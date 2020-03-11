@@ -1,0 +1,84 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:OpenTracker.ViewModels;assembly=OpenTracker"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
+        xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
+        mc:Ignorable="d" MinWidth="220" MinHeight="61" d:DesignWidth="1280" d:DesignHeight="960"
+        x:Class="OpenTracker.Views.MainWindow"
+        x:Name="HostWindow"
+        Background="#877373"
+        UseLayoutRounding="True"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="OpenTracker">
+
+  <Design.DataContext>
+    <vm:MainWindowVM />
+  </Design.DataContext>
+
+  <Grid ColumnDefinitions="Auto, *" RowDefinitions="*, Auto">
+
+    <Viewbox Grid.Column="1" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+        <ItemsControl x:Name="MapItemsControl" Items="{Binding Path=Maps}">
+
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <StackPanel Orientation="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=MapPanelOrientation, Mode=OneWay}" />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <view:MapControl />
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+
+        </ItemsControl>
+
+    </Viewbox>
+
+    <DockPanel Grid.Column="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=UIPanelColumn, Mode=OneWay}"
+               Grid.Row="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=UIPanelRow, Mode=OneWay}"
+               HorizontalAlignment="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=UIPanelHorizontalAlignment, Mode=OneWay}"
+               VerticalAlignment="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=UIPanelHorizontalAlignment, Mode=OneWay}">
+
+      <StackPanel DockPanel.Dock="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=UIPanelDock, Mode=OneWay}"
+                  Orientation="Vertical">
+
+        <Border Background="#212121" Padding="10,5">
+
+          <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                   FontSize="12" FontWeight="SemiBold" Text="Items" Foreground="#F6F6F6" Background="Transparent" />
+
+        </Border>
+
+        <Border Background="#443C3C" Padding="10,5,10,15">
+
+          <ItemsControl x:Name="ItemPanelControl" Items="{Binding Path=Items}">
+
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="238" MaxHeight="200"
+                           Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <view:ItemControl />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+
+          </ItemsControl>
+
+        </Border>
+
+      </StackPanel>
+
+    </DockPanel>
+
+  </Grid>
+
+</Window>

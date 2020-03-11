@@ -1,0 +1,47 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
+             xmlns:views="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
+             mc:Ignorable="d"
+             x:Class="OpenTracker.Views.MapControl">
+
+  <UserControl.Resources>
+
+    <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
+
+  </UserControl.Resources>
+
+  <UserControl.Styles>
+
+    <Style Selector="ItemsControl > ContentPresenter">
+      <Setter Property="Canvas.Left" Value="{Binding Path=CanvasX}" />
+      <Setter Property="Canvas.Top" Value="{Binding Path=CanvasY}" />
+    </Style>
+
+  </UserControl.Styles>
+
+  <Panel Margin="25">
+
+    <Image Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}" />
+
+    <ItemsControl Items="{Binding Path=MapLocations}">
+
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <Canvas />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <views:MapLocationControl />
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+
+    </ItemsControl>
+
+  </Panel>
+
+</UserControl>
