@@ -121,7 +121,8 @@ namespace OpenTracker.ViewModels
                 item.PropertyChanged += ItemChanged;
 
             SetSizeAndPosition();
-            Color = _appSettings.AccessibilityColors[Accessibility.Normal];
+            SetColor();
+            SetVisibility();
         }
     }
 }
