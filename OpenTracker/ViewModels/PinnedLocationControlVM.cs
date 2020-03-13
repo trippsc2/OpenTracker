@@ -13,7 +13,7 @@ namespace OpenTracker.ViewModels
         public string Name { get; }
         public ObservableCollection<SectionControlVM> Sections { get; }
 
-        public PinnedLocationControlVM(Game game, MainWindowVM mainWindow, Location location)
+        public PinnedLocationControlVM(AppSettingsVM appSettings, Game game, MainWindowVM mainWindow, Location location)
         {
             _mainWindow = mainWindow;
 
@@ -23,7 +23,7 @@ namespace OpenTracker.ViewModels
             Sections = new ObservableCollection<SectionControlVM>();
 
             foreach (ISection section in location.Sections)
-                Sections.Add(new SectionControlVM(game, section));
+                Sections.Add(new SectionControlVM(appSettings, game, section));
         }
 
         public void Close()

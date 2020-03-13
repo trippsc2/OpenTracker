@@ -4,6 +4,7 @@ using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.Enums;
 using ReactiveUI;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
@@ -75,8 +76,7 @@ namespace OpenTracker.ViewModels
 
             game.Mode.PropertyChanged += GameModeChanged;
 
-            foreach (Item item in game.Items.Values)
-                item.PropertyChanged += ItemChanged;
+            mapLocation.Location.ItemRequirementChanged += OnItemRequirementChanged;
 
             SetSizeAndPosition();
             SetColor();
@@ -126,7 +126,7 @@ namespace OpenTracker.ViewModels
             if (existingPinnedLocation != null)
                 _mainWindow.PinnedLocations.Remove(existingPinnedLocation);
 
-            _mainWindow.PinnedLocations.Insert(0, new PinnedLocationControlVM(_game, _mainWindow, _mapLocation.Location));
+            _mainWindow.PinnedLocations.Insert(0, new PinnedLocationControlVM(_appSettings, _game, _mainWindow, _mapLocation.Location));
         }
 
         private void GameModeChanged(object sender, PropertyChangedEventArgs e)
@@ -136,7 +136,7 @@ namespace OpenTracker.ViewModels
             SetVisibility();
         }
 
-        private void ItemChanged(object sender, PropertyChangedEventArgs e)
+        private void OnItemRequirementChanged(object sender, EventArgs e)
         {
             SetColor();
             SetVisibility();

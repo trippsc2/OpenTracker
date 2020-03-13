@@ -8,8 +8,8 @@
   <StackPanel Margin="4,0" Orientation="Vertical">
 
     <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-               Grid.Column="0" FontSize="9" FontWeight="Normal" Foreground="#F6F6F6" Text="{Binding Path=Name}"
-               HorizontalAlignment="Left" />
+               Grid.Column="0" FontSize="9" FontWeight="Normal" Foreground="{Binding Path=FontColor}"
+               Text="{Binding Path=Name}" HorizontalAlignment="Left" />
 
     <Panel>
 
@@ -19,7 +19,7 @@
               VerticalAlignment="Bottom">
         
         <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                   Foreground="#F6F6F6" FontSize="14" FontWeight="SemiBold" Text="3"
+                   Foreground="#F6F6F6" FontSize="14" FontWeight="SemiBold" Text="{Binding Path=NumberString}"
                    HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
         
       </Border>
