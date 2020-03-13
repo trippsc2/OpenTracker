@@ -1,8 +1,9 @@
 ﻿using Avalonia.Media;
-using OpenTracker.Enums;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
+using OpenTracker.Models.Enums;
 using ReactiveUI;
+using System;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels
@@ -82,19 +83,34 @@ namespace OpenTracker.ViewModels
             SetImage();
         }
 
-        public void ChangeItem(bool alternate = false)
+        public void ChangeItem(bool rightClick = false)
         {
             if (_items != null)
             {
-                if (alternate)
+                if (_items.Length == 2)
                 {
-                    if (_items.Length == 2)
-                        _items[1].Change(1);
+                    if (rightClick)
+                    {
+                        if (_items[1].Current == _items[1].Maximum)
+                            _items[1].Current = 0;
+                        else
+                            _items[1].Current++;
+                    }
                     else
-                        _items[0].Change(-1);
+                    {
+                        if (_items[0].Current == _items[0].Maximum)
+                            _items[0].Current = 0;
+                        else
+                            _items[0].Current++;
+                    }
                 }
                 else
-                    _items[0].Change(1);
+                {
+                    if (rightClick)
+                        _items[0].Current = Math.Max(_items[0].Current - 1, 0);
+                    else
+                        _items[0].Current = Math.Min(_items[0].Current + 1, _items[0].Maximum);
+                }
             }
         }
     }

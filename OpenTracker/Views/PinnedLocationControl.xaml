@@ -1,0 +1,44 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OpenTracker.Views.PinnedLocationControl"
+             Background="#343434">
+
+  <Grid RowDefinitions="Auto, Auto, Auto" Margin="4,4" Background="#343434">
+
+    <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+
+      <TextBlock Grid.Column="0" FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                 FontSize="11" FontWeight="Medium" Foreground="#F6F6F6" HorizontalAlignment="Left"
+                 VerticalAlignment="Center" Text="{Binding Path=Name}" />
+
+      <Image Source="avares://OpenTracker/Assets/Images/close.png" Grid.Column="2" Height="10"
+             Width="10" Margin="8,0,2,0" HorizontalAlignment="Right" VerticalAlignment="Center"
+             PointerReleased="OnClick" />
+      
+    </Grid>
+
+    <Border Grid.Row="1" Margin="0,2" Height="1" Background="#F6F6F6" />
+
+    <ItemsControl Grid.Row="2" Items="{Binding Path=Sections}">
+      
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <StackPanel Margin="0,2" Orientation="Horizontal" />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <view:SectionControl />
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+      
+    </ItemsControl>
+
+  </Grid>
+
+</UserControl>

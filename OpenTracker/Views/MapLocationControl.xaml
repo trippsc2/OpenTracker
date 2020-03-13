@@ -6,7 +6,8 @@
              x:Class="OpenTracker.Views.MapLocationControl">
 
   <Border Width="{Binding Path=Size}" Height="{Binding Path=Size}" BorderBrush="#212121"
-          Background="{Binding Path=Color}" IsVisible="{Binding Path=Visible}" IsHitTestVisible="{Binding Path=Visible}"
+          Background="{Binding Path=Color}" IsVisible="{Binding Path=Visible}"
+          IsHitTestVisible="{Binding Path=Visible}" DoubleTapped="OnDoubleClick"
           BorderThickness="{Binding Path=BorderSize}" PointerReleased="OnClick" />
   
 </UserControl>

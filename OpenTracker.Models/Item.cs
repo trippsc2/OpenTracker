@@ -1,4 +1,4 @@
-﻿using OpenTracker.Enums;
+﻿using OpenTracker.Models.Enums;
 using System;
 using System.ComponentModel;
 
@@ -6,8 +6,6 @@ namespace OpenTracker.Models
 {
     public class Item : INotifyPropertyChanged
     {
-        private readonly bool _cycle;
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ItemType ItemType { get; }
@@ -17,7 +15,7 @@ namespace OpenTracker.Models
         public int Current
         {
             get => _current;
-            private set
+            set
             {
                 if (_current != value)
                 {
@@ -43,13 +41,11 @@ namespace OpenTracker.Models
                 case ItemType.Ether:
                 case ItemType.Quake:
                 case ItemType.Flute:
-                    _cycle = true;
                     Maximum = 1;
                     break;
                 case ItemType.BigBomb:
                 case ItemType.MagicBat:
                 case ItemType.FluteActivated:
-                    _cycle = true;
                     Maximum = 1;
                     break;
                 case ItemType.Hookshot:
@@ -86,7 +82,6 @@ namespace OpenTracker.Models
                 case ItemType.BombosDungeons:
                 case ItemType.EtherDungeons:
                 case ItemType.QuakeDungeons:
-                    _cycle = true;
                     Maximum = 3;
                     break;
                 case ItemType.Bottle:
@@ -162,14 +157,6 @@ namespace OpenTracker.Models
                 default:
                     throw new ArgumentOutOfRangeException(nameof(itemType));
             }
-        }
-
-        public void Change(int delta)
-        {
-            if (_cycle && delta == 1 && Current + delta > Maximum)
-                Current = 0;
-            else
-                Current = Math.Min(Math.Max(Current + delta, 0), Maximum);
         }
 
         private void OnPropertyChanged(string propertyName)

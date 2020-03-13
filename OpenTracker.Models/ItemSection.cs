@@ -1,58 +1,127 @@
-﻿using OpenTracker.Enums;
+﻿using OpenTracker.Models.Enums;
+using OpenTracker.Models.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace OpenTracker.Models
 {
-    public class ItemSection
+    public class ItemSection : ISection, INotifyPropertyChanged
     {
-        private Game _game;
         private readonly bool _mapCompass;
         private readonly int _smallKeys;
-        private readonly bool _bigKeys;
+        private readonly bool _bigKey;
+        private readonly int _baseTotal;
+
+        public event EventHandler ItemRequirementChanged;
 
         public string Name { get; }
         public bool HasVisibleItem { get; }
-        public int Total { get; }
-        public int Available { get; set; }
-        public Item VisibleItem { get; set; }
 
-        public Func<Accessibility> GetAccessibility { get; }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private int _available;
+        public int Available
+        {
+            get => _available;
+            set
+            {
+                if (_available != value)
+                {
+                    _available = value;
+                    OnPropertyChanged(nameof(Available));
+                }
+            }
+        }
+
+        private int _total;
+        public int Total
+        {
+            get => _total;
+            set
+            {
+                if (_total != value)
+                {
+                    _total = value;
+                    OnPropertyChanged(nameof(Total));
+                }
+            }
+        }
+
+        private Item _visibleItem;
+        public Item VisibleItem
+        {
+            get => _visibleItem;
+            set
+            {
+                if (_visibleItem != value)
+                {
+                    _visibleItem = value;
+                    OnPropertyChanged(nameof(VisibleItem));
+                }
+            }
+        }
+
+        public Func<Mode, ItemDictionary, Accessibility> GetAccessibility { get; }
 
         public ItemSection(Game game, LocationID iD, int index = 0)
         {
-            _game = game;
+            game.Mode.PropertyChanged += OnGameModeChanged;
+
+            List<Item> itemRequirements = new List<Item>();
 
             switch (iD)
             {
                 case LocationID.Pedestal:
 
+                    _baseTotal = 1;
                     Name = "Pedestal";
                     HasVisibleItem = true;
-                    Total = 1;
-                    Available = 1;
 
-                    GetAccessibility = () =>
+                    GetAccessibility = (mode, items) =>
                     {
-                        if (_game.Items.Has(ItemType.GreenPendant) && _game.Items.Has(ItemType.Pendant, 2))
+                        if (items.Has(ItemType.GreenPendant) && items.Has(ItemType.Pendant, 2))
                         {
-                            if ((_game.Mode.ItemPlacement.Value == ItemPlacement.Advanced || _game.Items.Has(ItemType.Book)) &&
-                                (_game.Mode.WorldState.Value == WorldState.StandardOpen || _game.Items.Has(ItemType.MoonPearl)))
+                            if ((mode.ItemPlacement.Value == ItemPlacement.Advanced || items.Has(ItemType.Book)) &&
+                                (mode.WorldState.Value == WorldState.StandardOpen || items.Has(ItemType.MoonPearl)))
                                 return Accessibility.Normal;
 
-                            if (_game.Mode.WorldState.Value == WorldState.StandardOpen &&
-                                _game.Mode.ItemPlacement.Value == ItemPlacement.Basic)
+                            if (mode.WorldState.Value == WorldState.StandardOpen &&
+                                mode.ItemPlacement.Value == ItemPlacement.Basic)
                                 return Accessibility.SequenceBreak;
                         }
 
-                        if (_game.Items.Has(ItemType.Book))
+                        if (items.Has(ItemType.Book))
                             return Accessibility.Inspect;
 
                         return Accessibility.None;
                     };
 
+                    itemRequirements.Add(game.Items[ItemType.GreenPendant]);
+                    itemRequirements.Add(game.Items[ItemType.Pendant]);
+                    itemRequirements.Add(game.Items[ItemType.Book]);
+                    itemRequirements.Add(game.Items[ItemType.MoonPearl]);
+
                     break;
                 case LocationID.LumberjackCave:
+
+                    _baseTotal = 1;
+                    Name = "Cave";
+                    HasVisibleItem = true;
+
+                    GetAccessibility = (mode, items) =>
+                    {
+                        if (items.Has(ItemType.Aga) && items.Has(ItemType.Boots) &&
+                            (mode.WorldState == WorldState.StandardOpen || items.Has(ItemType.MoonPearl)))
+                            return Accessibility.Normal;
+
+                        return Accessibility.Inspect;
+                    };
+
+                    itemRequirements.Add(game.Items[ItemType.Aga]);
+                    itemRequirements.Add(game.Items[ItemType.Boots]);
+                    itemRequirements.Add(game.Items[ItemType.MoonPearl]);
+
                     break;
                 case LocationID.BlindsHouse:
                     break;
@@ -187,6 +256,47 @@ namespace OpenTracker.Models
                 case LocationID.GanonsTower:
                     break;
             }
+
+            Total = _baseTotal;
+            Available = _baseTotal;
+
+            foreach (Item item in itemRequirements)
+                item.PropertyChanged += OnItemRequirementChanged;
+        }
+
+        void SetTotal(Mode mode)
+        {
+            int newTotal = _baseTotal + ((mode.DungeonItemShuffle.Value >= DungeonItemShuffle.MapsCompasses && _mapCompass) ? 2 : 0) +
+                ((mode.DungeonItemShuffle.Value >= DungeonItemShuffle.MapsCompassesSmallKeys) ? _smallKeys : 0) +
+                ((mode.DungeonItemShuffle.Value == DungeonItemShuffle.Keysanity && _bigKey) ? 1 : 0);
+
+            int delta = newTotal - Total;
+
+            Total = newTotal;
+            Available = Math.Max(0, Math.Min(Total, Available + delta));
+        }
+        
+        private void OnItemRequirementChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (ItemRequirementChanged != null)
+                ItemRequirementChanged.Invoke(this, new EventArgs());
+        }
+
+        private void OnGameModeChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "DungeonItemShuffle")
+                SetTotal((Mode)sender);
+        }
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public bool IsAvailable()
+        {
+            return Available > 0;
         }
     }
 }

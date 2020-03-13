@@ -1,4 +1,4 @@
-﻿namespace OpenTracker.Enums
+﻿namespace OpenTracker.Models.Enums
 {
     public enum DungeonItemShuffle
     {

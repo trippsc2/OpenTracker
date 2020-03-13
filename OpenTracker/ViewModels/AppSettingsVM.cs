@@ -1,5 +1,5 @@
 ﻿using Avalonia.Media;
-using OpenTracker.Enums;
+using OpenTracker.Models.Enums;
 using System.Collections.Generic;
 
 namespace OpenTracker.ViewModels

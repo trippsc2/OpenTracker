@@ -1,5 +1,5 @@
-﻿using OpenTracker.Enums;
-using OpenTracker.Models;
+﻿using OpenTracker.Models;
+using OpenTracker.Models.Enums;
 using System;
 using System.Collections.ObjectModel;
 
@@ -12,6 +12,7 @@ namespace OpenTracker.ViewModels
 
         public ObservableCollection<MapControlVM> Maps { get; }
         public ObservableCollection<ItemControlVM> Items { get; }
+        public ObservableCollection<PinnedLocationControlVM> PinnedLocations { get; }
 
         public MainWindowVM()
         {
@@ -19,9 +20,10 @@ namespace OpenTracker.ViewModels
             _game = new Game();
 
             Maps = new ObservableCollection<MapControlVM>();
+            PinnedLocations = new ObservableCollection<PinnedLocationControlVM>();
 
             for (int i = 0; i < Enum.GetValues(typeof(MapID)).Length; i++)
-                Maps.Add(new MapControlVM(_appSettings, _game, (MapID)i));
+                Maps.Add(new MapControlVM(_appSettings, _game, this, (MapID)i));
 
             Items = new ObservableCollection<ItemControlVM>();
 
@@ -75,6 +77,7 @@ namespace OpenTracker.ViewModels
                         break;
                 }
             }
+
         }
     }
 }

@@ -17,34 +17,13 @@
     <vm:MainWindowVM />
   </Design.DataContext>
 
-  <Grid ColumnDefinitions="Auto, *" RowDefinitions="*, Auto">
+  <DockPanel>
 
-    <Viewbox Grid.Column="1" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-
-        <ItemsControl x:Name="MapItemsControl" Items="{Binding Path=Maps}">
-
-          <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-              <StackPanel Orientation="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=MapPanelOrientation, Mode=OneWay}" />
-            </ItemsPanelTemplate>
-          </ItemsControl.ItemsPanel>
-
-          <ItemsControl.ItemTemplate>
-            <DataTemplate>
-              <view:MapControl />
-            </DataTemplate>
-          </ItemsControl.ItemTemplate>
-
-        </ItemsControl>
-
-    </Viewbox>
-
-    <DockPanel Grid.Column="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=UIPanelColumn, Mode=OneWay}"
-               Grid.Row="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=UIPanelRow, Mode=OneWay}"
+    <DockPanel DockPanel.Dock="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=UIPanelDock, Mode=OneWay}"
                HorizontalAlignment="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=UIPanelHorizontalAlignment, Mode=OneWay}"
                VerticalAlignment="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=UIPanelHorizontalAlignment, Mode=OneWay}">
 
-      <StackPanel DockPanel.Dock="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=UIPanelDock, Mode=OneWay}"
+      <StackPanel DockPanel.Dock="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=UIPanelOrientationDock, Mode=OneWay}"
                   Orientation="Vertical">
 
         <Border Background="#212121" Padding="10,5">
@@ -77,8 +56,61 @@
 
       </StackPanel>
 
+      <Grid Margin="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=PinnedLocationsPanelMargin, Mode=OneWay}"
+            RowDefinitions="Auto, *" VerticalAlignment="Stretch">
+
+        <Border Grid.Row="0" Background="#212121" Padding="10,5">
+
+          <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                   FontSize="12" FontWeight="SemiBold" Text="Pinned Locations" Foreground="#F6F6F6" Background="Transparent" />
+
+        </Border>
+
+        <Border Grid.Row="1" Background="#443C3C" Padding="10,5,10,15">
+
+          <ItemsControl Items="{Binding Path=PinnedLocations}">
+
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <WrapPanel Orientation="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=MapPanelOrientation, Mode=OneWay}" />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <view:PinnedLocationControl />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+
+          </ItemsControl>
+
+        </Border>
+
+      </Grid>
+
     </DockPanel>
 
-  </Grid>
+    <Viewbox Grid.Column="1" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+        <ItemsControl x:Name="MapItemsControl" Items="{Binding Path=Maps}">
+
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <StackPanel Orientation="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=MapPanelOrientation, Mode=OneWay}" />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <view:MapControl />
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+
+        </ItemsControl>
+
+    </Viewbox>
+
+
+  </DockPanel>
 
 </Window>

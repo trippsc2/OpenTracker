@@ -1,17 +1,17 @@
-﻿using OpenTracker.Enums;
-using OpenTracker.Interfaces;
+﻿using OpenTracker.Models.Enums;
+using System.ComponentModel;
 
 namespace OpenTracker.Models
 {
-    public class LocationPlacement
+    public class MapLocation
     {
-        public ILocation Location { get; }
+        public Location Location { get; }
         public Mode VisibilityMode { get; }
         public MapID Map { get; }
         public double X { get; }
         public double Y { get; }
 
-        public LocationPlacement(ILocation location, MapID map,
+        public MapLocation(Location location, MapID map,
             double x, double y, Mode mode)
         {
             Location = location;

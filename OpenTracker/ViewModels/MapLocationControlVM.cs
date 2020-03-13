@@ -1,9 +1,10 @@
 ﻿using Avalonia;
 using Avalonia.Media;
-using OpenTracker.Enums;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
+using OpenTracker.Models.Enums;
 using ReactiveUI;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels
@@ -11,8 +12,9 @@ namespace OpenTracker.ViewModels
     public class MapLocationControlVM : ViewModelBase, IMapLocationControlVM
     {
         private readonly AppSettingsVM _appSettings;
-        private readonly LocationPlacement _placement;
         private readonly Game _game;
+        private readonly MainWindowVM _mainWindow;
+        private readonly MapLocation _mapLocation;
 
         private double _canvasX;
         public double CanvasX
@@ -63,6 +65,24 @@ namespace OpenTracker.ViewModels
             set => this.RaiseAndSetIfChanged(ref _visible, value);
         }
 
+        public MapLocationControlVM(AppSettingsVM appSettings, Game game,
+            MainWindowVM mainWindow, MapLocation mapLocation)
+        {
+            _appSettings = appSettings;
+            _game = game;
+            _mainWindow = mainWindow;
+            _mapLocation = mapLocation;
+
+            game.Mode.PropertyChanged += GameModeChanged;
+
+            foreach (Item item in game.Items.Values)
+                item.PropertyChanged += ItemChanged;
+
+            SetSizeAndPosition();
+            SetColor();
+            SetVisibility();
+        }
+
         private void SetSizeAndPosition()
         {
             if (_game.Mode.EntranceShuffle.HasValue &&
@@ -77,23 +97,36 @@ namespace OpenTracker.ViewModels
                 BorderSize = new Thickness(9);
             }
 
-            CanvasX = _placement.X - (Size / 2);
-            CanvasY = _placement.Y - (Size / 2);
+            CanvasX = _mapLocation.X - (Size / 2);
+            CanvasY = _mapLocation.Y - (Size / 2);
         }
 
         public void SetColor()
         {
-            Color = _appSettings.AccessibilityColors[_placement.Location.GetAccessibility()];
+            Color = _appSettings.AccessibilityColors[_mapLocation.Location.GetAccessibility(_game.Mode, _game.Items)];
         }
 
         public void SetVisibility()
         {
-            if (_game.Mode.Validate(_placement.VisibilityMode) && (_appSettings.DisplayAllLocations ||
-                (_placement.Location.GetAccessibility() != Accessibility.Cleared &&
-                _placement.Location.GetAccessibility() != Accessibility.None)))
-                Visible = true;
-            else
-                Visible = false;
+            Visible = _game.Mode.Validate(_mapLocation.VisibilityMode) && (_appSettings.DisplayAllLocations ||
+                (_mapLocation.Location.GetAccessibility(_game.Mode, _game.Items) != Accessibility.Cleared &&
+                _mapLocation.Location.GetAccessibility(_game.Mode, _game.Items) != Accessibility.None));
+        }
+
+        public void PinLocation()
+        {
+            PinnedLocationControlVM existingPinnedLocation = null;
+
+            foreach (PinnedLocationControlVM pinnedLocation in _mainWindow.PinnedLocations)
+            {
+                if (pinnedLocation.Location == _mapLocation.Location)
+                    existingPinnedLocation = pinnedLocation;
+            }
+
+            if (existingPinnedLocation != null)
+                _mainWindow.PinnedLocations.Remove(existingPinnedLocation);
+
+            _mainWindow.PinnedLocations.Insert(0, new PinnedLocationControlVM(_game, _mainWindow, _mapLocation.Location));
         }
 
         private void GameModeChanged(object sender, PropertyChangedEventArgs e)
@@ -105,22 +138,6 @@ namespace OpenTracker.ViewModels
 
         private void ItemChanged(object sender, PropertyChangedEventArgs e)
         {
-            SetColor();
-            SetVisibility();
-        }
-
-        public MapLocationControlVM(AppSettingsVM appSettings, Game game, LocationPlacement coord)
-        {
-            _appSettings = appSettings;
-            _placement = coord;
-            _game = game;
-
-            game.Mode.PropertyChanged += GameModeChanged;
-
-            foreach (Item item in game.Items.Values)
-                item.PropertyChanged += ItemChanged;
-
-            SetSizeAndPosition();
             SetColor();
             SetVisibility();
         }

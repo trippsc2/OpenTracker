@@ -1,0 +1,31 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OpenTracker.Views.SectionControl">
+
+  <StackPanel Margin="4,0" Orientation="Vertical">
+
+    <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+               Grid.Column="0" FontSize="9" FontWeight="Normal" Foreground="#F6F6F6" Text="{Binding Path=Name}"
+               HorizontalAlignment="Left" />
+
+    <Panel>
+
+      <Image Source="avares://OpenTracker/Assets/Images/chest1.png" />
+      
+      <Border Background="#000000" Height="16" Width="16" HorizontalAlignment="Right"
+              VerticalAlignment="Bottom">
+        
+        <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                   Foreground="#F6F6F6" FontSize="14" FontWeight="SemiBold" Text="3"
+                   HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+        
+      </Border>
+      
+    </Panel>
+
+  </StackPanel>
+
+</UserControl>

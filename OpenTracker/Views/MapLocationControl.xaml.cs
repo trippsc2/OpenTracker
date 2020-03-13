@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using OpenTracker.Interfaces;
 
@@ -23,6 +24,11 @@ namespace OpenTracker.Views
         {
             if (e.InitialPressMouseButton == MouseButton.Right)
                 _viewModel.SetColor();
+        }
+
+        private void OnDoubleClick(object sender, RoutedEventArgs e)
+        {
+            _viewModel.PinLocation();
         }
     }
 }

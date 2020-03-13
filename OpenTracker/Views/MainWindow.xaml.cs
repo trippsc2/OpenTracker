@@ -15,20 +15,12 @@ namespace OpenTracker.Views
             set => SetValue(MapPanelOrientationProperty, value);
         }
 
-        public static AvaloniaProperty<int> UIPanelColumnProperty =
-            AvaloniaProperty.Register<MainWindow, int>("UIPanelColumn");
-        public int UIPanelColumn
+        public static AvaloniaProperty<Dock> UIPanelDockProperty =
+            AvaloniaProperty.Register<MainWindow, Dock>("UIPanelDock");
+        public Dock UIPanelDock
         {
-            get => GetValue(UIPanelColumnProperty);
-            set => SetValue(UIPanelColumnProperty, value);
-        }
-
-        public static AvaloniaProperty<int> UIPanelRowProperty =
-            AvaloniaProperty.Register<MainWindow, int>("UIPanelRow");
-        public int UIPanelRow
-        {
-            get => GetValue(UIPanelRowProperty);
-            set => SetValue(UIPanelRowProperty, value);
+            get => GetValue(UIPanelDockProperty);
+            set => SetValue(UIPanelDockProperty, value);
         }
 
         public static AvaloniaProperty<HorizontalAlignment> UIPanelHorizontalAlignmentProperty =
@@ -47,12 +39,20 @@ namespace OpenTracker.Views
             set => SetValue(UIPanelVerticalAlignmentProperty, value);
         }
 
-        public static AvaloniaProperty<Dock> UIPanelDockProperty =
-            AvaloniaProperty.Register<MainWindow, Dock>("UIPanelDock");
-        public Dock UIPanelDock
+        public static AvaloniaProperty<Dock> UIPanelOrientationDockProperty =
+            AvaloniaProperty.Register<MainWindow, Dock>("UIPanelOrientationDock");
+        public Dock UIPanelOrientationDock
         {
-            get => GetValue(UIPanelDockProperty);
-            set => SetValue(UIPanelDockProperty, value);
+            get => GetValue(UIPanelOrientationDockProperty);
+            set => SetValue(UIPanelOrientationDockProperty, value);
+        }
+
+        public static AvaloniaProperty<Thickness> PinnedLocationsPanelMarginProperty =
+            AvaloniaProperty.Register<MainWindow, Thickness>("PinnedLocationsPanelMargin");
+        public Thickness PinnedLocationsPanelMargin
+        {
+            get => GetValue(PinnedLocationsPanelMarginProperty);
+            set => SetValue(PinnedLocationsPanelMarginProperty, value);
         }
 
         public MainWindow()
@@ -74,11 +74,8 @@ namespace OpenTracker.Views
             if (MapPanelOrientation != Orientation.Horizontal)
                 MapPanelOrientation = Orientation.Horizontal;
 
-            if (UIPanelColumn != 1)
-                UIPanelColumn = 1;
-
-            if (UIPanelRow != 1)
-                UIPanelRow = 1;
+            if (UIPanelDock != Dock.Bottom)
+                UIPanelDock = Dock.Bottom;
 
             if (UIPanelHorizontalAlignment != HorizontalAlignment.Stretch)
                 UIPanelHorizontalAlignment = HorizontalAlignment.Stretch;
@@ -86,8 +83,11 @@ namespace OpenTracker.Views
             if (UIPanelVerticalAlignment != VerticalAlignment.Bottom)
                 UIPanelVerticalAlignment = VerticalAlignment.Bottom;
 
-            if (UIPanelDock != Dock.Left)
-                UIPanelDock = Dock.Left;
+            if (UIPanelOrientationDock != Dock.Left)
+                UIPanelOrientationDock = Dock.Left;
+
+            if (PinnedLocationsPanelMargin.Left != 2)
+                PinnedLocationsPanelMargin = new Thickness(2, 0, 0, 0);
         }
 
         private void VerticalLayout()
@@ -95,11 +95,8 @@ namespace OpenTracker.Views
             if (MapPanelOrientation != Orientation.Vertical)
                 MapPanelOrientation = Orientation.Vertical;
 
-            if (UIPanelColumn != 0)
-                UIPanelColumn = 0;
-
-            if (UIPanelRow != 0)
-                UIPanelRow = 0;
+            if (UIPanelDock != Dock.Left)
+                UIPanelDock = Dock.Left;
 
             if (UIPanelHorizontalAlignment != HorizontalAlignment.Right)
                 UIPanelHorizontalAlignment = HorizontalAlignment.Right;
@@ -107,8 +104,11 @@ namespace OpenTracker.Views
             if (UIPanelVerticalAlignment != VerticalAlignment.Stretch)
                 UIPanelVerticalAlignment = VerticalAlignment.Stretch;
 
-            if (UIPanelDock != Dock.Top)
-                UIPanelDock = Dock.Top;
+            if (UIPanelOrientationDock != Dock.Top)
+                UIPanelOrientationDock = Dock.Top;
+
+            if (PinnedLocationsPanelMargin.Left != 0)
+                PinnedLocationsPanelMargin = new Thickness(0);
         }
 
         private void BoundsChanged(MainWindow window, AvaloniaPropertyChangedEventArgs e)

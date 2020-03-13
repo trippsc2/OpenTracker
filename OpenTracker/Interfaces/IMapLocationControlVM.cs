@@ -3,5 +3,6 @@
     public interface IMapLocationControlVM
     {
         void SetColor();
+        void PinLocation();
     }
 }

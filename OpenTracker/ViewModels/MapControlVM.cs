@@ -1,36 +1,27 @@
-﻿using OpenTracker.Enums;
-using OpenTracker.Interfaces;
-using OpenTracker.Models;
+﻿using OpenTracker.Models;
+using OpenTracker.Models.Enums;
 using System.Collections.ObjectModel;
 
 namespace OpenTracker.ViewModels
 {
     public class MapControlVM : ViewModelBase
     {
-        private readonly MapID _iD;
-        private readonly AppSettingsVM _appSettings;
-        private readonly Game _game;
-
         public string ImageSource { get; }
         public ObservableCollection<MapLocationControlVM> MapLocations { get; }
 
-        public MapControlVM(AppSettingsVM appSettings, Game game, MapID iD)
+        public MapControlVM(AppSettingsVM appSettings, Game game,
+            MainWindowVM mainWindow, MapID iD)
         {
-            _appSettings = appSettings;
-            _game = game;
-            _iD = iD;
-            ImageSource = "avares://OpenTracker/Assets/Images/Maps/" + _iD.ToString().ToLower() + ".png";
+            ImageSource = "avares://OpenTracker/Assets/Images/Maps/" + iD.ToString().ToLower() + ".png";
 
             MapLocations = new ObservableCollection<MapLocationControlVM>();
 
-            foreach (ILocation location in _game.Locations.Values)
+            foreach (Location location in game.Locations.Values)
             {
-                foreach (LocationPlacement coord in location.Placements)
+                foreach (MapLocation mapLocation in location.MapLocations)
                 {
-                    if (coord.Map == _iD)
-                    {
-                        MapLocations.Add(new MapLocationControlVM(_appSettings, _game, coord));
-                    }
+                    if (mapLocation.Map == iD)
+                        MapLocations.Add(new MapLocationControlVM(appSettings, game, mainWindow, mapLocation));
                 }
             }
         }

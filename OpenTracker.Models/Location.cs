@@ -1,35 +1,38 @@
-﻿using OpenTracker.Enums;
-using OpenTracker.Interfaces;
+﻿using OpenTracker.Models.Enums;
+using OpenTracker.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models
 {
-    public class ItemLocation : ILocation
+    public class Location
     {
-        private readonly Game _game;
         private readonly LocationID _iD;
+
+        public event EventHandler ItemRequirementChanged;
 
         public string Name { get; }
 
-        public List<LocationPlacement> Placements { get; }
-        public List<ItemSection> ItemSections { get; }
+        public List<MapLocation> MapLocations { get; }
+        public List<ISection> Sections { get; }
 
-        public ItemLocation(Game game, LocationID iD)
+        public Location(Game game, LocationID iD)
         {
-            _game = game;
             _iD = iD;
 
-            Placements = new List<LocationPlacement>();
-            ItemSections = new List<ItemSection>();
+            MapLocations = new List<MapLocation>();
+            Sections = new List<ISection>();
 
-            int itemCollections = 1;
+            int itemCollections = 0;
+
+            List<Item> itemRequirements = new List<Item>();
 
             switch (iD)
             {
                 case LocationID.Pedestal:
                     Name = "Master Sword Pedestal";
-                    Placements.Add(new LocationPlacement(this, MapID.LightWorld, 83, 101, new Mode()));
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 83, 101, new Mode()));
+                    itemCollections = 1;
                     break;
                 case LocationID.LumberjackCave:
                     /*Placements.Add(new LocationPlacement(this, MapID.LightWorld, 633, 117,
@@ -178,29 +181,40 @@ namespace OpenTracker.Models
             }
 
             for (int i = 0; i < itemCollections; i++)
-                ItemSections.Add(new ItemSection(_game, _iD, i));
+                Sections.Add(new ItemSection(game, _iD, i));
+
+            foreach (ISection section in Sections)
+                section.ItemRequirementChanged += OnItemRequirementChanged;
         }
 
-        public Accessibility GetAccessibility()
+        private void OnItemRequirementChanged(object sender, EventArgs e)
+        {
+            if (ItemRequirementChanged != null)
+                ItemRequirementChanged.Invoke(this, new EventArgs());
+        }
+
+        public Accessibility GetAccessibility(Mode mode, ItemDictionary items)
         {
             Accessibility? leastAccessible = null;
             Accessibility? mostAccessible = null;
 
-            int itemsAvailable = 0;
+            bool available = false;
 
-            foreach (ItemSection section in ItemSections)
+            foreach (ISection section in Sections)
             {
-                itemsAvailable += section.Available;
+                if (section.IsAvailable())
+                {
+                    available = true;
+                    Accessibility sectionAccessibility = section.GetAccessibility(mode, items);
 
-                Accessibility sectionAccessibility = section.GetAccessibility();
-
-                if (leastAccessible == null || leastAccessible > sectionAccessibility)
-                    leastAccessible = sectionAccessibility;
-                if (mostAccessible == null || mostAccessible < sectionAccessibility)
-                    mostAccessible = sectionAccessibility;
+                    if (leastAccessible == null || leastAccessible > sectionAccessibility)
+                        leastAccessible = sectionAccessibility;
+                    if (mostAccessible == null || mostAccessible < sectionAccessibility)
+                        mostAccessible = sectionAccessibility;
+                }
             }
 
-            if (itemsAvailable == 0)
+            if (!available)
                 return Accessibility.Cleared;
 
             return mostAccessible.Value switch
