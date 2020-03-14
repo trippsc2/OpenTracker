@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models
 {
-    public class ItemSection : ISection, INotifyPropertyChanged
+    public class ItemSection : ISection
     {
         private readonly bool _mapCompass;
         private readonly int _smallKeys;
@@ -14,11 +14,10 @@ namespace OpenTracker.Models
         private readonly int _baseTotal;
 
         public event EventHandler ItemRequirementChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public string Name { get; }
         public bool HasVisibleItem { get; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         private int _available;
         public int Available
@@ -292,6 +291,11 @@ namespace OpenTracker.Models
         {
             if (PropertyChanged != null)
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void Clear()
+        {
+            Available = 0;
         }
 
         public bool IsAvailable()

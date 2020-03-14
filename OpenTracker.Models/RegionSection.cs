@@ -5,7 +5,7 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models
 {
-    public class RegionSection : ISection, INotifyPropertyChanged
+    public class RegionSection : ISection
     {
         public string Name { get => ""; }
 
@@ -37,6 +37,11 @@ namespace OpenTracker.Models
         {
             if (PropertyChanged != null)
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void Clear()
+        {
+            Available = false;
         }
 
         public bool IsAvailable()

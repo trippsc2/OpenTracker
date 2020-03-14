@@ -40,7 +40,7 @@ namespace OpenTracker.ViewModels
 
             if (_items != null)
             {
-                _imageSourceBase = "avares://OpenTracker/Assets/Images/Items/" + _items[0].ItemType.ToString().ToLower();
+                _imageSourceBase = "avares://OpenTracker/Assets/Images/Items/" + _items[0].Type.ToString().ToLower();
 
                 SetImage();
 
@@ -60,7 +60,7 @@ namespace OpenTracker.ViewModels
             if (_items.Length == 2)
                 imageNumber += _items[1].Current * (_items[0].Maximum + 1);
 
-            if (_items[0].ItemType != ItemType.TowerCrystals && _items[0].ItemType != ItemType.GanonCrystals)
+            if (_items[0].Type != ItemType.TowerCrystals && _items[0].Type != ItemType.GanonCrystals)
             {
                 imageString = imageNumber.ToString();
                 ImageNumber = "";

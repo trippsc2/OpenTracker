@@ -2,7 +2,7 @@
 {
     public interface IMapLocationControlVM
     {
-        void SetColor();
+        void ClearAvailableSections();
         void PinLocation();
     }
 }

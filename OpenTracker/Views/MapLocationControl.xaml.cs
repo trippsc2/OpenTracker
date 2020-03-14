@@ -23,7 +23,7 @@ namespace OpenTracker.Views
         private void OnClick(object sender, PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Right)
-                _viewModel.SetColor();
+                _viewModel.ClearAvailableSections();
         }
 
         private void OnDoubleClick(object sender, RoutedEventArgs e)

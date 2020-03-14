@@ -30,7 +30,7 @@ namespace OpenTracker.Models
             switch (iD)
             {
                 case LocationID.Pedestal:
-                    Name = "Master Sword Pedestal";
+                    Name = "Pedestal";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 83, 101, new Mode()));
                     itemCollections = 1;
                     break;

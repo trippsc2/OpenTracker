@@ -3,6 +3,7 @@ using Avalonia.Media;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.Enums;
+using OpenTracker.Models.Interfaces;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -78,9 +79,42 @@ namespace OpenTracker.ViewModels
 
             mapLocation.Location.ItemRequirementChanged += OnItemRequirementChanged;
 
+            foreach (ISection section in mapLocation.Location.Sections)
+            {
+                section.PropertyChanged += OnSectionChanged;
+            }
+
             SetSizeAndPosition();
             SetColor();
             SetVisibility();
+        }
+
+        private void CheckLocationAvailability()
+        {
+            PinnedLocationControlVM thisPinnedLocation = null;
+
+            foreach (PinnedLocationControlVM pinnedLocation in _mainWindow.PinnedLocations)
+            {
+                if (pinnedLocation.Location == _mapLocation.Location)
+                    thisPinnedLocation = pinnedLocation;
+            }
+
+            if (thisPinnedLocation != null)
+            {
+                bool sectionAvailable = false;
+
+                foreach (ISection section in _mapLocation.Location.Sections)
+                {
+                    if (section.IsAvailable())
+                    {
+                        sectionAvailable = true;
+                        break;
+                    }
+                }
+
+                if (!sectionAvailable)
+                    _mainWindow.PinnedLocations.Remove(thisPinnedLocation);
+            }
         }
 
         private void SetSizeAndPosition()
@@ -101,16 +135,27 @@ namespace OpenTracker.ViewModels
             CanvasY = _mapLocation.Y - (Size / 2);
         }
 
-        public void SetColor()
+        private void SetColor()
         {
             Color = _appSettings.AccessibilityColors[_mapLocation.Location.GetAccessibility(_game.Mode, _game.Items)];
         }
 
-        public void SetVisibility()
+        private void SetVisibility()
         {
             Visible = _game.Mode.Validate(_mapLocation.VisibilityMode) && (_appSettings.DisplayAllLocations ||
                 (_mapLocation.Location.GetAccessibility(_game.Mode, _game.Items) != Accessibility.Cleared &&
                 _mapLocation.Location.GetAccessibility(_game.Mode, _game.Items) != Accessibility.None));
+        }
+
+        public void ClearAvailableSections()
+        {
+            foreach (ISection section in _mapLocation.Location.Sections)
+            {
+                if (section.IsAvailable())
+                    section.Clear();
+            }
+
+            CheckLocationAvailability();
         }
 
         public void PinLocation()
@@ -138,6 +183,13 @@ namespace OpenTracker.ViewModels
 
         private void OnItemRequirementChanged(object sender, EventArgs e)
         {
+            SetColor();
+            SetVisibility();
+        }
+
+        private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
+        {
+            CheckLocationAvailability();
             SetColor();
             SetVisibility();
         }

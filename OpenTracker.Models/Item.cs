@@ -8,7 +8,7 @@ namespace OpenTracker.Models
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ItemType ItemType { get; }
+        public ItemType Type { get; }
         public int Maximum { get; }
 
         private int _current;
@@ -27,9 +27,9 @@ namespace OpenTracker.Models
 
         public Item(ItemType itemType)
         {
-            ItemType = itemType;
+            Type = itemType;
 
-            switch (ItemType)
+            switch (Type)
             {
                 case ItemType.Bow:
                 case ItemType.SilverArrows:

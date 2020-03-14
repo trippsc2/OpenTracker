@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <ApplicationIcon />
     <Win32Resource />
+    <Version>0.0.1</Version>
+    <Authors>Tripp</Authors>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="**\*.xaml.cs">
