@@ -5,7 +5,9 @@ using OpenTracker.Models.Enums;
 using OpenTracker.Models.Interfaces;
 using ReactiveUI;
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Reactive;
 
 namespace OpenTracker.ViewModels
 {
@@ -46,21 +48,95 @@ namespace OpenTracker.ViewModels
             set => this.RaiseAndSetIfChanged(ref _numberString, value);
         }
 
+        private bool _visibleItemPopupOpen;
+        public bool VisibleItemPopupOpen
+        {
+            get => _visibleItemPopupOpen;
+            set => this.RaiseAndSetIfChanged(ref _visibleItemPopupOpen, value);
+        }
+
+        public ReactiveCommand<Unit, Unit> ClearVisibleItemCommand { get; }
+
+        public ObservableCollection<VisibleItemSelectControlVM> ItemSelect { get; }
+
         public SectionControlVM(AppSettingsVM appSettings, Game game, ISection section)
         {
+            ClearVisibleItemCommand = ReactiveCommand.Create(ClearVisibleItem);
             _appSettings = appSettings;
             _game = game;
             _section = section;
 
+            ItemSelect = new ObservableCollection<VisibleItemSelectControlVM>();
+
+            for (int i = 0; i < Enum.GetValues(typeof(ItemType)).Length; i++)
+            {
+                switch ((ItemType)i)
+                {
+                    case ItemType.Bow:
+                    case ItemType.SilverArrows:
+                    case ItemType.Boomerang:
+                    case ItemType.RedBoomerang:
+                    case ItemType.Hookshot:
+                    case ItemType.Powder:
+                    case ItemType.Mushroom:
+                    case ItemType.FireRod:
+                    case ItemType.IceRod:
+                    case ItemType.Bombos:
+                    case ItemType.Ether:
+                    case ItemType.Quake:
+                    case ItemType.Lamp:
+                    case ItemType.Hammer:
+                    case ItemType.Flute:
+                    case ItemType.Net:
+                    case ItemType.Book:
+                    case ItemType.Bottle:
+                    case ItemType.CaneOfSomaria:
+                    case ItemType.CaneOfByrna:
+                    case ItemType.Cape:
+                    case ItemType.Gloves:
+                    case ItemType.Boots:
+                    case ItemType.Flippers:
+                    case ItemType.HalfMagic:
+                    case ItemType.Sword:
+                    case ItemType.Shield:
+                    case ItemType.Mail:
+                        ItemSelect.Add(new VisibleItemSelectControlVM(_game, this, _game.Items[(ItemType)i]));
+                        break;
+                    case ItemType.Shovel:
+                    case ItemType.MoonPearl:
+                        ItemSelect.Add(new VisibleItemSelectControlVM(_game, this, _game.Items[(ItemType)i]));
+                        ItemSelect.Add(new VisibleItemSelectControlVM(_game, this, null));
+                        break;
+                    case ItemType.Mirror:
+                        ItemSelect.Add(new VisibleItemSelectControlVM(_game, this, _game.Items[(ItemType)i]));
+                        ItemSelect.Add(new VisibleItemSelectControlVM(_game, this, _game.Items[ItemType.SmallKey]));
+                        ItemSelect.Add(new VisibleItemSelectControlVM(_game, this, _game.Items[ItemType.BigKey]));
+                        break;
+                    default:
+                        break;
+                }
+            }
+
             if (_section is ItemSection)
-                VisibleItem = ((ItemSection)_section).HasVisibleItem;
+            {
+                ItemSection itemSection = (ItemSection)_section;
+
+                if (itemSection.HasVisibleItem)
+                {
+                    VisibleItem = true;
+                }
+            }
 
             _section.ItemRequirementChanged += OnItemRequirementChanged;
             _section.PropertyChanged += OnSectionChanged;
 
-            
-
             Update();
+        }
+
+        private void ClearVisibleItem()
+        {
+            ((ItemSection)_section).VisibleItem = null;
+            VisibleItemPopupOpen = false;
         }
 
         private void OnItemRequirementChanged(object sender, EventArgs e)
@@ -69,6 +145,11 @@ namespace OpenTracker.ViewModels
         }
 
         private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
+        {
+            Update();
+        }
+
+        private void OnVisibleItemChanged(object sender, PropertyChangedEventArgs e)
         {
             Update();
         }
@@ -108,145 +189,54 @@ namespace OpenTracker.ViewModels
                             ItemImageSource = "avares://OpenTracker/Assets/Images/Items/visible-empty.png";
                         else
                         {
+                            int itemNumber = 0;
                             switch (itemSection.VisibleItem.Type)
                             {
                                 case ItemType.Bow:
-                                    break;
                                 case ItemType.SilverArrows:
-                                    break;
                                 case ItemType.Boomerang:
-                                    break;
                                 case ItemType.RedBoomerang:
+                                case ItemType.SmallKey:
+                                case ItemType.BigKey:
+                                    ItemImageSource = "avares://OpenTracker/Assets/Images/Items/visible-" +
+                                        itemSection.VisibleItem.Type.ToString().ToLower() + ".png";
                                     break;
                                 case ItemType.Hookshot:
-                                    break;
-                                case ItemType.Bomb:
-                                    break;
-                                case ItemType.BigBomb:
-                                    break;
                                 case ItemType.Powder:
-                                    break;
-                                case ItemType.MagicBat:
+                                case ItemType.FireRod:
+                                case ItemType.IceRod:
+                                case ItemType.Shovel:
+                                case ItemType.Lamp:
+                                case ItemType.Hammer:
+                                case ItemType.Flute:
+                                case ItemType.Net:
+                                case ItemType.Book:
+                                case ItemType.MoonPearl:
+                                case ItemType.Bottle:
+                                case ItemType.CaneOfSomaria:
+                                case ItemType.CaneOfByrna:
+                                case ItemType.Cape:
+                                case ItemType.Mirror:
+                                case ItemType.Gloves:
+                                case ItemType.Boots:
+                                case ItemType.Flippers:
+                                case ItemType.HalfMagic:
+                                case ItemType.Sword:
+                                case ItemType.Shield:
+                                case ItemType.Mail:
+                                    itemNumber = Math.Min(itemSection.VisibleItem.Current + 1, itemSection.VisibleItem.Maximum);
+                                    ItemImageSource = "avares://OpenTracker/Assets/Images/Items/" +
+                                        itemSection.VisibleItem.Type.ToString().ToLower() + itemNumber.ToString() + ".png";
                                     break;
                                 case ItemType.Mushroom:
-                                    break;
-                                case ItemType.TowerCrystals:
-                                    break;
-                                case ItemType.FireRod:
-                                    break;
-                                case ItemType.IceRod:
+                                    ItemImageSource = "avares://OpenTracker/Assets/Images/Items/mushroom1.png";
                                     break;
                                 case ItemType.Bombos:
-                                    break;
-                                case ItemType.BombosDungeons:
-                                    break;
                                 case ItemType.Ether:
-                                    break;
-                                case ItemType.EtherDungeons:
-                                    break;
                                 case ItemType.Quake:
-                                    break;
-                                case ItemType.QuakeDungeons:
-                                    break;
-                                case ItemType.Shovel:
-                                    break;
-                                case ItemType.GanonCrystals:
-                                    break;
-                                case ItemType.Lamp:
-                                    break;
-                                case ItemType.Hammer:
-                                    break;
-                                case ItemType.Flute:
-                                    break;
-                                case ItemType.FluteActivated:
-                                    break;
-                                case ItemType.Net:
-                                    break;
-                                case ItemType.Book:
-                                    break;
-                                case ItemType.MoonPearl:
-                                    break;
-                                case ItemType.Bottle:
-                                    break;
-                                case ItemType.CaneOfSomaria:
-                                    break;
-                                case ItemType.CaneOfByrna:
-                                    break;
-                                case ItemType.Cape:
-                                    break;
-                                case ItemType.Mirror:
-                                    break;
-                                case ItemType.GoMode:
-                                    break;
-                                case ItemType.Aga:
-                                    break;
-                                case ItemType.Gloves:
-                                    break;
-                                case ItemType.Boots:
-                                    break;
-                                case ItemType.Flippers:
-                                    break;
-                                case ItemType.HalfMagic:
-                                    break;
-                                case ItemType.Sword:
-                                    break;
-                                case ItemType.Shield:
-                                    break;
-                                case ItemType.Mail:
-                                    break;
-                                case ItemType.GreenPendant:
-                                    break;
-                                case ItemType.Pendant:
-                                    break;
-                                case ItemType.Crystal:
-                                    break;
-                                case ItemType.RedCrystal:
-                                    break;
-                                case ItemType.HCSmallKey:
-                                    break;
-                                case ItemType.DPSmallKey:
-                                    break;
-                                case ItemType.ToHSmallKey:
-                                    break;
-                                case ItemType.ATSmallKey:
-                                    break;
-                                case ItemType.PoDSmallKey:
-                                    break;
-                                case ItemType.SPSmallKey:
-                                    break;
-                                case ItemType.SWSmallKey:
-                                    break;
-                                case ItemType.TTSmallKey:
-                                    break;
-                                case ItemType.IPSmallKey:
-                                    break;
-                                case ItemType.MMSmallKey:
-                                    break;
-                                case ItemType.TRSmallKey:
-                                    break;
-                                case ItemType.GTSmallKey:
-                                    break;
-                                case ItemType.EPBigKey:
-                                    break;
-                                case ItemType.DPBigKey:
-                                    break;
-                                case ItemType.ToHBigKey:
-                                    break;
-                                case ItemType.PoDBigKey:
-                                    break;
-                                case ItemType.SPBigKey:
-                                    break;
-                                case ItemType.SWBigKey:
-                                    break;
-                                case ItemType.TTBigKey:
-                                    break;
-                                case ItemType.IPBigKey:
-                                    break;
-                                case ItemType.MMBigKey:
-                                    break;
-                                case ItemType.TRBigKey:
-                                    break;
-                                case ItemType.GTBigKey:
+                                    itemNumber = 1 + (_game.Items[itemSection.VisibleItem.Type + 1].Current * 2);
+                                    ItemImageSource = "avares://OpenTracker/Assets/Images/Items/" +
+                                        itemSection.VisibleItem.Type.ToString().ToLower() + itemNumber.ToString() + ".png";
                                     break;
                             }
                         }
@@ -258,6 +248,49 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        public void ChangeVisibleItem(Item item)
+        {
+            if (item != null)
+            {
+                ItemSection itemSection = (ItemSection)_section;
+
+                if (itemSection.VisibleItem != null)
+                {
+                    itemSection.VisibleItem.PropertyChanged -= OnVisibleItemChanged;
+
+                    switch (itemSection.VisibleItem.Type)
+                    {
+                        case ItemType.Bombos:
+                        case ItemType.Ether:
+                        case ItemType.Quake:
+                            _game.Items[itemSection.VisibleItem.Type + 1].PropertyChanged -= OnVisibleItemChanged;
+                            break;
+                    }
+
+                }
+
+                itemSection.VisibleItem = item;
+
+                item.PropertyChanged += OnVisibleItemChanged;
+
+                switch (item.Type)
+                {
+                    case ItemType.Bombos:
+                    case ItemType.Ether:
+                    case ItemType.Quake:
+                        _game.Items[item.Type + 1].PropertyChanged += OnVisibleItemChanged;
+                        break;
+                }
+
+                VisibleItemPopupOpen = false;
+            }
+        }
+
+        public void OpenVisibleItemSelect()
+        {
+            VisibleItemPopupOpen = true;
+        }
+
         public void ChangeAvailable(bool rightClick = false)
         {
             if (_section.GetAccessibility(_game.Mode, _game.Items) >= Accessibility.SequenceBreak)
@@ -265,7 +298,15 @@ namespace OpenTracker.ViewModels
                 switch (_section)
                 {
                     case ItemSection itemSection:
+
                         itemSection.Available = Math.Max(0, Math.Min(itemSection.Total, itemSection.Available + (rightClick ? 1 : -1)));
+
+                        if (itemSection.VisibleItem != null && itemSection.Available == 0)
+                        {
+                            itemSection.VisibleItem.Current = Math.Min(itemSection.VisibleItem.Current + 1, itemSection.VisibleItem.Maximum);
+                            itemSection.VisibleItem = null;
+                        }
+
                         break;
                 }
             }

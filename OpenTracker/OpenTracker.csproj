@@ -17,9 +17,15 @@
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
   <ItemGroup>
+    <AvaloniaResource Remove="Views\SmallKeyControl.xaml" />
+    <AvaloniaResource Remove="Views\VisibleItemSelectControl.xaml" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Views\MapLocationControl.xaml" />
     <None Remove="Views\PinnedLocationControl.xaml" />
     <None Remove="Views\SectionControl.xaml" />
+    <None Remove="Views\SmallKeyControl.xaml" />
+    <None Remove="Views\VisibleItemSelectControl.xaml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.9.3" />
@@ -49,6 +55,16 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\SectionControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\VisibleItemSelectControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\SmallKeyControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>

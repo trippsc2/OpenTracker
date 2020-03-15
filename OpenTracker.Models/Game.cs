@@ -25,10 +25,7 @@ namespace OpenTracker.Models
             };
 
             foreach (ItemType type in Enum.GetValues(typeof(ItemType)))
-            {
-                if (type <= ItemType.RedCrystal)
-                    Items.Add(type, new Item(type));
-            }
+                Items.Add(type, new Item(type));
 
             foreach (LocationID iD in Enum.GetValues(typeof(LocationID)))
                 Locations.Add(iD, new Location(this, iD));

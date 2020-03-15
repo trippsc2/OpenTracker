@@ -77,7 +77,6 @@ namespace OpenTracker.ViewModels
                         break;
                 }
             }
-
         }
     }
 }

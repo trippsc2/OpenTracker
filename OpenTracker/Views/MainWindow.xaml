@@ -35,34 +35,66 @@
 
         <Border Background="#443C3C" Padding="10,5,10,15">
 
-          <ItemsControl x:Name="ItemPanelControl" Items="{Binding Path=Items}">
+          <StackPanel Orientation="Horizontal">
 
-            <ItemsControl.ItemsPanel>
-              <ItemsPanelTemplate>
-                <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="238" MaxHeight="200"
-                           Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" />
-              </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
+            <ItemsControl Items="{Binding Path=Items}">
 
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <view:ItemControl />
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="238" MaxHeight="200"
+                             Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
 
-          </ItemsControl>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <view:ItemControl />
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+
+            </ItemsControl>
+
+            <StackPanel Orientation="Vertical" Margin="6,4,4,0">
+
+              <StackPanel Orientation="Horizontal">
+
+                <Image Source="avares://OpenTracker/Assets/Images/hc.png" Height="16" Width="20" />
+
+                <ItemsControl Items="{Binding Path=HCKey}">
+
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <Panel Height="16" Width="16" />
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <view:SmallKeyControl />
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+
+                </ItemsControl>
+
+              </StackPanel>
+
+            </StackPanel>
+
+          </StackPanel>
 
         </Border>
 
       </StackPanel>
 
-      <Grid Margin="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=PinnedLocationsPanelMargin, Mode=OneWay}"
-            RowDefinitions="Auto, *" VerticalAlignment="Stretch">
+      <Grid Margin="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow},
+            Path=PinnedLocationsPanelMargin, Mode=OneWay}" RowDefinitions="Auto, *"
+            VerticalAlignment="Stretch">
 
         <Border Grid.Row="0" Background="#212121" Padding="10,5">
 
           <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                   FontSize="12" FontWeight="SemiBold" Text="Pinned Locations" Foreground="#F6F6F6" Background="Transparent" />
+                     FontSize="12" FontWeight="SemiBold" Text="Pinned Locations" Foreground="#F6F6F6"
+                     Background="Transparent" />
 
         </Border>
 

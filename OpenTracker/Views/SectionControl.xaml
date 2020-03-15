@@ -12,7 +12,6 @@
     <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
 
   </UserControl.Resources>
-
   
   <StackPanel Margin="4,0" Orientation="Vertical">
 
@@ -29,13 +28,38 @@
                Margin="0,0,8,0" Height="32" Width="32" IsHitTestVisible="{Binding VisibleItem}"
                IsVisible="{Binding VisibleItem}" />
 
-        <Popup IsOpen="{Binding RelativeSource={RelativeSource AncestorType=views:SectionControl},
-               Path=VisibleItemPopupOpen, Mode=TwoWay}" StaysOpen="False" PlacementMode="Top"
+        <Popup IsOpen="{Binding Path=VisibleItemPopupOpen, Mode=TwoWay}" StaysOpen="False" PlacementMode="Top"
                PlacementTarget="{Binding RelativeSource={RelativeSource AncestorType=views:SectionControl},
                Path=VisibleItemPopupTarget}" HorizontalOffset="16" VerticalOffset="16" >
 
-          <Border BorderBrush="#A9A9A9" BorderThickness="3" Background="#c0212121" CornerRadius="5">
-            <TextBlock Text="1" />
+          <Border BorderBrush="#A9A9A9" BorderThickness="3" Background="#212121"
+                  Padding="5">
+
+            <StackPanel Orientation="Vertical">
+
+              <ItemsControl Items="{Binding Path=ItemSelect}">
+
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="238" MaxHeight="200" Margin="0,0,0,10"
+                               Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                 <DataTemplate>
+                  <views:VisibleItemSelectControl />
+                 </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+              </ItemsControl>
+
+              <Border Grid.Row="1" Margin="0,2" Height="1" Background="#F6F6F6" />
+
+              <Button Command="{Binding Path=ClearVisibleItemCommand}">Clear</Button>
+
+            </StackPanel>
+
           </Border>
 
         </Popup>

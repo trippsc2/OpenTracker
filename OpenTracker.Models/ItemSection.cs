@@ -296,6 +296,12 @@ namespace OpenTracker.Models
         public void Clear()
         {
             Available = 0;
+
+            if (VisibleItem != null)
+            {
+                VisibleItem.Current = Math.Min(VisibleItem.Maximum, VisibleItem.Current + 1);
+                VisibleItem = null;
+            }
         }
 
         public bool IsAvailable()

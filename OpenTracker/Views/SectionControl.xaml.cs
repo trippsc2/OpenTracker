@@ -33,7 +33,7 @@ namespace OpenTracker.Views
             switch (e.InitialPressMouseButton)
             {
                 case MouseButton.Left:
-                    VisibleItemPopupOpen = true;
+                    _viewModel.OpenVisibleItemSelect();
                     break;
             }
         }

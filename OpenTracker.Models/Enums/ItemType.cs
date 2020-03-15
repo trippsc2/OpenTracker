@@ -70,6 +70,8 @@
         IPBigKey,
         MMBigKey,
         TRBigKey,
-        GTBigKey
+        GTBigKey,
+        SmallKey,
+        BigKey
     }
 }

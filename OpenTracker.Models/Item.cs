@@ -1,5 +1,4 @@
 ﻿using OpenTracker.Models.Enums;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models
@@ -108,54 +107,6 @@ namespace OpenTracker.Models
                 case ItemType.RedCrystal:
                     Maximum = 2;
                     break;
-                case ItemType.HCSmallKey:
-                    break;
-                case ItemType.DPSmallKey:
-                    break;
-                case ItemType.ToHSmallKey:
-                    break;
-                case ItemType.ATSmallKey:
-                    break;
-                case ItemType.PoDSmallKey:
-                    break;
-                case ItemType.SPSmallKey:
-                    break;
-                case ItemType.SWSmallKey:
-                    break;
-                case ItemType.TTSmallKey:
-                    break;
-                case ItemType.IPSmallKey:
-                    break;
-                case ItemType.MMSmallKey:
-                    break;
-                case ItemType.TRSmallKey:
-                    break;
-                case ItemType.GTSmallKey:
-                    break;
-                case ItemType.EPBigKey:
-                    break;
-                case ItemType.DPBigKey:
-                    break;
-                case ItemType.ToHBigKey:
-                    break;
-                case ItemType.PoDBigKey:
-                    break;
-                case ItemType.SPBigKey:
-                    break;
-                case ItemType.SWBigKey:
-                    break;
-                case ItemType.TTBigKey:
-                    break;
-                case ItemType.IPBigKey:
-                    break;
-                case ItemType.MMBigKey:
-                    break;
-                case ItemType.TRBigKey:
-                    break;
-                case ItemType.GTBigKey:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(itemType));
             }
         }
 
