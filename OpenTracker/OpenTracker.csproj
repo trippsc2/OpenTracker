@@ -17,14 +17,18 @@
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
   <ItemGroup>
-    <AvaloniaResource Remove="Views\SmallKeyControl.xaml" />
+    <AvaloniaResource Remove="Views\BossControl.xaml" />
+    <AvaloniaResource Remove="Views\DungeonItemControl.xaml" />
+    <AvaloniaResource Remove="Views\DungeonPrizeControl.xaml" />
     <AvaloniaResource Remove="Views\VisibleItemSelectControl.xaml" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Views\BossControl.xaml" />
+    <None Remove="Views\DungeonItemControl.xaml" />
+    <None Remove="Views\DungeonPrizeControl.xaml" />
     <None Remove="Views\MapLocationControl.xaml" />
     <None Remove="Views\PinnedLocationControl.xaml" />
     <None Remove="Views\SectionControl.xaml" />
-    <None Remove="Views\SmallKeyControl.xaml" />
     <None Remove="Views\VisibleItemSelectControl.xaml" />
   </ItemGroup>
   <ItemGroup>
@@ -64,7 +68,17 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\SmallKeyControl.xaml">
+    <EmbeddedResource Include="Views\DungeonItemControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\DungeonPrizeControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\BossControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
@@ -82,6 +96,9 @@
     </Compile>
     <Compile Update="Views\SectionControl.xaml.cs">
       <DependentUpon>SectionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\DungeonItemControl.xaml.cs">
+      <DependentUpon>DungeonItemControl.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

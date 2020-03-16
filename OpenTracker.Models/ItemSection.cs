@@ -8,7 +8,7 @@ namespace OpenTracker.Models
 {
     public class ItemSection : ISection
     {
-        private readonly bool _mapCompass;
+        private readonly int _mapCompass;
         private readonly int _smallKeys;
         private readonly bool _bigKey;
         private readonly int _baseTotal;
@@ -265,7 +265,7 @@ namespace OpenTracker.Models
 
         void SetTotal(Mode mode)
         {
-            int newTotal = _baseTotal + ((mode.DungeonItemShuffle.Value >= DungeonItemShuffle.MapsCompasses && _mapCompass) ? 2 : 0) +
+            int newTotal = _baseTotal + ((mode.DungeonItemShuffle.Value >= DungeonItemShuffle.MapsCompasses) ? _mapCompass : 0) +
                 ((mode.DungeonItemShuffle.Value >= DungeonItemShuffle.MapsCompassesSmallKeys) ? _smallKeys : 0) +
                 ((mode.DungeonItemShuffle.Value == DungeonItemShuffle.Keysanity && _bigKey) ? 1 : 0);
 

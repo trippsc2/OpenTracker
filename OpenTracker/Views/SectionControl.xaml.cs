@@ -10,14 +10,6 @@ namespace OpenTracker.Views
     {
         private ISectionControlVM _viewModel => DataContext as ISectionControlVM;
 
-        public static AvaloniaProperty<bool> VisibleItemPopupOpenProperty =
-            AvaloniaProperty.Register<MainWindow, bool>("VisibleItemPopupOpen");
-        public bool VisibleItemPopupOpen
-        {
-            get => GetValue(VisibleItemPopupOpenProperty);
-            set => SetValue(VisibleItemPopupOpenProperty, value);
-        }
-
         public SectionControl()
         {
             this.InitializeComponent();

@@ -13,6 +13,7 @@ namespace OpenTracker.Models
 
         public string Name { get; }
 
+        public BossSection BossSection { get; private set; }
         public List<MapLocation> MapLocations { get; }
         public List<ISection> Sections { get; }
 
@@ -157,24 +158,34 @@ namespace OpenTracker.Models
                 case LocationID.Agahnim:
                     break;
                 case LocationID.EasternPalace:
+                    BossSection = new BossSection(game, iD);
                     break;
                 case LocationID.DesertPalace:
+                    BossSection = new BossSection(game, iD);
                     break;
                 case LocationID.TowerOfHera:
+                    BossSection = new BossSection(game, iD);
                     break;
                 case LocationID.PalaceOfDarkness:
+                    BossSection = new BossSection(game, iD);
                     break;
                 case LocationID.SwampPalace:
+                    BossSection = new BossSection(game, iD);
                     break;
                 case LocationID.SkullWoods:
+                    BossSection = new BossSection(game, iD);
                     break;
                 case LocationID.ThievesTown:
+                    BossSection = new BossSection(game, iD);
                     break;
                 case LocationID.IcePalace:
+                    BossSection = new BossSection(game, iD);
                     break;
                 case LocationID.MiseryMire:
+                    BossSection = new BossSection(game, iD);
                     break;
                 case LocationID.TurtleRock:
+                    BossSection = new BossSection(game, iD);
                     break;
                 case LocationID.GanonsTower:
                     break;

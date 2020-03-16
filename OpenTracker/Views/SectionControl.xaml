@@ -25,8 +25,8 @@
       <Panel Name="VisibleItemPopupTarget" PointerReleased="OnClickVisibleItem">
 
         <Image Source="{Binding Path=ItemImageSource, Converter={StaticResource BitmapValueConverter}}"
-               Margin="0,0,8,0" Height="32" Width="32" IsHitTestVisible="{Binding VisibleItem}"
-               IsVisible="{Binding VisibleItem}" />
+               Margin="0,0,4,0" Height="32" Width="32" IsHitTestVisible="{Binding Path=VisibleItem}"
+               IsVisible="{Binding Path=VisibleItem}" />
 
         <Popup IsOpen="{Binding Path=VisibleItemPopupOpen, Mode=TwoWay}" StaysOpen="False" PlacementMode="Top"
                PlacementTarget="{Binding RelativeSource={RelativeSource AncestorType=views:SectionControl},

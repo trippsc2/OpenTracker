@@ -40,13 +40,9 @@ namespace OpenTracker.Models
                 case ItemType.Ether:
                 case ItemType.Quake:
                 case ItemType.Flute:
-                    Maximum = 1;
-                    break;
                 case ItemType.BigBomb:
                 case ItemType.MagicBat:
                 case ItemType.FluteActivated:
-                    Maximum = 1;
-                    break;
                 case ItemType.Hookshot:
                 case ItemType.FireRod:
                 case ItemType.IceRod:
@@ -63,15 +59,34 @@ namespace OpenTracker.Models
                 case ItemType.Boots:
                 case ItemType.Flippers:
                 case ItemType.HalfMagic:
-                    Maximum = 1;
-                    break;
+                case ItemType.HCSmallKey:
                 case ItemType.GoMode:
                 case ItemType.Aga:
+                case ItemType.GreenPendant:
+                case ItemType.DPSmallKey:
+                case ItemType.ToHSmallKey:
+                case ItemType.SPSmallKey:
+                case ItemType.TTSmallKey:
+                case ItemType.EPBigKey:
+                case ItemType.DPBigKey:
+                case ItemType.ToHBigKey:
+                case ItemType.PoDBigKey:
+                case ItemType.SPBigKey:
+                case ItemType.SWBigKey:
+                case ItemType.TTBigKey:
+                case ItemType.IPBigKey:
+                case ItemType.MMBigKey:
+                case ItemType.TRBigKey:
+                case ItemType.GTBigKey:
                     Maximum = 1;
                     break;
                 case ItemType.Mushroom:
                 case ItemType.Gloves:
                 case ItemType.Mail:
+                case ItemType.Pendant:
+                case ItemType.RedCrystal:
+                case ItemType.ATSmallKey:
+                case ItemType.IPSmallKey:
                     Maximum = 2;
                     break;
                 case ItemType.TowerCrystals:
@@ -81,31 +96,25 @@ namespace OpenTracker.Models
                 case ItemType.BombosDungeons:
                 case ItemType.EtherDungeons:
                 case ItemType.QuakeDungeons:
+                case ItemType.Shield:
+                case ItemType.SWSmallKey:
+                case ItemType.MMSmallKey:
                     Maximum = 3;
                     break;
                 case ItemType.Bottle:
+                case ItemType.TRSmallKey:
+                case ItemType.GTSmallKey:
                     Maximum = 4;
                     break;
                 case ItemType.Sword:
                     Maximum = 5;
                     Current = 1;
                     break;
-                case ItemType.Shield:
-                    Maximum = 3;
-                    break;
-                case ItemType.GreenPendant:
-                    Maximum = 1;
-                    Current = 1;
-                    break;
-                case ItemType.Pendant:
-                    Maximum = 2;
-                    Current = 2;
-                    break;
                 case ItemType.Crystal:
                     Maximum = 5;
                     break;
-                case ItemType.RedCrystal:
-                    Maximum = 2;
+                case ItemType.PoDSmallKey:
+                    Maximum = 6;
                     break;
             }
         }

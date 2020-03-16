@@ -45,7 +45,7 @@ namespace OpenTracker.ViewModels
                 SetImage();
 
                 foreach (Item item in _items)
-                    item.PropertyChanged += ComponentChanged;
+                    item.PropertyChanged += OnItemChanged;
             }
         }
 
@@ -78,7 +78,7 @@ namespace OpenTracker.ViewModels
             ImageSource = _imageSourceBase + imageString + ".png";
         }
 
-        private void ComponentChanged(object sender, PropertyChangedEventArgs e)
+        private void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
             SetImage();
         }

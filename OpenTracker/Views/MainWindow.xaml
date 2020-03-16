@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
         xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
+        xmlns:color="clr-namespace:ThemeEditor.Controls.ColorPicker;assembly=ThemeEditor.Controls.ColorPicker"
         mc:Ignorable="d" MinWidth="220" MinHeight="61" d:DesignWidth="1280" d:DesignHeight="960"
         x:Class="OpenTracker.Views.MainWindow"
         x:Name="HostWindow"
@@ -17,6 +18,12 @@
     <vm:MainWindowVM />
   </Design.DataContext>
 
+  <Window.Resources>
+
+    <vc:EnumBooleanConverter x:Key="EnumBooleanConverter" />
+
+  </Window.Resources>
+
   <DockPanel>
 
     <DockPanel DockPanel.Dock="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=UIPanelDock, Mode=OneWay}"
@@ -27,9 +34,114 @@
                   Orientation="Vertical">
 
         <Border Background="#212121" Padding="10,5">
+          <Grid ColumnDefinitions="Auto,*,Auto">
 
-          <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                   FontSize="12" FontWeight="SemiBold" Text="Items" Foreground="#F6F6F6" Background="Transparent" />
+            <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                       Grid.Column="0" FontSize="12" FontWeight="SemiBold" Text="Items" Foreground="#F6F6F6"
+                       Background="Transparent" />
+
+            <Panel Grid.Column="2">
+
+              <Image Source="avares://OpenTracker/Assets/Images/settings.png" PointerReleased="OpenModeSettingsPopup" />
+
+              <Popup IsOpen="{Binding Path=ModeSettingsPopupOpen,
+                     RelativeSource={RelativeSource AncestorType=view:MainWindow}, Mode=TwoWay}" StaysOpen="False"
+                     PlacementMode="Top" PlacementTarget="{Binding RelativeSource={RelativeSource AncestorType=Panel},
+                     Path=VisibleItemPopupTarget}" HorizontalOffset="8" VerticalOffset="8">
+
+                <Border BorderBrush="#A9A9A9" BorderThickness="3" Background="#212121"
+                        Padding="5">
+
+                  <Grid ColumnDefinitions="*,*,*,*"
+                        RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+
+                    <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                               Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="0" FontSize="12" FontWeight="SemiBold"
+                               Text="Item Placement" Foreground="#F6F6F6" Background="Transparent" Margin="4" />
+
+                    <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                                 Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" FontSize="11" Foreground="#F6F6F6"
+                                 Background="Transparent" IsChecked="{Binding Path=ItemPlacement,
+                                 Converter={StaticResource EnumBooleanConverter}, ConverterParameter=Basic}"
+                                 GroupName="ItemPlacement" Margin="4,4,4,8">Basic</RadioButton>
+
+                    <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                                 Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="1" FontSize="11" Foreground="#F6F6F6"
+                                 Background="Transparent" IsChecked="{Binding Path=ItemPlacement,
+                                 Converter={StaticResource EnumBooleanConverter}, ConverterParameter=Advanced}"
+                                 GroupName="ItemPlacement" Margin="4,4,4,8">Advanced</RadioButton>
+
+                    <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                               Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="2" FontSize="12" FontWeight="SemiBold"
+                               Text="Dungeon Item Shuffle" Foreground="#F6F6F6" Background="Transparent" Margin="4" />
+
+                    <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                                 Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="3" FontSize="11" Foreground="#F6F6F6"
+                                 Background="Transparent" IsChecked="{Binding Path=DungeonItemShuffle,
+                                 Converter={StaticResource EnumBooleanConverter}, ConverterParameter=Standard}"
+                                 GroupName="DungeonItemShuffle" Margin="4,4,4,8">Standard</RadioButton>
+
+                    <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                                 Grid.Column="1" Grid.ColumnSpan="1" Grid.Row="3" FontSize="11" Foreground="#F6F6F6"
+                                 Background="Transparent" IsChecked="{Binding Path=DungeonItemShuffle,
+                                 Converter={StaticResource EnumBooleanConverter}, ConverterParameter=MapsCompasses}"
+                                 GroupName="DungeonItemShuffle" Margin="4,4,4,8">Maps/Compasses</RadioButton>
+
+                    <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                                 Grid.Column="2" Grid.ColumnSpan="1" Grid.Row="3" FontSize="11" Foreground="#F6F6F6"
+                                 Background="Transparent" IsChecked="{Binding Path=DungeonItemShuffle,
+                                 Converter={StaticResource EnumBooleanConverter},
+                                 ConverterParameter=MapsCompassesSmallKeys}"
+                                 GroupName="DungeonItemShuffle" Margin="4,4,4,8">Maps/Compasses/Small Keys</RadioButton>
+
+                    <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                                 Grid.Column="3" Grid.ColumnSpan="1" Grid.Row="3" FontSize="11" Foreground="#F6F6F6"
+                                 Background="Transparent" IsChecked="{Binding Path=DungeonItemShuffle,
+                                 Converter={StaticResource EnumBooleanConverter}, ConverterParameter=Keysanity}"
+                                 GroupName="DungeonItemShuffle" Margin="4,4,4,8">Keysanity</RadioButton>
+
+                    <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                               Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="4" FontSize="12" FontWeight="SemiBold"
+                               Text="World State" Foreground="#F6F6F6" Background="Transparent" Margin="4" />
+
+                    <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                                 Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="5" FontSize="11" Foreground="#F6F6F6"
+                                 Background="Transparent" IsChecked="{Binding Path=WorldState,
+                                 Converter={StaticResource EnumBooleanConverter}, ConverterParameter=StandardOpen}"
+                                 GroupName="WorldState" Margin="4,4,4,8">Standard/Open</RadioButton>
+
+                    <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                                 Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="5" FontSize="11" Foreground="#F6F6F6"
+                                 Background="Transparent" IsChecked="{Binding Path=WorldState,
+                                 Converter={StaticResource EnumBooleanConverter}, ConverterParameter=Inverted}"
+                                 GroupName="WorldState" Margin="4,4,4,8">Inverted</RadioButton>
+
+                    <Border Grid.Row="6" Grid.ColumnSpan="4" Height="1" Background="#F6F6F6" />
+
+                    <CheckBox FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                              Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="7" FontSize="11" Foreground="#F6F6F6"
+                              Background="Transparent" IsChecked="{Binding Path=EntranceShuffle}"
+                              Margin="4">Entrance Shuffle</CheckBox>
+
+                    <CheckBox FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                              Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="8" FontSize="11" Foreground="#F6F6F6"
+                              Background="Transparent" IsChecked="{Binding Path=BossShuffle}"
+                              Margin="4">Boss Shuffle</CheckBox>
+
+                    <CheckBox FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                              Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="9" FontSize="11" Foreground="#F6F6F6"
+                              Background="Transparent" IsChecked="{Binding Path=EnemyShuffle}"
+                              Margin="4">Enemy Shuffle</CheckBox>
+
+                  </Grid>
+
+                </Border>
+
+              </Popup>
+
+            </Panel>
+
+          </Grid>
 
         </Border>
 
@@ -54,23 +166,44 @@
 
             </ItemsControl>
 
-            <StackPanel Orientation="Vertical" Margin="6,4,4,0">
+            <Grid Margin="6,0,4,0" ColumnDefinitions="Auto,Auto,Auto,Auto,Auto"
+                  RowDefinitions="24,Auto" VerticalAlignment="Top" HorizontalAlignment="Left">
 
-              <StackPanel Orientation="Horizontal">
+              <StackPanel Orientation="Horizontal" IsHitTestVisible="{Binding Path=SmallKeyShuffle}"
+                          IsVisible="{Binding Path=SmallKeyShuffle}" Grid.Column="0" Grid.ColumnSpan="6"
+                          VerticalAlignment="Top">
 
                 <Image Source="avares://OpenTracker/Assets/Images/hc.png" Height="16" Width="20" />
 
-                <ItemsControl Items="{Binding Path=HCKey}">
+                <ItemsControl Items="{Binding Path=HCItems}">
 
                   <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                      <Panel Height="16" Width="16" />
+                      <Panel Height="16" Width="16" Margin="2,0,1,0" />
                     </ItemsPanelTemplate>
                   </ItemsControl.ItemsPanel>
 
                   <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                      <view:SmallKeyControl />
+                      <view:DungeonItemControl />
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+
+                </ItemsControl>
+
+                <Image Source="avares://OpenTracker/Assets/Images/at.png" Height="16" Width="20" />
+
+                <ItemsControl Items="{Binding Path=ATItems}">
+
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <Panel Height="16" Width="16" Margin="2,0,0,0" />
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <view:DungeonItemControl />
                     </DataTemplate>
                   </ItemsControl.ItemTemplate>
 
@@ -78,7 +211,97 @@
 
               </StackPanel>
 
-            </StackPanel>
+              <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left"
+                          Margin="0,0,2,0">
+
+                <Image Source="avares://OpenTracker/Assets/Images/ep.png" Height="16" Width="20" />
+                <Image Source="avares://OpenTracker/Assets/Images/dp.png" Height="16" Width="20" />
+                <Image Source="avares://OpenTracker/Assets/Images/th.png" Height="16" Width="20" />
+                <Image Source="avares://OpenTracker/Assets/Images/pd.png" Height="16" Width="20" />
+                <Image Source="avares://OpenTracker/Assets/Images/sp.png" Height="16" Width="20" />
+                <Image Source="avares://OpenTracker/Assets/Images/sw.png" Height="16" Width="20" />
+                <Image Source="avares://OpenTracker/Assets/Images/tt.png" Height="16" Width="20" />
+                <Image Source="avares://OpenTracker/Assets/Images/ip.png" Height="16" Width="20" />
+                <Image Source="avares://OpenTracker/Assets/Images/mm.png" Height="16" Width="20" />
+                <Image Source="avares://OpenTracker/Assets/Images/tr.png" Height="16" Width="20" />
+                <Image Source="avares://OpenTracker/Assets/Images/gt.png" Height="16" Width="20"
+                       IsHitTestVisible="{Binding Path=SmallKeyShuffle}"
+                       IsVisible="{Binding Path=SmallKeyShuffle}" />
+
+              </StackPanel>
+
+              <ItemsControl Grid.Column="1" Grid.Row="1" Items="{Binding Path=SmallKeyItems}"
+                            HorizontalAlignment="Left" VerticalAlignment="Top">
+
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <StackPanel Width="16" Orientation="Vertical" IsHitTestVisible="{Binding Path=SmallKeyShuffle}"
+                                IsVisible="{Binding Path=SmallKeyShuffle}" />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <view:DungeonItemControl />
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+              </ItemsControl>
+
+              <ItemsControl Grid.Column="2" Grid.Row="1" Items="{Binding Path=BigKeyItems}"
+                            HorizontalAlignment="Left" VerticalAlignment="Top">
+
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <StackPanel Width="16" Orientation="Vertical" IsHitTestVisible="{Binding Path=BigKeyShuffle}"
+                                IsVisible="{Binding Path=BigKeyShuffle}" />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <view:DungeonItemControl />
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+              </ItemsControl>
+
+              <ItemsControl Grid.Column="3" Grid.Row="1" Items="{Binding Path=Prizes}"
+                            HorizontalAlignment="Left" VerticalAlignment="Top">
+
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <StackPanel Width="16" Orientation="Vertical" />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <view:DungeonPrizeControl />
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+              </ItemsControl>
+
+              <ItemsControl Grid.Column="4" Grid.Row="1" Items="{Binding Path=Bosses}"
+                            HorizontalAlignment="Left" VerticalAlignment="Top">
+
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <StackPanel Width="16" Orientation="Vertical" IsHitTestVisible="{Binding Path=BossShuffle}"
+                                IsVisible="{Binding Path=BossShuffle}" />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <view:BossControl />
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+              </ItemsControl>
+
+            </Grid>
 
           </StackPanel>
 
@@ -122,7 +345,9 @@
 
     </DockPanel>
 
-    <Viewbox Grid.Column="1" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Panel>
+
+      <Viewbox Grid.Column="1" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
         <ItemsControl x:Name="MapItemsControl" Items="{Binding Path=Maps}">
 
@@ -140,8 +365,89 @@
 
         </ItemsControl>
 
-    </Viewbox>
+      </Viewbox>
 
+      <Panel Height="16" Width="16" HorizontalAlignment="Right" VerticalAlignment="Top">
+
+        <Image Source="avares://OpenTracker/Assets/Images/settings.png" PointerReleased="OpenAppSettingsPopup"
+               Height="16" Width="16" HorizontalAlignment="Right" VerticalAlignment="Top" />
+
+        <Popup IsOpen="{Binding Path=AppSettingsPopupOpen,
+               RelativeSource={RelativeSource AncestorType=view:MainWindow}, Mode=TwoWay}" StaysOpen="False"
+               PlacementMode="Left" PlacementTarget="{Binding RelativeSource={RelativeSource AncestorType=Panel},
+               Path=VisibleItemPopupTarget}" HorizontalOffset="8" VerticalOffset="8"  >
+
+          <Border BorderBrush="#A9A9A9" BorderThickness="3" Background="#212121"
+                  Padding="5" DataContext="{Binding Path=AppSettings}">
+
+            <Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+
+              <CheckBox FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                        Grid.Column="0" Grid.Row="0" FontSize="11" Foreground="#F6F6F6"
+                        Background="Transparent" IsChecked="{Binding Path=DisplayAllLocations}"
+                        Margin="4" HorizontalAlignment="Left" VerticalAlignment="Center" />
+
+              <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                         Grid.Column="1" Grid.Row="0" FontSize="11"  Text="Display All Locations" Foreground="#F6F6F6"
+                         Background="Transparent" Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" />
+
+              <Border Background="{Binding Path=EmphasisFontColor}" Grid.Column="0" Grid.Row="1" Height="20" Width="20"
+                      BorderBrush="#000000" BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4">
+                <Popup IsOpen="{Binding Path=AppSettingsPopupOpen,
+               RelativeSource={RelativeSource AncestorType=view:MainWindow}, Mode=TwoWay}" PlacementMode="Left" PlacementTarget="{Binding RelativeSource={RelativeSource AncestorType=Border}}">
+                  <color:ColorPicker Color="{Binding Path=EmphasisFontColor, Mode=TwoWay}" />
+                </Popup>
+
+              </Border>
+
+              <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                         Grid.Column="1" Grid.Row="1" FontSize="11"  Text="Font Color (Emphasis)" Foreground="#F6F6F6"
+                         Background="Transparent" Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" />
+
+              <Border Background="{Binding Path=AccessibilityNoneColor}" Grid.Column="0" Grid.Row="2" Height="20" Width="20"
+                      BorderBrush="#000000" BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+
+              <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                         Grid.Column="1" Grid.Row="2" FontSize="11"  Text="Location (Unavailable)" Foreground="#F6F6F6"
+                         Background="Transparent" Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" />
+
+              <Border Background="{Binding Path=AccessibilityPartialColor}" Grid.Column="0" Grid.Row="3" Height="20" Width="20"
+                      BorderBrush="#000000" BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+
+              <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                         Grid.Column="1" Grid.Row="3" FontSize="11"  Text="Location (Partial)" Foreground="#F6F6F6"
+                         Background="Transparent" Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" />
+
+              <Border Background="{Binding Path=AccessibilityInspectColor}" Grid.Column="0" Grid.Row="4" Height="20" Width="20"
+                      BorderBrush="#000000" BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+
+              <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                         Grid.Column="1" Grid.Row="4" FontSize="11"  Text="Location (Visible)" Foreground="#F6F6F6"
+                         Background="Transparent" Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" />
+
+              <Border Background="{Binding Path=AccessibilitySequenceBreakColor}" Grid.Column="0" Grid.Row="5" Height="20" Width="20"
+                      BorderBrush="#000000" BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+
+              <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                         Grid.Column="1" Grid.Row="5" FontSize="11"  Text="Location (Sequence Break)" Foreground="#F6F6F6"
+                         Background="Transparent" Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" />
+
+              <Border Background="{Binding Path=AccessibilityNormalColor}" Grid.Column="0" Grid.Row="6" Height="20" Width="20"
+                      BorderBrush="#000000" BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
+
+              <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
+                         Grid.Column="1" Grid.Row="6" FontSize="11"  Text="Location (Available)" Foreground="#F6F6F6"
+                         Background="Transparent" Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" />
+
+            </Grid>
+
+          </Border>
+
+        </Popup>
+
+      </Panel>
+
+    </Panel>
 
   </DockPanel>
 

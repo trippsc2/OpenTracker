@@ -75,7 +75,8 @@ namespace OpenTracker.ViewModels
             _mainWindow = mainWindow;
             _mapLocation = mapLocation;
 
-            game.Mode.PropertyChanged += GameModeChanged;
+            appSettings.PropertyChanged += OnAppSettingsChanged;
+            game.Mode.PropertyChanged += OnModeChanged;
 
             mapLocation.Location.ItemRequirementChanged += OnItemRequirementChanged;
 
@@ -151,7 +152,8 @@ namespace OpenTracker.ViewModels
         {
             foreach (ISection section in _mapLocation.Location.Sections)
             {
-                if (section.IsAvailable())
+                if (section.IsAvailable() &&
+                    section.GetAccessibility(_game.Mode, _game.Items) >= Accessibility.SequenceBreak)
                     section.Clear();
             }
 
@@ -174,7 +176,14 @@ namespace OpenTracker.ViewModels
             _mainWindow.PinnedLocations.Insert(0, new PinnedLocationControlVM(_appSettings, _game, _mainWindow, _mapLocation.Location));
         }
 
-        private void GameModeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
+        {
+            SetSizeAndPosition();
+            SetColor();
+            SetVisibility();
+        }
+
+        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
             SetSizeAndPosition();
             SetColor();

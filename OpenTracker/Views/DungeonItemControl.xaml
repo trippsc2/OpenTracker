@@ -4,26 +4,28 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OpenTracker.Views.ItemControl">
-
+             x:Class="OpenTracker.Views.DungeonItemControl">
   <UserControl.Resources>
 
     <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
 
   </UserControl.Resources>
 
-  <Panel PointerReleased="OnItemClick" Height="32" Width="32" Margin="1,4" >
+  <Panel PointerReleased="OnClick" Height="16" Width="16">
 
-    <Image Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}" />
+    <Image Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}"
+           Height="16" Width="16" />
 
-    <Border Background="#000000" Padding="4,0" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+    <Border Height="16" Width="16" Background="#000000" IsVisible="{Binding Path=TextVisible}"
+            IsHitTestVisible="{Binding Path=TextVisible}">
 
       <TextBlock Text="{Binding Path=ImageNumber}" Foreground="{Binding Path=TextColor}"
                  Background="Transparent" FontWeight="SemiBold" FontSize="10"
+                 HorizontalAlignment="Center" VerticalAlignment="Center"
                  FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf" />
 
     </Border>
 
   </Panel>
-
+  
 </UserControl>

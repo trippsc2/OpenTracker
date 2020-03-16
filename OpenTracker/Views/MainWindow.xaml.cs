@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 
@@ -53,6 +54,22 @@ namespace OpenTracker.Views
         {
             get => GetValue(PinnedLocationsPanelMarginProperty);
             set => SetValue(PinnedLocationsPanelMarginProperty, value);
+        }
+
+        public static AvaloniaProperty<bool> ModeSettingsPopupOpenProperty =
+            AvaloniaProperty.Register<MainWindow, bool>("ModeSettingsPopupOpen");
+        public bool ModeSettingsPopupOpen
+        {
+            get => GetValue(ModeSettingsPopupOpenProperty);
+            set => SetValue(ModeSettingsPopupOpenProperty, value);
+        }
+
+        public static AvaloniaProperty<bool> AppSettingsPopupOpenProperty =
+            AvaloniaProperty.Register<MainWindow, bool>("AppSettingsPopupOpen");
+        public bool AppSettingsPopupOpen
+        {
+            get => GetValue(AppSettingsPopupOpenProperty);
+            set => SetValue(AppSettingsPopupOpenProperty, value);
         }
 
         public MainWindow()
@@ -120,6 +137,16 @@ namespace OpenTracker.Views
 
             if (bounds.Width > bounds.Height)
                 HorizontalLayout();
+        }
+
+        private void OpenModeSettingsPopup(object sender, PointerReleasedEventArgs e)
+        {
+            ModeSettingsPopupOpen = true;
+        }
+
+        private void OpenAppSettingsPopup(object sender, PointerReleasedEventArgs e)
+        {
+            AppSettingsPopupOpen = true;
         }
     }
 }
