@@ -15,6 +15,12 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_52B4232ADD464606B80710F676FAD771"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_582274CEB8A7425789CE7B6B45EFE16C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -96,6 +102,26 @@
         }
         "File"
         {
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_52B4232ADD464606B80710F676FAD771"
+            {
+            "SourcePath" = "8:..\\..\\..\\..\\Downloads\\triforce.ico"
+            "TargetName" = "8:triforce.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_B21EA2C01C014AC99A33B72F50C26B5D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
@@ -137,7 +163,7 @@
             }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_B21EA2C01C014AC99A33B72F50C26B5D"
             {
-            "DefaultLocation" = "8:[ProgramFilesFolder][Manufacturer]\\[ProductName]"
+            "DefaultLocation" = "8:[ProgramFilesFolder]\\[ProductName]"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -162,16 +188,16 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:OpenTracker.Setup"
-        "ProductCode" = "8:{683001D9-3AF1-4280-A5F3-334F9F4BA76A}"
-        "PackageCode" = "8:{E0E1B8A7-694B-4A7E-B5E0-EB7D5C13E0FE}"
+        "ProductName" = "8:OpenTracker"
+        "ProductCode" = "8:{AA9577B2-452D-42FB-A910-7D877972128F}"
+        "PackageCode" = "8:{1C6FCA3B-1CEE-4E24-8AB0-ED34A00E1D84}"
         "UpgradeCode" = "8:{C98C2121-B4C5-473A-9B86-5407FEFFE8F1}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:0.0.2"
+        "ProductVersion" = "8:0.1.0"
         "Manufacturer" = "8:OpenTracker"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -181,7 +207,7 @@
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
         "ARPURLINFOABOUT" = "8:"
-        "ARPPRODUCTICON" = "8:"
+        "ARPPRODUCTICON" = "8:_52B4232ADD464606B80710F676FAD771"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
@@ -295,7 +321,7 @@
             "Target" = "8:_582274CEB8A7425789CE7B6B45EFE16C"
             "Folder" = "8:_68CF9C3C7353438A9C1B8145DC8FAE43"
             "WorkingFolder" = "8:_B21EA2C01C014AC99A33B72F50C26B5D"
-            "Icon" = "8:"
+            "Icon" = "8:_52B4232ADD464606B80710F676FAD771"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_FAE56B1DAFA643A4B47DD08F08E6CB9C"
@@ -309,7 +335,7 @@
             "Target" = "8:_582274CEB8A7425789CE7B6B45EFE16C"
             "Folder" = "8:_53C29DC8DB594D14845D067B17A97FCE"
             "WorkingFolder" = "8:"
-            "Icon" = "8:"
+            "Icon" = "8:_52B4232ADD464606B80710F676FAD771"
             "Feature" = "8:"
             }
         }
@@ -713,7 +739,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_582274CEB8A7425789CE7B6B45EFE16C"
             {
-            "SourcePath" = "8:..\\OpenTracker\\obj\\Debug\\netcoreapp3.1\\OpenTracker.exe"
+            "SourcePath" = "8:..\\OpenTracker\\obj\\Release\\netcoreapp3.1\\OpenTracker.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B21EA2C01C014AC99A33B72F50C26B5D"
