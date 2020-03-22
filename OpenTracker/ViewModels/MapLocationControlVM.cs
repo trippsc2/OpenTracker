@@ -46,8 +46,8 @@ namespace OpenTracker.ViewModels
             private set => this.RaiseAndSetIfChanged(ref _borderSize, value);
         }
 
-        private Accessibility _accessibility;
-        public Accessibility Accessibility
+        private AccessibilityLevel _accessibility;
+        public AccessibilityLevel Accessibility
         {
             get => _accessibility;
             private set => this.RaiseAndSetIfChanged(ref _accessibility, value);
@@ -81,9 +81,7 @@ namespace OpenTracker.ViewModels
             mapLocation.Location.ItemRequirementChanged += OnItemRequirementChanged;
 
             foreach (ISection section in mapLocation.Location.Sections)
-            {
                 section.PropertyChanged += OnSectionChanged;
-            }
 
             SetSizeAndPosition();
             SetColor();
@@ -144,16 +142,15 @@ namespace OpenTracker.ViewModels
         private void SetVisibility()
         {
             Visible = _game.Mode.Validate(_mapLocation.VisibilityMode) && (_appSettings.DisplayAllLocations ||
-                (_mapLocation.Location.GetAccessibility(_game.Mode, _game.Items) != Accessibility.Cleared &&
-                _mapLocation.Location.GetAccessibility(_game.Mode, _game.Items) != Accessibility.None));
+                (_mapLocation.Location.GetAccessibility(_game.Mode, _game.Items) != AccessibilityLevel.Cleared &&
+                _mapLocation.Location.GetAccessibility(_game.Mode, _game.Items) != AccessibilityLevel.None));
         }
 
         public void ClearAvailableSections()
         {
             foreach (ISection section in _mapLocation.Location.Sections)
             {
-                if (section.IsAvailable() &&
-                    section.GetAccessibility(_game.Mode, _game.Items) >= Accessibility.SequenceBreak)
+                if (section.IsAvailable() && section.Accessibility >= AccessibilityLevel.Inspect)
                     section.Clear();
             }
 

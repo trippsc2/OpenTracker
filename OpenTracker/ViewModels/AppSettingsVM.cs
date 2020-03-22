@@ -23,8 +23,8 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        private IBrush _emphasisFontColor;
-        public IBrush EmphasisFontColor
+        private SolidColorBrush _emphasisFontColor;
+        public SolidColorBrush EmphasisFontColor
         {
             get => _emphasisFontColor;
             set
@@ -37,86 +37,86 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        public IBrush AccessibilityNoneColor
+        public SolidColorBrush AccessibilityNoneColor
         {
-            get => AccessibilityColors[Accessibility.None];
+            get => AccessibilityColors[AccessibilityLevel.None];
             set
             {
-                if (AccessibilityColors[Accessibility.None] != value)
+                if (AccessibilityColors[AccessibilityLevel.None] != value)
                 {
-                    AccessibilityColors[Accessibility.None] = value;
+                    AccessibilityColors[AccessibilityLevel.None] = value;
                     OnPropertyChanged(nameof(AccessibilityNoneColor));
                 }
             }
         }
 
-        public IBrush AccessibilityPartialColor
+        public SolidColorBrush AccessibilityPartialColor
         {
-            get => AccessibilityColors[Accessibility.Partial];
+            get => AccessibilityColors[AccessibilityLevel.Partial];
             set
             {
-                if (AccessibilityColors[Accessibility.Partial] != value)
+                if (AccessibilityColors[AccessibilityLevel.Partial] != value)
                 {
-                    AccessibilityColors[Accessibility.Partial] = value;
+                    AccessibilityColors[AccessibilityLevel.Partial] = value;
                     OnPropertyChanged(nameof(AccessibilityPartialColor));
                 }
             }
         }
 
-        public IBrush AccessibilityInspectColor
+        public SolidColorBrush AccessibilityInspectColor
         {
-            get => AccessibilityColors[Accessibility.Inspect];
+            get => AccessibilityColors[AccessibilityLevel.Inspect];
             set
             {
-                if (AccessibilityColors[Accessibility.Inspect] != value)
+                if (AccessibilityColors[AccessibilityLevel.Inspect] != value)
                 {
-                    AccessibilityColors[Accessibility.Inspect] = value;
+                    AccessibilityColors[AccessibilityLevel.Inspect] = value;
                     OnPropertyChanged(nameof(AccessibilityInspectColor));
                 }
             }
         }
 
-        public IBrush AccessibilitySequenceBreakColor
+        public SolidColorBrush AccessibilitySequenceBreakColor
         {
-            get => AccessibilityColors[Accessibility.SequenceBreak];
+            get => AccessibilityColors[AccessibilityLevel.SequenceBreak];
             set
             {
-                if (AccessibilityColors[Accessibility.SequenceBreak] != value)
+                if (AccessibilityColors[AccessibilityLevel.SequenceBreak] != value)
                 {
-                    AccessibilityColors[Accessibility.SequenceBreak] = value;
+                    AccessibilityColors[AccessibilityLevel.SequenceBreak] = value;
                     OnPropertyChanged(nameof(AccessibilitySequenceBreakColor));
                 }
             }
         }
 
-        public IBrush AccessibilityNormalColor
+        public SolidColorBrush AccessibilityNormalColor
         {
-            get => AccessibilityColors[Accessibility.Normal];
+            get => AccessibilityColors[AccessibilityLevel.Normal];
             set
             {
-                if (AccessibilityColors[Accessibility.Normal] != value)
+                if (AccessibilityColors[AccessibilityLevel.Normal] != value)
                 {
-                    AccessibilityColors[Accessibility.Normal] = value;
+                    AccessibilityColors[AccessibilityLevel.Normal] = value;
                     OnPropertyChanged(nameof(AccessibilityNormalColor));
                 }
             }
         }
 
-        public Dictionary<Accessibility, IBrush> AccessibilityColors { get; }
+        public Dictionary<AccessibilityLevel, SolidColorBrush> AccessibilityColors { get; }
 
         public AppSettingsVM()
         {
             DisplayAllLocations = true;
-            EmphasisFontColor = Brush.Parse("#00ff00");
+            EmphasisFontColor = new SolidColorBrush(Color.Parse("#00ff00"));
 
-            AccessibilityColors = new Dictionary<Accessibility, IBrush>()
+            AccessibilityColors = new Dictionary<AccessibilityLevel, SolidColorBrush>()
             {
-                { Accessibility.None, Brush.Parse("#ff3030") },
-                { Accessibility.Partial, Brush.Parse("#ff8c00") },
-                { Accessibility.Inspect, Brush.Parse("#6495ed") },
-                { Accessibility.SequenceBreak, Brush.Parse("#ffff00") },
-                { Accessibility.Normal, Brush.Parse("#00ff00") },
-                { Accessibility.Cleared, Brush.Parse("#333333") }
+                { AccessibilityLevel.None, new SolidColorBrush(Color.Parse("#ff3030")) },
+                { AccessibilityLevel.Partial, new SolidColorBrush(Color.Parse("#ff8c00")) },
+                { AccessibilityLevel.Inspect, new SolidColorBrush(Color.Parse("#6495ed")) },
+                { AccessibilityLevel.SequenceBreak, new SolidColorBrush(Color.Parse("#ffff00")) },
+                { AccessibilityLevel.Normal, new SolidColorBrush(Color.Parse("#00ff00")) },
+                { AccessibilityLevel.Cleared, new SolidColorBrush(Color.Parse("#333333")) }
             };
         }
 

@@ -24,13 +24,14 @@
 
   <Panel Margin="25">
 
-    <Image Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}" />
+    <Image Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}"
+           Height="2007" Width="2007" />
 
     <ItemsControl Items="{Binding Path=MapLocations}">
 
       <ItemsControl.ItemsPanel>
         <ItemsPanelTemplate>
-          <Canvas />
+          <Canvas Height="2007" Width="2007" />
         </ItemsPanelTemplate>
       </ItemsControl.ItemsPanel>
 

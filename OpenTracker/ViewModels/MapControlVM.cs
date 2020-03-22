@@ -1,18 +1,32 @@
 ﻿using OpenTracker.Models;
 using OpenTracker.Models.Enums;
+using ReactiveUI;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace OpenTracker.ViewModels
 {
     public class MapControlVM : ViewModelBase
     {
-        public string ImageSource { get; }
+        private readonly Game _game;
+        private readonly MapID _iD;
+
         public ObservableCollection<MapLocationControlVM> MapLocations { get; }
+
+        private string _imageSource;
+        public string ImageSource
+        {
+            get => _imageSource;
+            private set => this.RaiseAndSetIfChanged(ref _imageSource, value);
+        }
 
         public MapControlVM(AppSettingsVM appSettings, Game game,
             MainWindowVM mainWindow, MapID iD)
         {
-            ImageSource = "avares://OpenTracker/Assets/Images/Maps/" + iD.ToString().ToLower() + ".png";
+            _game = game;
+            _iD = iD;
+
+            game.Mode.PropertyChanged += OnModeChanged;
 
             MapLocations = new ObservableCollection<MapLocationControlVM>();
 
@@ -24,6 +38,20 @@ namespace OpenTracker.ViewModels
                         MapLocations.Add(new MapLocationControlVM(appSettings, game, mainWindow, mapLocation));
                 }
             }
+
+            UpdateMap();
+        }
+
+        private void UpdateMap()
+        {
+            ImageSource = "avares://OpenTracker/Assets/Images/Maps/" +
+                _game.Mode.WorldState.Value.ToString().ToLower() + "_" +
+                _iD.ToString().ToLower() + ".png";
+        }
+
+        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        {
+            UpdateMap();
         }
     }
 }

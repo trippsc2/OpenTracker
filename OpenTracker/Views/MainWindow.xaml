@@ -5,13 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
         xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
-        xmlns:color="clr-namespace:ThemeEditor.Controls.ColorPicker;assembly=ThemeEditor.Controls.ColorPicker"
         mc:Ignorable="d" MinWidth="220" MinHeight="61" d:DesignWidth="1280" d:DesignHeight="960"
         x:Class="OpenTracker.Views.MainWindow"
         x:Name="HostWindow"
         Background="#877373"
         UseLayoutRounding="True"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/triforce.ico"
         Title="OpenTracker">
 
   <Design.DataContext>
@@ -170,7 +169,7 @@
                   RowDefinitions="24,Auto" VerticalAlignment="Top" HorizontalAlignment="Left">
 
               <StackPanel Orientation="Horizontal" IsHitTestVisible="{Binding Path=SmallKeyShuffle}"
-                          IsVisible="{Binding Path=SmallKeyShuffle}" Grid.Column="0" Grid.ColumnSpan="6"
+                          IsVisible="{Binding Path=SmallKeyShuffle}" Grid.Column="0" Grid.ColumnSpan="5"
                           VerticalAlignment="Top">
 
                 <Image Source="avares://OpenTracker/Assets/Images/hc.png" Height="16" Width="20" />
@@ -231,12 +230,13 @@
               </StackPanel>
 
               <ItemsControl Grid.Column="1" Grid.Row="1" Items="{Binding Path=SmallKeyItems}"
-                            HorizontalAlignment="Left" VerticalAlignment="Top">
+                            HorizontalAlignment="Left" VerticalAlignment="Top"
+                            IsHitTestVisible="{Binding Path=SmallKeyShuffle}"
+                            IsVisible="{Binding Path=SmallKeyShuffle}">
 
                 <ItemsControl.ItemsPanel>
                   <ItemsPanelTemplate>
-                    <StackPanel Width="16" Orientation="Vertical" IsHitTestVisible="{Binding Path=SmallKeyShuffle}"
-                                IsVisible="{Binding Path=SmallKeyShuffle}" />
+                    <StackPanel Width="16" Orientation="Vertical" />
                   </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
 
@@ -249,12 +249,13 @@
               </ItemsControl>
 
               <ItemsControl Grid.Column="2" Grid.Row="1" Items="{Binding Path=BigKeyItems}"
-                            HorizontalAlignment="Left" VerticalAlignment="Top">
+                            HorizontalAlignment="Left" VerticalAlignment="Top"
+                            IsHitTestVisible="{Binding Path=BigKeyShuffle}"
+                            IsVisible="{Binding Path=BigKeyShuffle}">
 
                 <ItemsControl.ItemsPanel>
                   <ItemsPanelTemplate>
-                    <StackPanel Width="16" Orientation="Vertical" IsHitTestVisible="{Binding Path=BigKeyShuffle}"
-                                IsVisible="{Binding Path=BigKeyShuffle}" />
+                    <StackPanel Width="16" Orientation="Vertical" />
                   </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
 
@@ -333,7 +334,7 @@
 
             <ItemsControl.ItemTemplate>
               <DataTemplate>
-                <view:PinnedLocationControl />
+                <view:PinnedLocationControl Margin="1" />
               </DataTemplate>
             </ItemsControl.ItemTemplate>
 
@@ -377,71 +378,7 @@
                PlacementMode="Left" PlacementTarget="{Binding RelativeSource={RelativeSource AncestorType=Panel},
                Path=VisibleItemPopupTarget}" HorizontalOffset="8" VerticalOffset="8"  >
 
-          <Border BorderBrush="#A9A9A9" BorderThickness="3" Background="#212121"
-                  Padding="5" DataContext="{Binding Path=AppSettings}">
-
-            <Grid ColumnDefinitions="Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
-
-              <CheckBox FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                        Grid.Column="0" Grid.Row="0" FontSize="11" Foreground="#F6F6F6"
-                        Background="Transparent" IsChecked="{Binding Path=DisplayAllLocations}"
-                        Margin="4" HorizontalAlignment="Left" VerticalAlignment="Center" />
-
-              <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                         Grid.Column="1" Grid.Row="0" FontSize="11"  Text="Display All Locations" Foreground="#F6F6F6"
-                         Background="Transparent" Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" />
-
-              <Border Background="{Binding Path=EmphasisFontColor}" Grid.Column="0" Grid.Row="1" Height="20" Width="20"
-                      BorderBrush="#000000" BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4">
-                <Popup IsOpen="{Binding Path=AppSettingsPopupOpen,
-               RelativeSource={RelativeSource AncestorType=view:MainWindow}, Mode=TwoWay}" PlacementMode="Left" PlacementTarget="{Binding RelativeSource={RelativeSource AncestorType=Border}}">
-                  <color:ColorPicker Color="{Binding Path=EmphasisFontColor, Mode=TwoWay}" />
-                </Popup>
-
-              </Border>
-
-              <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                         Grid.Column="1" Grid.Row="1" FontSize="11"  Text="Font Color (Emphasis)" Foreground="#F6F6F6"
-                         Background="Transparent" Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" />
-
-              <Border Background="{Binding Path=AccessibilityNoneColor}" Grid.Column="0" Grid.Row="2" Height="20" Width="20"
-                      BorderBrush="#000000" BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
-
-              <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                         Grid.Column="1" Grid.Row="2" FontSize="11"  Text="Location (Unavailable)" Foreground="#F6F6F6"
-                         Background="Transparent" Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" />
-
-              <Border Background="{Binding Path=AccessibilityPartialColor}" Grid.Column="0" Grid.Row="3" Height="20" Width="20"
-                      BorderBrush="#000000" BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
-
-              <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                         Grid.Column="1" Grid.Row="3" FontSize="11"  Text="Location (Partial)" Foreground="#F6F6F6"
-                         Background="Transparent" Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" />
-
-              <Border Background="{Binding Path=AccessibilityInspectColor}" Grid.Column="0" Grid.Row="4" Height="20" Width="20"
-                      BorderBrush="#000000" BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
-
-              <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                         Grid.Column="1" Grid.Row="4" FontSize="11"  Text="Location (Visible)" Foreground="#F6F6F6"
-                         Background="Transparent" Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" />
-
-              <Border Background="{Binding Path=AccessibilitySequenceBreakColor}" Grid.Column="0" Grid.Row="5" Height="20" Width="20"
-                      BorderBrush="#000000" BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
-
-              <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                         Grid.Column="1" Grid.Row="5" FontSize="11"  Text="Location (Sequence Break)" Foreground="#F6F6F6"
-                         Background="Transparent" Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" />
-
-              <Border Background="{Binding Path=AccessibilityNormalColor}" Grid.Column="0" Grid.Row="6" Height="20" Width="20"
-                      BorderBrush="#000000" BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4" />
-
-              <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                         Grid.Column="1" Grid.Row="6" FontSize="11"  Text="Location (Available)" Foreground="#F6F6F6"
-                         Background="Transparent" Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" />
-
-            </Grid>
-
-          </Border>
+          <view:AppSettings DataContext="{Binding Path=AppSettings}" />
 
         </Popup>
 

@@ -98,10 +98,23 @@ namespace OpenTracker.Models
                 ItemPlacement != gameMode.ItemPlacement)
                 return false;
 
-            if (gameMode.DungeonItemShuffle != null &&
-                DungeonItemShuffle != null &&
-                DungeonItemShuffle != gameMode.DungeonItemShuffle)
-                return false;
+            if (gameMode.DungeonItemShuffle != null && DungeonItemShuffle != null)
+            {
+                switch (gameMode.DungeonItemShuffle.Value)
+                {
+                    case Enums.DungeonItemShuffle.Standard:
+                    case Enums.DungeonItemShuffle.MapsCompasses:
+                        if (DungeonItemShuffle.Value != Enums.DungeonItemShuffle.Standard &&
+                            DungeonItemShuffle.Value != Enums.DungeonItemShuffle.MapsCompasses)
+                            return false;
+                        break;
+                    case Enums.DungeonItemShuffle.MapsCompassesSmallKeys:
+                    case Enums.DungeonItemShuffle.Keysanity:
+                        if (DungeonItemShuffle.Value < gameMode.DungeonItemShuffle.Value)
+                            return false;
+                        break;
+                }
+            }
 
             if (gameMode.WorldState != null &&
                 WorldState != null &&

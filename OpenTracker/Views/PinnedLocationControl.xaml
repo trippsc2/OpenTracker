@@ -7,7 +7,7 @@
              x:Class="OpenTracker.Views.PinnedLocationControl"
              Background="#343434">
 
-  <Grid RowDefinitions="Auto, Auto, Auto" Margin="4,4" Background="#343434">
+  <Grid RowDefinitions="Auto, Auto, Auto" Margin="4">
 
     <Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" HorizontalAlignment="Stretch" VerticalAlignment="Center">
 

@@ -7,8 +7,8 @@ namespace OpenTracker.Models.Interfaces
     public interface ISection : INotifyPropertyChanged
     {
         string Name { get; }
-        event EventHandler ItemRequirementChanged;
-        Func<Mode, ItemDictionary, Accessibility> GetAccessibility { get; }
+        AccessibilityLevel Accessibility { get; }
+
         bool IsAvailable();
         void Clear();
     }

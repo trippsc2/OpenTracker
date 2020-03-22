@@ -11,6 +11,7 @@
         Blind,
         Kholdstare,
         Vitreous,
-        Trinexx
+        Trinexx,
+        Aga
     }
 }

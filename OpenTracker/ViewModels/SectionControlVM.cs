@@ -19,6 +19,15 @@ namespace OpenTracker.ViewModels
 
         public string Name { get => _section.Name; }
         public bool VisibleItem { get; }
+        public bool NumberBoxVisible { get; }
+        public ObservableCollection<VisibleItemSelectControlVM> ItemSelect { get; }
+
+        private bool _sectionVisible;
+        public bool SectionVisible
+        {
+            get => _sectionVisible;
+            private set => this.RaiseAndSetIfChanged(ref _sectionVisible, value);
+        }
 
         private IBrush _fontColor;
         public IBrush FontColor
@@ -55,9 +64,21 @@ namespace OpenTracker.ViewModels
             set => this.RaiseAndSetIfChanged(ref _visibleItemPopupOpen, value);
         }
 
-        public ReactiveCommand<Unit, Unit> ClearVisibleItemCommand { get; }
+        private bool _bossImageVisible;
+        public bool BossImageVisible
+        {
+            get => _bossImageVisible;
+            set => this.RaiseAndSetIfChanged(ref _bossImageVisible, value);
+        }
 
-        public ObservableCollection<VisibleItemSelectControlVM> ItemSelect { get; }
+        private string _bossImageSource;
+        public string BossImageSource
+        {
+            get => _bossImageSource;
+            set => this.RaiseAndSetIfChanged(ref _bossImageSource, value);
+        }
+
+        public ReactiveCommand<Unit, Unit> ClearVisibleItemCommand { get; }
 
         public SectionControlVM(AppSettingsVM appSettings, Game game, ISection section)
         {
@@ -65,6 +86,7 @@ namespace OpenTracker.ViewModels
             _appSettings = appSettings;
             _game = game;
             _section = section;
+
 
             ItemSelect = new ObservableCollection<VisibleItemSelectControlVM>();
 
@@ -117,17 +139,15 @@ namespace OpenTracker.ViewModels
                 }
             }
 
-            if (_section is ItemSection)
+            if (_section is ItemSection itemSection)
             {
-                ItemSection itemSection = (ItemSection)_section;
-
                 if (itemSection.HasVisibleItem)
-                {
                     VisibleItem = true;
-                }
+
+                NumberBoxVisible = true;
             }
 
-            _section.ItemRequirementChanged += OnItemRequirementChanged;
+            _game.Mode.PropertyChanged += OnModeChanged;
             _section.PropertyChanged += OnSectionChanged;
 
             Update();
@@ -139,7 +159,7 @@ namespace OpenTracker.ViewModels
             VisibleItemPopupOpen = false;
         }
 
-        private void OnItemRequirementChanged(object sender, EventArgs e)
+        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
             Update();
         }
@@ -156,26 +176,30 @@ namespace OpenTracker.ViewModels
 
         private void Update()
         {
-            Accessibility accessibility = _section.GetAccessibility(_game.Mode, _game.Items);
+            AccessibilityLevel accessibility = _section.Accessibility;
 
-            if (accessibility == Accessibility.Normal)
+            if (accessibility == AccessibilityLevel.Normal)
                 FontColor = new SolidColorBrush(new Color(255, 245, 245, 245));
             else
                 FontColor = _appSettings.AccessibilityColors[accessibility];
-
 
             switch (_section)
             {
                 case ItemSection itemSection:
 
+                    if (_game.Mode.Validate(itemSection.RequiredMode))
+                        SectionVisible = true;
+                    else
+                        SectionVisible = false;
+
                     switch (accessibility)
                     {
-                        case Accessibility.None:
-                        case Accessibility.Inspect:
+                        case AccessibilityLevel.None:
+                        case AccessibilityLevel.Inspect:
                             ImageSource = "avares://OpenTracker/Assets/Images/chest0.png";
                             break;
-                        case Accessibility.SequenceBreak:
-                        case Accessibility.Normal:
+                        case AccessibilityLevel.SequenceBreak:
+                        case AccessibilityLevel.Normal:
                             ImageSource = "avares://OpenTracker/Assets/Images/chest1.png";
                             break;
                     }
@@ -245,6 +269,38 @@ namespace OpenTracker.ViewModels
                     NumberString = itemSection.Available.ToString();
 
                     break;
+
+                case BossSection bossSection:
+
+                    SectionVisible = true;
+
+                    string imageBaseString = "avares://OpenTracker/Assets/Images/Items/";
+
+                    if (bossSection.Prize == null)
+                        imageBaseString += "unknown";
+                    else
+                        imageBaseString += bossSection.Prize.Type.ToString().ToLower();
+
+                    ImageSource = imageBaseString + (bossSection.Available ? "0" : "1") + ".png";
+
+                    imageBaseString = "avares://OpenTracker/Assets/Images/";
+
+                    if (bossSection.Boss == null)
+                        imageBaseString += "Items/unknown1";
+                    else
+                    {
+                        imageBaseString += "Bosses/";
+                        imageBaseString += bossSection.Boss.Type.ToString().ToLower();
+                    }
+
+                    BossImageSource = imageBaseString + ".png";
+
+                    if (_game.Mode.BossShuffle.Value && (bossSection.Boss == null || bossSection.Boss.Type != BossType.Aga))
+                        BossImageVisible = true;
+                    else
+                        BossImageVisible = false;
+
+                    break;
             }
         }
 
@@ -293,7 +349,7 @@ namespace OpenTracker.ViewModels
 
         public void ChangeAvailable(bool rightClick = false)
         {
-            if (_section.GetAccessibility(_game.Mode, _game.Items) >= Accessibility.SequenceBreak)
+            if (_section.Accessibility >= AccessibilityLevel.SequenceBreak || rightClick)
             {
                 switch (_section)
                 {
@@ -306,6 +362,12 @@ namespace OpenTracker.ViewModels
                             itemSection.VisibleItem.Current = Math.Min(itemSection.VisibleItem.Current + 1, itemSection.VisibleItem.Maximum);
                             itemSection.VisibleItem = null;
                         }
+
+                        break;
+
+                    case BossSection bossSection:
+
+                        bossSection.Available = rightClick;
 
                         break;
                 }

@@ -141,12 +141,14 @@ namespace OpenTracker.Views
 
         private void OpenModeSettingsPopup(object sender, PointerReleasedEventArgs e)
         {
-            ModeSettingsPopupOpen = true;
+            if (e.InitialPressMouseButton == MouseButton.Left)
+                ModeSettingsPopupOpen = true;
         }
 
         private void OpenAppSettingsPopup(object sender, PointerReleasedEventArgs e)
         {
-            AppSettingsPopupOpen = true;
+            if (e.InitialPressMouseButton == MouseButton.Left)
+                AppSettingsPopupOpen = true;
         }
     }
 }

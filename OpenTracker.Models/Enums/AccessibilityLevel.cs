@@ -1,10 +1,10 @@
 ﻿namespace OpenTracker.Models.Enums
 {
-    public enum Accessibility
+    public enum AccessibilityLevel
     {
         None,
-        Partial,
         Inspect,
+        Partial,
         SequenceBreak,
         Normal,
         Cleared

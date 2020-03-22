@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <ApplicationIcon>triforce.ico</ApplicationIcon>
   </PropertyGroup>
 
 </Project>
