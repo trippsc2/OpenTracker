@@ -18,9 +18,7 @@
   </Design.DataContext>
 
   <Window.Resources>
-
     <vc:EnumBooleanConverter x:Key="EnumBooleanConverter" />
-
   </Window.Resources>
 
   <DockPanel>
@@ -60,14 +58,12 @@
 
                     <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
                                  Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" FontSize="11" Foreground="#F6F6F6"
-                                 Background="Transparent" IsChecked="{Binding Path=ItemPlacement,
-                                 Converter={StaticResource EnumBooleanConverter}, ConverterParameter=Basic}"
+                                 Background="Transparent" IsChecked="{Binding Path=ItemPlacementBasic, Mode=TwoWay}"
                                  GroupName="ItemPlacement" Margin="4,4,4,8">Basic</RadioButton>
 
                     <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
                                  Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="1" FontSize="11" Foreground="#F6F6F6"
-                                 Background="Transparent" IsChecked="{Binding Path=ItemPlacement,
-                                 Converter={StaticResource EnumBooleanConverter}, ConverterParameter=Advanced}"
+                                 Background="Transparent" IsChecked="{Binding Path=ItemPlacementAdvanced, Mode=TwoWay}"
                                  GroupName="ItemPlacement" Margin="4,4,4,8">Advanced</RadioButton>
 
                     <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
@@ -76,28 +72,25 @@
 
                     <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
                                  Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="3" FontSize="11" Foreground="#F6F6F6"
-                                 Background="Transparent" IsChecked="{Binding Path=DungeonItemShuffle,
-                                 Converter={StaticResource EnumBooleanConverter}, ConverterParameter=Standard}"
-                                 GroupName="DungeonItemShuffle" Margin="4,4,4,8">Standard</RadioButton>
+                                 Background="Transparent" IsChecked="{Binding Path=DungeonItemShuffleStandard,
+                                 Mode=TwoWay}" GroupName="DungeonItemShuffle" Margin="4,4,4,8">Standard</RadioButton>
 
                     <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
                                  Grid.Column="1" Grid.ColumnSpan="1" Grid.Row="3" FontSize="11" Foreground="#F6F6F6"
-                                 Background="Transparent" IsChecked="{Binding Path=DungeonItemShuffle,
-                                 Converter={StaticResource EnumBooleanConverter}, ConverterParameter=MapsCompasses}"
-                                 GroupName="DungeonItemShuffle" Margin="4,4,4,8">Maps/Compasses</RadioButton>
+                                 Background="Transparent" IsChecked="{Binding Path=DungeonItemShuffleMapsCompasses,
+                                 Mode=TwoWay}" GroupName="DungeonItemShuffle"
+                                 Margin="4,4,4,8">Maps/Compasses</RadioButton>
 
                     <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
                                  Grid.Column="2" Grid.ColumnSpan="1" Grid.Row="3" FontSize="11" Foreground="#F6F6F6"
-                                 Background="Transparent" IsChecked="{Binding Path=DungeonItemShuffle,
-                                 Converter={StaticResource EnumBooleanConverter},
-                                 ConverterParameter=MapsCompassesSmallKeys}"
+                                 Background="Transparent" IsChecked="{Binding
+                                 Path=DungeonItemShuffleMapsCompassesSmallKeys, Mode=TwoWay}"
                                  GroupName="DungeonItemShuffle" Margin="4,4,4,8">Maps/Compasses/Small Keys</RadioButton>
 
                     <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
                                  Grid.Column="3" Grid.ColumnSpan="1" Grid.Row="3" FontSize="11" Foreground="#F6F6F6"
-                                 Background="Transparent" IsChecked="{Binding Path=DungeonItemShuffle,
-                                 Converter={StaticResource EnumBooleanConverter}, ConverterParameter=Keysanity}"
-                                 GroupName="DungeonItemShuffle" Margin="4,4,4,8">Keysanity</RadioButton>
+                                 Background="Transparent" IsChecked="{Binding Path=DungeonItemShuffleKeysanity,
+                                 Mode=TwoWay}" GroupName="DungeonItemShuffle" Margin="4,4,4,8">Keysanity</RadioButton>
 
                     <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
                                Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="4" FontSize="12" FontWeight="SemiBold"
@@ -105,14 +98,12 @@
 
                     <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
                                  Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="5" FontSize="11" Foreground="#F6F6F6"
-                                 Background="Transparent" IsChecked="{Binding Path=WorldState,
-                                 Converter={StaticResource EnumBooleanConverter}, ConverterParameter=StandardOpen}"
-                                 GroupName="WorldState" Margin="4,4,4,8">Standard/Open</RadioButton>
+                                 Background="Transparent" IsChecked="{Binding Path=WorldStateStandardOpen,
+                                 Mode=TwoWay}" GroupName="WorldState" Margin="4,4,4,8">Standard/Open</RadioButton>
 
                     <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
                                  Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="5" FontSize="11" Foreground="#F6F6F6"
-                                 Background="Transparent" IsChecked="{Binding Path=WorldState,
-                                 Converter={StaticResource EnumBooleanConverter}, ConverterParameter=Inverted}"
+                                 Background="Transparent" IsChecked="{Binding Path=WorldStateInverted, Mode=TwoWay}"
                                  GroupName="WorldState" Margin="4,4,4,8">Inverted</RadioButton>
 
                     <Border Grid.Row="6" Grid.ColumnSpan="4" Height="1" Background="#F6F6F6" />

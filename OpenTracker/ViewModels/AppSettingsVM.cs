@@ -106,7 +106,7 @@ namespace OpenTracker.ViewModels
 
         public AppSettingsVM()
         {
-            DisplayAllLocations = true;
+            DisplayAllLocations = false;
             EmphasisFontColor = new SolidColorBrush(Color.Parse("#00ff00"));
 
             AccessibilityColors = new Dictionary<AccessibilityLevel, SolidColorBrush>()

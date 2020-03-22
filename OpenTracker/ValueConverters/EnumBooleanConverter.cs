@@ -26,6 +26,8 @@ namespace OpenTracker.ValueConverters
             if (parameterString == null)
                 return AvaloniaProperty.UnsetValue;
 
+            object returnValue = Enum.Parse(targetType, parameterString);
+
             return Enum.Parse(targetType, parameterString);
         }
     }

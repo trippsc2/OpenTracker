@@ -35,25 +35,60 @@ namespace OpenTracker.ViewModels
             set => this.RaiseAndSetIfChanged(ref _modeSettingsPopupOpen, value);
         }
 
-        private ItemPlacement _itemPlacement;
-        public ItemPlacement ItemPlacement
+        private bool _itemPlacementBasic;
+        public bool ItemPlacementBasic
         {
-            get => _itemPlacement;
-            set => this.RaiseAndSetIfChanged(ref _itemPlacement, value);
+            get => _itemPlacementBasic;
+            set => this.RaiseAndSetIfChanged(ref _itemPlacementBasic, value);
         }
 
-        private DungeonItemShuffle _dungeonItemShuffle;
-        public DungeonItemShuffle DungeonItemShuffle
+        private bool _itemPlacementAdvanced;
+        public bool ItemPlacementAdvanced
         {
-            get => _dungeonItemShuffle;
-            set => this.RaiseAndSetIfChanged(ref _dungeonItemShuffle, value);
+            get => _itemPlacementAdvanced;
+            set => this.RaiseAndSetIfChanged(ref _itemPlacementAdvanced, value);
         }
 
-        private WorldState _worldState;
-        public WorldState WorldState
+        private bool _dungeonItemShuffleStandard;
+        public bool DungeonItemShuffleStandard
         {
-            get => _worldState;
-            set => this.RaiseAndSetIfChanged(ref _worldState, value);
+            get => _dungeonItemShuffleStandard;
+            set => this.RaiseAndSetIfChanged(ref _dungeonItemShuffleStandard, value);
+        }
+
+        private bool _dungeonItemShuffleMapsCompasses;
+        public bool DungeonItemShuffleMapsCompasses
+        {
+            get => _dungeonItemShuffleMapsCompasses;
+            set => this.RaiseAndSetIfChanged(ref _dungeonItemShuffleMapsCompasses, value);
+        }
+
+        private bool _dungeonItemShuffleMapsCompassesSmallKeys;
+        public bool DungeonItemShuffleMapsCompassesSmallKeys
+        {
+            get => _dungeonItemShuffleMapsCompassesSmallKeys;
+            set => this.RaiseAndSetIfChanged(ref _dungeonItemShuffleMapsCompassesSmallKeys, value);
+        }
+
+        private bool _dungeonItemShuffleKeysanity;
+        public bool DungeonItemShuffleKeysanity
+        {
+            get => _dungeonItemShuffleKeysanity;
+            set => this.RaiseAndSetIfChanged(ref _dungeonItemShuffleKeysanity, value);
+        }
+
+        private bool _worldStateStandardOpen;
+        public bool WorldStateStandardOpen
+        {
+            get => _worldStateStandardOpen;
+            set => this.RaiseAndSetIfChanged(ref _worldStateStandardOpen, value);
+        }
+
+        private bool _worldStateInverted;
+        public bool WorldStateInverted
+        {
+            get => _worldStateInverted;
+            set => this.RaiseAndSetIfChanged(ref _worldStateInverted, value);
         }
 
         private bool _entranceShuffle;
@@ -96,12 +131,12 @@ namespace OpenTracker.ViewModels
             _appSettings = new AppSettingsVM();
             _game = new Game();
 
-            ItemPlacement = _game.Mode.ItemPlacement.Value;
-            DungeonItemShuffle = _game.Mode.DungeonItemShuffle.Value;
-            WorldState = _game.Mode.WorldState.Value;
-            EntranceShuffle = _game.Mode.EntranceShuffle.Value;
-            BossShuffle = _game.Mode.BossShuffle.Value;
-            EnemyShuffle = _game.Mode.EnemyShuffle.Value;
+            RefreshItemPlacement();
+            RefreshDungeonItemShuffle();
+            RefreshWorldState();
+            RefreshEntranceShuffle();
+            RefreshBossShuffle();
+            RefreshEnemyShuffle();
 
             Maps = new ObservableCollection<MapControlVM>();
             PinnedLocations = new ObservableCollection<PinnedLocationControlVM>();
@@ -224,40 +259,182 @@ namespace OpenTracker.ViewModels
                 }
             }
 
-            this.PropertyChanged += OnPropertyChanged;
+            PropertyChanged += OnPropertyChanged;
         }
 
-        private void Update()
+        private void RefreshItemPlacement()
         {
-            if (_game != null)
+            switch (_game.Mode.ItemPlacement)
             {
-                _game.Mode.ItemPlacement = ItemPlacement;
-                _game.Mode.DungeonItemShuffle = DungeonItemShuffle;
-                _game.Mode.WorldState = WorldState;
-                _game.Mode.EntranceShuffle = EntranceShuffle;
-                _game.Mode.BossShuffle = BossShuffle;
-                _game.Mode.EnemyShuffle = EnemyShuffle;
+                case null:
+                    ItemPlacementBasic = false;
+                    ItemPlacementAdvanced = false;
+                    break;
+                case ItemPlacement.Basic:
+                    ItemPlacementBasic = true;
+                    ItemPlacementAdvanced = false;
+                    break;
+                case ItemPlacement.Advanced:
+                    ItemPlacementBasic = false;
+                    ItemPlacementAdvanced = true;
+                    break;
             }
+        }
 
-            if (_game.Mode.DungeonItemShuffle >= DungeonItemShuffle.MapsCompassesSmallKeys)
+        private void RefreshDungeonItemShuffle()
+        {
+            switch (_game.Mode.DungeonItemShuffle)
             {
-                SmallKeyShuffle = true;
-
-                if (_game.Mode.DungeonItemShuffle == DungeonItemShuffle.Keysanity)
-                    BigKeyShuffle = true;
-                else
-                    BigKeyShuffle = false;
+                case null:
+                    DungeonItemShuffleStandard = false;
+                    DungeonItemShuffleMapsCompasses = false;
+                    DungeonItemShuffleMapsCompassesSmallKeys = false;
+                    DungeonItemShuffleKeysanity = false;
+                    break;
+                case DungeonItemShuffle.Standard:
+                    DungeonItemShuffleStandard = true;
+                    DungeonItemShuffleMapsCompasses = false;
+                    DungeonItemShuffleMapsCompassesSmallKeys = false;
+                    DungeonItemShuffleKeysanity = false;
+                    break;
+                case DungeonItemShuffle.MapsCompasses:
+                    DungeonItemShuffleStandard = false;
+                    DungeonItemShuffleMapsCompasses = true;
+                    DungeonItemShuffleMapsCompassesSmallKeys = false;
+                    DungeonItemShuffleKeysanity = false;
+                    break;
+                case DungeonItemShuffle.MapsCompassesSmallKeys:
+                    DungeonItemShuffleStandard = false;
+                    DungeonItemShuffleMapsCompasses = false;
+                    DungeonItemShuffleMapsCompassesSmallKeys = true;
+                    DungeonItemShuffleKeysanity = false;
+                    break;
+                case DungeonItemShuffle.Keysanity:
+                    DungeonItemShuffleStandard = false;
+                    DungeonItemShuffleMapsCompasses = false;
+                    DungeonItemShuffleMapsCompassesSmallKeys = false;
+                    DungeonItemShuffleKeysanity = true;
+                    break;
             }
+        }
+
+        private void RefreshWorldState()
+        {
+            switch (_game.Mode.WorldState)
+            {
+                case null:
+                    WorldStateStandardOpen = false;
+                    WorldStateInverted = false;
+                    break;
+                case WorldState.StandardOpen:
+                    WorldStateStandardOpen = true;
+                    WorldStateInverted = false;
+                    break;
+                case WorldState.Inverted:
+                    WorldStateStandardOpen = false;
+                    WorldStateInverted = true;
+                    break;
+            }
+        }
+
+        private void RefreshEntranceShuffle()
+        {
+            if (_game.Mode.EntranceShuffle.HasValue && _game.Mode.EntranceShuffle.Value)
+                EntranceShuffle = true;
             else
-            {
+                EntranceShuffle = false;
+        }
+
+        private void RefreshBossShuffle()
+        {
+            if (_game.Mode.BossShuffle.HasValue && _game.Mode.BossShuffle.Value)
+                BossShuffle = true;
+            else
+                BossShuffle = false;
+        }
+
+        private void RefreshEnemyShuffle()
+        {
+            if (_game.Mode.EnemyShuffle.HasValue && _game.Mode.EnemyShuffle.Value)
+                EnemyShuffle = true;
+            else
+                EnemyShuffle = false;
+        }
+
+        private void SetItemPlacement(ItemPlacement itemPlacement)
+        {
+            _game.Mode.ItemPlacement = itemPlacement;
+        }
+
+        private void SetDungeonItemShuffle(DungeonItemShuffle dungeonItemShuffle)
+        {
+            _game.Mode.DungeonItemShuffle = dungeonItemShuffle;
+
+            if (dungeonItemShuffle >= DungeonItemShuffle.MapsCompassesSmallKeys)
+                SmallKeyShuffle = true;
+            else
                 SmallKeyShuffle = false;
+
+            if (dungeonItemShuffle == DungeonItemShuffle.Keysanity)
+                BigKeyShuffle = true;
+            else
                 BigKeyShuffle = false;
-            }
+        }
+
+        private void SetWorldState(WorldState worldState)
+        {
+            _game.Mode.WorldState = worldState;
+        }
+
+        private void SetEntranceShuffle(bool entranceShuffle)
+        {
+            _game.Mode.EntranceShuffle = entranceShuffle;
+        }
+
+        private void SetBossShuffle(bool bossShuffle)
+        {
+            _game.Mode.BossShuffle = bossShuffle;
+        }
+
+        private void SetEnemyShuffle(bool enemyShuffle)
+        {
+            _game.Mode.EnemyShuffle = enemyShuffle;
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            Update();
+            if (e.PropertyName == nameof(ItemPlacementBasic) && ItemPlacementBasic)
+                SetItemPlacement(ItemPlacement.Basic);
+
+            if (e.PropertyName == nameof(ItemPlacementAdvanced) && ItemPlacementAdvanced)
+                SetItemPlacement(ItemPlacement.Advanced);
+
+            if (e.PropertyName == nameof(DungeonItemShuffleStandard) && DungeonItemShuffleStandard)
+                SetDungeonItemShuffle(DungeonItemShuffle.Standard);
+
+            if (e.PropertyName == nameof(DungeonItemShuffleMapsCompasses) && DungeonItemShuffleMapsCompasses)
+                SetDungeonItemShuffle(DungeonItemShuffle.MapsCompasses);
+
+            if (e.PropertyName == nameof(DungeonItemShuffleMapsCompassesSmallKeys) && DungeonItemShuffleMapsCompassesSmallKeys)
+                SetDungeonItemShuffle(DungeonItemShuffle.MapsCompassesSmallKeys);
+
+            if (e.PropertyName == nameof(DungeonItemShuffleKeysanity) && DungeonItemShuffleKeysanity)
+                SetDungeonItemShuffle(DungeonItemShuffle.Keysanity);
+
+            if (e.PropertyName == nameof(WorldStateStandardOpen) && WorldStateStandardOpen)
+                SetWorldState(WorldState.StandardOpen);
+
+            if (e.PropertyName == nameof(WorldStateInverted) && WorldStateInverted)
+                SetWorldState(WorldState.Inverted);
+
+            if (e.PropertyName == nameof(EntranceShuffle))
+                SetEntranceShuffle(EntranceShuffle);
+
+            if (e.PropertyName == nameof(BossShuffle))
+                SetBossShuffle(BossShuffle);
+
+            if (e.PropertyName == nameof(EnemyShuffle))
+                SetEnemyShuffle(EnemyShuffle);
         }
     }
 }

@@ -8,19 +8,19 @@ namespace OpenTracker.Models
 {
     public class Location
     {
-        private readonly LocationID _iD;
 
-        public event EventHandler ItemRequirementChanged;
-
+        public LocationID ID { get; }
         public string Name { get; }
 
         public BossSection BossSection { get; private set; }
         public List<MapLocation> MapLocations { get; }
         public List<ISection> Sections { get; }
 
+        public event EventHandler ItemRequirementChanged;
+
         public Location(Game game, LocationID iD)
         {
-            _iD = iD;
+            ID = iD;
 
             MapLocations = new List<MapLocation>();
             Sections = new List<ISection>();
@@ -523,6 +523,11 @@ namespace OpenTracker.Models
                         {
                             EntranceShuffle = false
                         }));
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1000, 940,
+                        new Mode()
+                        {
+                            EntranceShuffle = true
+                        }));
                     itemCollections = 1;
                     break;
                 case LocationID.Agahnim:
@@ -539,6 +544,11 @@ namespace OpenTracker.Models
                             WorldState = WorldState.Inverted,
                             EntranceShuffle = false
                         }));
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1000, 750,
+                        new Mode()
+                        {
+                            EntranceShuffle = true
+                        }));
                     itemCollections = 1;
                     BossSection = new BossSection(game, iD);
                     break;
@@ -548,6 +558,11 @@ namespace OpenTracker.Models
                         new Mode()
                         {
                             EntranceShuffle = false
+                        }));
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1925, 780,
+                        new Mode()
+                        {
+                            EntranceShuffle = true
                         }));
                     itemCollections = 1;
                     BossSection = new BossSection(game, iD);
@@ -559,6 +574,11 @@ namespace OpenTracker.Models
                         {
                             EntranceShuffle = false
                         }));
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 150, 1700,
+                        new Mode()
+                        {
+                            EntranceShuffle = true
+                        }));
                     itemCollections = 1;
                     BossSection = new BossSection(game, iD);
                     break;
@@ -568,6 +588,11 @@ namespace OpenTracker.Models
                         new Mode()
                         {
                             EntranceShuffle = false
+                        }));
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1125, 20,
+                        new Mode()
+                        {
+                            EntranceShuffle = true
                         }));
                     itemCollections = 1;
                     BossSection = new BossSection(game, iD);
@@ -579,6 +604,11 @@ namespace OpenTracker.Models
                         {
                             EntranceShuffle = false
                         }));
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1925, 785,
+                        new Mode()
+                        {
+                            EntranceShuffle = true
+                        }));
                     itemCollections = 1;
                     BossSection = new BossSection(game, iD);
                     break;
@@ -588,6 +618,11 @@ namespace OpenTracker.Models
                         new Mode()
                         {
                             EntranceShuffle = false
+                        }));
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 940, 1840,
+                        new Mode()
+                        {
+                            EntranceShuffle = true
                         }));
                     itemCollections = 1;
                     BossSection = new BossSection(game, iD);
@@ -599,6 +634,11 @@ namespace OpenTracker.Models
                         {
                             EntranceShuffle = false
                         }));
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 80, 50,
+                        new Mode()
+                        {
+                            EntranceShuffle = true
+                        }));
                     itemCollections = 1;
                     BossSection = new BossSection(game, iD);
                     break;
@@ -608,6 +648,11 @@ namespace OpenTracker.Models
                         new Mode()
                         {
                             EntranceShuffle = false
+                        }));
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 255, 935,
+                        new Mode()
+                        {
+                            EntranceShuffle = true
                         }));
                     itemCollections = 1;
                     BossSection = new BossSection(game, iD);
@@ -619,6 +664,11 @@ namespace OpenTracker.Models
                         {
                             EntranceShuffle = false
                         }));
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1600, 1695,
+                        new Mode()
+                        {
+                            EntranceShuffle = true
+                        }));
                     itemCollections = 1;
                     BossSection = new BossSection(game, iD);
                     break;
@@ -629,6 +679,11 @@ namespace OpenTracker.Models
                         {
                             EntranceShuffle = false
                         }));
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 150, 1600,
+                        new Mode()
+                        {
+                            EntranceShuffle = true
+                        }));
                     itemCollections = 1;
                     BossSection = new BossSection(game, iD);
                     break;
@@ -638,6 +693,11 @@ namespace OpenTracker.Models
                         new Mode()
                         {
                             EntranceShuffle = false
+                        }));
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1890, 125,
+                        new Mode()
+                        {
+                            EntranceShuffle = true
                         }));
                     itemCollections = 1;
                     BossSection = new BossSection(game, iD);
@@ -656,12 +716,17 @@ namespace OpenTracker.Models
                             WorldState = WorldState.Inverted,
                             EntranceShuffle = false
                         }));
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1125, 30,
+                        new Mode()
+                        {
+                            EntranceShuffle = true
+                        }));
                     itemCollections = 1;
                     break;
             }
 
             for (int i = 0; i < itemCollections; i++)
-                Sections.Add(new ItemSection(game, _iD, i));
+                Sections.Add(new ItemSection(game, this, i));
 
             if (BossSection != null)
                 Sections.Add(BossSection);
@@ -709,7 +774,7 @@ namespace OpenTracker.Models
                 AccessibilityLevel.Normal when leastAccessible.Value <= AccessibilityLevel.Inspect => AccessibilityLevel.Partial,
                 AccessibilityLevel.Normal when leastAccessible.Value == AccessibilityLevel.SequenceBreak => AccessibilityLevel.SequenceBreak,
                 AccessibilityLevel.Normal => AccessibilityLevel.Normal,
-                _ => throw new Exception(string.Format("Unknown availability state for location {0}", _iD.ToString())),
+                _ => throw new Exception(string.Format("Unknown availability state for location {0}", ID.ToString())),
             };
         }
     }

@@ -16,7 +16,7 @@ namespace OpenTracker.Models
         {
             Mode = new Mode()
             {
-                ItemPlacement = ItemPlacement.Basic,
+                ItemPlacement = ItemPlacement.Advanced,
                 DungeonItemShuffle = DungeonItemShuffle.Standard,
                 WorldState = WorldState.StandardOpen,
                 EntranceShuffle = false,

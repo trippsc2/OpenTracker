@@ -1191,30 +1191,30 @@ namespace OpenTracker.Models
                                         _game.Items.Has(ItemType.HyruleCastleSecondFloorAccess) ||
                                         _game.Items.Has(ItemType.DesertLeftAccess))
                                         return AccessibilityLevel.Normal;
-                                    
+
                                     //  Light World access via either Village of Outcasts portal,
                                     //    Palace of Darkness portal, or portal north of Swamp Palace
                                     if (_game.Items.Has(ItemType.Gloves))
                                         return AccessibilityLevel.Normal;
-                                    
+
                                     //  Light World access via Desert Palace back exit
                                     if (_game.Items.Has(ItemType.DesertBackAccess) && _game.Items.Has(ItemType.Gloves))
                                         return AccessibilityLevel.Normal;
-                                    
+
                                     //  Light World access via Lake Hylia capacity upgrade fairy island
                                     if (_game.Items.Has(ItemType.LakeHyliaFairyIslandAccess) &&
                                         _game.Items.Has(ItemType.Flippers))
                                         return AccessibilityLevel.Normal;
-                                    
+
                                     //  Light World access via Waterfall Fairy exit
                                     if (_game.Items.Has(ItemType.WaterfallFairyAccess) &&
                                         _game.Items.Has(ItemType.Flippers))
                                         return AccessibilityLevel.Normal;
-                                    
+
                                     //  Light World access via Lake Hylia capacity upgrade fairy island (Fake Flippers)
                                     if (_game.Items.Has(ItemType.LakeHyliaFairyIslandAccess))
                                         return AccessibilityLevel.SequenceBreak;
-                                    
+
                                     //  Light World access via Waterfall Fairy exit (Fake Flippers)
                                     if (_game.Items.Has(ItemType.WaterfallFairyAccess))
                                         return AccessibilityLevel.SequenceBreak;
@@ -1370,25 +1370,25 @@ namespace OpenTracker.Models
                                     if (_game.Items.Has(ItemType.Gloves, 2) ||
                                         (_game.Items.Has(ItemType.Gloves) && _game.Items.Has(ItemType.Hammer)))
                                         return AccessibilityLevel.Normal;
-                                    
+
                                     //  Access via Desert Palace back exit
                                     if (_game.Items.Has(ItemType.DesertBackAccess) && _game.Items.Has(ItemType.Gloves))
                                         return AccessibilityLevel.Normal;
-                                    
+
                                     //  Access via Lake Hylia capacity upgrade fairy island
                                     if (_game.Items.Has(ItemType.LakeHyliaFairyIslandAccess) &&
                                         _game.Items.Has(ItemType.Flippers))
                                         return AccessibilityLevel.Normal;
-                                    
+
                                     //  Access via Waterfall Fairy exit
                                     if (_game.Items.Has(ItemType.WaterfallFairyAccess) &&
                                         _game.Items.Has(ItemType.Flippers))
                                         return AccessibilityLevel.Normal;
-                                    
+
                                     //  Access via Lake Hylia capacity upgrade fairy island (Fake Flippers)
                                     if (_game.Items.Has(ItemType.LakeHyliaFairyIslandAccess))
                                         return AccessibilityLevel.SequenceBreak;
-                                    
+
                                     //  Access via Waterfall Fairy exit (Fake Flippers)
                                     if (_game.Items.Has(ItemType.WaterfallFairyAccess))
                                         return AccessibilityLevel.SequenceBreak;
@@ -1999,7 +1999,7 @@ namespace OpenTracker.Models
 
                                 //  Sequence break dark room
                                 return AccessibilityLevel.SequenceBreak;
-                            }    
+                            }
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
@@ -2118,6 +2118,387 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.WaterfallFairyAccess]);
 
                     break;
+                case RegionID.HyruleCastle:
+
+                    GetAccessibility = () =>
+                    {
+                        if (_game.Mode.EntranceShuffle.Value)
+                            return AccessibilityLevel.Normal;
+
+                        if (_game.Mode.WorldState == WorldState.StandardOpen ||
+                            _game.Items.Has(ItemType.MoonPearl))
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+
+                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnItemRequirementChanged;
+
+                    break;
+                case RegionID.Agahnim:
+
+                    GetAccessibility = () =>
+                    {
+                        if (_game.Mode.EntranceShuffle.Value)
+                            return AccessibilityLevel.Normal;
+
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        {
+                            if (_game.Items.CanClearAgaTowerBarrier())
+                                return AccessibilityLevel.Normal;
+                        }
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                            return _game.Regions[RegionID.DarkDeathMountainTop].Accessibility;
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    itemReqs.Add(_game.Items[ItemType.Cape]);
+                    itemReqs.Add(_game.Items[ItemType.Sword]);
+                    itemReqs.Add(_game.Items[ItemType.Hammer]);
+
+                    _game.Regions[RegionID.DarkDeathMountainTop].PropertyChanged += OnItemRequirementChanged;
+
+                    break;
+                case RegionID.EasternPalace:
+
+                    GetAccessibility = () =>
+                    {
+                        if (_game.Mode.EntranceShuffle.Value)
+                            return AccessibilityLevel.Normal;
+
+                        if (_game.Mode.WorldState == WorldState.StandardOpen ||
+                            _game.Items.Has(ItemType.MoonPearl))
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+
+                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnItemRequirementChanged;
+
+                    break;
+                case RegionID.DesertPalace:
+
+                    GetAccessibility = () =>
+                    {
+                        if (_game.Mode.EntranceShuffle.Value)
+                            return AccessibilityLevel.Normal;
+
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        {
+                            if (_game.Items.Has(ItemType.Book))
+                                return AccessibilityLevel.Normal;
+
+                            if (_game.Items.Has(ItemType.Mirror))
+                                return _game.Regions[RegionID.MireArea].Accessibility;
+                        }
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        {
+                            if (_game.Items.Has(ItemType.Book) && _game.Items.Has(ItemType.MoonPearl))
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
+                        }
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    itemReqs.Add(_game.Items[ItemType.Book]);
+                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+
+                    _game.Regions[RegionID.MireArea].PropertyChanged += OnItemRequirementChanged;
+                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnItemRequirementChanged;
+
+                    break;
+                case RegionID.TowerOfHera:
+
+                    GetAccessibility = () =>
+                    {
+                        if (_game.Mode.EntranceShuffle.Value)
+                            return AccessibilityLevel.Normal;
+
+                        if (_game.Mode.WorldState == WorldState.StandardOpen ||
+                            _game.Items.Has(ItemType.MoonPearl))
+                            return _game.Regions[RegionID.DeathMountainWestTop].Accessibility;
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+
+                    _game.Regions[RegionID.DeathMountainWestTop].PropertyChanged += OnItemRequirementChanged;
+
+                    break;
+                case RegionID.PalaceOfDarkness:
+
+                    GetAccessibility = () =>
+                    {
+                        if (_game.Mode.EntranceShuffle.Value)
+                            return AccessibilityLevel.Normal;
+
+                        if (_game.Mode.WorldState == WorldState.Inverted ||
+                            _game.Items.Has(ItemType.MoonPearl))
+                            return _game.Regions[RegionID.DarkWorldEast].Accessibility;
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+
+                    _game.Regions[RegionID.DarkWorldEast].PropertyChanged += OnItemRequirementChanged;
+
+                    break;
+                case RegionID.SwampPalace:
+
+                    GetAccessibility = () =>
+                    {
+                        if (_game.Mode.EntranceShuffle.Value)
+                            return AccessibilityLevel.Normal;
+
+                        if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Mirror))
+                        {
+                            if (_game.Mode.WorldState == WorldState.StandardOpen)
+                                return _game.Regions[RegionID.DarkWorldSouth].Accessibility;
+
+                            if (_game.Mode.WorldState == WorldState.Inverted)
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
+                        }
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+
+                    _game.Regions[RegionID.DarkWorldSouth].PropertyChanged += OnItemRequirementChanged;
+                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnItemRequirementChanged;
+
+                    break;
+                case RegionID.SkullWoods:
+
+                    GetAccessibility = () =>
+                    {
+                        if (_game.Mode.EntranceShuffle.Value)
+                            return AccessibilityLevel.Normal;
+
+                        if (_game.Mode.WorldState == WorldState.Inverted ||
+                            _game.Items.Has(ItemType.MoonPearl))
+                            return _game.Regions[RegionID.DarkWorldWest].Accessibility;
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+
+                    _game.Regions[RegionID.DarkWorldWest].PropertyChanged += OnItemRequirementChanged;
+
+                    break;
+                case RegionID.ThievesTown:
+
+                    GetAccessibility = () =>
+                    {
+                        if (_game.Mode.EntranceShuffle.Value)
+                            return AccessibilityLevel.Normal;
+
+                        if (_game.Mode.WorldState == WorldState.Inverted ||
+                            _game.Items.Has(ItemType.MoonPearl))
+                            return _game.Regions[RegionID.DarkWorldWest].Accessibility;
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+
+                    _game.Regions[RegionID.DarkWorldWest].PropertyChanged += OnItemRequirementChanged;
+
+                    break;
+                case RegionID.IcePalace:
+
+                    GetAccessibility = () =>
+                    {
+                        if (_game.Mode.EntranceShuffle.Value)
+                            return AccessibilityLevel.Normal;
+
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        {
+                            if (_game.Items.Has(ItemType.Gloves, 2) && _game.Items.Has(ItemType.MoonPearl))
+                            {
+                                if (_game.Items.Has(ItemType.Flippers))
+                                    return AccessibilityLevel.Normal;
+
+                                return AccessibilityLevel.SequenceBreak;
+                            }
+                        }
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        {
+                            if (_game.Items.Has(ItemType.Flippers))
+                                return AccessibilityLevel.Normal;
+
+                            return AccessibilityLevel.SequenceBreak;
+                        }
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    itemReqs.Add(_game.Items[ItemType.Gloves]);
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    itemReqs.Add(_game.Items[ItemType.Flippers]);
+
+                    break;
+                case RegionID.MiseryMire:
+
+                    GetAccessibility = () =>
+                    {
+                        if (_game.Mode.EntranceShuffle.Value)
+                            return AccessibilityLevel.Normal;
+
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        {
+                            if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.CanUseMedallions() &&
+                                ((_game.Items.Has(ItemType.Bombos) && _game.Items.Has(ItemType.Ether) &&
+                                _game.Items.Has(ItemType.Quake)) ||
+                                (_game.Items.Has(ItemType.Bombos) &&
+                                (_game.Items[ItemType.BombosDungeons].Current == 1 ||
+                                _game.Items[ItemType.BombosDungeons].Current == 3)) ||
+                                (_game.Items.Has(ItemType.Ether) &&
+                                (_game.Items[ItemType.EtherDungeons].Current == 1 ||
+                                _game.Items[ItemType.EtherDungeons].Current == 3)) ||
+                                (_game.Items.Has(ItemType.Quake) &&
+                                (_game.Items[ItemType.QuakeDungeons].Current == 1 ||
+                                _game.Items[ItemType.QuakeDungeons].Current == 3))))
+                                return _game.Regions[RegionID.MireArea].Accessibility;
+                        }
+                        
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        {
+                            if (_game.Items.CanUseMedallions() &&
+                                ((_game.Items.Has(ItemType.Bombos) && _game.Items.Has(ItemType.Ether) &&
+                                _game.Items.Has(ItemType.Quake)) ||
+                                (_game.Items.Has(ItemType.Bombos) &&
+                                (_game.Items[ItemType.BombosDungeons].Current == 1 ||
+                                _game.Items[ItemType.BombosDungeons].Current == 3)) ||
+                                (_game.Items.Has(ItemType.Ether) &&
+                                (_game.Items[ItemType.EtherDungeons].Current == 1 ||
+                                _game.Items[ItemType.EtherDungeons].Current == 3)) ||
+                                (_game.Items.Has(ItemType.Quake) &&
+                                (_game.Items[ItemType.QuakeDungeons].Current == 1 ||
+                                _game.Items[ItemType.QuakeDungeons].Current == 3))))
+                                return _game.Regions[RegionID.MireArea].Accessibility;
+                        }
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    itemReqs.Add(_game.Items[ItemType.Sword]);
+                    itemReqs.Add(_game.Items[ItemType.Bombos]);
+                    itemReqs.Add(_game.Items[ItemType.BombosDungeons]);
+                    itemReqs.Add(_game.Items[ItemType.Ether]);
+                    itemReqs.Add(_game.Items[ItemType.EtherDungeons]);
+                    itemReqs.Add(_game.Items[ItemType.Quake]);
+                    itemReqs.Add(_game.Items[ItemType.QuakeDungeons]);
+
+                    _game.Regions[RegionID.MireArea].PropertyChanged += OnItemRequirementChanged;
+
+                    break;
+                case RegionID.TurtleRock:
+
+                    GetAccessibility = () =>
+                    {
+                        if (_game.Mode.EntranceShuffle.Value)
+                            return AccessibilityLevel.Normal;
+
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        {
+                            if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Hammer) &&
+                                _game.Items.CanUseMedallions() && ((_game.Items.Has(ItemType.Bombos) &&
+                                _game.Items.Has(ItemType.Ether) && _game.Items.Has(ItemType.Quake)) ||
+                                (_game.Items.Has(ItemType.Bombos) &&
+                                _game.Items[ItemType.BombosDungeons].Current >= 2) ||
+                                (_game.Items.Has(ItemType.Ether) &&
+                                _game.Items[ItemType.EtherDungeons].Current >= 2) ||
+                                (_game.Items.Has(ItemType.Quake) &&
+                                _game.Items[ItemType.QuakeDungeons].Current >= 2)))
+                                return _game.Regions[RegionID.DarkDeathMountainTop].Accessibility;
+                        }
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        {
+                            if (_game.Regions[RegionID.DeathMountainEastTop].Accessibility == AccessibilityLevel.Normal &&
+                                _game.Items.Has(ItemType.Mirror))
+                                return AccessibilityLevel.Normal;
+
+                            if (_game.Items.CanUseMedallions() && ((_game.Items.Has(ItemType.Bombos) &&
+                                _game.Items.Has(ItemType.Ether) && _game.Items.Has(ItemType.Quake)) ||
+                                (_game.Items.Has(ItemType.Bombos) &&
+                                _game.Items[ItemType.BombosDungeons].Current >= 2) ||
+                                (_game.Items.Has(ItemType.Ether) &&
+                                _game.Items[ItemType.EtherDungeons].Current >= 2) ||
+                                (_game.Items.Has(ItemType.Quake) &&
+                                _game.Items[ItemType.QuakeDungeons].Current >= 2)) &&
+                                _game.Regions[RegionID.DarkDeathMountainTop].Accessibility >= AccessibilityLevel.SequenceBreak)
+                                return _game.Regions[RegionID.DarkDeathMountainTop].Accessibility;
+
+                            if (_game.Regions[RegionID.DeathMountainEastTop].Accessibility == AccessibilityLevel.SequenceBreak &&
+                                _game.Items.Has(ItemType.Mirror))
+                                return AccessibilityLevel.SequenceBreak;
+                        }
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    itemReqs.Add(_game.Items[ItemType.Hammer]);
+                    itemReqs.Add(_game.Items[ItemType.Sword]);
+                    itemReqs.Add(_game.Items[ItemType.Bombos]);
+                    itemReqs.Add(_game.Items[ItemType.BombosDungeons]);
+                    itemReqs.Add(_game.Items[ItemType.Ether]);
+                    itemReqs.Add(_game.Items[ItemType.EtherDungeons]);
+                    itemReqs.Add(_game.Items[ItemType.Quake]);
+                    itemReqs.Add(_game.Items[ItemType.QuakeDungeons]);
+                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+
+                    _game.Regions[RegionID.DeathMountainEastTop].PropertyChanged += OnItemRequirementChanged;
+                    _game.Regions[RegionID.DarkDeathMountainTop].PropertyChanged += OnItemRequirementChanged;
+
+                    break;
+                case RegionID.GanonsTower:
+
+                    GetAccessibility = () =>
+                    {
+                        if (_game.Mode.EntranceShuffle.Value)
+                            return AccessibilityLevel.Normal;
+
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        {
+                            if (_game.Items.Has(ItemType.TowerCrystals) && _game.Items.Has(ItemType.MoonPearl))
+                                return _game.Regions[RegionID.DarkDeathMountainTop].Accessibility;
+                        }
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        {
+                            if (_game.Items.Has(ItemType.TowerCrystals) && _game.Items.Has(ItemType.MoonPearl))
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
+                        }
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    itemReqs.Add(_game.Items[ItemType.TowerCrystals]);
+                    itemReqs.Add(_game.Items[ItemType.Crystal]);
+                    itemReqs.Add(_game.Items[ItemType.RedCrystal]);
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+
+                    _game.Regions[RegionID.DarkDeathMountainTop].PropertyChanged += OnItemRequirementChanged;
+                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnItemRequirementChanged;
+
+                    break;
             }
 
             foreach (Item itemReq in itemReqs)
@@ -2131,7 +2512,9 @@ namespace OpenTracker.Models
 
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateAccessibility();
+            if (e.PropertyName == nameof(_game.Mode.WorldState) ||
+                e.PropertyName == nameof(_game.Mode.EntranceShuffle))
+                UpdateAccessibility();
         }
 
         private void OnItemRequirementChanged(object sender, PropertyChangedEventArgs e)
