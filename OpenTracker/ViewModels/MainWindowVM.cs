@@ -132,9 +132,16 @@ namespace OpenTracker.ViewModels
 
         public MainWindowVM()
         {
-            if (File.Exists("appsettings.json"))
+            string appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+
+            if (!Directory.Exists(appData))
+                Directory.CreateDirectory(appData);
+
+            string appSettingsPath = appData + Path.DirectorySeparatorChar + "opentracker.json";
+
+            if (File.Exists(appSettingsPath))
             {
-                string jsonContent = File.ReadAllText("appsettings.json");
+                string jsonContent = File.ReadAllText(appSettingsPath);
                 
                 _appSettings = JsonConvert.DeserializeObject<AppSettingsVM>(jsonContent, new SolidColorBrushConverter());
             }
@@ -451,12 +458,19 @@ namespace OpenTracker.ViewModels
 
         public void SaveAppSettings()
         {
-            if (File.Exists("appsettings.json"))
-                File.Delete("appsettings.json");
+            string appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+
+            if (!Directory.Exists(appData))
+                Directory.CreateDirectory(appData);
+
+            string appSettingsPath = appData + Path.DirectorySeparatorChar + "opentracker.json";
+
+            if (File.Exists(appSettingsPath))
+                File.Delete(appSettingsPath);
 
             string json = JsonConvert.SerializeObject(_appSettings, Formatting.Indented, new SolidColorBrushConverter());
 
-            File.WriteAllText("appsettings.json", json);
+            File.WriteAllText(appSettingsPath, json);
         }
     }
 }
