@@ -10,10 +10,12 @@ namespace OpenTracker.Models
     {
         private readonly Game _game;
         private readonly Boss _defaultBoss;
-        private readonly Region _standardRegion;
-        private readonly Region _invertedRegion;
+        private readonly Region _region;
 
         public string Name { get => "Boss"; }
+        public Mode RequiredMode { get; }
+
+        public Func<AccessibilityLevel> GetAccessibility { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -81,11 +83,10 @@ namespace OpenTracker.Models
             }
         }
 
-        public Func<AccessibilityLevel> GetAccessibility { get; }
-
         public BossSection(Game game, LocationID iD)
         {
             _game = game;
+            RequiredMode = new Mode();
 
             List<Item> itemReqs = new List<Item>();
 
@@ -96,8 +97,7 @@ namespace OpenTracker.Models
                     _defaultBoss = _game.Bosses[BossType.Aga];
                     _boss = _game.Bosses[BossType.Aga];
                     Prize = _game.Items[ItemType.Aga];
-                    _standardRegion = _game.Regions[RegionID.Agahnim];
-                    _invertedRegion = _game.Regions[RegionID.Agahnim];
+                    _region = _game.Regions[RegionID.Agahnim];
 
                     GetAccessibility = () =>
                     {
@@ -120,8 +120,7 @@ namespace OpenTracker.Models
                 case LocationID.EasternPalace:
 
                     _defaultBoss = _game.Bosses[BossType.Armos];
-                    _standardRegion = _game.Regions[RegionID.EasternPalace];
-                    _invertedRegion = _game.Regions[RegionID.EasternPalace];
+                    _region = _game.Regions[RegionID.EasternPalace];
 
                     GetAccessibility = () =>
                     {
@@ -147,8 +146,7 @@ namespace OpenTracker.Models
                 case LocationID.DesertPalace:
 
                     _defaultBoss = _game.Bosses[BossType.Lanmolas];
-                    _standardRegion = _game.Regions[RegionID.DesertPalace];
-                    _invertedRegion = _game.Regions[RegionID.DesertPalace];
+                    _region = _game.Regions[RegionID.DesertPalace];
 
                     GetAccessibility = () =>
                     {
@@ -168,8 +166,7 @@ namespace OpenTracker.Models
                 case LocationID.TowerOfHera:
 
                     _defaultBoss = _game.Bosses[BossType.Moldorm];
-                    _standardRegion = _game.Regions[RegionID.TowerOfHera];
-                    _invertedRegion = _game.Regions[RegionID.TowerOfHera];
+                    _region = _game.Regions[RegionID.TowerOfHera];
 
                     GetAccessibility = () =>
                     {
@@ -189,8 +186,7 @@ namespace OpenTracker.Models
                 case LocationID.PalaceOfDarkness:
 
                     _defaultBoss = _game.Bosses[BossType.HelmasaurKing];
-                    _standardRegion = _game.Regions[RegionID.PalaceOfDarkness];
-                    _invertedRegion = _game.Regions[RegionID.PalaceOfDarkness];
+                    _region = _game.Regions[RegionID.PalaceOfDarkness];
 
                     GetAccessibility = () =>
                     {
@@ -216,8 +212,7 @@ namespace OpenTracker.Models
                 case LocationID.SwampPalace:
 
                     _defaultBoss = _game.Bosses[BossType.Arrghus];
-                    _standardRegion = _game.Regions[RegionID.SwampPalace];
-                    _invertedRegion = _game.Regions[RegionID.SwampPalace];
+                    _region = _game.Regions[RegionID.SwampPalace];
 
                     GetAccessibility = () =>
                     {
@@ -237,8 +232,7 @@ namespace OpenTracker.Models
                 case LocationID.SkullWoods:
 
                     _defaultBoss = _game.Bosses[BossType.Mothula];
-                    _standardRegion = _game.Regions[RegionID.SkullWoods];
-                    _invertedRegion = _game.Regions[RegionID.SkullWoods];
+                    _region = _game.Regions[RegionID.SkullWoods];
 
                     GetAccessibility = () =>
                     {
@@ -255,8 +249,7 @@ namespace OpenTracker.Models
                 case LocationID.ThievesTown:
 
                     _defaultBoss = _game.Bosses[BossType.Blind];
-                    _standardRegion = _game.Regions[RegionID.ThievesTown];
-                    _invertedRegion = _game.Regions[RegionID.ThievesTown];
+                    _region = _game.Regions[RegionID.ThievesTown];
 
                     GetAccessibility = () =>
                     {
@@ -272,8 +265,7 @@ namespace OpenTracker.Models
                 case LocationID.IcePalace:
 
                     _defaultBoss = _game.Bosses[BossType.Kholdstare];
-                    _standardRegion = _game.Regions[RegionID.IcePalace];
-                    _invertedRegion = _game.Regions[RegionID.IcePalace];
+                    _region = _game.Regions[RegionID.IcePalace];
 
                     GetAccessibility = () =>
                     {
@@ -295,8 +287,7 @@ namespace OpenTracker.Models
                 case LocationID.MiseryMire:
 
                     _defaultBoss = _game.Bosses[BossType.Vitreous];
-                    _standardRegion = _game.Regions[RegionID.MiseryMire];
-                    _invertedRegion = _game.Regions[RegionID.MiseryMire];
+                    _region = _game.Regions[RegionID.MiseryMire];
 
                     GetAccessibility = () =>
                     {
@@ -324,8 +315,7 @@ namespace OpenTracker.Models
                 case LocationID.TurtleRock:
 
                     _defaultBoss = _game.Bosses[BossType.Trinexx];
-                    _standardRegion = _game.Regions[RegionID.TurtleRock];
-                    _invertedRegion = _game.Regions[RegionID.TurtleRock];
+                    _region = _game.Regions[RegionID.TurtleRock];
 
                     GetAccessibility = () =>
                     {
@@ -419,11 +409,8 @@ namespace OpenTracker.Models
             _game.Mode.PropertyChanged += OnModeChanged;
             _defaultBoss.PropertyChanged += OnBossChanged;
 
-            if (_standardRegion != null)
-                _standardRegion.PropertyChanged += OnRegionChanged;
-
-            if (_invertedRegion != null)
-                _invertedRegion.PropertyChanged += OnRegionChanged;
+            if (_region != null)
+                _region.PropertyChanged += OnRegionChanged;
 
             Available = true;
 
@@ -435,14 +422,9 @@ namespace OpenTracker.Models
             AccessibilityLevel? regionAccessibility = null;
             AccessibilityLevel sectionAccessibility = GetAccessibility();
             AccessibilityLevel bossAccessibility = AccessibilityLevel.None;
-
-            if (!_game.Mode.EntranceShuffle.Value)
-            {
-                if (_game.Mode.WorldState == WorldState.StandardOpen && _standardRegion != null)
-                    regionAccessibility = _standardRegion.Accessibility;
-                if (_game.Mode.WorldState == WorldState.Inverted && _invertedRegion != null)
-                    regionAccessibility = _invertedRegion.Accessibility;
-            }
+            
+            if (_region != null)
+                regionAccessibility = _region.Accessibility;
 
             if (_game.Mode.BossShuffle.Value)
             {

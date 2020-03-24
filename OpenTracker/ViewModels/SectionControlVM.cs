@@ -87,7 +87,6 @@ namespace OpenTracker.ViewModels
             _game = game;
             _section = section;
 
-
             ItemSelect = new ObservableCollection<VisibleItemSelectControlVM>();
 
             for (int i = 0; i < Enum.GetValues(typeof(ItemType)).Length; i++)
@@ -301,6 +300,16 @@ namespace OpenTracker.ViewModels
                         BossImageVisible = false;
 
                     break;
+
+                case EntranceSection entranceSection:
+
+                    SectionVisible = true;
+
+                    string entranceImageBaseString = "avares://OpenTracker/Assets/Images/door";
+
+                    ImageSource = entranceImageBaseString + (entranceSection.Available ? "0" : "1") + ".png";
+
+                    break;
             }
         }
 
@@ -349,7 +358,8 @@ namespace OpenTracker.ViewModels
 
         public void ChangeAvailable(bool rightClick = false)
         {
-            if (_section.Accessibility >= AccessibilityLevel.SequenceBreak || rightClick)
+            if (_section.Accessibility >= AccessibilityLevel.SequenceBreak || rightClick ||
+                _section is EntranceSection)
             {
                 switch (_section)
                 {
@@ -368,6 +378,12 @@ namespace OpenTracker.ViewModels
                     case BossSection bossSection:
 
                         bossSection.Available = rightClick;
+
+                        break;
+
+                    case EntranceSection entranceSection:
+
+                        entranceSection.Available = rightClick;
 
                         break;
                 }

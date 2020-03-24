@@ -352,7 +352,8 @@ namespace OpenTracker.Models
                             if (!_game.Mode.EntranceShuffle.Value)
                                 return AccessibilityLevel.Normal;
 
-                            if (_game.Items.Has(ItemType.Mirror))
+                            if (_game.Regions[RegionID.DarkWorldSouth].Accessibility >= AccessibilityLevel.SequenceBreak &&
+                                _game.Items.Has(ItemType.Mirror))
                                 return _game.Regions[RegionID.DarkWorldWest].Accessibility;
                         }
 
@@ -439,7 +440,7 @@ namespace OpenTracker.Models
                     RequiredMode = new Mode() { EntranceShuffle = false };
 
                     break;
-                case LocationID.CastleSecretEntrance when index == 0:
+                case LocationID.CastleSecret when index == 0:
 
                     _baseTotal = 1;
                     Name = "Uncle";
@@ -458,7 +459,7 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
                     break;
-                case LocationID.CastleSecretEntrance:
+                case LocationID.CastleSecret:
 
                     _baseTotal = 1;
                     Name = "Hallway";
@@ -1002,11 +1003,12 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.DesertBackAccess) && _game.Items.Has(ItemType.Gloves))
                                 return AccessibilityLevel.Normal;
 
-                            if (_game.Items.Has(ItemType.Mirror))
-                                return _game.Regions[RegionID.MireArea].Accessibility;
-
                             if (!_game.Mode.EntranceShuffle.Value && _game.Items.Has(ItemType.Book))
                                 return AccessibilityLevel.Normal;
+
+                            if (_game.Regions[RegionID.MireArea].Accessibility >= AccessibilityLevel.SequenceBreak &&
+                                _game.Items.Has(ItemType.Mirror))
+                                return _game.Regions[RegionID.MireArea].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
@@ -1240,6 +1242,7 @@ namespace OpenTracker.Models
                     Name = "Inside";
                     _standardRegion = _game.Regions[RegionID.LightWorld];
                     _invertedRegion = _game.Regions[RegionID.LightWorld];
+                    RequiredMode = new Mode() { EntranceShuffle = false };
 
                     GetAccessibility = () =>
                     {
@@ -1474,6 +1477,7 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardRegion = _game.Regions[RegionID.DeathMountainWestBottom];
                     _invertedRegion = _game.Regions[RegionID.DeathMountainWestBottom];
+                    RequiredMode = new Mode() { EntranceShuffle = false };
 
                     GetAccessibility = () => { return AccessibilityLevel.Normal; };
 
@@ -1873,30 +1877,12 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
-                        {
-                            if (_game.Items.CanClearAgaTowerBarrier())
-                            {
-                                if (_game.Items.Has(ItemType.Lamp) && _game.Items.Has(ItemType.ATSmallKey))
-                                    return AccessibilityLevel.Normal;
-
-                                return AccessibilityLevel.SequenceBreak;
-                            }
-                        }
-
-                        if (_game.Mode.WorldState == WorldState.Inverted)
-                        {
-                            if (_game.Items.Has(ItemType.Lamp) && _game.Items.Has(ItemType.ATSmallKey))
-                                return AccessibilityLevel.Normal;
-
-                            return AccessibilityLevel.SequenceBreak;
-                        }
-
-                        return AccessibilityLevel.None;
+                        if (_game.Items.Has(ItemType.Lamp) && _game.Items.Has(ItemType.ATSmallKey))
+                            return AccessibilityLevel.Normal;
+                        
+                        return AccessibilityLevel.SequenceBreak;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Cape]);
-                    itemReqs.Add(_game.Items[ItemType.Sword]);
                     itemReqs.Add(_game.Items[ItemType.Lamp]);
                     itemReqs.Add(_game.Items[ItemType.ATSmallKey]);
 

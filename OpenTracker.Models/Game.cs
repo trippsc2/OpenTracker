@@ -38,6 +38,9 @@ namespace OpenTracker.Models
             foreach (RegionID iD in Enum.GetValues(typeof(RegionID)))
                 Regions.Add(iD, new Region(this, iD));
 
+            foreach (Region region in Regions.Values)
+                region.SubscribeToRegions();
+
             foreach (LocationID iD in Enum.GetValues(typeof(LocationID)))
                 Locations.Add(iD, new Location(this, iD));
 

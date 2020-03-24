@@ -150,7 +150,8 @@ namespace OpenTracker.ViewModels
         {
             foreach (ISection section in _mapLocation.Location.Sections)
             {
-                if (section.IsAvailable() && section.Accessibility >= AccessibilityLevel.Inspect)
+                if (section.IsAvailable() && (section.Accessibility >= AccessibilityLevel.Inspect ||
+                    section is EntranceSection))
                     section.Clear();
             }
 

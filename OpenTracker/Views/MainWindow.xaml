@@ -6,6 +6,7 @@
         xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
         xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
         mc:Ignorable="d" MinWidth="220" MinHeight="61" d:DesignWidth="1280" d:DesignHeight="960"
+        Closing="OnClose"
         x:Class="OpenTracker.Views.MainWindow"
         x:Name="HostWindow"
         Background="#877373"
@@ -16,10 +17,6 @@
   <Design.DataContext>
     <vm:MainWindowVM />
   </Design.DataContext>
-
-  <Window.Resources>
-    <vc:EnumBooleanConverter x:Key="EnumBooleanConverter" />
-  </Window.Resources>
 
   <DockPanel>
 

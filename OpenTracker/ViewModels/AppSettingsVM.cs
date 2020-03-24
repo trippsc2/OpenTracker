@@ -1,12 +1,15 @@
 ﻿using Avalonia.Media;
 using OpenTracker.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels
 {
+    [Serializable()]
     public class AppSettingsVM : INotifyPropertyChanged
     {
+        [field: NonSerialized()]
         public event PropertyChangedEventHandler PropertyChanged;
 
         private bool _displayAllLocations;

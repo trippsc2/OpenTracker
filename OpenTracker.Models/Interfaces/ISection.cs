@@ -1,5 +1,4 @@
 ﻿using OpenTracker.Models.Enums;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Interfaces
@@ -8,6 +7,7 @@ namespace OpenTracker.Models.Interfaces
     {
         string Name { get; }
         AccessibilityLevel Accessibility { get; }
+        Mode RequiredMode { get; }
 
         bool IsAvailable();
         void Clear();

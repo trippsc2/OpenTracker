@@ -82,6 +82,8 @@
         DesertBackAccess,
         RaceGameAccess,
         HyruleCastleSecondFloorAccess,
+        WitchsHutAccess,
+        GrassHouseAccess,
         DeathMountainWestBottomAccess,
         DeathMountainWestTopAccess,
         DeathMountainEastTopAccess,
@@ -101,6 +103,8 @@
         DarkDeathMountainFloatingIslandAccess,
         DarkDeathMountainEastBottomAccess,
         TurtleRockTunnelAccess,
-        TurtleRockSafetyDoorAccess
+        TurtleRockSafetyDoorAccess,
+        SpiralCaveTopAccess,
+        MimicCaveAccess
     }
 }

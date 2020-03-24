@@ -17,6 +17,7 @@
         DarkDeathMountainTop,
         DarkDeathMountainEastBottom,
         DarkDeathMountainWestBottom,
+        TurtleRockTunnel,
         HyruleCastle,
         Agahnim,
         EasternPalace,

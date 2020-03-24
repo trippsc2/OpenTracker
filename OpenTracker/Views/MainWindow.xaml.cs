@@ -3,11 +3,14 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
+using OpenTracker.Interfaces;
+using System.ComponentModel;
 
 namespace OpenTracker.Views
 {
     public class MainWindow : Window
     {
+        private IMainWindowVM _viewModel => DataContext as IMainWindowVM;
         public static AvaloniaProperty<Orientation> MapPanelOrientationProperty =
             AvaloniaProperty.Register<MainWindow, Orientation>("MapPanelOrientation");
         public Orientation MapPanelOrientation
@@ -149,6 +152,11 @@ namespace OpenTracker.Views
         {
             if (e.InitialPressMouseButton == MouseButton.Left)
                 AppSettingsPopupOpen = true;
+        }
+
+        private void OnClose(object sender, CancelEventArgs e)
+        {
+            _viewModel.SaveAppSettings();
         }
     }
 }

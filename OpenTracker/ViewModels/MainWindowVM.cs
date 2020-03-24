@@ -1,13 +1,17 @@
-﻿using OpenTracker.Models;
+﻿using Newtonsoft.Json;
+using OpenTracker.Interfaces;
+using OpenTracker.JsonConverters;
+using OpenTracker.Models;
 using OpenTracker.Models.Enums;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 
 namespace OpenTracker.ViewModels
 {
-    public class MainWindowVM : ViewModelBase
+    public class MainWindowVM : ViewModelBase, IMainWindowVM
     {
         private readonly Game _game;
 
@@ -128,7 +132,15 @@ namespace OpenTracker.ViewModels
 
         public MainWindowVM()
         {
-            _appSettings = new AppSettingsVM();
+            if (File.Exists("appsettings.json"))
+            {
+                string jsonContent = File.ReadAllText("appsettings.json");
+                
+                _appSettings = JsonConvert.DeserializeObject<AppSettingsVM>(jsonContent, new SolidColorBrushConverter());
+            }
+            else
+                _appSettings = new AppSettingsVM();
+
             _game = new Game();
 
             RefreshItemPlacement();
@@ -435,6 +447,16 @@ namespace OpenTracker.ViewModels
 
             if (e.PropertyName == nameof(EnemyShuffle))
                 SetEnemyShuffle(EnemyShuffle);
+        }
+
+        public void SaveAppSettings()
+        {
+            if (File.Exists("appsettings.json"))
+                File.Delete("appsettings.json");
+
+            string json = JsonConvert.SerializeObject(_appSettings, Formatting.Indented, new SolidColorBrushConverter());
+
+            File.WriteAllText("appsettings.json", json);
         }
     }
 }
