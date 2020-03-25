@@ -189,8 +189,8 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenTracker"
-        "ProductCode" = "8:{E5A838D7-A0C7-4C90-8671-9546B7674C6F}"
-        "PackageCode" = "8:{FC3CD085-750B-4BDA-9C6C-C3F6B98EBED2}"
+        "ProductCode" = "8:{FC8917F1-E0AA-4117-B09F-2CF112CEFE8B}"
+        "PackageCode" = "8:{E2381B63-7F10-4823-B305-1BAFEFE2955B}"
         "UpgradeCode" = "8:{C98C2121-B4C5-473A-9B86-5407FEFFE8F1}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
