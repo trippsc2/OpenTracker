@@ -969,6 +969,10 @@ namespace OpenTracker.Models
                             AccessibilityLevel dDMTop = AccessibilityLevel.None;
                             AccessibilityLevel dMEastBottom = AccessibilityLevel.None;
 
+                            //  Access via Paradox Cave (non-entrance shuffle only)
+                            if (!_game.Mode.EntranceShuffle.Value && !excludedRegions.Contains(RegionID.DeathMountainEastBottom))
+                                dMEastBottom = _game.Regions[RegionID.DeathMountainEastBottom].GetAccessibility(newExcludedRegions);
+
                             if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.MoonPearl))
                             {
                                 //  Access via West Death Mountain top by hammer
@@ -978,10 +982,6 @@ namespace OpenTracker.Models
                                 // Access via Turtle Rock portal
                                 if (_game.Items.Has(ItemType.Gloves, 2) && !excludedRegions.Contains(RegionID.DarkDeathMountainTop))
                                     dDMTop = _game.Regions[RegionID.DarkDeathMountainTop].GetAccessibility(newExcludedRegions);
-
-                                //  Access via Paradox Cave (non-entrance shuffle only)
-                                if (!_game.Mode.EntranceShuffle.Value && !excludedRegions.Contains(RegionID.DeathMountainEastBottom))
-                                    dMEastBottom = _game.Regions[RegionID.DeathMountainEastBottom].GetAccessibility(newExcludedRegions);
                             }
 
                             return (AccessibilityLevel)Math.Max(Math.Max((byte)dMWestTop, (byte)dDMTop), (byte)dMEastBottom);

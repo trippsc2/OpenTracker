@@ -128,7 +128,8 @@ namespace OpenTracker.Models
                             (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value))
                         {
                             if (_game.Items.Has(ItemType.Lamp) || (_game.Items.Has(ItemType.FireRod) &&
-                                _game.Mode.ItemPlacement == ItemPlacement.Advanced))
+                                (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                _game.Mode.WorldState == WorldState.Inverted)))
                                 return AccessibilityLevel.Normal;
                             
                             return AccessibilityLevel.SequenceBreak;

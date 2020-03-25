@@ -196,6 +196,7 @@ namespace OpenTracker.Models
                     MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 552, 1693,
                         new Mode()
                         {
+                            WorldState = WorldState.StandardOpen,
                             EntranceShuffle = false
                         }));
                     itemSections = 1;
@@ -270,6 +271,7 @@ namespace OpenTracker.Models
                     MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1132, 530,
                         new Mode()
                         {
+                            WorldState = WorldState.StandardOpen,
                             EntranceShuffle = false
                         }));
                     itemSections = 1;
@@ -384,7 +386,11 @@ namespace OpenTracker.Models
                 case LocationID.LakeHyliaIsland:
                     Name = "Lake Hylia Island";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1450, 1666, new Mode()));
-                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1450, 1666, new Mode()));
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1450, 1666,
+                        new Mode()
+                        {
+                            WorldState = WorldState.StandardOpen
+                        }));
                     itemSections = 1;
                     break;
                 case LocationID.Hobo:
@@ -516,6 +522,7 @@ namespace OpenTracker.Models
                     MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1627, 40,
                         new Mode()
                         {
+                            WorldState = WorldState.StandardOpen,
                             EntranceShuffle = false
                         }));
                     itemSections = 1;
