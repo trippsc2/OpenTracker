@@ -4,12 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OpenTracker.Views.VisibleItemSelectControl">
+             x:Class="OpenTracker.Views.MarkingSelectControl">
 
   <UserControl.Resources>
-
     <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
-
   </UserControl.Resources>
 
   <Image Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}"

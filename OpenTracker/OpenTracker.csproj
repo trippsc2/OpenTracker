@@ -4,10 +4,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <ApplicationIcon>triforce.ico</ApplicationIcon>
     <Win32Resource />
-    <Version>0.2.2</Version>
+    <Version>0.3.0</Version>
     <Authors>Tripp</Authors>
-    <AssemblyVersion>0.2.2.0</AssemblyVersion>
-    <FileVersion>0.2.2.0</FileVersion>
+    <AssemblyVersion>0.3.0.0</AssemblyVersion>
+    <FileVersion>0.2.0.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="**\*.xaml.cs">
@@ -24,7 +24,7 @@
     <AvaloniaResource Remove="Views\ColorPickerControl.xaml" />
     <AvaloniaResource Remove="Views\DungeonItemControl.xaml" />
     <AvaloniaResource Remove="Views\DungeonPrizeControl.xaml" />
-    <AvaloniaResource Remove="Views\VisibleItemSelectControl.xaml" />
+    <AvaloniaResource Remove="Views\MarkingSelectControl.xaml" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Views\AppSettings.xaml" />
@@ -33,9 +33,9 @@
     <None Remove="Views\DungeonItemControl.xaml" />
     <None Remove="Views\DungeonPrizeControl.xaml" />
     <None Remove="Views\MapLocationControl.xaml" />
+    <None Remove="Views\MarkingSelectControl.xaml" />
     <None Remove="Views\PinnedLocationControl.xaml" />
     <None Remove="Views\SectionControl.xaml" />
-    <None Remove="Views\VisibleItemSelectControl.xaml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.9.4" />
@@ -70,7 +70,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\VisibleItemSelectControl.xaml">
+    <EmbeddedResource Include="Views\MarkingSelectControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
@@ -106,6 +106,9 @@
     </Compile>
     <Compile Update="Views\DungeonItemControl.xaml.cs">
       <DependentUpon>DungeonItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MarkingSelectControl.xaml.cs">
+      <DependentUpon>MarkingSelectControl.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

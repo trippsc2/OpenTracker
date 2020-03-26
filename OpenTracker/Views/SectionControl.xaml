@@ -8,9 +8,7 @@
              x:Class="OpenTracker.Views.SectionControl">
 
   <UserControl.Resources>
-
     <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
-
   </UserControl.Resources>
   
   <StackPanel Margin="4,0" Orientation="Vertical" IsHitTestVisible="{Binding Path=SectionVisible}"
@@ -23,18 +21,17 @@
 
     <StackPanel Orientation="Horizontal">
 
-      <Panel Name="VisibleItemPopupTarget" PointerReleased="OnClickVisibleItem">
+      <Panel Name="MarkingPopupTarget" PointerReleased="OnClickVisibleItem">
 
         <Image Source="{Binding Path=ItemImageSource, Converter={StaticResource BitmapValueConverter}}"
                Margin="0,0,4,0" Height="32" Width="32" IsHitTestVisible="{Binding Path=VisibleItem}"
-               IsVisible="{Binding Path=VisibleItem}" />
+               IsVisible="{Binding Path=VisibleItem}" Stretch="Uniform" />
 
-        <Popup IsOpen="{Binding Path=VisibleItemPopupOpen, Mode=TwoWay}" StaysOpen="False" PlacementMode="Top"
+        <Popup IsOpen="{Binding Path=MarkingPopupOpen, Mode=TwoWay}" StaysOpen="False" PlacementMode="Top"
                PlacementTarget="{Binding RelativeSource={RelativeSource AncestorType=views:SectionControl},
-               Path=VisibleItemPopupTarget}" HorizontalOffset="16" VerticalOffset="16" >
+               Path=MarkingPopupTarget}" HorizontalOffset="16" VerticalOffset="16">
 
-          <Border BorderBrush="#A9A9A9" BorderThickness="3" Background="#212121"
-                  Padding="5">
+          <Border BorderBrush="#A9A9A9" BorderThickness="3" Background="#212121" Padding="5">
 
             <StackPanel Orientation="Vertical">
 
@@ -42,14 +39,15 @@
 
                 <ItemsControl.ItemsPanel>
                   <ItemsPanelTemplate>
-                    <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="238" MaxHeight="200" Margin="0,0,0,10"
+                    <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="{Binding Path=MarkingPopupWidth}"
+                               MaxHeight="{Binding Path=MarkingPopupHeight}" Margin="0,0,0,10"
                                Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" />
                   </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
 
                 <ItemsControl.ItemTemplate>
                  <DataTemplate>
-                  <views:VisibleItemSelectControl />
+                  <views:MarkingSelectControl />
                  </DataTemplate>
                 </ItemsControl.ItemTemplate>
 

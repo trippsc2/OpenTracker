@@ -1,6 +1,6 @@
 ﻿namespace OpenTracker.Interfaces
 {
-    public interface IVisibleItemSelectControlVM
+    public interface IMarkingSelectControlVM
     {
         void SelectItem();
     }

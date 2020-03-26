@@ -2,12 +2,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.MapLocationControl">
 
-  <Border Width="{Binding Path=Size}" Height="{Binding Path=Size}" BorderBrush="#212121"
-          Background="{Binding Path=Color}" IsVisible="{Binding Path=Visible}"
-          IsHitTestVisible="{Binding Path=Visible}" DoubleTapped="OnDoubleClick"
-          BorderThickness="{Binding Path=BorderSize}" PointerReleased="OnClick" />
+  <UserControl.Resources>
+    <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
+  </UserControl.Resources>
+
+  <Panel Width="{Binding Path=Size}" Height="{Binding Path=Size}" IsVisible="{Binding Path=Visible}"
+         IsHitTestVisible="{Binding Path=Visible}" DoubleTapped="OnDoubleClick"
+         PointerReleased="OnClick">
+    <Border Width="{Binding Path=Size}" Height="{Binding Path=Size}" BorderBrush="#212121"
+            Background="{Binding Path=Color}" IsVisible="{Binding Path=BorderVisible}"
+            IsHitTestVisible="{Binding Path=BorderVisible}" BorderThickness="{Binding Path=BorderSize}" />
+    <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Uniform"
+           IsVisible="{Binding Path=ImageVisible}" IsHitTestVisible="{Binding Path=ImageVisible}"
+           Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}" />
+  </Panel>
   
 </UserControl>

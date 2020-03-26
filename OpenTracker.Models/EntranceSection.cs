@@ -15,6 +15,7 @@ namespace OpenTracker.Models
         private readonly Item _invertedItemProvided;
 
         public string Name { get; }
+        public bool HasMarking { get => true; }
         public Mode RequiredMode { get; }
 
         public Func<AccessibilityLevel> GetAccessibility { get; }
@@ -45,6 +46,20 @@ namespace OpenTracker.Models
                 {
                     _available = value;
                     OnPropertyChanged(nameof(Available));
+                }
+            }
+        }
+
+        private MarkingType? _marking;
+        public MarkingType? Marking
+        {
+            get => _marking;
+            set
+            {
+                if (_marking != value)
+                {
+                    _marking = value;
+                    OnPropertyChanged(nameof(Marking));
                 }
             }
         }

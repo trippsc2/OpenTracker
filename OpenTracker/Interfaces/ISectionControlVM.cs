@@ -2,7 +2,7 @@
 {
     public interface ISectionControlVM
     {
-        void OpenVisibleItemSelect();
+        void OpenMarkingSelect();
         void ChangeAvailable(bool rightClick = false);
     }
 }

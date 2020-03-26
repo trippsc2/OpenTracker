@@ -13,7 +13,9 @@ namespace OpenTracker.Models
         private readonly Region _region;
 
         public string Name { get => "Boss"; }
+        public bool HasMarking { get => false; }
         public Mode RequiredMode { get; }
+        public MarkingType? Marking { get => null; set { } }
 
         public Func<AccessibilityLevel> GetAccessibility { get; }
 

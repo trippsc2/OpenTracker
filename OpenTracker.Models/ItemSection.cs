@@ -19,7 +19,7 @@ namespace OpenTracker.Models
 
         public string Name { get; }
         public int Total { get; private set; }
-        public bool HasVisibleItem { get; }
+        public bool HasMarking { get; }
         public Mode RequiredMode { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -52,16 +52,16 @@ namespace OpenTracker.Models
             }
         }
 
-        private Item _visibleItem;
-        public Item VisibleItem
+        private MarkingType? _marking;
+        public MarkingType? Marking
         {
-            get => _visibleItem;
+            get => _marking;
             set
             {
-                if (_visibleItem != value)
+                if (_marking != value)
                 {
-                    _visibleItem = value;
-                    OnPropertyChanged(nameof(VisibleItem));
+                    _marking = value;
+                    OnPropertyChanged(nameof(Marking));
                 }
             }
         }
@@ -83,7 +83,7 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Pedestal";
-                    HasVisibleItem = true;
+                    HasMarking = true;
                     _standardRegion = _game.Regions[RegionID.LightWorld];
                     _invertedRegion = _game.Regions[RegionID.LightWorld];
 
@@ -115,7 +115,7 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Cave";
-                    HasVisibleItem = true;
+                    HasMarking = true;
                     _standardRegion = _game.Regions[RegionID.LightWorld];
                     _invertedRegion = _game.Regions[RegionID.LightWorld];
 
@@ -350,7 +350,7 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Take This Trash";
-                    HasVisibleItem = true;
+                    HasMarking = true;
                     _standardRegion = _game.Regions[RegionID.LightWorld];
                     _invertedRegion = _game.Regions[RegionID.LightWorld];
 
@@ -395,7 +395,7 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "On The Shelf";
-                    HasVisibleItem = true;
+                    HasMarking = true;
                     _standardRegion = _game.Regions[RegionID.LightWorld];
                     _invertedRegion = _game.Regions[RegionID.LightWorld];
 
@@ -424,7 +424,7 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Shroom";
-                    HasVisibleItem = true;
+                    HasMarking = true;
                     _standardRegion = _game.Regions[RegionID.LightWorld];
                     _invertedRegion = _game.Regions[RegionID.LightWorld];
 
@@ -638,7 +638,7 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Tablet";
-                    HasVisibleItem = true;
+                    HasMarking = true;
                     _standardRegion = _game.Regions[RegionID.DarkWorldSouth];
                     _invertedRegion = _game.Regions[RegionID.LightWorld];
 
@@ -828,7 +828,7 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Ledge";
-                    HasVisibleItem = true;
+                    HasMarking = true;
                     _standardRegion = _game.Regions[RegionID.LightWorld];
                     _invertedRegion = _game.Regions[RegionID.LightWorld];
 
@@ -1029,7 +1029,7 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Ledge";
-                    HasVisibleItem = true;
+                    HasMarking = true;
                     _standardRegion = _game.Regions[RegionID.LightWorld];
                     _invertedRegion = _game.Regions[RegionID.LightWorld];
 
@@ -1358,7 +1358,7 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Island";
-                    HasVisibleItem = true;
+                    HasMarking = true;
                     _standardRegion = _game.Regions[RegionID.LightWorld];
                     _invertedRegion = _game.Regions[RegionID.LightWorld];
 
@@ -1529,7 +1529,7 @@ namespace OpenTracker.Models
                     Name = "Up On Top";
                     _standardRegion = _game.Regions[RegionID.DeathMountainWestBottom];
                     _invertedRegion = _game.Regions[RegionID.DeathMountainWestTop];
-                    HasVisibleItem = true;
+                    HasMarking = true;
 
                     GetAccessibility = () =>
                     {
@@ -1552,7 +1552,7 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Tablet";
-                    HasVisibleItem = true;
+                    HasMarking = true;
                     _standardRegion = _game.Regions[RegionID.DeathMountainWestTop];
                     _invertedRegion = _game.Regions[RegionID.DeathMountainWestTop];
 
@@ -1798,7 +1798,7 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Island";
-                    HasVisibleItem = true;
+                    HasMarking = true;
                     _standardRegion = _game.Regions[RegionID.LightWorld];
                     _invertedRegion = _game.Regions[RegionID.DarkWorldSouth];
 
@@ -1971,7 +1971,7 @@ namespace OpenTracker.Models
                     _bigKey = 1;
                     _baseTotal = 2;
                     Name = "Dungeon";
-                    HasVisibleItem = true;
+                    HasMarking = true;
                     _standardRegion = _game.Regions[RegionID.DesertPalace];
                     _invertedRegion = _game.Regions[RegionID.DesertPalace];
 
@@ -2396,10 +2396,14 @@ namespace OpenTracker.Models
         {
             Available = 0;
 
-            if (VisibleItem != null)
+            if (Marking != null)
             {
-                VisibleItem.Current = Math.Min(VisibleItem.Maximum, VisibleItem.Current + 1);
-                VisibleItem = null;
+                if (Enum.TryParse(Marking.ToString(), out ItemType itemType))
+                {
+                    Item item = _game.Items[itemType];
+                    item.Current = Math.Max(item.Maximum, item.Current + 1);
+                    Marking = null;
+                }
             }
         }
 

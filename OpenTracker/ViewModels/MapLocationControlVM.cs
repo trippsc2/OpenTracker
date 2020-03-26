@@ -64,7 +64,28 @@ namespace OpenTracker.ViewModels
         public bool Visible
         {
             get => _visible;
-            set => this.RaiseAndSetIfChanged(ref _visible, value);
+            private set => this.RaiseAndSetIfChanged(ref _visible, value);
+        }
+
+        private bool _imageVisible;
+        public bool ImageVisible
+        {
+            get => _imageVisible;
+            private set => this.RaiseAndSetIfChanged(ref _imageVisible, value);
+        }
+
+        private bool _borderVisible;
+        public bool BorderVisible
+        {
+            get => _borderVisible;
+            set => this.RaiseAndSetIfChanged(ref _borderVisible, value);
+        }
+
+        private string _imageSource;
+        public string ImageSource
+        {
+            get => _imageSource;
+            private set => this.RaiseAndSetIfChanged(ref _imageSource, value);
         }
 
         public MapLocationControlVM(AppSettingsVM appSettings, Game game,
@@ -86,6 +107,7 @@ namespace OpenTracker.ViewModels
             SetSizeAndPosition();
             SetColor();
             SetVisibility();
+            SetImageSource();
         }
 
         private void CheckLocationAvailability()
@@ -121,7 +143,12 @@ namespace OpenTracker.ViewModels
             if (_game.Mode.EntranceShuffle.HasValue &&
                 _game.Mode.EntranceShuffle.Value)
             {
-                Size = 40.0;
+                if (_mapLocation.Location.Sections[0] is EntranceSection entranceSection &&
+                    entranceSection.Marking != null)
+                    Size = 55.0;
+                else
+                    Size = 40.0;
+
                 BorderSize = new Thickness(5);
             }
             else
@@ -139,11 +166,123 @@ namespace OpenTracker.ViewModels
             Color = _appSettings.AccessibilityColors[_mapLocation.Location.GetAccessibility(_game.Mode, _game.Items)];
         }
 
+        private void SetImageSource()
+        {
+            if (_mapLocation.Location.Sections[0] is EntranceSection entranceSection)
+            {
+                if (entranceSection.Marking == null)
+                    ImageSource = "avares://OpenTracker/Assets/Images/Items/visible-empty.png";
+                else
+                {
+                    int itemNumber = 0;
+                    switch (entranceSection.Marking)
+                    {
+                        case MarkingType.Bow:
+                        case MarkingType.SilverArrows:
+                        case MarkingType.Boomerang:
+                        case MarkingType.RedBoomerang:
+                        case MarkingType.SmallKey:
+                        case MarkingType.BigKey:
+                            ImageSource = "avares://OpenTracker/Assets/Images/Items/visible-" +
+                                entranceSection.Marking.ToString().ToLower() + ".png";
+                            break;
+                        case MarkingType.Hookshot:
+                        case MarkingType.Bomb:
+                        case MarkingType.Powder:
+                        case MarkingType.FireRod:
+                        case MarkingType.IceRod:
+                        case MarkingType.Shovel:
+                        case MarkingType.Lamp:
+                        case MarkingType.Hammer:
+                        case MarkingType.Flute:
+                        case MarkingType.Net:
+                        case MarkingType.Book:
+                        case MarkingType.MoonPearl:
+                        case MarkingType.Bottle:
+                        case MarkingType.CaneOfSomaria:
+                        case MarkingType.CaneOfByrna:
+                        case MarkingType.Cape:
+                        case MarkingType.Mirror:
+                        case MarkingType.Gloves:
+                        case MarkingType.Boots:
+                        case MarkingType.Flippers:
+                        case MarkingType.HalfMagic:
+                        case MarkingType.Sword:
+                        case MarkingType.Shield:
+                        case MarkingType.Mail:
+                        case MarkingType.Aga:
+                            Item item = _game.Items[Enum.Parse<ItemType>(entranceSection.Marking.ToString())];
+                            itemNumber = Math.Min(item.Current + 1, item.Maximum);
+                            ImageSource = "avares://OpenTracker/Assets/Images/Items/" +
+                                entranceSection.Marking.ToString().ToLower() + itemNumber.ToString() + ".png";
+                            break;
+                        case MarkingType.Mushroom:
+                            ImageSource = "avares://OpenTracker/Assets/Images/Items/mushroom1.png";
+                            break;
+                        case MarkingType.Bombos:
+                        case MarkingType.Ether:
+                        case MarkingType.Quake:
+                            Item medallionDungeons = _game.Items[Enum.Parse<ItemType>(entranceSection.Marking.ToString()) + 1];
+                            itemNumber = 1 + (medallionDungeons.Current * 2);
+                            ImageSource = "avares://OpenTracker/Assets/Images/Items/" +
+                                entranceSection.Marking.ToString().ToLower() + itemNumber.ToString() + ".png";
+                            break;
+                        case MarkingType.HCFront:
+                        case MarkingType.HCLeft:
+                        case MarkingType.HCRight:
+                        case MarkingType.EP:
+                        case MarkingType.SP:
+                        case MarkingType.SW:
+                        case MarkingType.DPFront:
+                        case MarkingType.DPLeft:
+                        case MarkingType.DPRight:
+                        case MarkingType.DPBack:
+                        case MarkingType.TT:
+                        case MarkingType.IP:
+                        case MarkingType.MM:
+                        case MarkingType.TRFront:
+                        case MarkingType.TRLeft:
+                        case MarkingType.TRRight:
+                        case MarkingType.TRBack:
+                        case MarkingType.GT:
+                            ImageSource = "avares://OpenTracker/Assets/Images/" +
+                                entranceSection.Marking.ToString().ToLower() + ".png";
+                            break;
+                        case MarkingType.ToH:
+                            ImageSource = "avares://OpenTracker/Assets/Images/th.png";
+                            break;
+                        case MarkingType.PoD:
+                            ImageSource = "avares://OpenTracker/Assets/Images/pd.png";
+                            break;
+                        case MarkingType.Ganon:
+                            ImageSource = "avares://OpenTracker/Assets/Images/ganon.png";
+                            break;
+                    }
+                }
+            }
+        }
+
         private void SetVisibility()
         {
-            Visible = _game.Mode.Validate(_mapLocation.VisibilityMode) && (_appSettings.DisplayAllLocations ||
-                (_mapLocation.Location.GetAccessibility(_game.Mode, _game.Items) != AccessibilityLevel.Cleared &&
-                _mapLocation.Location.GetAccessibility(_game.Mode, _game.Items) != AccessibilityLevel.None));
+            if (_game.Mode.Validate(_mapLocation.VisibilityMode))
+            {
+                if (_mapLocation.Location.Sections[0] is EntranceSection entranceSection &&
+                    entranceSection.Marking != null)
+                    ImageVisible = true;
+                else
+                    ImageVisible = false;
+
+                BorderVisible = !ImageVisible && (_appSettings.DisplayAllLocations ||
+                    (_mapLocation.Location.GetAccessibility(_game.Mode, _game.Items) != AccessibilityLevel.Cleared &&
+                    _mapLocation.Location.GetAccessibility(_game.Mode, _game.Items) != AccessibilityLevel.None));
+            }
+            else
+            {
+                ImageVisible = false;
+                BorderVisible = false;
+            }
+
+            Visible = ImageVisible || BorderVisible;
         }
 
         public void ClearAvailableSections()
@@ -196,9 +335,11 @@ namespace OpenTracker.ViewModels
 
         private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
+            SetSizeAndPosition();
             CheckLocationAvailability();
             SetColor();
             SetVisibility();
+            SetImageSource();
         }
     }
 }

@@ -5,10 +5,10 @@ using OpenTracker.Interfaces;
 
 namespace OpenTracker.Views
 {
-    public class VisibleItemSelectControl : UserControl
+    public class MarkingSelectControl : UserControl
     {
-        private IVisibleItemSelectControlVM _viewModel => DataContext as IVisibleItemSelectControlVM;
-        public VisibleItemSelectControl()
+        private IMarkingSelectControlVM _viewModel => DataContext as IMarkingSelectControlVM;
+        public MarkingSelectControl()
         {
             this.InitializeComponent();
         }

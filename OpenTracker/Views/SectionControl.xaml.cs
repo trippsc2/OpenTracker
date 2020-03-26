@@ -25,7 +25,7 @@ namespace OpenTracker.Views
             switch (e.InitialPressMouseButton)
             {
                 case MouseButton.Left:
-                    _viewModel.OpenVisibleItemSelect();
+                    _viewModel.OpenMarkingSelect();
                     break;
             }
         }
