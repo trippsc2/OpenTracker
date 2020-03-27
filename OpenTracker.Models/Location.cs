@@ -349,6 +349,11 @@ namespace OpenTracker.Models
                         {
                             EntranceShuffle = false
                         }));
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 680, 315,
+                        new Mode()
+                        {
+                            EntranceShuffle = true
+                        }));
                     itemSections = 1;
                     break;
                 case LocationID.Dam:
@@ -514,11 +519,7 @@ namespace OpenTracker.Models
                     break;
                 case LocationID.FloatingIsland:
                     Name = "Floating Island";
-                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1627, 40,
-                        new Mode()
-                        {
-                            EntranceShuffle = false
-                        }));
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1627, 40, new Mode()));
                     MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1627, 40,
                         new Mode()
                         {

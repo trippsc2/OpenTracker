@@ -1200,8 +1200,14 @@ namespace OpenTracker.Models
                         //  Inverted mode
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
+                            AccessibilityLevel lightWorld = AccessibilityLevel.None;
                             AccessibilityLevel dDMTop = AccessibilityLevel.None;
                             AccessibilityLevel dMWestBottom = AccessibilityLevel.None;
+
+                            //  Access via Flute drop spot
+                            if (_game.Items.Has(ItemType.Flute) && _game.Items.Has(ItemType.MoonPearl) &&
+                                !excludedRegions.Contains(RegionID.LightWorld))
+                                lightWorld = _game.Regions[RegionID.LightWorld].GetAccessibility(newExcludedRegions);
 
                             //  Access via Dark Death Mountain top
                             if (!excludedRegions.Contains(RegionID.DarkDeathMountainTop))
@@ -1211,7 +1217,7 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.Mirror) && !excludedRegions.Contains(RegionID.DeathMountainWestBottom))
                                 dMWestBottom = _game.Regions[RegionID.DeathMountainWestBottom].GetAccessibility(newExcludedRegions);
 
-                            return (AccessibilityLevel)Math.Max((byte)dDMTop, (byte)dMWestBottom);
+                            return (AccessibilityLevel)Math.Max(Math.Max((byte)lightWorld, (byte)dDMTop), (byte)dMWestBottom);
                         }
 
                         //  Default to no access
@@ -1222,9 +1228,11 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
                     itemReqs.Add(_game.Items[ItemType.Gloves]);
                     itemReqs.Add(_game.Items[ItemType.Lamp]);
+                    itemReqs.Add(_game.Items[ItemType.Flute]);
 
                     _observedRegions.Add(RegionID.DarkDeathMountainTop);
                     _observedRegions.Add(RegionID.DeathMountainWestBottom);
+                    _observedRegions.Add(RegionID.LightWorld);
 
                     break;
                 case RegionID.TurtleRockTunnel:
@@ -1247,12 +1255,29 @@ namespace OpenTracker.Models
                         //  Default to no access
                         return AccessibilityLevel.None;
                     };
-                    GetIndirectAccessibility = (excludedRegions) => { return AccessibilityLevel.None; };
+                    GetIndirectAccessibility = (excludedRegions) =>
+                    {
+                        List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
+                        newExcludedRegions.Add(ID);
+
+                        // Inverted mode
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        {
+                            //  Access via East Death Mountain top by mirror from Spiral Cave or Mimic Cave ledges
+                            if (_game.Items.Has(ItemType.Mirror) && !excludedRegions.Contains(RegionID.DeathMountainEastTop))
+                                return _game.Regions[RegionID.DeathMountainEastTop].Accessibility;
+                        }
+
+                        //  Default to no access
+                        return AccessibilityLevel.None;
+                    };
 
                     itemReqs.Add(_game.Items[ItemType.TurtleRockTunnelAccess]);
                     itemReqs.Add(_game.Items[ItemType.SpiralCaveTopAccess]);
                     itemReqs.Add(_game.Items[ItemType.MimicCaveAccess]);
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
+
+                    _observedRegions.Add(RegionID.DeathMountainEastTop);
 
                     break;
                 case RegionID.HyruleCastle:
@@ -1720,7 +1745,7 @@ namespace OpenTracker.Models
                                 (_game.Items.Has(ItemType.Quake) &&
                                 (_game.Items[ItemType.QuakeDungeons].Current == 1 ||
                                 _game.Items[ItemType.QuakeDungeons].Current == 3))) &&
-                                excludedRegions.Contains(RegionID.MireArea))
+                                !excludedRegions.Contains(RegionID.MireArea))
                                 return _game.Regions[RegionID.MireArea].GetAccessibility(newExcludedRegions);
                         }
 

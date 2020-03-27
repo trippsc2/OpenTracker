@@ -1228,8 +1228,9 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Ledge";
-                    _standardRegion = _game.Regions[RegionID.DarkWorldWest];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
+                    _standardRegion = _game.Regions[RegionID.LightWorld];
+                    _invertedRegion = _game.Regions[RegionID.DarkWorldSouth];
+                    HasMarking = true;
 
                     GetAccessibility = () =>
                     {
@@ -1238,16 +1239,23 @@ namespace OpenTracker.Models
 
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
-                            if (!_game.Mode.EntranceShuffle.Value)
-                            {
-                                if (_game.Items.Has(ItemType.Gloves) && _game.Items.Has(ItemType.Cape))
-                                {
-                                    if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
-                                        _game.Items.Has(ItemType.Hookshot))
-                                        return AccessibilityLevel.Normal;
+                            AccessibilityLevel dWWest = _game.Regions[RegionID.DarkWorldWest].Accessibility;
 
-                                    return AccessibilityLevel.SequenceBreak;
+                            if (dWWest >= AccessibilityLevel.SequenceBreak)
+                            {
+                                if (!_game.Mode.EntranceShuffle.Value)
+                                {
+                                    if (_game.Items.Has(ItemType.Gloves) && _game.Items.Has(ItemType.Cape))
+                                    {
+                                        if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                            _game.Items.Has(ItemType.Hookshot))
+                                            return (AccessibilityLevel)Math.Min((byte)dWWest, (byte)AccessibilityLevel.Normal);
+
+                                        return (AccessibilityLevel)Math.Min((byte)dWWest, (byte)AccessibilityLevel.SequenceBreak);
+                                    }
                                 }
+
+                                return AccessibilityLevel.Inspect;
                             }
                         }
 
@@ -1256,10 +1264,12 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.DeathMountainExitAccess) && _game.Items.Has(ItemType.Mirror))
                                 return AccessibilityLevel.Normal;
 
+                            AccessibilityLevel lightWorld = _game.Regions[RegionID.LightWorld].Accessibility;
+
                             if (!_game.Mode.EntranceShuffle.Value && _game.Items.Has(ItemType.MoonPearl) &&
                                 _game.Items.Has(ItemType.Cape) && _game.Items.Has(ItemType.Gloves) &&
-                                _game.Items.Has(ItemType.Mirror))
-                                return AccessibilityLevel.Normal;
+                                _game.Items.Has(ItemType.Mirror) && lightWorld >= AccessibilityLevel.SequenceBreak)
+                                return (AccessibilityLevel)Math.Min((byte)lightWorld, (byte)AccessibilityLevel.Normal);
 
                             if (_game.Regions[RegionID.DarkWorldWest].Accessibility >= AccessibilityLevel.SequenceBreak)
                                 return AccessibilityLevel.Inspect;
@@ -1268,9 +1278,11 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
+                    itemReqs.Add(_game.Items[ItemType.BumperCaveAccess]);
                     itemReqs.Add(_game.Items[ItemType.Gloves]);
                     itemReqs.Add(_game.Items[ItemType.Cape]);
                     itemReqs.Add(_game.Items[ItemType.Hookshot]);
+                    itemReqs.Add(_game.Items[ItemType.DeathMountainExitAccess]);
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
                     itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
