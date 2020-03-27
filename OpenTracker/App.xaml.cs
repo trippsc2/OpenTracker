@@ -1,6 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using OpenTracker.Interfaces;
+using OpenTracker.Utils;
 using OpenTracker.ViewModels;
 using OpenTracker.Views;
 
@@ -17,10 +19,16 @@ namespace OpenTracker
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
+                IDialogService dialogService = new DialogService();
+
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainWindowVM(),
+                    DataContext = new MainWindowVM(dialogService),
                 };
+
+                dialogService.Owner = desktop.MainWindow;
+
+                dialogService.Register<MessageBoxVM, MessageBox>();
             }
 
             base.OnFrameworkInitializationCompleted();

@@ -2423,5 +2423,11 @@ namespace OpenTracker.Models
         {
             return Available > 0;
         }
+
+        public void Reset()
+        {
+            Marking = null;
+            Available = Total;
+        }
     }
 }

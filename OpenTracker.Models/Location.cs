@@ -1925,5 +1925,11 @@ namespace OpenTracker.Models
                 _ => throw new Exception(string.Format("Unknown availability state for location {0}", ID.ToString())),
             };
         }
+
+        public void Reset()
+        {
+            foreach (ISection section in Sections)
+                section.Reset();
+        }
     }
 }

@@ -2555,5 +2555,11 @@ namespace OpenTracker.Models
         {
             return Available;
         }
+
+        public void Reset()
+        {
+            Marking = null;
+            Available = true;
+        }
     }
 }

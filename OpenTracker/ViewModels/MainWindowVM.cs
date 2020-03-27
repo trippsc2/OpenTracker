@@ -8,11 +8,13 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Reactive;
 
 namespace OpenTracker.ViewModels
 {
     public class MainWindowVM : ViewModelBase, IMainWindowVM
     {
+        private readonly IDialogService _dialogService;
         private readonly Game _game;
 
         public ObservableCollection<MapControlVM> Maps { get; }
@@ -24,6 +26,8 @@ namespace OpenTracker.ViewModels
         public ObservableCollection<DungeonItemControlVM> BigKeyItems { get; }
         public ObservableCollection<DungeonPrizeControlVM> Prizes { get; }
         public ObservableCollection<BossControlVM> Bosses { get; }
+
+        public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocationsCommand { get; }
 
         private AppSettingsVM _appSettings;
         public AppSettingsVM AppSettings
@@ -130,8 +134,15 @@ namespace OpenTracker.ViewModels
             set => this.RaiseAndSetIfChanged(ref _bigKeyShuffle, value);
         }
 
+        public MainWindowVM(IDialogService dialogService) : this()
+        {
+            _dialogService = dialogService;
+        }
+
         public MainWindowVM()
         {
+            ToggleDisplayAllLocationsCommand = ReactiveCommand.Create(ToggleDisplayAllLocations);
+
             string appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
             if (!Directory.Exists(appData))
@@ -142,7 +153,7 @@ namespace OpenTracker.ViewModels
             if (File.Exists(appSettingsPath))
             {
                 string jsonContent = File.ReadAllText(appSettingsPath);
-                
+
                 _appSettings = JsonConvert.DeserializeObject<AppSettingsVM>(jsonContent, new SolidColorBrushConverter());
             }
             else
@@ -279,6 +290,21 @@ namespace OpenTracker.ViewModels
             }
 
             PropertyChanged += OnPropertyChanged;
+        }
+
+        private void ToggleDisplayAllLocations()
+        {
+            _appSettings.DisplayAllLocations = !_appSettings.DisplayAllLocations;
+        }
+
+        private async void Reset()
+        {
+            bool? result = await _dialogService.ShowDialog(
+                new MessageBoxVM("Warning",
+                "Resetting the tracker will set all items and locations back to their starting values.  This cannot be undone.\nDo you wish to proceed?"));
+
+            if (result.HasValue && result.Value)
+                _game.Reset();
         }
 
         private void RefreshItemPlacement()

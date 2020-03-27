@@ -5,10 +5,12 @@ namespace OpenTracker.Models
 {
     public class Item : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        private readonly int _starting;
 
         public ItemType Type { get; }
         public int Maximum { get; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private int _current;
         public int Current
@@ -108,6 +110,7 @@ namespace OpenTracker.Models
                     break;
                 case ItemType.Sword:
                     Maximum = 5;
+                    _starting = 1;
                     Current = 1;
                     break;
                 case ItemType.Crystal:
@@ -123,6 +126,11 @@ namespace OpenTracker.Models
         {
             if (PropertyChanged != null)
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void Reset()
+        {
+            Current = _starting;
         }
     }
 }

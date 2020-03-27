@@ -10,7 +10,7 @@ namespace OpenTracker.Models
         public Dictionary<BossType, Boss> Bosses { get; }
         public ItemDictionary Items { get; }
         public Dictionary<RegionID, Region> Regions { get; }
-        public Dictionary<LocationID, Location> Locations { get; }
+        public LocationDictionary Locations { get; }
 
         public Game()
         {
@@ -27,7 +27,7 @@ namespace OpenTracker.Models
             Bosses = new Dictionary<BossType, Boss>(Enum.GetValues(typeof(BossType)).Length);
             Items = new ItemDictionary(Mode, Enum.GetValues(typeof(ItemType)).Length);
             Regions = new Dictionary<RegionID, Region>(Enum.GetValues(typeof(RegionID)).Length);
-            Locations = new Dictionary<LocationID, Location>(Enum.GetValues(typeof(LocationID)).Length);
+            Locations = new LocationDictionary(Enum.GetValues(typeof(LocationID)).Length);
 
             foreach (ItemType type in Enum.GetValues(typeof(ItemType)))
                 Items.Add(type, new Item(type));
@@ -44,6 +44,12 @@ namespace OpenTracker.Models
             foreach (LocationID iD in Enum.GetValues(typeof(LocationID)))
                 Locations.Add(iD, new Location(this, iD));
 
+        }
+
+        public void Reset()
+        {
+            Locations.Reset();
+            Items.Reset();
         }
     }
 }

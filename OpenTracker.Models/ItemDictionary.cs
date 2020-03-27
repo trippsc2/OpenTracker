@@ -138,5 +138,11 @@ namespace OpenTracker.Models
         {
             return Has(ItemType.FireRod) || (Has(ItemType.Bombos) && CanUseMedallions());
         }
+
+        public void Reset()
+        {
+            foreach (Item item in Values)
+                item.Reset();
+        }
     }
 }

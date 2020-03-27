@@ -25,6 +25,7 @@
     <AvaloniaResource Remove="Views\DungeonItemControl.xaml" />
     <AvaloniaResource Remove="Views\DungeonPrizeControl.xaml" />
     <AvaloniaResource Remove="Views\MarkingSelectControl.xaml" />
+    <AvaloniaResource Remove="Views\MessageBox.xaml" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Views\AppSettings.xaml" />
@@ -34,13 +35,14 @@
     <None Remove="Views\DungeonPrizeControl.xaml" />
     <None Remove="Views\MapLocationControl.xaml" />
     <None Remove="Views\MarkingSelectControl.xaml" />
+    <None Remove="Views\MessageBox.xaml" />
     <None Remove="Views\PinnedLocationControl.xaml" />
     <None Remove="Views\SectionControl.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.9.4" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.9.4" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.4" />
+    <PackageReference Include="Avalonia" Version="0.9.5" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.9.5" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.5" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="ThemeEditor.Controls.ColorPicker" Version="0.9.4" />
   </ItemGroup>
@@ -129,6 +131,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\ColorPickerControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\MessageBox.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>

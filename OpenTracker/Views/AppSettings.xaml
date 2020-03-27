@@ -11,10 +11,8 @@
              x:Class="OpenTracker.Views.AppSettings">
 
   <UserControl.Resources>
-
     <s:Boolean x:Key="True">True</s:Boolean>
     <s:Boolean x:Key="False">False</s:Boolean>
-
   </UserControl.Resources>
 
   <Border BorderBrush="#A9A9A9" BorderThickness="3" Background="#212121"
@@ -29,7 +27,7 @@
                 Margin="4" HorizontalAlignment="Left" VerticalAlignment="Center" />
 
       <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                 Grid.Column="2" Grid.Row="0" FontSize="11"  Text="Display All Locations" Foreground="#F6F6F6"
+                 Grid.Column="2" Grid.Row="0" FontSize="11"  Text="Display All Locations [F11]" Foreground="#F6F6F6"
                  Background="Transparent" Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" />
 
       <ToggleButton IsChecked="{Binding Path=EmphasisFontColorPickerOpen, RelativeSource={RelativeSource

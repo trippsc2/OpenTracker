@@ -493,5 +493,17 @@ namespace OpenTracker.Models
         {
             return Available;
         }
+
+        public void Reset()
+        {
+            Available = true;
+
+            if (_defaultBoss != _game.Bosses[BossType.Aga])
+            {
+                Boss = null;
+                Prize = null;
+            }
+            
+        }
     }
 }

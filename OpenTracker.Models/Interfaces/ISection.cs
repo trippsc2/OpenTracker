@@ -13,5 +13,6 @@ namespace OpenTracker.Models.Interfaces
 
         bool IsAvailable();
         void Clear();
+        void Reset();
     }
 }

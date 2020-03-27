@@ -1,0 +1,31 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        MaxWidth="400" SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        mc:Ignorable="d"
+        x:Class="OpenTracker.Views.MessageBox"
+        Title="{Binding Path=Title}">
+
+  <Window.Styles>
+    <Style Selector="Button">
+      <Setter Property="Margin" Value="15,0,0,0" />
+      <Setter Property="MinHeight" Value="24" />
+      <Setter Property="MinWidth" Value="75" />
+    </Style>
+  </Window.Styles>
+
+  <StackPanel Orientation="Vertical">
+
+    <TextBlock Margin="30" Text="{Binding Path=Text, FallbackValue=Test}" TextWrapping="Wrap" />
+
+    <StackPanel Orientation="Horizontal" Margin="15" HorizontalAlignment="Right">
+      <Button Content="Yes" Command="{Binding Path=YesCommand}" HotKey="y" />
+      <Button Content="No" Command="{Binding Path=NoCommand}" HotKey="n" />
+    </StackPanel>
+
+  </StackPanel>
+
+</Window>

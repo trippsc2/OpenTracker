@@ -18,6 +18,11 @@
     <vm:MainWindowVM />
   </Design.DataContext>
 
+  <Window.KeyBindings>
+    <KeyBinding Gesture="F5" Command="{Binding Path=Reset}" />
+    <KeyBinding Gesture="F11" Command="{Binding Path=ToggleDisplayAllLocationsCommand}" />
+  </Window.KeyBindings>
+
   <DockPanel>
 
     <DockPanel DockPanel.Dock="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=UIPanelDock, Mode=OneWay}"
