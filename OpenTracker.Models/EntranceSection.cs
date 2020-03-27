@@ -796,7 +796,8 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.Gloves, 2) && _game.Items.Has(ItemType.Boots))
                                 return AccessibilityLevel.Normal;
 
-                            if (_game.Items.Has(ItemType.Mirror) && _game.Items.Has(ItemType.MoonPearl))
+                            if (_game.Items.Has(ItemType.Mirror) && _game.Items.Has(ItemType.MoonPearl) &&
+                                _game.Items.Has(ItemType.Boots))
                                 return _game.Regions[RegionID.DarkWorldWest].Accessibility;
                         }
 
