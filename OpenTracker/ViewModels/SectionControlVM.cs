@@ -429,7 +429,7 @@ namespace OpenTracker.ViewModels
                             if (Enum.TryParse(itemSection.Marking.ToString(), out ItemType itemType))
                             {
                                 Item item = _game.Items[itemType];
-                                item.Current = Math.Min(item.Current + 1, item.Maximum);
+                                item.Change(1);
                                 itemSection.Marking = null;
                             }
                         }

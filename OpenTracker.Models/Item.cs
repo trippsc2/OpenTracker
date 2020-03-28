@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.Enums;
+using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models
@@ -16,7 +17,7 @@ namespace OpenTracker.Models
         public int Current
         {
             get => _current;
-            set
+            private set
             {
                 if (_current != value)
                 {
@@ -126,6 +127,19 @@ namespace OpenTracker.Models
         {
             if (PropertyChanged != null)
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public void Change(int delta, bool ignoreMaximum = false)
+        {
+            if (ignoreMaximum)
+                Current += delta;
+            else
+                Current = Math.Min(Maximum, Current + delta);
+        }
+
+        public void SetCurrent(int current = 0)
+        {
+            Current = current;
         }
 
         public void Reset()

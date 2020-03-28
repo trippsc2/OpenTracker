@@ -19,23 +19,23 @@
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
   <ItemGroup>
-    <AvaloniaResource Remove="Views\AppSettings.xaml" />
     <AvaloniaResource Remove="Views\BossControl.xaml" />
     <AvaloniaResource Remove="Views\ColorPickerControl.xaml" />
+    <AvaloniaResource Remove="Views\ColorSelectDialog.xaml" />
     <AvaloniaResource Remove="Views\DungeonItemControl.xaml" />
     <AvaloniaResource Remove="Views\DungeonPrizeControl.xaml" />
     <AvaloniaResource Remove="Views\MarkingSelectControl.xaml" />
-    <AvaloniaResource Remove="Views\MessageBox.xaml" />
+    <AvaloniaResource Remove="Views\MessageBoxDialog.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Views\AppSettings.xaml" />
     <None Remove="Views\BossControl.xaml" />
     <None Remove="Views\ColorPickerControl.xaml" />
+    <None Remove="Views\ColorSelectDialog.xaml" />
     <None Remove="Views\DungeonItemControl.xaml" />
     <None Remove="Views\DungeonPrizeControl.xaml" />
     <None Remove="Views\MapLocationControl.xaml" />
     <None Remove="Views\MarkingSelectControl.xaml" />
-    <None Remove="Views\MessageBox.xaml" />
+    <None Remove="Views\MessageBoxDialog.xaml" />
     <None Remove="Views\PinnedLocationControl.xaml" />
     <None Remove="Views\SectionControl.xaml" />
   </ItemGroup>
@@ -103,6 +103,9 @@
     <Compile Update="Views\ItemControl.xaml.cs">
       <DependentUpon>ItemControl.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\MessageBoxDialog.xaml.cs">
+      <DependentUpon>MessageBoxDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\SectionControl.xaml.cs">
       <DependentUpon>SectionControl.xaml</DependentUpon>
     </Compile>
@@ -125,17 +128,17 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\AppSettings.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Views\ColorPickerControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\MessageBox.xaml">
+    <EmbeddedResource Include="Views\MessageBoxDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\ColorSelectDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>

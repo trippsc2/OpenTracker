@@ -243,9 +243,14 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Mode.WorldState == WorldState.StandardOpen ||
-                            _game.Items.Has(ItemType.MoonPearl))
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
                             return AccessibilityLevel.Normal;
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        {
+                            if (_game.Items.Has(ItemType.MoonPearl))
+                                return AccessibilityLevel.Normal;
+                        }
                         
                         return AccessibilityLevel.None;
                     };
@@ -262,10 +267,15 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Mode.WorldState == WorldState.StandardOpen ||
-                            _game.Items.Has(ItemType.MoonPearl))
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
                             return AccessibilityLevel.Normal;
-                        
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        {
+                            if (_game.Items.Has(ItemType.MoonPearl))
+                                return AccessibilityLevel.Normal;
+                        }
+
                         return AccessibilityLevel.None;
                     };
 
@@ -388,7 +398,7 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
                     itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
-                    _game.Regions[RegionID.DarkWorldWest].PropertyChanged += OnRegionChanged;
+                    _game.Regions[RegionID.DarkWorldWest].PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.Library:
@@ -416,8 +426,8 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.Inspect;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
                     itemReqs.Add(_game.Items[ItemType.Boots]);
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
                     break;
                 case LocationID.LostWoods when index == 0:
@@ -430,9 +440,14 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Mode.WorldState == WorldState.StandardOpen ||
-                            _game.Items.Has(ItemType.MoonPearl))
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
                             return AccessibilityLevel.Normal;
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        {
+                            if (_game.Items.Has(ItemType.MoonPearl))
+                                return AccessibilityLevel.Normal;
+                        }
 
                         return AccessibilityLevel.Inspect;
                     };
@@ -461,9 +476,14 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Mode.WorldState == WorldState.StandardOpen ||
-                            _game.Items.Has(ItemType.MoonPearl))
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
                             return AccessibilityLevel.Normal;
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        {
+                            if (_game.Items.Has(ItemType.MoonPearl))
+                                return AccessibilityLevel.Normal;
+                        }
 
                         return AccessibilityLevel.None;
                     };
@@ -480,9 +500,14 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Mode.WorldState == WorldState.StandardOpen ||
-                            _game.Items.Has(ItemType.MoonPearl))
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
                             return AccessibilityLevel.Normal;
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        {
+                            if (_game.Items.Has(ItemType.MoonPearl))
+                                return AccessibilityLevel.Normal;
+                        }
                         
                         return AccessibilityLevel.None;
                     };
@@ -587,13 +612,13 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.MoonPearl]);
                     itemReqs.Add(_game.Items[ItemType.RedCrystal]);
                     itemReqs.Add(_game.Items[ItemType.Hammer]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    itemReqs.Add(_game.Items[ItemType.Gloves]);
                     itemReqs.Add(_game.Items[ItemType.Aga]);
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
                     itemReqs.Add(_game.Items[ItemType.Hookshot]);
                     itemReqs.Add(_game.Items[ItemType.Flippers]);
 
-                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnRegionChanged;
+                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.HauntedGrove:
@@ -624,8 +649,13 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Mode.WorldState == WorldState.Inverted ||
-                            _game.Items.Has(ItemType.MoonPearl))
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        {
+                            if (_game.Items.Has(ItemType.MoonPearl))
+                                return AccessibilityLevel.Normal;
+                        }
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
                             return AccessibilityLevel.Normal;
 
                         return AccessibilityLevel.None;
@@ -712,8 +742,13 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Mode.WorldState == WorldState.Inverted ||
-                            _game.Items.Has(ItemType.MoonPearl))
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        {
+                            if (_game.Items.Has(ItemType.MoonPearl))
+                                return AccessibilityLevel.Normal;
+                        }
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
                             return AccessibilityLevel.Normal;
 
                         return AccessibilityLevel.None;
@@ -746,11 +781,8 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.Hammer]);
-                    itemReqs.Add(_game.Items[ItemType.Aga]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
                     itemReqs.Add(_game.Items[ItemType.Mushroom]);
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
                     break;
                 case LocationID.WaterfallFairy:
@@ -784,8 +816,8 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
                     itemReqs.Add(_game.Items[ItemType.Flippers]);
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
                     break;
                 case LocationID.ZoraArea when index == 0:
@@ -994,7 +1026,7 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
                     itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
-                    _game.Regions[RegionID.DarkWorldWest].PropertyChanged += OnRegionChanged;
+                    _game.Regions[RegionID.DarkWorldWest].PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.GraveyardLedge:
@@ -1069,10 +1101,11 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.DesertLeftAccess]);
                     itemReqs.Add(_game.Items[ItemType.DesertBackAccess]);
                     itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
                     itemReqs.Add(_game.Items[ItemType.Book]);
+                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
-                    _game.Regions[RegionID.MireArea].PropertyChanged += OnRegionChanged;
+                    _game.Regions[RegionID.MireArea].PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.AginahsCave:
@@ -1151,7 +1184,7 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Gloves]);
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
 
-                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnRegionChanged;
+                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.PurpleChest:
@@ -1184,7 +1217,7 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Gloves]);
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
 
-                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnRegionChanged;
+                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.HammerPegs:
@@ -1221,7 +1254,7 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Hammer]);
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
 
-                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnRegionChanged;
+                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.BumperCave:
@@ -1249,7 +1282,7 @@ namespace OpenTracker.Models
                                     {
                                         if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
                                             _game.Items.Has(ItemType.Hookshot))
-                                            return (AccessibilityLevel)Math.Min((byte)dWWest, (byte)AccessibilityLevel.Normal);
+                                            return dWWest;
 
                                         return (AccessibilityLevel)Math.Min((byte)dWWest, (byte)AccessibilityLevel.SequenceBreak);
                                     }
@@ -1286,7 +1319,7 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
                     itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
-                    _game.Regions[RegionID.DarkWorldWest].PropertyChanged += OnRegionChanged;
+                    _game.Regions[RegionID.DarkWorldWest].PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.Dam when index == 0:
@@ -1299,9 +1332,14 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Mode.WorldState == WorldState.StandardOpen ||
-                            _game.Items.Has(ItemType.MoonPearl))
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
                             return AccessibilityLevel.Normal;
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        {
+                            if (_game.Items.Has(ItemType.MoonPearl))
+                                return AccessibilityLevel.Normal;
+                        }
 
                         return AccessibilityLevel.None;
                     };
@@ -1318,9 +1356,14 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Mode.WorldState == WorldState.StandardOpen ||
-                            _game.Items.Has(ItemType.MoonPearl))
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
                             return AccessibilityLevel.Normal;
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        {
+                            if (_game.Items.Has(ItemType.MoonPearl))
+                                return AccessibilityLevel.Normal;
+                        }
 
                         return AccessibilityLevel.None;
                     };
@@ -1337,9 +1380,14 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Mode.WorldState == WorldState.StandardOpen ||
-                            _game.Items.Has(ItemType.MoonPearl))
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
                             return AccessibilityLevel.Normal;
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        {
+                            if (_game.Items.Has(ItemType.MoonPearl))
+                                return AccessibilityLevel.Normal;
+                        }
 
                         return AccessibilityLevel.None;
                     };
@@ -1356,9 +1404,14 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Mode.WorldState == WorldState.StandardOpen ||
-                            _game.Items.Has(ItemType.MoonPearl))
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
                             return AccessibilityLevel.Normal;
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        {
+                            if (_game.Items.Has(ItemType.MoonPearl))
+                                return AccessibilityLevel.Normal;
+                        }
 
                         return AccessibilityLevel.None;
                     };
@@ -1410,9 +1463,9 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
                     itemReqs.Add(_game.Items[ItemType.Flippers]);
 
-                    _game.Regions[RegionID.DarkWorldEast].PropertyChanged += OnRegionChanged;
-                    _game.Regions[RegionID.DarkWorldSouth].PropertyChanged += OnRegionChanged;
-                    _game.Regions[RegionID.DarkWorldSouthEast].PropertyChanged += OnRegionChanged;
+                    _game.Regions[RegionID.DarkWorldEast].PropertyChanged += OnRequirementChanged;
+                    _game.Regions[RegionID.DarkWorldSouth].PropertyChanged += OnRequirementChanged;
+                    _game.Regions[RegionID.DarkWorldSouthEast].PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.Hobo:
@@ -1540,7 +1593,7 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Up On Top";
                     _standardRegion = _game.Regions[RegionID.DeathMountainWestBottom];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainWestTop];
+                    _invertedRegion = _game.Regions[RegionID.DarkWorldSouth];
                     HasMarking = true;
 
                     GetAccessibility = () =>
@@ -1552,12 +1605,20 @@ namespace OpenTracker.Models
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
-                            return AccessibilityLevel.Normal;
+                        {
+                            if (_game.Regions[RegionID.DeathMountainWestTop].Accessibility >= AccessibilityLevel.SequenceBreak)
+                                return _game.Regions[RegionID.DeathMountainWestTop].Accessibility;
+
+                            if (_game.Regions[RegionID.DeathMountainWestBottom].Accessibility >= AccessibilityLevel.SequenceBreak)
+                                return AccessibilityLevel.Inspect;
+                        }
 
                         return AccessibilityLevel.None;
                     };
 
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
+
+                    _game.Regions[RegionID.DeathMountainWestTop].PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.EtherTablet:
@@ -1597,7 +1658,8 @@ namespace OpenTracker.Models
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
-                            if (_game.Items.Has(ItemType.Gloves) && _game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.MoonPearl))
+                            if (_game.Items.Has(ItemType.Gloves) && _game.Items.Has(ItemType.Hammer) &&
+                                _game.Items.Has(ItemType.MoonPearl))
                             {
                                 if (_game.Items.Has(ItemType.CaneOfByrna) || (_game.Items.Has(ItemType.Cape) &&
                                     (_game.Items.Has(ItemType.HalfMagic) || _game.Items.Has(ItemType.Bottle))))
@@ -1647,8 +1709,6 @@ namespace OpenTracker.Models
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
                                 return AccessibilityLevel.Normal;
-
-                            return AccessibilityLevel.SequenceBreak;
                         }
 
                         return AccessibilityLevel.None;
@@ -1769,14 +1829,14 @@ namespace OpenTracker.Models
                     };
 
                     itemReqs.Add(_game.Items[ItemType.MoonPearl]);
-                    itemReqs.Add(_game.Items[ItemType.Flute]);
+                    itemReqs.Add(_game.Items[ItemType.Gloves]);
                     itemReqs.Add(_game.Items[ItemType.Hookshot]);
                     itemReqs.Add(_game.Items[ItemType.Boots]);
 
                     break;
                 case LocationID.HookshotCave:
 
-                    _baseTotal = 1;
+                    _baseTotal = 3;
                     Name = "Back";
                     _standardRegion = _game.Regions[RegionID.DarkDeathMountainTop];
                     _invertedRegion = _game.Regions[RegionID.DarkDeathMountainTop];
@@ -1799,11 +1859,9 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Hookshot]);
                     itemReqs.Add(_game.Items[ItemType.Gloves]);
                     itemReqs.Add(_game.Items[ItemType.MoonPearl]);
-                    itemReqs.Add(_game.Items[ItemType.Flute]);
-                    itemReqs.Add(_game.Items[ItemType.Lamp]);
+                    itemReqs.Add(_game.Items[ItemType.Hookshot]);
 
                     break;
                 case LocationID.FloatingIsland:
@@ -1845,9 +1903,10 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
                     itemReqs.Add(_game.Items[ItemType.DarkDeathMountainFloatingIslandAccess]);
                     itemReqs.Add(_game.Items[ItemType.Gloves]);
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
-                    _game.Regions[RegionID.DarkDeathMountainTop].PropertyChanged += OnRegionChanged;
-                    _game.Regions[RegionID.DeathMountainEastTop].PropertyChanged += OnRegionChanged;
+                    _game.Regions[RegionID.DarkDeathMountainTop].PropertyChanged += OnRequirementChanged;
+                    _game.Regions[RegionID.DeathMountainEastTop].PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.MimicCave:
@@ -1932,7 +1991,7 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.FireRod]);
 
                     break;
-                case LocationID.Agahnim:
+                case LocationID.AgahnimTower:
 
                     _baseTotal = 0;
                     _smallKey = 2;
@@ -1973,7 +2032,6 @@ namespace OpenTracker.Models
 
                     itemReqs.Add(_game.Items[ItemType.EPBigKey]);
                     itemReqs.Add(_game.Items[ItemType.Lamp]);
-                    itemReqs.Add(_game.Items[ItemType.FireRod]);
 
                     break;
                 case LocationID.DesertPalace:
@@ -2291,8 +2349,8 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Quake]);
                     itemReqs.Add(_game.Items[ItemType.QuakeDungeons]);
 
-                    _game.Regions[RegionID.DeathMountainEastTop].PropertyChanged += OnItemRequirementChanged;
-                    _game.Regions[RegionID.DarkDeathMountainTop].PropertyChanged += OnItemRequirementChanged;
+                    _game.Regions[RegionID.DeathMountainEastTop].PropertyChanged += OnRequirementChanged;
+                    _game.Regions[RegionID.DarkDeathMountainTop].PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.GanonsTower:
@@ -2333,21 +2391,21 @@ namespace OpenTracker.Models
             Available = _baseTotal;
 
             foreach (Item item in itemReqs)
-                item.PropertyChanged += OnItemRequirementChanged;
+                item.PropertyChanged += OnRequirementChanged;
 
             if (RequiredMode == null)
                 RequiredMode = new Mode();
 
             if (_standardRegion != null)
-                _standardRegion.PropertyChanged += OnRegionChanged;
+                _standardRegion.PropertyChanged += OnRequirementChanged;
 
             if (_invertedRegion != null)
-                _invertedRegion.PropertyChanged += OnRegionChanged;
+                _invertedRegion.PropertyChanged += OnRequirementChanged;
 
             UpdateAccessibility();
         }
 
-        void SetTotal()
+        private void SetTotal()
         {
             int newTotal = _baseTotal +
                 ((_game.Mode.DungeonItemShuffle.Value >= DungeonItemShuffle.MapsCompasses) ? _mapCompass : 0) +
@@ -2380,12 +2438,7 @@ namespace OpenTracker.Models
                 Accessibility = GetAccessibility();
         }
         
-        private void OnRegionChanged(object sender, PropertyChangedEventArgs e)
-        {
-            UpdateAccessibility();
-        }
-
-        private void OnItemRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateAccessibility();
         }
@@ -2413,7 +2466,7 @@ namespace OpenTracker.Models
                 if (Enum.TryParse(Marking.ToString(), out ItemType itemType))
                 {
                     Item item = _game.Items[itemType];
-                    item.Current = Math.Max(item.Maximum, item.Current + 1);
+                    item.Change(1);
                     Marking = null;
                 }
             }

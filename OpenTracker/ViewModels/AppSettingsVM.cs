@@ -1,5 +1,7 @@
 ﻿using Avalonia.Media;
+using OpenTracker.Interfaces;
 using OpenTracker.Models.Enums;
+using OpenTracker.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,10 +9,13 @@ using System.ComponentModel;
 namespace OpenTracker.ViewModels
 {
     [Serializable()]
-    public class AppSettingsVM : INotifyPropertyChanged
+    public class AppSettingsVM : INotifyPropertyChanged, IDialogRequestClose
     {
         [field: NonSerialized()]
         public event PropertyChangedEventHandler PropertyChanged;
+
+        [field: NonSerialized()]
+        public event EventHandler<DialogCloseRequestedEventArgs> CloseRequested;
 
         private bool _displayAllLocations;
         public bool DisplayAllLocations

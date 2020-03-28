@@ -6,7 +6,7 @@
         WindowStartupLocation="CenterOwner"
         CanResize="False"
         mc:Ignorable="d"
-        x:Class="OpenTracker.Views.MessageBox"
+        x:Class="OpenTracker.Views.MessageBoxDialog"
         Title="{Binding Path=Title}">
 
   <Window.Styles>

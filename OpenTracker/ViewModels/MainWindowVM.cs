@@ -300,11 +300,16 @@ namespace OpenTracker.ViewModels
         private async void Reset()
         {
             bool? result = await _dialogService.ShowDialog(
-                new MessageBoxVM("Warning",
+                new MessageBoxDialogVM("Warning",
                 "Resetting the tracker will set all items and locations back to their starting values.  This cannot be undone.\nDo you wish to proceed?"));
 
             if (result.HasValue && result.Value)
                 _game.Reset();
+        }
+
+        private async void ColorSelect()
+        {
+            bool? result = await _dialogService.ShowDialog(_appSettings);
         }
 
         private void RefreshItemPlacement()

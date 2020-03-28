@@ -125,17 +125,17 @@ namespace OpenTracker.Models
                     GetIndirectAccessibility = (excludedRegions) => { return AccessibilityLevel.None; };
 
                     itemReqs.Add(_game.Items[ItemType.Aga]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.Hammer]);
                     itemReqs.Add(_game.Items[ItemType.LightWorldAccess]);
                     itemReqs.Add(_game.Items[ItemType.DeathMountainExitAccess]);
                     itemReqs.Add(_game.Items[ItemType.RaceGameAccess]);
+                    itemReqs.Add(_game.Items[ItemType.HyruleCastleSecondFloorAccess]);
                     itemReqs.Add(_game.Items[ItemType.DesertLeftAccess]);
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
                     itemReqs.Add(_game.Items[ItemType.GrassHouseAccess]);
                     itemReqs.Add(_game.Items[ItemType.WitchsHutAccess]);
+                    itemReqs.Add(_game.Items[ItemType.Gloves]);
+                    itemReqs.Add(_game.Items[ItemType.Hammer]);
                     itemReqs.Add(_game.Items[ItemType.DesertBackAccess]);
-                    itemReqs.Add(_game.Items[ItemType.HyruleCastleSecondFloorAccess]);
                     itemReqs.Add(_game.Items[ItemType.LakeHyliaFairyIslandAccess]);
                     itemReqs.Add(_game.Items[ItemType.Flippers]);
                     itemReqs.Add(_game.Items[ItemType.WaterfallFairyAccess]);
@@ -228,7 +228,7 @@ namespace OpenTracker.Models
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             //  Access via Dark World Witch area by hookshot
-                            if (_game.Items.Has(ItemType.MoonPearl) &&_game.Items.Has(ItemType.Hookshot) &&
+                            if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Hookshot) &&
                                 !excludedRegions.Contains(RegionID.DarkWorldWitchArea))
                                 return _game.Regions[RegionID.DarkWorldWitchArea].GetAccessibility(newExcludedRegions);
                         }
@@ -367,7 +367,6 @@ namespace OpenTracker.Models
                         newExcludedRegions.Add(ID);
 
                         //  Standard and Open modes
-                        //  Standard and Open modes
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             AccessibilityLevel darkWorldWitch = AccessibilityLevel.None;
@@ -437,10 +436,12 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Gloves]);
                     itemReqs.Add(_game.Items[ItemType.Hammer]);
                     itemReqs.Add(_game.Items[ItemType.Flippers]);
+                    itemReqs.Add(_game.Items[ItemType.Mirror]);
 
                     _observedRegions.Add(RegionID.DarkWorldWitchArea);
                     _observedRegions.Add(RegionID.DarkWorldSouth);
                     _observedRegions.Add(RegionID.DarkWorldSouthEast);
+                    _observedRegions.Add(RegionID.LightWorld);
 
                     break;
                 case RegionID.DarkWorldSouthEast:
@@ -502,16 +503,24 @@ namespace OpenTracker.Models
                             return (AccessibilityLevel)Math.Max((byte)darkWorldSouth, (byte)darkWorldEast);
                         }
 
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        {
+                            if (_game.Items.Has(ItemType.Mirror) && !excludedRegions.Contains(RegionID.LightWorld))
+                                return _game.Regions[RegionID.LightWorld].GetAccessibility(newExcludedRegions);
+                        }
+
                         //  Default to no access
                         return AccessibilityLevel.None;
                     };
 
                     itemReqs.Add(_game.Items[ItemType.DarkWorldSouthEastAccess]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
                     itemReqs.Add(_game.Items[ItemType.Flippers]);
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    itemReqs.Add(_game.Items[ItemType.Mirror]);
 
                     _observedRegions.Add(RegionID.DarkWorldSouth);
                     _observedRegions.Add(RegionID.DarkWorldEast);
+                    _observedRegions.Add(RegionID.LightWorld);
 
                     break;
                 case RegionID.DarkWorldWitchArea:
@@ -619,6 +628,7 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Gloves]);
                     itemReqs.Add(_game.Items[ItemType.Hammer]);
                     itemReqs.Add(_game.Items[ItemType.Flippers]);
+                    itemReqs.Add(_game.Items[ItemType.Mirror]);
 
                     _observedRegions.Add(RegionID.DarkWorldSouth);
                     _observedRegions.Add(RegionID.DarkWorldWest);
@@ -758,10 +768,10 @@ namespace OpenTracker.Models
 
                     itemReqs.Add(_game.Items[ItemType.DeathMountainWestBottomAccess]);
                     itemReqs.Add(_game.Items[ItemType.Flute]);
-                    itemReqs.Add(_game.Items[ItemType.Hookshot]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
                     itemReqs.Add(_game.Items[ItemType.Gloves]);
                     itemReqs.Add(_game.Items[ItemType.Lamp]);
+                    itemReqs.Add(_game.Items[ItemType.Hookshot]);
+                    itemReqs.Add(_game.Items[ItemType.Mirror]);
                     itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
                     _observedRegions.Add(RegionID.DeathMountainWestTop);
@@ -826,6 +836,7 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.DeathMountainWestTopAccess]);
                     itemReqs.Add(_game.Items[ItemType.Hammer]);
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
                     _observedRegions.Add(RegionID.DeathMountainEastTop);
                     _observedRegions.Add(RegionID.DarkDeathMountainWestBottom);
@@ -912,10 +923,10 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.DeathMountainEastTopConnectorAccess]);
                     itemReqs.Add(_game.Items[ItemType.DeathMountainEastBottomAccess]);
                     itemReqs.Add(_game.Items[ItemType.SpiralCaveTopAccess]);
-                    itemReqs.Add(_game.Items[ItemType.Hookshot]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
                     itemReqs.Add(_game.Items[ItemType.TurtleRockTunnelAccess]);
                     itemReqs.Add(_game.Items[ItemType.TurtleRockSafetyDoorAccess]);
+                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    itemReqs.Add(_game.Items[ItemType.Hookshot]);
                     itemReqs.Add(_game.Items[ItemType.Gloves]);
                     itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
@@ -1077,9 +1088,9 @@ namespace OpenTracker.Models
 
                     itemReqs.Add(_game.Items[ItemType.DarkDeathMountainFloatingIslandAccess]);
                     itemReqs.Add(_game.Items[ItemType.DarkDeathMountainTopAccess]);
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
                     itemReqs.Add(_game.Items[ItemType.Hammer]);
                     itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
 
                     _observedRegions.Add(RegionID.DeathMountainEastTop);
@@ -1225,10 +1236,11 @@ namespace OpenTracker.Models
                     };
 
                     itemReqs.Add(_game.Items[ItemType.DarkDeathMountainWestBottomAccess]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
                     itemReqs.Add(_game.Items[ItemType.Gloves]);
                     itemReqs.Add(_game.Items[ItemType.Lamp]);
                     itemReqs.Add(_game.Items[ItemType.Flute]);
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    itemReqs.Add(_game.Items[ItemType.Mirror]);
 
                     _observedRegions.Add(RegionID.DarkDeathMountainTop);
                     _observedRegions.Add(RegionID.DeathMountainWestBottom);
@@ -1466,8 +1478,11 @@ namespace OpenTracker.Models
                         newExcludedRegions.Add(ID);
 
                         //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen && !excludedRegions.Contains(RegionID.DeathMountainWestTop))
-                            return _game.Regions[RegionID.DeathMountainWestTop].GetAccessibility(newExcludedRegions);
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        {
+                            if (!excludedRegions.Contains(RegionID.DeathMountainWestTop))
+                                return _game.Regions[RegionID.DeathMountainWestTop].GetAccessibility(newExcludedRegions);
+                        }
 
                         //  Inverted mode
                         if (_game.Mode.WorldState == WorldState.Inverted)

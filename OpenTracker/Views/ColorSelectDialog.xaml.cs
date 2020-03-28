@@ -1,15 +1,14 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Markup.Xaml;
+using OpenTracker.Interfaces;
 
 namespace OpenTracker.Views
 {
-    public class AppSettings : UserControl
+    public class ColorSelectDialog : Window, IDialog
     {
-
         public static AvaloniaProperty<bool> EmphasisFontColorPickerOpenProperty =
-            AvaloniaProperty.Register<AppSettings, bool>("EmphasisFontColorPickerOpen");
+            AvaloniaProperty.Register<ColorSelectDialog, bool>("EmphasisFontColorPickerOpen");
         public bool EmphasisFontColorPickerOpen
         {
             get => GetValue(EmphasisFontColorPickerOpenProperty);
@@ -17,7 +16,7 @@ namespace OpenTracker.Views
         }
 
         public static AvaloniaProperty<bool> AccessibilityNoneColorPickerOpenProperty =
-            AvaloniaProperty.Register<AppSettings, bool>("AccessibilityNoneColorPickerOpen");
+            AvaloniaProperty.Register<ColorSelectDialog, bool>("AccessibilityNoneColorPickerOpen");
         public bool AccessibilityNoneColorPickerOpen
         {
             get => GetValue(AccessibilityNoneColorPickerOpenProperty);
@@ -25,7 +24,7 @@ namespace OpenTracker.Views
         }
 
         public static AvaloniaProperty<bool> AccessibilityPartialColorPickerOpenProperty =
-            AvaloniaProperty.Register<AppSettings, bool>("AccessibilityPartialColorPickerOpen");
+            AvaloniaProperty.Register<ColorSelectDialog, bool>("AccessibilityPartialColorPickerOpen");
         public bool AccessibilityPartialColorPickerOpen
         {
             get => GetValue(AccessibilityPartialColorPickerOpenProperty);
@@ -33,7 +32,7 @@ namespace OpenTracker.Views
         }
 
         public static AvaloniaProperty<bool> AccessibilityInspectColorPickerOpenProperty =
-            AvaloniaProperty.Register<AppSettings, bool>("AccessibilityInspectColorPickerOpen");
+            AvaloniaProperty.Register<ColorSelectDialog, bool>("AccessibilityInspectColorPickerOpen");
         public bool AccessibilityInspectColorPickerOpen
         {
             get => GetValue(AccessibilityInspectColorPickerOpenProperty);
@@ -41,7 +40,7 @@ namespace OpenTracker.Views
         }
 
         public static AvaloniaProperty<bool> AccessibilitySequenceBreakColorPickerOpenProperty =
-            AvaloniaProperty.Register<AppSettings, bool>("AccessibilitySequenceBreakColorPickerOpen");
+            AvaloniaProperty.Register<ColorSelectDialog, bool>("AccessibilitySequenceBreakColorPickerOpen");
         public bool AccessibilitySequenceBreakColorPickerOpen
         {
             get => GetValue(AccessibilitySequenceBreakColorPickerOpenProperty);
@@ -49,27 +48,24 @@ namespace OpenTracker.Views
         }
 
         public static AvaloniaProperty<bool> AccessibilityNormalColorPickerOpenProperty =
-            AvaloniaProperty.Register<AppSettings, bool>("AccessibilityNormalColorPickerOpen");
+            AvaloniaProperty.Register<ColorSelectDialog, bool>("AccessibilityNormalColorPickerOpen");
         public bool AccessibilityNormalColorPickerOpen
         {
             get => GetValue(AccessibilityNormalColorPickerOpenProperty);
             set => SetValue(AccessibilityNormalColorPickerOpenProperty, value);
         }
 
-        public AppSettings()
+        public ColorSelectDialog()
         {
             this.InitializeComponent();
+#if DEBUG
+            this.AttachDevTools();
+#endif
         }
 
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
-        }
-
-        private void OpenEmphasisFontColorPickerPopup(object sender, PointerReleasedEventArgs e)
-        {
-            if (e.InitialPressMouseButton == MouseButton.Left)
-                EmphasisFontColorPickerOpen = true;
         }
     }
 }

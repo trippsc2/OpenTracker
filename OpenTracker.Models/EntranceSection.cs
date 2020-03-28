@@ -380,6 +380,11 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.Inspect;
                     };
 
+                    itemReqs.Add(_game.Items[ItemType.Hammer]);
+                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    itemReqs.Add(_game.Items[ItemType.Gloves]);
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+
                     break;
                 case LocationID.ChestGame:
 
@@ -458,7 +463,7 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.Inspect;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
                     break;
                 case LocationID.ForestChestGame:
@@ -559,6 +564,8 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Sword]);
                     itemReqs.Add(_game.Items[ItemType.Hammer]);
                     itemReqs.Add(_game.Items[ItemType.TowerCrystals]);
+                    itemReqs.Add(_game.Items[ItemType.Crystal]);
+                    itemReqs.Add(_game.Items[ItemType.RedCrystal]);
 
                     break;
                 case LocationID.DamEntrance:
@@ -622,6 +629,8 @@ namespace OpenTracker.Models
 
                         return AccessibilityLevel.None;
                     };
+
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
                     break;
                 case LocationID.WaterfallFairyEntrance:
@@ -751,6 +760,8 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.Inspect;
                     };
 
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+
                     break;
                 case LocationID.NorthBonkRocks:
 
@@ -793,12 +804,14 @@ namespace OpenTracker.Models
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
-                            if (_game.Items.Has(ItemType.Gloves, 2) && _game.Items.Has(ItemType.Boots))
-                                return AccessibilityLevel.Normal;
+                            if (_game.Items.Has(ItemType.Boots))
+                            {
+                                if (_game.Items.Has(ItemType.Gloves, 2))
+                                    return AccessibilityLevel.Normal;
 
-                            if (_game.Items.Has(ItemType.Mirror) && _game.Items.Has(ItemType.MoonPearl) &&
-                                _game.Items.Has(ItemType.Boots))
-                                return _game.Regions[RegionID.DarkWorldWest].Accessibility;
+                                if (_game.Items.Has(ItemType.Mirror) && _game.Items.Has(ItemType.MoonPearl))
+                                    return _game.Regions[RegionID.DarkWorldWest].Accessibility;
+                            }
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
@@ -811,12 +824,12 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
                     itemReqs.Add(_game.Items[ItemType.Boots]);
+                    itemReqs.Add(_game.Items[ItemType.Gloves]);
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
                     itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
-                    _game.Regions[RegionID.DarkWorldWest].PropertyChanged += OnItemRequirementChanged;
+                    _game.Regions[RegionID.DarkWorldWest].PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.GraveyardLedgeEntrance:
@@ -882,7 +895,7 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
                     itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
-                    _game.Regions[RegionID.MireArea].PropertyChanged += OnItemRequirementChanged;
+                    _game.Regions[RegionID.MireArea].PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.DesertBackEntrance:
@@ -891,7 +904,7 @@ namespace OpenTracker.Models
                     _standardItemProvided = _game.Items[ItemType.DesertBackAccess];
                     _invertedItemProvided = _game.Items[ItemType.DesertBackAccess];
                     _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
+                    _invertedRegion = _game.Regions[RegionID.DarkWorldSouth];
 
                     GetAccessibility = () =>
                     {
@@ -919,7 +932,7 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
                     itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
-                    _game.Regions[RegionID.MireArea].PropertyChanged += OnItemRequirementChanged;
+                    _game.Regions[RegionID.MireArea].PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.DesertRightEntrance:
@@ -927,10 +940,21 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
+                    _standardRegion = _game.Regions[RegionID.MireArea];
                     _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.None; };
+                    GetAccessibility = () =>
+                    {
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        {
+                            if (_game.Items.Has(ItemType.Mirror))
+                                return AccessibilityLevel.Normal;
+                        }
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    itemReqs.Add(_game.Items[ItemType.Mirror]);
 
                     break;
                 case LocationID.DesertFrontEntrance:
@@ -963,7 +987,7 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
                     itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
-                    _game.Regions[RegionID.MireArea].PropertyChanged += OnItemRequirementChanged;
+                    _game.Regions[RegionID.MireArea].PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.AginahsCaveEntrance:
@@ -1067,6 +1091,8 @@ namespace OpenTracker.Models
 
                         return AccessibilityLevel.None;
                     };
+
+                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
                     break;
                 case LocationID.CShapedHouseEntrance:
@@ -1226,7 +1252,7 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.MoonPearl]);
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
 
-                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnItemRequirementChanged;
+                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.BumperCaveExit:
@@ -1656,7 +1682,7 @@ namespace OpenTracker.Models
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
-                            if (_game.Items.Has(ItemType.Gloves, 2))
+                            if (_game.Items.Has(ItemType.Gloves, 2) && _game.Items.Has(ItemType.Flippers))
                                 return AccessibilityLevel.Normal;
 
                             if (_game.Items.Has(ItemType.MoonPearl))
@@ -1668,6 +1694,9 @@ namespace OpenTracker.Models
                                 if (_game.Regions[RegionID.LightWorld].Accessibility >= AccessibilityLevel.SequenceBreak)
                                     return AccessibilityLevel.SequenceBreak;
                             }
+
+                            if (_game.Items.Has(ItemType.Gloves, 2))
+                                return AccessibilityLevel.SequenceBreak;
                         }
 
                         return AccessibilityLevel.None;
@@ -1679,7 +1708,7 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Gloves]);
                     itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
-                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnItemRequirementChanged;
+                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.MiniMoldormCaveEntrance:
@@ -1789,6 +1818,9 @@ namespace OpenTracker.Models
                                 if (_game.Items.Has(ItemType.Flippers))
                                     return AccessibilityLevel.Normal;
 
+                                if (_game.Items.Has(ItemType.LakeHyliaFairyIslandAccess))
+                                    return AccessibilityLevel.Normal;
+
                                 return AccessibilityLevel.SequenceBreak;
                             }
                         }
@@ -1816,11 +1848,11 @@ namespace OpenTracker.Models
 
                     itemReqs.Add(_game.Items[ItemType.Gloves]);
                     itemReqs.Add(_game.Items[ItemType.Flippers]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
                     itemReqs.Add(_game.Items[ItemType.LakeHyliaFairyIslandAccess]);
+                    itemReqs.Add(_game.Items[ItemType.Mirror]);
                     itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
-                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnItemRequirementChanged;
+                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.MiseryMireEntrance:
@@ -2144,10 +2176,11 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Gloves]);
                     itemReqs.Add(_game.Items[ItemType.DeathMountainEastTopConnectorAccess]);
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    itemReqs.Add(_game.Items[ItemType.TurtleRockSafetyDoorAccess]);
                     itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
-                    _game.Regions[RegionID.DeathMountainEastTop].PropertyChanged += OnItemRequirementChanged;
-                    _game.Regions[RegionID.DarkDeathMountainEastBottom].PropertyChanged += OnItemRequirementChanged;
+                    _game.Regions[RegionID.DeathMountainEastTop].PropertyChanged += OnRequirementChanged;
+                    _game.Regions[RegionID.DarkDeathMountainEastBottom].PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.SpiralCaveTop:
@@ -2228,8 +2261,8 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
                     itemReqs.Add(_game.Items[ItemType.TurtleRockSafetyDoorAccess]);
+                    itemReqs.Add(_game.Items[ItemType.Mirror]);
 
                     break;
                 case LocationID.ParadoxCaveTop:
@@ -2310,7 +2343,7 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DarkDeathMountainTopAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkDeathMountainTopAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkDeathMountainTop];
+                    _standardRegion = _game.Regions[RegionID.DeathMountainEastTop];
                     _invertedRegion = _game.Regions[RegionID.DarkDeathMountainTop];
 
                     GetAccessibility = () =>
@@ -2318,8 +2351,9 @@ namespace OpenTracker.Models
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Hammer) &&
-                                _game.Items.CanUseMedallions() && ((_game.Items.Has(ItemType.Bombos) &&
-                                _game.Items.Has(ItemType.Ether) && _game.Items.Has(ItemType.Quake)) ||
+                                _game.Items.Has(ItemType.Gloves, 2) && _game.Items.CanUseMedallions() &&
+                                ((_game.Items.Has(ItemType.Bombos) && _game.Items.Has(ItemType.Ether) &&
+                                _game.Items.Has(ItemType.Quake)) ||
                                 (_game.Items.Has(ItemType.Bombos) &&
                                 _game.Items[ItemType.BombosDungeons].Current >= 2) ||
                                 (_game.Items.Has(ItemType.Ether) &&
@@ -2347,6 +2381,7 @@ namespace OpenTracker.Models
 
                     itemReqs.Add(_game.Items[ItemType.MoonPearl]);
                     itemReqs.Add(_game.Items[ItemType.Hammer]);
+                    itemReqs.Add(_game.Items[ItemType.Gloves]);
                     itemReqs.Add(_game.Items[ItemType.Sword]);
                     itemReqs.Add(_game.Items[ItemType.Bombos]);
                     itemReqs.Add(_game.Items[ItemType.BombosDungeons]);
@@ -2411,20 +2446,28 @@ namespace OpenTracker.Models
                     _standardItemProvided = _game.Items[ItemType.TurtleRockSafetyDoorAccess];
                     _invertedItemProvided = _game.Items[ItemType.TurtleRockSafetyDoorAccess];
                     _standardRegion = _game.Regions[RegionID.DarkDeathMountainTop];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainEastTop];
+                    _invertedRegion = _game.Regions[RegionID.DarkWorldSouth];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.Mirror))
-                                return AccessibilityLevel.Normal;
+                            {
+                                if (_game.Items.Has(ItemType.DeathMountainEastTopConnectorAccess))
+                                    return AccessibilityLevel.Normal;
+
+                                return _game.Regions[RegionID.DeathMountainEastTop].Accessibility;
+                            }
                         }    
 
                         return AccessibilityLevel.None;
                     };
 
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    itemReqs.Add(_game.Items[ItemType.DeathMountainEastTopConnectorAccess]);
+
+                    _game.Regions[RegionID.DeathMountainEastTop].PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.HookshotCaveTop:
@@ -2457,13 +2500,13 @@ namespace OpenTracker.Models
             _game.Mode.PropertyChanged += OnModeChanged;
 
             foreach (Item item in itemReqs)
-                item.PropertyChanged += OnItemRequirementChanged;
+                item.PropertyChanged += OnRequirementChanged;
 
             if (_standardRegion != null)
-                _standardRegion.PropertyChanged += OnRegionChanged;
+                _standardRegion.PropertyChanged += OnRequirementChanged;
 
             if (_invertedRegion != null)
-                _invertedRegion.PropertyChanged += OnRegionChanged;
+                _invertedRegion.PropertyChanged += OnRequirementChanged;
 
             UpdateAccessibility();
         }
@@ -2488,11 +2531,6 @@ namespace OpenTracker.Models
                 Accessibility = GetAccessibility();
         }
 
-        private void OnRegionChanged(object sender, PropertyChangedEventArgs e)
-        {
-            UpdateAccessibility();
-        }
-
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (!Available && e.PropertyName == nameof(_game.Mode.WorldState))
@@ -2501,14 +2539,14 @@ namespace OpenTracker.Models
                 {
                     if (_game.Mode.WorldState == WorldState.StandardOpen)
                     {
-                        _invertedItemProvided.Current--;
-                        _standardItemProvided.Current++;
+                        _invertedItemProvided.Change(-1, true);
+                        _standardItemProvided.Change(1, true);
                     }
 
                     if (_game.Mode.WorldState == WorldState.Inverted)
                     {
-                        _standardItemProvided.Current--;
-                        _invertedItemProvided.Current++;
+                        _standardItemProvided.Change(-1, true);
+                        _invertedItemProvided.Change(1, true);
                     }
                 }
             }
@@ -2516,7 +2554,7 @@ namespace OpenTracker.Models
             UpdateAccessibility();
         }
 
-        private void OnItemRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateAccessibility();
         }
@@ -2531,17 +2569,17 @@ namespace OpenTracker.Models
                 if (_game.Mode.WorldState == WorldState.StandardOpen && _standardItemProvided != null)
                 {
                     if (Available)
-                        _standardItemProvided.Current--;
+                        _standardItemProvided.Change(-1, true);
                     else
-                        _standardItemProvided.Current++;
+                        _standardItemProvided.Change(1, true);
                 }
 
                 if (_game.Mode.WorldState == WorldState.Inverted && _invertedItemProvided != null)
                 {
                     if (Available)
-                        _invertedItemProvided.Current--;
+                        _invertedItemProvided.Change(-1, true);
                     else
-                        _invertedItemProvided.Current++;
+                        _invertedItemProvided.Change(1, true);
                 }
             }
         }

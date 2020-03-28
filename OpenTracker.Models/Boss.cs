@@ -43,9 +43,11 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Items.Has(ItemType.Sword) || _game.Items.Has(ItemType.Hammer) || _game.Items.Has(ItemType.Bow) ||
-                            _game.Items.Has(ItemType.Boomerang) || _game.Items.Has(ItemType.RedBoomerang) || (_game.Items.CanExtendMagic(4) &&
-                            (_game.Items.Has(ItemType.FireRod) || _game.Items.Has(ItemType.IceRod))) || (_game.Items.CanExtendMagic() &&
+                        if (_game.Items.Has(ItemType.Sword) || _game.Items.Has(ItemType.Hammer) ||
+                            _game.Items.Has(ItemType.Bow) || _game.Items.Has(ItemType.Boomerang) ||
+                            _game.Items.Has(ItemType.RedBoomerang) || (_game.Items.CanExtendMagic(4) &&
+                            (_game.Items.Has(ItemType.FireRod) || _game.Items.Has(ItemType.IceRod))) ||
+                            (_game.Items.CanExtendMagic() &&
                             (_game.Items.Has(ItemType.CaneOfByrna) || _game.Items.Has(ItemType.CaneOfSomaria))))
                             return AccessibilityLevel.Normal;
 
@@ -69,8 +71,9 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Items.Has(ItemType.Sword) || _game.Items.Has(ItemType.Hammer) || _game.Items.Has(ItemType.Bow) ||
-                            _game.Items.Has(ItemType.FireRod) || _game.Items.Has(ItemType.IceRod) || _game.Items.Has(ItemType.CaneOfByrna) ||
+                        if (_game.Items.Has(ItemType.Sword) || _game.Items.Has(ItemType.Hammer) ||
+                            _game.Items.Has(ItemType.Bow) || _game.Items.Has(ItemType.FireRod) ||
+                            _game.Items.Has(ItemType.IceRod) || _game.Items.Has(ItemType.CaneOfByrna) ||
                             _game.Items.Has(ItemType.CaneOfSomaria))
                             return AccessibilityLevel.Normal;
 
@@ -102,21 +105,21 @@ namespace OpenTracker.Models
                     break;
                 case BossType.HelmasaurKing:
 
-                    GetAccessibility = () =>
-                    {
-                        return AccessibilityLevel.Normal;
-                    };
+                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
 
                     break;
                 case BossType.Arrghus:
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Items.Has(ItemType.Hookshot) && (_game.Items.Has(ItemType.Hammer) || _game.Items.Has(ItemType.Sword) ||
-                            ((_game.Items.CanExtendMagic(2) || _game.Items.Has(ItemType.Bow)) && (_game.Items.Has(ItemType.FireRod)
-                            || _game.Items.Has(ItemType.IceRod)))))
+                        if (_game.Items.Has(ItemType.Hookshot) && (_game.Items.Has(ItemType.Hammer) ||
+                            _game.Items.Has(ItemType.Sword) ||
+                            ((_game.Items.CanExtendMagic(2) || _game.Items.Has(ItemType.Bow)) &&
+                            (_game.Items.Has(ItemType.FireRod) || _game.Items.Has(ItemType.IceRod)))))
                         {
-                            if (_game.Mode.ItemPlacement == ItemPlacement.Advanced || _game.Items.Swordless() || _game.Items.Has(ItemType.Sword, 2))
+                            if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                _game.Mode.WorldState == WorldState.Inverted ||
+                                _game.Items.Swordless() || _game.Items.Has(ItemType.Sword, 2))
                                 return AccessibilityLevel.Normal;
 
                             return AccessibilityLevel.SequenceBreak;
@@ -125,9 +128,9 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemRequirements.Add(_game.Items[ItemType.Sword]);
                     itemRequirements.Add(_game.Items[ItemType.Hookshot]);
                     itemRequirements.Add(_game.Items[ItemType.Hammer]);
+                    itemRequirements.Add(_game.Items[ItemType.Sword]);
                     itemRequirements.Add(_game.Items[ItemType.Bottle]);
                     itemRequirements.Add(_game.Items[ItemType.HalfMagic]);
                     itemRequirements.Add(_game.Items[ItemType.Bow]);
@@ -139,10 +142,13 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Items.Has(ItemType.Sword) || _game.Items.Has(ItemType.Hammer) || (_game.Items.CanExtendMagic(2) &&
-                            (_game.Items.Has(ItemType.FireRod) || _game.Items.Has(ItemType.CaneOfSomaria) || _game.Items.Has(ItemType.CaneOfByrna))))
+                        if (_game.Items.Has(ItemType.Sword) || _game.Items.Has(ItemType.Hammer) ||
+                            (_game.Items.CanExtendMagic(2) && (_game.Items.Has(ItemType.FireRod) ||
+                            _game.Items.Has(ItemType.CaneOfSomaria) || _game.Items.Has(ItemType.CaneOfByrna))))
                         {
-                            if (_game.Mode.ItemPlacement == ItemPlacement.Advanced || _game.Items.Has(ItemType.Sword, 2) || (_game.Items.CanExtendMagic(2) &&
+                            if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                _game.Mode.WorldState == WorldState.Inverted ||
+                                _game.Items.Has(ItemType.Sword, 2) || (_game.Items.CanExtendMagic(2) &&
                                 _game.Items.Has(ItemType.FireRod)))
                                 return AccessibilityLevel.Normal;
 
@@ -153,10 +159,10 @@ namespace OpenTracker.Models
                     };
 
                     itemRequirements.Add(_game.Items[ItemType.Sword]);
+                    itemRequirements.Add(_game.Items[ItemType.Hammer]);
                     itemRequirements.Add(_game.Items[ItemType.Bottle]);
                     itemRequirements.Add(_game.Items[ItemType.HalfMagic]);
                     itemRequirements.Add(_game.Items[ItemType.FireRod]);
-                    itemRequirements.Add(_game.Items[ItemType.Hammer]);
                     itemRequirements.Add(_game.Items[ItemType.CaneOfSomaria]);
                     itemRequirements.Add(_game.Items[ItemType.CaneOfByrna]);
 
@@ -165,11 +171,13 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Items.Has(ItemType.Sword) || _game.Items.Has(ItemType.Hammer) || _game.Items.Has(ItemType.CaneOfSomaria) ||
-                            _game.Items.Has(ItemType.CaneOfByrna))
+                        if (_game.Items.Has(ItemType.Sword) || _game.Items.Has(ItemType.Hammer) ||
+                            _game.Items.Has(ItemType.CaneOfSomaria) || _game.Items.Has(ItemType.CaneOfByrna))
                         {
-                            if (_game.Mode.ItemPlacement == ItemPlacement.Advanced || _game.Items.Swordless() || (_game.Items.Has(ItemType.Sword) &&
-                            (_game.Items.Has(ItemType.Cape) || _game.Items.Has(ItemType.CaneOfByrna))))
+                            if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                _game.Mode.WorldState == WorldState.Inverted ||
+                                _game.Items.Swordless() || (_game.Items.Has(ItemType.Sword) &&
+                                (_game.Items.Has(ItemType.Cape) || _game.Items.Has(ItemType.CaneOfByrna))))
                                 return AccessibilityLevel.Normal;
 
                             return AccessibilityLevel.SequenceBreak;
@@ -180,7 +188,6 @@ namespace OpenTracker.Models
 
                     itemRequirements.Add(_game.Items[ItemType.Sword]);
                     itemRequirements.Add(_game.Items[ItemType.Cape]);
-                    itemRequirements.Add(_game.Items[ItemType.CaneOfByrna]);
                     itemRequirements.Add(_game.Items[ItemType.Hammer]);
                     itemRequirements.Add(_game.Items[ItemType.CaneOfSomaria]);
                     itemRequirements.Add(_game.Items[ItemType.CaneOfByrna]);
@@ -190,13 +197,19 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Items.CanMeltThings() && (_game.Items.Has(ItemType.Hammer) || _game.Items.Has(ItemType.Sword) ||
-                            (_game.Items.CanExtendMagic(3) && _game.Items.Has(ItemType.FireRod)) || (_game.Items.CanExtendMagic(2) &&
-                            _game.Items.Has(ItemType.FireRod) && _game.Items.Has(ItemType.Bombos) && _game.Items.Swordless())))
+                        if (_game.Items.CanMeltThings() && (_game.Items.Has(ItemType.Hammer) ||
+                            _game.Items.Has(ItemType.Sword) ||
+                            (_game.Items.CanExtendMagic(3) && _game.Items.Has(ItemType.FireRod))
+                            || (_game.Items.CanExtendMagic(2) && _game.Items.Has(ItemType.FireRod)
+                            && _game.Items.Has(ItemType.Bombos) && _game.Items.Swordless())))
                         {
-                            if (_game.Mode.ItemPlacement == ItemPlacement.Advanced || _game.Items.Has(ItemType.Sword, 2) || (_game.Items.CanExtendMagic(3) &&
-                                _game.Items.Has(ItemType.FireRod)) || (_game.Items.Has(ItemType.Bombos) && (_game.Items.Swordless() ||
-                                _game.Items.Has(ItemType.Sword)) && _game.Items.CanExtendMagic(2) && _game.Items.Has(ItemType.FireRod)))
+                            if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                _game.Mode.WorldState == WorldState.Inverted ||
+                                _game.Items.Has(ItemType.Sword, 2) ||
+                                (_game.Items.CanExtendMagic(3) && _game.Items.Has(ItemType.FireRod)) ||
+                                (_game.Items.Has(ItemType.Bombos) &&
+                                (_game.Items.Swordless() || _game.Items.Has(ItemType.Sword)) &&
+                                _game.Items.CanExtendMagic(2) && _game.Items.Has(ItemType.FireRod)))
                                 return AccessibilityLevel.Normal;
 
                             return AccessibilityLevel.SequenceBreak;
@@ -205,21 +218,24 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemRequirements.Add(_game.Items[ItemType.Sword]);
-                    itemRequirements.Add(_game.Items[ItemType.Bottle]);
-                    itemRequirements.Add(_game.Items[ItemType.HalfMagic]);
                     itemRequirements.Add(_game.Items[ItemType.FireRod]);
                     itemRequirements.Add(_game.Items[ItemType.Bombos]);
+                    itemRequirements.Add(_game.Items[ItemType.Sword]);
                     itemRequirements.Add(_game.Items[ItemType.Hammer]);
+                    itemRequirements.Add(_game.Items[ItemType.Bottle]);
+                    itemRequirements.Add(_game.Items[ItemType.HalfMagic]);
 
                     break;
                 case BossType.Vitreous:
 
                     GetAccessibility = () =>
                     {
-                        if ((_game.Items.Has(ItemType.Hammer) || _game.Items.Has(ItemType.Sword) || _game.Items.Has(ItemType.Bow)))
+                        if (_game.Items.Has(ItemType.Hammer) || _game.Items.Has(ItemType.Sword) ||
+                            _game.Items.Has(ItemType.Bow))
                         {
-                            if (_game.Mode.ItemPlacement == ItemPlacement.Advanced || _game.Items.Has(ItemType.Sword, 2) || _game.Items.Has(ItemType.Bow))
+                            if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                _game.Mode.WorldState == WorldState.Inverted ||
+                                _game.Items.Has(ItemType.Sword, 2) || _game.Items.Has(ItemType.Bow))
                                 return AccessibilityLevel.Normal;
 
                             return AccessibilityLevel.SequenceBreak;
@@ -228,20 +244,23 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
+                    itemRequirements.Add(_game.Items[ItemType.Hammer]);
                     itemRequirements.Add(_game.Items[ItemType.Sword]);
                     itemRequirements.Add(_game.Items[ItemType.Bow]);
-                    itemRequirements.Add(_game.Items[ItemType.Hammer]);
 
                     break;
                 case BossType.Trinexx:
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Items.Has(ItemType.FireRod) && _game.Items.Has(ItemType.IceRod) && (_game.Items.Has(ItemType.Sword, 3) ||
-                            _game.Items.Has(ItemType.Hammer) || (_game.Items.CanExtendMagic(2) && _game.Items.Has(ItemType.Sword, 2)) ||
+                        if (_game.Items.Has(ItemType.FireRod) && _game.Items.Has(ItemType.IceRod) &&
+                            (_game.Items.Has(ItemType.Sword, 3) || _game.Items.Has(ItemType.Hammer) ||
+                            (_game.Items.CanExtendMagic(2) && _game.Items.Has(ItemType.Sword, 2)) ||
                             (_game.Items.CanExtendMagic(4) && _game.Items.Has(ItemType.Sword))))
                         {
-                            if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||_game.Items.Swordless() || _game.Items.Has(ItemType.Sword, 3) ||
+                            if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                _game.Mode.WorldState == WorldState.Inverted ||
+                                _game.Items.Swordless() || _game.Items.Has(ItemType.Sword, 3) ||
                                 (_game.Items.CanExtendMagic(2) && _game.Items.Has(ItemType.Sword, 2)))
                                 return AccessibilityLevel.Normal;
 
@@ -254,16 +273,17 @@ namespace OpenTracker.Models
                     itemRequirements.Add(_game.Items[ItemType.FireRod]);
                     itemRequirements.Add(_game.Items[ItemType.IceRod]);
                     itemRequirements.Add(_game.Items[ItemType.Sword]);
+                    itemRequirements.Add(_game.Items[ItemType.Hammer]);
                     itemRequirements.Add(_game.Items[ItemType.Bottle]);
                     itemRequirements.Add(_game.Items[ItemType.HalfMagic]);
-                    itemRequirements.Add(_game.Items[ItemType.Hammer]);
 
                     break;
                 case BossType.Aga:
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Items.Has(ItemType.Sword) || _game.Items.Has(ItemType.Hammer) || _game.Items.Has(ItemType.Net))
+                        if (_game.Items.Has(ItemType.Sword) || _game.Items.Has(ItemType.Hammer) ||
+                            _game.Items.Has(ItemType.Net))
                             return AccessibilityLevel.Normal;
 
                         return AccessibilityLevel.None;
@@ -289,6 +309,9 @@ namespace OpenTracker.Models
 
         private void OnGameModeChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (e.PropertyName == "WorldState")
+                UpdateAccessibility();
+
             if (e.PropertyName == "ItemPlacement")
                 UpdateAccessibility();
         }

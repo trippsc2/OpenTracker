@@ -6,7 +6,7 @@ using System.Reactive;
 
 namespace OpenTracker.ViewModels
 {
-    public class MessageBoxVM : ViewModelBase, IDialogRequestClose
+    public class MessageBoxDialogVM : ViewModelBase, IDialogRequestClose
     {
         public ReactiveCommand<Unit, Unit> YesCommand { get; }
         public ReactiveCommand<Unit, Unit> NoCommand { get; }
@@ -15,7 +15,7 @@ namespace OpenTracker.ViewModels
 
         public event EventHandler<DialogCloseRequestedEventArgs> CloseRequested;
 
-        public MessageBoxVM(string title, string text)
+        public MessageBoxDialogVM(string title, string text)
         {
             YesCommand = ReactiveCommand.Create(Yes);
             NoCommand = ReactiveCommand.Create(No);

@@ -365,18 +365,50 @@
 
       <Panel Height="16" Width="16" HorizontalAlignment="Right" VerticalAlignment="Top">
 
-        <Image Source="avares://OpenTracker/Assets/Images/settings.png" PointerReleased="OpenAppSettingsPopup"
-               Height="16" Width="16" HorizontalAlignment="Right" VerticalAlignment="Top" 
-               ToolTip.Tip="App Settings" />
+        <Menu Height="16" Width="16" Background="Transparent" HorizontalAlignment="Right">
 
-        <Popup IsOpen="{Binding Path=AppSettingsPopupOpen,
-               RelativeSource={RelativeSource AncestorType=view:MainWindow}, Mode=TwoWay}" StaysOpen="False"
-               PlacementMode="Left" PlacementTarget="{Binding RelativeSource={RelativeSource AncestorType=Panel},
-               Path=VisibleItemPopupTarget}" HorizontalOffset="8" VerticalOffset="8">
+          <MenuItem Width="16">
+            <MenuItem.Header>
+              <Image Source="avares://OpenTracker/Assets/Images/settings.png"
+                     Height="16" Width="16" ToolTip.Tip="App Settings" />
+            </MenuItem.Header>
 
-          <view:AppSettings DataContext="{Binding Path=AppSettings}" />
+            <MenuItem Command="{Binding Path=Reset}">
+              <MenuItem.Header>
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                  <TextBlock Text="Reset" />
+                  <TextBlock Margin="10,0,0,0" Text="F5" Grid.Column="2" />
+                </Grid>
+              </MenuItem.Header>
+            </MenuItem>
 
-        </Popup>
+            <Separator />
+            <MenuItem Header="Open..." IsEnabled="False" />
+            <MenuItem Header="Save" IsEnabled="False" />
+            <MenuItem Header="Save As..." IsEnabled="False" />
+            <Separator />
+            
+            <MenuItem Command="{Binding Path=ToggleDisplayAllLocationsCommand}">
+
+              <MenuItem.Icon>
+                <CheckBox IsChecked="{Binding Path=AppSettings.DisplayAllLocations}" />
+              </MenuItem.Icon>
+
+              <MenuItem.Header>
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                  <TextBlock Text="Display All Locations" />
+                  <TextBlock Margin="10,0,0,0" Text="F11" Grid.Column="2" />
+                </Grid>
+              </MenuItem.Header>
+
+            </MenuItem>
+
+            <Separator />
+            <MenuItem Header="Change Colors..." Command="{Binding Path=ColorSelect}" />
+
+          </MenuItem>
+
+        </Menu>
 
       </Panel>
 

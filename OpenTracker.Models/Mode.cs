@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models
 {
-    public class Mode : INotifyPropertyChanged
+    public class Mode : INotifyPropertyChanging, INotifyPropertyChanged
     {
         private ItemPlacement? _itemPlacement;
         public ItemPlacement? ItemPlacement
@@ -13,6 +13,7 @@ namespace OpenTracker.Models
             {
                 if (_itemPlacement != value)
                 {
+                    OnPropertyChanging(nameof(ItemPlacement));
                     _itemPlacement = value;
                     OnPropertyChanged(nameof(ItemPlacement));
                 }
@@ -27,6 +28,7 @@ namespace OpenTracker.Models
             {
                 if (_dungeonItemShuffle != value)
                 {
+                    OnPropertyChanging(nameof(DungeonItemShuffle));
                     _dungeonItemShuffle = value;
                     OnPropertyChanged(nameof(DungeonItemShuffle));
                 }
@@ -41,6 +43,7 @@ namespace OpenTracker.Models
             {
                 if (_worldState != value)
                 {
+                    OnPropertyChanging(nameof(WorldState));
                     _worldState = value;
                     OnPropertyChanged(nameof(WorldState));
                 }
@@ -55,6 +58,7 @@ namespace OpenTracker.Models
             {
                 if (_entranceShuffle != value)
                 {
+                    OnPropertyChanging(nameof(EntranceShuffle));
                     _entranceShuffle = value;
                     OnPropertyChanged(nameof(EntranceShuffle));
                 }
@@ -69,6 +73,7 @@ namespace OpenTracker.Models
             {
                 if (_bossShuffle != value)
                 {
+                    OnPropertyChanging(nameof(BossShuffle));
                     _bossShuffle = value;
                     OnPropertyChanged(nameof(BossShuffle));
                 }
@@ -83,12 +88,14 @@ namespace OpenTracker.Models
             {
                 if (_enemyShuffle != value)
                 {
+                    OnPropertyChanging(nameof(EnemyShuffle));
                     _enemyShuffle = value;
                     OnPropertyChanged(nameof(EnemyShuffle));
                 }
             }
         }
 
+        public event PropertyChangingEventHandler PropertyChanging;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public bool Validate(Mode gameMode)
@@ -139,7 +146,13 @@ namespace OpenTracker.Models
             return true;
         }
 
-        public void OnPropertyChanged(string propertyName)
+        private void OnPropertyChanging(string propertyName)
+        {
+            if (PropertyChanging != null)
+                PropertyChanging.Invoke(this, new PropertyChangingEventArgs(propertyName));
+        }
+
+        private void OnPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));

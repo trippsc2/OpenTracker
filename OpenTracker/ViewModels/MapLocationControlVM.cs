@@ -99,7 +99,7 @@ namespace OpenTracker.ViewModels
             appSettings.PropertyChanged += OnAppSettingsChanged;
             game.Mode.PropertyChanged += OnModeChanged;
 
-            mapLocation.Location.ItemRequirementChanged += OnItemRequirementChanged;
+            mapLocation.Location.RequirementChanged += OnItemRequirementChanged;
 
             foreach (ISection section in mapLocation.Location.Sections)
                 section.PropertyChanged += OnSectionChanged;

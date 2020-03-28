@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models
 {
-    public class BossSection : ISection
+    public class BossSection : ISection, INotifyPropertyChanging
     {
         private readonly Game _game;
         private readonly Boss _defaultBoss;
@@ -19,6 +19,7 @@ namespace OpenTracker.Models
 
         public Func<AccessibilityLevel> GetAccessibility { get; }
 
+        public event PropertyChangingEventHandler PropertyChanging;
         public event PropertyChangedEventHandler PropertyChanged;
 
         private AccessibilityLevel _accessibility;
@@ -57,11 +58,8 @@ namespace OpenTracker.Models
             {
                 if (_boss != value)
                 {
-                    if (_boss != null)
-                        _boss.PropertyChanged -= OnBossChanged;
+                    OnPropertyChanging(nameof(Boss));
                     _boss = value;
-                    if (_boss != null)
-                        _boss.PropertyChanged += OnBossChanged;
                     OnPropertyChanged(nameof(Boss));
                 }
             }
@@ -75,11 +73,8 @@ namespace OpenTracker.Models
             {
                 if (_prize != value)
                 {
-                    if (_prize != null && !Available)
-                        _prize.Current--;
+                    OnPropertyChanging(nameof(Prize));
                     _prize = value;
-                    if (_prize != null && !Available)
-                        _prize.Current++;
                     OnPropertyChanged(nameof(Prize));
                 }
             }
@@ -94,7 +89,7 @@ namespace OpenTracker.Models
 
             switch (iD)
             {
-                case LocationID.Agahnim:
+                case LocationID.AgahnimTower:
 
                     _defaultBoss = _game.Bosses[BossType.Aga];
                     _boss = _game.Bosses[BossType.Aga];
@@ -297,9 +292,9 @@ namespace OpenTracker.Models
                         if ((_game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.Boots)) &&
                             _game.Items.Has(ItemType.CaneOfSomaria) && _game.Items.Has(ItemType.MMBigKey))
                         {
-                            if (_game.Items.Has(ItemType.Hookshot) || (_game.Items.Has(ItemType.Boots) &&
+                            if ((_game.Items.Has(ItemType.Hookshot) || (_game.Items.Has(ItemType.Boots) &&
                                 (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
-                                _game.Mode.WorldState == WorldState.Inverted)) && _game.Items.Has(ItemType.Lamp))
+                                _game.Mode.WorldState == WorldState.Inverted))) && _game.Items.Has(ItemType.Lamp))
                                 return AccessibilityLevel.Normal;
 
                             return AccessibilityLevel.SequenceBreak;
@@ -335,7 +330,7 @@ namespace OpenTracker.Models
                             {
                                 if (_game.Items.Has(ItemType.Lamp))
                                 {
-                                    if (_game.Mode.DungeonItemShuffle < DungeonItemShuffle.Keysanity &&
+                                    if (_game.Mode.DungeonItemShuffle < DungeonItemShuffle.MapsCompassesSmallKeys &&
                                         _game.Items.Has(ItemType.FireRod))
                                         return AccessibilityLevel.Normal;
                                 }
@@ -382,16 +377,12 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.FireRod]);
-                    itemReqs.Add(_game.Items[ItemType.Lamp]);
                     itemReqs.Add(_game.Items[ItemType.TRBigKey]);
-                    itemReqs.Add(_game.Items[ItemType.CaneOfSomaria]);
                     itemReqs.Add(_game.Items[ItemType.TRSmallKey]);
+                    itemReqs.Add(_game.Items[ItemType.CaneOfSomaria]);
+                    itemReqs.Add(_game.Items[ItemType.Lamp]);
+                    itemReqs.Add(_game.Items[ItemType.FireRod]);
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.Hookshot]);
-                    itemReqs.Add(_game.Items[ItemType.Cape]);
-                    itemReqs.Add(_game.Items[ItemType.CaneOfByrna]);
-                    itemReqs.Add(_game.Items[ItemType.Shield]);
                     itemReqs.Add(_game.Items[ItemType.Sword]);
                     itemReqs.Add(_game.Items[ItemType.Bombos]);
                     itemReqs.Add(_game.Items[ItemType.BombosDungeons]);
@@ -400,14 +391,14 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Quake]);
                     itemReqs.Add(_game.Items[ItemType.QuakeDungeons]);
 
-                    _game.Regions[RegionID.DeathMountainEastTop].PropertyChanged += OnItemRequirementChanged;
-                    _game.Regions[RegionID.DarkDeathMountainTop].PropertyChanged += OnItemRequirementChanged;
+                    _game.Regions[RegionID.DeathMountainEastTop].PropertyChanged += OnRequirementChanged;
+                    _game.Regions[RegionID.DarkDeathMountainTop].PropertyChanged += OnRequirementChanged;
 
                     break;
             }
 
             foreach (Item item in itemReqs)
-                item.PropertyChanged += OnItemRequirementChanged;
+                item.PropertyChanged += OnRequirementChanged;
 
             _game.Mode.PropertyChanged += OnModeChanged;
             _defaultBoss.PropertyChanged += OnBossChanged;
@@ -462,23 +453,52 @@ namespace OpenTracker.Models
             UpdateAccessibility();
         }
 
-        private void OnItemRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateAccessibility();
         }
 
+        private void OnPropertyChanging(string propertyName)
+        {
+            if (propertyName == nameof(Boss))
+            {
+                if (Boss != null)
+                    Boss.PropertyChanged -= OnBossChanged;
+            }
+
+            if (propertyName == nameof(Prize) && Prize != null &&
+                !Available)
+                Prize.Change(-1, true);
+
+            if (PropertyChanging != null)
+                PropertyChanging.Invoke(this, new PropertyChangingEventArgs(propertyName));
+        }
+
         private void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
             if (propertyName == nameof(Available) && Prize != null)
             {
                 if (Available)
-                    Prize.Current--;
+                    Prize.Change(-1, true);
                 else
-                    Prize.Current++;
+                    Prize.Change(1, true);
             }
+
+            if (propertyName == nameof(Boss))
+            {
+                if (Boss != null)
+                    Boss.PropertyChanged += OnBossChanged;
+
+                UpdateAccessibility();
+            }
+
+            if (propertyName == nameof(Prize) && Prize != null &&
+                !Available)
+                Prize.Change(1, true);
+
+            if (PropertyChanged != null)
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
 
             if (propertyName == nameof(Boss))
                 UpdateAccessibility();

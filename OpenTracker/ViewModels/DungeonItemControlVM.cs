@@ -128,9 +128,12 @@ namespace OpenTracker.ViewModels
             if (_item != null)
             {
                 if (rightClick)
-                    _item.Current = Math.Max(_item.Current - 1, 0);
+                {
+                    if (_item.Current > 0)
+                        _item.Change(-1);
+                }
                 else
-                    _item.Current = Math.Min(_item.Current + 1, _item.Maximum);
+                    _item.Change(1);
             }
         }
     }

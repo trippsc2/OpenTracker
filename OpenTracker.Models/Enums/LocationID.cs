@@ -59,7 +59,7 @@
         FloatingIsland,
         MimicCave,
         HyruleCastle,
-        Agahnim,
+        AgahnimTower,
         EasternPalace,
         DesertPalace,
         TowerOfHera,

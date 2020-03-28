@@ -17,7 +17,7 @@ namespace OpenTracker.Models
         public List<MapLocation> MapLocations { get; }
         public List<ISection> Sections { get; }
 
-        public event EventHandler ItemRequirementChanged;
+        public event EventHandler RequirementChanged;
 
         public Location(Game game, LocationID iD)
         {
@@ -561,7 +561,7 @@ namespace OpenTracker.Models
                         }));
                     itemSections = 1;
                     break;
-                case LocationID.Agahnim:
+                case LocationID.AgahnimTower:
                     Name = "Agahnim";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1003, 807,
                         new Mode()
@@ -1880,13 +1880,13 @@ namespace OpenTracker.Models
                 Sections.Add(BossSection);
 
             foreach (ISection section in Sections)
-                section.PropertyChanged += OnItemRequirementChanged;
+                section.PropertyChanged += OnRequirementChanged;
         }
 
-        private void OnItemRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (ItemRequirementChanged != null)
-                ItemRequirementChanged.Invoke(this, new EventArgs());
+            if (RequirementChanged != null)
+                RequirementChanged.Invoke(this, new EventArgs());
         }
 
         public AccessibilityLevel GetAccessibility(Mode mode, ItemDictionary items)

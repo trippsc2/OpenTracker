@@ -92,24 +92,27 @@ namespace OpenTracker.ViewModels
                     if (rightClick)
                     {
                         if (_items[1].Current == _items[1].Maximum)
-                            _items[1].Current = 0;
+                            _items[1].SetCurrent();
                         else
-                            _items[1].Current++;
+                            _items[1].Change(1);
                     }
                     else
                     {
                         if (_items[0].Current == _items[0].Maximum)
-                            _items[0].Current = 0;
+                            _items[0].SetCurrent();
                         else
-                            _items[0].Current++;
+                            _items[0].Change(1);
                     }
                 }
                 else
                 {
                     if (rightClick)
-                        _items[0].Current = Math.Max(_items[0].Current - 1, 0);
+                    {
+                        if (_items[0].Current > 0)
+                            _items[0].Change(-1);
+                    }
                     else
-                        _items[0].Current = Math.Min(_items[0].Current + 1, _items[0].Maximum);
+                        _items[0].Change(1);
                 }
             }
         }

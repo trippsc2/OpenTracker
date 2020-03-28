@@ -5,9 +5,9 @@ using OpenTracker.Interfaces;
 
 namespace OpenTracker.Views
 {
-    public class MessageBox : Window, IDialog
+    public class MessageBoxDialog : Window, IDialog
     {
-        public MessageBox()
+        public MessageBoxDialog()
         {
             this.InitializeComponent();
 #if DEBUG
