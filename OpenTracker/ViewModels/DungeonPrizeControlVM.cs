@@ -1,4 +1,5 @@
-﻿using OpenTracker.Interfaces;
+﻿using OpenTracker.Actions;
+using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.Enums;
 using ReactiveUI;
@@ -8,6 +9,7 @@ namespace OpenTracker.ViewModels
 {
     public class DungeonPrizeControlVM : ViewModelBase, IItemControlVM
     {
+        private readonly UndoRedoManager _undoRedoManager;
         private readonly Game _game;
         private readonly BossSection _prizeSection;
 
@@ -18,8 +20,10 @@ namespace OpenTracker.ViewModels
             set => this.RaiseAndSetIfChanged(ref _imageSource, value);
         }
 
-        public DungeonPrizeControlVM(Game game, BossSection prizeSection)
+        public DungeonPrizeControlVM(UndoRedoManager undoRedoManager,
+            Game game, BossSection prizeSection)
         {
+            _undoRedoManager = undoRedoManager;
             _game = game;
             _prizeSection = prizeSection;
 
@@ -45,22 +49,25 @@ namespace OpenTracker.ViewModels
             ImageSource = imageBaseString + (_prizeSection.Available ? "0" : "1") + ".png";
         }
 
-        public void ChangeItem(bool alternate = false)
+        public void ChangeItem(bool rightClick = false)
         {
-            if (alternate)
+            if (rightClick)
             {
                 if (_prizeSection.Prize == null)
-                    _prizeSection.Prize = _game.Items[ItemType.GreenPendant];
+                {
+                    _undoRedoManager.Execute(new ChangePrize(_prizeSection,
+                        _game.Items[ItemType.GreenPendant]));
+                }
                 else if (_prizeSection.Prize.Type == ItemType.RedCrystal)
-                    _prizeSection.Prize = null;
+                    _undoRedoManager.Execute(new ChangePrize(_prizeSection, null));
                 else
                 {
-                    ItemType newPrize = _prizeSection.Prize.Type + 1;
-                    _prizeSection.Prize = _game.Items[newPrize];
+                    Item newPrize = _game.Items[_prizeSection.Prize.Type + 1];
+                    _undoRedoManager.Execute(new ChangePrize(_prizeSection, newPrize));
                 }
             }
             else
-                _prizeSection.Available = !_prizeSection.Available;
+                _undoRedoManager.Execute(new TogglePrize(_prizeSection));
         }
     }
 }

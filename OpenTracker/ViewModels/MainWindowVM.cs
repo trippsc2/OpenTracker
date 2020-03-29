@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using OpenTracker.Actions;
 using OpenTracker.Interfaces;
 using OpenTracker.JsonConverters;
 using OpenTracker.Models;
@@ -6,6 +7,7 @@ using OpenTracker.Models.Enums;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Reactive;
@@ -15,6 +17,7 @@ namespace OpenTracker.ViewModels
     public class MainWindowVM : ViewModelBase, IMainWindowVM
     {
         private readonly IDialogService _dialogService;
+        private readonly UndoRedoManager _undoRedoManager;
         private readonly Game _game;
 
         public ObservableCollection<MapControlVM> Maps { get; }
@@ -27,7 +30,29 @@ namespace OpenTracker.ViewModels
         public ObservableCollection<DungeonPrizeControlVM> Prizes { get; }
         public ObservableCollection<BossControlVM> Bosses { get; }
 
+        public ReactiveCommand<Unit, Unit> UndoCommand { get; }
+        public ReactiveCommand<Unit, Unit> RedoCommand { get; }
         public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocationsCommand { get; }
+        public ReactiveCommand<string, Unit> ItemPlacementCommand { get; }
+        public ReactiveCommand<string, Unit> DungeonItemShuffleCommand { get; }
+        public ReactiveCommand<string, Unit> WorldStateCommand { get; }
+        public ReactiveCommand<Unit, Unit> EntranceShuffleCommand { get; }
+        public ReactiveCommand<Unit, Unit> BossShuffleCommand { get; }
+        public ReactiveCommand<Unit, Unit> EnemyShuffleCommand { get; }
+
+        private bool _canUndo;
+        public bool CanUndo
+        {
+            get => _canUndo;
+            private set => this.RaiseAndSetIfChanged(ref _canUndo, value);
+        }
+
+        private bool _canRedo;
+        public bool CanRedo
+        {
+            get => _canRedo;
+            private set => this.RaiseAndSetIfChanged(ref _canRedo, value);
+        }
 
         private AppSettingsVM _appSettings;
         public AppSettingsVM AppSettings
@@ -141,7 +166,20 @@ namespace OpenTracker.ViewModels
 
         public MainWindowVM()
         {
+            _undoRedoManager = new UndoRedoManager();
+
+            _undoRedoManager.UndoableActions.CollectionChanged += OnUndoChanged;
+            _undoRedoManager.RedoableActions.CollectionChanged += OnRedoChanged;
+
+            UndoCommand = ReactiveCommand.Create(Undo, this.WhenAnyValue(x => x.CanUndo));
+            RedoCommand = ReactiveCommand.Create(Redo, this.WhenAnyValue(x => x.CanRedo));
             ToggleDisplayAllLocationsCommand = ReactiveCommand.Create(ToggleDisplayAllLocations);
+            ItemPlacementCommand = ReactiveCommand.Create<string>(SetItemPlacement);
+            DungeonItemShuffleCommand = ReactiveCommand.Create<string>(SetDungeonItemShuffle);
+            WorldStateCommand = ReactiveCommand.Create<string>(SetWorldState);
+            EntranceShuffleCommand = ReactiveCommand.Create(ToggleEntranceShuffle);
+            BossShuffleCommand = ReactiveCommand.Create(ToggleBossShuffle);
+            EnemyShuffleCommand = ReactiveCommand.Create(ToggleEnemyShuffle);
 
             string appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
@@ -172,69 +210,69 @@ namespace OpenTracker.ViewModels
             PinnedLocations = new ObservableCollection<PinnedLocationControlVM>();
             HCItems = new ObservableCollection<DungeonItemControlVM>()
             {
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.HCSmallKey])
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.HCSmallKey])
             };
             ATItems = new ObservableCollection<DungeonItemControlVM>()
             {
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.ATSmallKey])
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.ATSmallKey])
             };
             SmallKeyItems = new ObservableCollection<DungeonItemControlVM>()
             {
-                new DungeonItemControlVM(_appSettings, _game.Mode, null),
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.DPSmallKey]),
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.ToHSmallKey]),
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.PoDSmallKey]),
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.SPSmallKey]),
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.SWSmallKey]),
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.TTSmallKey]),
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.IPSmallKey]),
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.MMSmallKey]),
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.TRSmallKey]),
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.GTSmallKey])
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, null),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.DPSmallKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.ToHSmallKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.PoDSmallKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.SPSmallKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.SWSmallKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.TTSmallKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.IPSmallKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.MMSmallKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.TRSmallKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.GTSmallKey])
             };
             BigKeyItems = new ObservableCollection<DungeonItemControlVM>()
             {
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.EPBigKey]),
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.DPBigKey]),
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.ToHBigKey]),
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.PoDBigKey]),
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.SPBigKey]),
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.SWBigKey]),
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.TTBigKey]),
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.IPBigKey]),
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.MMBigKey]),
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.TRBigKey]),
-                new DungeonItemControlVM(_appSettings, _game.Mode, _game.Items[ItemType.GTBigKey])
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.EPBigKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.DPBigKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.ToHBigKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.PoDBigKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.SPBigKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.SWBigKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.TTBigKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.IPBigKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.MMBigKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.TRBigKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Mode, _game.Items[ItemType.GTBigKey])
             };
             Prizes = new ObservableCollection<DungeonPrizeControlVM>()
             {
-                new DungeonPrizeControlVM(_game, _game.Locations[LocationID.EasternPalace].BossSection),
-                new DungeonPrizeControlVM(_game, _game.Locations[LocationID.DesertPalace].BossSection),
-                new DungeonPrizeControlVM(_game, _game.Locations[LocationID.TowerOfHera].BossSection),
-                new DungeonPrizeControlVM(_game, _game.Locations[LocationID.PalaceOfDarkness].BossSection),
-                new DungeonPrizeControlVM(_game, _game.Locations[LocationID.SwampPalace].BossSection),
-                new DungeonPrizeControlVM(_game, _game.Locations[LocationID.SkullWoods].BossSection),
-                new DungeonPrizeControlVM(_game, _game.Locations[LocationID.ThievesTown].BossSection),
-                new DungeonPrizeControlVM(_game, _game.Locations[LocationID.IcePalace].BossSection),
-                new DungeonPrizeControlVM(_game, _game.Locations[LocationID.MiseryMire].BossSection),
-                new DungeonPrizeControlVM(_game, _game.Locations[LocationID.TurtleRock].BossSection)
+                new DungeonPrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.EasternPalace].BossSection),
+                new DungeonPrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.DesertPalace].BossSection),
+                new DungeonPrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.TowerOfHera].BossSection),
+                new DungeonPrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.PalaceOfDarkness].BossSection),
+                new DungeonPrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.SwampPalace].BossSection),
+                new DungeonPrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.SkullWoods].BossSection),
+                new DungeonPrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.ThievesTown].BossSection),
+                new DungeonPrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.IcePalace].BossSection),
+                new DungeonPrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.MiseryMire].BossSection),
+                new DungeonPrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.TurtleRock].BossSection)
             };
             Bosses = new ObservableCollection<BossControlVM>()
             {
-                new BossControlVM(_game, _game.Locations[LocationID.EasternPalace].BossSection),
-                new BossControlVM(_game, _game.Locations[LocationID.DesertPalace].BossSection),
-                new BossControlVM(_game, _game.Locations[LocationID.TowerOfHera].BossSection),
-                new BossControlVM(_game, _game.Locations[LocationID.PalaceOfDarkness].BossSection),
-                new BossControlVM(_game, _game.Locations[LocationID.SwampPalace].BossSection),
-                new BossControlVM(_game, _game.Locations[LocationID.SkullWoods].BossSection),
-                new BossControlVM(_game, _game.Locations[LocationID.ThievesTown].BossSection),
-                new BossControlVM(_game, _game.Locations[LocationID.IcePalace].BossSection),
-                new BossControlVM(_game, _game.Locations[LocationID.MiseryMire].BossSection),
-                new BossControlVM(_game, _game.Locations[LocationID.TurtleRock].BossSection)
+                new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.EasternPalace].BossSection),
+                new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.DesertPalace].BossSection),
+                new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.TowerOfHera].BossSection),
+                new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.PalaceOfDarkness].BossSection),
+                new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.SwampPalace].BossSection),
+                new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.SkullWoods].BossSection),
+                new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.ThievesTown].BossSection),
+                new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.IcePalace].BossSection),
+                new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.MiseryMire].BossSection),
+                new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.TurtleRock].BossSection)
             };
 
             for (int i = 0; i < Enum.GetValues(typeof(MapID)).Length; i++)
-                Maps.Add(new MapControlVM(_appSettings, _game, this, (MapID)i));
+                Maps.Add(new MapControlVM(_undoRedoManager, _appSettings, _game, this, (MapID)i));
 
             Items = new ObservableCollection<ItemControlVM>();
 
@@ -250,12 +288,13 @@ namespace OpenTracker.ViewModels
                     case ItemType.Ether:
                     case ItemType.Quake:
                     case ItemType.Flute:
-                        Items.Add(new ItemControlVM(new Item[2] {
-                            _game.Items[(ItemType)i], _game.Items[(ItemType)(i + 1)] }));
+                        Items.Add(new ItemControlVM(_undoRedoManager, new Item[2] {
+                            _game.Items[(ItemType)i], _game.Items[(ItemType)(i + 1)]
+                        }));
                         break;
                     case ItemType.MoonPearl:
-                        Items.Add(new ItemControlVM(new Item[1] { _game.Items[(ItemType)i] }));
-                        Items.Add(new ItemControlVM(null));
+                        Items.Add(new ItemControlVM(_undoRedoManager, new Item[1] { _game.Items[(ItemType)i] }));
+                        Items.Add(new ItemControlVM(_undoRedoManager, null));
                         break;
                     case ItemType.Hookshot:
                     case ItemType.Mushroom:
@@ -282,34 +321,14 @@ namespace OpenTracker.ViewModels
                     case ItemType.Sword:
                     case ItemType.Shield:
                     case ItemType.Mail:
-                        Items.Add(new ItemControlVM(new Item[1] { _game.Items[(ItemType)i] }));
+                        Items.Add(new ItemControlVM(_undoRedoManager, new Item[1] { _game.Items[(ItemType)i] }));
                         break;
                     default:
                         break;
                 }
             }
 
-            PropertyChanged += OnPropertyChanged;
-        }
-
-        private void ToggleDisplayAllLocations()
-        {
-            _appSettings.DisplayAllLocations = !_appSettings.DisplayAllLocations;
-        }
-
-        private async void Reset()
-        {
-            bool? result = await _dialogService.ShowDialog(
-                new MessageBoxDialogVM("Warning",
-                "Resetting the tracker will set all items and locations back to their starting values.  This cannot be undone.\nDo you wish to proceed?"));
-
-            if (result.HasValue && result.Value)
-                _game.Reset();
-        }
-
-        private async void ColorSelect()
-        {
-            bool? result = await _dialogService.ShowDialog(_appSettings);
+            _game.Mode.PropertyChanged += OnModeChanged;
         }
 
         private void RefreshItemPlacement()
@@ -340,30 +359,40 @@ namespace OpenTracker.ViewModels
                     DungeonItemShuffleMapsCompasses = false;
                     DungeonItemShuffleMapsCompassesSmallKeys = false;
                     DungeonItemShuffleKeysanity = false;
+                    SmallKeyShuffle = false;
+                    BigKeyShuffle = false;
                     break;
                 case DungeonItemShuffle.Standard:
                     DungeonItemShuffleStandard = true;
                     DungeonItemShuffleMapsCompasses = false;
                     DungeonItemShuffleMapsCompassesSmallKeys = false;
                     DungeonItemShuffleKeysanity = false;
+                    SmallKeyShuffle = false;
+                    BigKeyShuffle = false;
                     break;
                 case DungeonItemShuffle.MapsCompasses:
                     DungeonItemShuffleStandard = false;
                     DungeonItemShuffleMapsCompasses = true;
                     DungeonItemShuffleMapsCompassesSmallKeys = false;
                     DungeonItemShuffleKeysanity = false;
+                    SmallKeyShuffle = false;
+                    BigKeyShuffle = false;
                     break;
                 case DungeonItemShuffle.MapsCompassesSmallKeys:
                     DungeonItemShuffleStandard = false;
                     DungeonItemShuffleMapsCompasses = false;
                     DungeonItemShuffleMapsCompassesSmallKeys = true;
                     DungeonItemShuffleKeysanity = false;
+                    SmallKeyShuffle = true;
+                    BigKeyShuffle = false;
                     break;
                 case DungeonItemShuffle.Keysanity:
                     DungeonItemShuffleStandard = false;
                     DungeonItemShuffleMapsCompasses = false;
                     DungeonItemShuffleMapsCompassesSmallKeys = false;
                     DungeonItemShuffleKeysanity = true;
+                    SmallKeyShuffle = true;
+                    BigKeyShuffle = true;
                     break;
             }
         }
@@ -411,80 +440,108 @@ namespace OpenTracker.ViewModels
                 EnemyShuffle = false;
         }
 
-        private void SetItemPlacement(ItemPlacement itemPlacement)
+        private void SetItemPlacement(string itemPlacementString)
         {
-            _game.Mode.ItemPlacement = itemPlacement;
+            if (Enum.TryParse(itemPlacementString, out ItemPlacement itemPlacement))
+                _undoRedoManager.Execute(new ChangeItemPlacement(_game.Mode, itemPlacement));
         }
 
-        private void SetDungeonItemShuffle(DungeonItemShuffle dungeonItemShuffle)
+        private void SetDungeonItemShuffle(string dungeonItemShuffleString)
         {
-            _game.Mode.DungeonItemShuffle = dungeonItemShuffle;
-
-            if (dungeonItemShuffle >= DungeonItemShuffle.MapsCompassesSmallKeys)
-                SmallKeyShuffle = true;
-            else
-                SmallKeyShuffle = false;
-
-            if (dungeonItemShuffle == DungeonItemShuffle.Keysanity)
-                BigKeyShuffle = true;
-            else
-                BigKeyShuffle = false;
+            if (Enum.TryParse(dungeonItemShuffleString, out DungeonItemShuffle dungeonItemShuffle))
+                _undoRedoManager.Execute(new ChangeDungeonItemShuffle(_game.Mode, dungeonItemShuffle));
         }
 
-        private void SetWorldState(WorldState worldState)
+        private void SetWorldState(string worldStateString)
         {
-            _game.Mode.WorldState = worldState;
+            if (Enum.TryParse(worldStateString, out WorldState worldState))
+                _undoRedoManager.Execute(new ChangeWorldState(_game.Mode, worldState));
         }
 
-        private void SetEntranceShuffle(bool entranceShuffle)
+        private void ToggleEntranceShuffle()
         {
-            _game.Mode.EntranceShuffle = entranceShuffle;
+            _undoRedoManager.Execute(new ChangeEntranceShuffle(_game.Mode, !_game.Mode.EntranceShuffle.Value));
         }
 
-        private void SetBossShuffle(bool bossShuffle)
+        private void ToggleBossShuffle()
         {
-            _game.Mode.BossShuffle = bossShuffle;
+            _undoRedoManager.Execute(new ChangeBossShuffle(_game.Mode, !_game.Mode.BossShuffle.Value));
         }
 
-        private void SetEnemyShuffle(bool enemyShuffle)
+        private void ToggleEnemyShuffle()
         {
-            _game.Mode.EnemyShuffle = enemyShuffle;
+            _undoRedoManager.Execute(new ChangeEnemyShuffle(_game.Mode, !_game.Mode.EnemyShuffle.Value));
         }
 
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ItemPlacementBasic) && ItemPlacementBasic)
-                SetItemPlacement(ItemPlacement.Basic);
+            if (e.PropertyName == nameof(_game.Mode.ItemPlacement))
+                RefreshItemPlacement();
 
-            if (e.PropertyName == nameof(ItemPlacementAdvanced) && ItemPlacementAdvanced)
-                SetItemPlacement(ItemPlacement.Advanced);
+            if (e.PropertyName == nameof(_game.Mode.DungeonItemShuffle))
+                RefreshDungeonItemShuffle();
 
-            if (e.PropertyName == nameof(DungeonItemShuffleStandard) && DungeonItemShuffleStandard)
-                SetDungeonItemShuffle(DungeonItemShuffle.Standard);
+            if (e.PropertyName == nameof(_game.Mode.WorldState))
+                RefreshWorldState();
 
-            if (e.PropertyName == nameof(DungeonItemShuffleMapsCompasses) && DungeonItemShuffleMapsCompasses)
-                SetDungeonItemShuffle(DungeonItemShuffle.MapsCompasses);
+            if (e.PropertyName == nameof(_game.Mode.EntranceShuffle))
+                RefreshEntranceShuffle();
 
-            if (e.PropertyName == nameof(DungeonItemShuffleMapsCompassesSmallKeys) && DungeonItemShuffleMapsCompassesSmallKeys)
-                SetDungeonItemShuffle(DungeonItemShuffle.MapsCompassesSmallKeys);
+            if (e.PropertyName == nameof(_game.Mode.BossShuffle))
+                RefreshBossShuffle();
 
-            if (e.PropertyName == nameof(DungeonItemShuffleKeysanity) && DungeonItemShuffleKeysanity)
-                SetDungeonItemShuffle(DungeonItemShuffle.Keysanity);
+            if (e.PropertyName == nameof(_game.Mode.EnemyShuffle))
+                RefreshEnemyShuffle();
+        }
 
-            if (e.PropertyName == nameof(WorldStateStandardOpen) && WorldStateStandardOpen)
-                SetWorldState(WorldState.StandardOpen);
+        private void OnUndoChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            UpdateCanUndo();
+        }
 
-            if (e.PropertyName == nameof(WorldStateInverted) && WorldStateInverted)
-                SetWorldState(WorldState.Inverted);
+        private void OnRedoChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            UpdateCanRedo();
+        }
 
-            if (e.PropertyName == nameof(EntranceShuffle))
-                SetEntranceShuffle(EntranceShuffle);
+        private void UpdateCanUndo()
+        {
+            CanUndo = _undoRedoManager.CanUndo();
+        }
 
-            if (e.PropertyName == nameof(BossShuffle))
-                SetBossShuffle(BossShuffle);
+        private void Undo()
+        {
+            _undoRedoManager.Undo();
+        }
 
-            if (e.PropertyName == nameof(EnemyShuffle))
-                SetEnemyShuffle(EnemyShuffle);
+        private void UpdateCanRedo()
+        {
+            CanRedo = _undoRedoManager.CanRedo();
+        }
+
+        private void Redo()
+        {
+            _undoRedoManager.Redo();
+        }
+
+        private void ToggleDisplayAllLocations()
+        {
+            _appSettings.DisplayAllLocations = !_appSettings.DisplayAllLocations;
+        }
+
+        public async void Reset()
+        {
+            bool? result = await _dialogService.ShowDialog(
+                new MessageBoxDialogVM("Warning",
+                "Resetting the tracker will set all items and locations back to their starting values.  This cannot be undone.\nDo you wish to proceed?"));
+
+            if (result.HasValue && result.Value)
+                _game.Reset();
+        }
+
+        public async void ColorSelect()
+        {
+            bool? result = await _dialogService.ShowDialog(_appSettings);
         }
 
         public void SaveAppSettings()

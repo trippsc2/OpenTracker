@@ -1,15 +1,16 @@
 ﻿using Avalonia.Media;
+using OpenTracker.Actions;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.Enums;
 using ReactiveUI;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels
 {
     public class ItemControlVM : ViewModelBase, IItemControlVM
     {
+        private readonly UndoRedoManager _undoRedoManager;
         private readonly string _imageSourceBase;
         private readonly Item[] _items;
 
@@ -34,8 +35,9 @@ namespace OpenTracker.ViewModels
             private set => this.RaiseAndSetIfChanged(ref _textColor, value);
         }
 
-        public ItemControlVM(Item[] items)
+        public ItemControlVM(UndoRedoManager undoRedoManager, Item[] items)
         {
+            _undoRedoManager = undoRedoManager;
             _items = items;
 
             if (_items != null)
@@ -90,29 +92,16 @@ namespace OpenTracker.ViewModels
                 if (_items.Length == 2)
                 {
                     if (rightClick)
-                    {
-                        if (_items[1].Current == _items[1].Maximum)
-                            _items[1].SetCurrent();
-                        else
-                            _items[1].Change(1);
-                    }
+                        _undoRedoManager.Execute(new CycleItem(_items[1]));
                     else
-                    {
-                        if (_items[0].Current == _items[0].Maximum)
-                            _items[0].SetCurrent();
-                        else
-                            _items[0].Change(1);
-                    }
+                        _undoRedoManager.Execute(new CycleItem(_items[0]));
                 }
                 else
                 {
                     if (rightClick)
-                    {
-                        if (_items[0].Current > 0)
-                            _items[0].Change(-1);
-                    }
+                        _undoRedoManager.Execute(new RemoveItem(_items[0]));
                     else
-                        _items[0].Change(1);
+                        _undoRedoManager.Execute(new AddItem(_items[0]));
                 }
             }
         }

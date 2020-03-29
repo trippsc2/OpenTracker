@@ -20,8 +20,8 @@ namespace OpenTracker.ViewModels
             private set => this.RaiseAndSetIfChanged(ref _imageSource, value);
         }
 
-        public MapControlVM(AppSettingsVM appSettings, Game game,
-            MainWindowVM mainWindow, MapID iD)
+        public MapControlVM(UndoRedoManager undoRedoManager, AppSettingsVM appSettings,
+            Game game, MainWindowVM mainWindow, MapID iD)
         {
             _game = game;
             _iD = iD;
@@ -35,7 +35,10 @@ namespace OpenTracker.ViewModels
                 foreach (MapLocation mapLocation in location.MapLocations)
                 {
                     if (mapLocation.Map == iD)
-                        MapLocations.Add(new MapLocationControlVM(appSettings, game, mainWindow, mapLocation));
+                    {
+                        MapLocations.Add(new MapLocationControlVM(undoRedoManager, appSettings,
+                            game, mainWindow, mapLocation));
+                    }
                 }
             }
 

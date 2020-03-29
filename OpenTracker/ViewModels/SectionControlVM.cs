@@ -1,4 +1,5 @@
 ﻿using Avalonia.Media;
+using OpenTracker.Actions;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.Enums;
@@ -13,6 +14,7 @@ namespace OpenTracker.ViewModels
 {
     public class SectionControlVM : ViewModelBase, ISectionControlVM
     {
+        private readonly UndoRedoManager _undoRedoManager;
         private readonly AppSettingsVM _appSettings;
         private readonly Game _game;
         private readonly ISection _section;
@@ -82,12 +84,15 @@ namespace OpenTracker.ViewModels
 
         public ReactiveCommand<Unit, Unit> ClearVisibleItemCommand { get; }
 
-        public SectionControlVM(AppSettingsVM appSettings, Game game, ISection section)
+        public SectionControlVM(UndoRedoManager undoRedoManager, AppSettingsVM appSettings,
+            Game game, ISection section)
         {
-            ClearVisibleItemCommand = ReactiveCommand.Create(ClearMarking);
+            _undoRedoManager = undoRedoManager;
             _appSettings = appSettings;
             _game = game;
             _section = section;
+
+            ClearVisibleItemCommand = ReactiveCommand.Create(ClearMarking);
 
             ItemSelect = new ObservableCollection<MarkingSelectControlVM>();
 
@@ -176,7 +181,7 @@ namespace OpenTracker.ViewModels
 
         private void ClearMarking()
         {
-            _section.Marking = null;
+            _undoRedoManager.Execute(new MarkSection(_section, null));
             MarkingPopupOpen = false;
         }
 
@@ -294,7 +299,6 @@ namespace OpenTracker.ViewModels
                 }
             }
 
-
             switch (_section)
             {
                 case ItemSection itemSection:
@@ -388,7 +392,7 @@ namespace OpenTracker.ViewModels
                     }
                 }
 
-                _section.Marking = marking;
+                _undoRedoManager.Execute(new MarkSection(_section, marking));
 
                 if (Enum.TryParse(_section.Marking.ToString(), out ItemType newItemType))
                 {
@@ -415,38 +419,44 @@ namespace OpenTracker.ViewModels
 
         public void ChangeAvailable(bool rightClick = false)
         {
-            if (_section.Accessibility >= AccessibilityLevel.SequenceBreak || rightClick ||
-                _section is EntranceSection)
+            if (rightClick)
             {
                 switch (_section)
                 {
-                    case ItemSection itemSection:
-
-                        itemSection.Available = Math.Max(0, Math.Min(itemSection.Total, itemSection.Available + (rightClick ? 1 : -1)));
-
-                        if (itemSection.Marking != null && itemSection.Available == 0)
-                        {
-                            if (Enum.TryParse(itemSection.Marking.ToString(), out ItemType itemType))
-                            {
-                                Item item = _game.Items[itemType];
-                                item.Change(1);
-                                itemSection.Marking = null;
-                            }
-                        }
-
+                    case BossSection bossSectionUncollect:
+                        if (!bossSectionUncollect.Available)
+                            _undoRedoManager.Execute(new UncollectSection(_section));
                         break;
-
-                    case BossSection bossSection:
-
-                        bossSection.Available = rightClick;
-
+                    case EntranceSection entranceSectionUncollect:
+                        if (!entranceSectionUncollect.Available)
+                            _undoRedoManager.Execute(new UncollectSection(_section));
                         break;
-
-                    case EntranceSection entranceSection:
-
-                        entranceSection.Available = rightClick;
-
+                    case ItemSection itemSectionUncollect:
+                        if (itemSectionUncollect.Available < itemSectionUncollect.Total)
+                            _undoRedoManager.Execute(new UncollectSection(_section));
                         break;
+                }
+            }
+            else
+            {
+                if (_section is EntranceSection ||
+                _section.Accessibility >= AccessibilityLevel.SequenceBreak)
+                {
+                    switch (_section)
+                    {
+                        case BossSection bossSectionCollect:
+                            if (bossSectionCollect.Available)
+                                _undoRedoManager.Execute(new CollectSection(_game, _section));
+                            break;
+                        case EntranceSection entranceSectionCollect:
+                            if (entranceSectionCollect.Available)
+                                _undoRedoManager.Execute(new CollectSection(_game, _section));
+                            break;
+                        case ItemSection itemSectionCollect:
+                            if (itemSectionCollect.Available > 0)
+                                _undoRedoManager.Execute(new CollectSection(_game, _section));
+                            break;
+                    }
                 }
             }
         }

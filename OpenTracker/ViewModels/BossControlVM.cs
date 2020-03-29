@@ -1,4 +1,5 @@
-﻿using OpenTracker.Interfaces;
+﻿using OpenTracker.Actions;
+using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.Enums;
 using ReactiveUI;
@@ -8,6 +9,7 @@ namespace OpenTracker.ViewModels
 {
     public class BossControlVM : ViewModelBase, IItemControlVM
     {
+        private readonly UndoRedoManager _undoRedoManager;
         private readonly Game _game;
         private readonly BossSection _bossSection;
 
@@ -18,8 +20,10 @@ namespace OpenTracker.ViewModels
             set => this.RaiseAndSetIfChanged(ref _imageSource, value);
         }
 
-        public BossControlVM(Game game, BossSection bossSection)
+        public BossControlVM(UndoRedoManager undoRedoManager, Game game,
+            BossSection bossSection)
         {
+            _undoRedoManager = undoRedoManager;
             _game = game;
             _bossSection = bossSection;
 
@@ -48,16 +52,19 @@ namespace OpenTracker.ViewModels
             ImageSource = imageBaseString + ".png";
         }
 
-        public void ChangeItem(bool alternate = false)
+        public void ChangeItem(bool rightClick = false)
         {
             if (_bossSection.Boss == null)
-                _bossSection.Boss = _game.Bosses[BossType.Armos];
+            {
+                _undoRedoManager.Execute(new ChangeBoss(_bossSection,
+                    _game.Bosses[BossType.Armos]));
+            }
             else if (_bossSection.Boss.Type == BossType.Trinexx)
-                _bossSection.Boss = null;
+                _undoRedoManager.Execute(new ChangeBoss(_bossSection, null));
             else
             {
-                BossType newBoss = _bossSection.Boss.Type + 1;
-                _bossSection.Boss = _game.Bosses[newBoss];
+                Boss newBoss = _game.Bosses[_bossSection.Boss.Type + 1];
+                _undoRedoManager.Execute(new ChangeBoss(_bossSection, newBoss));
             }
         }
     }

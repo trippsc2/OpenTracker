@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Media;
+using OpenTracker.Actions;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.Enums;
@@ -13,6 +14,7 @@ namespace OpenTracker.ViewModels
 {
     public class MapLocationControlVM : ViewModelBase, IMapLocationControlVM
     {
+        private readonly UndoRedoManager _undoRedoManager;
         private readonly AppSettingsVM _appSettings;
         private readonly Game _game;
         private readonly MainWindowVM _mainWindow;
@@ -88,9 +90,10 @@ namespace OpenTracker.ViewModels
             private set => this.RaiseAndSetIfChanged(ref _imageSource, value);
         }
 
-        public MapLocationControlVM(AppSettingsVM appSettings, Game game,
-            MainWindowVM mainWindow, MapLocation mapLocation)
+        public MapLocationControlVM(UndoRedoManager undoRedoManager, AppSettingsVM appSettings,
+            Game game, MainWindowVM mainWindow, MapLocation mapLocation)
         {
+            _undoRedoManager = undoRedoManager;
             _appSettings = appSettings;
             _game = game;
             _mainWindow = mainWindow;
@@ -112,9 +115,10 @@ namespace OpenTracker.ViewModels
 
         private void CheckLocationAvailability()
         {
+            ObservableCollection<PinnedLocationControlVM> pinnedLocations = _mainWindow.PinnedLocations;
             PinnedLocationControlVM thisPinnedLocation = null;
 
-            foreach (PinnedLocationControlVM pinnedLocation in _mainWindow.PinnedLocations)
+            foreach (PinnedLocationControlVM pinnedLocation in pinnedLocations)
             {
                 if (pinnedLocation.Location == _mapLocation.Location)
                     thisPinnedLocation = pinnedLocation;
@@ -134,7 +138,7 @@ namespace OpenTracker.ViewModels
                 }
 
                 if (!sectionAvailable)
-                    _mainWindow.PinnedLocations.Remove(thisPinnedLocation);
+                    thisPinnedLocation.Close();
             }
         }
 
@@ -287,30 +291,41 @@ namespace OpenTracker.ViewModels
 
         public void ClearAvailableSections()
         {
+            bool canBeCleared = false;
+
             foreach (ISection section in _mapLocation.Location.Sections)
             {
-                if (section.IsAvailable() && (section.Accessibility >= AccessibilityLevel.Inspect ||
+                if (section.IsAvailable() &&
+                    (section.Accessibility >= AccessibilityLevel.SequenceBreak ||
+                    (section.Accessibility == AccessibilityLevel.Inspect &&
+                    section.Marking == null) ||
                     section is EntranceSection))
-                    section.Clear();
+                    canBeCleared = true;
             }
 
-            CheckLocationAvailability();
+            if (canBeCleared)
+                _undoRedoManager.Execute(new ClearLocation(_game, _mapLocation.Location));
         }
 
         public void PinLocation()
         {
+            ObservableCollection<PinnedLocationControlVM> pinnedLocations = _mainWindow.PinnedLocations;
             PinnedLocationControlVM existingPinnedLocation = null;
 
-            foreach (PinnedLocationControlVM pinnedLocation in _mainWindow.PinnedLocations)
+            foreach (PinnedLocationControlVM pinnedLocation in pinnedLocations)
             {
                 if (pinnedLocation.Location == _mapLocation.Location)
                     existingPinnedLocation = pinnedLocation;
             }
 
-            if (existingPinnedLocation != null)
-                _mainWindow.PinnedLocations.Remove(existingPinnedLocation);
-
-            _mainWindow.PinnedLocations.Insert(0, new PinnedLocationControlVM(_appSettings, _game, _mainWindow, _mapLocation.Location));
+            if (existingPinnedLocation == null)
+            {
+                _undoRedoManager.Execute(new PinLocation(pinnedLocations,
+                    new PinnedLocationControlVM(_undoRedoManager, _appSettings, _game, _mainWindow,
+                    _mapLocation.Location)));
+            }
+            else if (pinnedLocations[0] != existingPinnedLocation)
+                _undoRedoManager.Execute(new PinLocation(pinnedLocations, existingPinnedLocation));
         }
 
         private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)

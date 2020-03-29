@@ -2,6 +2,6 @@
 {
     interface IItemControlVM
     {
-        void ChangeItem(bool alternate = false);
+        void ChangeItem(bool rightClick = false);
     }
 }

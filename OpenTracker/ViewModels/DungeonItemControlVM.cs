@@ -1,4 +1,5 @@
 ﻿using Avalonia.Media;
+using OpenTracker.Actions;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.Enums;
@@ -10,6 +11,7 @@ namespace OpenTracker.ViewModels
 {
     public class DungeonItemControlVM : ViewModelBase, IItemControlVM
     {
+        private readonly UndoRedoManager _undoRedoManager;
         private readonly AppSettingsVM _appSettings;
         private readonly string _imageSourceBase;
         private readonly Item _item;
@@ -43,8 +45,10 @@ namespace OpenTracker.ViewModels
             private set => this.RaiseAndSetIfChanged(ref _textVisible, value);
         }
 
-        public DungeonItemControlVM(AppSettingsVM appSettings, Mode mode, Item item)
+        public DungeonItemControlVM(UndoRedoManager undoRedoManager, AppSettingsVM appSettings,
+            Mode mode, Item item)
         {
+            _undoRedoManager = undoRedoManager;
             _appSettings = appSettings;
             _item = item;
 
@@ -130,10 +134,13 @@ namespace OpenTracker.ViewModels
                 if (rightClick)
                 {
                     if (_item.Current > 0)
-                        _item.Change(-1);
+                        _undoRedoManager.Execute(new RemoveItem(_item));
                 }
                 else
-                    _item.Change(1);
+                {
+                    if (_item.Current < _item.Maximum)
+                        _undoRedoManager.Execute(new AddItem(_item));
+                }
             }
         }
     }
