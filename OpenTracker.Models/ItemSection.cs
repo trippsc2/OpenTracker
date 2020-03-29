@@ -1602,6 +1602,8 @@ namespace OpenTracker.Models
                         {
                             if (_game.Items.Has(ItemType.Mirror))
                                 return AccessibilityLevel.Normal;
+
+                            return AccessibilityLevel.Inspect;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)

@@ -749,17 +749,25 @@ namespace OpenTracker.Models
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                        {
+                            if (_game.Items.Has(ItemType.Gloves))
+                                return AccessibilityLevel.Normal;
+
+                            return AccessibilityLevel.Inspect;
+                        }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
-                            if (_game.Items.Has(ItemType.MoonPearl))
+                            if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Gloves))
                                 return AccessibilityLevel.Normal;
+
+                            return AccessibilityLevel.Inspect;
                         }
 
-                        return AccessibilityLevel.Inspect;
+                        return AccessibilityLevel.None;
                     };
 
+                    itemReqs.Add(_game.Items[ItemType.Gloves]);
                     itemReqs.Add(_game.Items[ItemType.MoonPearl]);
 
                     break;
