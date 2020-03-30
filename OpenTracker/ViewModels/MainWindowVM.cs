@@ -4,6 +4,7 @@ using OpenTracker.Interfaces;
 using OpenTracker.JsonConverters;
 using OpenTracker.Models;
 using OpenTracker.Models.Enums;
+using OpenTracker.Models.Interfaces;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -11,6 +12,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Reactive;
+using System.Threading.Tasks;
 
 namespace OpenTracker.ViewModels
 {
@@ -524,12 +526,97 @@ namespace OpenTracker.ViewModels
             _undoRedoManager.Redo();
         }
 
+        public void Save(string path)
+        {
+            if (File.Exists(path))
+                File.Delete(path);
+
+            SaveData saveData = new SaveData(_game);
+
+            string json = JsonConvert.SerializeObject(saveData);
+
+            File.WriteAllText(path, json);
+        }
+
+        public void Open(string path)
+        {
+            string jsonContent = File.ReadAllText(path);
+
+            SaveData saveData = JsonConvert.DeserializeObject<SaveData>(jsonContent);
+
+            _game.Mode.ItemPlacement = saveData.Mode.ItemPlacement;
+            _game.Mode.DungeonItemShuffle = saveData.Mode.DungeonItemShuffle;
+            _game.Mode.WorldState = saveData.Mode.WorldState;
+            _game.Mode.EntranceShuffle = saveData.Mode.EntranceShuffle;
+            _game.Mode.BossShuffle = saveData.Mode.BossShuffle;
+            _game.Mode.EnemyShuffle = saveData.Mode.EnemyShuffle;
+
+            foreach (ItemType item in saveData.ItemCounts.Keys)
+                _game.Items[item].SetCurrent(saveData.ItemCounts[item]);
+
+            foreach (LocationID location in saveData.LocationSectionCounts.Keys)
+            {
+                foreach (int i in saveData.LocationSectionCounts[location].Keys)
+                {
+                    switch (_game.Locations[location].Sections[i])
+                    {
+                        case BossSection bossSection:
+
+                            bossSection.Available = saveData.LocationSectionCounts[location][i] == 1;
+
+                            break;
+                        case EntranceSection entranceSection:
+
+                            entranceSection.Available = saveData.LocationSectionCounts[location][i] == 1;
+
+                            break;
+                        case ItemSection itemSection:
+
+                            itemSection.Available = saveData.LocationSectionCounts[location][i];
+
+                            break;
+                    }
+                }
+            }
+
+            foreach (LocationID location in saveData.LocationSectionMarkings.Keys)
+            {
+                foreach (int i in saveData.LocationSectionMarkings[location].Keys)
+                {
+                    _game.Locations[location].Sections[i].Marking =
+                        saveData.LocationSectionMarkings[location][i];
+                }
+            }
+
+            foreach (LocationID location in saveData.PrizePlacements.Keys)
+            {
+                if (saveData.PrizePlacements[location] == null)
+                    _game.Locations[location].BossSection.Prize = null;
+                else
+                {
+                    _game.Locations[location].BossSection.Prize =
+                        _game.Items[saveData.PrizePlacements[location].Value];
+                }
+            }
+
+            foreach (LocationID location in saveData.BossPlacements.Keys)
+            {
+                if (saveData.BossPlacements[location] == null)
+                    _game.Locations[location].BossSection.Boss = null;
+                else
+                {
+                    _game.Locations[location].BossSection.Boss =
+                        _game.Bosses[saveData.BossPlacements[location].Value];
+                }
+            }
+        }
+
         private void ToggleDisplayAllLocations()
         {
             _appSettings.DisplayAllLocations = !_appSettings.DisplayAllLocations;
         }
 
-        public async void Reset()
+        public async Task Reset()
         {
             bool? result = await _dialogService.ShowDialog(
                 new MessageBoxDialogVM("Warning",
@@ -539,7 +626,7 @@ namespace OpenTracker.ViewModels
                 _game.Reset();
         }
 
-        public async void ColorSelect()
+        public async Task ColorSelect()
         {
             bool? result = await _dialogService.ShowDialog(_appSettings);
         }

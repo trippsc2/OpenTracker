@@ -7,7 +7,7 @@
         SizeToContent="WidthAndHeight" CanResize="False"
         WindowStartupLocation="CenterOwner"
         x:Class="OpenTracker.Views.ColorSelectDialog"
-        Icon="avares://OpenTracker/Assets/triforce.ico"
+        Icon="avares://OpenTracker/Assets/triforce.png"
         Title="OpenTracker - Color Select">
 
   <Border BorderBrush="#A9A9A9" BorderThickness="3" Background="#212121"

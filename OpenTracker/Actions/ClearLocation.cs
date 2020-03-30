@@ -11,9 +11,9 @@ namespace OpenTracker.Actions
     {
         private readonly Game _game;
         private readonly Location _location;
-        private List<int?> _previousLocationCounts;
-        private List<MarkingType?> _previousMarkings;
-        private List<Item> _markedItems;
+        private readonly List<int?> _previousLocationCounts;
+        private readonly List<MarkingType?> _previousMarkings;
+        private readonly List<Item> _markedItems;
 
         public ClearLocation(Game game, Location location)
         {

@@ -5,6 +5,9 @@ namespace OpenTracker.Models
 {
     public class Mode : INotifyPropertyChanging, INotifyPropertyChanged
     {
+        public event PropertyChangingEventHandler PropertyChanging;
+        public event PropertyChangedEventHandler PropertyChanged;
+
         private ItemPlacement? _itemPlacement;
         public ItemPlacement? ItemPlacement
         {
@@ -95,8 +98,31 @@ namespace OpenTracker.Models
             }
         }
 
-        public event PropertyChangingEventHandler PropertyChanging;
-        public event PropertyChangedEventHandler PropertyChanged;
+        public Mode()
+        {
+        }
+
+        public Mode(Mode source)
+        {
+            ItemPlacement = source.ItemPlacement;
+            DungeonItemShuffle = source.DungeonItemShuffle;
+            WorldState = source.WorldState;
+            EntranceShuffle = source.EntranceShuffle;
+            BossShuffle = source.BossShuffle;
+            EnemyShuffle = source.EnemyShuffle;
+        }
+
+        private void OnPropertyChanging(string propertyName)
+        {
+            if (PropertyChanging != null)
+                PropertyChanging.Invoke(this, new PropertyChangingEventArgs(propertyName));
+        }
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         public bool Validate(Mode gameMode)
         {
@@ -144,18 +170,6 @@ namespace OpenTracker.Models
                 return false;
 
             return true;
-        }
-
-        private void OnPropertyChanging(string propertyName)
-        {
-            if (PropertyChanging != null)
-                PropertyChanging.Invoke(this, new PropertyChangingEventArgs(propertyName));
-        }
-
-        private void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

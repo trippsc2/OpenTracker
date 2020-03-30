@@ -11,7 +11,7 @@
         x:Name="HostWindow"
         Background="#877373"
         UseLayoutRounding="True"
-        Icon="/Assets/triforce.ico"
+        Icon="avares://OpenTracker/Assets/triforce.png"
         Title="OpenTracker">
 
   <Design.DataContext>
@@ -19,6 +19,9 @@
   </Design.DataContext>
 
   <Window.KeyBindings>
+    <KeyBinding Gesture="Ctrl+o" Command="{Binding RelativeSource={RelativeSource Self}, Path=Open}" />
+    <KeyBinding Gesture="Ctrl+s" Command="{Binding RelativeSource={RelativeSource Self}, Path=Save}" />
+    <KeyBinding Gesture="Ctrl+Shift+s" Command="{Binding RelativeSource={RelativeSource Self}, Path=SaveAs}" />
     <KeyBinding Gesture="Ctrl+z" Command="{Binding Path=UndoCommand}" />
     <KeyBinding Gesture="Ctrl+y" Command="{Binding Path=RedoCommand}" />
     <KeyBinding Gesture="F5" Command="{Binding Path=Reset}" />
@@ -384,7 +387,7 @@
                      Height="16" Width="16" ToolTip.Tip="App Settings" />
             </MenuItem.Header>
 
-            <MenuItem IsEnabled="False">
+            <MenuItem Command="{Binding ElementName=HostWindow, Path=Open}">
               <MenuItem.Header>
                 <Grid ColumnDefinitions="Auto,*,Auto">
                   <TextBlock Text="Open..." />
@@ -393,7 +396,7 @@
               </MenuItem.Header>
             </MenuItem>
 
-            <MenuItem IsEnabled="False">
+            <MenuItem Command="{Binding ElementName=HostWindow, Path=Save}">
               <MenuItem.Header>
                 <Grid ColumnDefinitions="Auto,*,Auto">
                   <TextBlock Text="Save" />
@@ -402,7 +405,7 @@
               </MenuItem.Header>
             </MenuItem>
 
-            <MenuItem IsEnabled="False">
+            <MenuItem Command="{Binding ElementName=HostWindow, Path=SaveAs}">
               <MenuItem.Header>
                 <Grid ColumnDefinitions="Auto,*,Auto">
                   <TextBlock Text="Save As..." />

@@ -5,12 +5,14 @@ using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using OpenTracker.Interfaces;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace OpenTracker.Views
 {
     public class MainWindow : Window
     {
         private IMainWindowVM _viewModel => DataContext as IMainWindowVM;
+
         public static AvaloniaProperty<Orientation> MapPanelOrientationProperty =
             AvaloniaProperty.Register<MainWindow, Orientation>("MapPanelOrientation");
         public Orientation MapPanelOrientation
@@ -73,6 +75,14 @@ namespace OpenTracker.Views
         {
             get => GetValue(AppSettingsPopupOpenProperty);
             set => SetValue(AppSettingsPopupOpenProperty, value);
+        }
+
+        public static AvaloniaProperty<string> CurrentFilePathProperty =
+            AvaloniaProperty.Register<MainWindow, string>("CurrentFilePath");
+        public string CurrentFilePath
+        {
+            get => GetValue(CurrentFilePathProperty);
+            set => SetValue(CurrentFilePathProperty, value);
         }
 
         public MainWindow()
@@ -140,6 +150,42 @@ namespace OpenTracker.Views
 
             if (bounds.Width > bounds.Height)
                 HorizontalLayout();
+        }
+
+        public async Task Save()
+        {
+            if (CurrentFilePath != null)
+                _viewModel.Save(CurrentFilePath);
+            else
+                await SaveAs();
+        }
+
+        public async Task SaveAs()
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filters.Add(new FileDialogFilter() { Name = "JSON", Extensions = { "json" } });
+
+            string path = await dialog.ShowAsync(this);
+
+            CurrentFilePath = path;
+
+            _viewModel.Save(CurrentFilePath);
+        }
+
+        public async Task Open()
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filters.Add(new FileDialogFilter() { Name = "JSON", Extensions = { "json" } });
+            dialog.AllowMultiple = false;
+
+            if (CurrentFilePath != null)
+                dialog.InitialFileName = CurrentFilePath;
+
+            string[] path = await dialog.ShowAsync(this);
+
+            CurrentFilePath = path[0];
+
+            _viewModel.Open(CurrentFilePath);
         }
 
         private void OpenModeSettingsPopup(object sender, PointerReleasedEventArgs e)

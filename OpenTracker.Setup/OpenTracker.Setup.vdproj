@@ -21,7 +21,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_582274CEB8A7425789CE7B6B45EFE16C"
+        "MsmKey" = "8:_8BEB0D6860DB4F80B56A45FAD1BDE151"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -189,15 +189,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenTracker"
-        "ProductCode" = "8:{69BC09D7-A658-4CB4-A62C-53432514C370}"
-        "PackageCode" = "8:{F3B764AD-9DCE-48AA-A136-6058A7DB0D66}"
+        "ProductCode" = "8:{4D04BD5B-2D57-47E5-9852-30E687820805}"
+        "PackageCode" = "8:{C476505C-9AB8-4659-9C0C-5CE283C7DA0B}"
         "UpgradeCode" = "8:{C98C2121-B4C5-473A-9B86-5407FEFFE8F1}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:0.5.0"
+        "ProductVersion" = "8:0.6.0"
         "Manufacturer" = "8:OpenTracker"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -310,7 +310,7 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_904FE0DE8C7E47E6B1BBC5E9A8C687F2"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_077012C5F76F407DB79E7B88D8ABB09B"
             {
             "Name" = "8:OpenTracker"
             "Arguments" = "8:"
@@ -318,13 +318,13 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_582274CEB8A7425789CE7B6B45EFE16C"
+            "Target" = "8:_8BEB0D6860DB4F80B56A45FAD1BDE151"
             "Folder" = "8:_68CF9C3C7353438A9C1B8145DC8FAE43"
             "WorkingFolder" = "8:_B21EA2C01C014AC99A33B72F50C26B5D"
             "Icon" = "8:_52B4232ADD464606B80710F676FAD771"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_FAE56B1DAFA643A4B47DD08F08E6CB9C"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_2E82BC7017114BC3AFA6C98FCBDD9E07"
             {
             "Name" = "8:OpenTracker"
             "Arguments" = "8:"
@@ -332,9 +332,9 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_582274CEB8A7425789CE7B6B45EFE16C"
+            "Target" = "8:_8BEB0D6860DB4F80B56A45FAD1BDE151"
             "Folder" = "8:_53C29DC8DB594D14845D067B17A97FCE"
-            "WorkingFolder" = "8:"
+            "WorkingFolder" = "8:_B21EA2C01C014AC99A33B72F50C26B5D"
             "Icon" = "8:_52B4232ADD464606B80710F676FAD771"
             "Feature" = "8:"
             }
@@ -737,7 +737,7 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_582274CEB8A7425789CE7B6B45EFE16C"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_8BEB0D6860DB4F80B56A45FAD1BDE151"
             {
             "SourcePath" = "8:..\\OpenTracker\\obj\\Debug\\netcoreapp3.1\\OpenTracker.exe"
             "TargetName" = "8:"
@@ -758,7 +758,7 @@
             "IsolateTo" = "8:"
             "ProjectOutputGroupRegister" = "3:1"
             "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:PublishItemsOutputGroup"
+            "OutputGroupCanonicalName" = "8:PublishItems"
             "OutputProjectGuid" = "8:{9D32A24F-7FF0-4632-B663-5AD2D64A6C87}"
             "ShowKeyOutput" = "11:TRUE"
                 "ExcludeFilters"
