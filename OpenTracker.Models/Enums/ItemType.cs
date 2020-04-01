@@ -44,6 +44,7 @@
         Sword,
         Shield,
         Mail,
+        Aga2,
         GreenPendant,
         Pendant,
         Crystal,

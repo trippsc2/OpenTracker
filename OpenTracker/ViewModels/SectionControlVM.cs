@@ -335,6 +335,8 @@ namespace OpenTracker.ViewModels
 
                     if (bossSection.Prize == null)
                         imageBaseString += "unknown";
+                    else if (bossSection.Prize.Type == ItemType.Aga2)
+                        imageBaseString += "aga";
                     else
                         imageBaseString += bossSection.Prize.Type.ToString().ToLower();
 
@@ -440,7 +442,9 @@ namespace OpenTracker.ViewModels
             else
             {
                 if (_section is EntranceSection ||
-                _section.Accessibility >= AccessibilityLevel.SequenceBreak)
+                    (_section is BossSection bossSection &&
+                    bossSection.Prize != null && bossSection.Prize.Type == ItemType.Aga2) &&
+                    _section.Accessibility >= AccessibilityLevel.SequenceBreak)
                 {
                     switch (_section)
                     {

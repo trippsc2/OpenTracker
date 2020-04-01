@@ -99,9 +99,15 @@ namespace OpenTracker.ViewModels
                 else
                 {
                     if (rightClick)
-                        _undoRedoManager.Execute(new RemoveItem(_items[0]));
+                    {
+                        if (_items[0].Current > 0)
+                            _undoRedoManager.Execute(new RemoveItem(_items[0]));
+                    }
                     else
-                        _undoRedoManager.Execute(new AddItem(_items[0]));
+                    {
+                        if (_items[0].Current < _items[0].Maximum)
+                            _undoRedoManager.Execute(new AddItem(_items[0]));
+                    }
                 }
             }
         }

@@ -395,6 +395,28 @@ namespace OpenTracker.Models
                     _game.Regions[RegionID.DarkDeathMountainTop].PropertyChanged += OnRequirementChanged;
 
                     break;
+
+                case LocationID.GanonsTower:
+
+                    _defaultBoss = _game.Bosses[BossType.Aga];
+                    _boss = _game.Bosses[BossType.Aga];
+                    Prize = _game.Items[ItemType.Aga2];
+                    _region = _game.Regions[RegionID.GanonsTower];
+
+                    GetAccessibility = () =>
+                    {
+                        if ((_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value) &&
+                            _game.Items.Has(ItemType.GTSmallKey, 2) && _game.Items.Has(ItemType.GTBigKey))
+                            return AccessibilityLevel.Normal;
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    itemReqs.Add(_game.Items[ItemType.Bow]);
+                    itemReqs.Add(_game.Items[ItemType.GTSmallKey]);
+                    itemReqs.Add(_game.Items[ItemType.GTBigKey]);
+
+                    break;
             }
 
             foreach (Item item in itemReqs)

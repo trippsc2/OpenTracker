@@ -623,7 +623,7 @@ namespace OpenTracker.Models
                     break;
                 case LocationID.HauntedGrove:
 
-                    _baseTotal = 2;
+                    _baseTotal = 1;
                     Name = "Stumpy";
                     _standardRegion = _game.Regions[RegionID.DarkWorldSouth];
                     _invertedRegion = _game.Regions[RegionID.DarkWorldSouth];

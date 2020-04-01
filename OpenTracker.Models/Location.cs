@@ -143,7 +143,8 @@ namespace OpenTracker.Models
                     MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1097, 1366,
                         new Mode()
                         {
-                            WorldState = WorldState.Inverted
+                            WorldState = WorldState.Inverted,
+                            EntranceShuffle = false
                         }));
                     itemSections = 1;
                     break;
@@ -183,7 +184,10 @@ namespace OpenTracker.Models
                 case LocationID.BombosTablet:
                     Name = "Bombos Tablet";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 440, 1845, new Mode()));
-                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 440, 1845, new Mode()));
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 440, 1845, new Mode()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    }));
                     itemSections = 1;
                     break;
                 case LocationID.SouthOfGrove:
@@ -753,6 +757,7 @@ namespace OpenTracker.Models
                             EntranceShuffle = true
                         }));
                     itemSections = 1;
+                    BossSection = new BossSection(game, iD);
                     break;
                 case LocationID.LumberjackHouse:
                     Name = "Lumber House";
@@ -1362,13 +1367,6 @@ namespace OpenTracker.Models
                     MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1098, 1382,
                         new Mode()
                         {
-                            WorldState = WorldState.StandardOpen,
-                            EntranceShuffle = true
-                        }));
-                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1098, 1382,
-                        new Mode()
-                        {
-                            WorldState = WorldState.Inverted,
                             EntranceShuffle = true
                         }));
                     entranceSection = true;
@@ -1447,9 +1445,16 @@ namespace OpenTracker.Models
                     break;
                 case LocationID.GanonHole:
                     Name = "Ganon Hole";
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 902, 862,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Inverted,
+                            EntranceShuffle = true
+                        }));
                     MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1000, 820,
                         new Mode()
                         {
+                            WorldState = WorldState.StandardOpen,
                             EntranceShuffle = true
                         }));
                     entranceSection = true;
@@ -1864,6 +1869,16 @@ namespace OpenTracker.Models
                     MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1627, 40,
                         new Mode()
                         {
+                            EntranceShuffle = true
+                        }));
+                    entranceSection = true;
+                    break;
+                case LocationID.LinksHouseEntrance:
+                    Name = "Link's House";
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1098, 1382,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Inverted,
                             EntranceShuffle = true
                         }));
                     entranceSection = true;

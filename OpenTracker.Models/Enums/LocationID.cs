@@ -193,6 +193,7 @@
         TRLedgeLeft,
         TRLedgeRight,
         TRSafetyDoor,
-        HookshotCaveTop
+        HookshotCaveTop,
+        LinksHouseEntrance
     }
 }

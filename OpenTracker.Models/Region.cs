@@ -210,10 +210,6 @@ namespace OpenTracker.Models
                             //  Access via Hammer House exit
                             if (_game.Items.Has(ItemType.HammerHouseAccess) && _game.Items.Has(ItemType.Hammer))
                                 return AccessibilityLevel.Normal;
-
-                            //  Access via South Dark World by lifting rock near Jeremiah
-                            if (_game.Items.Has(ItemType.Gloves, 2))
-                                return AccessibilityLevel.Normal;
                         }
 
                         //  Default to no access
@@ -236,18 +232,23 @@ namespace OpenTracker.Models
                         //  Inverted mode
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
-                            AccessibilityLevel darkWorldWitch = AccessibilityLevel.None;
+                            AccessibilityLevel dWSouth = AccessibilityLevel.None;
+                            AccessibilityLevel dWWitch = AccessibilityLevel.None;
                             AccessibilityLevel lightWorld = AccessibilityLevel.None;
+
+                            //  Access via South Dark World by mitts
+                            if (_game.Items.Has(ItemType.Gloves, 2) && !excludedRegions.Contains(RegionID.DarkWorldSouth))
+                                dWSouth = _game.Regions[RegionID.DarkWorldSouth].GetAccessibility(newExcludedRegions);
 
                             //  Access via Dark World Witch area by hookshot
                             if (_game.Items.Has(ItemType.Hookshot) && !excludedRegions.Contains(RegionID.DarkWorldWitchArea))
-                                darkWorldWitch = _game.Regions[RegionID.DarkWorldWitchArea].GetAccessibility(newExcludedRegions);
+                                dWWitch = _game.Regions[RegionID.DarkWorldWitchArea].GetAccessibility(newExcludedRegions);
 
                             //  Access via Light World by mirror
                             if (_game.Items.Has(ItemType.Mirror) && !excludedRegions.Contains(RegionID.LightWorld))
                                 lightWorld = _game.Regions[RegionID.LightWorld].GetAccessibility(newExcludedRegions);
 
-                            return (AccessibilityLevel)Math.Max((byte)darkWorldWitch, (byte)lightWorld);
+                            return (AccessibilityLevel)Math.Max(Math.Max((byte)dWSouth, (byte)dWWitch), (byte)lightWorld);
                         }
 
                         //  Default to no access
@@ -263,6 +264,7 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Hookshot]);
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
 
+                    _observedRegions.Add(RegionID.DarkWorldSouth);
                     _observedRegions.Add(RegionID.DarkWorldWitchArea);
                     _observedRegions.Add(RegionID.LightWorld);
 
@@ -286,7 +288,11 @@ namespace OpenTracker.Models
 
                         //  Inverted mode
                         if (_game.Mode.WorldState == WorldState.Inverted)
-                            return AccessibilityLevel.Normal;
+                        {
+                            //  Access is provided from the start in non-entrance shuffle
+                            if (!_game.Mode.EntranceShuffle.Value)
+                                return AccessibilityLevel.Normal;
+                        }
 
                         //  Default to no access
                         return AccessibilityLevel.None;
@@ -314,6 +320,28 @@ namespace OpenTracker.Models
                             return (AccessibilityLevel)Math.Max((byte)darkWorldWest, (byte)darkWorldEast);
                         }
 
+                        //  Inverted mode
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        {
+                            AccessibilityLevel dWWest = AccessibilityLevel.None;
+                            AccessibilityLevel dWEast = AccessibilityLevel.None;
+                            AccessibilityLevel lightWorld = AccessibilityLevel.None;
+
+                            //  Access via West Dark World
+                            if (!excludedRegions.Contains(RegionID.DarkWorldWest))
+                                dWWest = _game.Regions[RegionID.DarkWorldWest].GetAccessibility(newExcludedRegions);
+
+                            //  Access via East Dark World by hammer
+                            if (_game.Items.Has(ItemType.Hammer) && !excludedRegions.Contains(RegionID.DarkWorldEast))
+                                dWEast = _game.Regions[RegionID.DarkWorldEast].GetAccessibility(newExcludedRegions);
+
+                            //  Access via Light World by mirror
+                            if (_game.Items.Has(ItemType.Mirror) && !excludedRegions.Contains(RegionID.LightWorld))
+                                lightWorld = _game.Regions[RegionID.LightWorld].GetAccessibility(newExcludedRegions);
+
+                            return (AccessibilityLevel)Math.Max(Math.Max((byte)dWWest, (byte)dWEast), (byte)lightWorld);
+                        }
+
                         //  Default to no access
                         return AccessibilityLevel.None;
                     };
@@ -322,9 +350,11 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.MoonPearl]);
                     itemReqs.Add(_game.Items[ItemType.Hammer]);
                     itemReqs.Add(_game.Items[ItemType.Gloves]);
+                    itemReqs.Add(_game.Items[ItemType.Mirror]);
 
                     _observedRegions.Add(RegionID.DarkWorldWest);
                     _observedRegions.Add(RegionID.DarkWorldEast);
+                    _observedRegions.Add(RegionID.LightWorld);
 
                     break;
                 case RegionID.DarkWorldEast:
@@ -345,17 +375,6 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Gloves) &&
                                 _game.Items.Has(ItemType.Hammer))
                                 return AccessibilityLevel.Normal;
-                        }
-
-                        //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
-                        {
-                            //  Access via South Dark World by hammer or flippers
-                            if (_game.Items.Has(ItemType.Hammer) || _game.Items.Has(ItemType.Flippers))
-                                return AccessibilityLevel.Normal;
-
-                            //  Always available by fake flippers
-                            return AccessibilityLevel.SequenceBreak;
                         }
 
                         //  Default to no access
@@ -412,18 +431,30 @@ namespace OpenTracker.Models
                         //  Inverted mode
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
-                            AccessibilityLevel darkWorldWitch = AccessibilityLevel.None;
+                            AccessibilityLevel dWSouth = AccessibilityLevel.None;
+                            AccessibilityLevel dWWitch = AccessibilityLevel.None;
                             AccessibilityLevel lightWorld = AccessibilityLevel.None;
 
-                            //  Access via Dark World Witch area by gloves
-                            if (_game.Items.Has(ItemType.Gloves) && !excludedRegions.Contains(RegionID.DarkWorldWitchArea))
-                                darkWorldWitch = _game.Regions[RegionID.DarkWorldWitchArea].GetAccessibility(newExcludedRegions);
+                            //  Access via South Dark World by hammer, flippers, or fake flippers sequence break
+                            if (!excludedRegions.Contains(RegionID.DarkWorldSouth))
+                            {
+                                if (_game.Items.Has(ItemType.Hammer) || _game.Items.Has(ItemType.Flippers))
+                                    dWSouth = _game.Regions[RegionID.DarkWorldSouth].GetAccessibility(newExcludedRegions);
+                                else
+                                    dWSouth = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.DarkWorldSouth].GetAccessibility(newExcludedRegions));
+                            }
+
+                            //  Access via Dark World Witch area by hammer or gloves
+                            if ((_game.Items.Has(ItemType.Gloves) || _game.Items.Has(ItemType.Hammer))
+                                && !excludedRegions.Contains(RegionID.DarkWorldWitchArea))
+                                dWWitch = _game.Regions[RegionID.DarkWorldWitchArea].GetAccessibility(newExcludedRegions);
 
                             //  Access via Light World by mirror
                             if (_game.Items.Has(ItemType.Mirror) && !excludedRegions.Contains(RegionID.LightWorld))
                                 lightWorld = _game.Regions[RegionID.LightWorld].GetAccessibility(newExcludedRegions);
 
-                            return (AccessibilityLevel)Math.Max((byte)darkWorldWitch, (byte)lightWorld);
+                            return (AccessibilityLevel)Math.Max(Math.Max((byte)dWSouth, (byte)dWWitch), (byte)lightWorld);
                         }
 
                         //  Default to no access
@@ -451,17 +482,6 @@ namespace OpenTracker.Models
                         //  Access via exits in the region
                         if (_game.Items.Has(ItemType.DarkWorldSouthEastAccess))
                             return AccessibilityLevel.Normal;
-
-                        //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
-                        {
-                            //  Access via Dark World South by flippers
-                            if (_game.Items.Has(ItemType.Flippers))
-                                return AccessibilityLevel.Normal;
-
-                            //  Always available by fake flippers
-                            return AccessibilityLevel.SequenceBreak;
-                        }
 
                         //  Default to no access
                         return AccessibilityLevel.None;
@@ -503,10 +523,38 @@ namespace OpenTracker.Models
                             return (AccessibilityLevel)Math.Max((byte)darkWorldSouth, (byte)darkWorldEast);
                         }
 
+                        //  Inverted mode
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
+                            AccessibilityLevel dWSouth = AccessibilityLevel.None;
+                            AccessibilityLevel dWEast = AccessibilityLevel.None;
+                            AccessibilityLevel lightWorld = AccessibilityLevel.None;
+
+                            //  Access via South Dark World by flippers or fake flippers sequence break
+                            if (!excludedRegions.Contains(RegionID.DarkWorldSouth))
+                            {
+                                if (_game.Items.Has(ItemType.Flippers))
+                                    dWSouth = _game.Regions[RegionID.DarkWorldSouth].GetAccessibility(newExcludedRegions);
+                                else
+                                    dWSouth = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.DarkWorldSouth].GetAccessibility(newExcludedRegions));
+                            }
+
+                            //  Access via East Dark World by flippers or fake flippers sequence break
+                            if (!excludedRegions.Contains(RegionID.DarkWorldEast))
+                            {
+                                if (_game.Items.Has(ItemType.Flippers))
+                                    dWEast = _game.Regions[RegionID.DarkWorldEast].GetAccessibility(newExcludedRegions);
+                                else
+                                    dWEast = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.DarkWorldEast].GetAccessibility(newExcludedRegions));
+                            }
+
+                            //  Access via Light World by mirror
                             if (_game.Items.Has(ItemType.Mirror) && !excludedRegions.Contains(RegionID.LightWorld))
-                                return _game.Regions[RegionID.LightWorld].GetAccessibility(newExcludedRegions);
+                                lightWorld = _game.Regions[RegionID.LightWorld].GetAccessibility(newExcludedRegions);
+
+                            return (AccessibilityLevel)Math.Max(Math.Max((byte)dWSouth, (byte)dWEast), (byte)lightWorld);
                         }
 
                         //  Default to no access
@@ -530,13 +578,6 @@ namespace OpenTracker.Models
                         //  Access via exits in the region
                         if (_game.Items.Has(ItemType.DarkWorldWitchAreaAccess))
                             return AccessibilityLevel.Normal;
-
-                        //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
-                        {
-                            //  Fake Flippers
-                            return AccessibilityLevel.SequenceBreak;
-                        }
 
                         //  Default to no access
                         return AccessibilityLevel.None;
@@ -586,7 +627,7 @@ namespace OpenTracker.Models
                             AccessibilityLevel darkWorldWest = AccessibilityLevel.None;
                             AccessibilityLevel lightWorld = AccessibilityLevel.None;
 
-                            //  Access via South Dark World by gloves, hammer, or flippers
+                            //  Access via East Dark World by gloves, hammer, flippers, or fake flippers sequence break
                             if (!excludedRegions.Contains(RegionID.DarkWorldEast))
                             {
                                 if (_game.Items.Has(ItemType.Gloves) || _game.Items.Has(ItemType.Hammer) ||
@@ -630,7 +671,7 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Flippers]);
                     itemReqs.Add(_game.Items[ItemType.Mirror]);
 
-                    _observedRegions.Add(RegionID.DarkWorldSouth);
+                    _observedRegions.Add(RegionID.DarkWorldEast);
                     _observedRegions.Add(RegionID.DarkWorldWest);
                     _observedRegions.Add(RegionID.LightWorld);
 
