@@ -443,7 +443,7 @@ namespace OpenTracker.ViewModels
             {
                 if (_section is EntranceSection ||
                     (_section is BossSection bossSection &&
-                    bossSection.Prize != null && bossSection.Prize.Type == ItemType.Aga2) &&
+                    bossSection.Prize != null && bossSection.Prize.Type == ItemType.Aga2) ||
                     _section.Accessibility >= AccessibilityLevel.SequenceBreak)
                 {
                     switch (_section)
