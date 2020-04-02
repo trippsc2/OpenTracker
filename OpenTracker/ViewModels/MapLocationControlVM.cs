@@ -296,7 +296,7 @@ namespace OpenTracker.ViewModels
             foreach (ISection section in _mapLocation.Location.Sections)
             {
                 if (section.IsAvailable() &&
-                    (section.Accessibility >= AccessibilityLevel.SequenceBreak ||
+                    (section.Accessibility >= AccessibilityLevel.Partial ||
                     (section.Accessibility == AccessibilityLevel.Inspect &&
                     section.Marking == null) ||
                     section is EntranceSection))

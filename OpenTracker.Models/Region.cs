@@ -1561,7 +1561,8 @@ namespace OpenTracker.Models
                         //  Standard and Open modes
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
-                            if (!excludedRegions.Contains(RegionID.DarkWorldEast))
+                            //  Access via East Dark World entrance
+                            if (_game.Items.Has(ItemType.MoonPearl) && !excludedRegions.Contains(RegionID.DarkWorldEast))
                                 return _game.Regions[RegionID.DarkWorldEast].GetAccessibility(newExcludedRegions);
                         }
 
@@ -1569,7 +1570,7 @@ namespace OpenTracker.Models
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             //  Access via East Dark World entrance
-                            if (_game.Items.Has(ItemType.MoonPearl) && !excludedRegions.Contains(RegionID.DarkWorldEast))
+                            if (!excludedRegions.Contains(RegionID.DarkWorldEast))
                                 return _game.Regions[RegionID.DarkWorldEast].GetAccessibility(newExcludedRegions);
                         }
 

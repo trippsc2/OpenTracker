@@ -55,7 +55,9 @@ namespace OpenTracker.Actions
                             _previousLocationCounts.Add(itemSection.Available);
                             _previousMarkings.Add(itemSection.Marking);
 
-                            if (itemSection.Marking != null)
+                            itemSection.Clear();
+
+                            if (itemSection.Available == 0 && itemSection.Marking != null)
                             {
                                 Item item = _game.Items[Enum.Parse<ItemType>(itemSection.Marking.Value.ToString())];
                                 itemSection.Marking = null;
@@ -70,8 +72,6 @@ namespace OpenTracker.Actions
                             }
                             else
                                 _markedItems.Add(null);
-
-                            itemSection.Available = 0;
 
                             break;
                     }

@@ -314,6 +314,7 @@ namespace OpenTracker.ViewModels
                         case AccessibilityLevel.Inspect:
                             ImageSource = "avares://OpenTracker/Assets/Images/chest0.png";
                             break;
+                        case AccessibilityLevel.Partial:
                         case AccessibilityLevel.SequenceBreak:
                         case AccessibilityLevel.Normal:
                             ImageSource = "avares://OpenTracker/Assets/Images/chest1.png";
@@ -444,7 +445,7 @@ namespace OpenTracker.ViewModels
                 if (_section is EntranceSection ||
                     (_section is BossSection bossSection &&
                     bossSection.Prize != null && bossSection.Prize.Type == ItemType.Aga2) ||
-                    _section.Accessibility >= AccessibilityLevel.SequenceBreak)
+                    _section.Accessibility >= AccessibilityLevel.Partial)
                 {
                     switch (_section)
                     {

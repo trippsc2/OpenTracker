@@ -7,7 +7,7 @@ namespace OpenTracker.Models
     public class Game
     {
         public Mode Mode { get; }
-        public Dictionary<BossType, Boss> Bosses { get; }
+        public BossDictionary Bosses { get; }
         public ItemDictionary Items { get; }
         public Dictionary<RegionID, Region> Regions { get; }
         public LocationDictionary Locations { get; }
@@ -24,7 +24,7 @@ namespace OpenTracker.Models
                 EnemyShuffle = false
             };
 
-            Bosses = new Dictionary<BossType, Boss>(Enum.GetValues(typeof(BossType)).Length);
+            Bosses = new BossDictionary(this, Enum.GetValues(typeof(BossType)).Length);
             Items = new ItemDictionary(Mode, Enum.GetValues(typeof(ItemType)).Length);
             Regions = new Dictionary<RegionID, Region>(Enum.GetValues(typeof(RegionID)).Length);
             Locations = new LocationDictionary(Enum.GetValues(typeof(LocationID)).Length);
@@ -34,6 +34,8 @@ namespace OpenTracker.Models
 
             foreach (BossType type in Enum.GetValues(typeof(BossType)))
                 Bosses.Add(type, new Boss(this, type));
+
+            Bosses.SubscribeToMemberEvents();
 
             foreach (RegionID iD in Enum.GetValues(typeof(RegionID)))
                 Regions.Add(iD, new Region(this, iD));

@@ -2005,14 +2005,24 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Items.Has(ItemType.Lamp) && _game.Items.Has(ItemType.ATSmallKey))
-                            return AccessibilityLevel.Normal;
-                        
-                        return AccessibilityLevel.SequenceBreak;
+                        if (_game.Items.Has(ItemType.ATSmallKey))
+                        {
+                            if (_game.Items.Has(ItemType.Lamp))
+                                return AccessibilityLevel.Normal;
+
+                            return AccessibilityLevel.SequenceBreak;
+                        }
+
+                        if (Available == 2)
+                            return AccessibilityLevel.Partial;
+
+                        return AccessibilityLevel.None;
                     };
 
                     itemReqs.Add(_game.Items[ItemType.Lamp]);
                     itemReqs.Add(_game.Items[ItemType.ATSmallKey]);
+
+                    PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.EasternPalace:
@@ -2026,14 +2036,38 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Items.Has(ItemType.EPBigKey) && _game.Items.Has(ItemType.Lamp))
-                            return AccessibilityLevel.Normal;
+                        if (_game.Mode.DungeonItemShuffle <= DungeonItemShuffle.MapsCompassesSmallKeys)
+                        {
+                            if (_game.Items.Has(ItemType.Lamp) &&
+                                (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value))
+                                return AccessibilityLevel.Normal;
+                            
+                            return AccessibilityLevel.SequenceBreak;
+                        }
+                        
+                        if (_game.Items.Has(ItemType.EPBigKey) && 
+                            (_game.Mode.EnemyShuffle.Value || _game.Items.Has(ItemType.Bow)))
+                        {
+                            if (_game.Items.Has(ItemType.Lamp))
+                                return AccessibilityLevel.Normal;
+                            
+                            return AccessibilityLevel.SequenceBreak;
+                        }
 
-                        return AccessibilityLevel.SequenceBreak;
+                        if (_game.Items.Has(ItemType.EPBigKey) && Available > 1)
+                            return AccessibilityLevel.Partial;
+                        
+                        if (Available > 2)
+                            return AccessibilityLevel.Partial;
+                        
+                        return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.EPBigKey]);
                     itemReqs.Add(_game.Items[ItemType.Lamp]);
+                    itemReqs.Add(_game.Items[ItemType.Bow]);
+                    itemReqs.Add(_game.Items[ItemType.EPBigKey]);
+
+                    PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.DesertPalace:
@@ -2049,16 +2083,110 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Items.Has(ItemType.Boots) && _game.Items.Has(ItemType.DPSmallKey) &&
-                            _game.Items.Has(ItemType.DPBigKey))
-                            return AccessibilityLevel.Normal;
+                        switch (_game.Mode.DungeonItemShuffle.Value)
+                        {
+                            case DungeonItemShuffle.Standard:
+
+                                if (_game.Items.Has(ItemType.Boots) &&
+                                    (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
+                                    (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
+                                    return AccessibilityLevel.Normal;
+
+                                return AccessibilityLevel.SequenceBreak;
+
+                            case DungeonItemShuffle.MapsCompasses:
+
+                                if (_game.Items.Has(ItemType.Boots) &&
+                                    (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
+                                    (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
+                                    return AccessibilityLevel.Normal;
+
+                                if ((_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
+                                    (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
+                                    return AccessibilityLevel.SequenceBreak;
+
+                                if (Available > 1)
+                                    return AccessibilityLevel.Partial;
+
+                                break;
+                            case DungeonItemShuffle.MapsCompassesSmallKeys:
+
+                                if (_game.Items.Has(ItemType.Boots) && _game.Items.Has(ItemType.DPSmallKey) &&
+                                    (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
+                                    (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
+                                    return AccessibilityLevel.Normal;
+
+                                if (_game.Items.Has(ItemType.DPSmallKey) &&
+                                    (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
+                                    (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
+                                    return AccessibilityLevel.SequenceBreak;
+                                
+                                if (_game.Items.Has(ItemType.DPSmallKey))
+                                {
+                                    if (Available > 1)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                if (Available > 3)
+                                    return AccessibilityLevel.Partial;
+
+                                break;
+                            case DungeonItemShuffle.Keysanity:
+
+                                if (_game.Items.Has(ItemType.Boots) && _game.Items.Has(ItemType.DPBigKey) &&
+                                    _game.Items.Has(ItemType.DPSmallKey) &&
+                                    (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
+                                    (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
+                                    return AccessibilityLevel.Normal;
+
+                                if (_game.Items.Has(ItemType.DPBigKey) && _game.Items.Has(ItemType.DPSmallKey) &&
+                                    (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
+                                    (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
+                                    return AccessibilityLevel.SequenceBreak;
+
+                                if (_game.Items.Has(ItemType.DPBigKey) && _game.Items.Has(ItemType.DPSmallKey))
+                                {
+                                    if (Available > 1)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                if (_game.Items.Has(ItemType.DPBigKey) &&
+                                    (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
+                                    (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
+                                {
+                                    if (Available > 2)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                if (_game.Items.Has(ItemType.DPSmallKey))
+                                {
+                                    if (Available > 2)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                if (_game.Items.Has(ItemType.DPBigKey))
+                                {
+                                    if (Available > 3)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                if (Available > 4)
+                                    return AccessibilityLevel.Partial;
+
+                                break;
+                        }
                         
-                        return AccessibilityLevel.SequenceBreak;
+                        return AccessibilityLevel.None;
                     };
 
                     itemReqs.Add(_game.Items[ItemType.Boots]);
-                    itemReqs.Add(_game.Items[ItemType.DPSmallKey]);
+                    itemReqs.Add(_game.Items[ItemType.Gloves]);
+                    itemReqs.Add(_game.Items[ItemType.Lamp]);
+                    itemReqs.Add(_game.Items[ItemType.FireRod]);
                     itemReqs.Add(_game.Items[ItemType.DPBigKey]);
+                    itemReqs.Add(_game.Items[ItemType.DPSmallKey]);
+
+                    PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.TowerOfHera:
@@ -2073,17 +2201,67 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if ((_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)) &&
-                            _game.Items.Has(ItemType.ToHSmallKey) && _game.Items.Has(ItemType.ToHBigKey))
-                            return AccessibilityLevel.Normal;
-                        
-                        return AccessibilityLevel.SequenceBreak;
+                        switch (_game.Mode.DungeonItemShuffle.Value)
+                        {
+                            case DungeonItemShuffle.Standard:
+                            case DungeonItemShuffle.MapsCompasses:
+
+                                if (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod))
+                                    return AccessibilityLevel.Normal;
+
+                                return AccessibilityLevel.SequenceBreak;
+
+                            case DungeonItemShuffle.MapsCompassesSmallKeys:
+
+                                if ((_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)) &&
+                                    _game.Items.Has(ItemType.ToHSmallKey))
+                                    return AccessibilityLevel.Normal;
+
+                                if (Available > 1)
+                                    return AccessibilityLevel.Partial;
+
+                                break;
+                            case DungeonItemShuffle.Keysanity:
+
+                                if ((_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)) &&
+                                    _game.Items.Has(ItemType.ToHSmallKey) && _game.Items.Has(ItemType.ToHBigKey))
+                                    return AccessibilityLevel.Normal;
+
+                                if ((_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)) &&
+                                    _game.Items.Has(ItemType.ToHSmallKey))
+                                {
+                                    if (Available > 3)
+                                        return AccessibilityLevel.Partial;
+
+                                    if (_game.Items.Has(ItemType.Hookshot) && Available > 1)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                if (_game.Items.Has(ItemType.ToHBigKey))
+                                {
+                                    if (Available > 1)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                if (_game.Items.Has(ItemType.Hookshot) && Available > 2)
+                                    return AccessibilityLevel.Partial;
+
+                                if (Available > 4)
+                                    return AccessibilityLevel.Partial;
+
+                                break;
+                        }
+
+                        return AccessibilityLevel.None;
                     };
 
                     itemReqs.Add(_game.Items[ItemType.Lamp]);
                     itemReqs.Add(_game.Items[ItemType.FireRod]);
                     itemReqs.Add(_game.Items[ItemType.ToHSmallKey]);
                     itemReqs.Add(_game.Items[ItemType.ToHBigKey]);
+                    itemReqs.Add(_game.Items[ItemType.Hookshot]);
+
+                    PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.PalaceOfDarkness:
@@ -2098,18 +2276,171 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Items.Has(ItemType.Lamp) && _game.Items.Has(ItemType.PoDBigKey) &&
-                            _game.Items.Has(ItemType.PoDSmallKey, 5) &&
-                            (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value))
-                            return AccessibilityLevel.Normal;
-                        
-                        return AccessibilityLevel.SequenceBreak;
+                        switch (_game.Mode.DungeonItemShuffle.Value)
+                        {
+                            case DungeonItemShuffle.Standard:
+
+                                if (_game.Items.Has(ItemType.Lamp) && _game.Items.Has(ItemType.Hammer) &&
+                                    _game.Items.Has(ItemType.Bow))
+                                    return AccessibilityLevel.Normal;
+                                
+                                return AccessibilityLevel.SequenceBreak;
+
+                            case DungeonItemShuffle.MapsCompasses:
+
+                                if (_game.Items.Has(ItemType.Lamp) && _game.Items.Has(ItemType.Hammer) &&
+                                    _game.Items.Has(ItemType.Bow))
+                                    return AccessibilityLevel.Normal;
+
+                                if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.Bow))
+                                    return AccessibilityLevel.SequenceBreak;
+
+                                if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
+                                        return AccessibilityLevel.SequenceBreak;
+
+                                if (Available > 1)
+                                    return AccessibilityLevel.Partial;
+
+                                break;
+                            case DungeonItemShuffle.MapsCompassesSmallKeys:
+
+                                if (_game.Items.Has(ItemType.Lamp) && _game.Items.Has(ItemType.Hammer) &&
+                                    _game.Items.Has(ItemType.Bow) && _game.Items.Has(ItemType.PoDSmallKey, 5))
+                                    return AccessibilityLevel.Normal;
+
+                                if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.Bow) &&
+                                    _game.Items.Has(ItemType.PoDSmallKey, 4))
+                                    return AccessibilityLevel.SequenceBreak;
+
+                                if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
+                                {
+                                    if (Available > 1 && (_game.Items.Has(ItemType.PoDSmallKey, 4) ||
+                                        (_game.Items.Has(ItemType.PoDSmallKey, 3) && _game.Items.Has(ItemType.Hammer))))
+                                        return AccessibilityLevel.Partial;
+
+                                    if (Available > 2 && (_game.Items.Has(ItemType.PoDSmallKey, 3) ||
+                                        (_game.Items.Has(ItemType.PoDSmallKey, 2) && _game.Items.Has(ItemType.Hammer))))
+                                        return AccessibilityLevel.Partial;
+
+                                    if (Available > 3 && (_game.Items.Has(ItemType.PoDSmallKey, 2) ||
+                                        (_game.Items.Has(ItemType.PoDSmallKey) && _game.Items.Has(ItemType.Hammer))))
+                                        return AccessibilityLevel.Partial;
+
+                                    if (Available > 8 &&
+                                        (_game.Items.Has(ItemType.PoDSmallKey) || _game.Items.Has(ItemType.Hammer)))
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                if (_game.Items.Has(ItemType.PoDSmallKey, 4) && Available > 3)
+                                    return AccessibilityLevel.Partial;
+
+                                if (_game.Items.Has(ItemType.PoDSmallKey, 3) && Available > 4)
+                                    return AccessibilityLevel.Partial;
+
+                                if (_game.Items.Has(ItemType.PoDSmallKey, 2) && Available > 5)
+                                    return AccessibilityLevel.Partial;
+
+                                if (_game.Items.Has(ItemType.PoDSmallKey) && Available > 10)
+                                    return AccessibilityLevel.Partial;
+
+                                if (Available > 12)
+                                    return AccessibilityLevel.Partial;
+
+                                break;
+                            case DungeonItemShuffle.Keysanity:
+
+                                if (_game.Items.Has(ItemType.Lamp) && _game.Items.Has(ItemType.Hammer) &&
+                                    _game.Items.Has(ItemType.Bow) && _game.Items.Has(ItemType.PoDSmallKey, 5) &&
+                                    _game.Items.Has(ItemType.PoDBigKey))
+                                    return AccessibilityLevel.Normal;
+
+                                if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.Bow) &&
+                                    _game.Items.Has(ItemType.PoDSmallKey, 4) && _game.Items.Has(ItemType.PoDBigKey))
+                                    return AccessibilityLevel.SequenceBreak;
+
+                                if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
+                                {
+                                    if (_game.Items.Has(ItemType.PoDSmallKey, 4) ||
+                                        (_game.Items.Has(ItemType.PoDSmallKey, 3) && _game.Items.Has(ItemType.Hammer)))
+                                    {
+                                        if (_game.Items.Has(ItemType.PoDBigKey) && Available > 1)
+                                            return AccessibilityLevel.Partial;
+
+                                        if (Available > 2)
+                                            return AccessibilityLevel.Partial;
+                                    }
+
+                                    if (_game.Items.Has(ItemType.PoDSmallKey, 3) ||
+                                        (_game.Items.Has(ItemType.PoDSmallKey, 2) && _game.Items.Has(ItemType.Hammer)))
+                                    {
+                                        if (_game.Items.Has(ItemType.PoDBigKey) && Available > 2)
+                                            return AccessibilityLevel.Partial;
+
+                                        if (Available > 3)
+                                            return AccessibilityLevel.Partial;
+                                    }
+
+                                    if (_game.Items.Has(ItemType.PoDSmallKey, 2) ||
+                                        (_game.Items.Has(ItemType.PoDSmallKey) && _game.Items.Has(ItemType.Hammer)))
+                                    {
+                                        if (_game.Items.Has(ItemType.PoDBigKey) && Available > 3)
+                                            return AccessibilityLevel.Partial;
+
+                                        if (Available > 4)
+                                            return AccessibilityLevel.Partial;
+                                    }
+
+                                    if (Available > 9 &&
+                                        (_game.Items.Has(ItemType.PoDSmallKey) || _game.Items.Has(ItemType.Hammer)))
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                if (_game.Items.Has(ItemType.PoDSmallKey, 4))
+                                {
+                                    if (_game.Items.Has(ItemType.PoDBigKey) && Available > 3)
+                                        return AccessibilityLevel.Partial;
+
+                                    if (Available > 4)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                if (_game.Items.Has(ItemType.PoDSmallKey, 3))
+                                {
+                                    if (_game.Items.Has(ItemType.PoDBigKey) && Available > 4)
+                                        return AccessibilityLevel.Partial;
+
+                                    if (Available > 5)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                if (_game.Items.Has(ItemType.PoDSmallKey, 2))
+                                {
+                                    if (_game.Items.Has(ItemType.PoDBigKey) && Available > 5)
+                                        return AccessibilityLevel.Partial;
+
+                                    if (Available > 6)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                if (_game.Items.Has(ItemType.PoDSmallKey) && Available > 11)
+                                    return AccessibilityLevel.Partial;
+
+                                if (Available > 13)
+                                    return AccessibilityLevel.Partial;
+
+                                break;
+                        }
+
+                        return AccessibilityLevel.None;
                     };
 
                     itemReqs.Add(_game.Items[ItemType.Lamp]);
+                    itemReqs.Add(_game.Items[ItemType.Hammer]);
+                    itemReqs.Add(_game.Items[ItemType.Bow]);
                     itemReqs.Add(_game.Items[ItemType.PoDBigKey]);
                     itemReqs.Add(_game.Items[ItemType.PoDSmallKey]);
-                    itemReqs.Add(_game.Items[ItemType.Bow]);
+
+                    PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.SwampPalace:
@@ -2124,14 +2455,98 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Items.Has(ItemType.Flippers))
+                        switch (_game.Mode.DungeonItemShuffle.Value)
                         {
+                            case DungeonItemShuffle.Standard:
 
-                            if (_game.Items.Has(ItemType.Hookshot) && _game.Items.Has(ItemType.Hammer) &&
-                                _game.Items.Has(ItemType.SPSmallKey) && _game.Items.Has(ItemType.SPBigKey))
-                                return AccessibilityLevel.Normal;
+                                if (_game.Items.Has(ItemType.Flippers))
+                                {
+                                    if (_game.Items.Has(ItemType.Hammer))
+                                    {
+                                        if (_game.Items.Has(ItemType.Hookshot))
+                                            return AccessibilityLevel.Normal;
 
-                            return AccessibilityLevel.SequenceBreak;
+                                        if (Available > 2)
+                                            return AccessibilityLevel.Partial;
+                                    }
+
+                                    if (Available > 5)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                break;
+                            case DungeonItemShuffle.MapsCompasses:
+
+                                if (_game.Items.Has(ItemType.Flippers))
+                                {
+                                    if (_game.Items.Has(ItemType.Hammer))
+                                    {
+                                        if (_game.Items.Has(ItemType.Hookshot))
+                                            return AccessibilityLevel.Normal;
+
+                                        if (Available > 4)
+                                            return AccessibilityLevel.Partial;
+                                    }
+
+                                    if (Available > 7)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                break;
+                            case DungeonItemShuffle.MapsCompassesSmallKeys:
+
+                                if (_game.Items.Has(ItemType.Flippers))
+                                {
+                                    if (_game.Items.Has(ItemType.SPSmallKey))
+                                    {
+                                        if (_game.Items.Has(ItemType.Hammer))
+                                        {
+                                            if (_game.Items.Has(ItemType.Hookshot))
+                                                return AccessibilityLevel.Normal;
+
+                                            if (Available > 4)
+                                                return AccessibilityLevel.Partial;
+                                        }
+
+                                        if (Available > 7)
+                                            return AccessibilityLevel.Partial;
+                                    }
+
+                                    if (Available > 8)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                break;
+                            case DungeonItemShuffle.Keysanity:
+
+                                if (_game.Items.Has(ItemType.Flippers))
+                                {
+                                    if (_game.Items.Has(ItemType.SPSmallKey))
+                                    {
+                                        if (_game.Items.Has(ItemType.Hammer))
+                                        {
+                                            if (_game.Items.Has(ItemType.Hookshot) && _game.Items.Has(ItemType.SPBigKey))
+                                                return AccessibilityLevel.Normal;
+
+                                            if (Available > 1 && _game.Items.Has(ItemType.Hookshot))
+                                                return AccessibilityLevel.Partial;
+
+                                            if (Available > 4 && _game.Items.Has(ItemType.SPBigKey))
+                                                return AccessibilityLevel.Partial;
+
+                                            if (Available > 5)
+                                                return AccessibilityLevel.Partial;
+                                        }
+
+                                        if (Available > 8)
+                                            return AccessibilityLevel.Partial;
+                                    }
+
+                                    if (Available > 9)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                break;
                         }
 
                         return AccessibilityLevel.None;
@@ -2142,6 +2557,8 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Hammer]);
                     itemReqs.Add(_game.Items[ItemType.SPSmallKey]);
                     itemReqs.Add(_game.Items[ItemType.SPBigKey]);
+
+                    PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.SkullWoods:
@@ -2156,16 +2573,78 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Items.Has(ItemType.SWBigKey) && _game.Items.Has(ItemType.SWSmallKey) &&
-                            _game.Items.Has(ItemType.FireRod))
-                            return AccessibilityLevel.Normal;
+                        switch (_game.Mode.DungeonItemShuffle.Value)
+                        {
+                            case DungeonItemShuffle.Standard:
+                            case DungeonItemShuffle.MapsCompasses:
+
+                                if ((_game.Items.Has(ItemType.FireRod) || _game.Mode.EntranceShuffle.Value) &&
+                                    _game.Items.CanRemoveCurtains())
+                                    return AccessibilityLevel.Normal;
+
+                                return AccessibilityLevel.SequenceBreak;
+
+                            case DungeonItemShuffle.MapsCompassesSmallKeys:
+
+                                if (_game.Items.Has(ItemType.FireRod) || _game.Mode.EntranceShuffle.Value)
+                                {
+                                    if (_game.Items.CanRemoveCurtains())
+                                    {
+                                        if (_game.Items.Has(ItemType.SWSmallKey))
+                                            return AccessibilityLevel.Normal;
+
+                                        return AccessibilityLevel.SequenceBreak;
+                                    }
+
+                                    if (Available > 1)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                if (Available > 2)
+                                    return AccessibilityLevel.Partial;
+
+                                break;
+                            case DungeonItemShuffle.Keysanity:
+
+                                if (_game.Items.Has(ItemType.FireRod) || _game.Mode.EntranceShuffle.Value)
+                                {
+                                    if (_game.Items.CanRemoveCurtains())
+                                    {
+                                        if (_game.Items.Has(ItemType.SWBigKey) && _game.Items.Has(ItemType.SPSmallKey))
+                                            return AccessibilityLevel.Normal;
+
+                                        if (_game.Items.Has(ItemType.SWBigKey))
+                                            return AccessibilityLevel.SequenceBreak;
+
+                                        if (Available > 1)
+                                            return AccessibilityLevel.Partial;
+                                    }
+
+                                    if (Available > 1 && _game.Items.Has(ItemType.SWBigKey))
+                                        return AccessibilityLevel.Partial;
+
+                                    if (Available > 2)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                if (Available > 2 && _game.Items.Has(ItemType.SWBigKey))
+                                    return AccessibilityLevel.Partial;
+
+                                if (Available > 3)
+                                    return AccessibilityLevel.Partial;
+
+                                break;
+                        }
                         
-                        return AccessibilityLevel.SequenceBreak;
+                        return AccessibilityLevel.None;
                     };
 
+                    itemReqs.Add(_game.Items[ItemType.FireRod]);
+                    itemReqs.Add(_game.Items[ItemType.Sword]);
                     itemReqs.Add(_game.Items[ItemType.SWBigKey]);
                     itemReqs.Add(_game.Items[ItemType.SWSmallKey]);
-                    itemReqs.Add(_game.Items[ItemType.FireRod]);
+
+                    PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.ThievesTown:
@@ -2180,16 +2659,48 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Items.Has(ItemType.TTBigKey) && _game.Items.Has(ItemType.TTSmallKey) &&
-                            _game.Items.Has(ItemType.Hammer))
-                            return AccessibilityLevel.Normal;
+                        switch (_game.Mode.DungeonItemShuffle.Value)
+                        {
+                            case DungeonItemShuffle.Standard:
+                            case DungeonItemShuffle.MapsCompasses:
+
+                                if (_game.Items.Has(ItemType.Hammer))
+                                    return AccessibilityLevel.Normal;
+
+                                return AccessibilityLevel.SequenceBreak;
+
+                            case DungeonItemShuffle.MapsCompassesSmallKeys:
+
+                                if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.TTSmallKey))
+                                    return AccessibilityLevel.Normal;
+
+                                return AccessibilityLevel.SequenceBreak;
+
+                            case DungeonItemShuffle.Keysanity:
+
+                                if (_game.Items.Has(ItemType.TTBigKey))
+                                {
+                                    if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.TTSmallKey))
+                                        return AccessibilityLevel.Normal;
+
+                                    if (Available > 1)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                if (Available > 4)
+                                    return AccessibilityLevel.Partial;
+
+                                break;
+                        }
                         
-                        return AccessibilityLevel.SequenceBreak;
+                        return AccessibilityLevel.None;
                     };
 
                     itemReqs.Add(_game.Items[ItemType.TTBigKey]);
                     itemReqs.Add(_game.Items[ItemType.TTSmallKey]);
                     itemReqs.Add(_game.Items[ItemType.Hammer]);
+
+                    PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.IcePalace:
@@ -2204,13 +2715,84 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Items.CanMeltThings())
+                        switch (_game.Mode.DungeonItemShuffle.Value)
                         {
-                            if (_game.Items.Has(ItemType.Hookshot) && _game.Items.Has(ItemType.Hammer) &&
-                                _game.Items.Has(ItemType.IPBigKey))
-                                return AccessibilityLevel.Normal;
-                            
-                            return AccessibilityLevel.SequenceBreak;
+                            case DungeonItemShuffle.Standard:
+
+                                if (_game.Items.CanMeltThings())
+                                {
+                                    if (_game.Items.Has(ItemType.Hammer) &&
+                                        (_game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.CaneOfSomaria)))
+                                        return AccessibilityLevel.Normal;
+
+                                    return AccessibilityLevel.SequenceBreak;
+                                }
+
+                                break;
+                            case DungeonItemShuffle.MapsCompasses:
+
+                                if (_game.Items.CanMeltThings())
+                                {
+                                    if (_game.Items.Has(ItemType.Hammer))
+                                    {
+                                        if (_game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.CaneOfSomaria))
+                                            return AccessibilityLevel.Normal;
+
+                                        return AccessibilityLevel.SequenceBreak;
+                                    }
+
+                                    if (Available > 1)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                break;
+                            case DungeonItemShuffle.MapsCompassesSmallKeys:
+
+                                if (_game.Items.CanMeltThings())
+                                {
+                                    if (_game.Items.Has(ItemType.Hammer))
+                                    {
+                                        if ((_game.Items.Has(ItemType.Hookshot) && _game.Items.Has(ItemType.CaneOfSomaria)) ||
+                                            (_game.Items.Has(ItemType.Hookshot) && _game.Items.Has(ItemType.IPSmallKey)) ||
+                                            (_game.Items.Has(ItemType.CaneOfSomaria) && _game.Items.Has(ItemType.IPSmallKey)) ||
+                                            _game.Items.Has(ItemType.IPSmallKey, 2))
+                                            return AccessibilityLevel.Normal;
+
+                                        return AccessibilityLevel.SequenceBreak;
+                                    }
+
+                                    if (Available > 3)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                break;
+                            case DungeonItemShuffle.Keysanity:
+
+                                if (_game.Items.CanMeltThings())
+                                {
+                                    if (_game.Items.Has(ItemType.Hammer))
+                                    {
+                                        if (((_game.Items.Has(ItemType.Hookshot) && _game.Items.Has(ItemType.CaneOfSomaria)) ||
+                                            (_game.Items.Has(ItemType.Hookshot) && _game.Items.Has(ItemType.IPSmallKey)) ||
+                                            (_game.Items.Has(ItemType.CaneOfSomaria) && _game.Items.Has(ItemType.IPSmallKey)) ||
+                                            _game.Items.Has(ItemType.IPSmallKey, 2)) && _game.Items.Has(ItemType.IPBigKey))
+                                            return AccessibilityLevel.Normal;
+
+                                        if (_game.Items.Has(ItemType.IPBigKey))
+                                            return AccessibilityLevel.SequenceBreak;
+
+                                        if (Available > 1)
+                                            return AccessibilityLevel.Partial;
+                                    }
+
+                                    if (Available > 3 && _game.Items.Has(ItemType.IPBigKey))
+                                        return AccessibilityLevel.Partial;
+
+                                    if (Available > 4)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                break;
                         }
 
                         return AccessibilityLevel.None;
@@ -2219,9 +2801,13 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.FireRod]);
                     itemReqs.Add(_game.Items[ItemType.Bombos]);
                     itemReqs.Add(_game.Items[ItemType.Sword]);
-                    itemReqs.Add(_game.Items[ItemType.Hookshot]);
                     itemReqs.Add(_game.Items[ItemType.Hammer]);
+                    itemReqs.Add(_game.Items[ItemType.Hookshot]);
+                    itemReqs.Add(_game.Items[ItemType.CaneOfSomaria]);
+                    itemReqs.Add(_game.Items[ItemType.IPSmallKey]);
                     itemReqs.Add(_game.Items[ItemType.IPBigKey]);
+
+                    PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.MiseryMire:
@@ -2236,17 +2822,91 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-
-                        if (_game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.Boots))
+                        switch (_game.Mode.DungeonItemShuffle.Value)
                         {
-                            if ((_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)) &&
-                                _game.Items.Has(ItemType.MMBigKey) &&
-                                (_game.Items.Has(ItemType.Hookshot) || (_game.Items.Has(ItemType.Boots) &&
-                                (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
-                                _game.Mode.WorldState == WorldState.Inverted))))
-                                return AccessibilityLevel.Normal;
+                            case DungeonItemShuffle.Standard:
+                            case DungeonItemShuffle.MapsCompasses:
 
-                            return AccessibilityLevel.SequenceBreak;
+                                if (_game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.Boots))
+                                {
+                                    if (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod))
+                                    {
+                                        if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                        {
+                                            if ((_game.Items.Has(ItemType.Hookshot) ||
+                                                (_game.Items.Has(ItemType.Boots) && _game.Mode.ItemPlacement == ItemPlacement.Advanced)) &&
+                                                _game.Items.Has(ItemType.Lamp))
+                                                return AccessibilityLevel.Normal;
+                                        }
+                                    }
+
+                                    return AccessibilityLevel.SequenceBreak;
+                                }
+
+                                break;
+                            case DungeonItemShuffle.MapsCompassesSmallKeys:
+
+                                if (_game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.Boots))
+                                {
+                                    if (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod))
+                                    {
+                                        if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                        {
+                                            if ((_game.Items.Has(ItemType.Hookshot) ||
+                                                (_game.Items.Has(ItemType.Boots) && _game.Mode.ItemPlacement == ItemPlacement.Advanced)) &&
+                                                _game.Items.Has(ItemType.Lamp))
+                                                return AccessibilityLevel.Normal;
+
+                                            return AccessibilityLevel.SequenceBreak;
+                                        }
+
+                                        if (Available > 1)
+                                            return AccessibilityLevel.Partial;
+                                    }
+
+                                    if (Available > 2 && _game.Items.Has(ItemType.CaneOfSomaria))
+                                        return AccessibilityLevel.Partial;
+
+                                    if (Available > 3)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                break;
+                            case DungeonItemShuffle.Keysanity:
+
+                                if (_game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.Boots))
+                                {
+                                    if (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod))
+                                    {
+                                        if (_game.Items.Has(ItemType.CaneOfSomaria) && _game.Items.Has(ItemType.MMBigKey))
+                                        {
+                                            if ((_game.Items.Has(ItemType.Hookshot) ||
+                                                (_game.Items.Has(ItemType.Boots) && _game.Mode.ItemPlacement == ItemPlacement.Advanced)) &&
+                                                _game.Items.Has(ItemType.Lamp))
+                                                return AccessibilityLevel.Normal;
+
+                                            return AccessibilityLevel.SequenceBreak;
+                                        }
+
+                                        if (Available > 1 && _game.Items.Has(ItemType.MMBigKey))
+                                            return AccessibilityLevel.Partial;
+
+                                        if (Available > 2)
+                                            return AccessibilityLevel.Partial;
+                                    }
+
+                                    if (Available > 2 &&
+                                        _game.Items.Has(ItemType.CaneOfSomaria) && _game.Items.Has(ItemType.MMBigKey))
+                                        return AccessibilityLevel.Partial;
+
+                                    if (Available > 3 && _game.Items.Has(ItemType.MMBigKey))
+                                        return AccessibilityLevel.Partial;
+
+                                    if (Available > 4)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                break;
                         }
 
                         return AccessibilityLevel.None;
@@ -2256,7 +2916,10 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.Boots]);
                     itemReqs.Add(_game.Items[ItemType.Lamp]);
                     itemReqs.Add(_game.Items[ItemType.FireRod]);
+                    itemReqs.Add(_game.Items[ItemType.CaneOfSomaria]);
                     itemReqs.Add(_game.Items[ItemType.MMBigKey]);
+
+                    PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.TurtleRock:
@@ -2271,78 +2934,323 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Mode.EntranceShuffle.Value)
+                        AccessibilityLevel frontAccess()
                         {
-                            if (_game.Items.Has(ItemType.FireRod) && _game.Items.Has(ItemType.Lamp) &&
-                                _game.Items.Has(ItemType.TRBigKey) && _game.Items.Has(ItemType.CaneOfSomaria))
+                            if (_game.Mode.EntranceShuffle.Value)
                                 return AccessibilityLevel.Normal;
 
-                            return AccessibilityLevel.SequenceBreak;
-                        }
-
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
-                        {
-                            if (_game.Items.Has(ItemType.CaneOfSomaria))
+                            if (_game.Mode.WorldState == WorldState.StandardOpen)
                             {
-                                if (_game.Items.Has(ItemType.FireRod) && _game.Items.Has(ItemType.Lamp) &&
-                                    _game.Items.Has(ItemType.TRSmallKey) && _game.Items.Has(ItemType.TRBigKey) &&
-                                    (_game.Items.Has(ItemType.Cape) || _game.Items.Has(ItemType.CaneOfByrna) ||
-                                    _game.Items.Has(ItemType.Shield, 3) ||
-                                    _game.Mode.ItemPlacement == ItemPlacement.Advanced))
-                                    return AccessibilityLevel.Normal;
-
-                                return AccessibilityLevel.SequenceBreak;
-                            }
-                        }
-
-                        if (_game.Mode.WorldState == WorldState.Inverted)
-                        {
-                            if (_game.Regions[RegionID.DeathMountainEastTop].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Items.Has(ItemType.Mirror))
-                            {
-                                if (_game.Items.Has(ItemType.FireRod) && _game.Items.Has(ItemType.Lamp) &&
-                                _game.Items.Has(ItemType.TRBigKey) && _game.Items.Has(ItemType.CaneOfSomaria))
-                                    return AccessibilityLevel.Normal;
-                                
-                                return AccessibilityLevel.SequenceBreak;
-                            }
-                            
-                            if (_game.Items.CanUseMedallions() && _game.Items.Has(ItemType.CaneOfSomaria) &&
-                                ((_game.Items.Has(ItemType.Bombos) && _game.Items.Has(ItemType.Ether) &&
-                                _game.Items.Has(ItemType.Quake)) ||
-                                (_game.Items.Has(ItemType.Bombos) &&
-                                _game.Items[ItemType.BombosDungeons].Current >= 2) ||
-                                (_game.Items.Has(ItemType.Ether) &&
-                                _game.Items[ItemType.EtherDungeons].Current >= 2) ||
-                                (_game.Items.Has(ItemType.Quake) &&
-                                _game.Items[ItemType.QuakeDungeons].Current >= 2)) &&
-                                _game.Regions[RegionID.DarkDeathMountainTop].Accessibility >= AccessibilityLevel.SequenceBreak)
-                            {
-                                if (_game.Items.Has(ItemType.FireRod) && _game.Items.Has(ItemType.Lamp) &&
-                                _game.Items.Has(ItemType.TRSmallKey, 3) && _game.Items.Has(ItemType.TRBigKey))
+                                if (_game.Items.Has(ItemType.Hammer) &&
+                                    _game.Items.CanUseMedallions() && ((_game.Items.Has(ItemType.Bombos) &&
+                                    _game.Items.Has(ItemType.Ether) && _game.Items.Has(ItemType.Quake)) ||
+                                    (_game.Items.Has(ItemType.Bombos) &&
+                                    _game.Items[ItemType.BombosDungeons].Current >= 2) ||
+                                    (_game.Items.Has(ItemType.Ether) &&
+                                    _game.Items[ItemType.EtherDungeons].Current >= 2) ||
+                                    (_game.Items.Has(ItemType.Quake) &&
+                                    _game.Items[ItemType.QuakeDungeons].Current >= 2)))
                                     return _game.Regions[RegionID.DarkDeathMountainTop].Accessibility;
-                                
-                                return AccessibilityLevel.SequenceBreak;
                             }
-                            
-                            if (_game.Regions[RegionID.DeathMountainEastTop].Accessibility == AccessibilityLevel.SequenceBreak &&
-                                _game.Items.Has(ItemType.Mirror))
-                                return AccessibilityLevel.SequenceBreak;
+
+                            if (_game.Mode.WorldState == WorldState.Inverted)
+                            {
+                                if (_game.Items.CanUseMedallions() && ((_game.Items.Has(ItemType.Bombos) &&
+                                    _game.Items.Has(ItemType.Ether) && _game.Items.Has(ItemType.Quake)) ||
+                                    (_game.Items.Has(ItemType.Bombos) &&
+                                    _game.Items[ItemType.BombosDungeons].Current >= 2) ||
+                                    (_game.Items.Has(ItemType.Ether) &&
+                                    _game.Items[ItemType.EtherDungeons].Current >= 2) ||
+                                    (_game.Items.Has(ItemType.Quake) &&
+                                    _game.Items[ItemType.QuakeDungeons].Current >= 2)))
+                                    return _game.Regions[RegionID.DarkDeathMountainTop].Accessibility;
+                            }
+
+                            return AccessibilityLevel.None;
+                        }
+
+                        AccessibilityLevel backAccess()
+                        {
+                            if (_game.Mode.EntranceShuffle.Value)
+                                return AccessibilityLevel.Normal;
+
+                            if (_game.Mode.WorldState == WorldState.Inverted)
+                            {
+                                if (_game.Regions[RegionID.DeathMountainEastTop].Accessibility >= AccessibilityLevel.SequenceBreak &&
+                                    _game.Items.Has(ItemType.Mirror))
+                                    return _game.Regions[RegionID.DeathMountainEastTop].Accessibility;
+                            }
+
+                            return AccessibilityLevel.None;
+                        }
+
+                        switch (_game.Mode.DungeonItemShuffle.Value)
+                        {
+                            case DungeonItemShuffle.Standard:
+
+                                if (_game.Items.Has(ItemType.CaneOfSomaria) && _game.Items.Has(ItemType.FireRod) &&
+                                    _game.Items.Has(ItemType.Lamp) && (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                    _game.Mode.WorldState == WorldState.Inverted || _game.Items.Has(ItemType.Cape) ||
+                                    _game.Items.Has(ItemType.CaneOfByrna) || _game.Items.Has(ItemType.Shield, 3)))
+                                    return AccessibilityLevel.Normal;
+
+                                if (backAccess() >= AccessibilityLevel.SequenceBreak)
+                                    return AccessibilityLevel.SequenceBreak;
+
+                                if (frontAccess() >= AccessibilityLevel.SequenceBreak && _game.Items.Has(ItemType.CaneOfSomaria))
+                                    return AccessibilityLevel.SequenceBreak;
+
+                                break;
+                            case DungeonItemShuffle.MapsCompasses:
+
+                                if (_game.Items.Has(ItemType.CaneOfSomaria) && _game.Items.Has(ItemType.FireRod) &&
+                                    _game.Items.Has(ItemType.Lamp) && (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                    _game.Mode.WorldState == WorldState.Inverted || _game.Items.Has(ItemType.Cape) ||
+                                    _game.Items.Has(ItemType.CaneOfByrna) || _game.Items.Has(ItemType.Shield, 3)))
+                                    return AccessibilityLevel.Normal;
+
+                                if (backAccess() >= AccessibilityLevel.SequenceBreak)
+                                    return AccessibilityLevel.SequenceBreak;
+
+                                if (frontAccess() >= AccessibilityLevel.SequenceBreak)
+                                {
+                                    if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                    {
+                                        if (_game.Items.Has(ItemType.FireRod))
+                                            return AccessibilityLevel.SequenceBreak;
+
+                                        if (Available > 2)
+                                            return AccessibilityLevel.Partial;
+                                    }
+                                }
+
+                                break;
+                            case DungeonItemShuffle.MapsCompassesSmallKeys:
+
+                                if (backAccess() >= AccessibilityLevel.SequenceBreak)
+                                {
+                                    if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                    {
+                                        if (_game.Items.Has(ItemType.TRSmallKey, 2) ||
+                                            (_game.Items.Has(ItemType.TRSmallKey) && frontAccess() >= AccessibilityLevel.SequenceBreak))
+                                        {
+                                            if (_game.Items.Has(ItemType.FireRod) && (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                                _game.Mode.WorldState == WorldState.Inverted || _game.Items.Has(ItemType.Cape) ||
+                                                _game.Items.Has(ItemType.CaneOfByrna) || _game.Items.Has(ItemType.Shield, 3)))
+                                                return AccessibilityLevel.Normal;
+
+                                            if (Available > 2)
+                                                return AccessibilityLevel.Partial;
+                                        }
+
+                                        if (_game.Items.Has(ItemType.TRSmallKey) || frontAccess() >= AccessibilityLevel.SequenceBreak)
+                                        {
+                                            if (Available > 1 && _game.Items.Has(ItemType.FireRod))
+                                                return AccessibilityLevel.Partial;
+
+                                            if (Available > 3)
+                                                return AccessibilityLevel.Partial;
+                                        }
+                                    }
+
+                                    if (Available > 4)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                if (frontAccess() >= AccessibilityLevel.SequenceBreak)
+                                {
+                                    if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                    {
+                                        if (_game.Items.Has(ItemType.TRSmallKey, 4))
+                                        {
+                                            if (_game.Items.Has(ItemType.FireRod))
+                                            {
+                                                if (_game.Items.Has(ItemType.Lamp) && (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                                    _game.Mode.WorldState == WorldState.Inverted || _game.Items.Has(ItemType.Cape) ||
+                                                    _game.Items.Has(ItemType.CaneOfByrna) || _game.Items.Has(ItemType.Shield, 3)))
+                                                    return AccessibilityLevel.Normal;
+
+                                                return AccessibilityLevel.SequenceBreak;
+                                            }
+
+                                            if (Available > 2)
+                                                return AccessibilityLevel.Partial;
+                                        }
+
+                                        if (_game.Items.Has(ItemType.TRSmallKey, 3))
+                                        {
+                                            if (Available > 1 && _game.Items.Has(ItemType.FireRod))
+                                                return AccessibilityLevel.Partial;
+
+                                            if (Available > 3)
+                                                return AccessibilityLevel.Partial;
+                                        }
+
+                                        if (_game.Items.Has(ItemType.TRSmallKey, 2))
+                                        {
+                                            if (Available > 5 && _game.Items.Has(ItemType.FireRod))
+                                                return AccessibilityLevel.Partial;
+
+                                            if (Available > 7)
+                                                return AccessibilityLevel.Partial;
+                                        }
+
+                                        if (_game.Items.Has(ItemType.TRSmallKey))
+                                        {
+                                            if (Available > 7 && _game.Items.Has(ItemType.FireRod))
+                                                return AccessibilityLevel.Partial;
+
+                                            if (Available > 9)
+                                                return AccessibilityLevel.Partial;
+                                        }
+
+                                        if (Available > 8 && _game.Items.Has(ItemType.FireRod))
+                                            return AccessibilityLevel.Partial;
+
+                                        if (Available > 10)
+                                            return AccessibilityLevel.Partial;
+                                    }
+                                }
+
+                                break;
+                            case DungeonItemShuffle.Keysanity:
+
+                                if (backAccess() >= AccessibilityLevel.SequenceBreak)
+                                {
+                                    if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                    {
+                                        if (frontAccess() >= AccessibilityLevel.SequenceBreak)
+                                        {
+                                            if (_game.Items.Has(ItemType.FireRod) && _game.Items.Has(ItemType.TRSmallKey) &&
+                                                _game.Items.Has(ItemType.TRBigKey) && (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                                _game.Mode.WorldState == WorldState.Inverted || _game.Items.Has(ItemType.Cape) ||
+                                                _game.Items.Has(ItemType.CaneOfByrna) || _game.Items.Has(ItemType.Shield, 3)))
+                                                return AccessibilityLevel.Normal;
+
+                                            if (Available > 4)
+                                                return AccessibilityLevel.Partial;
+
+                                            if (Available > 3 && _game.Items.Has(ItemType.TRBigKey))
+                                                return AccessibilityLevel.Partial;
+
+                                            if (Available > 2 &&
+                                                _game.Items.Has(ItemType.TRSmallKey) && _game.Items.Has(ItemType.TRBigKey))
+                                                return AccessibilityLevel.Partial;
+
+                                            if (Available > 2 && _game.Items.Has(ItemType.FireRod))
+                                                return AccessibilityLevel.Partial;
+
+                                            if (Available > 1 &&
+                                                _game.Items.Has(ItemType.FireRod) && _game.Items.Has(ItemType.TRBigKey))
+                                                return AccessibilityLevel.Partial;
+                                        }
+
+                                        if (_game.Items.Has(ItemType.FireRod) && _game.Items.Has(ItemType.TRSmallKey, 2) &&
+                                            _game.Items.Has(ItemType.TRBigKey) && (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                            _game.Mode.WorldState == WorldState.Inverted || _game.Items.Has(ItemType.Cape) ||
+                                            _game.Items.Has(ItemType.CaneOfByrna) || _game.Items.Has(ItemType.Shield, 3)))
+                                            return AccessibilityLevel.Normal;
+
+                                        if (Available > 4 && _game.Items.Has(ItemType.TRSmallKey))
+                                            return AccessibilityLevel.Partial;
+
+                                        if (Available > 4 && _game.Items.Has(ItemType.TRBigKey))
+                                            return AccessibilityLevel.Partial;
+
+                                        if (Available > 3 &&
+                                            _game.Items.Has(ItemType.TRSmallKey) && _game.Items.Has(ItemType.TRBigKey))
+                                            return AccessibilityLevel.Partial;
+
+                                        if (Available > 2 &&
+                                            _game.Items.Has(ItemType.TRSmallKey) && _game.Items.Has(ItemType.FireRod))
+                                            return AccessibilityLevel.Partial;
+
+                                        if (Available > 2 &&
+                                            _game.Items.Has(ItemType.TRSmallKey, 2) && _game.Items.Has(ItemType.TRBigKey))
+                                            return AccessibilityLevel.Partial;
+
+                                        if (Available > 1 && _game.Items.Has(ItemType.FireRod) &&
+                                            _game.Items.Has(ItemType.TRSmallKey) && _game.Items.Has(ItemType.TRBigKey))
+                                            return AccessibilityLevel.Partial;
+                                    }
+
+                                    if (Available > 4 &&
+                                        _game.Items.Has(ItemType.TRBigKey) && _game.Items.Has(ItemType.Hookshot))
+                                        return AccessibilityLevel.Partial;
+
+                                    if (Available > 5)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                if (frontAccess() >= AccessibilityLevel.SequenceBreak)
+                                {
+                                    if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                    {
+                                        if (_game.Items.Has(ItemType.TRSmallKey, 4) && _game.Items.Has(ItemType.TRBigKey))
+                                        {
+                                            if (_game.Items.Has(ItemType.FireRod))
+                                            {
+                                                if (_game.Items.Has(ItemType.Lamp))
+                                                    return AccessibilityLevel.Normal;
+
+                                                return AccessibilityLevel.SequenceBreak;
+                                            }
+                                            
+                                            if (Available > 2)
+                                                return AccessibilityLevel.Partial;
+                                        }
+
+                                        if (_game.Items.Has(ItemType.TRSmallKey, 3) && _game.Items.Has(ItemType.TRBigKey))
+                                        {
+                                            if (Available > 1 && _game.Items.Has(ItemType.FireRod))
+                                                return AccessibilityLevel.Partial;
+                                            
+                                            if (Available > 3)
+                                                return AccessibilityLevel.Partial;
+                                        }
+
+                                        if (_game.Items.Has(ItemType.TRSmallKey, 2))
+                                        {
+                                            if (_game.Items.Has(ItemType.TRBigKey))
+                                            {
+                                                if (Available > 5 && _game.Items.Has(ItemType.FireRod))
+                                                    return AccessibilityLevel.Partial;
+
+                                                if (Available > 7)
+                                                    return AccessibilityLevel.Partial;
+                                            }
+
+                                            if (Available > 7 && _game.Items.Has(ItemType.FireRod))
+                                                return AccessibilityLevel.Partial;
+
+                                            if (Available > 9)
+                                                return AccessibilityLevel.Partial;
+                                        }
+
+                                        if (_game.Items.Has(ItemType.TRSmallKey))
+                                        {
+                                            if (Available > 8 && _game.Items.Has(ItemType.FireRod))
+                                                return AccessibilityLevel.Partial;
+
+                                            if (Available > 10)
+                                                return AccessibilityLevel.Partial;
+                                        }
+
+                                        if (Available > 9 && _game.Items.Has(ItemType.FireRod))
+                                            return AccessibilityLevel.Partial;
+
+                                        if (Available > 11)
+                                            return AccessibilityLevel.Partial;
+                                    }
+                                }
+
+                                break;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.FireRod]);
-                    itemReqs.Add(_game.Items[ItemType.Lamp]);
-                    itemReqs.Add(_game.Items[ItemType.TRBigKey]);
-                    itemReqs.Add(_game.Items[ItemType.CaneOfSomaria]);
-                    itemReqs.Add(_game.Items[ItemType.TRSmallKey]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.Hookshot]);
-                    itemReqs.Add(_game.Items[ItemType.Cape]);
-                    itemReqs.Add(_game.Items[ItemType.CaneOfByrna]);
-                    itemReqs.Add(_game.Items[ItemType.Shield]);
+                    itemReqs.Add(_game.Items[ItemType.Hammer]);
                     itemReqs.Add(_game.Items[ItemType.Sword]);
                     itemReqs.Add(_game.Items[ItemType.Bombos]);
                     itemReqs.Add(_game.Items[ItemType.BombosDungeons]);
@@ -2350,9 +3258,21 @@ namespace OpenTracker.Models
                     itemReqs.Add(_game.Items[ItemType.EtherDungeons]);
                     itemReqs.Add(_game.Items[ItemType.Quake]);
                     itemReqs.Add(_game.Items[ItemType.QuakeDungeons]);
+                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    itemReqs.Add(_game.Items[ItemType.CaneOfSomaria]);
+                    itemReqs.Add(_game.Items[ItemType.FireRod]);
+                    itemReqs.Add(_game.Items[ItemType.Lamp]);
+                    itemReqs.Add(_game.Items[ItemType.Cape]);
+                    itemReqs.Add(_game.Items[ItemType.CaneOfByrna]);
+                    itemReqs.Add(_game.Items[ItemType.Shield]);
+                    itemReqs.Add(_game.Items[ItemType.TRSmallKey]);
+                    itemReqs.Add(_game.Items[ItemType.TRBigKey]);
+                    itemReqs.Add(_game.Items[ItemType.Hookshot]);
 
                     _game.Regions[RegionID.DeathMountainEastTop].PropertyChanged += OnRequirementChanged;
                     _game.Regions[RegionID.DarkDeathMountainTop].PropertyChanged += OnRequirementChanged;
+
+                    PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.GanonsTower:
@@ -2360,31 +3280,394 @@ namespace OpenTracker.Models
                     _mapCompass = 2;
                     _smallKey = 4;
                     _bigKey = 1;
-                    _baseTotal = 20;
+                    _baseTotal = 19;
                     Name = "Dungeon";
                     _standardRegion = _game.Regions[RegionID.GanonsTower];
                     _invertedRegion = _game.Regions[RegionID.GanonsTower];
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.FireRod) &&
-                            _game.Items.Has(ItemType.Hookshot) && _game.Items.Has(ItemType.Boots) &&
-                            _game.Items.Has(ItemType.CaneOfSomaria) &&
-                            (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value) &&
-                            _game.Items.Has(ItemType.GTSmallKey, 2) && _game.Items.Has(ItemType.GTBigKey))
-                            return AccessibilityLevel.Normal;
+                        switch (_game.Mode.DungeonItemShuffle.Value)
+                        {
+                            case DungeonItemShuffle.Standard:
+
+                                if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.Hookshot) &&
+                                    _game.Items.Has(ItemType.Boots) && _game.Items.Has(ItemType.CaneOfSomaria) &&
+                                    (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value) &&
+                                    _game.Items.Has(ItemType.FireRod))
+                                    return AccessibilityLevel.Normal;
+
+                                if (_game.Items.Has(ItemType.Hammer) &&
+                                    (_game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.Boots)))
+                                {
+                                    if (_game.Items.Has(ItemType.FireRod) || _game.Items.Has(ItemType.Lamp))
+                                    {
+                                        if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                        {
+                                            if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
+                                                return AccessibilityLevel.SequenceBreak;
+
+                                            if (Available > 1)
+                                                return AccessibilityLevel.Partial;
+                                        }
+
+                                        if (Available > 2 &&
+                                            (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value))
+                                            return AccessibilityLevel.Partial;
+
+                                        if (Available > 5)
+                                            return AccessibilityLevel.Partial;
+                                    }
+
+                                    if (Available > 5)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                if (_game.Items.Has(ItemType.FireRod) || _game.Items.Has(ItemType.Lamp))
+                                {
+                                    if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                    {
+                                        if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
+                                        {
+                                            if (Available > 4 &&
+                                                (_game.Items.Has(ItemType.Boots) || _game.Items.Has(ItemType.Hookshot)))
+                                                return AccessibilityLevel.Partial;
+
+                                            if (Available > 5)
+                                                return AccessibilityLevel.Partial;
+                                        }
+
+                                        if (Available > 7 &&
+                                            (_game.Items.Has(ItemType.Boots) || _game.Items.Has(ItemType.Hookshot)))
+                                            return AccessibilityLevel.Partial;
+
+                                        if (Available > 8)
+                                            return AccessibilityLevel.Partial;
+                                    }
+
+                                    if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
+                                    {
+                                        if (Available > 13 &&
+                                            (_game.Items.Has(ItemType.Boots) || _game.Items.Has(ItemType.Hookshot)))
+                                            return AccessibilityLevel.Partial;
+
+                                        if (Available > 14)
+                                            return AccessibilityLevel.Partial;
+                                    }
+
+                                }
+
+                                if (Available > 15 && _game.Items.Has(ItemType.CaneOfSomaria))
+                                    return AccessibilityLevel.Partial;
+
+                                if (Available > 16)
+                                    return AccessibilityLevel.Partial;
+
+                                break;
+                            case DungeonItemShuffle.MapsCompasses:
+
+                                if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.Hookshot) &&
+                                    _game.Items.Has(ItemType.Boots) && _game.Items.Has(ItemType.CaneOfSomaria) &&
+                                    (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value) &&
+                                    _game.Items.Has(ItemType.FireRod))
+                                    return AccessibilityLevel.Normal;
+
+                                if (_game.Items.Has(ItemType.Hammer) &&
+                                    (_game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.Boots)))
+                                {
+                                    if (_game.Items.Has(ItemType.FireRod) || _game.Items.Has(ItemType.Lamp))
+                                    {
+                                        if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                        {
+                                            if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
+                                                return AccessibilityLevel.SequenceBreak;
+
+                                            if (Available > 3)
+                                                return AccessibilityLevel.Partial;
+                                        }
+
+                                        if (Available > 4 &&
+                                            (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value))
+                                            return AccessibilityLevel.Partial;
+
+                                        if (Available > 7)
+                                            return AccessibilityLevel.Partial;
+                                    }
+
+                                    if (Available > 7)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                if (_game.Items.Has(ItemType.FireRod) || _game.Items.Has(ItemType.Lamp))
+                                {
+                                    if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                    {
+                                        if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
+                                        {
+                                            if (Available > 6 &&
+                                                (_game.Items.Has(ItemType.Boots) || _game.Items.Has(ItemType.Hookshot)))
+                                                return AccessibilityLevel.Partial;
+
+                                            if (Available > 7)
+                                                return AccessibilityLevel.Partial;
+                                        }
+
+                                        if (Available > 10)
+                                            return AccessibilityLevel.Partial;
+                                    }
+
+                                    if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
+                                    {
+                                        if (Available > 15 &&
+                                            (_game.Items.Has(ItemType.Boots) || _game.Items.Has(ItemType.Hookshot)))
+                                            return AccessibilityLevel.Partial;
+
+                                        if (Available > 16)
+                                            return AccessibilityLevel.Partial;
+                                    }
+                                }
+
+                                if (Available > 17 && _game.Items.Has(ItemType.CaneOfSomaria))
+                                    return AccessibilityLevel.Partial;
+
+                                if (Available > 18)
+                                    return AccessibilityLevel.Partial;
+
+                                break;
+                            case DungeonItemShuffle.MapsCompassesSmallKeys:
+
+                                if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.Hookshot) &&
+                                    _game.Items.Has(ItemType.Boots) && _game.Items.Has(ItemType.CaneOfSomaria) &&
+                                    (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value) &&
+                                    _game.Items.Has(ItemType.FireRod) && _game.Items.Has(ItemType.GTSmallKey, 2))
+                                    return AccessibilityLevel.Normal;
+
+                                if (_game.Items.Has(ItemType.Hammer) &&
+                                    (_game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.Boots)))
+                                {
+                                    if (_game.Items.Has(ItemType.FireRod) || _game.Items.Has(ItemType.Lamp))
+                                    {
+                                        if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                        {
+                                            if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
+                                            {
+                                                if (_game.Items.Has(ItemType.GTSmallKey))
+                                                    return AccessibilityLevel.SequenceBreak;
+
+                                                if (Available > 1)
+                                                    return AccessibilityLevel.Partial;
+                                            }
+
+                                            if (Available > 4)
+                                                return AccessibilityLevel.Partial;
+                                        }
+
+                                        if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
+                                        {
+                                            if (Available > 5 && _game.Items.Has(ItemType.GTSmallKey, 2))
+                                                return AccessibilityLevel.Partial;
+
+                                            if (Available > 6 && _game.Items.Has(ItemType.GTSmallKey))
+                                                return AccessibilityLevel.Partial;
+
+                                            if (Available > 7)
+                                                return AccessibilityLevel.Partial;
+                                        }
+                                    }
+
+                                    if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                    {
+                                        if (Available > 8 && _game.Items.Has(ItemType.GTSmallKey))
+                                            return AccessibilityLevel.Partial;
+
+                                        if (Available > 9)
+                                            return AccessibilityLevel.Partial;
+                                    }
+
+                                    if (Available > 9 && _game.Items.Has(ItemType.GTSmallKey))
+                                        return AccessibilityLevel.Partial;
+
+                                    if (Available > 10)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                if (_game.Items.Has(ItemType.FireRod) || _game.Items.Has(ItemType.Lamp))
+                                {
+                                    if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                    {
+                                        if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
+                                        {
+                                            if (Available > 9 && _game.Items.Has(ItemType.GTSmallKey) &&
+                                                (_game.Items.Has(ItemType.Boots) || _game.Items.Has(ItemType.Hookshot)))
+                                                return AccessibilityLevel.Partial;
+
+                                            if (Available > 10)
+                                                return AccessibilityLevel.Partial;
+                                        }
+
+                                        if (Available > 13)
+                                            return AccessibilityLevel.Partial;
+                                    }
+
+                                    if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
+                                    {
+                                        if (Available > 19 &&
+                                            (_game.Items.Has(ItemType.Boots) || _game.Items.Has(ItemType.Hookshot)))
+                                            return AccessibilityLevel.Partial;
+
+                                        if (Available > 20)
+                                            return AccessibilityLevel.Partial;
+                                    }
+                                }
+
+                                if (Available > 21 && _game.Items.Has(ItemType.CaneOfSomaria))
+                                    return AccessibilityLevel.Partial;
+
+                                if (Available > 22)
+                                    return AccessibilityLevel.Partial;
+
+                                break;
+                            case DungeonItemShuffle.Keysanity:
+
+                                if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.Hookshot) &&
+                                    _game.Items.Has(ItemType.Boots) && _game.Items.Has(ItemType.CaneOfSomaria) &&
+                                    (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value) &&
+                                    _game.Items.Has(ItemType.FireRod) && _game.Items.Has(ItemType.GTSmallKey, 2) &&
+                                    _game.Items.Has(ItemType.GTBigKey))
+                                    return AccessibilityLevel.Normal;
+
+                                if (_game.Items.Has(ItemType.Hammer) &&
+                                    (_game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.Boots)))
+                                {
+                                    if (_game.Items.Has(ItemType.FireRod) || _game.Items.Has(ItemType.Lamp))
+                                    {
+                                        if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                        {
+                                            if (_game.Items.Has(ItemType.GTBigKey))
+                                            {
+                                                if ((_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value) &&
+                                                    _game.Items.Has(ItemType.GTBigKey))
+                                                {
+                                                    if (_game.Items.Has(ItemType.GTSmallKey))
+                                                        return AccessibilityLevel.SequenceBreak;
+
+                                                    if (Available > 1)
+                                                        return AccessibilityLevel.Partial;
+                                                }
+
+                                                if (Available > 4)
+                                                    return AccessibilityLevel.Partial;
+                                            }
+
+                                            if (Available > 5)
+                                                return AccessibilityLevel.Partial;
+                                        }
+
+                                        if (_game.Items.Has(ItemType.GTBigKey))
+                                        {
+                                            if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
+                                            {
+                                                if (Available > 5 && _game.Items.Has(ItemType.GTSmallKey, 2))
+                                                    return AccessibilityLevel.Partial;
+
+                                                if (Available > 6 && _game.Items.Has(ItemType.GTSmallKey))
+                                                    return AccessibilityLevel.Partial;
+
+                                                if (Available > 7)
+                                                    return AccessibilityLevel.Partial;
+                                            }
+                                        }
+                                    }
+
+                                    if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                    {
+                                        if (Available > 8 &&
+                                            _game.Items.Has(ItemType.GTBigKey) && _game.Items.Has(ItemType.GTSmallKey))
+                                            return AccessibilityLevel.Partial;
+
+                                        if (Available > 9 && _game.Items.Has(ItemType.GTSmallKey))
+                                            return AccessibilityLevel.Partial;
+
+                                        if (Available > 9 && _game.Items.Has(ItemType.GTBigKey))
+                                            return AccessibilityLevel.Partial;
+
+                                        if (Available > 10)
+                                            return AccessibilityLevel.Partial;
+                                    }
+
+                                    if (Available > 9 &&
+                                        _game.Items.Has(ItemType.GTSmallKey) && _game.Items.Has(ItemType.GTBigKey))
+                                        return AccessibilityLevel.Partial;
+
+                                    if (Available > 10 && _game.Items.Has(ItemType.GTSmallKey))
+                                        return AccessibilityLevel.Partial;
+
+                                    if (Available > 10 && _game.Items.Has(ItemType.GTBigKey))
+                                        return AccessibilityLevel.Partial;
+
+                                    if (Available > 11)
+                                        return AccessibilityLevel.Partial;
+                                }
+
+                                if (_game.Items.Has(ItemType.FireRod) || _game.Items.Has(ItemType.Lamp))
+                                {
+                                    if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                    {
+                                        if (_game.Items.Has(ItemType.GTBigKey))
+                                        {
+                                            if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
+                                            {
+                                                if (Available > 10 && _game.Items.Has(ItemType.GTSmallKey) &&
+                                                    (_game.Items.Has(ItemType.Boots) || _game.Items.Has(ItemType.Hookshot)))
+                                                    return AccessibilityLevel.Partial;
+
+                                                if (Available > 11)
+                                                    return AccessibilityLevel.Partial;
+                                            }
+
+                                            if (Available > 13)
+                                                return AccessibilityLevel.Partial;
+                                        }
+
+                                        if (Available > 14)
+                                            return AccessibilityLevel.Partial;
+                                    }
+
+                                    if ((_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value) &&
+                                        _game.Items.Has(ItemType.GTBigKey))
+                                    {
+                                        if (Available > 20 &&
+                                            (_game.Items.Has(ItemType.Boots) || _game.Items.Has(ItemType.Hookshot)))
+                                            return AccessibilityLevel.Partial;
+
+                                        if (Available > 21)
+                                            return AccessibilityLevel.Partial;
+                                    }
+                                }
+
+                                if (Available > 22 && _game.Items.Has(ItemType.CaneOfSomaria))
+                                    return AccessibilityLevel.Partial;
+
+                                if (Available > 23)
+                                    return AccessibilityLevel.Partial;
+
+                                break;
+                        }
                         
-                        return AccessibilityLevel.SequenceBreak;
+                        return AccessibilityLevel.None;
                     };
 
                     itemReqs.Add(_game.Items[ItemType.Hammer]);
-                    itemReqs.Add(_game.Items[ItemType.FireRod]);
                     itemReqs.Add(_game.Items[ItemType.Hookshot]);
                     itemReqs.Add(_game.Items[ItemType.Boots]);
                     itemReqs.Add(_game.Items[ItemType.CaneOfSomaria]);
                     itemReqs.Add(_game.Items[ItemType.Bow]);
+                    itemReqs.Add(_game.Items[ItemType.FireRod]);
+                    itemReqs.Add(_game.Items[ItemType.Lamp]);
                     itemReqs.Add(_game.Items[ItemType.GTSmallKey]);
                     itemReqs.Add(_game.Items[ItemType.GTBigKey]);
+
+                    PropertyChanged += OnRequirementChanged;
 
                     break;
             }
@@ -2449,7 +3732,7 @@ namespace OpenTracker.Models
         {
             UpdateAccessibility();
 
-            if (e.PropertyName == "DungeonItemShuffle")
+            if (e.PropertyName == nameof(_game.Mode.DungeonItemShuffle))
                 SetTotal();
         }
 
@@ -2461,17 +3744,10 @@ namespace OpenTracker.Models
 
         public void Clear()
         {
-            Available = 0;
-
-            if (Marking != null)
+            do
             {
-                if (Enum.TryParse(Marking.ToString(), out ItemType itemType))
-                {
-                    Item item = _game.Items[itemType];
-                    item.Change(1);
-                    Marking = null;
-                }
-            }
+                Available--;
+            } while (Accessibility >= AccessibilityLevel.Inspect && Available > 0);
         }
 
         public bool IsAvailable()

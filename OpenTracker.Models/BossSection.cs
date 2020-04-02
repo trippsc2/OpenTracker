@@ -406,7 +406,7 @@ namespace OpenTracker.Models
                     GetAccessibility = () =>
                     {
                         if ((_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value) &&
-                            _game.Items.Has(ItemType.GTSmallKey, 2) && _game.Items.Has(ItemType.GTBigKey))
+                            _game.Items.Has(ItemType.GTSmallKey, 1) && _game.Items.Has(ItemType.GTBigKey))
                             return AccessibilityLevel.Normal;
 
                         return AccessibilityLevel.None;
@@ -444,7 +444,9 @@ namespace OpenTracker.Models
 
             if (_game.Mode.BossShuffle.Value)
             {
-                if (Boss != null)
+                if (Boss == null)
+                    bossAccessibility = _game.Bosses.UnknownBossAccessibility;
+                else
                     bossAccessibility = Boss.Accessibility;
             }
             else
@@ -484,7 +486,9 @@ namespace OpenTracker.Models
         {
             if (propertyName == nameof(Boss))
             {
-                if (Boss != null)
+                if (Boss == null)
+                    _game.Bosses.PropertyChanged -= OnBossChanged;
+                else if (Boss != _defaultBoss)
                     Boss.PropertyChanged -= OnBossChanged;
             }
 
@@ -508,7 +512,9 @@ namespace OpenTracker.Models
 
             if (propertyName == nameof(Boss))
             {
-                if (Boss != null)
+                if (Boss == null)
+                    _game.Bosses.PropertyChanged += OnBossChanged;
+                else if (Boss != _defaultBoss)
                     Boss.PropertyChanged += OnBossChanged;
 
                 UpdateAccessibility();
