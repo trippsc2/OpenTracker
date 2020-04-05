@@ -176,7 +176,7 @@ namespace OpenTracker.ViewModels
             UndoCommand = ReactiveCommand.Create(Undo, this.WhenAnyValue(x => x.CanUndo));
             RedoCommand = ReactiveCommand.Create(Redo, this.WhenAnyValue(x => x.CanRedo));
             ToggleDisplayAllLocationsCommand = ReactiveCommand.Create(ToggleDisplayAllLocations);
-            ItemPlacementCommand = ReactiveCommand.Create<string>(SetItemPlacement);
+            ItemPlacementCommand = ReactiveCommand.Create<string>(SetItemPlacement, this.WhenAnyValue(x => x.WorldStateStandardOpen));
             DungeonItemShuffleCommand = ReactiveCommand.Create<string>(SetDungeonItemShuffle);
             WorldStateCommand = ReactiveCommand.Create<string>(SetWorldState);
             EntranceShuffleCommand = ReactiveCommand.Create(ToggleEntranceShuffle);

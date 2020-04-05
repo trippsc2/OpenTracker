@@ -1,5 +1,4 @@
 ﻿using OpenTracker.Models.Enums;
-using System.ComponentModel;
 
 namespace OpenTracker.Models
 {

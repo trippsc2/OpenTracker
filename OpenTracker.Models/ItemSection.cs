@@ -10,12 +10,17 @@ namespace OpenTracker.Models
     {
         private readonly Game _game;
         private readonly Location _location;
-        private readonly Region _standardRegion;
-        private readonly Region _invertedRegion;
         private readonly int _mapCompass;
         private readonly int _smallKey;
         private readonly int _bigKey;
         private readonly int _baseTotal;
+        private readonly bool _updateOnDungeonItemShuffleChange;
+        private readonly bool _updateOnItemPlacementChange;
+        private readonly bool _updateOnEnemyShuffleChange;
+        private readonly Dictionary<RegionID, Mode> _regionSubscriptions;
+        private readonly Dictionary<RegionID, bool> _regionIsSubscribed;
+        private readonly Dictionary<ItemType, Mode> _itemSubscriptions;
+        private readonly Dictionary<ItemType, bool> _itemIsSubscribed;
 
         public string Name { get; }
         public int Total { get; private set; }
@@ -73,9 +78,10 @@ namespace OpenTracker.Models
             _game = game;
             _location = location;
 
-            _game.Mode.PropertyChanged += OnModeChanged;
-
-            List<Item> itemReqs = new List<Item>();
+            _regionSubscriptions = new Dictionary<RegionID, Mode>();
+            _regionIsSubscribed = new Dictionary<RegionID, bool>();
+            _itemSubscriptions = new Dictionary<ItemType, Mode>();
+            _itemIsSubscribed = new Dictionary<ItemType, bool>();
 
             switch (_location.ID)
             {
@@ -84,31 +90,36 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Pedestal";
                     HasMarking = true;
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Items.Has(ItemType.GreenPendant) && _game.Items.Has(ItemType.Pendant, 2))
+                        if (_game.Regions[RegionID.LightWorld].Accessibility >= AccessibilityLevel.SequenceBreak)
                         {
-                            //  Basic Item Placement requires Book in logic
-                            if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
-                                _game.Mode.WorldState == WorldState.Inverted ||
-                                _game.Items.Has(ItemType.Book))
-                                return AccessibilityLevel.Normal;
+                            if (_game.Items.Has(ItemType.GreenPendant) && _game.Items.Has(ItemType.Pendant, 2))
+                            {
+                                //  Basic Item Placement requires Book in logic
+                                if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                    _game.Items.Has(ItemType.Book))
+                                    return _game.Regions[RegionID.LightWorld].Accessibility;
 
-                            return AccessibilityLevel.SequenceBreak;
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.LightWorld].Accessibility);
+                            }
+
+                            if (_game.Items.Has(ItemType.Book))
+                                return AccessibilityLevel.Inspect;
                         }
-                        
-                        if (_game.Items.Has(ItemType.Book))
-                            return AccessibilityLevel.Inspect;
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.GreenPendant]);
-                    itemReqs.Add(_game.Items[ItemType.Pendant]);
-                    itemReqs.Add(_game.Items[ItemType.Book]);
+                    _updateOnItemPlacementChange = true;
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.GreenPendant, new Mode());
+                    _itemSubscriptions.Add(ItemType.Pendant, new Mode());
+                    _itemSubscriptions.Add(ItemType.Book, new Mode() { ItemPlacement = ItemPlacement.Basic });
 
                     break;
                 case LocationID.LumberjackCave:
@@ -116,196 +127,207 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Cave";
                     HasMarking = true;
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Aga) && _game.Items.Has(ItemType.Boots))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.Aga) && _game.Items.Has(ItemType.Boots) &&
                                 _game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.Inspect;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Aga]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
-                    itemReqs.Add(_game.Items[ItemType.Boots]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Aga, new Mode());
+                    _itemSubscriptions.Add(ItemType.Boots, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.BlindsHouse when index == 0:
 
                     _baseTotal = 4;
                     Name = "Main";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.BlindsHouse:
 
                     _baseTotal = 1;
                     Name = "Bomb";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.TheWell when index == 0:
 
                     _baseTotal = 4;
                     Name = "Cave";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () =>
+                    {
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        {
+                            if (_game.Items.Has(ItemType.MoonPearl))
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
+                        }
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.TheWell:
 
                     _baseTotal = 1;
                     Name = "Bomb";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
-                        
+
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.BottleVendor:
 
                     _baseTotal = 1;
                     Name = "This Jerk";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.ChickenHouse:
 
                     _baseTotal = 1;
                     Name = "Bombable Wall";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
-                        
+
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.Tavern:
 
                     _baseTotal = 1;
                     Name = "Back Room";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.SickKid:
 
                     _baseTotal = 1;
                     Name = "By The Bed";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Items.Has(ItemType.Bottle))
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Bottle]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Bottle, new Mode());
 
                     break;
                 case LocationID.MagicBat:
 
                     _baseTotal = 1;
                     Name = "Magic Bowl";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
@@ -314,7 +336,7 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.Powder))
                             {
                                 if (_game.Items.Has(ItemType.Hammer))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.LightWorld].Accessibility;
 
                                 if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Gloves, 2) &&
                                     _game.Items.Has(ItemType.Mirror))
@@ -324,7 +346,10 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.Mushroom) && _game.Items.Has(ItemType.CaneOfSomaria))
                             {
                                 if (_game.Items.Has(ItemType.Hammer))
-                                    return AccessibilityLevel.SequenceBreak;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.LightWorld].Accessibility);
+                                }
 
                                 if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Gloves, 2) &&
                                     _game.Items.Has(ItemType.Mirror))
@@ -337,23 +362,28 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Hammer))
                             {
                                 if (_game.Items.Has(ItemType.Powder))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.LightWorld].Accessibility;
 
                                 if (_game.Items.Has(ItemType.Mushroom) && _game.Items.Has(ItemType.CaneOfSomaria))
-                                    return AccessibilityLevel.SequenceBreak;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.LightWorld].Accessibility);
+                                }
                             }
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Powder]);
-                    itemReqs.Add(_game.Items[ItemType.Hammer]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.Mushroom]);
-                    itemReqs.Add(_game.Items[ItemType.CaneOfSomaria]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Powder, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode());
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Mushroom, new Mode());
+                    _itemSubscriptions.Add(ItemType.CaneOfSomaria, new Mode());
 
                     break;
                 case LocationID.RaceGame:
@@ -361,8 +391,6 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Take This Trash";
                     HasMarking = true;
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
@@ -371,12 +399,21 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.RaceGameAccess))
                                 return AccessibilityLevel.Normal;
 
-                            if (!_game.Mode.EntranceShuffle.Value)
-                                return AccessibilityLevel.Normal;
+                            AccessibilityLevel lightWorld = AccessibilityLevel.None;
+                            AccessibilityLevel dWSouth = AccessibilityLevel.None;
 
-                            if (_game.Regions[RegionID.DarkWorldSouth].Accessibility >= AccessibilityLevel.SequenceBreak &&
-                                _game.Items.Has(ItemType.Mirror))
-                                return _game.Regions[RegionID.DarkWorldWest].Accessibility;
+                            if (!_game.Mode.EntranceShuffle.Value)
+                                lightWorld = _game.Regions[RegionID.LightWorld].Accessibility;
+                            else
+                            {
+                                lightWorld = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Inspect,
+                                    (byte)_game.Regions[RegionID.LightWorld].Accessibility);
+                            }
+
+                            if (_game.Items.Has(ItemType.Mirror))
+                                dWSouth = _game.Regions[RegionID.DarkWorldWest].Accessibility;
+
+                            return (AccessibilityLevel)Math.Max((byte)lightWorld, (byte)dWSouth);
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
@@ -387,16 +424,22 @@ namespace OpenTracker.Models
                                     return AccessibilityLevel.Normal;
 
                                 if (!_game.Mode.EntranceShuffle.Value)
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.LightWorld].Accessibility;
+
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Inspect,
+                                    (byte)_game.Regions[RegionID.LightWorld].Accessibility);
                             }
                         }
 
-                        return AccessibilityLevel.Inspect;
+                        return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.RaceGameAccess]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode() { WorldState = WorldState.StandardOpen });
+
+                    _itemSubscriptions.Add(ItemType.RaceGameAccess, new Mode());
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     _game.Regions[RegionID.DarkWorldWest].PropertyChanged += OnRequirementChanged;
 
@@ -406,28 +449,34 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "On The Shelf";
                     HasMarking = true;
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Boots))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
+
+                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Inspect,
+                                (byte)_game.Regions[RegionID.LightWorld].Accessibility);
                         }    
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Boots))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
+
+                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Inspect,
+                                (byte)_game.Regions[RegionID.LightWorld].Accessibility);
                         }
 
-                        return AccessibilityLevel.Inspect;
+                        return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Boots]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Boots, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.LostWoods when index == 0:
@@ -435,140 +484,138 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Shroom";
                     HasMarking = true;
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
-                        return AccessibilityLevel.Inspect;
+                        return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.LostWoods:
 
                     _baseTotal = 1;
                     Name = "Hideout";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
-
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
 
                     RequiredMode = new Mode() { EntranceShuffle = false };
+
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.CastleSecret when index == 0:
 
                     _baseTotal = 1;
                     Name = "Uncle";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.CastleSecret:
 
                     _baseTotal = 1;
                     Name = "Hallway";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
-                        
+
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.LinksHouse:
 
                     _baseTotal = 1;
                     Name = "By The Door";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldSouth];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.GroveDiggingSpot:
 
                     _baseTotal = 1;
                     Name = "Hidden Treasure";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Shovel))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Shovel))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Shovel]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Shovel, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.PyramidLedge:
 
                     _baseTotal = 1;
                     Name = "Ledge";
-                    _standardRegion = _game.Regions[RegionID.DarkWorldEast];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldEast];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DarkWorldEast].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DarkWorldEast, new Mode());
 
                     break;
                 case LocationID.FatFairy:
 
                     _baseTotal = 2;
                     Name = "Big Bomb Spot";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldSouth];
 
                     GetAccessibility = () =>
                     {
@@ -577,26 +624,29 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.RedCrystal, 2))
                             {
                                 if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.Gloves))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.LightWorld].Accessibility;
 
                                 if (_game.Items.Has(ItemType.Aga))
                                 {
                                     if (_game.Items.Has(ItemType.Hammer))
-                                        return AccessibilityLevel.Normal;
+                                        return _game.Regions[RegionID.LightWorld].Accessibility;
 
                                     if (_game.Items.Has(ItemType.Mirror))
                                     {
                                         if (_game.Items.Has(ItemType.Gloves, 2))
-                                            return AccessibilityLevel.Normal;
+                                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                                         if (_game.Items.Has(ItemType.Hookshot) &&
                                             (_game.Items.Has(ItemType.Flippers) || _game.Items.Has(ItemType.Gloves)))
-                                            return AccessibilityLevel.Normal;
+                                            return _game.Regions[RegionID.LightWorld].Accessibility;
                                     }
                                 }
 
                                 if (_game.Items.Has(ItemType.Gloves, 2))
-                                    return AccessibilityLevel.SequenceBreak;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.LightWorld].Accessibility);
+                                }
                             }
                         }
 
@@ -609,59 +659,64 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
-                    itemReqs.Add(_game.Items[ItemType.RedCrystal]);
-                    itemReqs.Add(_game.Items[ItemType.Hammer]);
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.Aga]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.Hookshot]);
-                    itemReqs.Add(_game.Items[ItemType.Flippers]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
-                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnRequirementChanged;
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.RedCrystal, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Aga, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hookshot, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Flippers, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.HauntedGrove:
 
                     _baseTotal = 1;
                     Name = "Stumpy";
-                    _standardRegion = _game.Regions[RegionID.DarkWorldSouth];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldSouth];
-
-                    GetAccessibility = () =>
-                    {
-                        if (_game.Mode.WorldState == WorldState.Inverted ||
-                            _game.Items.Has(ItemType.MoonPearl))
-                            return AccessibilityLevel.Normal;
-
-                        return AccessibilityLevel.None;
-                    };
-
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
-
-                    break;
-                case LocationID.HypeCave:
-
-                    _baseTotal = 5;
-                    Name = "Cave";
-                    _standardRegion = _game.Regions[RegionID.DarkWorldSouth];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldSouth];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldSouth].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.DarkWorldSouth].Accessibility;
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
+
+                    break;
+                case LocationID.HypeCave:
+
+                    _baseTotal = 5;
+                    Name = "Cave";
+
+                    GetAccessibility = () =>
+                    {
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        {
+                            if (_game.Items.Has(ItemType.MoonPearl))
+                                return _game.Regions[RegionID.DarkWorldSouth].Accessibility;
+                        }
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                            return _game.Regions[RegionID.DarkWorldSouth].Accessibility;
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.BombosTablet:
@@ -669,8 +724,6 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Tablet";
                     HasMarking = true;
-                    _standardRegion = _game.Regions[RegionID.DarkWorldSouth];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
@@ -679,9 +732,10 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.Book) && _game.Items.Has(ItemType.Mirror))
                             {
                                 if (_game.Items.CanActivateTablets())
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.DarkWorldSouth].Accessibility;
 
-                                return AccessibilityLevel.Inspect;
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Inspect,
+                                    (byte)_game.Regions[RegionID.DarkWorldSouth].Accessibility);
                             }
                         }
 
@@ -690,116 +744,120 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.Book))
                             {
                                 if (_game.Items.CanActivateTablets())
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.LightWorld].Accessibility;
 
-                                return AccessibilityLevel.Inspect;
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Inspect,
+                                    (byte)_game.Regions[RegionID.LightWorld].Accessibility);
                             }
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Book]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.Sword]);
-                    itemReqs.Add(_game.Items[ItemType.Hammer]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode() { WorldState = WorldState.StandardOpen });
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode() { WorldState = WorldState.Inverted });
+
+                    _itemSubscriptions.Add(ItemType.Book, new Mode());
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Sword, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
 
                     break;
                 case LocationID.SouthOfGrove:
 
                     _baseTotal = 1;
                     Name = "Circle of Bushes";
-                    _standardRegion = _game.Regions[RegionID.DarkWorldSouth];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Mirror))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldSouth].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode() { WorldState = WorldState.StandardOpen });
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode() { WorldState = WorldState.Inverted });
+
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.DiggingGame:
 
                     _baseTotal = 1;
                     Name = "Dig For Treasure";
-                    _standardRegion = _game.Regions[RegionID.DarkWorldSouth];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldSouth];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldSouth].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.DarkWorldSouth].Accessibility;
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.WitchsHut:
 
                     _baseTotal = 1;
                     Name = "Assistant";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Mushroom))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Mushroom))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Mushroom]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Mushroom, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.WaterfallFairy:
 
                     _baseTotal = 2;
                     Name = "Waterfall Cave";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Flippers))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
 
-                            return AccessibilityLevel.SequenceBreak;
+                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                (byte)_game.Regions[RegionID.LightWorld].Accessibility);
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
@@ -807,34 +865,36 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.MoonPearl))
                             {
                                 if (_game.Items.Has(ItemType.Flippers))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.LightWorld].Accessibility;
 
-                                return AccessibilityLevel.SequenceBreak;
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.LightWorld].Accessibility);
                             }
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Flippers]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Flippers, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.ZoraArea when index == 0:
 
                     _baseTotal = 1;
                     Name = "King Zora";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Gloves) || _game.Items.Has(ItemType.Flippers))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
 
-                            return AccessibilityLevel.SequenceBreak;
+                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                (byte)_game.Regions[RegionID.LightWorld].Accessibility);
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
@@ -842,18 +902,21 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.MoonPearl))
                             {
                                 if (_game.Items.Has(ItemType.Gloves) || _game.Items.Has(ItemType.Flippers))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.LightWorld].Accessibility;
 
-                                return AccessibilityLevel.SequenceBreak;
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.LightWorld].Accessibility);
                             }
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.Flippers]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.Flippers, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.ZoraArea:
@@ -861,17 +924,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Ledge";
                     HasMarking = true;
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Flippers))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
 
-                            return AccessibilityLevel.SequenceBreak;
+                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                (byte)_game.Regions[RegionID.LightWorld].Accessibility);
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
@@ -879,123 +941,124 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.MoonPearl))
                             {
                                 if (_game.Items.Has(ItemType.Flippers))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.LightWorld].Accessibility;
 
-                                return AccessibilityLevel.SequenceBreak;
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.LightWorld].Accessibility);
                             }
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Flippers]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Flippers, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.Catfish:
 
                     _baseTotal = 1;
                     Name = "Ring of Stones";
-                    _standardRegion = _game.Regions[RegionID.DarkWorldEast];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldEast];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Gloves) && _game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldEast].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.Gloves))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldEast].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldEast, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.SahasrahlasHut when index == 0:
 
                     _baseTotal = 3;
                     Name = "Back Room";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.SahasrahlasHut:
 
                     _baseTotal = 1;
                     Name = "Shabba";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Items.Has(ItemType.GreenPendant))
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.GreenPendant]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.GreenPendant, new Mode());
 
                     break;
                 case LocationID.BonkRocks:
 
                     _baseTotal = 1;
                     Name = "Cave";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Boots))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.Boots) && _game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Boots]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Boots, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.KingsTomb:
 
                     _baseTotal = 1;
                     Name = "The Crypt";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
@@ -1003,11 +1066,16 @@ namespace OpenTracker.Models
                         {
                             if (_game.Items.Has(ItemType.Boots))
                             {
-                                if (_game.Items.Has(ItemType.Gloves, 2))
-                                    return AccessibilityLevel.Normal;
+                                AccessibilityLevel direct = AccessibilityLevel.None;
+                                AccessibilityLevel mirror = AccessibilityLevel.None;
 
-                                if (_game.Items.Has(ItemType.Mirror))
-                                    return _game.Regions[RegionID.DarkWorldWest].Accessibility;
+                                if (_game.Items.Has(ItemType.Gloves, 2))
+                                    direct = _game.Regions[RegionID.LightWorld].Accessibility;
+
+                                if (_game.Items.Has(ItemType.Mirror) && _game.Items.Has(ItemType.MoonPearl))
+                                    mirror = _game.Regions[RegionID.DarkWorldWest].Accessibility;
+
+                                return (AccessibilityLevel)Math.Max((byte)direct, (byte)mirror);
                             }
                         }
 
@@ -1021,40 +1089,42 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Boots]);
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode() { WorldState = WorldState.StandardOpen });
 
-                    _game.Regions[RegionID.DarkWorldWest].PropertyChanged += OnRequirementChanged;
+                    _itemSubscriptions.Add(ItemType.Boots, new Mode());
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode());
 
                     break;
                 case LocationID.GraveyardLedge:
 
                     _baseTotal = 1;
                     Name = "Cave";
-                    _standardRegion = _game.Regions[RegionID.DarkWorldWest];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
-                            if (_game.Items.Has(ItemType.Mirror))
-                                return AccessibilityLevel.Normal;
+                            if (_game.Items.Has(ItemType.Mirror) && _game.Items.Has(ItemType.MoonPearl))
+                                return _game.Regions[RegionID.DarkWorldWest].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode() { WorldState = WorldState.StandardOpen });
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode() { WorldState = WorldState.Inverted });
+
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode());
 
                     break;
                 case LocationID.DesertLedge:
@@ -1062,8 +1132,6 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Ledge";
                     HasMarking = true;
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
@@ -1075,12 +1143,19 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.DesertBackAccess) && _game.Items.Has(ItemType.Gloves))
                                 return AccessibilityLevel.Normal;
 
-                            if (!_game.Mode.EntranceShuffle.Value && _game.Items.Has(ItemType.Book))
-                                return AccessibilityLevel.Normal;
+                            AccessibilityLevel lightWorld = AccessibilityLevel.None;
+                            AccessibilityLevel mireArea = AccessibilityLevel.None;
 
-                            if (_game.Regions[RegionID.MireArea].Accessibility >= AccessibilityLevel.SequenceBreak &&
-                                _game.Items.Has(ItemType.Mirror))
-                                return _game.Regions[RegionID.MireArea].Accessibility;
+                            if (!_game.Mode.EntranceShuffle.Value && _game.Items.Has(ItemType.Book))
+                                lightWorld = _game.Regions[RegionID.LightWorld].Accessibility;
+                            else
+                                lightWorld = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Inspect,
+                                    (byte)_game.Regions[RegionID.LightWorld].Accessibility);
+
+                            if (_game.Items.Has(ItemType.Mirror))
+                                mireArea = _game.Regions[RegionID.MireArea].Accessibility;
+
+                            return (AccessibilityLevel)Math.Max((byte)lightWorld, (byte)mireArea);
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
@@ -1091,178 +1166,271 @@ namespace OpenTracker.Models
                                     return AccessibilityLevel.Normal;
 
                                 if (!_game.Mode.EntranceShuffle.Value && _game.Items.Has(ItemType.Book))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.LightWorld].Accessibility;
                             }
+
+                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Inspect,
+                                (byte)_game.Regions[RegionID.LightWorld].Accessibility);
                         }
 
-                        return AccessibilityLevel.Inspect;
+                        return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.DesertLeftAccess]);
-                    itemReqs.Add(_game.Items[ItemType.DesertBackAccess]);
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.Book]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+                    _regionSubscriptions.Add(RegionID.MireArea, new Mode() { WorldState = WorldState.StandardOpen });
 
-                    _game.Regions[RegionID.MireArea].PropertyChanged += OnRequirementChanged;
+                    _itemSubscriptions.Add(ItemType.DesertLeftAccess, new Mode());
+                    _itemSubscriptions.Add(ItemType.DesertBackAccess, new Mode());
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.Book, new Mode());
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.AginahsCave:
 
                     _baseTotal = 1;
                     Name = "Cave";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () =>
+                    {
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        {
+                            if (_game.Items.Has(ItemType.MoonPearl))
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
+                        }
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.CShapedHouse:
 
                     _baseTotal = 1;
                     Name = "House";
-                    _standardRegion = _game.Regions[RegionID.DarkWorldWest];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldWest];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () =>
+                    {
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        {
+                            if (_game.Items.Has(ItemType.MoonPearl))
+                                return _game.Regions[RegionID.DarkWorldWest].Accessibility;
+                        }
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                            return _game.Regions[RegionID.DarkWorldWest].Accessibility;
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.TreasureGame:
 
                     _baseTotal = 1;
                     Name = "Prize";
-                    _standardRegion = _game.Regions[RegionID.DarkWorldWest];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldWest];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () =>
+                    {
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        {
+                            if (_game.Items.Has(ItemType.MoonPearl))
+                                return _game.Regions[RegionID.DarkWorldWest].Accessibility;
+                        }
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                            return _game.Regions[RegionID.DarkWorldWest].Accessibility;
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.BombableShack:
 
                     _baseTotal = 1;
                     Name = "Downstairs";
-                    _standardRegion = _game.Regions[RegionID.DarkWorldWest];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldWest];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () =>
+                    {
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        {
+                            if (_game.Items.Has(ItemType.MoonPearl))
+                                return _game.Regions[RegionID.DarkWorldWest].Accessibility;
+                        }
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                            return _game.Regions[RegionID.DarkWorldWest].Accessibility;
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.Blacksmith:
 
                     _baseTotal = 1;
                     Name = "House";
-                    _standardRegion = _game.Regions[RegionID.DarkWorldWest];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldWest];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
-                            if (_game.Items.Has(ItemType.Gloves, 2))
+                            if (_game.Items.Has(ItemType.Gloves, 2) && _game.Items.Has(ItemType.MoonPearl))
                             {
+                                AccessibilityLevel dWWest = AccessibilityLevel.None;
+                                AccessibilityLevel lightWorld = _game.Regions[RegionID.LightWorld].Accessibility;
+
                                 if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
                                     _game.Items.Has(ItemType.Mirror))
-                                    return AccessibilityLevel.Normal;
+                                    dWWest = _game.Regions[RegionID.DarkWorldWest].Accessibility;
 
-                                return AccessibilityLevel.SequenceBreak;
+                                dWWest = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.DarkWorldWest].Accessibility);
+
+                                return (AccessibilityLevel)Math.Min((byte)dWWest, (byte)lightWorld);
                             }
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
-                            if (_game.Items.Has(ItemType.Gloves, 2))
-                                return AccessibilityLevel.Normal;
+                            AccessibilityLevel lightWorld = _game.Regions[RegionID.LightWorld].Accessibility;
+                            AccessibilityLevel dWWest = AccessibilityLevel.None;
 
                             if (_game.Items.Has(ItemType.Mirror))
-                                return _game.Regions[RegionID.LightWorld].Accessibility;
+                                return lightWorld;
+
+                            if (_game.Items.Has(ItemType.Gloves, 2))
+                            {
+                                dWWest = _game.Regions[RegionID.DarkWorldWest].Accessibility;
+
+                                return (AccessibilityLevel)Math.Min((byte)lightWorld, (byte)dWWest);
+                            }
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    _updateOnItemPlacementChange = true;
 
-                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnRequirementChanged;
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode());
 
                     break;
                 case LocationID.PurpleChest:
 
                     _baseTotal = 1;
                     Name = "Show To Gary";
-                    _standardRegion = _game.Regions[RegionID.DarkWorldWest];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldWest];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
-                            if (_game.Items.Has(ItemType.Gloves, 2))
-                                return AccessibilityLevel.Normal;
+                            if (_game.Items.Has(ItemType.Gloves, 2) && _game.Items.Has(ItemType.MoonPearl))
+                            {
+                                AccessibilityLevel dWWest = AccessibilityLevel.None;
+                                AccessibilityLevel lightWorld = _game.Regions[RegionID.LightWorld].Accessibility;
+
+                                dWWest = _game.Regions[RegionID.DarkWorldWest].Accessibility;
+
+                                return (AccessibilityLevel)Math.Min((byte)dWWest, (byte)lightWorld);
+                            }
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
-                            if (_game.Items.Has(ItemType.Gloves, 2))
-                                return AccessibilityLevel.Normal;
+                            AccessibilityLevel lightWorld = _game.Regions[RegionID.LightWorld].Accessibility;
+                            AccessibilityLevel dWWest = AccessibilityLevel.None;
 
                             if (_game.Items.Has(ItemType.Mirror))
-                                return _game.Regions[RegionID.LightWorld].Accessibility;
-                        }
+                                return lightWorld;
 
-                        return AccessibilityLevel.None;
-                    };
-
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-
-                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnRequirementChanged;
-
-                    break;
-                case LocationID.HammerPegs:
-
-                    _baseTotal = 1;
-                    Name = "Cave";
-                    _standardRegion = _game.Regions[RegionID.DarkWorldWest];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldWest];
-
-                    GetAccessibility = () =>
-                    {
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
-                        {
-                            if (_game.Items.Has(ItemType.Gloves, 2) && _game.Items.Has(ItemType.Hammer))
-                                return AccessibilityLevel.Normal;
-                        }
-
-                        if (_game.Mode.WorldState == WorldState.Inverted)
-                        {
-                            if (_game.Items.Has(ItemType.Hammer))
+                            if (_game.Items.Has(ItemType.Gloves, 2))
                             {
-                                if (_game.Items.Has(ItemType.Gloves, 2))
-                                    return AccessibilityLevel.Normal;
+                                dWWest = _game.Regions[RegionID.DarkWorldWest].Accessibility;
 
-                                if (_game.Items.Has(ItemType.Mirror))
-                                    return _game.Regions[RegionID.LightWorld].Accessibility;
+                                return (AccessibilityLevel)Math.Min((byte)lightWorld, (byte)dWWest);
                             }
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.Hammer]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
-                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnRequirementChanged;
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode());
+
+                    break;
+                case LocationID.HammerPegs:
+
+                    _baseTotal = 1;
+                    Name = "Cave";
+
+                    GetAccessibility = () =>
+                    {
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        {
+                            if (_game.Items.Has(ItemType.Gloves, 2) && _game.Items.Has(ItemType.Hammer) &&
+                                _game.Items.Has(ItemType.MoonPearl))
+                                return _game.Regions[RegionID.DarkWorldWest].Accessibility;
+                        }
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        {
+                            if (_game.Items.Has(ItemType.Hammer))
+                            {
+                                AccessibilityLevel dWWest = AccessibilityLevel.None;
+                                AccessibilityLevel lightWorld = AccessibilityLevel.None;
+
+                                if (_game.Items.Has(ItemType.Gloves, 2))
+                                    dWWest = _game.Regions[RegionID.DarkWorldWest].Accessibility;
+
+                                if (_game.Items.Has(ItemType.Mirror))
+                                    lightWorld = _game.Regions[RegionID.LightWorld].Accessibility;
+
+                                return (AccessibilityLevel)Math.Max((byte)dWWest, (byte)lightWorld);
+                            }
+                        }
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode() { WorldState = WorldState.Inverted });
+
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.BumperCave:
 
                     _baseTotal = 1;
                     Name = "Ledge";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldSouth];
                     HasMarking = true;
 
                     GetAccessibility = () =>
@@ -1272,24 +1440,27 @@ namespace OpenTracker.Models
 
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
-                            AccessibilityLevel dWWest = _game.Regions[RegionID.DarkWorldWest].Accessibility;
+                            AccessibilityLevel dWWest = AccessibilityLevel.None;
+                            AccessibilityLevel inspect = AccessibilityLevel.None;
 
-                            if (dWWest >= AccessibilityLevel.SequenceBreak)
+                            if (!_game.Mode.EntranceShuffle.Value)
                             {
-                                if (!_game.Mode.EntranceShuffle.Value)
+                                if (_game.Items.Has(ItemType.Gloves) && _game.Items.Has(ItemType.Cape) &&
+                                    _game.Items.Has(ItemType.MoonPearl))
                                 {
-                                    if (_game.Items.Has(ItemType.Gloves) && _game.Items.Has(ItemType.Cape))
-                                    {
-                                        if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
-                                            _game.Items.Has(ItemType.Hookshot))
-                                            return dWWest;
-
-                                        return (AccessibilityLevel)Math.Min((byte)dWWest, (byte)AccessibilityLevel.SequenceBreak);
-                                    }
+                                    if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                        _game.Items.Has(ItemType.Hookshot))
+                                        dWWest = _game.Regions[RegionID.DarkWorldWest].Accessibility;
+                                    else
+                                        dWWest = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                            (byte)_game.Regions[RegionID.DarkWorldWest].Accessibility);
                                 }
-
-                                return AccessibilityLevel.Inspect;
                             }
+                            
+                            inspect = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Inspect,
+                                (byte)_game.Regions[RegionID.DarkWorldWest].Accessibility);
+
+                            return (AccessibilityLevel)Math.Max((byte)dWWest, (byte)inspect);
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
@@ -1297,27 +1468,34 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.DeathMountainExitAccess) && _game.Items.Has(ItemType.Mirror))
                                 return AccessibilityLevel.Normal;
 
-                            AccessibilityLevel lightWorld = _game.Regions[RegionID.LightWorld].Accessibility;
+                            AccessibilityLevel lightWorld = AccessibilityLevel.None;
+                            AccessibilityLevel dWWest = AccessibilityLevel.None;
 
                             if (!_game.Mode.EntranceShuffle.Value && _game.Items.Has(ItemType.MoonPearl) &&
                                 _game.Items.Has(ItemType.Cape) && _game.Items.Has(ItemType.Gloves) &&
-                                _game.Items.Has(ItemType.Mirror) && lightWorld >= AccessibilityLevel.SequenceBreak)
-                                return (AccessibilityLevel)Math.Min((byte)lightWorld, (byte)AccessibilityLevel.Normal);
+                                _game.Items.Has(ItemType.Mirror))
+                                lightWorld = _game.Regions[RegionID.LightWorld].Accessibility;
+                            
+                            dWWest = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Inspect,
+                                (byte)_game.Regions[RegionID.DarkWorldWest].Accessibility);
 
-                            if (_game.Regions[RegionID.DarkWorldWest].Accessibility >= AccessibilityLevel.SequenceBreak)
-                                return AccessibilityLevel.Inspect;
+                            return (AccessibilityLevel)Math.Max((byte)lightWorld, (byte)dWWest);
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.BumperCaveAccess]);
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.Cape]);
-                    itemReqs.Add(_game.Items[ItemType.Hookshot]);
-                    itemReqs.Add(_game.Items[ItemType.DeathMountainExitAccess]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _updateOnItemPlacementChange = true;
+
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.BumperCaveAccess, new Mode());
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.Cape, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hookshot, new Mode() { ItemPlacement = ItemPlacement.Advanced });
+                    _itemSubscriptions.Add(ItemType.DeathMountainExitAccess, new Mode() { WorldState = WorldState.Inverted });
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.Inverted });
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode());
 
                     _game.Regions[RegionID.DarkWorldWest].PropertyChanged += OnRequirementChanged;
 
@@ -1326,97 +1504,97 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Inside";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
                     RequiredMode = new Mode() { EntranceShuffle = false };
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.Dam:
 
                     _baseTotal = 1;
                     Name = "Outside";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.MiniMoldormCave:
 
                     _baseTotal = 5;
                     Name = "Cave";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.IceRodCave:
 
                     _baseTotal = 1;
                     Name = "Cave";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.LakeHyliaIsland:
@@ -1424,65 +1602,38 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Island";
                     HasMarking = true;
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
+                            AccessibilityLevel lightWorld = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Inspect,
+                                (byte)_game.Regions[RegionID.LightWorld].Accessibility);
+                            AccessibilityLevel dWEast = AccessibilityLevel.None;
+                            AccessibilityLevel dWSouth = AccessibilityLevel.None;
+                            AccessibilityLevel dWSouthEast = AccessibilityLevel.None;
+
                             if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Mirror))
                             {
-                                if (_game.Regions[RegionID.DarkWorldEast].Accessibility == AccessibilityLevel.Normal ||
-                                    _game.Regions[RegionID.DarkWorldSouth].Accessibility == AccessibilityLevel.Normal ||
-                                    _game.Regions[RegionID.DarkWorldSouthEast].Accessibility == AccessibilityLevel.Normal)
+                                if (_game.Items.Has(ItemType.Flippers))
                                 {
-                                    if (_game.Items.Has(ItemType.Flippers))
-                                        return AccessibilityLevel.Normal;
-
-                                    return AccessibilityLevel.SequenceBreak;
+                                    dWEast = _game.Regions[RegionID.DarkWorldWest].Accessibility;
+                                    dWSouth = _game.Regions[RegionID.DarkWorldSouth].Accessibility;
+                                    dWSouthEast = _game.Regions[RegionID.DarkWorldSouthEast].Accessibility;
                                 }
-
-                                if (_game.Regions[RegionID.DarkWorldEast].Accessibility == AccessibilityLevel.SequenceBreak ||
-                                    _game.Regions[RegionID.DarkWorldSouth].Accessibility == AccessibilityLevel.SequenceBreak ||
-                                    _game.Regions[RegionID.DarkWorldSouthEast].Accessibility == AccessibilityLevel.SequenceBreak)
-                                    return AccessibilityLevel.SequenceBreak;
+                                else
+                                {
+                                    dWEast = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.DarkWorldWest].Accessibility);
+                                    dWSouth = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.DarkWorldSouth].Accessibility);
+                                    dWSouthEast = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.DarkWorldSouthEast].Accessibility);
+                                }
                             }
-                        }
 
-                        if (_game.Mode.WorldState == WorldState.Inverted)
-                        {
-                            if (_game.Items.Has(ItemType.Flippers) && _game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
-                        }
-
-                        return AccessibilityLevel.Inspect;
-                    };
-
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.Flippers]);
-
-                    _game.Regions[RegionID.DarkWorldEast].PropertyChanged += OnRequirementChanged;
-                    _game.Regions[RegionID.DarkWorldSouth].PropertyChanged += OnRequirementChanged;
-                    _game.Regions[RegionID.DarkWorldSouthEast].PropertyChanged += OnRequirementChanged;
-
-                    break;
-                case LocationID.Hobo:
-
-                    _baseTotal = 1;
-                    Name = "Under The Bridge";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
-
-                    GetAccessibility = () =>
-                    {
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
-                        {
-                            if (_game.Items.Has(ItemType.Flippers))
-                                return AccessibilityLevel.Normal;
-
-                            return AccessibilityLevel.SequenceBreak;
+                            return (AccessibilityLevel)Math.Max(Math.Max(Math.Max((byte)lightWorld, (byte)dWEast),
+                                (byte)dWSouth), (byte)dWSouthEast);
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
@@ -1490,137 +1641,191 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.MoonPearl))
                             {
                                 if (_game.Items.Has(ItemType.Flippers))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.LightWorld].Accessibility;
 
-                                return AccessibilityLevel.SequenceBreak;
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.LightWorld].Accessibility);
+
+                            }   
+                        }
+
+                        return AccessibilityLevel.Inspect;
+                    };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+                    _regionSubscriptions.Add(RegionID.DarkWorldEast, new Mode() { WorldState = WorldState.StandardOpen });
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode() { WorldState = WorldState.StandardOpen });
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouthEast, new Mode() { WorldState = WorldState.StandardOpen });
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode());
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Flippers, new Mode());
+
+                    break;
+                case LocationID.Hobo:
+
+                    _baseTotal = 1;
+                    Name = "Under The Bridge";
+
+                    GetAccessibility = () =>
+                    {
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        {
+                            if (_game.Items.Has(ItemType.Flippers))
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
+
+                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                (byte)_game.Regions[RegionID.LightWorld].Accessibility);
+                        }
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        {
+                            if (_game.Items.Has(ItemType.MoonPearl))
+                            {
+                                if (_game.Items.Has(ItemType.Flippers))
+                                    return _game.Regions[RegionID.LightWorld].Accessibility;
+
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.LightWorld].Accessibility);
                             }
                         }
 
                         return AccessibilityLevel.SequenceBreak;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Flippers]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Flippers, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.MireShack:
 
                     _baseTotal = 2;
                     Name = "Shack";
-                    _standardRegion = _game.Regions[RegionID.MireArea];
-                    _invertedRegion = _game.Regions[RegionID.MireArea];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.MireArea].Accessibility;
 
                             if (_game.Items.Has(ItemType.Mirror))
-                                return AccessibilityLevel.SequenceBreak;
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.MireArea].Accessibility);
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.MireArea].Accessibility;
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    _regionSubscriptions.Add(RegionID.MireArea, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.CheckerboardCave:
 
                     _baseTotal = 1;
                     Name = "Cave";
-                    _standardRegion = _game.Regions[RegionID.MireArea];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
-                            if (_game.Items.Has(ItemType.Mirror))
-                                return AccessibilityLevel.Normal;
+                            if (_game.Items.Has(ItemType.Mirror) && _game.Items.Has(ItemType.Gloves))
+                                return _game.Regions[RegionID.MireArea].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.Gloves))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
+                    _regionSubscriptions.Add(RegionID.MireArea, new Mode() { WorldState = WorldState.StandardOpen });
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode() { WorldState = WorldState.Inverted });
+
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
 
                     break;
                 case LocationID.OldMan:
 
                     _baseTotal = 1;
                     Name = "Bring Him Home";
-                    _standardRegion = _game.Regions[RegionID.DeathMountainWestBottom];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainWestBottom];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Items.Has(ItemType.Lamp))
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.DeathMountainWestBottom].Accessibility;
                         
-                        return AccessibilityLevel.SequenceBreak;
+                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                            (byte)_game.Regions[RegionID.DeathMountainWestBottom].Accessibility);
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Lamp]);
+                    _regionSubscriptions.Add(RegionID.DeathMountainWestBottom, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Lamp, new Mode());
 
                     break;
                 case LocationID.SpectacleRock when index == 0:
 
                     _baseTotal = 1;
                     Name = "Cave";
-                    _standardRegion = _game.Regions[RegionID.DeathMountainWestBottom];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainWestBottom];
+
                     RequiredMode = new Mode() { EntranceShuffle = false };
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DeathMountainWestBottom].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DeathMountainWestBottom, new Mode());
 
                     break;
                 case LocationID.SpectacleRock:
 
                     _baseTotal = 1;
                     Name = "Up On Top";
-                    _standardRegion = _game.Regions[RegionID.DeathMountainWestBottom];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldSouth];
                     HasMarking = true;
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
-                            if (_game.Items.Has(ItemType.Mirror))
-                                return AccessibilityLevel.Normal;
+                            AccessibilityLevel dMWestBottom = AccessibilityLevel.None;
+                            AccessibilityLevel inspect = AccessibilityLevel.None;
 
-                            return AccessibilityLevel.Inspect;
+                            if (_game.Items.Has(ItemType.Mirror))
+                                dMWestBottom = _game.Regions[RegionID.DeathMountainWestBottom].Accessibility;
+
+                            inspect = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Inspect,
+                                (byte)_game.Regions[RegionID.DeathMountainWestBottom].Accessibility);
+
+                            return (AccessibilityLevel)Math.Max((byte)dMWestBottom, (byte)inspect);
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
-                            if (_game.Regions[RegionID.DeathMountainWestTop].Accessibility >= AccessibilityLevel.SequenceBreak)
-                                return _game.Regions[RegionID.DeathMountainWestTop].Accessibility;
+                            AccessibilityLevel dMWestTop = _game.Regions[RegionID.DeathMountainWestTop].Accessibility;
+                            AccessibilityLevel inspect = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Inspect,
+                                (byte)_game.Regions[RegionID.DeathMountainWestBottom].Accessibility);
 
-                            if (_game.Regions[RegionID.DeathMountainWestBottom].Accessibility >= AccessibilityLevel.SequenceBreak)
-                                return AccessibilityLevel.Inspect;
+                            return (AccessibilityLevel)Math.Max((byte)dMWestTop, (byte)inspect);
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    _regionSubscriptions.Add(RegionID.DeathMountainWestBottom, new Mode());
+                    _regionSubscriptions.Add(RegionID.DeathMountainWestTop, new Mode() { WorldState = WorldState.Inverted });
 
-                    _game.Regions[RegionID.DeathMountainWestTop].PropertyChanged += OnRequirementChanged;
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.EtherTablet:
@@ -1628,33 +1833,37 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Tablet";
                     HasMarking = true;
-                    _standardRegion = _game.Regions[RegionID.DeathMountainWestTop];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainWestTop];
 
                     GetAccessibility = () =>
                     {
+                        AccessibilityLevel dMWestTop = AccessibilityLevel.None;
+                        AccessibilityLevel inspect = AccessibilityLevel.None;
+
                         if (_game.Items.Has(ItemType.Book))
                         {
                             if (_game.Items.CanActivateTablets())
-                                return AccessibilityLevel.Normal;
+                                dMWestTop = _game.Regions[RegionID.DeathMountainWestTop].Accessibility;
                             
-                            return AccessibilityLevel.Inspect;
+                            inspect = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Inspect,
+                                (byte)_game.Regions[RegionID.DeathMountainWestTop].Accessibility);
+
+                            return (AccessibilityLevel)Math.Max((byte)dMWestTop, (byte)inspect);
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Book]);
-                    itemReqs.Add(_game.Items[ItemType.Sword]);
-                    itemReqs.Add(_game.Items[ItemType.Hammer]);
+                    _regionSubscriptions.Add(RegionID.DeathMountainWestTop, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Book, new Mode());
+                    _itemSubscriptions.Add(ItemType.Sword, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
 
                     break;
                 case LocationID.SpikeCave:
 
                     _baseTotal = 1;
                     Name = "Cave";
-                    _standardRegion = _game.Regions[RegionID.DarkDeathMountainWestBottom];
-                    _invertedRegion = _game.Regions[RegionID.DarkDeathMountainWestBottom];
 
                     GetAccessibility = () =>
                     {
@@ -1665,9 +1874,10 @@ namespace OpenTracker.Models
                             {
                                 if (_game.Items.Has(ItemType.CaneOfByrna) || (_game.Items.Has(ItemType.Cape) &&
                                     (_game.Items.Has(ItemType.HalfMagic) || _game.Items.Has(ItemType.Bottle))))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.DarkDeathMountainWestBottom].Accessibility;
 
-                                return AccessibilityLevel.SequenceBreak;
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.DarkDeathMountainWestBottom].Accessibility);
                             }
                         }
 
@@ -1677,132 +1887,130 @@ namespace OpenTracker.Models
                             {
                                 if (_game.Items.Has(ItemType.CaneOfByrna) || (_game.Items.Has(ItemType.Cape) &&
                                     (_game.Items.Has(ItemType.HalfMagic) || _game.Items.Has(ItemType.Bottle))))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.DarkDeathMountainWestBottom].Accessibility;
 
-                                return AccessibilityLevel.SequenceBreak;
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.DarkDeathMountainWestBottom].Accessibility);
                             }
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.Hammer]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
-                    itemReqs.Add(_game.Items[ItemType.CaneOfByrna]);
-                    itemReqs.Add(_game.Items[ItemType.Cape]);
-                    itemReqs.Add(_game.Items[ItemType.HalfMagic]);
-                    itemReqs.Add(_game.Items[ItemType.Bottle]);
+                    _regionSubscriptions.Add(RegionID.DarkDeathMountainWestBottom, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.CaneOfByrna, new Mode());
+                    _itemSubscriptions.Add(ItemType.Cape, new Mode());
+                    _itemSubscriptions.Add(ItemType.HalfMagic, new Mode());
+                    _itemSubscriptions.Add(ItemType.Bottle, new Mode());
 
                     break;
                 case LocationID.SpiralCave:
 
                     _baseTotal = 1;
                     Name = "Cave";
-                    _standardRegion = _game.Regions[RegionID.DeathMountainEastTop];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainEastTop];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.DeathMountainEastTop].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DeathMountainEastTop].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.ParadoxCave when index == 0:
 
                     _baseTotal = 2;
                     Name = "Bottom";
-                    _standardRegion = _game.Regions[RegionID.DeathMountainEastTop];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainEastTop];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.DeathMountainEastTop].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
-
-                            return AccessibilityLevel.SequenceBreak;
+                                return _game.Regions[RegionID.DeathMountainEastTop].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.ParadoxCave:
 
                     _baseTotal = 5;
                     Name = "Top";
-                    _standardRegion = _game.Regions[RegionID.DeathMountainEastTop];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainEastTop];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.DeathMountainEastTop].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
-
-                            return AccessibilityLevel.SequenceBreak;
+                                return _game.Regions[RegionID.DeathMountainEastTop].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.SuperBunnyCave:
 
                     _baseTotal = 2;
                     Name = "Cave";
-                    _standardRegion = _game.Regions[RegionID.DarkDeathMountainTop];
-                    _invertedRegion = _game.Regions[RegionID.DarkDeathMountainTop];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkDeathMountainTop].Accessibility;
 
-                            return AccessibilityLevel.SequenceBreak;
+                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                (byte)_game.Regions[RegionID.DarkDeathMountainTop].Accessibility);
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.DarkDeathMountainTop].Accessibility;
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.DarkDeathMountainTop, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.HookshotCave when index == 0:
 
                     _baseTotal = 1;
                     Name = "Bonkable Chest";
-                    _standardRegion = _game.Regions[RegionID.DarkDeathMountainTop];
-                    _invertedRegion = _game.Regions[RegionID.DarkDeathMountainTop];
 
                     GetAccessibility = () =>
                     {
@@ -1813,10 +2021,13 @@ namespace OpenTracker.Models
                                 if (_game.Items.Has(ItemType.Hookshot) ||
                                     (_game.Items.Has(ItemType.Boots) &&
                                     (_game.Mode.ItemPlacement == ItemPlacement.Advanced)))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.DarkDeathMountainTop].Accessibility;
 
                                 if (_game.Items.Has(ItemType.Boots))
-                                    return AccessibilityLevel.SequenceBreak;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.DarkDeathMountainTop].Accessibility);
+                                }
                             }
                         }
 
@@ -1824,24 +2035,26 @@ namespace OpenTracker.Models
                         {
                             if (_game.Items.Has(ItemType.Gloves) &&
                                 (_game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.Boots)))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.DarkDeathMountainTop].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.Hookshot]);
-                    itemReqs.Add(_game.Items[ItemType.Boots]);
+                    _updateOnItemPlacementChange = true;
+
+                    _regionSubscriptions.Add(RegionID.DarkDeathMountainTop, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hookshot, new Mode());
+                    _itemSubscriptions.Add(ItemType.Boots, new Mode());
 
                     break;
                 case LocationID.HookshotCave:
 
                     _baseTotal = 3;
                     Name = "Back";
-                    _standardRegion = _game.Regions[RegionID.DarkDeathMountainTop];
-                    _invertedRegion = _game.Regions[RegionID.DarkDeathMountainTop];
 
                     GetAccessibility = () =>
                     {
@@ -1849,21 +2062,23 @@ namespace OpenTracker.Models
                         {
                             if (_game.Items.Has(ItemType.Gloves) && _game.Items.Has(ItemType.MoonPearl) &&
                                 _game.Items.Has(ItemType.Hookshot))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkDeathMountainTop].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.Gloves) && _game.Items.Has(ItemType.Hookshot))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkDeathMountainTop].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
-                    itemReqs.Add(_game.Items[ItemType.Hookshot]);
+                    _regionSubscriptions.Add(RegionID.DarkDeathMountainTop, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Hookshot, new Mode());
 
                     break;
                 case LocationID.FloatingIsland:
@@ -1871,52 +2086,49 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Island";
                     HasMarking = true;
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldSouth];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
+                            AccessibilityLevel dDMTop = AccessibilityLevel.None;
+                            AccessibilityLevel inspect = AccessibilityLevel.None;
+
                             if (_game.Items.Has(ItemType.Mirror))
                             {
                                 if (_game.Items.Has(ItemType.DarkDeathMountainFloatingIslandAccess))
                                     return AccessibilityLevel.Normal;
 
                                 if (!_game.Mode.EntranceShuffle.Value && _game.Items.Has(ItemType.Gloves) &&
-                                    _game.Items.Has(ItemType.MoonPearl) &&
-                                    _game.Regions[RegionID.DarkDeathMountainTop].Accessibility >= AccessibilityLevel.SequenceBreak)
-                                    return _game.Regions[RegionID.DarkDeathMountainTop].Accessibility;
+                                    _game.Items.Has(ItemType.MoonPearl))
+                                    dDMTop = _game.Regions[RegionID.DarkDeathMountainTop].Accessibility;
                             }
+                            
+                            inspect = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Inspect,
+                                (byte)_game.Regions[RegionID.DeathMountainEastTop].Accessibility);
 
-                            if (_game.Regions[RegionID.DeathMountainEastTop].Accessibility >= AccessibilityLevel.SequenceBreak)
-                                return AccessibilityLevel.Inspect;
+                            return (AccessibilityLevel)Math.Max((byte)dDMTop, (byte)inspect);
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
-                        {
-                            if (_game.Regions[RegionID.DeathMountainEastTop].Accessibility >= AccessibilityLevel.SequenceBreak)
-                                return _game.Regions[RegionID.DeathMountainEastTop].Accessibility;
-                        }
+                            return _game.Regions[RegionID.DeathMountainEastTop].Accessibility;
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.DarkDeathMountainFloatingIslandAccess]);
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.DarkDeathMountainTop, new Mode() { WorldState = WorldState.StandardOpen });
+                    _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode());
 
-                    _game.Regions[RegionID.DarkDeathMountainTop].PropertyChanged += OnRequirementChanged;
-                    _game.Regions[RegionID.DeathMountainEastTop].PropertyChanged += OnRequirementChanged;
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.DarkDeathMountainFloatingIslandAccess, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.MimicCave:
 
                     _baseTotal = 1;
                     Name = "Cave";
-                    _standardRegion = _game.Regions[RegionID.TurtleRock];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainEastTop];
 
                     GetAccessibility = () =>
                     {
@@ -1928,27 +2140,37 @@ namespace OpenTracker.Models
                                 if (_game.Items.Has(ItemType.TRSmallKey, 2) &&
                                     (_game.Mode.DungeonItemShuffle.Value >= DungeonItemShuffle.MapsCompassesSmallKeys ||
                                     _game.Items.Has(ItemType.FireRod)))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.TurtleRock].Accessibility;
 
-                                return AccessibilityLevel.SequenceBreak;
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.TurtleRock].Accessibility);
                             }
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Hammer))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DeathMountainEastTop].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.Hammer]);
-                    itemReqs.Add(_game.Items[ItemType.CaneOfSomaria]);
-                    itemReqs.Add(_game.Items[ItemType.TRSmallKey]);
-                    itemReqs.Add(_game.Items[ItemType.FireRod]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _updateOnDungeonItemShuffleChange = true;
+
+                    _regionSubscriptions.Add(RegionID.TurtleRock, new Mode() { WorldState = WorldState.StandardOpen });
+                    _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode() { WorldState = WorldState.Inverted });
+
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.CaneOfSomaria, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.TRSmallKey, new Mode()
+                    {
+                        WorldState = WorldState.StandardOpen,
+                        DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys
+                    });
+                    _itemSubscriptions.Add(ItemType.FireRod, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.HyruleCastle:
@@ -1957,40 +2179,54 @@ namespace OpenTracker.Models
                     _smallKey = 1;
                     _baseTotal = 6;
                     Name = "Escape";
-                    _standardRegion = _game.Regions[RegionID.HyruleCastle];
-                    _invertedRegion = _game.Regions[RegionID.HyruleCastle];
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        switch (_game.Mode.DungeonItemShuffle.Value)
                         {
-                            if (_game.Items.Has(ItemType.Gloves) || (_game.Items.Has(ItemType.HCSmallKey) &&
-                                _game.Mode.DungeonItemShuffle >= DungeonItemShuffle.MapsCompassesSmallKeys))
-                            {
-                                if (_game.Items.Has(ItemType.Lamp) ||
-                                    (_game.Mode.ItemPlacement.Value == ItemPlacement.Advanced &&
-                                    _game.Items.Has(ItemType.FireRod)))
-                                    return AccessibilityLevel.Normal;
-                            }
+                            case DungeonItemShuffle.Standard:
+                            case DungeonItemShuffle.MapsCompasses:
+
+                                if (_game.Items.Has(ItemType.Gloves) && (_game.Items.Has(ItemType.Lamp) ||
+                                    (_game.Mode.ItemPlacement == ItemPlacement.Advanced &&
+                                    _game.Items.Has(ItemType.FireRod))))
+                                    return _game.Regions[RegionID.HyruleCastle].Accessibility;
+
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.HyruleCastle].Accessibility);
+
+                            case DungeonItemShuffle.MapsCompassesSmallKeys:
+                            case DungeonItemShuffle.Keysanity:
+
+                                if (_game.Items.Has(ItemType.Gloves) || _game.Items.Has(ItemType.HCSmallKey))
+                                {
+                                    if (_game.Items.Has(ItemType.Lamp) ||
+                                        (_game.Mode.ItemPlacement.Value == ItemPlacement.Advanced &&
+                                        _game.Items.Has(ItemType.FireRod)))
+                                        return _game.Regions[RegionID.HyruleCastle].Accessibility;
+                                }
+
+                                if (Available > 3)
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.HyruleCastle].Accessibility);
+                                }
+
+                                break;
                         }
 
-                        if (_game.Mode.WorldState == WorldState.Inverted)
-                        {
-                            if (_game.Items.Has(ItemType.Gloves) || (_game.Items.Has(ItemType.HCSmallKey) &&
-                                _game.Mode.DungeonItemShuffle >= DungeonItemShuffle.MapsCompassesSmallKeys))
-                            {
-                                if (_game.Items.Has(ItemType.Lamp))
-                                    return AccessibilityLevel.Normal;
-                            }
-                        }
-
-                        return AccessibilityLevel.SequenceBreak;
+                        return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.HCSmallKey]);
-                    itemReqs.Add(_game.Items[ItemType.Lamp]);
-                    itemReqs.Add(_game.Items[ItemType.FireRod]);
+                    _updateOnItemPlacementChange = true;
+                    _updateOnDungeonItemShuffleChange = true;
+
+                    _regionSubscriptions.Add(RegionID.HyruleCastle, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.HCSmallKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys });
+                    _itemSubscriptions.Add(ItemType.Lamp, new Mode());
+                    _itemSubscriptions.Add(ItemType.FireRod, new Mode() { ItemPlacement = ItemPlacement.Basic });
 
                     break;
                 case LocationID.AgahnimTower:
@@ -1998,8 +2234,6 @@ namespace OpenTracker.Models
                     _baseTotal = 0;
                     _smallKey = 2;
                     Name = "Dungeon";
-                    _standardRegion = _game.Regions[RegionID.Agahnim];
-                    _invertedRegion = _game.Regions[RegionID.Agahnim];
 
                     RequiredMode = new Mode() { DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys };
 
@@ -2008,19 +2242,25 @@ namespace OpenTracker.Models
                         if (_game.Items.Has(ItemType.ATSmallKey))
                         {
                             if (_game.Items.Has(ItemType.Lamp))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.Agahnim].Accessibility;
 
-                            return AccessibilityLevel.SequenceBreak;
+                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                (byte)_game.Regions[RegionID.Agahnim].Accessibility);
                         }
 
-                        if (Available == 2)
-                            return AccessibilityLevel.Partial;
+                        if (Available > 1)
+                        {
+                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                (byte)_game.Regions[RegionID.Agahnim].Accessibility);
+                        }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Lamp]);
-                    itemReqs.Add(_game.Items[ItemType.ATSmallKey]);
+                    _regionSubscriptions.Add(RegionID.Agahnim, new Mode() { DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys });
+
+                    _itemSubscriptions.Add(ItemType.Lamp, new Mode() { DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys });
+                    _itemSubscriptions.Add(ItemType.ATSmallKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys });
 
                     PropertyChanged += OnRequirementChanged;
 
@@ -2031,41 +2271,77 @@ namespace OpenTracker.Models
                     _bigKey = 1;
                     _baseTotal = 3;
                     Name = "Dungeon";
-                    _standardRegion = _game.Regions[RegionID.EasternPalace];
-                    _invertedRegion = _game.Regions[RegionID.EasternPalace];
 
                     GetAccessibility = () =>
                     {
-                        if (_game.Mode.DungeonItemShuffle <= DungeonItemShuffle.MapsCompassesSmallKeys)
+                        switch (_game.Mode.DungeonItemShuffle.Value)
                         {
-                            if (_game.Items.Has(ItemType.Lamp) &&
-                                (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value))
-                                return AccessibilityLevel.Normal;
-                            
-                            return AccessibilityLevel.SequenceBreak;
-                        }
-                        
-                        if (_game.Items.Has(ItemType.EPBigKey) && 
-                            (_game.Mode.EnemyShuffle.Value || _game.Items.Has(ItemType.Bow)))
-                        {
-                            if (_game.Items.Has(ItemType.Lamp))
-                                return AccessibilityLevel.Normal;
-                            
-                            return AccessibilityLevel.SequenceBreak;
-                        }
+                            case DungeonItemShuffle.Standard:
 
-                        if (_game.Items.Has(ItemType.EPBigKey) && Available > 1)
-                            return AccessibilityLevel.Partial;
-                        
-                        if (Available > 2)
-                            return AccessibilityLevel.Partial;
+                                if (_game.Items.Has(ItemType.Lamp) &&
+                                    (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value))
+                                    return _game.Regions[RegionID.EasternPalace].Accessibility;
+
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.EasternPalace].Accessibility);
+
+                            case DungeonItemShuffle.MapsCompasses:
+                            case DungeonItemShuffle.MapsCompassesSmallKeys:
+
+                                if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
+                                {
+                                    if (_game.Items.Has(ItemType.Lamp))
+                                        return _game.Regions[RegionID.EasternPalace].Accessibility;
+
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.EasternPalace].Accessibility);
+                                }
+
+                                if (Available > 1)
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.EasternPalace].Accessibility);
+                                }
+
+                                break;
+                            case DungeonItemShuffle.Keysanity:
+
+                                if (_game.Items.Has(ItemType.EPBigKey) &&
+                                    (_game.Mode.EnemyShuffle.Value || _game.Items.Has(ItemType.Bow)))
+                                {
+                                    if (_game.Items.Has(ItemType.Lamp))
+                                        return _game.Regions[RegionID.EasternPalace].Accessibility;
+
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.EasternPalace].Accessibility);
+                                }
+
+                                if (Available > 1 && _game.Items.Has(ItemType.EPBigKey))
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.EasternPalace].Accessibility);
+                                }
+
+                                if (Available > 2)
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.EasternPalace].Accessibility);
+                                }
+
+                                break;
+                        }
                         
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Lamp]);
-                    itemReqs.Add(_game.Items[ItemType.Bow]);
-                    itemReqs.Add(_game.Items[ItemType.EPBigKey]);
+                    _updateOnDungeonItemShuffleChange = true;
+                    _updateOnEnemyShuffleChange = true;
+
+                    _regionSubscriptions.Add(RegionID.EasternPalace, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Lamp, new Mode());
+                    _itemSubscriptions.Add(ItemType.Bow, new Mode() { EnemyShuffle = false });
+                    _itemSubscriptions.Add(ItemType.EPBigKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.Keysanity });
 
                     PropertyChanged += OnRequirementChanged;
 
@@ -2078,8 +2354,6 @@ namespace OpenTracker.Models
                     _baseTotal = 2;
                     Name = "Dungeon";
                     HasMarking = true;
-                    _standardRegion = _game.Regions[RegionID.DesertPalace];
-                    _invertedRegion = _game.Regions[RegionID.DesertPalace];
 
                     GetAccessibility = () =>
                     {
@@ -2090,23 +2364,30 @@ namespace OpenTracker.Models
                                 if (_game.Items.Has(ItemType.Boots) &&
                                     (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
                                     (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.DesertPalace].Accessibility;
 
-                                return AccessibilityLevel.SequenceBreak;
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.DesertPalace].Accessibility);
 
                             case DungeonItemShuffle.MapsCompasses:
 
                                 if (_game.Items.Has(ItemType.Boots) &&
                                     (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
                                     (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.DesertPalace].Accessibility;
 
                                 if ((_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
                                     (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
-                                    return AccessibilityLevel.SequenceBreak;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.DesertPalace].Accessibility);
+                                }
 
                                 if (Available > 1)
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.DesertPalace].Accessibility);
+                                }
 
                                 break;
                             case DungeonItemShuffle.MapsCompassesSmallKeys:
@@ -2114,21 +2395,35 @@ namespace OpenTracker.Models
                                 if (_game.Items.Has(ItemType.Boots) && _game.Items.Has(ItemType.DPSmallKey) &&
                                     (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
                                     (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.DesertPalace].Accessibility;
 
                                 if (_game.Items.Has(ItemType.DPSmallKey) &&
                                     (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
                                     (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
-                                    return AccessibilityLevel.SequenceBreak;
-                                
-                                if (_game.Items.Has(ItemType.DPSmallKey))
                                 {
-                                    if (Available > 1)
-                                        return AccessibilityLevel.Partial;
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.DesertPalace].Accessibility);
+                                }
+
+                                if (Available > 1 && _game.Items.Has(ItemType.DPSmallKey))
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.DesertPalace].Accessibility);
+                                }
+
+                                if (Available > 2 && 
+                                    (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
+                                    (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.DesertPalace].Accessibility);
                                 }
 
                                 if (Available > 3)
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.DesertPalace].Accessibility);
+                                }
 
                                 break;
                             case DungeonItemShuffle.Keysanity:
@@ -2137,17 +2432,23 @@ namespace OpenTracker.Models
                                     _game.Items.Has(ItemType.DPSmallKey) &&
                                     (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
                                     (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.DesertPalace].Accessibility;
 
                                 if (_game.Items.Has(ItemType.DPBigKey) && _game.Items.Has(ItemType.DPSmallKey) &&
                                     (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
                                     (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
-                                    return AccessibilityLevel.SequenceBreak;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.DesertPalace].Accessibility);
+                                }
 
                                 if (_game.Items.Has(ItemType.DPBigKey) && _game.Items.Has(ItemType.DPSmallKey))
                                 {
                                     if (Available > 1)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.DesertPalace].Accessibility);
+                                    }
                                 }
 
                                 if (_game.Items.Has(ItemType.DPBigKey) &&
@@ -2155,23 +2456,35 @@ namespace OpenTracker.Models
                                     (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
                                 {
                                     if (Available > 2)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.DesertPalace].Accessibility);
+                                    }
                                 }
 
                                 if (_game.Items.Has(ItemType.DPSmallKey))
                                 {
                                     if (Available > 2)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.DesertPalace].Accessibility);
+                                    }
                                 }
 
                                 if (_game.Items.Has(ItemType.DPBigKey))
                                 {
                                     if (Available > 3)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.DesertPalace].Accessibility);
+                                    }
                                 }
 
                                 if (Available > 4)
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.DesertPalace].Accessibility);
+                                }
 
                                 break;
                         }
@@ -2179,12 +2492,16 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Boots]);
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.Lamp]);
-                    itemReqs.Add(_game.Items[ItemType.FireRod]);
-                    itemReqs.Add(_game.Items[ItemType.DPBigKey]);
-                    itemReqs.Add(_game.Items[ItemType.DPSmallKey]);
+                    _updateOnDungeonItemShuffleChange = true;
+
+                    _regionSubscriptions.Add(RegionID.DesertPalace, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Boots, new Mode());
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode() { EntranceShuffle = false });
+                    _itemSubscriptions.Add(ItemType.Lamp, new Mode());
+                    _itemSubscriptions.Add(ItemType.FireRod, new Mode());
+                    _itemSubscriptions.Add(ItemType.DPBigKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.Keysanity });
+                    _itemSubscriptions.Add(ItemType.DPSmallKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys });
 
                     PropertyChanged += OnRequirementChanged;
 
@@ -2196,8 +2513,6 @@ namespace OpenTracker.Models
                     _bigKey = 1;
                     _baseTotal = 2;
                     Name = "Dungeon";
-                    _standardRegion = _game.Regions[RegionID.TowerOfHera];
-                    _invertedRegion = _game.Regions[RegionID.TowerOfHera];
 
                     GetAccessibility = () =>
                     {
@@ -2207,47 +2522,59 @@ namespace OpenTracker.Models
                             case DungeonItemShuffle.MapsCompasses:
 
                                 if (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.TowerOfHera].Accessibility;
 
-                                return AccessibilityLevel.SequenceBreak;
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.TowerOfHera].Accessibility);
 
                             case DungeonItemShuffle.MapsCompassesSmallKeys:
 
                                 if ((_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)) &&
                                     _game.Items.Has(ItemType.ToHSmallKey))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.TowerOfHera].Accessibility;
+                                
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.TowerOfHera].Accessibility);
 
-                                if (Available > 1)
-                                    return AccessibilityLevel.Partial;
-
-                                break;
                             case DungeonItemShuffle.Keysanity:
 
                                 if ((_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)) &&
                                     _game.Items.Has(ItemType.ToHSmallKey) && _game.Items.Has(ItemType.ToHBigKey))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.TowerOfHera].Accessibility;
 
                                 if ((_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)) &&
                                     _game.Items.Has(ItemType.ToHSmallKey))
                                 {
+                                    if (Available > 1 && _game.Items.Has(ItemType.Hookshot))
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.TowerOfHera].Accessibility);
+                                    }
+
                                     if (Available > 3)
-                                        return AccessibilityLevel.Partial;
-
-                                    if (_game.Items.Has(ItemType.Hookshot) && Available > 1)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.TowerOfHera].Accessibility);
+                                    }
                                 }
 
-                                if (_game.Items.Has(ItemType.ToHBigKey))
+                                if (Available > 1 && _game.Items.Has(ItemType.ToHBigKey))
                                 {
-                                    if (Available > 1)
-                                        return AccessibilityLevel.Partial;
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.TowerOfHera].Accessibility);
                                 }
 
-                                if (_game.Items.Has(ItemType.Hookshot) && Available > 2)
-                                    return AccessibilityLevel.Partial;
+                                if (Available > 2 && _game.Items.Has(ItemType.Hookshot))
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.TowerOfHera].Accessibility);
+                                }
 
                                 if (Available > 4)
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.TowerOfHera].Accessibility);
+                                }
 
                                 break;
                         }
@@ -2255,11 +2582,15 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Lamp]);
-                    itemReqs.Add(_game.Items[ItemType.FireRod]);
-                    itemReqs.Add(_game.Items[ItemType.ToHSmallKey]);
-                    itemReqs.Add(_game.Items[ItemType.ToHBigKey]);
-                    itemReqs.Add(_game.Items[ItemType.Hookshot]);
+                    _updateOnDungeonItemShuffleChange = true;
+
+                    _regionSubscriptions.Add(RegionID.TowerOfHera, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Lamp, new Mode());
+                    _itemSubscriptions.Add(ItemType.FireRod, new Mode());
+                    _itemSubscriptions.Add(ItemType.ToHSmallKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys });
+                    _itemSubscriptions.Add(ItemType.ToHBigKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.Keysanity });
+                    _itemSubscriptions.Add(ItemType.Hookshot, new Mode() { DungeonItemShuffle = DungeonItemShuffle.Keysanity });
 
                     PropertyChanged += OnRequirementChanged;
 
@@ -2271,8 +2602,6 @@ namespace OpenTracker.Models
                     _bigKey = 1;
                     _baseTotal = 5;
                     Name = "Dungeon";
-                    _standardRegion = _game.Regions[RegionID.PalaceOfDarkness];
-                    _invertedRegion = _game.Regions[RegionID.PalaceOfDarkness];
 
                     GetAccessibility = () =>
                     {
@@ -2282,9 +2611,10 @@ namespace OpenTracker.Models
 
                                 if (_game.Items.Has(ItemType.Lamp) && _game.Items.Has(ItemType.Hammer) &&
                                     _game.Items.Has(ItemType.Bow))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.PalaceOfDarkness].Accessibility;
                                 
-                                return AccessibilityLevel.SequenceBreak;
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
 
                             case DungeonItemShuffle.MapsCompasses:
 
@@ -2293,13 +2623,16 @@ namespace OpenTracker.Models
                                     return AccessibilityLevel.Normal;
 
                                 if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.Bow))
-                                    return AccessibilityLevel.SequenceBreak;
-
-                                if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
-                                        return AccessibilityLevel.SequenceBreak;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                }
 
                                 if (Available > 1)
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                }
 
                                 break;
                             case DungeonItemShuffle.MapsCompassesSmallKeys:
@@ -2310,41 +2643,78 @@ namespace OpenTracker.Models
 
                                 if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.Bow) &&
                                     _game.Items.Has(ItemType.PoDSmallKey, 4))
-                                    return AccessibilityLevel.SequenceBreak;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                }
 
-                                if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
+                                if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value ||
+                                    _game.Items.Has(ItemType.Bottle))
                                 {
                                     if (Available > 1 && (_game.Items.Has(ItemType.PoDSmallKey, 4) ||
                                         (_game.Items.Has(ItemType.PoDSmallKey, 3) && _game.Items.Has(ItemType.Hammer))))
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                    }
 
                                     if (Available > 2 && (_game.Items.Has(ItemType.PoDSmallKey, 3) ||
                                         (_game.Items.Has(ItemType.PoDSmallKey, 2) && _game.Items.Has(ItemType.Hammer))))
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                    }
 
                                     if (Available > 3 && (_game.Items.Has(ItemType.PoDSmallKey, 2) ||
                                         (_game.Items.Has(ItemType.PoDSmallKey) && _game.Items.Has(ItemType.Hammer))))
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                    }
 
                                     if (Available > 8 &&
                                         (_game.Items.Has(ItemType.PoDSmallKey) || _game.Items.Has(ItemType.Hammer)))
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                    }
+
+                                    if (Available > 10)
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                    }
                                 }
 
                                 if (_game.Items.Has(ItemType.PoDSmallKey, 4) && Available > 3)
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                }
 
                                 if (_game.Items.Has(ItemType.PoDSmallKey, 3) && Available > 4)
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                }
 
                                 if (_game.Items.Has(ItemType.PoDSmallKey, 2) && Available > 5)
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                }
 
                                 if (_game.Items.Has(ItemType.PoDSmallKey) && Available > 10)
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                }
 
                                 if (Available > 12)
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                }
 
                                 break;
                             case DungeonItemShuffle.Keysanity:
@@ -2356,77 +2726,132 @@ namespace OpenTracker.Models
 
                                 if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.Bow) &&
                                     _game.Items.Has(ItemType.PoDSmallKey, 4) && _game.Items.Has(ItemType.PoDBigKey))
-                                    return AccessibilityLevel.SequenceBreak;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                }
 
-                                if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
+                                if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value ||
+                                    _game.Items.Has(ItemType.Bottle))
                                 {
                                     if (_game.Items.Has(ItemType.PoDSmallKey, 4) ||
                                         (_game.Items.Has(ItemType.PoDSmallKey, 3) && _game.Items.Has(ItemType.Hammer)))
                                     {
                                         if (_game.Items.Has(ItemType.PoDBigKey) && Available > 1)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                        }
 
                                         if (Available > 2)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                        }
                                     }
 
                                     if (_game.Items.Has(ItemType.PoDSmallKey, 3) ||
                                         (_game.Items.Has(ItemType.PoDSmallKey, 2) && _game.Items.Has(ItemType.Hammer)))
                                     {
                                         if (_game.Items.Has(ItemType.PoDBigKey) && Available > 2)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                        }
 
                                         if (Available > 3)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                        }
                                     }
 
                                     if (_game.Items.Has(ItemType.PoDSmallKey, 2) ||
                                         (_game.Items.Has(ItemType.PoDSmallKey) && _game.Items.Has(ItemType.Hammer)))
                                     {
                                         if (_game.Items.Has(ItemType.PoDBigKey) && Available > 3)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                        }
 
                                         if (Available > 4)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                        }
                                     }
 
                                     if (Available > 9 &&
                                         (_game.Items.Has(ItemType.PoDSmallKey) || _game.Items.Has(ItemType.Hammer)))
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                    }
+
+                                    if (Available > 11)
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                    }
                                 }
 
                                 if (_game.Items.Has(ItemType.PoDSmallKey, 4))
                                 {
                                     if (_game.Items.Has(ItemType.PoDBigKey) && Available > 3)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                    }
 
                                     if (Available > 4)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                    }
                                 }
 
                                 if (_game.Items.Has(ItemType.PoDSmallKey, 3))
                                 {
                                     if (_game.Items.Has(ItemType.PoDBigKey) && Available > 4)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                    }
 
                                     if (Available > 5)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                    }
                                 }
 
                                 if (_game.Items.Has(ItemType.PoDSmallKey, 2))
                                 {
                                     if (_game.Items.Has(ItemType.PoDBigKey) && Available > 5)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                    }
 
                                     if (Available > 6)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                    }
                                 }
 
                                 if (_game.Items.Has(ItemType.PoDSmallKey) && Available > 11)
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                }
 
                                 if (Available > 13)
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.PalaceOfDarkness].Accessibility);
+                                }
 
                                 break;
                         }
@@ -2434,11 +2859,17 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Lamp]);
-                    itemReqs.Add(_game.Items[ItemType.Hammer]);
-                    itemReqs.Add(_game.Items[ItemType.Bow]);
-                    itemReqs.Add(_game.Items[ItemType.PoDBigKey]);
-                    itemReqs.Add(_game.Items[ItemType.PoDSmallKey]);
+                    _updateOnDungeonItemShuffleChange = true;
+                    _updateOnEnemyShuffleChange = true;
+
+                    _regionSubscriptions.Add(RegionID.PalaceOfDarkness, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Lamp, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.Bow, new Mode());
+                    _itemSubscriptions.Add(ItemType.Bottle, new Mode());
+                    _itemSubscriptions.Add(ItemType.PoDBigKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.Keysanity });
+                    _itemSubscriptions.Add(ItemType.PoDSmallKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys });
 
                     PropertyChanged += OnRequirementChanged;
 
@@ -2450,8 +2881,6 @@ namespace OpenTracker.Models
                     _bigKey = 1;
                     _baseTotal = 6;
                     Name = "Dungeon";
-                    _standardRegion = _game.Regions[RegionID.SwampPalace];
-                    _invertedRegion = _game.Regions[RegionID.SwampPalace];
 
                     GetAccessibility = () =>
                     {
@@ -2464,14 +2893,20 @@ namespace OpenTracker.Models
                                     if (_game.Items.Has(ItemType.Hammer))
                                     {
                                         if (_game.Items.Has(ItemType.Hookshot))
-                                            return AccessibilityLevel.Normal;
+                                            return _game.Regions[RegionID.SwampPalace].Accessibility;
 
                                         if (Available > 2)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.SwampPalace].Accessibility);
+                                        }
                                     }
 
                                     if (Available > 5)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.SwampPalace].Accessibility);
+                                    }
                                 }
 
                                 break;
@@ -2482,14 +2917,20 @@ namespace OpenTracker.Models
                                     if (_game.Items.Has(ItemType.Hammer))
                                     {
                                         if (_game.Items.Has(ItemType.Hookshot))
-                                            return AccessibilityLevel.Normal;
+                                            return _game.Regions[RegionID.SwampPalace].Accessibility;
 
                                         if (Available > 4)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.SwampPalace].Accessibility);
+                                        }
                                     }
 
                                     if (Available > 7)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.SwampPalace].Accessibility);
+                                    }
                                 }
 
                                 break;
@@ -2502,18 +2943,27 @@ namespace OpenTracker.Models
                                         if (_game.Items.Has(ItemType.Hammer))
                                         {
                                             if (_game.Items.Has(ItemType.Hookshot))
-                                                return AccessibilityLevel.Normal;
+                                                return _game.Regions[RegionID.SwampPalace].Accessibility;
 
                                             if (Available > 4)
-                                                return AccessibilityLevel.Partial;
+                                            {
+                                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)_game.Regions[RegionID.SwampPalace].Accessibility);
+                                            }
                                         }
 
                                         if (Available > 7)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.SwampPalace].Accessibility);
+                                        }
                                     }
 
                                     if (Available > 8)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.SwampPalace].Accessibility);
+                                    }
                                 }
 
                                 break;
@@ -2526,24 +2976,39 @@ namespace OpenTracker.Models
                                         if (_game.Items.Has(ItemType.Hammer))
                                         {
                                             if (_game.Items.Has(ItemType.Hookshot) && _game.Items.Has(ItemType.SPBigKey))
-                                                return AccessibilityLevel.Normal;
+                                                return _game.Regions[RegionID.SwampPalace].Accessibility;
 
                                             if (Available > 1 && _game.Items.Has(ItemType.Hookshot))
-                                                return AccessibilityLevel.Partial;
+                                            {
+                                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)_game.Regions[RegionID.SwampPalace].Accessibility);
+                                            }
 
                                             if (Available > 4 && _game.Items.Has(ItemType.SPBigKey))
-                                                return AccessibilityLevel.Partial;
+                                            {
+                                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)_game.Regions[RegionID.SwampPalace].Accessibility);
+                                            }
 
                                             if (Available > 5)
-                                                return AccessibilityLevel.Partial;
+                                            {
+                                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)_game.Regions[RegionID.SwampPalace].Accessibility);
+                                            }
                                         }
 
                                         if (Available > 8)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.SwampPalace].Accessibility);
+                                        }
                                     }
 
                                     if (Available > 9)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.SwampPalace].Accessibility);
+                                    }
                                 }
 
                                 break;
@@ -2552,11 +3017,15 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Flippers]);
-                    itemReqs.Add(_game.Items[ItemType.Hookshot]);
-                    itemReqs.Add(_game.Items[ItemType.Hammer]);
-                    itemReqs.Add(_game.Items[ItemType.SPSmallKey]);
-                    itemReqs.Add(_game.Items[ItemType.SPBigKey]);
+                    _updateOnDungeonItemShuffleChange = true;
+
+                    _regionSubscriptions.Add(RegionID.SwampPalace, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Flippers, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hookshot, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.SPSmallKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys });
+                    _itemSubscriptions.Add(ItemType.SPBigKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.Keysanity });
 
                     PropertyChanged += OnRequirementChanged;
 
@@ -2568,8 +3037,6 @@ namespace OpenTracker.Models
                     _bigKey = 1;
                     _baseTotal = 2;
                     Name = "Dungeon";
-                    _standardRegion = _game.Regions[RegionID.SkullWoods];
-                    _invertedRegion = _game.Regions[RegionID.SkullWoods];
 
                     GetAccessibility = () =>
                     {
@@ -2580,9 +3047,10 @@ namespace OpenTracker.Models
 
                                 if ((_game.Items.Has(ItemType.FireRod) || _game.Mode.EntranceShuffle.Value) &&
                                     _game.Items.CanRemoveCurtains())
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.SkullWoods].Accessibility;
 
-                                return AccessibilityLevel.SequenceBreak;
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.SkullWoods].Accessibility);
 
                             case DungeonItemShuffle.MapsCompassesSmallKeys:
 
@@ -2591,17 +3059,24 @@ namespace OpenTracker.Models
                                     if (_game.Items.CanRemoveCurtains())
                                     {
                                         if (_game.Items.Has(ItemType.SWSmallKey))
-                                            return AccessibilityLevel.Normal;
+                                            return _game.Regions[RegionID.SkullWoods].Accessibility;
 
-                                        return AccessibilityLevel.SequenceBreak;
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                            (byte)_game.Regions[RegionID.SkullWoods].Accessibility);
                                     }
 
                                     if (Available > 1)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.SkullWoods].Accessibility);
+                                    }
                                 }
 
                                 if (Available > 2)
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.SkullWoods].Accessibility);
+                                }
 
                                 break;
                             case DungeonItemShuffle.Keysanity:
@@ -2611,27 +3086,45 @@ namespace OpenTracker.Models
                                     if (_game.Items.CanRemoveCurtains())
                                     {
                                         if (_game.Items.Has(ItemType.SWBigKey) && _game.Items.Has(ItemType.SPSmallKey))
-                                            return AccessibilityLevel.Normal;
+                                            return _game.Regions[RegionID.SkullWoods].Accessibility;
 
                                         if (_game.Items.Has(ItemType.SWBigKey))
-                                            return AccessibilityLevel.SequenceBreak;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                                (byte)_game.Regions[RegionID.SkullWoods].Accessibility);
+                                        }
 
                                         if (Available > 1)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.SkullWoods].Accessibility);
+                                        }
                                     }
 
                                     if (Available > 1 && _game.Items.Has(ItemType.SWBigKey))
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.SkullWoods].Accessibility);
+                                    }
 
                                     if (Available > 2)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.SkullWoods].Accessibility);
+                                    }
                                 }
 
                                 if (Available > 2 && _game.Items.Has(ItemType.SWBigKey))
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.SkullWoods].Accessibility);
+                                }
 
                                 if (Available > 3)
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.SkullWoods].Accessibility);
+                                }
 
                                 break;
                         }
@@ -2639,10 +3132,14 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.FireRod]);
-                    itemReqs.Add(_game.Items[ItemType.Sword]);
-                    itemReqs.Add(_game.Items[ItemType.SWBigKey]);
-                    itemReqs.Add(_game.Items[ItemType.SWSmallKey]);
+                    _updateOnDungeonItemShuffleChange = true;
+
+                    _regionSubscriptions.Add(RegionID.SkullWoods, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.FireRod, new Mode());
+                    _itemSubscriptions.Add(ItemType.Sword, new Mode());
+                    _itemSubscriptions.Add(ItemType.SWBigKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.Keysanity });
+                    _itemSubscriptions.Add(ItemType.SWSmallKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys });
 
                     PropertyChanged += OnRequirementChanged;
 
@@ -2654,8 +3151,6 @@ namespace OpenTracker.Models
                     _bigKey = 1;
                     _baseTotal = 4;
                     Name = "Dungeon";
-                    _standardRegion = _game.Regions[RegionID.ThievesTown];
-                    _invertedRegion = _game.Regions[RegionID.ThievesTown];
 
                     GetAccessibility = () =>
                     {
@@ -2665,30 +3160,38 @@ namespace OpenTracker.Models
                             case DungeonItemShuffle.MapsCompasses:
 
                                 if (_game.Items.Has(ItemType.Hammer))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.ThievesTown].Accessibility;
 
-                                return AccessibilityLevel.SequenceBreak;
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.ThievesTown].Accessibility);
 
                             case DungeonItemShuffle.MapsCompassesSmallKeys:
 
                                 if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.TTSmallKey))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.ThievesTown].Accessibility;
 
-                                return AccessibilityLevel.SequenceBreak;
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.ThievesTown].Accessibility);
 
                             case DungeonItemShuffle.Keysanity:
 
                                 if (_game.Items.Has(ItemType.TTBigKey))
                                 {
                                     if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.TTSmallKey))
-                                        return AccessibilityLevel.Normal;
+                                        return _game.Regions[RegionID.ThievesTown].Accessibility;
 
                                     if (Available > 1)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.ThievesTown].Accessibility);
+                                    }
                                 }
 
                                 if (Available > 4)
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.ThievesTown].Accessibility);
+                                }
 
                                 break;
                         }
@@ -2696,9 +3199,13 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.TTBigKey]);
-                    itemReqs.Add(_game.Items[ItemType.TTSmallKey]);
-                    itemReqs.Add(_game.Items[ItemType.Hammer]);
+                    _updateOnDungeonItemShuffleChange = true;
+
+                    _regionSubscriptions.Add(RegionID.ThievesTown, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.TTBigKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.Keysanity });
+                    _itemSubscriptions.Add(ItemType.TTSmallKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys });
 
                     PropertyChanged += OnRequirementChanged;
 
@@ -2710,8 +3217,6 @@ namespace OpenTracker.Models
                     _bigKey = 1;
                     _baseTotal = 3;
                     Name = "Dungeon";
-                    _standardRegion = _game.Regions[RegionID.IcePalace];
-                    _invertedRegion = _game.Regions[RegionID.IcePalace];
 
                     GetAccessibility = () =>
                     {
@@ -2723,9 +3228,10 @@ namespace OpenTracker.Models
                                 {
                                     if (_game.Items.Has(ItemType.Hammer) &&
                                         (_game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.CaneOfSomaria)))
-                                        return AccessibilityLevel.Normal;
+                                        return _game.Regions[RegionID.IcePalace].Accessibility;
 
-                                    return AccessibilityLevel.SequenceBreak;
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.IcePalace].Accessibility);
                                 }
 
                                 break;
@@ -2736,13 +3242,17 @@ namespace OpenTracker.Models
                                     if (_game.Items.Has(ItemType.Hammer))
                                     {
                                         if (_game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.CaneOfSomaria))
-                                            return AccessibilityLevel.Normal;
+                                            return _game.Regions[RegionID.IcePalace].Accessibility;
 
-                                        return AccessibilityLevel.SequenceBreak;
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                            (byte)_game.Regions[RegionID.IcePalace].Accessibility);
                                     }
 
                                     if (Available > 1)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.IcePalace].Accessibility);
+                                    }
                                 }
 
                                 break;
@@ -2756,13 +3266,17 @@ namespace OpenTracker.Models
                                             (_game.Items.Has(ItemType.Hookshot) && _game.Items.Has(ItemType.IPSmallKey)) ||
                                             (_game.Items.Has(ItemType.CaneOfSomaria) && _game.Items.Has(ItemType.IPSmallKey)) ||
                                             _game.Items.Has(ItemType.IPSmallKey, 2))
-                                            return AccessibilityLevel.Normal;
+                                            return _game.Regions[RegionID.IcePalace].Accessibility;
 
-                                        return AccessibilityLevel.SequenceBreak;
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                            (byte)_game.Regions[RegionID.IcePalace].Accessibility);
                                     }
 
                                     if (Available > 3)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.IcePalace].Accessibility);
+                                    }
                                 }
 
                                 break;
@@ -2776,20 +3290,32 @@ namespace OpenTracker.Models
                                             (_game.Items.Has(ItemType.Hookshot) && _game.Items.Has(ItemType.IPSmallKey)) ||
                                             (_game.Items.Has(ItemType.CaneOfSomaria) && _game.Items.Has(ItemType.IPSmallKey)) ||
                                             _game.Items.Has(ItemType.IPSmallKey, 2)) && _game.Items.Has(ItemType.IPBigKey))
-                                            return AccessibilityLevel.Normal;
+                                            return _game.Regions[RegionID.IcePalace].Accessibility;
 
                                         if (_game.Items.Has(ItemType.IPBigKey))
-                                            return AccessibilityLevel.SequenceBreak;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                                (byte)_game.Regions[RegionID.IcePalace].Accessibility);
+                                        }
 
                                         if (Available > 1)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.IcePalace].Accessibility);
+                                        }
                                     }
 
                                     if (Available > 3 && _game.Items.Has(ItemType.IPBigKey))
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.IcePalace].Accessibility);
+                                    }
 
                                     if (Available > 4)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.IcePalace].Accessibility);
+                                    }
                                 }
 
                                 break;
@@ -2798,14 +3324,18 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.FireRod]);
-                    itemReqs.Add(_game.Items[ItemType.Bombos]);
-                    itemReqs.Add(_game.Items[ItemType.Sword]);
-                    itemReqs.Add(_game.Items[ItemType.Hammer]);
-                    itemReqs.Add(_game.Items[ItemType.Hookshot]);
-                    itemReqs.Add(_game.Items[ItemType.CaneOfSomaria]);
-                    itemReqs.Add(_game.Items[ItemType.IPSmallKey]);
-                    itemReqs.Add(_game.Items[ItemType.IPBigKey]);
+                    _updateOnDungeonItemShuffleChange = true;
+
+                    _regionSubscriptions.Add(RegionID.IcePalace, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.FireRod, new Mode());
+                    _itemSubscriptions.Add(ItemType.Bombos, new Mode());
+                    _itemSubscriptions.Add(ItemType.Sword, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hookshot, new Mode());
+                    _itemSubscriptions.Add(ItemType.CaneOfSomaria, new Mode());
+                    _itemSubscriptions.Add(ItemType.IPSmallKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys });
+                    _itemSubscriptions.Add(ItemType.IPBigKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.Keysanity });
 
                     PropertyChanged += OnRequirementChanged;
 
@@ -2817,14 +3347,32 @@ namespace OpenTracker.Models
                     _bigKey = 1;
                     _baseTotal = 2;
                     Name = "Dungeon";
-                    _standardRegion = _game.Regions[RegionID.MiseryMire];
-                    _invertedRegion = _game.Regions[RegionID.MiseryMire];
 
                     GetAccessibility = () =>
                     {
                         switch (_game.Mode.DungeonItemShuffle.Value)
                         {
                             case DungeonItemShuffle.Standard:
+
+                                if (_game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.Boots))
+                                {
+                                    if (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod))
+                                    {
+                                        if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                        {
+                                            if ((_game.Items.Has(ItemType.Hookshot) ||
+                                                (_game.Items.Has(ItemType.Boots) &&
+                                                _game.Mode.ItemPlacement == ItemPlacement.Advanced)) &&
+                                                _game.Items.Has(ItemType.Lamp))
+                                                return _game.Regions[RegionID.MiseryMire].Accessibility;
+                                        }
+                                    }
+
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.MiseryMire].Accessibility);
+                                }
+
+                                break;
                             case DungeonItemShuffle.MapsCompasses:
 
                                 if (_game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.Boots))
@@ -2834,13 +3382,27 @@ namespace OpenTracker.Models
                                         if (_game.Items.Has(ItemType.CaneOfSomaria))
                                         {
                                             if ((_game.Items.Has(ItemType.Hookshot) ||
-                                                (_game.Items.Has(ItemType.Boots) && _game.Mode.ItemPlacement == ItemPlacement.Advanced)) &&
+                                                (_game.Items.Has(ItemType.Boots) &&
+                                                _game.Mode.ItemPlacement == ItemPlacement.Advanced)) &&
                                                 _game.Items.Has(ItemType.Lamp))
-                                                return AccessibilityLevel.Normal;
+                                                return _game.Regions[RegionID.MiseryMire].Accessibility;
+
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                                (byte)_game.Regions[RegionID.MiseryMire].Accessibility);
+                                        }
+
+                                        if (Available > 1)
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.MiseryMire].Accessibility);
                                         }
                                     }
 
-                                    return AccessibilityLevel.SequenceBreak;
+                                    if (Available > 3)
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.MiseryMire].Accessibility);
+                                    }
                                 }
 
                                 break;
@@ -2855,20 +3417,30 @@ namespace OpenTracker.Models
                                             if ((_game.Items.Has(ItemType.Hookshot) ||
                                                 (_game.Items.Has(ItemType.Boots) && _game.Mode.ItemPlacement == ItemPlacement.Advanced)) &&
                                                 _game.Items.Has(ItemType.Lamp))
-                                                return AccessibilityLevel.Normal;
+                                                return _game.Regions[RegionID.MiseryMire].Accessibility;
 
-                                            return AccessibilityLevel.SequenceBreak;
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                                (byte)_game.Regions[RegionID.MiseryMire].Accessibility);
                                         }
 
                                         if (Available > 1)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.MiseryMire].Accessibility);
+                                        }
                                     }
 
                                     if (Available > 2 && _game.Items.Has(ItemType.CaneOfSomaria))
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.MiseryMire].Accessibility);
+                                    }
 
                                     if (Available > 3)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.MiseryMire].Accessibility);
+                                    }
                                 }
 
                                 break;
@@ -2883,27 +3455,43 @@ namespace OpenTracker.Models
                                             if ((_game.Items.Has(ItemType.Hookshot) ||
                                                 (_game.Items.Has(ItemType.Boots) && _game.Mode.ItemPlacement == ItemPlacement.Advanced)) &&
                                                 _game.Items.Has(ItemType.Lamp))
-                                                return AccessibilityLevel.Normal;
+                                                return _game.Regions[RegionID.MiseryMire].Accessibility;
 
-                                            return AccessibilityLevel.SequenceBreak;
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                                (byte)_game.Regions[RegionID.MiseryMire].Accessibility);
                                         }
 
                                         if (Available > 1 && _game.Items.Has(ItemType.MMBigKey))
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.MiseryMire].Accessibility);
+                                        }
 
                                         if (Available > 2)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.MiseryMire].Accessibility);
+                                        }
                                     }
 
                                     if (Available > 2 &&
                                         _game.Items.Has(ItemType.CaneOfSomaria) && _game.Items.Has(ItemType.MMBigKey))
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.MiseryMire].Accessibility);
+                                    }
 
                                     if (Available > 3 && _game.Items.Has(ItemType.MMBigKey))
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.MiseryMire].Accessibility);
+                                    }
 
                                     if (Available > 4)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.MiseryMire].Accessibility);
+                                    }
                                 }
 
                                 break;
@@ -2912,12 +3500,17 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Hookshot]);
-                    itemReqs.Add(_game.Items[ItemType.Boots]);
-                    itemReqs.Add(_game.Items[ItemType.Lamp]);
-                    itemReqs.Add(_game.Items[ItemType.FireRod]);
-                    itemReqs.Add(_game.Items[ItemType.CaneOfSomaria]);
-                    itemReqs.Add(_game.Items[ItemType.MMBigKey]);
+                    _updateOnItemPlacementChange = true;
+                    _updateOnDungeonItemShuffleChange = true;
+
+                    _regionSubscriptions.Add(RegionID.MiseryMire, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Hookshot, new Mode());
+                    _itemSubscriptions.Add(ItemType.Boots, new Mode());
+                    _itemSubscriptions.Add(ItemType.Lamp, new Mode());
+                    _itemSubscriptions.Add(ItemType.FireRod, new Mode());
+                    _itemSubscriptions.Add(ItemType.CaneOfSomaria, new Mode());
+                    _itemSubscriptions.Add(ItemType.MMBigKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.Keysanity });
 
                     PropertyChanged += OnRequirementChanged;
 
@@ -2929,8 +3522,6 @@ namespace OpenTracker.Models
                     _bigKey = 1;
                     _baseTotal = 5;
                     Name = "Dungeon";
-                    _standardRegion = _game.Regions[RegionID.TurtleRock];
-                    _invertedRegion = _game.Regions[RegionID.TurtleRock];
 
                     GetAccessibility = () =>
                     {
@@ -2984,293 +3575,526 @@ namespace OpenTracker.Models
                             return AccessibilityLevel.None;
                         }
 
+                        AccessibilityLevel back = AccessibilityLevel.None;
+                        AccessibilityLevel backFront = AccessibilityLevel.None;
+                        AccessibilityLevel front = AccessibilityLevel.None;
+
                         switch (_game.Mode.DungeonItemShuffle.Value)
                         {
                             case DungeonItemShuffle.Standard:
 
                                 if (_game.Items.Has(ItemType.CaneOfSomaria) && _game.Items.Has(ItemType.FireRod) &&
-                                    _game.Items.Has(ItemType.Lamp) && (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
-                                    _game.Mode.WorldState == WorldState.Inverted || _game.Items.Has(ItemType.Cape) ||
-                                    _game.Items.Has(ItemType.CaneOfByrna) || _game.Items.Has(ItemType.Shield, 3)))
-                                    return AccessibilityLevel.Normal;
+                                    _game.Items.Has(ItemType.Lamp) &&
+                                    (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                    _game.Items.Has(ItemType.Cape) || _game.Items.Has(ItemType.CaneOfByrna) ||
+                                    _game.Items.Has(ItemType.Shield, 3)))
+                                    return _game.Regions[RegionID.TurtleRock].Accessibility;
 
-                                if (backAccess() >= AccessibilityLevel.SequenceBreak)
-                                    return AccessibilityLevel.SequenceBreak;
+                                back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)backAccess());
 
-                                if (frontAccess() >= AccessibilityLevel.SequenceBreak && _game.Items.Has(ItemType.CaneOfSomaria))
-                                    return AccessibilityLevel.SequenceBreak;
+                                if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                {
+                                    front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)frontAccess());
+                                }
 
-                                break;
+                                return (AccessibilityLevel)Math.Max((byte)back, (byte)front);
+
                             case DungeonItemShuffle.MapsCompasses:
 
                                 if (_game.Items.Has(ItemType.CaneOfSomaria) && _game.Items.Has(ItemType.FireRod) &&
-                                    _game.Items.Has(ItemType.Lamp) && (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
-                                    _game.Mode.WorldState == WorldState.Inverted || _game.Items.Has(ItemType.Cape) ||
-                                    _game.Items.Has(ItemType.CaneOfByrna) || _game.Items.Has(ItemType.Shield, 3)))
-                                    return AccessibilityLevel.Normal;
+                                    _game.Items.Has(ItemType.Lamp) &&
+                                    (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                    _game.Items.Has(ItemType.Cape) || _game.Items.Has(ItemType.CaneOfByrna) ||
+                                    _game.Items.Has(ItemType.Shield, 3)))
+                                    return _game.Regions[RegionID.TurtleRock].Accessibility;
 
-                                if (backAccess() >= AccessibilityLevel.SequenceBreak)
-                                    return AccessibilityLevel.SequenceBreak;
-
-                                if (frontAccess() >= AccessibilityLevel.SequenceBreak)
+                                if (Available > 1)
                                 {
-                                    if (_game.Items.Has(ItemType.CaneOfSomaria))
-                                    {
-                                        if (_game.Items.Has(ItemType.FireRod))
-                                            return AccessibilityLevel.SequenceBreak;
+                                    back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)backAccess());
+                                }
 
-                                        if (Available > 2)
-                                            return AccessibilityLevel.Partial;
+                                if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                {
+                                    back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)backAccess());
+
+                                    if (Available > 2)
+                                    {
+                                        front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)frontAccess());
+                                    }
+
+                                    if (_game.Items.Has(ItemType.FireRod))
+                                    {
+                                        front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                            (byte)frontAccess());
+                                    }
+
+                                }
+
+                                return (AccessibilityLevel)Math.Max((byte)back, (byte)front);
+
+                            case DungeonItemShuffle.MapsCompassesSmallKeys:
+
+                                if (Available > 5)
+                                {
+                                    back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)backAccess());
+                                }
+
+                                if (_game.Items.Has(ItemType.Hookshot))
+                                {
+                                    if (Available > 4)
+                                    {
+                                        back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)backAccess());
+                                    }
+
+                                    if (_game.Items.Has(ItemType.TRSmallKey))
+                                    {
+                                        if (Available > 3)
+                                        {
+                                            back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)backAccess());
+                                        }
                                     }
                                 }
 
-                                break;
-                            case DungeonItemShuffle.MapsCompassesSmallKeys:
-
-                                if (backAccess() >= AccessibilityLevel.SequenceBreak)
+                                if (_game.Items.Has(ItemType.CaneOfSomaria))
                                 {
-                                    if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                    if (Available > 10)
                                     {
-                                        if (_game.Items.Has(ItemType.TRSmallKey, 2) ||
-                                            (_game.Items.Has(ItemType.TRSmallKey) && frontAccess() >= AccessibilityLevel.SequenceBreak))
-                                        {
-                                            if (_game.Items.Has(ItemType.FireRod) && (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
-                                                _game.Mode.WorldState == WorldState.Inverted || _game.Items.Has(ItemType.Cape) ||
-                                                _game.Items.Has(ItemType.CaneOfByrna) || _game.Items.Has(ItemType.Shield, 3)))
-                                                return AccessibilityLevel.Normal;
-
-                                            if (Available > 2)
-                                                return AccessibilityLevel.Partial;
-                                        }
-
-                                        if (_game.Items.Has(ItemType.TRSmallKey) || frontAccess() >= AccessibilityLevel.SequenceBreak)
-                                        {
-                                            if (Available > 1 && _game.Items.Has(ItemType.FireRod))
-                                                return AccessibilityLevel.Partial;
-
-                                            if (Available > 3)
-                                                return AccessibilityLevel.Partial;
-                                        }
+                                        front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)frontAccess());
                                     }
 
                                     if (Available > 4)
-                                        return AccessibilityLevel.Partial;
-                                }
-
-                                if (frontAccess() >= AccessibilityLevel.SequenceBreak)
-                                {
-                                    if (_game.Items.Has(ItemType.CaneOfSomaria))
                                     {
-                                        if (_game.Items.Has(ItemType.TRSmallKey, 4))
-                                        {
-                                            if (_game.Items.Has(ItemType.FireRod))
-                                            {
-                                                if (_game.Items.Has(ItemType.Lamp) && (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
-                                                    _game.Mode.WorldState == WorldState.Inverted || _game.Items.Has(ItemType.Cape) ||
-                                                    _game.Items.Has(ItemType.CaneOfByrna) || _game.Items.Has(ItemType.Shield, 3)))
-                                                    return AccessibilityLevel.Normal;
+                                        back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)backAccess());
+                                    }
 
-                                                return AccessibilityLevel.SequenceBreak;
+                                    if (Available > 3)
+                                    {
+                                        backFront = (AccessibilityLevel)Math.Min(Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)backAccess()), (byte)frontAccess());
+                                    }
+
+                                    if (_game.Items.Has(ItemType.FireRod))
+                                    {
+                                        if (Available > 8)
+                                        {
+                                            front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)frontAccess());
+                                        }
+
+                                        if (Available > 1)
+                                        {
+                                            backFront = (AccessibilityLevel)Math.Min(Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)backAccess()), (byte)frontAccess());
+                                        }
+                                    }
+
+                                    if (_game.Items.Has(ItemType.TRSmallKey))
+                                    {
+                                        if (Available > 9)
+                                        {
+                                            front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)frontAccess());
+                                        }
+
+                                        if (Available > 3)
+                                        {
+                                            back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)backAccess());
+                                        }
+
+                                        if (Available > 2)
+                                        {
+                                            backFront = (AccessibilityLevel)Math.Min(Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)backAccess()), (byte)frontAccess());
+                                        }
+
+                                        if (_game.Items.Has(ItemType.FireRod))
+                                        {
+                                            if (Available > 7)
+                                            {
+                                                front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)frontAccess());
                                             }
 
-                                            if (Available > 2)
-                                                return AccessibilityLevel.Partial;
+                                            if (Available > 1)
+                                            {
+                                                back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)backAccess());
+                                            }
+                                            
+                                            backFront = (AccessibilityLevel)Math.Min(Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                                (byte)backAccess()), (byte)frontAccess());
+
+                                            if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                                _game.Items.Has(ItemType.Cape) || _game.Items.Has(ItemType.CaneOfByrna) ||
+                                                _game.Items.Has(ItemType.Shield, 3))
+                                                backFront = (AccessibilityLevel)Math.Min((byte)backAccess(), (byte)frontAccess());
+                                        }
+                                    }
+
+                                    if (_game.Items.Has(ItemType.TRSmallKey, 2))
+                                    {
+                                        if (Available > 7)
+                                        {
+                                            front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)frontAccess());
                                         }
 
-                                        if (_game.Items.Has(ItemType.TRSmallKey, 3))
+                                        if (Available > 2)
                                         {
-                                            if (Available > 1 && _game.Items.Has(ItemType.FireRod))
-                                                return AccessibilityLevel.Partial;
-
-                                            if (Available > 3)
-                                                return AccessibilityLevel.Partial;
+                                            back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)backAccess());
                                         }
 
-                                        if (_game.Items.Has(ItemType.TRSmallKey, 2))
+                                        if (_game.Items.Has(ItemType.FireRod))
                                         {
-                                            if (Available > 5 && _game.Items.Has(ItemType.FireRod))
-                                                return AccessibilityLevel.Partial;
+                                            if (Available > 5)
+                                            {
+                                                front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)frontAccess());
+                                            }
 
-                                            if (Available > 7)
-                                                return AccessibilityLevel.Partial;
+                                            back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                                (byte)backAccess());
+
+                                            if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                                _game.Items.Has(ItemType.Cape) || _game.Items.Has(ItemType.CaneOfByrna) ||
+                                                _game.Items.Has(ItemType.Shield, 3))
+                                                back = backAccess();
+                                        }
+                                    }
+
+                                    if (_game.Items.Has(ItemType.TRSmallKey, 3))
+                                    {
+                                        if (Available > 3)
+                                        {
+                                            front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)frontAccess());
+                                        }
+
+                                        if (_game.Items.Has(ItemType.FireRod))
+                                        {
+                                            if (Available > 1)
+                                            {
+                                                front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)frontAccess());
+                                            }
+                                        }
+                                    }
+
+                                    if (_game.Items.Has(ItemType.TRSmallKey, 4))
+                                    {
+                                        if (Available > 2)
+                                        {
+                                            front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)frontAccess());
+                                        }
+
+                                        if (_game.Items.Has(ItemType.FireRod))
+                                        {
+                                            front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                                (byte)frontAccess());
+
+                                            if ((_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                                _game.Items.Has(ItemType.Cape) || _game.Items.Has(ItemType.CaneOfByrna) ||
+                                                _game.Items.Has(ItemType.Shield, 3)) && _game.Items.Has(ItemType.Lamp))
+                                                front = frontAccess();
+                                        }
+                                    }
+                                }
+
+                                return (AccessibilityLevel)Math.Max(Math.Max((byte)back, (byte)front), (byte)backFront);
+
+                           case DungeonItemShuffle.Keysanity:
+
+                                if (Available > 6)
+                                {
+                                    back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)backAccess());
+                                }
+
+                                if (_game.Items.Has(ItemType.TRBigKey))
+                                {
+                                    if (Available > 5)
+                                    {
+                                        back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)backAccess());
+                                    }
+
+                                    if (_game.Items.Has(ItemType.Hookshot))
+                                    {
+                                        if (Available > 4)
+                                        {
+                                            back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)backAccess());
                                         }
 
                                         if (_game.Items.Has(ItemType.TRSmallKey))
                                         {
-                                            if (Available > 7 && _game.Items.Has(ItemType.FireRod))
-                                                return AccessibilityLevel.Partial;
-
-                                            if (Available > 9)
-                                                return AccessibilityLevel.Partial;
+                                            if (Available > 3)
+                                            {
+                                                back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)backAccess());
+                                            }
                                         }
-
-                                        if (Available > 8 && _game.Items.Has(ItemType.FireRod))
-                                            return AccessibilityLevel.Partial;
-
-                                        if (Available > 10)
-                                            return AccessibilityLevel.Partial;
                                     }
                                 }
 
-                                break;
-                            case DungeonItemShuffle.Keysanity:
-
-                                if (backAccess() >= AccessibilityLevel.SequenceBreak)
+                                if (_game.Items.Has(ItemType.CaneOfSomaria))
                                 {
-                                    if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                    if (Available > 11)
                                     {
-                                        if (frontAccess() >= AccessibilityLevel.SequenceBreak)
-                                        {
-                                            if (_game.Items.Has(ItemType.FireRod) && _game.Items.Has(ItemType.TRSmallKey) &&
-                                                _game.Items.Has(ItemType.TRBigKey) && (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
-                                                _game.Mode.WorldState == WorldState.Inverted || _game.Items.Has(ItemType.Cape) ||
-                                                _game.Items.Has(ItemType.CaneOfByrna) || _game.Items.Has(ItemType.Shield, 3)))
-                                                return AccessibilityLevel.Normal;
-
-                                            if (Available > 4)
-                                                return AccessibilityLevel.Partial;
-
-                                            if (Available > 3 && _game.Items.Has(ItemType.TRBigKey))
-                                                return AccessibilityLevel.Partial;
-
-                                            if (Available > 2 &&
-                                                _game.Items.Has(ItemType.TRSmallKey) && _game.Items.Has(ItemType.TRBigKey))
-                                                return AccessibilityLevel.Partial;
-
-                                            if (Available > 2 && _game.Items.Has(ItemType.FireRod))
-                                                return AccessibilityLevel.Partial;
-
-                                            if (Available > 1 &&
-                                                _game.Items.Has(ItemType.FireRod) && _game.Items.Has(ItemType.TRBigKey))
-                                                return AccessibilityLevel.Partial;
-                                        }
-
-                                        if (_game.Items.Has(ItemType.FireRod) && _game.Items.Has(ItemType.TRSmallKey, 2) &&
-                                            _game.Items.Has(ItemType.TRBigKey) && (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
-                                            _game.Mode.WorldState == WorldState.Inverted || _game.Items.Has(ItemType.Cape) ||
-                                            _game.Items.Has(ItemType.CaneOfByrna) || _game.Items.Has(ItemType.Shield, 3)))
-                                            return AccessibilityLevel.Normal;
-
-                                        if (Available > 4 && _game.Items.Has(ItemType.TRSmallKey))
-                                            return AccessibilityLevel.Partial;
-
-                                        if (Available > 4 && _game.Items.Has(ItemType.TRBigKey))
-                                            return AccessibilityLevel.Partial;
-
-                                        if (Available > 3 &&
-                                            _game.Items.Has(ItemType.TRSmallKey) && _game.Items.Has(ItemType.TRBigKey))
-                                            return AccessibilityLevel.Partial;
-
-                                        if (Available > 2 &&
-                                            _game.Items.Has(ItemType.TRSmallKey) && _game.Items.Has(ItemType.FireRod))
-                                            return AccessibilityLevel.Partial;
-
-                                        if (Available > 2 &&
-                                            _game.Items.Has(ItemType.TRSmallKey, 2) && _game.Items.Has(ItemType.TRBigKey))
-                                            return AccessibilityLevel.Partial;
-
-                                        if (Available > 1 && _game.Items.Has(ItemType.FireRod) &&
-                                            _game.Items.Has(ItemType.TRSmallKey) && _game.Items.Has(ItemType.TRBigKey))
-                                            return AccessibilityLevel.Partial;
+                                        front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)frontAccess());
                                     }
-
-                                    if (Available > 4 &&
-                                        _game.Items.Has(ItemType.TRBigKey) && _game.Items.Has(ItemType.Hookshot))
-                                        return AccessibilityLevel.Partial;
 
                                     if (Available > 5)
-                                        return AccessibilityLevel.Partial;
-                                }
-
-                                if (frontAccess() >= AccessibilityLevel.SequenceBreak)
-                                {
-                                    if (_game.Items.Has(ItemType.CaneOfSomaria))
                                     {
-                                        if (_game.Items.Has(ItemType.TRSmallKey, 4) && _game.Items.Has(ItemType.TRBigKey))
+                                        back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)backAccess());
+                                    }
+
+                                    if (Available > 4)
+                                    {
+                                        backFront = (AccessibilityLevel)Math.Min(Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)backAccess()), (byte)frontAccess());
+                                    }
+
+                                    if (_game.Items.Has(ItemType.TRBigKey))
+                                    {
+                                        if (Available > 4)
                                         {
-                                            if (_game.Items.Has(ItemType.FireRod))
+                                            back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)backAccess());
+                                        }
+
+                                        if (Available > 3)
+                                        {
+                                            backFront = (AccessibilityLevel)Math.Min(Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)backAccess()), (byte)frontAccess());
+                                        }
+                                    }
+
+                                    if (_game.Items.Has(ItemType.FireRod))
+                                    {
+                                        if (Available > 9)
+                                        {
+                                            front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)frontAccess());
+                                        }
+
+                                        if (Available > 2)
+                                        {
+                                            backFront = (AccessibilityLevel)Math.Min(Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)backAccess()), (byte)frontAccess());
+                                        }
+
+                                        if (_game.Items.Has(ItemType.TRBigKey))
+                                        {
+                                            if (Available > 1)
                                             {
-                                                if (_game.Items.Has(ItemType.Lamp))
-                                                    return AccessibilityLevel.Normal;
-
-                                                return AccessibilityLevel.SequenceBreak;
+                                                backFront = (AccessibilityLevel)Math.Min(Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)backAccess()), (byte)frontAccess());
                                             }
-                                            
-                                            if (Available > 2)
-                                                return AccessibilityLevel.Partial;
+                                        }
+                                    }
+
+                                    if (_game.Items.Has(ItemType.TRSmallKey))
+                                    {
+                                        if (Available > 10)
+                                        {
+                                            front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)frontAccess());
                                         }
 
-                                        if (_game.Items.Has(ItemType.TRSmallKey, 3) && _game.Items.Has(ItemType.TRBigKey))
+                                        if (Available > 4)
                                         {
-                                            if (Available > 1 && _game.Items.Has(ItemType.FireRod))
-                                                return AccessibilityLevel.Partial;
-                                            
+                                            back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)backAccess());
+                                        }
+
+                                        if (_game.Items.Has(ItemType.TRBigKey))
+                                        {
                                             if (Available > 3)
-                                                return AccessibilityLevel.Partial;
+                                            {
+                                                back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)backAccess());
+                                            }
+
+                                            if (Available > 2)
+                                            {
+                                                backFront = (AccessibilityLevel)Math.Min(Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)backAccess()), (byte)frontAccess());
+                                            }
                                         }
 
-                                        if (_game.Items.Has(ItemType.TRSmallKey, 2))
+                                        if (_game.Items.Has(ItemType.FireRod))
                                         {
+                                            if (Available > 8)
+                                            {
+                                                front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)frontAccess());
+                                            }
+
+                                            if (Available > 2)
+                                            {
+                                                back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)backAccess());
+                                            }
+
                                             if (_game.Items.Has(ItemType.TRBigKey))
                                             {
-                                                if (Available > 5 && _game.Items.Has(ItemType.FireRod))
-                                                    return AccessibilityLevel.Partial;
+                                                if (Available > 1)
+                                                {
+                                                    back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                        (byte)backAccess());
+                                                }
 
-                                                if (Available > 7)
-                                                    return AccessibilityLevel.Partial;
+                                                backFront = (AccessibilityLevel)Math.Min(Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                                    (byte)backAccess()), (byte)frontAccess());
+
+                                                if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                                    _game.Items.Has(ItemType.Cape) || _game.Items.Has(ItemType.CaneOfByrna) ||
+                                                    _game.Items.Has(ItemType.Shield, 3))
+                                                    backFront = (AccessibilityLevel)Math.Min((byte)backAccess(), (byte)frontAccess());
+                                            }
+                                        }
+                                    }
+
+                                    if (_game.Items.Has(ItemType.TRSmallKey, 2))
+                                    {
+                                        if (Available > 9)
+                                        {
+                                            front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)frontAccess());
+                                        }
+
+                                        if (_game.Items.Has(ItemType.TRBigKey))
+                                        {
+                                            if (Available > 7)
+                                            {
+                                                front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)frontAccess());
                                             }
 
-                                            if (Available > 7 && _game.Items.Has(ItemType.FireRod))
-                                                return AccessibilityLevel.Partial;
-
-                                            if (Available > 9)
-                                                return AccessibilityLevel.Partial;
+                                            if (Available > 2)
+                                            {
+                                                back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)backAccess());
+                                            }
                                         }
 
-                                        if (_game.Items.Has(ItemType.TRSmallKey))
+                                        if (_game.Items.Has(ItemType.FireRod))
                                         {
-                                            if (Available > 8 && _game.Items.Has(ItemType.FireRod))
-                                                return AccessibilityLevel.Partial;
+                                            if (Available > 7)
+                                            {
+                                                front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)frontAccess());
+                                            }
 
-                                            if (Available > 10)
-                                                return AccessibilityLevel.Partial;
+                                            if (_game.Items.Has(ItemType.TRBigKey))
+                                            {
+                                                if (Available > 5)
+                                                {
+                                                    front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                        (byte)frontAccess());
+                                                }
+                                                
+                                                back = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                                    (byte)backAccess());
+
+                                                if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                                    _game.Items.Has(ItemType.Cape) || _game.Items.Has(ItemType.CaneOfByrna) ||
+                                                    _game.Items.Has(ItemType.Shield, 3))
+                                                    back = backAccess();
+                                            }
+                                        }
+                                    }
+
+                                    if (_game.Items.Has(ItemType.TRBigKey))
+                                    {
+                                        if (_game.Items.Has(ItemType.TRSmallKey, 3))
+                                        {
+                                            if (Available > 3)
+                                            {
+                                                front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)frontAccess());
+                                            }
+
+                                            if (_game.Items.Has(ItemType.FireRod))
+                                            {
+                                                if (Available > 1)
+                                                {
+                                                    front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                        (byte)frontAccess());
+                                                }
+                                            }
                                         }
 
-                                        if (Available > 9 && _game.Items.Has(ItemType.FireRod))
-                                            return AccessibilityLevel.Partial;
+                                        if (_game.Items.Has(ItemType.TRSmallKey, 4))
+                                        {
+                                            if (Available > 2)
+                                            {
+                                                front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)frontAccess());
+                                            }
 
-                                        if (Available > 11)
-                                            return AccessibilityLevel.Partial;
+                                            if (_game.Items.Has(ItemType.FireRod))
+                                            {
+                                                front = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                                    (byte)frontAccess());
+
+                                                if ((_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
+                                                    _game.Items.Has(ItemType.Cape) || _game.Items.Has(ItemType.CaneOfByrna) ||
+                                                    _game.Items.Has(ItemType.Shield, 3)) && _game.Items.Has(ItemType.Lamp))
+                                                    front = frontAccess();
+                                            }
+                                        }
                                     }
                                 }
 
-                                break;
+                                return (AccessibilityLevel)Math.Max(Math.Max((byte)back, (byte)front), (byte)backFront);
+
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Hammer]);
-                    itemReqs.Add(_game.Items[ItemType.Sword]);
-                    itemReqs.Add(_game.Items[ItemType.Bombos]);
-                    itemReqs.Add(_game.Items[ItemType.BombosDungeons]);
-                    itemReqs.Add(_game.Items[ItemType.Ether]);
-                    itemReqs.Add(_game.Items[ItemType.EtherDungeons]);
-                    itemReqs.Add(_game.Items[ItemType.Quake]);
-                    itemReqs.Add(_game.Items[ItemType.QuakeDungeons]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.CaneOfSomaria]);
-                    itemReqs.Add(_game.Items[ItemType.FireRod]);
-                    itemReqs.Add(_game.Items[ItemType.Lamp]);
-                    itemReqs.Add(_game.Items[ItemType.Cape]);
-                    itemReqs.Add(_game.Items[ItemType.CaneOfByrna]);
-                    itemReqs.Add(_game.Items[ItemType.Shield]);
-                    itemReqs.Add(_game.Items[ItemType.TRSmallKey]);
-                    itemReqs.Add(_game.Items[ItemType.TRBigKey]);
-                    itemReqs.Add(_game.Items[ItemType.Hookshot]);
+                    _updateOnItemPlacementChange = true;
+                    _updateOnDungeonItemShuffleChange = true;
 
-                    _game.Regions[RegionID.DeathMountainEastTop].PropertyChanged += OnRequirementChanged;
-                    _game.Regions[RegionID.DarkDeathMountainTop].PropertyChanged += OnRequirementChanged;
+                    _regionSubscriptions.Add(RegionID.TurtleRock, new Mode());
+                    _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode());
+                    _regionSubscriptions.Add(RegionID.DarkDeathMountainTop, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.Sword, new Mode());
+                    _itemSubscriptions.Add(ItemType.Bombos, new Mode());
+                    _itemSubscriptions.Add(ItemType.BombosDungeons, new Mode());
+                    _itemSubscriptions.Add(ItemType.Ether, new Mode());
+                    _itemSubscriptions.Add(ItemType.EtherDungeons, new Mode());
+                    _itemSubscriptions.Add(ItemType.Quake, new Mode());
+                    _itemSubscriptions.Add(ItemType.QuakeDungeons, new Mode());
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode());
+                    _itemSubscriptions.Add(ItemType.CaneOfSomaria, new Mode());
+                    _itemSubscriptions.Add(ItemType.FireRod, new Mode());
+                    _itemSubscriptions.Add(ItemType.Lamp, new Mode());
+                    _itemSubscriptions.Add(ItemType.Cape, new Mode() { ItemPlacement = ItemPlacement.Basic });
+                    _itemSubscriptions.Add(ItemType.CaneOfByrna, new Mode() { ItemPlacement = ItemPlacement.Basic });
+                    _itemSubscriptions.Add(ItemType.Shield, new Mode() { ItemPlacement = ItemPlacement.Basic });
+                    _itemSubscriptions.Add(ItemType.TRSmallKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys });
+                    _itemSubscriptions.Add(ItemType.TRBigKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.Keysanity });
+                    _itemSubscriptions.Add(ItemType.Hookshot, new Mode());
 
                     PropertyChanged += OnRequirementChanged;
 
@@ -3282,8 +4106,6 @@ namespace OpenTracker.Models
                     _bigKey = 1;
                     _baseTotal = 19;
                     Name = "Dungeon";
-                    _standardRegion = _game.Regions[RegionID.GanonsTower];
-                    _invertedRegion = _game.Regions[RegionID.GanonsTower];
 
                     GetAccessibility = () =>
                     {
@@ -3295,7 +4117,7 @@ namespace OpenTracker.Models
                                     _game.Items.Has(ItemType.Boots) && _game.Items.Has(ItemType.CaneOfSomaria) &&
                                     (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value) &&
                                     _game.Items.Has(ItemType.FireRod))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.GanonsTower].Accessibility;
 
                                 if (_game.Items.Has(ItemType.Hammer) &&
                                     (_game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.Boots)))
@@ -3305,22 +4127,37 @@ namespace OpenTracker.Models
                                         if (_game.Items.Has(ItemType.CaneOfSomaria))
                                         {
                                             if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
-                                                return AccessibilityLevel.SequenceBreak;
+                                            {
+                                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                                    (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                            }
 
                                             if (Available > 1)
-                                                return AccessibilityLevel.Partial;
+                                            {
+                                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                            }
                                         }
 
                                         if (Available > 2 &&
                                             (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value))
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
 
                                         if (Available > 5)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
                                     }
 
                                     if (Available > 5)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                    }
                                 }
 
                                 if (_game.Items.Has(ItemType.FireRod) || _game.Items.Has(ItemType.Lamp))
@@ -3331,37 +4168,61 @@ namespace OpenTracker.Models
                                         {
                                             if (Available > 4 &&
                                                 (_game.Items.Has(ItemType.Boots) || _game.Items.Has(ItemType.Hookshot)))
-                                                return AccessibilityLevel.Partial;
+                                            {
+                                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                            }
 
                                             if (Available > 5)
-                                                return AccessibilityLevel.Partial;
+                                            {
+                                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                            }
                                         }
 
                                         if (Available > 7 &&
                                             (_game.Items.Has(ItemType.Boots) || _game.Items.Has(ItemType.Hookshot)))
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
 
                                         if (Available > 8)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
                                     }
 
                                     if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
                                     {
                                         if (Available > 13 &&
                                             (_game.Items.Has(ItemType.Boots) || _game.Items.Has(ItemType.Hookshot)))
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
 
                                         if (Available > 14)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
                                     }
 
                                 }
 
                                 if (Available > 15 && _game.Items.Has(ItemType.CaneOfSomaria))
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                }
 
                                 if (Available > 16)
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                }
 
                                 break;
                             case DungeonItemShuffle.MapsCompasses:
@@ -3370,7 +4231,7 @@ namespace OpenTracker.Models
                                     _game.Items.Has(ItemType.Boots) && _game.Items.Has(ItemType.CaneOfSomaria) &&
                                     (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value) &&
                                     _game.Items.Has(ItemType.FireRod))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.GanonsTower].Accessibility;
 
                                 if (_game.Items.Has(ItemType.Hammer) &&
                                     (_game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.Boots)))
@@ -3380,22 +4241,37 @@ namespace OpenTracker.Models
                                         if (_game.Items.Has(ItemType.CaneOfSomaria))
                                         {
                                             if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
-                                                return AccessibilityLevel.SequenceBreak;
+                                            {
+                                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                                    (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                            }
 
                                             if (Available > 3)
-                                                return AccessibilityLevel.Partial;
+                                            {
+                                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                            }
                                         }
 
                                         if (Available > 4 &&
                                             (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value))
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
 
                                         if (Available > 7)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
                                     }
 
                                     if (Available > 7)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                    }
                                 }
 
                                 if (_game.Items.Has(ItemType.FireRod) || _game.Items.Has(ItemType.Lamp))
@@ -3406,32 +4282,53 @@ namespace OpenTracker.Models
                                         {
                                             if (Available > 6 &&
                                                 (_game.Items.Has(ItemType.Boots) || _game.Items.Has(ItemType.Hookshot)))
-                                                return AccessibilityLevel.Partial;
+                                            {
+                                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                            }
 
                                             if (Available > 7)
-                                                return AccessibilityLevel.Partial;
+                                            {
+                                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                            }
                                         }
 
                                         if (Available > 10)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
                                     }
 
                                     if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
                                     {
                                         if (Available > 15 &&
                                             (_game.Items.Has(ItemType.Boots) || _game.Items.Has(ItemType.Hookshot)))
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
 
                                         if (Available > 16)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
                                     }
                                 }
 
                                 if (Available > 17 && _game.Items.Has(ItemType.CaneOfSomaria))
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                }
 
                                 if (Available > 18)
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                }
 
                                 break;
                             case DungeonItemShuffle.MapsCompassesSmallKeys:
@@ -3440,7 +4337,7 @@ namespace OpenTracker.Models
                                     _game.Items.Has(ItemType.Boots) && _game.Items.Has(ItemType.CaneOfSomaria) &&
                                     (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value) &&
                                     _game.Items.Has(ItemType.FireRod) && _game.Items.Has(ItemType.GTSmallKey, 2))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.GanonsTower].Accessibility;
 
                                 if (_game.Items.Has(ItemType.Hammer) &&
                                     (_game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.Boots)))
@@ -3452,43 +4349,73 @@ namespace OpenTracker.Models
                                             if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
                                             {
                                                 if (_game.Items.Has(ItemType.GTSmallKey))
-                                                    return AccessibilityLevel.SequenceBreak;
+                                                {
+                                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                                        (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                                }
 
                                                 if (Available > 1)
-                                                    return AccessibilityLevel.Partial;
+                                                {
+                                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                        (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                                }
                                             }
 
                                             if (Available > 4)
-                                                return AccessibilityLevel.Partial;
+                                            {
+                                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                            }
                                         }
 
                                         if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
                                         {
                                             if (Available > 5 && _game.Items.Has(ItemType.GTSmallKey, 2))
-                                                return AccessibilityLevel.Partial;
+                                            {
+                                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                            }
 
                                             if (Available > 6 && _game.Items.Has(ItemType.GTSmallKey))
-                                                return AccessibilityLevel.Partial;
+                                            {
+                                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                            }
 
                                             if (Available > 7)
-                                                return AccessibilityLevel.Partial;
+                                            {
+                                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                            }
                                         }
                                     }
 
                                     if (_game.Items.Has(ItemType.CaneOfSomaria))
                                     {
                                         if (Available > 8 && _game.Items.Has(ItemType.GTSmallKey))
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
 
                                         if (Available > 9)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
                                     }
 
                                     if (Available > 9 && _game.Items.Has(ItemType.GTSmallKey))
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                    }
 
                                     if (Available > 10)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                    }
                                 }
 
                                 if (_game.Items.Has(ItemType.FireRod) || _game.Items.Has(ItemType.Lamp))
@@ -3499,32 +4426,53 @@ namespace OpenTracker.Models
                                         {
                                             if (Available > 9 && _game.Items.Has(ItemType.GTSmallKey) &&
                                                 (_game.Items.Has(ItemType.Boots) || _game.Items.Has(ItemType.Hookshot)))
-                                                return AccessibilityLevel.Partial;
+                                            {
+                                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                            }
 
                                             if (Available > 10)
-                                                return AccessibilityLevel.Partial;
+                                            {
+                                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                            }
                                         }
 
                                         if (Available > 13)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
                                     }
 
                                     if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
                                     {
                                         if (Available > 19 &&
                                             (_game.Items.Has(ItemType.Boots) || _game.Items.Has(ItemType.Hookshot)))
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
 
                                         if (Available > 20)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
                                     }
                                 }
 
                                 if (Available > 21 && _game.Items.Has(ItemType.CaneOfSomaria))
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                }
 
                                 if (Available > 22)
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                }
 
                                 break;
                             case DungeonItemShuffle.Keysanity:
@@ -3534,7 +4482,7 @@ namespace OpenTracker.Models
                                     (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value) &&
                                     _game.Items.Has(ItemType.FireRod) && _game.Items.Has(ItemType.GTSmallKey, 2) &&
                                     _game.Items.Has(ItemType.GTBigKey))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.GanonsTower].Accessibility;
 
                                 if (_game.Items.Has(ItemType.Hammer) &&
                                     (_game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.Boots)))
@@ -3549,18 +4497,30 @@ namespace OpenTracker.Models
                                                     _game.Items.Has(ItemType.GTBigKey))
                                                 {
                                                     if (_game.Items.Has(ItemType.GTSmallKey))
-                                                        return AccessibilityLevel.SequenceBreak;
+                                                    {
+                                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                                            (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                                    }
 
                                                     if (Available > 1)
-                                                        return AccessibilityLevel.Partial;
+                                                    {
+                                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                            (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                                    }
                                                 }
 
                                                 if (Available > 4)
-                                                    return AccessibilityLevel.Partial;
+                                                {
+                                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                        (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                                }
                                             }
 
                                             if (Available > 5)
-                                                return AccessibilityLevel.Partial;
+                                            {
+                                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                            }
                                         }
 
                                         if (_game.Items.Has(ItemType.GTBigKey))
@@ -3568,13 +4528,22 @@ namespace OpenTracker.Models
                                             if (_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value)
                                             {
                                                 if (Available > 5 && _game.Items.Has(ItemType.GTSmallKey, 2))
-                                                    return AccessibilityLevel.Partial;
+                                                {
+                                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                        (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                                }
 
                                                 if (Available > 6 && _game.Items.Has(ItemType.GTSmallKey))
-                                                    return AccessibilityLevel.Partial;
+                                                {
+                                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                        (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                                }
 
                                                 if (Available > 7)
-                                                    return AccessibilityLevel.Partial;
+                                                {
+                                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                        (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                                }
                                             }
                                         }
                                     }
@@ -3583,30 +4552,54 @@ namespace OpenTracker.Models
                                     {
                                         if (Available > 8 &&
                                             _game.Items.Has(ItemType.GTBigKey) && _game.Items.Has(ItemType.GTSmallKey))
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
 
                                         if (Available > 9 && _game.Items.Has(ItemType.GTSmallKey))
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
 
                                         if (Available > 9 && _game.Items.Has(ItemType.GTBigKey))
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
 
                                         if (Available > 10)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
                                     }
 
                                     if (Available > 9 &&
                                         _game.Items.Has(ItemType.GTSmallKey) && _game.Items.Has(ItemType.GTBigKey))
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                    }
 
                                     if (Available > 10 && _game.Items.Has(ItemType.GTSmallKey))
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                    }
 
                                     if (Available > 10 && _game.Items.Has(ItemType.GTBigKey))
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                    }
 
                                     if (Available > 11)
-                                        return AccessibilityLevel.Partial;
+                                    {
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                            (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                    }
                                 }
 
                                 if (_game.Items.Has(ItemType.FireRod) || _game.Items.Has(ItemType.Lamp))
@@ -3619,18 +4612,30 @@ namespace OpenTracker.Models
                                             {
                                                 if (Available > 10 && _game.Items.Has(ItemType.GTSmallKey) &&
                                                     (_game.Items.Has(ItemType.Boots) || _game.Items.Has(ItemType.Hookshot)))
-                                                    return AccessibilityLevel.Partial;
+                                                {
+                                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                        (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                                }
 
                                                 if (Available > 11)
-                                                    return AccessibilityLevel.Partial;
+                                                {
+                                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                        (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                                }
                                             }
 
                                             if (Available > 13)
-                                                return AccessibilityLevel.Partial;
+                                            {
+                                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                    (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                            }
                                         }
 
                                         if (Available > 14)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
                                     }
 
                                     if ((_game.Items.Has(ItemType.Bow) || _game.Mode.EnemyShuffle.Value) &&
@@ -3638,18 +4643,30 @@ namespace OpenTracker.Models
                                     {
                                         if (Available > 20 &&
                                             (_game.Items.Has(ItemType.Boots) || _game.Items.Has(ItemType.Hookshot)))
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
 
                                         if (Available > 21)
-                                            return AccessibilityLevel.Partial;
+                                        {
+                                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                                (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                        }
                                     }
                                 }
 
                                 if (Available > 22 && _game.Items.Has(ItemType.CaneOfSomaria))
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                }
 
                                 if (Available > 23)
-                                    return AccessibilityLevel.Partial;
+                                {
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial,
+                                        (byte)_game.Regions[RegionID.GanonsTower].Accessibility);
+                                }
 
                                 break;
                         }
@@ -3657,37 +4674,146 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Hammer]);
-                    itemReqs.Add(_game.Items[ItemType.Hookshot]);
-                    itemReqs.Add(_game.Items[ItemType.Boots]);
-                    itemReqs.Add(_game.Items[ItemType.CaneOfSomaria]);
-                    itemReqs.Add(_game.Items[ItemType.Bow]);
-                    itemReqs.Add(_game.Items[ItemType.FireRod]);
-                    itemReqs.Add(_game.Items[ItemType.Lamp]);
-                    itemReqs.Add(_game.Items[ItemType.GTSmallKey]);
-                    itemReqs.Add(_game.Items[ItemType.GTBigKey]);
+                    _updateOnDungeonItemShuffleChange = true;
+                    _updateOnEnemyShuffleChange = true;
+
+                    _regionSubscriptions.Add(RegionID.GanonsTower, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hookshot, new Mode());
+                    _itemSubscriptions.Add(ItemType.Boots, new Mode());
+                    _itemSubscriptions.Add(ItemType.CaneOfSomaria, new Mode());
+                    _itemSubscriptions.Add(ItemType.Bow, new Mode() { EnemyShuffle = false });
+                    _itemSubscriptions.Add(ItemType.FireRod, new Mode());
+                    _itemSubscriptions.Add(ItemType.Lamp, new Mode());
+                    _itemSubscriptions.Add(ItemType.GTSmallKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys });
+                    _itemSubscriptions.Add(ItemType.GTBigKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.Keysanity });
 
                     PropertyChanged += OnRequirementChanged;
 
                     break;
             }
 
-            Total = _baseTotal;
-            Available = _baseTotal;
-
-            foreach (Item item in itemReqs)
-                item.PropertyChanged += OnRequirementChanged;
-
             if (RequiredMode == null)
                 RequiredMode = new Mode();
 
-            if (_standardRegion != null)
-                _standardRegion.PropertyChanged += OnRequirementChanged;
+            SetTotal();
 
-            if (_invertedRegion != null)
-                _invertedRegion.PropertyChanged += OnRequirementChanged;
+            _game.Mode.PropertyChanged += OnModeChanged;
+
+            UpdateRegionSubscriptions();
+            UpdateItemSubscriptions();
 
             UpdateAccessibility();
+        }
+
+        private void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        {
+            UpdateItemSubscriptions();
+            UpdateRegionSubscriptions();
+
+            if (e.PropertyName == nameof(_game.Mode.ItemPlacement) &&
+                _updateOnItemPlacementChange)
+                UpdateAccessibility();
+
+            if (e.PropertyName == nameof(_game.Mode.DungeonItemShuffle))
+            {
+                SetTotal();
+
+                if (_updateOnDungeonItemShuffleChange)
+                    UpdateAccessibility();
+            }
+
+            if (e.PropertyName == nameof(_game.Mode.WorldState))
+                UpdateAccessibility();
+
+            if (e.PropertyName == nameof(_game.Mode.EnemyShuffle) &&
+                _updateOnEnemyShuffleChange)
+                UpdateAccessibility();
+
+        }
+
+        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        {
+            UpdateAccessibility();
+        }
+
+        private void UpdateRegionSubscriptions()
+        {
+            foreach (RegionID region in _regionSubscriptions.Keys)
+            {
+                if (_game.Mode.Validate(_regionSubscriptions[region]))
+                {
+                    if (_regionIsSubscribed.ContainsKey(region))
+                    {
+                        if (!_regionIsSubscribed[region])
+                        {
+                            _regionIsSubscribed[region] = true;
+                            _game.Regions[region].PropertyChanged += OnRequirementChanged;
+                        }
+                    }
+                    else
+                    {
+                        _regionIsSubscribed.Add(region, true);
+                        _game.Regions[region].PropertyChanged += OnRequirementChanged;
+                    }
+                }
+                else
+                {
+                    if (_regionIsSubscribed.ContainsKey(region))
+                    {
+                        if (_regionIsSubscribed[region])
+                        {
+                            _regionIsSubscribed[region] = false;
+                            _game.Regions[region].PropertyChanged -= OnRequirementChanged;
+                        }
+                    }
+                    else
+                        _regionIsSubscribed.Add(region, false);
+                }
+            }
+        }
+
+        private void UpdateItemSubscriptions()
+        {
+            foreach (ItemType item in _itemSubscriptions.Keys)
+            {
+                if (_game.Mode.Validate(_itemSubscriptions[item]))
+                {
+                    if (_itemIsSubscribed.ContainsKey(item))
+                    {
+                        if (!_itemIsSubscribed[item])
+                        {
+                            _itemIsSubscribed[item] = true;
+                            _game.Items[item].PropertyChanged += OnRequirementChanged;
+                        }
+                    }
+                    else
+                    {
+                        _itemIsSubscribed.Add(item, true);
+                        _game.Items[item].PropertyChanged += OnRequirementChanged;
+                    }
+                }
+                else
+                {
+                    if (_itemIsSubscribed.ContainsKey(item))
+                    {
+                        if (_itemIsSubscribed[item])
+                        {
+                            _itemIsSubscribed[item] = false;
+                            _game.Items[item].PropertyChanged -= OnRequirementChanged;
+                        }
+                    }
+                    else
+                        _itemIsSubscribed.Add(item, false);
+                }
+            }
         }
 
         private void SetTotal()
@@ -3705,43 +4831,9 @@ namespace OpenTracker.Models
 
         private void UpdateAccessibility()
         {
-            AccessibilityLevel? regionAccessibility = null;
-            
-            if (_game.Mode.WorldState == WorldState.StandardOpen && _standardRegion != null)
-                regionAccessibility = _standardRegion.Accessibility;
-            
-            if (_game.Mode.WorldState == WorldState.Inverted && _invertedRegion != null)
-                regionAccessibility = _invertedRegion.Accessibility;
-            
-            if (regionAccessibility != null)
-            {
-                AccessibilityLevel sectionAccessibility = GetAccessibility();
-                Accessibility = (AccessibilityLevel)Math.Min((byte)regionAccessibility.Value,
-                    (byte)sectionAccessibility);
-            }
-            else
-                Accessibility = GetAccessibility();
+            Accessibility = GetAccessibility();
         }
         
-        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
-        {
-            UpdateAccessibility();
-        }
-
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
-        {
-            UpdateAccessibility();
-
-            if (e.PropertyName == nameof(_game.Mode.DungeonItemShuffle))
-                SetTotal();
-        }
-
-        private void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         public void Clear()
         {
             do

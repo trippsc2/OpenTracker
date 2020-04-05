@@ -24,7 +24,7 @@ namespace OpenTracker.Models
                 EnemyShuffle = false
             };
 
-            Bosses = new BossDictionary(this, Enum.GetValues(typeof(BossType)).Length);
+            Bosses = new BossDictionary(Enum.GetValues(typeof(BossType)).Length);
             Items = new ItemDictionary(Mode, Enum.GetValues(typeof(ItemType)).Length);
             Regions = new Dictionary<RegionID, Region>(Enum.GetValues(typeof(RegionID)).Length);
             Locations = new LocationDictionary(Enum.GetValues(typeof(LocationID)).Length);
@@ -41,11 +41,13 @@ namespace OpenTracker.Models
                 Regions.Add(iD, new Region(this, iD));
 
             foreach (Region region in Regions.Values)
-                region.SubscribeToRegions();
+            {
+                region.UpdateRegionSubscriptions();
+                region.UpdateAccessibility();
+            }
 
             foreach (LocationID iD in Enum.GetValues(typeof(LocationID)))
                 Locations.Add(iD, new Location(this, iD));
-
         }
 
         public void Reset()

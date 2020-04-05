@@ -31,8 +31,6 @@ namespace OpenTracker.Models
             int itemSections = 0;
             bool entranceSection = false;
 
-            List<Item> itemRequirements = new List<Item>();
-
             switch (iD)
             {
                 case LocationID.Pedestal:

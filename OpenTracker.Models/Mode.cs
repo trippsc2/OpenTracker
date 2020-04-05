@@ -122,6 +122,9 @@ namespace OpenTracker.Models
         {
             if (PropertyChanged != null)
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+            if (propertyName == nameof(WorldState) && WorldState == Enums.WorldState.Inverted)
+                ItemPlacement = Enums.ItemPlacement.Advanced;
         }
 
         public bool Validate(Mode gameMode)

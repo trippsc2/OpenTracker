@@ -102,7 +102,7 @@ namespace OpenTracker.ViewModels
             appSettings.PropertyChanged += OnAppSettingsChanged;
             game.Mode.PropertyChanged += OnModeChanged;
 
-            mapLocation.Location.RequirementChanged += OnItemRequirementChanged;
+            mapLocation.Location.RequirementChanged += OnRequirementChanged;
 
             foreach (ISection section in mapLocation.Location.Sections)
                 section.PropertyChanged += OnSectionChanged;
@@ -342,7 +342,7 @@ namespace OpenTracker.ViewModels
             SetVisibility();
         }
 
-        private void OnItemRequirementChanged(object sender, EventArgs e)
+        private void OnRequirementChanged(object sender, EventArgs e)
         {
             SetColor();
             SetVisibility();

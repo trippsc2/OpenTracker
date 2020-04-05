@@ -6,8 +6,6 @@ namespace OpenTracker.Models
 {
     public class BossDictionary : Dictionary<BossType, Boss>, INotifyPropertyChanged
     {
-        private readonly Game _game;
-
         public event PropertyChangedEventHandler PropertyChanged; 
 
         private AccessibilityLevel _unknownBossAccessibility;
@@ -24,9 +22,8 @@ namespace OpenTracker.Models
             }
         }
 
-        public BossDictionary(Game game, int capacity) : base(capacity)
+        public BossDictionary(int capacity) : base(capacity)
         {
-            _game = game;
         }
 
         private void OnPropertyChanged(string propertyName)

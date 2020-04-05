@@ -8,6 +8,9 @@ namespace OpenTracker.Models
     public class Boss : INotifyPropertyChanged
     {
         private readonly Game _game;
+        private readonly bool _updateOnItemPlacementChange;
+        private readonly Dictionary<ItemType, Mode> _itemSubscriptions;
+        private readonly Dictionary<ItemType, bool> _itemIsSubscribed;
 
         public BossType Type { get; }
         public Func<AccessibilityLevel> GetAccessibility { get; }
@@ -31,11 +34,11 @@ namespace OpenTracker.Models
         public Boss(Game game, BossType type)
         {
             _game = game;
+
+            _itemSubscriptions = new Dictionary<ItemType, Mode>();
+            _itemIsSubscribed = new Dictionary<ItemType, bool>();
+
             Type = type;
-
-            _game.Mode.PropertyChanged += OnGameModeChanged;
-
-            List<Item> itemRequirements = new List<Item>();
 
             switch (Type)
             {
@@ -54,17 +57,17 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemRequirements.Add(_game.Items[ItemType.Sword]);
-                    itemRequirements.Add(_game.Items[ItemType.Hammer]);
-                    itemRequirements.Add(_game.Items[ItemType.Bow]);
-                    itemRequirements.Add(_game.Items[ItemType.Boomerang]);
-                    itemRequirements.Add(_game.Items[ItemType.RedBoomerang]);
-                    itemRequirements.Add(_game.Items[ItemType.Bottle]);
-                    itemRequirements.Add(_game.Items[ItemType.HalfMagic]);
-                    itemRequirements.Add(_game.Items[ItemType.FireRod]);
-                    itemRequirements.Add(_game.Items[ItemType.IceRod]);
-                    itemRequirements.Add(_game.Items[ItemType.CaneOfByrna]);
-                    itemRequirements.Add(_game.Items[ItemType.CaneOfSomaria]);
+                    _itemSubscriptions.Add(ItemType.Sword, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.Bow, new Mode());
+                    _itemSubscriptions.Add(ItemType.Boomerang, new Mode());
+                    _itemSubscriptions.Add(ItemType.RedBoomerang, new Mode());
+                    _itemSubscriptions.Add(ItemType.Bottle, new Mode());
+                    _itemSubscriptions.Add(ItemType.HalfMagic, new Mode());
+                    _itemSubscriptions.Add(ItemType.FireRod, new Mode());
+                    _itemSubscriptions.Add(ItemType.IceRod, new Mode());
+                    _itemSubscriptions.Add(ItemType.CaneOfByrna, new Mode());
+                    _itemSubscriptions.Add(ItemType.CaneOfSomaria, new Mode());
 
                     break;
                 case BossType.Lanmolas:
@@ -80,13 +83,13 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.SequenceBreak;
                     };
 
-                    itemRequirements.Add(_game.Items[ItemType.Sword]);
-                    itemRequirements.Add(_game.Items[ItemType.Hammer]);
-                    itemRequirements.Add(_game.Items[ItemType.Bow]);
-                    itemRequirements.Add(_game.Items[ItemType.FireRod]);
-                    itemRequirements.Add(_game.Items[ItemType.IceRod]);
-                    itemRequirements.Add(_game.Items[ItemType.CaneOfByrna]);
-                    itemRequirements.Add(_game.Items[ItemType.CaneOfSomaria]);
+                    _itemSubscriptions.Add(ItemType.Sword, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.Bow, new Mode());
+                    _itemSubscriptions.Add(ItemType.FireRod, new Mode());
+                    _itemSubscriptions.Add(ItemType.IceRod, new Mode());
+                    _itemSubscriptions.Add(ItemType.CaneOfByrna, new Mode());
+                    _itemSubscriptions.Add(ItemType.CaneOfSomaria, new Mode());
 
                     break;
                 case BossType.Moldorm:
@@ -99,8 +102,8 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemRequirements.Add(_game.Items[ItemType.Sword]);
-                    itemRequirements.Add(_game.Items[ItemType.Hammer]);
+                    _itemSubscriptions.Add(ItemType.Sword, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
 
                     break;
                 case BossType.HelmasaurKing:
@@ -118,7 +121,6 @@ namespace OpenTracker.Models
                             (_game.Items.Has(ItemType.FireRod) || _game.Items.Has(ItemType.IceRod)))))
                         {
                             if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
-                                _game.Mode.WorldState == WorldState.Inverted ||
                                 _game.Items.Swordless() || _game.Items.Has(ItemType.Sword, 2))
                                 return AccessibilityLevel.Normal;
 
@@ -128,14 +130,16 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemRequirements.Add(_game.Items[ItemType.Hookshot]);
-                    itemRequirements.Add(_game.Items[ItemType.Hammer]);
-                    itemRequirements.Add(_game.Items[ItemType.Sword]);
-                    itemRequirements.Add(_game.Items[ItemType.Bottle]);
-                    itemRequirements.Add(_game.Items[ItemType.HalfMagic]);
-                    itemRequirements.Add(_game.Items[ItemType.Bow]);
-                    itemRequirements.Add(_game.Items[ItemType.FireRod]);
-                    itemRequirements.Add(_game.Items[ItemType.IceRod]);
+                    _updateOnItemPlacementChange = true;
+
+                    _itemSubscriptions.Add(ItemType.Hookshot, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.Sword, new Mode());
+                    _itemSubscriptions.Add(ItemType.Bottle, new Mode());
+                    _itemSubscriptions.Add(ItemType.HalfMagic, new Mode());
+                    _itemSubscriptions.Add(ItemType.Bow, new Mode());
+                    _itemSubscriptions.Add(ItemType.FireRod, new Mode());
+                    _itemSubscriptions.Add(ItemType.IceRod, new Mode());
 
                     break;
                 case BossType.Mothula:
@@ -147,7 +151,6 @@ namespace OpenTracker.Models
                             _game.Items.Has(ItemType.CaneOfSomaria) || _game.Items.Has(ItemType.CaneOfByrna))))
                         {
                             if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
-                                _game.Mode.WorldState == WorldState.Inverted ||
                                 _game.Items.Has(ItemType.Sword, 2) || (_game.Items.CanExtendMagic(2) &&
                                 _game.Items.Has(ItemType.FireRod)))
                                 return AccessibilityLevel.Normal;
@@ -158,13 +161,15 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemRequirements.Add(_game.Items[ItemType.Sword]);
-                    itemRequirements.Add(_game.Items[ItemType.Hammer]);
-                    itemRequirements.Add(_game.Items[ItemType.Bottle]);
-                    itemRequirements.Add(_game.Items[ItemType.HalfMagic]);
-                    itemRequirements.Add(_game.Items[ItemType.FireRod]);
-                    itemRequirements.Add(_game.Items[ItemType.CaneOfSomaria]);
-                    itemRequirements.Add(_game.Items[ItemType.CaneOfByrna]);
+                    _updateOnItemPlacementChange = true;
+
+                    _itemSubscriptions.Add(ItemType.Sword, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.Bottle, new Mode());
+                    _itemSubscriptions.Add(ItemType.HalfMagic, new Mode());
+                    _itemSubscriptions.Add(ItemType.FireRod, new Mode());
+                    _itemSubscriptions.Add(ItemType.CaneOfSomaria, new Mode());
+                    _itemSubscriptions.Add(ItemType.CaneOfByrna, new Mode());
 
                     break;
                 case BossType.Blind:
@@ -175,7 +180,6 @@ namespace OpenTracker.Models
                             _game.Items.Has(ItemType.CaneOfSomaria) || _game.Items.Has(ItemType.CaneOfByrna))
                         {
                             if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
-                                _game.Mode.WorldState == WorldState.Inverted ||
                                 _game.Items.Swordless() || (_game.Items.Has(ItemType.Sword) &&
                                 (_game.Items.Has(ItemType.Cape) || _game.Items.Has(ItemType.CaneOfByrna))))
                                 return AccessibilityLevel.Normal;
@@ -186,11 +190,13 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemRequirements.Add(_game.Items[ItemType.Sword]);
-                    itemRequirements.Add(_game.Items[ItemType.Cape]);
-                    itemRequirements.Add(_game.Items[ItemType.Hammer]);
-                    itemRequirements.Add(_game.Items[ItemType.CaneOfSomaria]);
-                    itemRequirements.Add(_game.Items[ItemType.CaneOfByrna]);
+                    _updateOnItemPlacementChange = true;
+
+                    _itemSubscriptions.Add(ItemType.Sword, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.CaneOfSomaria, new Mode());
+                    _itemSubscriptions.Add(ItemType.CaneOfByrna, new Mode());
+                    _itemSubscriptions.Add(ItemType.Cape, new Mode() { ItemPlacement = ItemPlacement.Advanced });
 
                     break;
                 case BossType.Kholdstare:
@@ -204,7 +210,6 @@ namespace OpenTracker.Models
                             && _game.Items.Has(ItemType.Bombos) && _game.Items.Swordless())))
                         {
                             if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
-                                _game.Mode.WorldState == WorldState.Inverted ||
                                 _game.Items.Has(ItemType.Sword, 2) ||
                                 (_game.Items.CanExtendMagic(3) && _game.Items.Has(ItemType.FireRod)) ||
                                 (_game.Items.Has(ItemType.Bombos) &&
@@ -218,12 +223,14 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemRequirements.Add(_game.Items[ItemType.FireRod]);
-                    itemRequirements.Add(_game.Items[ItemType.Bombos]);
-                    itemRequirements.Add(_game.Items[ItemType.Sword]);
-                    itemRequirements.Add(_game.Items[ItemType.Hammer]);
-                    itemRequirements.Add(_game.Items[ItemType.Bottle]);
-                    itemRequirements.Add(_game.Items[ItemType.HalfMagic]);
+                    _updateOnItemPlacementChange = true;
+
+                    _itemSubscriptions.Add(ItemType.FireRod, new Mode());
+                    _itemSubscriptions.Add(ItemType.Bombos, new Mode());
+                    _itemSubscriptions.Add(ItemType.Sword, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.Bottle, new Mode());
+                    _itemSubscriptions.Add(ItemType.HalfMagic, new Mode());
 
                     break;
                 case BossType.Vitreous:
@@ -234,7 +241,6 @@ namespace OpenTracker.Models
                             _game.Items.Has(ItemType.Bow))
                         {
                             if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
-                                _game.Mode.WorldState == WorldState.Inverted ||
                                 _game.Items.Has(ItemType.Sword, 2) || _game.Items.Has(ItemType.Bow))
                                 return AccessibilityLevel.Normal;
 
@@ -244,9 +250,11 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemRequirements.Add(_game.Items[ItemType.Hammer]);
-                    itemRequirements.Add(_game.Items[ItemType.Sword]);
-                    itemRequirements.Add(_game.Items[ItemType.Bow]);
+                    _updateOnItemPlacementChange = true;
+
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.Sword, new Mode());
+                    _itemSubscriptions.Add(ItemType.Bow, new Mode());
 
                     break;
                 case BossType.Trinexx:
@@ -259,7 +267,6 @@ namespace OpenTracker.Models
                             (_game.Items.CanExtendMagic(4) && _game.Items.Has(ItemType.Sword))))
                         {
                             if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
-                                _game.Mode.WorldState == WorldState.Inverted ||
                                 _game.Items.Swordless() || _game.Items.Has(ItemType.Sword, 3) ||
                                 (_game.Items.CanExtendMagic(2) && _game.Items.Has(ItemType.Sword, 2)))
                                 return AccessibilityLevel.Normal;
@@ -270,12 +277,14 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemRequirements.Add(_game.Items[ItemType.FireRod]);
-                    itemRequirements.Add(_game.Items[ItemType.IceRod]);
-                    itemRequirements.Add(_game.Items[ItemType.Sword]);
-                    itemRequirements.Add(_game.Items[ItemType.Hammer]);
-                    itemRequirements.Add(_game.Items[ItemType.Bottle]);
-                    itemRequirements.Add(_game.Items[ItemType.HalfMagic]);
+                    _updateOnItemPlacementChange = true;
+
+                    _itemSubscriptions.Add(ItemType.FireRod, new Mode());
+                    _itemSubscriptions.Add(ItemType.IceRod, new Mode());
+                    _itemSubscriptions.Add(ItemType.Sword, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.Bottle, new Mode());
+                    _itemSubscriptions.Add(ItemType.HalfMagic, new Mode());
 
                     break;
                 case BossType.Aga:
@@ -289,35 +298,16 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemRequirements.Add(_game.Items[ItemType.Sword]);
-                    itemRequirements.Add(_game.Items[ItemType.Hammer]);
-                    itemRequirements.Add(_game.Items[ItemType.Net]);
+                    _itemSubscriptions.Add(ItemType.Sword, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.Net, new Mode());
 
                     break;
             }
 
-            foreach (Item item in itemRequirements)
-                item.PropertyChanged += OnItemRequirementChanged;
+            _game.Mode.PropertyChanged += OnGameModeChanged;
 
-            UpdateAccessibility();
-        }
-
-        private void UpdateAccessibility()
-        {
-            Accessibility = GetAccessibility();
-        }
-
-        private void OnGameModeChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == "WorldState")
-                UpdateAccessibility();
-
-            if (e.PropertyName == "ItemPlacement")
-                UpdateAccessibility();
-        }
-
-        private void OnItemRequirementChanged(object sender, PropertyChangedEventArgs e)
-        {
+            UpdateItemSubscriptions();
             UpdateAccessibility();
         }
 
@@ -326,5 +316,61 @@ namespace OpenTracker.Models
             if (PropertyChanged != null)
                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        private void OnGameModeChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "ItemPlacement" && _updateOnItemPlacementChange)
+            {
+                UpdateItemSubscriptions();
+                UpdateAccessibility();
+            }
+        }
+
+        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        {
+            UpdateAccessibility();
+        }
+
+        private void UpdateItemSubscriptions()
+        {
+            foreach (ItemType item in _itemSubscriptions.Keys)
+            {
+                if (_game.Mode.Validate(_itemSubscriptions[item]))
+                {
+                    if (_itemIsSubscribed.ContainsKey(item))
+                    {
+                        if (!_itemIsSubscribed[item])
+                        {
+                            _itemIsSubscribed[item] = true;
+                            _game.Items[item].PropertyChanged += OnRequirementChanged;
+                        }
+                    }
+                    else
+                    {
+                        _itemIsSubscribed.Add(item, true);
+                        _game.Items[item].PropertyChanged += OnRequirementChanged;
+                    }
+                }
+                else
+                {
+                    if (_itemIsSubscribed.ContainsKey(item))
+                    {
+                        if (_itemIsSubscribed[item])
+                        {
+                            _itemIsSubscribed[item] = false;
+                            _game.Items[item].PropertyChanged -= OnRequirementChanged;
+                        }
+                    }
+                    else
+                        _itemIsSubscribed.Add(item, false);
+                }
+            }
+        }
+
+        private void UpdateAccessibility()
+        {
+            Accessibility = GetAccessibility();
+        }
+
     }
 }

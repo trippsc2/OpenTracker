@@ -274,15 +274,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenTracker"
-        "ProductCode" = "8:{8560B543-CDC5-4378-A016-E7442882BFE7}"
-        "PackageCode" = "8:{6477EB62-4D47-47D0-A7B6-FC12ED9C33DB}"
+        "ProductCode" = "8:{2D8F6709-1B8C-40AC-8BF6-F5138CFB5B7B}"
+        "PackageCode" = "8:{4B1C3BF1-9E05-452F-9432-946482E80785}"
         "UpgradeCode" = "8:{C98C2121-B4C5-473A-9B86-5407FEFFE8F1}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:0.7.0"
+        "ProductVersion" = "8:0.7.1"
         "Manufacturer" = "8:OpenTracker"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -824,7 +824,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_8BEB0D6860DB4F80B56A45FAD1BDE151"
             {
-            "SourcePath" = "8:..\\OpenTracker\\obj\\Debug\\netcoreapp3.1\\OpenTracker.exe"
+            "SourcePath" = "8:..\\OpenTracker\\obj\\Release\\netcoreapp3.1\\OpenTracker.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_B21EA2C01C014AC99A33B72F50C26B5D"

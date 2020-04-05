@@ -9,10 +9,12 @@ namespace OpenTracker.Models
     public class EntranceSection : ISection
     {
         private readonly Game _game;
-        private readonly Region _standardRegion;
-        private readonly Region _invertedRegion;
         private readonly Item _standardItemProvided;
         private readonly Item _invertedItemProvided;
+        private readonly Dictionary<RegionID, Mode> _regionSubscriptions;
+        private readonly Dictionary<RegionID, bool> _regionIsSubscribed;
+        private readonly Dictionary<ItemType, Mode> _itemSubscriptions;
+        private readonly Dictionary<ItemType, bool> _itemIsSubscribed;
 
         public string Name { get; }
         public bool HasMarking { get => true; }
@@ -67,8 +69,13 @@ namespace OpenTracker.Models
         public EntranceSection(Game game, LocationID iD)
         {
             _game = game;
-            RequiredMode = new Mode();
 
+            _regionSubscriptions = new Dictionary<RegionID, Mode>();
+            _regionIsSubscribed = new Dictionary<RegionID, bool>();
+            _itemSubscriptions = new Dictionary<ItemType, Mode>();
+            _itemIsSubscribed = new Dictionary<ItemType, bool>();
+
+            RequiredMode = new Mode();
             Available = true;
 
             List<Item> itemReqs = new List<Item>();
@@ -80,10 +87,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.LumberjackCaveEntrance:
@@ -91,30 +98,30 @@ namespace OpenTracker.Models
                     Name = "Dropdown";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Aga) && _game.Items.Has(ItemType.Boots))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.Aga) && _game.Items.Has(ItemType.Boots) &&
                                 _game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.Inspect;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Aga]);
-                    itemReqs.Add(_game.Items[ItemType.Boots]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Aga, new Mode());
+                    _itemSubscriptions.Add(ItemType.Boots, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.DeathMountainEntryCave:
@@ -122,28 +129,28 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Gloves))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.Gloves) && _game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.DeathMountainExitCave:
@@ -151,8 +158,6 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DeathMountainExitAccess];
                     _invertedItemProvided = _game.Items[ItemType.DeathMountainExitAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
@@ -165,8 +170,8 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.BumperCaveAccess]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    _itemSubscriptions.Add(ItemType.BumperCaveAccess, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.KakarikoFortuneTeller:
@@ -174,10 +179,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.WomanLeftDoor:
@@ -185,10 +190,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.WomanRightDoor:
@@ -196,10 +201,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.LeftSnitchHouse:
@@ -207,10 +212,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.RightSnitchHouse:
@@ -218,10 +223,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.BlindsHouseEntrance:
@@ -229,10 +234,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.TheWellEntrance:
@@ -240,10 +245,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.ChickenHouseEntrance:
@@ -251,10 +256,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.GrassHouse:
@@ -262,24 +267,24 @@ namespace OpenTracker.Models
                     Name = "Move your lawn";
                     _standardItemProvided = _game.Items[ItemType.GrassHouseAccess];
                     _invertedItemProvided = _game.Items[ItemType.GrassHouseAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.TavernFront:
@@ -287,10 +292,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.KakarikoShop:
@@ -298,10 +303,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.BombHut:
@@ -309,24 +314,24 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.SickKidEntrance:
@@ -334,10 +339,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.BlacksmithHouse:
@@ -345,10 +350,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.MagicBatEntrance:
@@ -356,34 +361,49 @@ namespace OpenTracker.Models
                     Name = "Dropdown";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
+                            AccessibilityLevel direct = AccessibilityLevel.None;
+                            AccessibilityLevel mirror = AccessibilityLevel.None;
+
                             if (_game.Items.Has(ItemType.Hammer))
-                                return AccessibilityLevel.Normal;
+                                direct = _game.Regions[RegionID.LightWorld].Accessibility;
+                            else
+                            {
+                                direct = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Inspect,
+                                    (byte)_game.Regions[RegionID.LightWorld].Accessibility);
+                            }
 
                             if (_game.Items.Has(ItemType.Mirror) && _game.Items.Has(ItemType.Gloves, 2) &&
                                 _game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                mirror = AccessibilityLevel.Normal;
+
+                            return (AccessibilityLevel)Math.Max((byte)direct, (byte)mirror);
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
-                            if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                            if (_game.Regions[RegionID.LightWorld].Accessibility >= AccessibilityLevel.SequenceBreak)
+                            {
+                                if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.MoonPearl))
+                                    return _game.Regions[RegionID.LightWorld].Accessibility;
+
+                                return AccessibilityLevel.Inspect;
+                            }
                         }
 
-                        return AccessibilityLevel.Inspect;
+                        return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Hammer]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode());
 
                     break;
                 case LocationID.ChestGame:
@@ -391,10 +411,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.RaceHouseLeft:
@@ -402,21 +422,21 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.RaceGameAccess];
                     _invertedItemProvided = _game.Items[ItemType.RaceGameAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldSouth];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Mirror))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldSouth].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode() { WorldState = WorldState.StandardOpen });
+
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.RaceHouseRight:
@@ -424,10 +444,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.LibraryEntrance:
@@ -435,10 +455,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.ForestHideout:
@@ -446,24 +466,24 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
-                        return AccessibilityLevel.Inspect;
+                        return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.ForestChestGame:
@@ -471,10 +491,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.CastleSecretEntrance:
@@ -482,24 +502,29 @@ namespace OpenTracker.Models
                     Name = "Dropdown";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
-                            if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                            if (_game.Regions[RegionID.LightWorld].Accessibility >= AccessibilityLevel.SequenceBreak)
+                            {
+                                if (_game.Items.Has(ItemType.MoonPearl))
+                                    return _game.Regions[RegionID.LightWorld].Accessibility;
+
+                                return AccessibilityLevel.Inspect;
+                            }
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.CastleMainEntrance:
@@ -507,10 +532,10 @@ namespace OpenTracker.Models
                     Name = "Dungeon";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.CastleLeftEntrance:
@@ -518,10 +543,10 @@ namespace OpenTracker.Models
                     Name = "Dungeon";
                     _standardItemProvided = _game.Items[ItemType.HyruleCastleSecondFloorAccess];
                     _invertedItemProvided = _game.Items[ItemType.HyruleCastleSecondFloorAccess];
-                    _standardRegion = _game.Regions[RegionID.HyruleCastleSecondFloor];
-                    _invertedRegion = _game.Regions[RegionID.HyruleCastleSecondFloor];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.HyruleCastleSecondFloor].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.HyruleCastleSecondFloor, new Mode());
 
                     break;
                 case LocationID.CastleRightEntrance:
@@ -529,10 +554,10 @@ namespace OpenTracker.Models
                     Name = "Dungeon";
                     _standardItemProvided = _game.Items[ItemType.HyruleCastleSecondFloorAccess];
                     _invertedItemProvided = _game.Items[ItemType.HyruleCastleSecondFloorAccess];
-                    _standardRegion = _game.Regions[RegionID.HyruleCastleSecondFloor];
-                    _invertedRegion = _game.Regions[RegionID.HyruleCastleSecondFloor];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.HyruleCastleSecondFloor].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.HyruleCastleSecondFloor, new Mode());
 
                     break;
                 case LocationID.CastleTowerEntrance:
@@ -540,32 +565,32 @@ namespace OpenTracker.Models
                     Name = "Dungeon";
                     _standardItemProvided = _game.Items[ItemType.HyruleCastleSecondFloorAccess];
                     _invertedItemProvided = _game.Items[ItemType.HyruleCastleSecondFloorAccess];
-                    _standardRegion = _game.Regions[RegionID.HyruleCastleSecondFloor];
-                    _invertedRegion = _game.Regions[RegionID.HyruleCastleSecondFloor];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.CanClearAgaTowerBarrier())
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.HyruleCastleSecondFloor].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.TowerCrystals))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.HyruleCastleSecondFloor].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Cape]);
-                    itemReqs.Add(_game.Items[ItemType.Sword]);
-                    itemReqs.Add(_game.Items[ItemType.Hammer]);
-                    itemReqs.Add(_game.Items[ItemType.TowerCrystals]);
-                    itemReqs.Add(_game.Items[ItemType.Crystal]);
-                    itemReqs.Add(_game.Items[ItemType.RedCrystal]);
+                    _regionSubscriptions.Add(RegionID.HyruleCastleSecondFloor, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Cape, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Sword, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.TowerCrystals, new Mode() { WorldState = WorldState.Inverted });
+                    _itemSubscriptions.Add(ItemType.Crystal, new Mode() { WorldState = WorldState.Inverted });
+                    _itemSubscriptions.Add(ItemType.RedCrystal, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.DamEntrance:
@@ -573,10 +598,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.CentralBonkRocks:
@@ -584,8 +609,6 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
@@ -604,8 +627,10 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Boots]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Boots, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.WitchsHutEntrance:
@@ -613,24 +638,24 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.WitchsHutAccess];
                     _invertedItemProvided = _game.Items[ItemType.WitchsHutAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.WaterfallFairyEntrance:
@@ -638,35 +663,41 @@ namespace OpenTracker.Models
                     Name = "Waterfall Cave";
                     _standardItemProvided = _game.Items[ItemType.WaterfallFairyAccess];
                     _invertedItemProvided = _game.Items[ItemType.WaterfallFairyAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
-                            if (_game.Items.Has(ItemType.Flippers))
-                                return AccessibilityLevel.Normal;
+                            if (_game.Regions[RegionID.LightWorld].Accessibility >= AccessibilityLevel.SequenceBreak)
+                            {
+                                if (_game.Items.Has(ItemType.Flippers))
+                                    return _game.Regions[RegionID.LightWorld].Accessibility;
 
-                            return AccessibilityLevel.SequenceBreak;
+                                return AccessibilityLevel.SequenceBreak;
+                            }
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
                             {
-                                if (_game.Items.Has(ItemType.Flippers))
-                                    return AccessibilityLevel.Normal;
+                                if (_game.Regions[RegionID.LightWorld].Accessibility >= AccessibilityLevel.SequenceBreak)
+                                {
+                                    if (_game.Items.Has(ItemType.Flippers))
+                                        return _game.Regions[RegionID.LightWorld].Accessibility;
 
-                                return AccessibilityLevel.SequenceBreak;
+                                    return AccessibilityLevel.SequenceBreak;
+                                }
                             }
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Flippers]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Flippers, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.SahasrahlasHutEntrance:
@@ -674,10 +705,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.TreesFairyCave:
@@ -685,10 +716,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.PegsFairyCave:
@@ -696,10 +727,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.EasternPalaceEntrance:
@@ -707,10 +738,10 @@ namespace OpenTracker.Models
                     Name = "Dungeon";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.HoulihanHole:
@@ -718,24 +749,29 @@ namespace OpenTracker.Models
                     Name = "Dropdown";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
-                            if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                            if (_game.Regions[RegionID.LightWorld].Accessibility >= AccessibilityLevel.SequenceBreak)
+                            {
+                                if (_game.Items.Has(ItemType.MoonPearl))
+                                    return _game.Regions[RegionID.LightWorld].Accessibility;
+
+                                return AccessibilityLevel.Inspect;
+                            }
                         }
 
-                        return AccessibilityLevel.Inspect;
+                        return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.SanctuaryGrave:
@@ -743,32 +779,38 @@ namespace OpenTracker.Models
                     Name = "Dropdown";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
-                            if (_game.Items.Has(ItemType.Gloves))
-                                return AccessibilityLevel.Normal;
+                            if (_game.Regions[RegionID.LightWorld].Accessibility >= AccessibilityLevel.SequenceBreak)
+                            {
+                                if (_game.Items.Has(ItemType.Gloves))
+                                    return _game.Regions[RegionID.LightWorld].Accessibility;
 
-                            return AccessibilityLevel.Inspect;
+                                return AccessibilityLevel.Inspect;
+                            }
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
-                            if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Gloves))
-                                return AccessibilityLevel.Normal;
+                            if (_game.Regions[RegionID.LightWorld].Accessibility >= AccessibilityLevel.SequenceBreak)
+                            {
+                                if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Gloves))
+                                    return _game.Regions[RegionID.LightWorld].Accessibility;
 
-                            return AccessibilityLevel.Inspect;
+                                return AccessibilityLevel.Inspect;
+                            }
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.NorthBonkRocks:
@@ -776,28 +818,28 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Boots))
-                                return AccessibilityLevel.Normal;
-                        }    
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
+                        }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.Boots) && _game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Boots]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Boots, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.KingsTombEntrance:
@@ -805,8 +847,6 @@ namespace OpenTracker.Models
                     Name = "The Crypt";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
@@ -814,11 +854,16 @@ namespace OpenTracker.Models
                         {
                             if (_game.Items.Has(ItemType.Boots))
                             {
+                                AccessibilityLevel lightWorld = AccessibilityLevel.None;
+                                AccessibilityLevel dWWest = AccessibilityLevel.None;
+
                                 if (_game.Items.Has(ItemType.Gloves, 2))
-                                    return AccessibilityLevel.Normal;
+                                    lightWorld = _game.Regions[RegionID.LightWorld].Accessibility;
 
                                 if (_game.Items.Has(ItemType.Mirror) && _game.Items.Has(ItemType.MoonPearl))
-                                    return _game.Regions[RegionID.DarkWorldWest].Accessibility;
+                                    dWWest = _game.Regions[RegionID.DarkWorldWest].Accessibility;
+
+                                return (AccessibilityLevel)Math.Max((byte)lightWorld, (byte)dWWest);
                             }
                         }
 
@@ -826,18 +871,19 @@ namespace OpenTracker.Models
                         {
                             if (_game.Items.Has(ItemType.Gloves, 2) && _game.Items.Has(ItemType.Boots) &&
                                 _game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Boots]);
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode() { WorldState = WorldState.StandardOpen });
 
-                    _game.Regions[RegionID.DarkWorldWest].PropertyChanged += OnRequirementChanged;
+                    _itemSubscriptions.Add(ItemType.Boots, new Mode());
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode());
 
                     break;
                 case LocationID.GraveyardLedgeEntrance:
@@ -845,15 +891,13 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldWest];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Mirror))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldWest].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
@@ -865,8 +909,11 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode() { WorldState = WorldState.StandardOpen });
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode() { WorldState = WorldState.Inverted });
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode());
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.DesertLeftEntrance:
@@ -874,8 +921,6 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DesertLeftAccess];
                     _invertedItemProvided = _game.Items[ItemType.DesertLeftAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
@@ -898,12 +943,12 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.DesertBackAccess]);
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.MireArea, new Mode() { WorldState = WorldState.StandardOpen });
 
-                    _game.Regions[RegionID.MireArea].PropertyChanged += OnRequirementChanged;
+                    _itemSubscriptions.Add(ItemType.DesertBackAccess, new Mode());
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.DesertBackEntrance:
@@ -933,12 +978,12 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.DesertLeftAccess]);
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.MireArea, new Mode() { WorldState = WorldState.StandardOpen });
 
-                    _game.Regions[RegionID.MireArea].PropertyChanged += OnRequirementChanged;
+                    _itemSubscriptions.Add(ItemType.DesertLeftAccess, new Mode());
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.DesertRightEntrance:
@@ -946,54 +991,58 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.MireArea];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Mirror))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.MireArea].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    _regionSubscriptions.Add(RegionID.MireArea, new Mode() { WorldState = WorldState.StandardOpen });
+
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.DesertFrontEntrance:
 
                     Name = "Cave";
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
+                            AccessibilityLevel direct = AccessibilityLevel.None;
+                            AccessibilityLevel mirror = AccessibilityLevel.None;
+
                             if (_game.Items.Has(ItemType.Book))
-                                return AccessibilityLevel.Normal;
+                                direct = _game.Regions[RegionID.LightWorld].Accessibility;
 
                             if (_game.Items.Has(ItemType.Mirror))
-                                return _game.Regions[RegionID.MireArea].Accessibility;
+                                mirror = _game.Regions[RegionID.MireArea].Accessibility;
+
+                            return (AccessibilityLevel)Math.Max((byte)direct, (byte)mirror);
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Book))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Book]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+                    _regionSubscriptions.Add(RegionID.MireArea, new Mode() { WorldState = WorldState.StandardOpen });
 
-                    _game.Regions[RegionID.MireArea].PropertyChanged += OnRequirementChanged;
+                    _itemSubscriptions.Add(ItemType.Book, new Mode());
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.AginahsCaveEntrance:
@@ -1001,10 +1050,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.ThiefCave:
@@ -1012,10 +1061,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.RupeeCave:
@@ -1023,28 +1072,28 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Gloves))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.Gloves) && _game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.SkullWoodsBack:
@@ -1052,28 +1101,28 @@ namespace OpenTracker.Models
                     Name = "Dungeon";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldWestAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldWestAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldWest];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldWest];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.FireRod) && _game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldWest].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.FireRod))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldWest].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.FireRod]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.FireRod, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.ThievesTownEntrance:
@@ -1081,24 +1130,24 @@ namespace OpenTracker.Models
                     Name = "Dungeon";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldWestAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldWestAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldWest];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldWest];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldWest].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.DarkWorldWest].Accessibility;
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.CShapedHouseEntrance:
@@ -1106,10 +1155,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldWestAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldWestAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldWest];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldWest];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DarkWorldWest].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
 
                     break;
                 case LocationID.HammerHouse:
@@ -1117,28 +1166,38 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.HammerHouseAccess];
                     _invertedItemProvided = _game.Items[ItemType.HammerHouseAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldWest];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldWest];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldWest].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
+                            AccessibilityLevel direct = AccessibilityLevel.None;
+                            AccessibilityLevel mirror = AccessibilityLevel.None;
+
                             if (_game.Items.Has(ItemType.Hammer))
-                                return AccessibilityLevel.Normal;
+                                direct = _game.Regions[RegionID.DarkWorldWest].Accessibility;
+
+                            if (_game.Items.Has(ItemType.Mirror) && _game.Items.Has(ItemType.MoonPearl))
+                                mirror = _game.Regions[RegionID.LightWorld].Accessibility;
+
+                            return (AccessibilityLevel)Math.Max((byte)direct, (byte)mirror);
                         }    
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Hammer]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode() { WorldState = WorldState.Inverted });
+
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode());
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.DarkVillageFortuneTeller:
@@ -1146,10 +1205,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldWestAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldWestAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldWest];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldWest];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DarkWorldWest].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
 
                     break;
                 case LocationID.DarkChapel:
@@ -1157,10 +1216,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldWestAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldWestAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldWest];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldWest];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DarkWorldWest].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
 
                     break;
                 case LocationID.ShieldShop:
@@ -1168,10 +1227,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldWestAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldWestAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldWest];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldWest];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DarkWorldWest].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
 
                     break;
                 case LocationID.DarkLumberjack:
@@ -1179,10 +1238,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldWestAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldWestAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldWest];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldWest];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DarkWorldWest].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
 
                     break;
                 case LocationID.TreasureGameEntrance:
@@ -1190,10 +1249,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldWestAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldWestAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldWest];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldWest];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DarkWorldWest].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
 
                     break;
                 case LocationID.BombableShackEntrance:
@@ -1201,24 +1260,24 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldWestAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldWestAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldWest];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldWest];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldWest].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.DarkWorldWest].Accessibility;
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.HammerPegsEntrance:
@@ -1226,8 +1285,6 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldWestAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldWestAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldWest];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldWest];
 
                     GetAccessibility = () =>
                     {
@@ -1235,7 +1292,7 @@ namespace OpenTracker.Models
                         {
                             if (_game.Items.Has(ItemType.Gloves, 2) && _game.Items.Has(ItemType.Hammer) &&
                                 _game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldWest].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
@@ -1243,7 +1300,7 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.Hammer))
                             {
                                 if (_game.Items.Has(ItemType.Gloves, 2))
-                                    return AccessibilityLevel.Normal;
+                                    return _game.Regions[RegionID.DarkWorldWest].Accessibility;
 
                                 if (_game.Items.Has(ItemType.Mirror))
                                     return _game.Regions[RegionID.LightWorld].Accessibility;
@@ -1253,12 +1310,13 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.Hammer]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode() { WorldState = WorldState.Inverted });
 
-                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnRequirementChanged;
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.BumperCaveExit:
@@ -1279,8 +1337,8 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.DeathMountainExitAccess]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    _itemSubscriptions.Add(ItemType.DeathMountainExitAccess, new Mode() { WorldState = WorldState.Inverted });
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.BumperCaveEntrance:
@@ -1288,28 +1346,28 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldWestAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldWestAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldWest];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldWest];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Gloves) && _game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldWest].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.Gloves))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldWest].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.HypeCaveEntrance:
@@ -1317,24 +1375,25 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldSouthAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldSouthAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldSouth];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldSouth];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldSouth].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.DarkWorldSouth].Accessibility;
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Boots, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.SwampPalaceEntrance:
@@ -1342,10 +1401,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldSouthAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldSouthAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldSouth];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldSouth];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DarkWorldSouth].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode());
 
                     break;
                 case LocationID.DarkCentralBonkRocks:
@@ -1353,28 +1412,28 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldSouthAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldSouthAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldSouth];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldSouth];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Boots) && _game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldSouth].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.Boots))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldSouth].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Boots]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Boots, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.SouthOfGroveEntrance:
@@ -1382,24 +1441,25 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldSouth];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Mirror))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldSouth].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode() { WorldState = WorldState.StandardOpen });
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode() { WorldState = WorldState.Inverted });
+
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.BombShop:
@@ -1407,10 +1467,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldSouthAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldSouthAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldSouth];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldSouth];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DarkWorldSouth].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode());
 
                     break;
                 case LocationID.ArrowGame:
@@ -1418,10 +1478,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldSouthAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldSouthAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldSouth];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldSouth];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DarkWorldSouth].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode());
 
                     break;
                 case LocationID.DarkHyliaFortuneTeller:
@@ -1429,10 +1489,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldSouthAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldSouthAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldSouth];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldSouth];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DarkWorldSouth].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode());
 
                     break;
                 case LocationID.DarkTreesFairyCave:
@@ -1440,10 +1500,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldEastAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldEastAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldEast];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldEast];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DarkWorldEast].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DarkWorldEast, new Mode());
 
                     break;
                 case LocationID.DarkSahasrahla:
@@ -1451,10 +1511,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldEastAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldEastAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldEast];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldEast];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DarkWorldEast].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DarkWorldEast, new Mode());
 
                     break;
                 case LocationID.PalaceOfDarknessEntrance:
@@ -1462,24 +1522,24 @@ namespace OpenTracker.Models
                     Name = "Dungeon";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldEastAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldEastAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldEast];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldEast];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldEast].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.DarkWorldEast].Accessibility;
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldEast, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.DarkWitchsHut:
@@ -1487,10 +1547,10 @@ namespace OpenTracker.Models
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldWitchAreaAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldWitchAreaAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldWitchArea];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldWitchArea];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DarkWorldWitchArea].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DarkWorldWitchArea, new Mode());
 
                     break;
                 case LocationID.DarkFluteSpotFive:
@@ -1498,10 +1558,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldEastAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldEastAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldEast];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldEast];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DarkWorldEast].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DarkWorldEast, new Mode());
 
                     break;
                 case LocationID.FatFairyEntrance:
@@ -1509,31 +1569,28 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldEastAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldEastAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldEast];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldEast];
 
                     GetAccessibility = () =>
                     {
-                        //  Standard and Open modes
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.RedCrystal, 2))
                                 return AccessibilityLevel.Normal;
                         }
 
-                        //  Inverted mode
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.RedCrystal, 2))
                                 return AccessibilityLevel.Normal;
                         }
 
-                        //  Default to no access
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
-                    itemReqs.Add(_game.Items[ItemType.RedCrystal]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldEast, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.RedCrystal, new Mode());
 
                     break;
                 case LocationID.GanonHole:
@@ -1541,31 +1598,33 @@ namespace OpenTracker.Models
                     Name = "Dropdown";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldEastAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldEast];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Aga2))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldEast].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
-                            if (_game.Items.Has(ItemType.Aga2))
+                            if (_game.Regions[RegionID.HyruleCastleSecondFloor].Accessibility >= AccessibilityLevel.SequenceBreak &&
+                                _game.Items.Has(ItemType.Aga2))
                                 return _game.Regions[RegionID.HyruleCastleSecondFloor].Accessibility;
 
-                            return AccessibilityLevel.Inspect;
+                            if (_game.Regions[RegionID.LightWorld].Accessibility >= AccessibilityLevel.SequenceBreak)
+                                return AccessibilityLevel.Inspect;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Aga2]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldEast, new Mode() { WorldState = WorldState.StandardOpen });
+                    _regionSubscriptions.Add(RegionID.HyruleCastleSecondFloor, new Mode() { WorldState = WorldState.Inverted });
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode() { WorldState = WorldState.Inverted });
 
-                    _game.Regions[RegionID.HyruleCastleSecondFloor].PropertyChanged += OnRequirementChanged;
+                    _itemSubscriptions.Add(ItemType.Aga2, new Mode());
 
                     break;
                 case LocationID.DarkIceRodCave:
@@ -1573,24 +1632,24 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldSouthEastAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldSouthEastAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldSouthEast];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldSouthEast];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldSouthEast].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.DarkWorldSouthEast].Accessibility;
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouthEast, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.DarkFakeIceRodCave:
@@ -1598,10 +1657,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldSouthEastAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldSouthEastAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldSouthEast];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldSouthEast];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DarkWorldSouthEast].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouthEast, new Mode());
 
                     break;
                 case LocationID.DarkIceRodRock:
@@ -1609,28 +1668,28 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DarkWorldSouthEastAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkWorldSouthEastAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkWorldSouthEast];
-                    _invertedRegion = _game.Regions[RegionID.DarkWorldSouthEast];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Gloves))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldSouthEast].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.Gloves))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkWorldSouthEast].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouthEast, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
 
                     break;
                 case LocationID.HypeFairyCave:
@@ -1638,24 +1697,24 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.FortuneTeller:
@@ -1663,10 +1722,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.LakeShop:
@@ -1674,10 +1733,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.UpgradeFairy:
@@ -1685,18 +1744,19 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.LakeHyliaFairyIslandAccess];
                     _invertedItemProvided = _game.Items[ItemType.LakeHyliaFairyIslandAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
-                            if (_game.Items.Has(ItemType.Flippers))
+                            if (_game.Regions[RegionID.LightWorld].Accessibility == AccessibilityLevel.Normal &&
+                                _game.Items.Has(ItemType.Flippers))
                                 return AccessibilityLevel.Normal;
 
                             if (_game.Items.Has(ItemType.IcePalaceAccess) && _game.Items.Has(ItemType.Mirror))
                                 return AccessibilityLevel.Normal;
 
+                            if (_game.Regions[RegionID.LightWorld].Accessibility >= AccessibilityLevel.SequenceBreak)
                             return AccessibilityLevel.SequenceBreak;
                         }
 
@@ -1726,13 +1786,15 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Flippers]);
-                    itemReqs.Add(_game.Items[ItemType.IcePalaceAccess]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode() { WorldState = WorldState.Inverted });
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouthEast, new Mode() { WorldState = WorldState.Inverted });
 
-                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnRequirementChanged;
+                    _itemSubscriptions.Add(ItemType.Flippers, new Mode());
+                    _itemSubscriptions.Add(ItemType.IcePalaceAccess, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode() { WorldState = WorldState.Inverted });
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.MiniMoldormCaveEntrance:
@@ -1740,24 +1802,24 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.IceRodCaveEntrance:
@@ -1765,24 +1827,24 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.LightWorld].Accessibility;
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.IceBeeCave:
@@ -1790,10 +1852,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
                 case LocationID.IceFairyCave:
@@ -1801,28 +1863,28 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Gloves))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Gloves))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.IcePalaceEntrance:
@@ -1830,7 +1892,6 @@ namespace OpenTracker.Models
                     Name = "Dungeon";
                     _standardItemProvided = _game.Items[ItemType.IcePalaceAccess];
                     _invertedItemProvided = _game.Items[ItemType.IcePalaceAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
 
                     GetAccessibility = () =>
                     {
@@ -1838,52 +1899,69 @@ namespace OpenTracker.Models
                         {
                             if (_game.Items.Has(ItemType.Gloves, 2))
                             {
-                                if (_game.Items.Has(ItemType.Flippers))
-                                    return AccessibilityLevel.Normal;
-
                                 if (_game.Items.Has(ItemType.LakeHyliaFairyIslandAccess))
                                     return AccessibilityLevel.Normal;
 
-                                return AccessibilityLevel.SequenceBreak;
+                                if (_game.Regions[RegionID.LightWorld].Accessibility >= AccessibilityLevel.SequenceBreak)
+                                {
+                                    if (_game.Items.Has(ItemType.Flippers))
+                                        return _game.Regions[RegionID.LightWorld].Accessibility;
+
+                                    return AccessibilityLevel.SequenceBreak;
+                                }
                             }
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
-                            if ((_game.Regions[RegionID.DarkWorldSouth].Accessibility == AccessibilityLevel.Normal ||
-                                _game.Regions[RegionID.DarkWorldSouthEast].Accessibility == AccessibilityLevel.Normal) &&
-                                _game.Items.Has(ItemType.Flippers))
-                                return AccessibilityLevel.Normal;
+                            AccessibilityLevel dWSouth = AccessibilityLevel.None;
+                            AccessibilityLevel dWSouthEast = AccessibilityLevel.None;
+                            AccessibilityLevel lightWorld = AccessibilityLevel.None;
+
+                            if (_game.Items.Has(ItemType.Flippers))
+                            {
+                                dWSouth = _game.Regions[RegionID.DarkWorldSouth].Accessibility;
+                                dWSouthEast = _game.Regions[RegionID.DarkWorldSouthEast].Accessibility;
+                            }
+                            else
+                            {
+                                dWSouth = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.DarkWorldSouth].Accessibility);
+                                dWSouthEast = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.DarkWorldSouthEast].Accessibility);
+                            }
 
                             if (_game.Items.Has(ItemType.Mirror))
                             {
-                                if (_game.Items.Has(ItemType.LakeHyliaFairyIslandAccess))
-                                    return AccessibilityLevel.Normal;
-
-                                if (_game.Regions[RegionID.LightWorld].Accessibility == AccessibilityLevel.Normal &&
-                                    _game.Items.Has(ItemType.Flippers) && _game.Items.Has(ItemType.MoonPearl))
-                                    return AccessibilityLevel.Normal;
-
-                                if (_game.Regions[RegionID.LightWorld].Accessibility >= AccessibilityLevel.SequenceBreak &&
-                                    _game.Items.Has(ItemType.MoonPearl))
-                                    return AccessibilityLevel.SequenceBreak;
+                                if (_game.Items.Has(ItemType.LakeHyliaFairyIslandAccess) ||
+                                    (_game.Items.Has(ItemType.Flippers) && _game.Items.Has(ItemType.MoonPearl)))
+                                    lightWorld = _game.Regions[RegionID.LightWorld].Accessibility;
+                                else if (_game.Items.Has(ItemType.MoonPearl))
+                                {
+                                    lightWorld = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.LightWorld].Accessibility);
+                                }
                             }
 
                             if (_game.Regions[RegionID.DarkWorldSouth].Accessibility >= AccessibilityLevel.SequenceBreak ||
                                 _game.Regions[RegionID.DarkWorldSouthEast].Accessibility >= AccessibilityLevel.SequenceBreak)
                                 return AccessibilityLevel.SequenceBreak;
+
+                            return (AccessibilityLevel)Math.Max(Math.Max((byte)dWSouth, (byte)dWSouthEast), (byte)lightWorld);
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.Flippers]);
-                    itemReqs.Add(_game.Items[ItemType.LakeHyliaFairyIslandAccess]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode() { WorldState = WorldState.Inverted });
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouthEast, new Mode() { WorldState = WorldState.Inverted });
 
-                    _game.Regions[RegionID.LightWorld].PropertyChanged += OnRequirementChanged;
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.LakeHyliaFairyIslandAccess, new Mode());
+                    _itemSubscriptions.Add(ItemType.Flippers, new Mode());
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.Inverted });
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.MiseryMireEntrance:
@@ -1891,8 +1969,6 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.MireAreaAccess];
                     _invertedItemProvided = _game.Items[ItemType.MireAreaAccess];
-                    _standardRegion = _game.Regions[RegionID.MireArea];
-                    _invertedRegion = _game.Regions[RegionID.MireArea];
 
                     GetAccessibility = () =>
                     {
@@ -1910,7 +1986,7 @@ namespace OpenTracker.Models
                                 (_game.Items.Has(ItemType.Quake) &&
                                 (_game.Items[ItemType.QuakeDungeons].Current == 1 ||
                                 _game.Items[ItemType.QuakeDungeons].Current == 3))))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.MireArea].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
@@ -1927,21 +2003,23 @@ namespace OpenTracker.Models
                                 (_game.Items.Has(ItemType.Quake) &&
                                 (_game.Items[ItemType.QuakeDungeons].Current == 1 ||
                                 _game.Items[ItemType.QuakeDungeons].Current == 3))))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.MireArea].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
-                    itemReqs.Add(_game.Items[ItemType.Sword]);
-                    itemReqs.Add(_game.Items[ItemType.Hammer]);
-                    itemReqs.Add(_game.Items[ItemType.Bombos]);
-                    itemReqs.Add(_game.Items[ItemType.BombosDungeons]);
-                    itemReqs.Add(_game.Items[ItemType.Ether]);
-                    itemReqs.Add(_game.Items[ItemType.EtherDungeons]);
-                    itemReqs.Add(_game.Items[ItemType.Quake]);
-                    itemReqs.Add(_game.Items[ItemType.QuakeDungeons]);
+                    _regionSubscriptions.Add(RegionID.MireArea, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Sword, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.Bombos, new Mode());
+                    _itemSubscriptions.Add(ItemType.BombosDungeons, new Mode());
+                    _itemSubscriptions.Add(ItemType.Ether, new Mode());
+                    _itemSubscriptions.Add(ItemType.EtherDungeons, new Mode());
+                    _itemSubscriptions.Add(ItemType.Quake, new Mode());
+                    _itemSubscriptions.Add(ItemType.QuakeDungeons, new Mode());
 
                     break;
                 case LocationID.MireShackEntrance:
@@ -1949,10 +2027,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.MireAreaAccess];
                     _invertedItemProvided = _game.Items[ItemType.MireAreaAccess];
-                    _standardRegion = _game.Regions[RegionID.MireArea];
-                    _invertedRegion = _game.Regions[RegionID.MireArea];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.MireArea].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.MireArea, new Mode());
 
                     break;
                 case LocationID.MireRightShack:
@@ -1960,10 +2038,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.MireAreaAccess];
                     _invertedItemProvided = _game.Items[ItemType.MireAreaAccess];
-                    _standardRegion = _game.Regions[RegionID.MireArea];
-                    _invertedRegion = _game.Regions[RegionID.MireArea];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.MireArea].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.MireArea, new Mode());
 
                     break;
                 case LocationID.MireCave:
@@ -1971,40 +2049,41 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.MireAreaAccess];
                     _invertedItemProvided = _game.Items[ItemType.MireAreaAccess];
-                    _standardRegion = _game.Regions[RegionID.MireArea];
-                    _invertedRegion = _game.Regions[RegionID.MireArea];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.MireArea].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.MireArea, new Mode());
 
                     break;
                 case LocationID.CheckerboardCaveEntrance:
 
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.CheckerboardCaveAccess];
-                    _invertedItemProvided = _game.Items[ItemType.CheckerboardCaveAccess];
-                    _standardRegion = _game.Regions[RegionID.MireArea];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
+                    _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Mirror) && _game.Items.Has(ItemType.Gloves))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.MireArea].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Gloves))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.LightWorld].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.MireArea, new Mode() { WorldState = WorldState.StandardOpen });
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode() { WorldState = WorldState.Inverted });
+
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.DeathMountainEntranceBack:
@@ -2012,10 +2091,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DeathMountainWestBottomAccess];
                     _invertedItemProvided = _game.Items[ItemType.DeathMountainWestBottomAccess];
-                    _standardRegion = _game.Regions[RegionID.DeathMountainWestBottom];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainWestBottom];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DeathMountainWestBottom].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DeathMountainWestBottom, new Mode());
 
                     break;
                 case LocationID.OldManResidence:
@@ -2023,10 +2102,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DeathMountainWestBottomAccess];
                     _invertedItemProvided = _game.Items[ItemType.DeathMountainWestBottomAccess];
-                    _standardRegion = _game.Regions[RegionID.DeathMountainWestBottom];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainWestBottom];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DeathMountainWestBottom].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DeathMountainWestBottom, new Mode());
 
                     break;
                 case LocationID.OldManBackResidence:
@@ -2034,10 +2113,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DeathMountainWestBottomAccess];
                     _invertedItemProvided = _game.Items[ItemType.DeathMountainWestBottomAccess];
-                    _standardRegion = _game.Regions[RegionID.DeathMountainWestBottom];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainWestBottom];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DeathMountainWestBottom].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DeathMountainWestBottom, new Mode());
 
                     break;
                 case LocationID.DeathMountainExitFront:
@@ -2045,10 +2124,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DeathMountainWestBottomAccess];
                     _invertedItemProvided = _game.Items[ItemType.DeathMountainWestBottomAccess];
-                    _standardRegion = _game.Regions[RegionID.DeathMountainWestBottom];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainWestBottom];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DeathMountainWestBottom].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DeathMountainWestBottom, new Mode());
 
                     break;
                 case LocationID.SpectacleRockLeft:
@@ -2056,10 +2135,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DeathMountainWestBottomAccess];
                     _invertedItemProvided = _game.Items[ItemType.DeathMountainWestBottomAccess];
-                    _standardRegion = _game.Regions[RegionID.DeathMountainWestBottom];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainWestBottom];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DeathMountainWestBottom].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DeathMountainWestBottom, new Mode());
 
                     break;
                 case LocationID.SpectacleRockRight:
@@ -2067,10 +2146,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DeathMountainWestBottomAccess];
                     _invertedItemProvided = _game.Items[ItemType.DeathMountainWestBottomAccess];
-                    _standardRegion = _game.Regions[RegionID.DeathMountainWestBottom];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainWestBottom];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DeathMountainWestBottom].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DeathMountainWestBottom, new Mode());
 
                     break;
                 case LocationID.SpectacleRockTop:
@@ -2078,10 +2157,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DeathMountainWestBottomAccess];
                     _invertedItemProvided = _game.Items[ItemType.DeathMountainWestBottomAccess];
-                    _standardRegion = _game.Regions[RegionID.DeathMountainWestBottom];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainWestBottom];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DeathMountainWestBottom].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DeathMountainWestBottom, new Mode());
 
                     break;
                 case LocationID.SpikeCaveEntrance:
@@ -2089,10 +2168,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DarkDeathMountainWestBottomAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkDeathMountainWestBottomAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkDeathMountainWestBottom];
-                    _invertedRegion = _game.Regions[RegionID.DarkDeathMountainWestBottom];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DarkDeathMountainWestBottom].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DarkDeathMountainWestBottom, new Mode());
 
                     break;
                 case LocationID.DarkMountainFairy:
@@ -2100,10 +2179,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DarkDeathMountainWestBottomAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkDeathMountainWestBottomAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkDeathMountainWestBottom];
-                    _invertedRegion = _game.Regions[RegionID.DarkDeathMountainWestBottom];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DarkDeathMountainWestBottom].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DarkDeathMountainWestBottom, new Mode());
 
                     break;
                 case LocationID.TowerOfHeraEntrance:
@@ -2111,10 +2190,10 @@ namespace OpenTracker.Models
                     Name = "Dungeon";
                     _standardItemProvided = _game.Items[ItemType.DeathMountainWestTopAccess];
                     _invertedItemProvided = _game.Items[ItemType.DeathMountainWestTopAccess];
-                    _standardRegion = _game.Regions[RegionID.DeathMountainWestTop];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainWestTop];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DeathMountainWestTop].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DeathMountainWestTop, new Mode());
 
                     break;
                 case LocationID.SpiralCaveBottom:
@@ -2122,10 +2201,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DeathMountainEastBottomAccess];
                     _invertedItemProvided = _game.Items[ItemType.DeathMountainEastBottomAccess];
-                    _standardRegion = _game.Regions[RegionID.DeathMountainEastBottom];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainEastBottom];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DeathMountainEastBottom].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DeathMountainEastBottom, new Mode());
 
                     break;
                 case LocationID.EDMFairyCave:
@@ -2133,10 +2212,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DeathMountainEastBottomAccess];
                     _invertedItemProvided = _game.Items[ItemType.DeathMountainEastBottomAccess];
-                    _standardRegion = _game.Regions[RegionID.DeathMountainEastBottom];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainEastBottom];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DeathMountainEastBottom].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DeathMountainEastBottom, new Mode());
 
                     break;
                 case LocationID.ParadoxCaveMiddle:
@@ -2144,10 +2223,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DeathMountainEastBottomAccess];
                     _invertedItemProvided = _game.Items[ItemType.DeathMountainEastBottomAccess];
-                    _standardRegion = _game.Regions[RegionID.DeathMountainEastBottom];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainEastBottom];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DeathMountainEastBottom].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DeathMountainEastBottom, new Mode());
 
                     break;
                 case LocationID.ParadoxCaveBottom:
@@ -2155,10 +2234,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DeathMountainEastBottomAccess];
                     _invertedItemProvided = _game.Items[ItemType.DeathMountainEastBottomAccess];
-                    _standardRegion = _game.Regions[RegionID.DeathMountainEastBottom];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainEastBottom];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DeathMountainEastBottom].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DeathMountainEastBottom, new Mode());
 
                     break;
                 case LocationID.EDMConnectorBottom:
@@ -2166,49 +2245,58 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DeathMountainEastBottomAccess];
                     _invertedItemProvided = _game.Items[ItemType.DeathMountainEastBottomAccess];
-                    _standardRegion = _game.Regions[RegionID.DeathMountainEastBottom];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainEastBottom];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
-                            if (_game.Items.Has(ItemType.Gloves, 2))
-                                return AccessibilityLevel.Normal;
-
-                            if (_game.Items.Has(ItemType.DeathMountainEastTopConnectorAccess))
-                                return AccessibilityLevel.Normal;
-
                             AccessibilityLevel dMEastTop = _game.Regions[RegionID.DeathMountainEastTop].Accessibility;
+                            AccessibilityLevel dMEastBottom = AccessibilityLevel.None;
                             AccessibilityLevel dDMEastBottom = AccessibilityLevel.None;
+
+                            if (_game.Items.Has(ItemType.DeathMountainEastTopConnectorAccess) ||
+                                _game.Items.Has(ItemType.Gloves, 2))
+                                dMEastBottom = _game.Regions[RegionID.DeathMountainEastBottom].Accessibility;
 
                             if (_game.Items.Has(ItemType.Mirror))
                             {
                                 if (_game.Items.Has(ItemType.TurtleRockSafetyDoorAccess))
                                     return AccessibilityLevel.Normal;
 
-                                dDMEastBottom = _game.Regions[RegionID.DarkDeathMountainEastBottom].Accessibility;
+                                if (_game.Items.Has(ItemType.MoonPearl))
+                                    dDMEastBottom = _game.Regions[RegionID.DarkDeathMountainEastBottom].Accessibility;
                             }
 
-                            return (AccessibilityLevel)Math.Max((byte)dMEastTop, (byte)dDMEastBottom);
+                            return (AccessibilityLevel)Math.Max(Math.Max((byte)dMEastTop, (byte)dMEastBottom),
+                                (byte)dDMEastBottom);
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
-                            if (_game.Items.Has(ItemType.Gloves, 2) && _game.Items.Has(ItemType.MoonPearl))
+                            if (_game.Items.Has(ItemType.DeathMountainEastTopConnectorAccess))
                                 return AccessibilityLevel.Normal;
 
-                            return _game.Regions[RegionID.DeathMountainEastTop].Accessibility;
+                            AccessibilityLevel dMEastTop = _game.Regions[RegionID.DeathMountainEastTop].Accessibility;
+                            AccessibilityLevel dMEastBottom = AccessibilityLevel.None;
+
+                            if (_game.Items.Has(ItemType.Gloves, 2) && _game.Items.Has(ItemType.MoonPearl))
+                                dMEastBottom = _game.Regions[RegionID.DeathMountainEastBottom].Accessibility;
+
+                            return (AccessibilityLevel)Math.Max((byte)dMEastTop, (byte)dMEastBottom);
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.DeathMountainEastTopConnectorAccess]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.TurtleRockSafetyDoorAccess]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode());
+                    _regionSubscriptions.Add(RegionID.DeathMountainEastBottom, new Mode());
+                    _regionSubscriptions.Add(RegionID.DarkDeathMountainEastBottom, new Mode() { WorldState = WorldState.StandardOpen });
+
+                    _itemSubscriptions.Add(ItemType.DeathMountainEastTopConnectorAccess, new Mode());
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.TurtleRockSafetyDoorAccess, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode());
 
                     _game.Regions[RegionID.DeathMountainEastTop].PropertyChanged += OnRequirementChanged;
                     _game.Regions[RegionID.DarkDeathMountainEastBottom].PropertyChanged += OnRequirementChanged;
@@ -2219,8 +2307,6 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.SpiralCaveTopAccess];
                     _invertedItemProvided = _game.Items[ItemType.SpiralCaveTopAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainEastTop];
 
                     GetAccessibility = () =>
                     {
@@ -2233,13 +2319,15 @@ namespace OpenTracker.Models
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.DeathMountainEastTop].Accessibility;
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.TurtleRockTunnelAccess]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.TurtleRockTunnelAccess, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.MimicCaveEntrance:
@@ -2247,24 +2335,25 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.MimicCaveAccess];
                     _invertedItemProvided = _game.Items[ItemType.MimicCaveAccess];
-                    _standardRegion = _game.Regions[RegionID.TurtleRockTunnel];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainEastTop];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Mirror))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.TurtleRockTunnel].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.DeathMountainEastTop].Accessibility;
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    _regionSubscriptions.Add(RegionID.TurtleRockTunnel, new Mode() { WorldState = WorldState.StandardOpen });
+                    _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode() { WorldState = WorldState.Inverted });
+
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.EDMConnectorTop:
@@ -2272,8 +2361,6 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DeathMountainEastTopConnectorAccess];
                     _invertedItemProvided = _game.Items[ItemType.DeathMountainEastTopConnectorAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainEastTop];
 
                     GetAccessibility = () =>
                     {
@@ -2287,13 +2374,15 @@ namespace OpenTracker.Models
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.DeathMountainEastTop].Accessibility;
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.TurtleRockSafetyDoorAccess]);
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.TurtleRockSafetyDoorAccess, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.ParadoxCaveTop:
@@ -2301,10 +2390,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DeathMountainEastTopAccess];
                     _invertedItemProvided = _game.Items[ItemType.DeathMountainEastTopAccess];
-                    _standardRegion = _game.Regions[RegionID.DeathMountainEastTop];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainEastTop];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DeathMountainEastTop].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode());
 
                     break;
                 case LocationID.SuperBunnyCaveBottom:
@@ -2312,10 +2401,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DarkDeathMountainEastBottomAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkDeathMountainEastBottomAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkDeathMountainEastBottom];
-                    _invertedRegion = _game.Regions[RegionID.DarkDeathMountainEastBottom];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DeathMountainEastBottom].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DeathMountainEastBottom, new Mode());
 
                     break;
                 case LocationID.DeathMountainShop:
@@ -2323,10 +2412,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DarkDeathMountainEastBottomAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkDeathMountainEastBottomAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkDeathMountainEastBottom];
-                    _invertedRegion = _game.Regions[RegionID.DarkDeathMountainEastBottom];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DeathMountainEastBottom].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DeathMountainEastBottom, new Mode());
 
                     break;
                 case LocationID.SuperBunnyCaveTop:
@@ -2334,10 +2423,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DarkDeathMountainTopAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkDeathMountainTopAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkDeathMountainTop];
-                    _invertedRegion = _game.Regions[RegionID.DarkDeathMountainTop];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DarkDeathMountainTop].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.DarkDeathMountainTop, new Mode());
 
                     break;
                 case LocationID.HookshotCaveEntrance:
@@ -2345,28 +2434,28 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DarkDeathMountainTopAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkDeathMountainTopAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkDeathMountainTop];
-                    _invertedRegion = _game.Regions[RegionID.DarkDeathMountainTop];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.Gloves) && _game.Items.Has(ItemType.MoonPearl))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkDeathMountainTop].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.Gloves))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkDeathMountainTop].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
+                    _regionSubscriptions.Add(RegionID.DarkDeathMountainTop, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.TurtleRockEntrance:
@@ -2374,8 +2463,6 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DarkDeathMountainTopAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkDeathMountainTopAccess];
-                    _standardRegion = _game.Regions[RegionID.DeathMountainEastTop];
-                    _invertedRegion = _game.Regions[RegionID.DarkDeathMountainTop];
 
                     GetAccessibility = () =>
                     {
@@ -2391,7 +2478,7 @@ namespace OpenTracker.Models
                                 _game.Items[ItemType.EtherDungeons].Current >= 2) ||
                                 (_game.Items.Has(ItemType.Quake) &&
                                 _game.Items[ItemType.QuakeDungeons].Current >= 2)))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DeathMountainEastTop].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
@@ -2404,22 +2491,25 @@ namespace OpenTracker.Models
                                 _game.Items[ItemType.EtherDungeons].Current >= 2) ||
                                 (_game.Items.Has(ItemType.Quake) &&
                                 _game.Items[ItemType.QuakeDungeons].Current >= 2)))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkDeathMountainTop].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.MoonPearl]);
-                    itemReqs.Add(_game.Items[ItemType.Hammer]);
-                    itemReqs.Add(_game.Items[ItemType.Gloves]);
-                    itemReqs.Add(_game.Items[ItemType.Sword]);
-                    itemReqs.Add(_game.Items[ItemType.Bombos]);
-                    itemReqs.Add(_game.Items[ItemType.BombosDungeons]);
-                    itemReqs.Add(_game.Items[ItemType.Ether]);
-                    itemReqs.Add(_game.Items[ItemType.EtherDungeons]);
-                    itemReqs.Add(_game.Items[ItemType.Quake]);
-                    itemReqs.Add(_game.Items[ItemType.QuakeDungeons]);
+                    _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode() { WorldState = WorldState.StandardOpen });
+                    _regionSubscriptions.Add(RegionID.DarkDeathMountainTop, new Mode() { WorldState = WorldState.Inverted });
+
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Sword, new Mode());
+                    _itemSubscriptions.Add(ItemType.Bombos, new Mode());
+                    _itemSubscriptions.Add(ItemType.BombosDungeons, new Mode());
+                    _itemSubscriptions.Add(ItemType.Ether, new Mode());
+                    _itemSubscriptions.Add(ItemType.EtherDungeons, new Mode());
+                    _itemSubscriptions.Add(ItemType.Quake, new Mode());
+                    _itemSubscriptions.Add(ItemType.QuakeDungeons, new Mode());
 
                     break;
                 case LocationID.GanonsTowerEntrance:
@@ -2427,26 +2517,26 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DarkDeathMountainTopAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkDeathMountainTopAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkDeathMountainTop];
-                    _invertedRegion = _game.Regions[RegionID.DarkDeathMountainTop];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             if (_game.Items.Has(ItemType.TowerCrystals))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkDeathMountainTop].Accessibility;
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
-                            return AccessibilityLevel.Normal;
+                            return _game.Regions[RegionID.DarkDeathMountainTop].Accessibility;
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.TowerCrystals]);
-                    itemReqs.Add(_game.Items[ItemType.Crystal]);
-                    itemReqs.Add(_game.Items[ItemType.RedCrystal]);
+                    _regionSubscriptions.Add(RegionID.DarkDeathMountainTop, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.TowerCrystals, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.Crystal, new Mode() { WorldState = WorldState.StandardOpen });
+                    _itemSubscriptions.Add(ItemType.RedCrystal, new Mode() { WorldState = WorldState.StandardOpen });
 
                     break;
                 case LocationID.TRLedgeLeft:
@@ -2454,10 +2544,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.TurtleRockTunnelAccess];
                     _invertedItemProvided = _game.Items[ItemType.TurtleRockTunnelAccess];
-                    _standardRegion = _game.Regions[RegionID.TurtleRockTunnel];
-                    _invertedRegion = _game.Regions[RegionID.TurtleRockTunnel];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.TurtleRockTunnel].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.TurtleRockTunnel, new Mode());
 
                     break;
                 case LocationID.TRLedgeRight:
@@ -2465,10 +2555,10 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.TurtleRockTunnelAccess];
                     _invertedItemProvided = _game.Items[ItemType.TurtleRockTunnelAccess];
-                    _standardRegion = _game.Regions[RegionID.TurtleRockTunnel];
-                    _invertedRegion = _game.Regions[RegionID.TurtleRockTunnel];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.TurtleRockTunnel].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.TurtleRockTunnel, new Mode());
 
                     break;
                 case LocationID.TRSafetyDoor:
@@ -2476,7 +2566,6 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.TurtleRockSafetyDoorAccess];
                     _invertedItemProvided = _game.Items[ItemType.TurtleRockSafetyDoorAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkDeathMountainTop];
 
                     GetAccessibility = () =>
                     {
@@ -2494,10 +2583,10 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
-                    itemReqs.Add(_game.Items[ItemType.DeathMountainEastTopConnectorAccess]);
+                    _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode() { WorldState = WorldState.Inverted });
 
-                    _game.Regions[RegionID.DeathMountainEastTop].PropertyChanged += OnRequirementChanged;
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.Inverted });
+                    _itemSubscriptions.Add(ItemType.DeathMountainEastTopConnectorAccess, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.HookshotCaveTop:
@@ -2505,21 +2594,21 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     _standardItemProvided = _game.Items[ItemType.DarkDeathMountainFloatingIslandAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkDeathMountainFloatingIslandAccess];
-                    _standardRegion = _game.Regions[RegionID.DarkDeathMountainEastBottom];
-                    _invertedRegion = _game.Regions[RegionID.DeathMountainEastTop];
 
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.Mirror))
-                                return AccessibilityLevel.Normal;
+                                return _game.Regions[RegionID.DarkDeathMountainEastBottom].Accessibility;
                         }
 
                         return AccessibilityLevel.None;
                     };
 
-                    itemReqs.Add(_game.Items[ItemType.Mirror]);
+                    _regionSubscriptions.Add(RegionID.DarkDeathMountainEastBottom, new Mode() { WorldState = WorldState.Inverted });
+
+                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
                 case LocationID.LinksHouseEntrance:
@@ -2527,76 +2616,19 @@ namespace OpenTracker.Models
                     Name = "Link's House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
-                    _standardRegion = _game.Regions[RegionID.LightWorld];
-                    _invertedRegion = _game.Regions[RegionID.LightWorld];
 
-                    GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
+
+                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
             }
 
-            if (GetAccessibility == null)
-                GetAccessibility = () => { return AccessibilityLevel.None; };
-
             _game.Mode.PropertyChanged += OnModeChanged;
 
-            foreach (Item item in itemReqs)
-                item.PropertyChanged += OnRequirementChanged;
+            UpdateRegionSubscriptions();
+            UpdateItemSubscriptions();
 
-            if (_standardRegion != null)
-                _standardRegion.PropertyChanged += OnRequirementChanged;
-
-            if (_invertedRegion != null)
-                _invertedRegion.PropertyChanged += OnRequirementChanged;
-
-            UpdateAccessibility();
-        }
-
-        private void UpdateAccessibility()
-        {
-            AccessibilityLevel? regionAccessibility = null;
-
-            if (_game.Mode.WorldState == WorldState.StandardOpen && _standardRegion != null)
-                regionAccessibility = _standardRegion.Accessibility;
-
-            if (_game.Mode.WorldState == WorldState.Inverted && _invertedRegion != null)
-                regionAccessibility = _invertedRegion.Accessibility;
-
-            if (regionAccessibility != null)
-            {
-                AccessibilityLevel sectionAccessibility = GetAccessibility();
-                Accessibility = (AccessibilityLevel)Math.Min((byte)regionAccessibility.Value,
-                    (byte)sectionAccessibility);
-            }
-            else
-                Accessibility = GetAccessibility();
-        }
-
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (!Available && e.PropertyName == nameof(_game.Mode.WorldState))
-            {
-                if (_standardItemProvided != null && _invertedItemProvided != null)
-                {
-                    if (_game.Mode.WorldState == WorldState.StandardOpen)
-                    {
-                        _invertedItemProvided.Change(-1, true);
-                        _standardItemProvided.Change(1, true);
-                    }
-
-                    if (_game.Mode.WorldState == WorldState.Inverted)
-                    {
-                        _standardItemProvided.Change(-1, true);
-                        _invertedItemProvided.Change(1, true);
-                    }
-                }
-            }
-
-            UpdateAccessibility();
-        }
-
-        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
-        {
             UpdateAccessibility();
         }
 
@@ -2623,6 +2655,124 @@ namespace OpenTracker.Models
                         _invertedItemProvided.Change(1, true);
                 }
             }
+        }
+
+        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(_game.Mode.WorldState))
+            {
+                if (!Available)
+                {
+                    if (_standardItemProvided != null)
+                    {
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                            _standardItemProvided.Change(1, true);
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                            _standardItemProvided.Change(-1, true);
+                    }
+
+                    if (_invertedItemProvided != null)
+                    {
+                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                            _invertedItemProvided.Change(-1, true);
+
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                            _invertedItemProvided.Change(1, true);
+                    }
+                }
+
+                UpdateRegionSubscriptions();
+                UpdateItemSubscriptions();
+
+                UpdateAccessibility();
+            }
+
+            if (e.PropertyName == nameof(_game.Mode.EntranceShuffle))
+                UpdateAccessibility();
+        }
+
+        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        {
+            UpdateAccessibility();
+        }
+
+        private void UpdateRegionSubscriptions()
+        {
+            foreach (RegionID region in _regionSubscriptions.Keys)
+            {
+                if (_game.Mode.Validate(_regionSubscriptions[region]))
+                {
+                    if (_regionIsSubscribed.ContainsKey(region))
+                    {
+                        if (!_regionIsSubscribed[region])
+                        {
+                            _regionIsSubscribed[region] = true;
+                            _game.Regions[region].PropertyChanged += OnRequirementChanged;
+                        }
+                    }
+                    else
+                    {
+                        _regionIsSubscribed.Add(region, true);
+                        _game.Regions[region].PropertyChanged += OnRequirementChanged;
+                    }
+                }
+                else
+                {
+                    if (_regionIsSubscribed.ContainsKey(region))
+                    {
+                        if (_regionIsSubscribed[region])
+                        {
+                            _regionIsSubscribed[region] = false;
+                            _game.Regions[region].PropertyChanged -= OnRequirementChanged;
+                        }
+                    }
+                    else
+                        _regionIsSubscribed.Add(region, false);
+                }
+            }
+        }
+
+        private void UpdateItemSubscriptions()
+        {
+            foreach (ItemType item in _itemSubscriptions.Keys)
+            {
+                if (_game.Mode.Validate(_itemSubscriptions[item]))
+                {
+                    if (_itemIsSubscribed.ContainsKey(item))
+                    {
+                        if (!_itemIsSubscribed[item])
+                        {
+                            _itemIsSubscribed[item] = true;
+                            _game.Items[item].PropertyChanged += OnRequirementChanged;
+                        }
+                    }
+                    else
+                    {
+                        _itemIsSubscribed.Add(item, true);
+                        _game.Items[item].PropertyChanged += OnRequirementChanged;
+                    }
+                }
+                else
+                {
+                    if (_itemIsSubscribed.ContainsKey(item))
+                    {
+                        if (_itemIsSubscribed[item])
+                        {
+                            _itemIsSubscribed[item] = false;
+                            _game.Items[item].PropertyChanged -= OnRequirementChanged;
+                        }
+                    }
+                    else
+                        _itemIsSubscribed.Add(item, false);
+                }
+            }
+        }
+
+        private void UpdateAccessibility()
+        {
+            if (_game.Mode.EntranceShuffle.Value)
+                Accessibility = GetAccessibility();
         }
 
         public void Clear()
