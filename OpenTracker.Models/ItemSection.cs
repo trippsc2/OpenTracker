@@ -26,6 +26,7 @@ namespace OpenTracker.Models
         public int Total { get; private set; }
         public bool HasMarking { get; }
         public Mode RequiredMode { get; }
+        public Func<AccessibilityLevel> GetAccessibility { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -70,8 +71,6 @@ namespace OpenTracker.Models
                 }
             }
         }
-
-        public Func<AccessibilityLevel> GetAccessibility { get; }
 
         public ItemSection(Game game, Location location, int index = 0)
         {
@@ -119,7 +118,7 @@ namespace OpenTracker.Models
 
                     _itemSubscriptions.Add(ItemType.GreenPendant, new Mode());
                     _itemSubscriptions.Add(ItemType.Pendant, new Mode());
-                    _itemSubscriptions.Add(ItemType.Book, new Mode() { ItemPlacement = ItemPlacement.Basic });
+                    _itemSubscriptions.Add(ItemType.Book, new Mode());
 
                     break;
                 case LocationID.LumberjackCave:
@@ -1230,7 +1229,7 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
 
                     _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
 
@@ -1254,7 +1253,7 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
 
                     _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
 
@@ -1278,7 +1277,7 @@ namespace OpenTracker.Models
                         return AccessibilityLevel.None;
                     };
 
-                    _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
+                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
 
                     _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.StandardOpen });
 
@@ -2204,6 +2203,9 @@ namespace OpenTracker.Models
                                         (_game.Mode.ItemPlacement.Value == ItemPlacement.Advanced &&
                                         _game.Items.Has(ItemType.FireRod)))
                                         return _game.Regions[RegionID.HyruleCastle].Accessibility;
+
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.HyruleCastle].Accessibility);
                                 }
 
                                 if (Available > 3)
@@ -2226,7 +2228,7 @@ namespace OpenTracker.Models
                     _itemSubscriptions.Add(ItemType.Gloves, new Mode());
                     _itemSubscriptions.Add(ItemType.HCSmallKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys });
                     _itemSubscriptions.Add(ItemType.Lamp, new Mode());
-                    _itemSubscriptions.Add(ItemType.FireRod, new Mode() { ItemPlacement = ItemPlacement.Basic });
+                    _itemSubscriptions.Add(ItemType.FireRod, new Mode() { ItemPlacement = ItemPlacement.Advanced });
 
                     break;
                 case LocationID.AgahnimTower:

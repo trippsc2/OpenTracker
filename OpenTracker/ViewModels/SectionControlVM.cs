@@ -347,6 +347,8 @@ namespace OpenTracker.ViewModels
 
                     if (bossSection.Boss == null)
                         imageBaseString += "Items/unknown1";
+                    else if (bossSection.Boss.Type == BossType.Aga)
+                        imageBaseString += "Items/aga1";
                     else
                     {
                         imageBaseString += "Bosses/";

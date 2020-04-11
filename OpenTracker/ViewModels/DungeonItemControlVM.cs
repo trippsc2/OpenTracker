@@ -105,7 +105,7 @@ namespace OpenTracker.ViewModels
 
             ImageNumber = _item.Current.ToString();
 
-            ImageSource = _imageSourceBase + ImageNumber + ".png";
+            ImageSource = _imageSourceBase + (_item.Current > 0 ? "1" : "0") + ".png";
 
             if (_item.Current == _item.Maximum)
             {

@@ -11,6 +11,9 @@ namespace OpenTracker.ValueConverters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value == null)
+                return null;
+
             if (value is string && targetType == typeof(IBitmap))
             {
                 var uri = new Uri((string)value, UriKind.RelativeOrAbsolute);
