@@ -992,20 +992,7 @@ namespace OpenTracker.Models
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
                     _invertedItemProvided = _game.Items[ItemType.LightWorldAccess];
 
-                    GetAccessibility = () =>
-                    {
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
-                        {
-                            if (_game.Items.Has(ItemType.Mirror))
-                                return _game.Regions[RegionID.MireArea].Accessibility;
-                        }
-
-                        return AccessibilityLevel.None;
-                    };
-
-                    _regionSubscriptions.Add(RegionID.MireArea, new Mode() { WorldState = WorldState.StandardOpen });
-
-                    _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
+                    GetAccessibility = () => { return AccessibilityLevel.None; };
 
                     break;
                 case LocationID.DesertFrontEntrance:
@@ -2402,9 +2389,9 @@ namespace OpenTracker.Models
                     _standardItemProvided = _game.Items[ItemType.DarkDeathMountainEastBottomAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkDeathMountainEastBottomAccess];
 
-                    GetAccessibility = () => { return _game.Regions[RegionID.DeathMountainEastBottom].Accessibility; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DarkDeathMountainEastBottom].Accessibility; };
 
-                    _regionSubscriptions.Add(RegionID.DeathMountainEastBottom, new Mode());
+                    _regionSubscriptions.Add(RegionID.DarkDeathMountainEastBottom, new Mode());
 
                     break;
                 case LocationID.DeathMountainShop:
@@ -2413,9 +2400,9 @@ namespace OpenTracker.Models
                     _standardItemProvided = _game.Items[ItemType.DarkDeathMountainEastBottomAccess];
                     _invertedItemProvided = _game.Items[ItemType.DarkDeathMountainEastBottomAccess];
 
-                    GetAccessibility = () => { return _game.Regions[RegionID.DeathMountainEastBottom].Accessibility; };
+                    GetAccessibility = () => { return _game.Regions[RegionID.DarkDeathMountainEastBottom].Accessibility; };
 
-                    _regionSubscriptions.Add(RegionID.DeathMountainEastBottom, new Mode());
+                    _regionSubscriptions.Add(RegionID.DarkDeathMountainEastBottom, new Mode());
 
                     break;
                 case LocationID.SuperBunnyCaveTop:

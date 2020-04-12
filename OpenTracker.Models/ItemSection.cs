@@ -410,7 +410,7 @@ namespace OpenTracker.Models
                             }
 
                             if (_game.Items.Has(ItemType.Mirror))
-                                dWSouth = _game.Regions[RegionID.DarkWorldWest].Accessibility;
+                                dWSouth = _game.Regions[RegionID.DarkWorldSouth].Accessibility;
 
                             return (AccessibilityLevel)Math.Max((byte)lightWorld, (byte)dWSouth);
                         }
@@ -434,7 +434,7 @@ namespace OpenTracker.Models
                     };
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
-                    _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode() { WorldState = WorldState.StandardOpen });
+                    _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode() { WorldState = WorldState.StandardOpen });
 
                     _itemSubscriptions.Add(ItemType.RaceGameAccess, new Mode());
                     _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
@@ -855,8 +855,11 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.Flippers))
                                 return _game.Regions[RegionID.LightWorld].Accessibility;
 
-                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
-                                (byte)_game.Regions[RegionID.LightWorld].Accessibility);
+                            if (_game.Items.Has(ItemType.MoonPearl))
+                            {
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                    (byte)_game.Regions[RegionID.LightWorld].Accessibility);
+                            }
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
@@ -877,7 +880,7 @@ namespace OpenTracker.Models
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     _itemSubscriptions.Add(ItemType.Flippers, new Mode());
-                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
+                    _itemSubscriptions.Add(ItemType.MoonPearl, new Mode());
 
                     break;
                 case LocationID.ZoraArea when index == 0:
@@ -1648,7 +1651,7 @@ namespace OpenTracker.Models
                             }   
                         }
 
-                        return AccessibilityLevel.Inspect;
+                        return AccessibilityLevel.None;
                     };
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
@@ -1689,7 +1692,7 @@ namespace OpenTracker.Models
                             }
                         }
 
-                        return AccessibilityLevel.SequenceBreak;
+                        return AccessibilityLevel.None;
                     };
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
@@ -4737,6 +4740,9 @@ namespace OpenTracker.Models
 
             if (e.PropertyName == nameof(_game.Mode.EnemyShuffle) &&
                 _updateOnEnemyShuffleChange)
+                UpdateAccessibility();
+
+            if (e.PropertyName == nameof(_game.Mode.EntranceShuffle))
                 UpdateAccessibility();
 
         }
