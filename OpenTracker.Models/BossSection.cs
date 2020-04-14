@@ -43,8 +43,8 @@ namespace OpenTracker.Models
             }
         }
 
-        private bool _available;
-        public bool Available
+        private int _available;
+        public int Available
         {
             get => _available;
             set
@@ -97,7 +97,7 @@ namespace OpenTracker.Models
             _itemIsSubscribed = new Dictionary<ItemType, bool>();
 
             RequiredMode = new Mode();
-            Available = true;
+            Available = 1;
 
             switch (iD)
             {
@@ -576,7 +576,7 @@ namespace OpenTracker.Models
 
         private void OnPropertyChanging(string propertyName)
         {
-            if (propertyName == nameof(Prize) && Prize != null && !Available)
+            if (propertyName == nameof(Prize) && Prize != null && !IsAvailable())
                 Prize.Change(-1, true);
 
             if (PropertyChanging != null)
@@ -587,7 +587,7 @@ namespace OpenTracker.Models
         {
             if (propertyName == nameof(Available) && Prize != null)
             {
-                if (Available)
+                if (IsAvailable())
                     Prize.Change(-1, true);
                 else
                     Prize.Change(1, true);
@@ -599,7 +599,7 @@ namespace OpenTracker.Models
                 UpdateAccessibility();
             }
 
-            if (propertyName == nameof(Prize) && Prize != null && !Available)
+            if (propertyName == nameof(Prize) && Prize != null && !IsAvailable())
                 Prize.Change(1, true);
 
             if (PropertyChanged != null)
@@ -771,17 +771,17 @@ namespace OpenTracker.Models
 
         public void Clear()
         {
-            Available = false;
+            Available = 0;
         }
 
         public bool IsAvailable()
         {
-            return Available;
+            return Available > 0;
         }
 
         public void Reset()
         {
-            Available = true;
+            Available = 1;
 
             if (_defaultBoss != _game.Bosses[BossType.Aga])
             {

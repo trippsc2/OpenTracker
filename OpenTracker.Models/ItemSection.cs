@@ -4724,8 +4724,10 @@ namespace OpenTracker.Models
 
         private void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+            if (propertyName == nameof(Available) && !IsAvailable())
+                CollectMarkingItem();
         }
 
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
@@ -4850,6 +4852,17 @@ namespace OpenTracker.Models
         private void UpdateAccessibility()
         {
             Accessibility = GetAccessibility();
+        }
+
+        private void CollectMarkingItem()
+        {
+            if (Marking.HasValue)
+            {
+                if (Enum.TryParse(Marking.Value.ToString(), out ItemType itemType))
+                    _game.Items[itemType].Change(1);
+
+                Marking = null;
+            }
         }
         
         public void Clear()

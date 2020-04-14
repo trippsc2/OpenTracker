@@ -341,7 +341,7 @@ namespace OpenTracker.ViewModels
                     else
                         imageBaseString += bossSection.Prize.Type.ToString().ToLower();
 
-                    ImageSource = imageBaseString + (bossSection.Available ? "0" : "1") + ".png";
+                    ImageSource = imageBaseString + (bossSection.IsAvailable() ? "0" : "1") + ".png";
 
                     imageBaseString = "avares://OpenTracker/Assets/Images/";
 
@@ -370,7 +370,7 @@ namespace OpenTracker.ViewModels
 
                     string entranceImageBaseString = "avares://OpenTracker/Assets/Images/door";
 
-                    ImageSource = entranceImageBaseString + (entranceSection.Available ? "0" : "1") + ".png";
+                    ImageSource = entranceImageBaseString + (entranceSection.IsAvailable() ? "0" : "1") + ".png";
 
                     break;
             }
@@ -429,11 +429,11 @@ namespace OpenTracker.ViewModels
                 switch (_section)
                 {
                     case BossSection bossSectionUncollect:
-                        if (!bossSectionUncollect.Available)
+                        if (!bossSectionUncollect.IsAvailable())
                             _undoRedoManager.Execute(new UncollectSection(_section));
                         break;
                     case EntranceSection entranceSectionUncollect:
-                        if (!entranceSectionUncollect.Available)
+                        if (!entranceSectionUncollect.IsAvailable())
                             _undoRedoManager.Execute(new UncollectSection(_section));
                         break;
                     case ItemSection itemSectionUncollect:
@@ -449,21 +449,8 @@ namespace OpenTracker.ViewModels
                     bossSection.Prize != null && bossSection.Prize.Type == ItemType.Aga2) ||
                     _section.Accessibility >= AccessibilityLevel.Partial)
                 {
-                    switch (_section)
-                    {
-                        case BossSection bossSectionCollect:
-                            if (bossSectionCollect.Available)
-                                _undoRedoManager.Execute(new CollectSection(_game, _section));
-                            break;
-                        case EntranceSection entranceSectionCollect:
-                            if (entranceSectionCollect.Available)
-                                _undoRedoManager.Execute(new CollectSection(_game, _section));
-                            break;
-                        case ItemSection itemSectionCollect:
-                            if (itemSectionCollect.Available > 0)
-                                _undoRedoManager.Execute(new CollectSection(_game, _section));
-                            break;
-                    }
+                    if (_section.IsAvailable())
+                        _undoRedoManager.Execute(new CollectSection(_game, _section));
                 }
             }
         }

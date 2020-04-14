@@ -21,57 +21,30 @@ namespace OpenTracker.Actions
 
         public void Execute()
         {
-            switch (_section)
+            _previousMarking = _section.Marking;
+
+            if (_section is ItemSection && _section.Available == 1 &&
+                _section.Marking.HasValue)
             {
-                case BossSection bossSection:
-                    bossSection.Available = false;
-                    break;
-                case EntranceSection entranceSection:
-                    entranceSection.Available = false;
-                    break;
-                case ItemSection itemSection:
+                if (Enum.TryParse(_section.Marking.ToString(), out ItemType itemType))
+                {
+                    Item item = _game.Items[itemType];
 
-                    itemSection.Available--;
-
-                    if (itemSection.Available == 0 && itemSection.Marking != null)
-                    {
-                        _previousMarking = itemSection.Marking;
-                        itemSection.Marking = null;
-                        Item item = _game.Items[Enum.Parse<ItemType>(_previousMarking.Value.ToString())];
-
-                        if (item.Current < item.Maximum)
-                        {
-                            _markedItem = item;
-                            _markedItem.Change(1);
-                        }
-                    }
-
-                    break;
+                    if (item.Current < item.Maximum)
+                        _markedItem = item;
+                }
             }
+
+            _section.Available--;
         }
 
         public void Undo()
         {
-            switch (_section)
-            {
-                case BossSection bossSection:
-                    bossSection.Available = true;
-                    break;
-                case EntranceSection entranceSection:
-                    entranceSection.Available = true;
-                    break;
-                case ItemSection itemSection:
+            _section.Available++;
+            _section.Marking = _previousMarking;
 
-                    itemSection.Available++;
-
-                    if (_previousMarking != null)
-                        itemSection.Marking = _previousMarking;
-
-                    if (_markedItem != null)
-                        _markedItem.Change(-1);
-
-                    break;
-            }
+            if (_markedItem != null)
+                _markedItem.Change(-1);
         }
     }
 }

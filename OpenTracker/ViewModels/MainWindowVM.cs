@@ -558,24 +558,8 @@ namespace OpenTracker.ViewModels
             {
                 foreach (int i in saveData.LocationSectionCounts[location].Keys)
                 {
-                    switch (_game.Locations[location].Sections[i])
-                    {
-                        case BossSection bossSection:
-
-                            bossSection.Available = saveData.LocationSectionCounts[location][i] == 1;
-
-                            break;
-                        case EntranceSection entranceSection:
-
-                            entranceSection.Available = saveData.LocationSectionCounts[location][i] == 1;
-
-                            break;
-                        case ItemSection itemSection:
-
-                            itemSection.Available = saveData.LocationSectionCounts[location][i];
-
-                            break;
-                    }
+                    _game.Locations[location].Sections[i].Available =
+                        saveData.LocationSectionCounts[location][i];
                 }
             }
 

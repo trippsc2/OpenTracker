@@ -56,28 +56,7 @@ namespace OpenTracker.ViewModels
                     if (location.Sections[i].HasMarking)
                         markingDictionary.Add(i, location.Sections[i].Marking);
 
-                    switch (location.Sections[i])
-                    {
-                        case BossSection bossSection:
-
-                            int bossAvailable = bossSection.Available ? 1 : 0;
-
-                            countDictionary.Add(i, bossAvailable);
-
-                            break;
-                        case EntranceSection entranceSection:
-
-                            int entranceAvailable = entranceSection.Available ? 1 : 0;
-
-                            countDictionary.Add(i, entranceAvailable);
-
-                            break;
-                        case ItemSection itemSection:
-
-                            countDictionary.Add(i, itemSection.Available);
-
-                            break;
-                    }
+                    countDictionary.Add(i, location.Sections[i].Available);
                 }
             }
         }

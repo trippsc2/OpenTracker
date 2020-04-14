@@ -28,7 +28,6 @@ namespace OpenTracker.Actions
         {
             _previousLocationCounts.Clear();
             _previousMarkings.Clear();
-            _markedItems.Clear();
 
             foreach (ISection section in _location.Sections)
             {
@@ -36,45 +35,30 @@ namespace OpenTracker.Actions
                     (section.Accessibility >= AccessibilityLevel.Inspect ||
                     section is EntranceSection))
                 {
-                    switch (section)
+                    _previousLocationCounts.Add(section.Available);
+                    _previousMarkings.Add(section.Marking);
+
+                    if (section is ItemSection && section.Marking.HasValue)
                     {
-                        case BossSection bossSection:
-                            _previousLocationCounts.Add(1);
-                            _previousMarkings.Add(null);
-                            _markedItems.Add(null);
-                            bossSection.Available = false;
-                            break;
-                        case EntranceSection entranceSection:
-                            _previousLocationCounts.Add(1);
-                            _previousMarkings.Add(null);
-                            _markedItems.Add(null);
-                            entranceSection.Available = false;
-                            break;
-                        case ItemSection itemSection:
+                        if (Enum.TryParse(section.Marking.Value.ToString(), out ItemType itemType))
+                        {
+                            Item item = _game.Items[itemType];
 
-                            _previousLocationCounts.Add(itemSection.Available);
-                            _previousMarkings.Add(itemSection.Marking);
-
-                            itemSection.Clear();
-
-                            if (itemSection.Available == 0 && itemSection.Marking != null)
-                            {
-                                Item item = _game.Items[Enum.Parse<ItemType>(itemSection.Marking.Value.ToString())];
-                                itemSection.Marking = null;
-
-                                if (item.Current < item.Maximum)
-                                {
-                                    _markedItems.Add(item);
-                                    item.Change(1);
-                                }
-                                else
-                                    _markedItems.Add(null);
-                            }
+                            if (item.Current < item.Maximum)
+                                _markedItems.Add(item);
                             else
                                 _markedItems.Add(null);
-
-                            break;
+                        }
+                        else
+                            _markedItems.Add(null);
                     }
+                    else
+                        _markedItems.Add(null);
+
+                    section.Clear();
+
+                    if (section.IsAvailable())
+                        _markedItems[_markedItems.Count - 1] = null;
                 }
                 else
                 {
@@ -90,20 +74,7 @@ namespace OpenTracker.Actions
             for (int i = 0; i < _previousLocationCounts.Count; i++)
             {
                 if (_previousLocationCounts[i] != null)
-                {
-                    switch (_location.Sections[i])
-                    {
-                        case BossSection bossSection:
-                            bossSection.Available = true;
-                            break;
-                        case EntranceSection entranceSection:
-                            entranceSection.Available = true;
-                            break;
-                        case ItemSection itemSection:
-                            itemSection.Available = _previousLocationCounts[i].Value;
-                            break;
-                    }
-                }
+                    _location.Sections[i].Available = _previousLocationCounts[i].Value;
 
                 if (_previousMarkings[i] != null)
                     _location.Sections[i].Marking = _previousMarkings[i];

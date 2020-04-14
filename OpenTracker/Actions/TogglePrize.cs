@@ -14,12 +14,18 @@ namespace OpenTracker.Actions
 
         public void Execute()
         {
-            _prizeSection.Available = !_prizeSection.Available;
+            if (_prizeSection.IsAvailable())
+                _prizeSection.Available = 0;
+            else
+                _prizeSection.Available = 1;
         }
 
         public void Undo()
         {
-            _prizeSection.Available = !_prizeSection.Available;
+            if (_prizeSection.IsAvailable())
+                _prizeSection.Available = 0;
+            else
+                _prizeSection.Available = 1;
         }
     }
 }

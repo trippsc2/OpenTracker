@@ -46,7 +46,7 @@ namespace OpenTracker.ViewModels
             else
                 imageBaseString += _prizeSection.Prize.Type.ToString().ToLower();
 
-            ImageSource = imageBaseString + (_prizeSection.Available ? "0" : "1") + ".png";
+            ImageSource = imageBaseString + (_prizeSection.IsAvailable() ? "0" : "1") + ".png";
         }
 
         public void ChangeItem(bool rightClick = false)

@@ -38,8 +38,8 @@ namespace OpenTracker.Models
             }
         }
 
-        private bool _available;
-        public bool Available
+        private int _available;
+        public int Available
         {
             get => _available;
             set
@@ -76,7 +76,7 @@ namespace OpenTracker.Models
             _itemIsSubscribed = new Dictionary<ItemType, bool>();
 
             RequiredMode = new Mode();
-            Available = true;
+            Available = 1;
 
             List<Item> itemReqs = new List<Item>();
 
@@ -2634,7 +2634,7 @@ namespace OpenTracker.Models
             {
                 if (_game.Mode.WorldState == WorldState.StandardOpen && _standardItemProvided != null)
                 {
-                    if (Available)
+                    if (IsAvailable())
                         _standardItemProvided.Change(-1, true);
                     else
                         _standardItemProvided.Change(1, true);
@@ -2642,7 +2642,7 @@ namespace OpenTracker.Models
 
                 if (_game.Mode.WorldState == WorldState.Inverted && _invertedItemProvided != null)
                 {
-                    if (Available)
+                    if (IsAvailable())
                         _invertedItemProvided.Change(-1, true);
                     else
                         _invertedItemProvided.Change(1, true);
@@ -2654,7 +2654,7 @@ namespace OpenTracker.Models
         {
             if (e.PropertyName == nameof(_game.Mode.WorldState))
             {
-                if (!Available)
+                if (!IsAvailable())
                 {
                     if (_standardItemProvided != null)
                     {
@@ -2770,18 +2770,18 @@ namespace OpenTracker.Models
 
         public void Clear()
         {
-            Available = false;
+            Available = 0;
         }
 
         public bool IsAvailable()
         {
-            return Available;
+            return Available > 0;
         }
 
         public void Reset()
         {
             Marking = null;
-            Available = true;
+            Available = 1;
         }
     }
 }

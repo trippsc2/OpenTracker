@@ -15,34 +15,12 @@ namespace OpenTracker.Actions
 
         public void Execute()
         {
-            switch (_section)
-            {
-                case BossSection bossSection:
-                    bossSection.Available = true;
-                    break;
-                case EntranceSection entranceSection:
-                    entranceSection.Available = true;
-                    break;
-                case ItemSection itemSection:
-                    itemSection.Available++;
-                    break;
-            }
+            _section.Available++;
         }
 
         public void Undo()
         {
-            switch (_section)
-            {
-                case BossSection bossSection:
-                    bossSection.Available = false;
-                    break;
-                case EntranceSection entranceSection:
-                    entranceSection.Available = false;
-                    break;
-                case ItemSection itemSection:
-                    itemSection.Available--;
-                    break;
-            }
+            _section.Available--;
         }
     }
 }
