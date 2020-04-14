@@ -1919,6 +1919,9 @@ namespace OpenTracker.Models
 
         private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (e.PropertyName == nameof(ISection.Available) && !((ISection)sender).IsAvailable())
+                UpdateAccessibility();
+
             if (e.PropertyName == nameof(ISection.Accessibility))
                 UpdateAccessibility();
         }
