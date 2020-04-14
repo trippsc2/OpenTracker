@@ -105,6 +105,9 @@ namespace OpenTracker.Models
                         {
                             if (_game.Items.Has(ItemType.Aga) && _game.Items.Has(ItemType.Boots))
                                 return _game.Regions[RegionID.LightWorld].Accessibility;
+
+                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Inspect,
+                                (byte)_game.Regions[RegionID.LightWorld].Accessibility);
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
@@ -112,9 +115,12 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.Aga) && _game.Items.Has(ItemType.Boots) &&
                                 _game.Items.Has(ItemType.MoonPearl))
                                 return _game.Regions[RegionID.LightWorld].Accessibility;
+
+                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Inspect,
+                                (byte)_game.Regions[RegionID.LightWorld].Accessibility);
                         }
 
-                        return AccessibilityLevel.Inspect;
+                        return AccessibilityLevel.None;
                     };
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());

@@ -133,6 +133,9 @@ namespace OpenTracker.Models
                         {
                             if (_game.Items.Has(ItemType.Aga) && _game.Items.Has(ItemType.Boots))
                                 return _game.Regions[RegionID.LightWorld].Accessibility;
+
+                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Inspect,
+                                (byte)_game.Regions[RegionID.LightWorld].Accessibility);
                         }
 
                         if (_game.Mode.WorldState == WorldState.Inverted)
@@ -140,9 +143,12 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.Aga) && _game.Items.Has(ItemType.Boots) &&
                                 _game.Items.Has(ItemType.MoonPearl))
                                 return _game.Regions[RegionID.LightWorld].Accessibility;
+
+                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Inspect,
+                                (byte)_game.Regions[RegionID.LightWorld].Accessibility);
                         }
 
-                        return AccessibilityLevel.Inspect;
+                        return AccessibilityLevel.None;
                     };
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
@@ -1302,9 +1308,11 @@ namespace OpenTracker.Models
                                 if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
                                     _game.Items.Has(ItemType.Mirror))
                                     dWWest = _game.Regions[RegionID.DarkWorldWest].Accessibility;
-
-                                dWWest = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
-                                    (byte)_game.Regions[RegionID.DarkWorldWest].Accessibility);
+                                else
+                                {
+                                    dWWest = (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak,
+                                        (byte)_game.Regions[RegionID.DarkWorldWest].Accessibility);
+                                }
 
                                 return (AccessibilityLevel)Math.Min((byte)dWWest, (byte)lightWorld);
                             }
@@ -2232,6 +2240,8 @@ namespace OpenTracker.Models
                     _itemSubscriptions.Add(ItemType.HCSmallKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys });
                     _itemSubscriptions.Add(ItemType.Lamp, new Mode());
                     _itemSubscriptions.Add(ItemType.FireRod, new Mode() { ItemPlacement = ItemPlacement.Advanced });
+
+                    PropertyChanged += OnRequirementChanged;
 
                     break;
                 case LocationID.AgahnimTower:
