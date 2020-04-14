@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models.Interfaces
 {
-    public interface ISection : INotifyPropertyChanged
+    public interface ISection : INotifyPropertyChanging,INotifyPropertyChanged
     {
         string Name { get; }
         bool HasMarking { get; }

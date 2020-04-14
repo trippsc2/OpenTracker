@@ -45,16 +45,17 @@ namespace OpenTracker.ViewModels
             UpdateMap();
         }
 
+        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Mode.WorldState))
+                UpdateMap();
+        }
+
         private void UpdateMap()
         {
             ImageSource = "avares://OpenTracker/Assets/Images/Maps/" +
                 _game.Mode.WorldState.Value.ToString().ToLower() + "_" +
                 _iD.ToString().ToLower() + ".png";
-        }
-
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
-        {
-            UpdateMap();
         }
     }
 }

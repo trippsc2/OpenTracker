@@ -29,25 +29,23 @@ namespace OpenTracker.ViewModels
 
             _bossSection.PropertyChanged += OnSectionChanged;
 
-            Update();
+            UpdateImage();
         }
 
         private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
-            Update();
+            if (e.PropertyName == nameof(BossSection.Boss))
+                UpdateImage();
         }
 
-        private void Update()
+        private void UpdateImage()
         {
             string imageBaseString = "avares://OpenTracker/Assets/Images/";
 
             if (_bossSection.Boss == null)
                 imageBaseString += "Items/unknown1";
             else
-            {
-                imageBaseString += "Bosses/";
-                imageBaseString += _bossSection.Boss.Type.ToString().ToLower();
-            }
+                imageBaseString += "Bosses/" + _bossSection.Boss.Type.ToString().ToLower();
 
             ImageSource = imageBaseString + ".png";
         }

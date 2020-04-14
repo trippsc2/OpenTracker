@@ -22,6 +22,7 @@ namespace OpenTracker.Models
 
         public Func<AccessibilityLevel> GetAccessibility { get; }
 
+        public event PropertyChangingEventHandler PropertyChanging;
         public event PropertyChangedEventHandler PropertyChanged;
 
         private AccessibilityLevel _accessibility;
@@ -60,6 +61,7 @@ namespace OpenTracker.Models
             {
                 if (_marking != value)
                 {
+                    OnPropertyChanging(nameof(Marking));
                     _marking = value;
                     OnPropertyChanged(nameof(Marking));
                 }
@@ -2625,10 +2627,14 @@ namespace OpenTracker.Models
             UpdateAccessibility();
         }
 
+        private void OnPropertyChanging(string propertyName)
+        {
+            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
+        }
+
         private void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
             if (propertyName == nameof(Available))
             {

@@ -4,7 +4,6 @@ using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.Enums;
 using ReactiveUI;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels
@@ -46,7 +45,7 @@ namespace OpenTracker.ViewModels
         }
 
         public DungeonItemControlVM(UndoRedoManager undoRedoManager, AppSettingsVM appSettings,
-            Mode mode, Item item)
+            Item item)
         {
             _undoRedoManager = undoRedoManager;
             _appSettings = appSettings;
@@ -86,45 +85,56 @@ namespace OpenTracker.ViewModels
                         break;
                 }
 
-                SetImage();
+                UpdateImage();
+
+                if (_smallKey)
+                {
+                    UpdateText();
+                    UpdateTextColor();
+                }
                 
                 item.PropertyChanged += OnItemChanged;
-                mode.PropertyChanged += OnModeChanged;
             }
         }
 
-        private void SetImage()
+        private void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (_item == null)
-                return;
+            if (_item != null)
+            {
+                UpdateImage();
 
-            if (_smallKey && _item.Current > 0)
+                if (_smallKey)
+                {
+                    UpdateText();
+                    UpdateTextColor();
+                }
+            }
+        }
+
+        private void UpdateImage()
+        {
+            ImageSource = _imageSourceBase + (_item.Current > 0 ? "1" : "0") + ".png";
+        }
+
+        private void UpdateText()
+        {
+            if (_item.Current > 0)
                 TextVisible = true;
             else
                 TextVisible = false;
 
             ImageNumber = _item.Current.ToString();
 
-            ImageSource = _imageSourceBase + (_item.Current > 0 ? "1" : "0") + ".png";
-
             if (_item.Current == _item.Maximum)
-            {
-                TextColor = _appSettings.EmphasisFontColor;
                 ImageNumber += "*";
-            }
+        }
+
+        private void UpdateTextColor()
+        {
+            if (_item.Current == _item.Maximum)
+                TextColor = _appSettings.EmphasisFontColor;
             else
                 TextColor = Brushes.White;
-
-        }
-
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
-        {
-            SetImage();
-        }
-
-        private void OnItemChanged(object sender, PropertyChangedEventArgs e)
-        {
-            SetImage();
         }
 
         public void ChangeItem(bool rightClick = false)

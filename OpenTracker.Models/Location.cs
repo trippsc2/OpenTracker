@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models
 {
-    public class Location
+    public class Location : INotifyPropertyChanged
     {
         private readonly Game _game;
 
@@ -17,7 +17,21 @@ namespace OpenTracker.Models
         public List<MapLocation> MapLocations { get; }
         public List<ISection> Sections { get; }
 
-        public event EventHandler RequirementChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private AccessibilityLevel _accessibility;
+        public AccessibilityLevel Accessibility
+        {
+            get => _accessibility;
+            set
+            {
+                if (_accessibility != value)
+                {
+                    _accessibility = value;
+                    OnPropertyChanged(nameof(Accessibility));
+                }
+            }
+        }
 
         public Location(Game game, LocationID iD)
         {
@@ -1893,16 +1907,23 @@ namespace OpenTracker.Models
                 Sections.Add(BossSection);
 
             foreach (ISection section in Sections)
-                section.PropertyChanged += OnRequirementChanged;
-        }
+                section.PropertyChanged += OnSectionChanged;
 
-        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+            UpdateAccessibility();
+        }
+        
+        private void OnPropertyChanged(string propertyName)
         {
-            if (RequirementChanged != null)
-                RequirementChanged.Invoke(this, new EventArgs());
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public AccessibilityLevel GetAccessibility(Mode mode, ItemDictionary items)
+        private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ISection.Accessibility))
+                UpdateAccessibility();
+        }
+
+        public void UpdateAccessibility()
         {
             AccessibilityLevel? leastAccessible = null;
             AccessibilityLevel? mostAccessible = null;
@@ -1924,20 +1945,22 @@ namespace OpenTracker.Models
             }
 
             if (!available)
-                return AccessibilityLevel.Cleared;
-
-            return mostAccessible.Value switch
+                Accessibility = AccessibilityLevel.Cleared;
+            else
             {
-                AccessibilityLevel.None => AccessibilityLevel.None,
-                AccessibilityLevel.Inspect => AccessibilityLevel.Inspect,
-                AccessibilityLevel.Partial => AccessibilityLevel.Partial,
-                AccessibilityLevel.SequenceBreak when leastAccessible.Value <= AccessibilityLevel.Partial => AccessibilityLevel.Partial,
-                AccessibilityLevel.SequenceBreak => AccessibilityLevel.SequenceBreak,
-                AccessibilityLevel.Normal when leastAccessible.Value <= AccessibilityLevel.Partial => AccessibilityLevel.Partial,
-                AccessibilityLevel.Normal when leastAccessible.Value == AccessibilityLevel.SequenceBreak => AccessibilityLevel.SequenceBreak,
-                AccessibilityLevel.Normal => AccessibilityLevel.Normal,
-                _ => throw new Exception(string.Format("Unknown availability state for location {0}", ID.ToString())),
-            };
+                Accessibility = mostAccessible.Value switch
+                {
+                    AccessibilityLevel.None => AccessibilityLevel.None,
+                    AccessibilityLevel.Inspect => AccessibilityLevel.Inspect,
+                    AccessibilityLevel.Partial => AccessibilityLevel.Partial,
+                    AccessibilityLevel.SequenceBreak when leastAccessible.Value <= AccessibilityLevel.Partial => AccessibilityLevel.Partial,
+                    AccessibilityLevel.SequenceBreak => AccessibilityLevel.SequenceBreak,
+                    AccessibilityLevel.Normal when leastAccessible.Value <= AccessibilityLevel.Partial => AccessibilityLevel.Partial,
+                    AccessibilityLevel.Normal when leastAccessible.Value == AccessibilityLevel.SequenceBreak => AccessibilityLevel.SequenceBreak,
+                    AccessibilityLevel.Normal => AccessibilityLevel.Normal,
+                    _ => throw new Exception(string.Format("Unknown availability state for location {0}", ID.ToString())),
+                };
+            }
         }
 
         public void Reset()

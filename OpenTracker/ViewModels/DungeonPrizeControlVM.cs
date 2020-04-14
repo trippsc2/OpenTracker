@@ -29,15 +29,19 @@ namespace OpenTracker.ViewModels
 
             _prizeSection.PropertyChanged += OnSectionChanged;
 
-            Update();
+            UpdateImage();
         }
 
         private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
-            Update();
+            if (e.PropertyName == nameof(BossSection.Prize))
+                UpdateImage();
+
+            if (e.PropertyName == nameof(BossSection.Available))
+                UpdateImage();
         }
 
-        private void Update()
+        private void UpdateImage()
         {
             string imageBaseString = "avares://OpenTracker/Assets/Images/Items/";
 

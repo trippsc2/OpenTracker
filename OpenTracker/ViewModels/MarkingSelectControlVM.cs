@@ -42,16 +42,16 @@ namespace OpenTracker.ViewModels
                     }
                 }
                 
-                Update();
+                UpdateImage();
             }
         }
 
         private void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
-            Update();
+            UpdateImage();
         }
 
-        public void Update()
+        public void UpdateImage()
         {
             int itemNumber = 0;
             if (_marking != null)
@@ -69,44 +69,52 @@ namespace OpenTracker.ViewModels
                         break;
                     case MarkingType.Hookshot:
                     case MarkingType.Bomb:
+                    case MarkingType.Mushroom:
+                    case MarkingType.Powder:
                     case MarkingType.FireRod:
                     case MarkingType.IceRod:
+                    case MarkingType.Bombos:
+                    case MarkingType.Ether:
+                    case MarkingType.Quake:
                     case MarkingType.Shovel:
-                    case MarkingType.Powder:
                     case MarkingType.Lamp:
                     case MarkingType.Hammer:
                     case MarkingType.Flute:
                     case MarkingType.Net:
                     case MarkingType.Book:
                     case MarkingType.MoonPearl:
-                    case MarkingType.Bottle:
                     case MarkingType.CaneOfSomaria:
                     case MarkingType.CaneOfByrna:
                     case MarkingType.Cape:
                     case MarkingType.Mirror:
-                    case MarkingType.Gloves:
                     case MarkingType.Boots:
                     case MarkingType.Flippers:
                     case MarkingType.HalfMagic:
-                    case MarkingType.Sword:
+                    case MarkingType.Aga:
+                        ImageSource = "avares://OpenTracker/Assets/Images/Items/" +
+                            _marking.ToString().ToLower() + "1.png";
+                        break;
+                    case MarkingType.Bottle:
+                    case MarkingType.Gloves:
                     case MarkingType.Shield:
                     case MarkingType.Mail:
-                    case MarkingType.Aga:
                         Item item = _game.Items[Enum.Parse<ItemType>(_marking.ToString())];
                         itemNumber = Math.Min(item.Current + 1, item.Maximum);
                         ImageSource = "avares://OpenTracker/Assets/Images/Items/" +
                             _marking.ToString().ToLower() + itemNumber.ToString() + ".png";
                         break;
-                    case MarkingType.Mushroom:
-                        ImageSource = "avares://OpenTracker/Assets/Images/Items/mushroom1.png";
-                        break;
-                    case MarkingType.Bombos:
-                    case MarkingType.Ether:
-                    case MarkingType.Quake:
-                        Item medallionDungeons = _game.Items[Enum.Parse<ItemType>(_marking.ToString()) + 1];
-                        itemNumber = 1 + (medallionDungeons.Current * 2);
+                    case MarkingType.Sword:
+
+                        Item sword = _game.Items[ItemType.Sword];
+
+                        if (sword.Current == 0)
+                            itemNumber = 0;
+                        else
+                            itemNumber = Math.Min(sword.Current + 1, sword.Maximum);
+
                         ImageSource = "avares://OpenTracker/Assets/Images/Items/" +
                             _marking.ToString().ToLower() + itemNumber.ToString() + ".png";
+
                         break;
                     case MarkingType.HCFront:
                     case MarkingType.HCLeft:

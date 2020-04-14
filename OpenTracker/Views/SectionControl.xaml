@@ -23,9 +23,9 @@
 
       <Panel Name="MarkingPopupTarget" PointerReleased="OnClickVisibleItem">
 
-        <Image Source="{Binding Path=ItemImageSource, Converter={StaticResource BitmapValueConverter}}"
-               Margin="0,0,4,0" Height="32" Width="32" IsHitTestVisible="{Binding Path=VisibleItem}"
-               IsVisible="{Binding Path=VisibleItem}" Stretch="Uniform" />
+        <Image Source="{Binding Path=MarkingSource, Converter={StaticResource BitmapValueConverter}}"
+               Margin="0,0,4,0" Height="32" Width="32" IsHitTestVisible="{Binding Path=MarkingVisible}"
+               IsVisible="{Binding Path=MarkingVisible}" Stretch="Uniform" />
 
         <Popup IsOpen="{Binding Path=MarkingPopupOpen, Mode=TwoWay}" StaysOpen="False" PlacementMode="Top"
                PlacementTarget="{Binding RelativeSource={RelativeSource AncestorType=views:SectionControl},

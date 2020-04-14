@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models
 {
-    public class BossSection : ISection, INotifyPropertyChanging
+    public class BossSection : ISection
     {
         private readonly Game _game;
         private readonly Boss _defaultBoss;

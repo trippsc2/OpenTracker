@@ -11,6 +11,7 @@ namespace OpenTracker.ViewModels
     public class ItemControlVM : ViewModelBase, IItemControlVM
     {
         private readonly UndoRedoManager _undoRedoManager;
+        private readonly AppSettingsVM _appSettings;
         private readonly string _imageSourceBase;
         private readonly Item[] _items;
 
@@ -35,54 +36,68 @@ namespace OpenTracker.ViewModels
             private set => this.RaiseAndSetIfChanged(ref _textColor, value);
         }
 
-        public ItemControlVM(UndoRedoManager undoRedoManager, Item[] items)
+        public ItemControlVM(UndoRedoManager undoRedoManager, AppSettingsVM appSettings,
+            Item[] items)
         {
             _undoRedoManager = undoRedoManager;
+            _appSettings = appSettings;
             _items = items;
 
             if (_items != null)
             {
                 _imageSourceBase = "avares://OpenTracker/Assets/Images/Items/" + _items[0].Type.ToString().ToLower();
 
-                SetImage();
+                UpdateImage();
+
+                if (_items[0].Type == ItemType.TowerCrystals || _items[0].Type == ItemType.GanonCrystals)
+                {
+                    UpdateText();
+                    UpdateTextColor();
+                }
 
                 foreach (Item item in _items)
                     item.PropertyChanged += OnItemChanged;
             }
         }
 
-        private void SetImage()
-        {
-            if (_items == null)
-                return;
-
-            int imageNumber = _items[0].Current;
-            string imageString = "";
-
-            if (_items.Length == 2)
-                imageNumber += _items[1].Current * (_items[0].Maximum + 1);
-
-            if (_items[0].Type != ItemType.TowerCrystals && _items[0].Type != ItemType.GanonCrystals)
-            {
-                imageString = imageNumber.ToString();
-                ImageNumber = "";
-            }
-            else
-            {
-                ImageNumber = (7 - _items[0].Current).ToString();
-
-                if (_items[0].Current == 0)
-                    TextColor = Brushes.Lime;
-                else
-                    TextColor = Brushes.White;
-            }
-
-            ImageSource = _imageSourceBase + imageString + ".png";
-        }
-
         private void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
-            SetImage();
+            UpdateImage();
+
+            if (_items[0].Type == ItemType.TowerCrystals || _items[0].Type == ItemType.GanonCrystals)
+            {
+                UpdateText();
+                UpdateTextColor();
+            }
+        }
+
+        private void UpdateImage()
+        {
+            if (_items[0].Type == ItemType.TowerCrystals || _items[0].Type == ItemType.GanonCrystals)
+                ImageSource = _imageSourceBase + ".png";
+            else
+            {
+                int imageNumber = _items[0].Current;
+
+                if (_items.Length == 2)
+                    imageNumber += _items[1].Current * (_items[0].Maximum + 1);
+
+                ImageSource = _imageSourceBase + imageNumber.ToString() + ".png";
+            }
+        }
+
+        private void UpdateText()
+        {
+            if (_items[0].Type == ItemType.TowerCrystals || _items[0].Type == ItemType.GanonCrystals)
+                ImageNumber = (7 - _items[0].Current).ToString();
+        }
+
+        private void UpdateTextColor()
+        {
+            if (_items[0].Current == 0)
+                TextColor = _appSettings.EmphasisFontColor;
+            else
+                TextColor = Brushes.White;
         }
 
         public void ChangeItem(bool rightClick = false)

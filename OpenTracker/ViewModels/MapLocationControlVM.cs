@@ -101,54 +101,78 @@ namespace OpenTracker.ViewModels
 
             appSettings.PropertyChanged += OnAppSettingsChanged;
             game.Mode.PropertyChanged += OnModeChanged;
-
-            mapLocation.Location.RequirementChanged += OnRequirementChanged;
+            mapLocation.Location.PropertyChanged += OnLocationChanged;
 
             foreach (ISection section in mapLocation.Location.Sections)
-                section.PropertyChanged += OnSectionChanged;
-
-            SetSizeAndPosition();
-            SetColor();
-            SetVisibility();
-            SetImageSource();
-        }
-
-        private void CheckLocationAvailability()
-        {
-            ObservableCollection<PinnedLocationControlVM> pinnedLocations = _mainWindow.PinnedLocations;
-            PinnedLocationControlVM thisPinnedLocation = null;
-
-            foreach (PinnedLocationControlVM pinnedLocation in pinnedLocations)
             {
-                if (pinnedLocation.Location == _mapLocation.Location)
-                    thisPinnedLocation = pinnedLocation;
-            }
-
-            if (thisPinnedLocation != null)
-            {
-                bool sectionAvailable = false;
-
-                foreach (ISection section in _mapLocation.Location.Sections)
+                if (section is EntranceSection entranceSection)
                 {
-                    if (section.IsAvailable())
-                    {
-                        sectionAvailable = true;
-                        break;
-                    }
+                    entranceSection.PropertyChanging += OnSectionChanging;
+                    section.PropertyChanged += OnSectionChanged;
                 }
+            }
 
-                if (!sectionAvailable)
-                    thisPinnedLocation.Close();
+            UpdateSizeAndPosition();
+            UpdateColor();
+            UpdateImage();
+            UpdateVisibility();
+        }
+
+        private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(AppSettingsVM.DisplayAllLocations))
+                UpdateVisibility();
+            else if (e.PropertyName != nameof(AppSettingsVM.EmphasisFontColor))
+                UpdateColor();
+        }
+
+        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Mode.EntranceShuffle))
+                UpdateSizeAndPosition();
+
+            UpdateVisibility();
+        }
+
+        private void OnLocationChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Location.Accessibility))
+            {
+                UpdateColor();
+                UpdateVisibility();
+                CheckLocationAvailability();
             }
         }
 
-        private void SetSizeAndPosition()
+        private void OnSectionChanging(object sender, PropertyChangingEventArgs e)
+        {
+            if (e.PropertyName == nameof(ISection.Marking))
+                UnsubscribeFromMarkingItem((ISection)sender);
+        }
+
+        private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ISection.Marking))
+            {
+                UpdateSizeAndPosition();
+                UpdateImage();
+                UpdateVisibility();
+                SubscribeToMarkingItem((ISection)sender);
+            }
+        }
+
+        private void OnItemChanged(object sender, PropertyChangedEventArgs e)
+        {
+            UpdateImage();
+        }
+
+        private void UpdateSizeAndPosition()
         {
             if (_game.Mode.EntranceShuffle.HasValue &&
                 _game.Mode.EntranceShuffle.Value)
             {
-                if (_mapLocation.Location.Sections[0] is EntranceSection entranceSection &&
-                    entranceSection.Marking != null)
+                if (_mapLocation.Location.Sections[0] is EntranceSection &&
+                    _mapLocation.Location.Sections[0].Marking != null)
                     Size = 55.0;
                 else
                     Size = 40.0;
@@ -165,12 +189,12 @@ namespace OpenTracker.ViewModels
             CanvasY = _mapLocation.Y - (Size / 2);
         }
 
-        private void SetColor()
+        private void UpdateColor()
         {
-            Color = _appSettings.AccessibilityColors[_mapLocation.Location.GetAccessibility(_game.Mode, _game.Items)];
+            Color = _appSettings.AccessibilityColors[_mapLocation.Location.Accessibility];
         }
 
-        private void SetImageSource()
+        private void UpdateImage()
         {
             if (_mapLocation.Location.Sections[0] is EntranceSection entranceSection)
             {
@@ -192,9 +216,13 @@ namespace OpenTracker.ViewModels
                             break;
                         case MarkingType.Hookshot:
                         case MarkingType.Bomb:
+                        case MarkingType.Mushroom:
                         case MarkingType.Powder:
                         case MarkingType.FireRod:
                         case MarkingType.IceRod:
+                        case MarkingType.Bombos:
+                        case MarkingType.Ether:
+                        case MarkingType.Quake:
                         case MarkingType.Shovel:
                         case MarkingType.Lamp:
                         case MarkingType.Hammer:
@@ -202,34 +230,38 @@ namespace OpenTracker.ViewModels
                         case MarkingType.Net:
                         case MarkingType.Book:
                         case MarkingType.MoonPearl:
-                        case MarkingType.Bottle:
                         case MarkingType.CaneOfSomaria:
                         case MarkingType.CaneOfByrna:
                         case MarkingType.Cape:
                         case MarkingType.Mirror:
-                        case MarkingType.Gloves:
                         case MarkingType.Boots:
                         case MarkingType.Flippers:
                         case MarkingType.HalfMagic:
-                        case MarkingType.Sword:
+                        case MarkingType.Aga:
+                            ImageSource = "avares://OpenTracker/Assets/Images/Items/" +
+                                entranceSection.Marking.ToString().ToLower() + "1.png";
+                            break;
+                        case MarkingType.Bottle:
+                        case MarkingType.Gloves:
                         case MarkingType.Shield:
                         case MarkingType.Mail:
-                        case MarkingType.Aga:
                             Item item = _game.Items[Enum.Parse<ItemType>(entranceSection.Marking.ToString())];
                             itemNumber = Math.Min(item.Current + 1, item.Maximum);
                             ImageSource = "avares://OpenTracker/Assets/Images/Items/" +
                                 entranceSection.Marking.ToString().ToLower() + itemNumber.ToString() + ".png";
                             break;
-                        case MarkingType.Mushroom:
-                            ImageSource = "avares://OpenTracker/Assets/Images/Items/mushroom1.png";
-                            break;
-                        case MarkingType.Bombos:
-                        case MarkingType.Ether:
-                        case MarkingType.Quake:
-                            Item medallionDungeons = _game.Items[Enum.Parse<ItemType>(entranceSection.Marking.ToString()) + 1];
-                            itemNumber = 1 + (medallionDungeons.Current * 2);
+                        case MarkingType.Sword:
+
+                            Item sword = _game.Items[ItemType.Sword];
+
+                            if (sword.Current == 0)
+                                itemNumber = 0;
+                            else
+                                itemNumber = Math.Min(sword.Current + 1, sword.Maximum);
+
                             ImageSource = "avares://OpenTracker/Assets/Images/Items/" +
                                 entranceSection.Marking.ToString().ToLower() + itemNumber.ToString() + ".png";
+
                             break;
                         case MarkingType.HCFront:
                         case MarkingType.HCLeft:
@@ -266,7 +298,7 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        private void SetVisibility()
+        private void UpdateVisibility()
         {
             if (_game.Mode.Validate(_mapLocation.VisibilityMode))
             {
@@ -277,8 +309,8 @@ namespace OpenTracker.ViewModels
                     ImageVisible = false;
 
                 BorderVisible = !ImageVisible && (_appSettings.DisplayAllLocations ||
-                    (_mapLocation.Location.GetAccessibility(_game.Mode, _game.Items) != AccessibilityLevel.Cleared &&
-                    _mapLocation.Location.GetAccessibility(_game.Mode, _game.Items) != AccessibilityLevel.None));
+                    (_mapLocation.Location.Accessibility != AccessibilityLevel.Cleared &&
+                    _mapLocation.Location.Accessibility != AccessibilityLevel.None));
             }
             else
             {
@@ -287,6 +319,58 @@ namespace OpenTracker.ViewModels
             }
 
             Visible = ImageVisible || BorderVisible;
+        }
+
+        private void UnsubscribeFromMarkingItem(ISection section)
+        {
+            if (section.Marking.HasValue)
+            {
+                switch (section.Marking.Value)
+                {
+                    case MarkingType.Bottle:
+                    case MarkingType.Gloves:
+                    case MarkingType.Sword:
+                    case MarkingType.Shield:
+                    case MarkingType.Mail:
+                        ItemType itemType = Enum.Parse<ItemType>(section.Marking.Value.ToString());
+                        _game.Items[itemType].PropertyChanged -= OnItemChanged;
+                        break;
+                }
+            }
+        }
+
+        private void SubscribeToMarkingItem(ISection section)
+        {
+            if (section.Marking.HasValue)
+            {
+                switch (section.Marking.Value)
+                {
+                    case MarkingType.Bottle:
+                    case MarkingType.Gloves:
+                    case MarkingType.Sword:
+                    case MarkingType.Shield:
+                    case MarkingType.Mail:
+                        ItemType itemType = Enum.Parse<ItemType>(section.Marking.Value.ToString());
+                        _game.Items[itemType].PropertyChanged += OnItemChanged;
+                        break;
+                }
+            }
+        }
+
+        private void CheckLocationAvailability()
+        {
+            ObservableCollection<PinnedLocationControlVM> pinnedLocations = _mainWindow.PinnedLocations;
+            PinnedLocationControlVM thisPinnedLocation = null;
+
+            foreach (PinnedLocationControlVM pinnedLocation in pinnedLocations)
+            {
+                if (pinnedLocation.Location == _mapLocation.Location)
+                    thisPinnedLocation = pinnedLocation;
+            }
+
+            if (thisPinnedLocation != null &&
+                _mapLocation.Location.Accessibility == AccessibilityLevel.Cleared)
+                thisPinnedLocation.Close();
         }
 
         public void ClearAvailableSections()
@@ -326,35 +410,6 @@ namespace OpenTracker.ViewModels
             }
             else if (pinnedLocations[0] != existingPinnedLocation)
                 _undoRedoManager.Execute(new PinLocation(pinnedLocations, existingPinnedLocation));
-        }
-
-        private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
-        {
-            SetSizeAndPosition();
-            SetColor();
-            SetVisibility();
-        }
-
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
-        {
-            SetSizeAndPosition();
-            SetColor();
-            SetVisibility();
-        }
-
-        private void OnRequirementChanged(object sender, EventArgs e)
-        {
-            SetColor();
-            SetVisibility();
-        }
-
-        private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
-        {
-            SetSizeAndPosition();
-            CheckLocationAvailability();
-            SetColor();
-            SetVisibility();
-            SetImageSource();
         }
     }
 }
