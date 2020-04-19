@@ -6,43 +6,41 @@
              xmlns:views="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
              mc:Ignorable="d"
              x:Class="OpenTracker.Views.MapControl">
+	
+	<UserControl.Resources>
+		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />
+	</UserControl.Resources>
+	
+	<UserControl.Styles>
+		<Style Selector="ItemsControl > ContentPresenter">
+			<Setter Property="Canvas.Left" Value="{Binding Path=CanvasX}" />
+			<Setter Property="Canvas.Top" Value="{Binding Path=CanvasY}" />
+		</Style>
+	</UserControl.Styles>
 
-  <UserControl.Resources>
+	<Border BorderBrush="#081212" Background="Transparent" BorderThickness="3" Margin="12.5,25">
+		<Panel>
 
-    <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
+			<Image Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}"
+				   Height="2007" Width="2007" />
 
-  </UserControl.Resources>
+			<ItemsControl Classes="Canvas" Items="{Binding Path=MapLocations}">
 
-  <UserControl.Styles>
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<Canvas Height="2007" Width="2007" />
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
 
-    <Style Selector="ItemsControl > ContentPresenter">
-      <Setter Property="Canvas.Left" Value="{Binding Path=CanvasX}" />
-      <Setter Property="Canvas.Top" Value="{Binding Path=CanvasY}" />
-    </Style>
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<views:MapLocationControl />
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
 
-  </UserControl.Styles>
+			</ItemsControl>
 
-  <Panel Margin="25">
-
-    <Image Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}"
-           Height="2007" Width="2007" />
-
-    <ItemsControl Items="{Binding Path=MapLocations}">
-
-      <ItemsControl.ItemsPanel>
-        <ItemsPanelTemplate>
-          <Canvas Height="2007" Width="2007" />
-        </ItemsPanelTemplate>
-      </ItemsControl.ItemsPanel>
-
-      <ItemsControl.ItemTemplate>
-        <DataTemplate>
-          <views:MapLocationControl />
-        </DataTemplate>
-      </ItemsControl.ItemTemplate>
-
-    </ItemsControl>
-
-  </Panel>
+		</Panel>
+	</Border>
 
 </UserControl>

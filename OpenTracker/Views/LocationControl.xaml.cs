@@ -5,11 +5,11 @@ using OpenTracker.Interfaces;
 
 namespace OpenTracker.Views
 {
-    public class PinnedLocationControl : UserControl
+    public class LocationControl : UserControl
     {
-        private IPinnedLocationControlVM _viewModel => DataContext as IPinnedLocationControlVM;
+        private ILocationControlVM _viewModel => DataContext as ILocationControlVM;
 
-        public PinnedLocationControl()
+        public LocationControl()
         {
             this.InitializeComponent();
         }

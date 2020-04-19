@@ -9,6 +9,7 @@ namespace OpenTracker.Models.Interfaces
         bool HasMarking { get; }
         Mode RequiredMode { get; }
         AccessibilityLevel Accessibility { get; }
+        bool UserManipulated { get; set; }
         MarkingType? Marking { get; set; }
         int Available { get; set; }
 

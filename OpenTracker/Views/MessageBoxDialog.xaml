@@ -9,24 +9,26 @@
         x:Class="OpenTracker.Views.MessageBoxDialog"
         Icon="avares://OpenTracker/Assets/triforce.png"
         Title="{Binding Path=Title}">
+	
+	<Window.Styles>
+		<Style Selector="Button">
+			<Setter Property="Margin" Value="15,0,0,0" />
+			<Setter Property="MinHeight" Value="24" />
+			<Setter Property="MinWidth" Value="75" />
+		</Style>
+	</Window.Styles>
 
-  <Window.Styles>
-    <Style Selector="Button">
-      <Setter Property="Margin" Value="15,0,0,0" />
-      <Setter Property="MinHeight" Value="24" />
-      <Setter Property="MinWidth" Value="75" />
-    </Style>
-  </Window.Styles>
+	<Border Classes="Dialog">
+		<StackPanel Orientation="Vertical">
 
-  <StackPanel Orientation="Vertical">
+			<TextBlock Classes="MessageBox" Text="{Binding Path=Text, FallbackValue=Test}" />
 
-    <TextBlock Margin="30" Text="{Binding Path=Text, FallbackValue=Test}" TextWrapping="Wrap" />
+			<StackPanel Orientation="Horizontal" Margin="15" HorizontalAlignment="Right">
+				<Button Classes="MessageBox" Content="Yes" Command="{Binding Path=YesCommand}" />
+				<Button Classes="MessageBox" Content="No" Command="{Binding Path=NoCommand}" />
+			</StackPanel>
 
-    <StackPanel Orientation="Horizontal" Margin="15" HorizontalAlignment="Right">
-      <Button Content="Yes" Command="{Binding Path=YesCommand}" HotKey="y" />
-      <Button Content="No" Command="{Binding Path=NoCommand}" HotKey="n" />
-    </StackPanel>
-
-  </StackPanel>
-
+		</StackPanel>
+	</Border>
+	
 </Window>

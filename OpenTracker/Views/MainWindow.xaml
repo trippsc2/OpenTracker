@@ -6,474 +6,475 @@
         xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
         xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
         mc:Ignorable="d" MinWidth="220" MinHeight="61" d:DesignWidth="1280" d:DesignHeight="960"
-        Closing="OnClose"
         x:Class="OpenTracker.Views.MainWindow"
         x:Name="HostWindow"
-        Background="#877373"
+        Closing="OnClose"
+        Background="#132525"
         UseLayoutRounding="True"
         Icon="avares://OpenTracker/Assets/triforce.png"
         Title="OpenTracker">
-
-  <Design.DataContext>
-    <vm:MainWindowVM />
-  </Design.DataContext>
-
-  <Window.KeyBindings>
-    <KeyBinding Gesture="Ctrl+o" Command="{Binding RelativeSource={RelativeSource Self}, Path=Open}" />
-    <KeyBinding Gesture="Ctrl+s" Command="{Binding RelativeSource={RelativeSource Self}, Path=Save}" />
-    <KeyBinding Gesture="Ctrl+Shift+s" Command="{Binding RelativeSource={RelativeSource Self}, Path=SaveAs}" />
-    <KeyBinding Gesture="Ctrl+z" Command="{Binding Path=UndoCommand}" />
-    <KeyBinding Gesture="Ctrl+y" Command="{Binding Path=RedoCommand}" />
-    <KeyBinding Gesture="F5" Command="{Binding Path=Reset}" />
-    <KeyBinding Gesture="F11" Command="{Binding Path=ToggleDisplayAllLocationsCommand}" />
-  </Window.KeyBindings>
-
-  <DockPanel>
-
-    <DockPanel DockPanel.Dock="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=UIPanelDock, Mode=OneWay}"
-               HorizontalAlignment="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=UIPanelHorizontalAlignment, Mode=OneWay}"
-               VerticalAlignment="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=UIPanelHorizontalAlignment, Mode=OneWay}">
-
-      <StackPanel DockPanel.Dock="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=UIPanelOrientationDock, Mode=OneWay}"
-                  Orientation="Vertical">
-
-        <Border Background="#212121" Padding="10,5">
-          <Grid ColumnDefinitions="Auto,*,Auto">
-
-            <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                       Grid.Column="0" FontSize="12" FontWeight="SemiBold" Text="Items" Foreground="#F6F6F6"
-                       Background="Transparent" />
-
-            <Panel Grid.Column="2">
-
-              <Image Source="avares://OpenTracker/Assets/Images/settings.png" PointerReleased="OpenModeSettingsPopup"
-                     ToolTip.Tip="Mode Settings" />
-              
-
-              <Popup IsOpen="{Binding Path=ModeSettingsPopupOpen,
-                     RelativeSource={RelativeSource AncestorType=view:MainWindow}, Mode=TwoWay}" StaysOpen="False"
-                     PlacementMode="Top" PlacementTarget="{Binding RelativeSource={RelativeSource AncestorType=Panel},
-                     Path=VisibleItemPopupTarget}" HorizontalOffset="8" VerticalOffset="8">
-
-                <Border BorderBrush="#A9A9A9" BorderThickness="3" Background="#212121"
-                        Padding="5">
-
-                  <Grid ColumnDefinitions="*,*,*,*"
-                        RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
-
-                    <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                               Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="0" FontSize="12" FontWeight="SemiBold"
-                               Text="Item Placement" Foreground="#F6F6F6" Background="Transparent" Margin="4" />
-
-                    <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                                 Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" FontSize="11" Foreground="#F6F6F6"
-                                 Background="Transparent" IsChecked="{Binding Path=ItemPlacementBasic, Mode=OneWay}"
-                                 GroupName="ItemPlacement" Margin="4,4,4,8" Command="{Binding
-                                 Path=ItemPlacementCommand}" CommandParameter="Basic">Basic</RadioButton>
-
-                    <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                                 Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="1" FontSize="11" Foreground="#F6F6F6"
-                                 Background="Transparent" IsChecked="{Binding Path=ItemPlacementAdvanced, Mode=OneWay}"
-                                 GroupName="ItemPlacement" Margin="4,4,4,8" Command="{Binding
-                                 Path=ItemPlacementCommand}" CommandParameter="Advanced">Advanced</RadioButton>
-
-                    <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                               Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="2" FontSize="12" FontWeight="SemiBold"
-                               Text="Dungeon Item Shuffle" Foreground="#F6F6F6" Background="Transparent" Margin="4" />
-
-                    <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                                 Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="3" FontSize="11" Foreground="#F6F6F6"
-                                 Background="Transparent" IsChecked="{Binding Path=DungeonItemShuffleStandard,
-                                 Mode=OneWay}" GroupName="DungeonItemShuffle" Margin="4,4,4,8" Command="{Binding
-                                 Path=DungeonItemShuffleCommand}" CommandParameter="Standard">Standard</RadioButton>
-
-                    <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                                 Grid.Column="1" Grid.ColumnSpan="1" Grid.Row="3" FontSize="11" Foreground="#F6F6F6"
-                                 Background="Transparent" IsChecked="{Binding Path=DungeonItemShuffleMapsCompasses,
-                                 Mode=OneWay}" GroupName="DungeonItemShuffle"
-                                 Margin="4,4,4,8" Command="{Binding Path=DungeonItemShuffleCommand}"
-                                 CommandParameter="MapsCompasses">Maps/Compasses</RadioButton>
-
-                    <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                                 Grid.Column="2" Grid.ColumnSpan="1" Grid.Row="3" FontSize="11" Foreground="#F6F6F6"
-                                 Background="Transparent" IsChecked="{Binding
-                                 Path=DungeonItemShuffleMapsCompassesSmallKeys, Mode=OneWay}"
-                                 GroupName="DungeonItemShuffle" Margin="4,4,4,8" Command="{Binding
-                                 Path=DungeonItemShuffleCommand}"
-                                 CommandParameter="MapsCompassesSmallKeys">Maps/Compasses/Small Keys</RadioButton>
-
-                    <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                                 Grid.Column="3" Grid.ColumnSpan="1" Grid.Row="3" FontSize="11" Foreground="#F6F6F6"
-                                 Background="Transparent" IsChecked="{Binding Path=DungeonItemShuffleKeysanity,
-                                 Mode=OneWay}" GroupName="DungeonItemShuffle" Margin="4,4,4,8" Command="{Binding
-                                 Path=DungeonItemShuffleCommand}" CommandParameter="Keysanity">Keysanity</RadioButton>
-
-                    <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                               Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="4" FontSize="12" FontWeight="SemiBold"
-                               Text="World State" Foreground="#F6F6F6" Background="Transparent" Margin="4" />
-
-                    <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                                 Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="5" FontSize="11" Foreground="#F6F6F6"
-                                 Background="Transparent" IsChecked="{Binding Path=WorldStateStandardOpen,
-                                 Mode=OneWay}" GroupName="WorldState" Margin="4,4,4,8" Command="{Binding
-                                 Path=WorldStateCommand}" CommandParameter="StandardOpen">Standard/Open</RadioButton>
-
-                    <RadioButton FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                                 Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="5" FontSize="11" Foreground="#F6F6F6"
-                                 Background="Transparent" IsChecked="{Binding Path=WorldStateInverted, Mode=OneWay}"
-                                 GroupName="WorldState" Margin="4,4,4,8" Command="{Binding Path=WorldStateCommand}"
-                                 CommandParameter="Inverted">Inverted</RadioButton>
-
-                    <Border Grid.Row="6" Grid.ColumnSpan="4" Height="1" Background="#F6F6F6" />
-
-                    <CheckBox FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                              Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="7" FontSize="11" Foreground="#F6F6F6"
-                              Background="Transparent" IsChecked="{Binding Path=EntranceShuffle, Mode=OneWay}"
-                              Margin="4" Command="{Binding Path=EntranceShuffleCommand}">Entrance Shuffle</CheckBox>
-
-                    <CheckBox FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                              Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="8" FontSize="11" Foreground="#F6F6F6"
-                              Background="Transparent" IsChecked="{Binding Path=BossShuffle, Mode=OneWay}"
-                              Margin="4" Command="{Binding Path=BossShuffleCommand}">Boss Shuffle</CheckBox>
-
-                    <CheckBox FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                              Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="9" FontSize="11" Foreground="#F6F6F6"
-                              Background="Transparent" IsChecked="{Binding Path=EnemyShuffle, Mode=OneWay}"
-                              Margin="4" Command="{Binding Path=EnemyShuffleCommand}">Enemy Shuffle</CheckBox>
-
-                  </Grid>
-
-                </Border>
-
-              </Popup>
-
-            </Panel>
-
-          </Grid>
-
-        </Border>
-
-        <Border Background="#443C3C" Padding="10,5,10,15">
-
-          <StackPanel Orientation="Horizontal">
-
-            <ItemsControl Items="{Binding Path=Items}">
-
-              <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                  <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="238" MaxHeight="200"
-                             Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                </ItemsPanelTemplate>
-              </ItemsControl.ItemsPanel>
-
-              <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                  <view:ItemControl />
-                </DataTemplate>
-              </ItemsControl.ItemTemplate>
-
-            </ItemsControl>
-
-            <Grid Margin="6,0,4,0" ColumnDefinitions="Auto,Auto,Auto,Auto,Auto"
-                  RowDefinitions="24,Auto" VerticalAlignment="Top" HorizontalAlignment="Left">
-
-              <StackPanel Orientation="Horizontal" IsHitTestVisible="{Binding Path=SmallKeyShuffle}"
-                          IsVisible="{Binding Path=SmallKeyShuffle}" Grid.Column="0" Grid.ColumnSpan="5"
-                          VerticalAlignment="Top">
-
-                <Image Source="avares://OpenTracker/Assets/Images/hc.png" Height="16" Width="20" />
-
-                <ItemsControl Items="{Binding Path=HCItems}">
-
-                  <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                      <Panel Height="16" Width="16" Margin="2,0,1,0" />
-                    </ItemsPanelTemplate>
-                  </ItemsControl.ItemsPanel>
-
-                  <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                      <view:DungeonItemControl />
-                    </DataTemplate>
-                  </ItemsControl.ItemTemplate>
-
-                </ItemsControl>
-
-                <Image Source="avares://OpenTracker/Assets/Images/at.png" Height="16" Width="20" />
-
-                <ItemsControl Items="{Binding Path=ATItems}">
-
-                  <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                      <Panel Height="16" Width="16" Margin="2,0,0,0" />
-                    </ItemsPanelTemplate>
-                  </ItemsControl.ItemsPanel>
-
-                  <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                      <view:DungeonItemControl />
-                    </DataTemplate>
-                  </ItemsControl.ItemTemplate>
-
-                </ItemsControl>
-
-              </StackPanel>
-
-              <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left"
-                          Margin="0,0,2,0">
-
-                <Image Source="avares://OpenTracker/Assets/Images/ep.png" Height="16" Width="20" />
-                <Image Source="avares://OpenTracker/Assets/Images/dp.png" Height="16" Width="20" />
-                <Image Source="avares://OpenTracker/Assets/Images/th.png" Height="16" Width="20" />
-                <Image Source="avares://OpenTracker/Assets/Images/pd.png" Height="16" Width="20" />
-                <Image Source="avares://OpenTracker/Assets/Images/sp.png" Height="16" Width="20" />
-                <Image Source="avares://OpenTracker/Assets/Images/sw.png" Height="16" Width="20" />
-                <Image Source="avares://OpenTracker/Assets/Images/tt.png" Height="16" Width="20" />
-                <Image Source="avares://OpenTracker/Assets/Images/ip.png" Height="16" Width="20" />
-                <Image Source="avares://OpenTracker/Assets/Images/mm.png" Height="16" Width="20" />
-                <Image Source="avares://OpenTracker/Assets/Images/tr.png" Height="16" Width="20" />
-                <Image Source="avares://OpenTracker/Assets/Images/gt.png" Height="16" Width="20"
-                       IsHitTestVisible="{Binding Path=SmallKeyShuffle}"
-                       IsVisible="{Binding Path=SmallKeyShuffle}" />
-
-              </StackPanel>
-
-              <ItemsControl Grid.Column="1" Grid.Row="1" Items="{Binding Path=SmallKeyItems}"
-                            HorizontalAlignment="Left" VerticalAlignment="Top"
-                            IsHitTestVisible="{Binding Path=SmallKeyShuffle}"
-                            IsVisible="{Binding Path=SmallKeyShuffle}">
-
-                <ItemsControl.ItemsPanel>
-                  <ItemsPanelTemplate>
-                    <StackPanel Width="16" Orientation="Vertical" />
-                  </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-
-                <ItemsControl.ItemTemplate>
-                  <DataTemplate>
-                    <view:DungeonItemControl />
-                  </DataTemplate>
-                </ItemsControl.ItemTemplate>
-
-              </ItemsControl>
-
-              <ItemsControl Grid.Column="2" Grid.Row="1" Items="{Binding Path=BigKeyItems}"
-                            HorizontalAlignment="Left" VerticalAlignment="Top"
-                            IsHitTestVisible="{Binding Path=BigKeyShuffle}"
-                            IsVisible="{Binding Path=BigKeyShuffle}">
-
-                <ItemsControl.ItemsPanel>
-                  <ItemsPanelTemplate>
-                    <StackPanel Width="16" Orientation="Vertical" />
-                  </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-
-                <ItemsControl.ItemTemplate>
-                  <DataTemplate>
-                    <view:DungeonItemControl />
-                  </DataTemplate>
-                </ItemsControl.ItemTemplate>
-
-              </ItemsControl>
-
-              <ItemsControl Grid.Column="3" Grid.Row="1" Items="{Binding Path=Prizes}"
-                            HorizontalAlignment="Left" VerticalAlignment="Top">
-
-                <ItemsControl.ItemsPanel>
-                  <ItemsPanelTemplate>
-                    <StackPanel Width="16" Orientation="Vertical" />
-                  </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-
-                <ItemsControl.ItemTemplate>
-                  <DataTemplate>
-                    <view:DungeonPrizeControl />
-                  </DataTemplate>
-                </ItemsControl.ItemTemplate>
-
-              </ItemsControl>
-
-              <ItemsControl Grid.Column="4" Grid.Row="1" Items="{Binding Path=Bosses}"
-                            HorizontalAlignment="Left" VerticalAlignment="Top">
-
-                <ItemsControl.ItemsPanel>
-                  <ItemsPanelTemplate>
-                    <StackPanel Width="16" Orientation="Vertical" IsHitTestVisible="{Binding Path=BossShuffle}"
-                                IsVisible="{Binding Path=BossShuffle}" />
-                  </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-
-                <ItemsControl.ItemTemplate>
-                  <DataTemplate>
-                    <view:BossControl />
-                  </DataTemplate>
-                </ItemsControl.ItemTemplate>
-
-              </ItemsControl>
-
-            </Grid>
-
-          </StackPanel>
-
-        </Border>
-
-      </StackPanel>
-
-      <Grid Margin="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow},
-            Path=PinnedLocationsPanelMargin, Mode=OneWay}" RowDefinitions="Auto, *"
-            VerticalAlignment="Stretch">
-
-        <Border Grid.Row="0" Background="#212121" Padding="10,5">
-
-          <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                     FontSize="12" FontWeight="SemiBold" Text="Pinned Locations" Foreground="#F6F6F6"
-                     Background="Transparent" />
-
-        </Border>
-
-        <Border Grid.Row="1" Background="#443C3C" Padding="10,5,10,15">
-
-          <ItemsControl Items="{Binding Path=PinnedLocations}">
-
-            <ItemsControl.ItemsPanel>
-              <ItemsPanelTemplate>
-                <WrapPanel Orientation="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=MapPanelOrientation, Mode=OneWay}" />
-              </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <view:PinnedLocationControl Margin="1" />
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-
-          </ItemsControl>
-
-        </Border>
-
-      </Grid>
-
-    </DockPanel>
-
-    <Panel>
-
-      <Viewbox Grid.Column="1" Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-
-        <ItemsControl x:Name="MapItemsControl" Items="{Binding Path=Maps}">
-
-          <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-              <StackPanel Orientation="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow}, Path=MapPanelOrientation, Mode=OneWay}" />
-            </ItemsPanelTemplate>
-          </ItemsControl.ItemsPanel>
-
-          <ItemsControl.ItemTemplate>
-            <DataTemplate>
-              <view:MapControl />
-            </DataTemplate>
-          </ItemsControl.ItemTemplate>
-
-        </ItemsControl>
-
-      </Viewbox>
-
-      <Panel Height="16" Width="16" HorizontalAlignment="Right" VerticalAlignment="Top">
-
-        <Menu Height="16" Width="16" Background="Transparent" HorizontalAlignment="Right">
-
-          <MenuItem Width="16">
-            <MenuItem.Header>
-              <Image Source="avares://OpenTracker/Assets/Images/settings.png"
-                     Height="16" Width="16" ToolTip.Tip="App Settings" />
-            </MenuItem.Header>
-
-            <MenuItem Command="{Binding ElementName=HostWindow, Path=Open}">
-              <MenuItem.Header>
-                <Grid ColumnDefinitions="Auto,*,Auto">
-                  <TextBlock Text="Open..." />
-                  <TextBlock Margin="10,0,0,0" Text="Ctrl+O" Grid.Column="2" />
-                </Grid>
-              </MenuItem.Header>
-            </MenuItem>
-
-            <MenuItem Command="{Binding ElementName=HostWindow, Path=Save}">
-              <MenuItem.Header>
-                <Grid ColumnDefinitions="Auto,*,Auto">
-                  <TextBlock Text="Save" />
-                  <TextBlock Margin="10,0,0,0" Text="Ctrl+S" Grid.Column="2" />
-                </Grid>
-              </MenuItem.Header>
-            </MenuItem>
-
-            <MenuItem Command="{Binding ElementName=HostWindow, Path=SaveAs}">
-              <MenuItem.Header>
-                <Grid ColumnDefinitions="Auto,*,Auto">
-                  <TextBlock Text="Save As..." />
-                  <TextBlock Margin="10,0,0,0" Text="Ctrl+Shift+S" Grid.Column="2" />
-                </Grid>
-              </MenuItem.Header>
-            </MenuItem>
-
-            <Separator />
-
-            <MenuItem Command="{Binding Path=Reset}">
-              <MenuItem.Header>
-                <Grid ColumnDefinitions="Auto,*,Auto">
-                  <TextBlock Text="Reset" />
-                  <TextBlock Margin="10,0,0,0" Text="F5" Grid.Column="2" />
-                </Grid>
-              </MenuItem.Header>
-            </MenuItem>
-
-            <Separator />
-
-            <MenuItem Command="{Binding Path=UndoCommand}">
-              <MenuItem.Header>
-                <Grid ColumnDefinitions="Auto,*,Auto">
-                  <TextBlock Text="Undo" />
-                  <TextBlock Margin="10,0,0,0" Text="Ctrl+Z" Grid.Column="2" />
-                </Grid>
-              </MenuItem.Header>
-            </MenuItem>
-
-            <MenuItem Command="{Binding Path=RedoCommand}">
-              <MenuItem.Header>
-                <Grid ColumnDefinitions="Auto,*,Auto">
-                  <TextBlock Text="Redo" />
-                  <TextBlock Margin="10,0,0,0" Text="Ctrl+Y" Grid.Column="2" />
-                </Grid>
-              </MenuItem.Header>
-            </MenuItem>
-
-            <Separator />
-
-            <MenuItem Command="{Binding Path=ToggleDisplayAllLocationsCommand}">
-
-              <MenuItem.Icon>
-                <CheckBox IsChecked="{Binding Path=AppSettings.DisplayAllLocations}" />
-              </MenuItem.Icon>
-
-              <MenuItem.Header>
-                <Grid ColumnDefinitions="Auto,*,Auto">
-                  <TextBlock Text="Display All Locations" />
-                  <TextBlock Margin="10,0,0,0" Text="F11" Grid.Column="2" />
-                </Grid>
-              </MenuItem.Header>
-
-            </MenuItem>
-
-            <Separator />
-
-            <MenuItem Header="Change Colors..." Command="{Binding Path=ColorSelect}" />
-
-          </MenuItem>
-
-        </Menu>
-
-      </Panel>
-
-    </Panel>
-
-  </DockPanel>
+	
+	<Design.DataContext>
+		<vm:MainWindowVM />
+	</Design.DataContext>
+	
+	<Window.KeyBindings>
+		<KeyBinding Gesture="Ctrl+o" Command="{Binding RelativeSource={RelativeSource Self}, Path=Open}" />
+		<KeyBinding Gesture="Ctrl+s" Command="{Binding RelativeSource={RelativeSource Self}, Path=Save}" />
+		<KeyBinding Gesture="Ctrl+Shift+s" Command="{Binding RelativeSource={RelativeSource Self}, Path=SaveAs}" />
+		<KeyBinding Gesture="Ctrl+z" Command="{Binding Path=UndoCommand}" />
+		<KeyBinding Gesture="Ctrl+y" Command="{Binding Path=RedoCommand}" />
+		<KeyBinding Gesture="F5" Command="{Binding Path=Reset}" />
+		<KeyBinding Gesture="F11" Command="{Binding Path=ToggleDisplayAllLocationsCommand}" />
+	</Window.KeyBindings>
+
+	<DockPanel>
+
+		<!-- Window MenuBar -->
+		<Border Classes="ControlBorder" DockPanel.Dock="Top">
+			<Menu Classes="MenuBar">
+				
+				<MenuItem Classes="Menu" Header="File">
+					
+					<MenuItem Classes="Menu InnerMenu" Command="{Binding ElementName=HostWindow, Path=Open}">
+						<MenuItem.Header>
+							<Grid ColumnDefinitions="Auto,*,Auto">
+								<TextBlock Text="Open..." />
+								<TextBlock Margin="10,0,0,0" Text="Ctrl+O" Grid.Column="2" />
+							</Grid>
+						</MenuItem.Header>
+					</MenuItem>
+
+					<MenuItem Classes="Menu InnerMenu" Command="{Binding ElementName=HostWindow, Path=Save}">
+						<MenuItem.Header>
+							<Grid ColumnDefinitions="Auto,*,Auto">
+								<TextBlock Text="Save" />
+								<TextBlock Margin="10,0,0,0" Text="Ctrl+S" Grid.Column="2" />
+							</Grid>
+						</MenuItem.Header>
+					</MenuItem>
+
+					<MenuItem Classes="Menu InnerMenu" Command="{Binding ElementName=HostWindow, Path=SaveAs}">
+						<MenuItem.Header>
+							<Grid ColumnDefinitions="Auto,*,Auto">
+								<TextBlock Text="Save As..." />
+								<TextBlock Margin="10,0,0,0" Text="Ctrl+Shift+S" Grid.Column="2" />
+							</Grid>
+						</MenuItem.Header>
+					</MenuItem>
+
+					<MenuItem Classes="Menu InnerMenu" Command="{Binding Path=Reset}">
+						<MenuItem.Header>
+							<Grid ColumnDefinitions="Auto,*,Auto">
+								<TextBlock Text="Reset" />
+								<TextBlock Margin="10,0,0,0" Text="F5" Grid.Column="2" />
+							</Grid>
+						</MenuItem.Header>
+					</MenuItem>
+
+					<Separator />
+					<MenuItem Classes="Menu InnerMenu" Command="{Binding ElementName=HostWindow, Path=Close}"
+							  Header="Exit" />
+
+				</MenuItem>
+
+				<MenuItem Classes="Menu" Header="Tracking">
+
+					<MenuItem Classes="Menu InnerMenu" Command="{Binding Path=UndoCommand}">
+						<MenuItem.Header>
+							<Grid ColumnDefinitions="Auto,*,Auto">
+								<TextBlock Text="Undo" />
+								<TextBlock Margin="10,0,0,0" Text="Ctrl+Z" Grid.Column="2" />
+							</Grid>
+						</MenuItem.Header>
+					</MenuItem>
+
+					<MenuItem Classes="Menu InnerMenu" Command="{Binding Path=RedoCommand}">
+						<MenuItem.Header>
+							<Grid ColumnDefinitions="Auto,*,Auto">
+								<TextBlock Text="Redo" />
+								<TextBlock Margin="10,0,0,0" Text="Ctrl+Y" Grid.Column="2" />
+							</Grid>
+						</MenuItem.Header>
+					</MenuItem>
+
+					<Separator />
+					<MenuItem Classes="Menu InnerMenu" Command="{Binding ElementName=HostWindow, Path=AutoTracker}"
+							  Header="AutoTracker..." />
+
+				</MenuItem>
+
+				<MenuItem Classes="Menu" Header="View">
+					
+					<MenuItem Classes="Menu InnerMenu" Command="{Binding Path=ToggleDisplayAllLocationsCommand}">
+
+						<MenuItem.Icon>
+							<CheckBox Classes="Menu" IsChecked="{Binding Path=AppSettings.DisplayAllLocations}" />
+						</MenuItem.Icon>
+
+						<MenuItem.Header>
+							<Grid ColumnDefinitions="Auto,*,Auto">
+								<TextBlock Text="Display All Locations" />
+								<TextBlock Margin="10,0,0,0" Text="F11" Grid.Column="2" />
+							</Grid>
+						</MenuItem.Header>
+
+					</MenuItem>
+
+					<Separator />
+					<MenuItem Classes="Menu InnerMenu" Command="{Binding ElementName=HostWindow, Path=ColorSelect}"
+							  Header="Change Colors..." />
+					<Separator />
+
+					<MenuItem Classes="Menu InnerMenu" Header="Layout Orientation">
+						
+						<MenuItem Classes="Menu InnerMenu" Header="Dynamic"
+								  Command="{Binding Path=SetLayoutOrientationCommand}" CommandParameter="Dynamic">
+							<MenuItem.Icon>
+								<RadioButton Classes="Menu" GroupName="LayoutOrientation" IsChecked="{Binding Path=DynamicLayoutOrientation, Mode=OneWay}"
+											 Command="{Binding Path=SetLayoutOrientationCommand}" CommandParameter="Dynamic" />
+							</MenuItem.Icon>
+						</MenuItem>
+
+						<MenuItem Classes="Menu InnerMenu" Header="Horizontal"
+								  Command="{Binding Path=SetLayoutOrientationCommand}" CommandParameter="Horizontal">
+							<MenuItem.Icon>
+								<RadioButton Classes="Menu" GroupName="LayoutOrientation" IsChecked="{Binding Path=HorizontalLayoutOrientation, Mode=OneWay}"
+											 Command="{Binding Path=SetLayoutOrientationCommand}" CommandParameter="Horizontal" />
+							</MenuItem.Icon>
+						</MenuItem>
+
+						<MenuItem Classes="Menu InnerMenu" Header="Vertical"
+								  Command="{Binding Path=SetLayoutOrientationCommand}" CommandParameter="Vertical">
+							<MenuItem.Icon>
+								<RadioButton Classes="Menu" GroupName="LayoutOrientation" IsChecked="{Binding Path=VerticalLayoutOrientation, Mode=OneWay}"
+											 Command="{Binding Path=SetLayoutOrientationCommand}" CommandParameter="Vertical" />
+							</MenuItem.Icon>
+						</MenuItem>
+						
+					</MenuItem>
+
+					<MenuItem Classes="Menu InnerMenu" Header="Map Orientation">
+
+						<MenuItem Classes="Menu InnerMenu" Header="Dynamic"
+								  Command="{Binding Path=SetMapOrientationCommand}" CommandParameter="Dynamic">
+							<MenuItem.Icon>
+								<RadioButton Classes="Menu" GroupName="MapOrientation" IsChecked="{Binding Path=DynamicMapOrientation, Mode=OneWay}"
+											 Command="{Binding Path=SetMapOrientationCommand}" CommandParameter="Dynamic" />
+							</MenuItem.Icon>
+						</MenuItem>
+
+						<MenuItem Classes="Menu InnerMenu" Header="Horizontal"
+								  Command="{Binding Path=SetMapOrientationCommand}" CommandParameter="Horizontal">
+							<MenuItem.Icon>
+								<RadioButton Classes="Menu" GroupName="MapOrientation" IsChecked="{Binding Path=HorizontalMapOrientation, Mode=OneWay}"
+											 Command="{Binding Path=SetMapOrientationCommand}" CommandParameter="Horizontal" />
+							</MenuItem.Icon>
+						</MenuItem>
+
+						<MenuItem Classes="Menu InnerMenu" Header="Vertical"
+								  Command="{Binding Path=SetMapOrientationCommand}" CommandParameter="Vertical">
+							<MenuItem.Icon>
+								<RadioButton Classes="Menu" GroupName="MapOrientation" IsChecked="{Binding Path=VerticalMapOrientation, Mode=OneWay}"
+											 Command="{Binding Path=SetMapOrientationCommand}" CommandParameter="Vertical" />
+							</MenuItem.Icon>
+						</MenuItem>
+
+					</MenuItem>
+
+					<MenuItem Classes="Menu InnerMenu" Header="Horizontal Items Placement">
+
+						<MenuItem Classes="Menu InnerMenu" Header="Left"
+								  Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Left">
+							<MenuItem.Icon>
+								<RadioButton Classes="Menu" GroupName="HorizontalItemsPlacement" IsChecked="{Binding Path=LeftHorizontalItemsPlacement, Mode=OneWay}"
+											 Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Left" />
+							</MenuItem.Icon>
+						</MenuItem>
+
+						<MenuItem Classes="Menu InnerMenu" Header="Right"
+								  Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Right">
+							<MenuItem.Icon>
+								<RadioButton Classes="Menu" GroupName="HorizontalItemsPlacement" IsChecked="{Binding Path=RightHorizontalItemsPlacement, Mode=OneWay}"
+											 Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Right" />
+							</MenuItem.Icon>
+						</MenuItem>
+
+					</MenuItem>
+
+					<MenuItem Classes="Menu InnerMenu" Header="Vertical Items Placement">
+
+						<MenuItem Classes="Menu InnerMenu" Header="Top"
+								  Command="{Binding Path=SetVerticalItemsPlacementCommand}" CommandParameter="Top">
+							<MenuItem.Icon>
+								<RadioButton Classes="Menu" GroupName="VerticalItemsPlacement" IsChecked="{Binding Path=TopVerticalItemsPlacement, Mode=OneWay}"
+											 Command="{Binding Path=SetVerticalItemsPlacementCommand}" CommandParameter="Top" />
+							</MenuItem.Icon>
+						</MenuItem>
+
+						<MenuItem Classes="Menu InnerMenu" Header="Bottom"
+								  Command="{Binding Path=SetVerticalItemsPlacementCommand}" CommandParameter="Bottom">
+							<MenuItem.Icon>
+								<RadioButton Classes="Menu" GroupName="VerticalItemsPlacement" IsChecked="{Binding Path=BottomVerticalItemsPlacement, Mode=OneWay}"
+											 Command="{Binding Path=SetVerticalItemsPlacementCommand}" CommandParameter="Bottom" />
+							</MenuItem.Icon>
+						</MenuItem>
+
+					</MenuItem>
+
+				</MenuItem>
+				
+			</Menu>
+		</Border>
+
+		<!-- UI Panels -->
+		<DockPanel DockPanel.Dock="{Binding ElementName=HostWindow, Path=UIPanelDock, Mode=OneWay}"
+				   HorizontalAlignment="{Binding ElementName=HostWindow, Path=UIPanelHorizontalAlignment,
+				   Mode=OneWay}" VerticalAlignment="{Binding ElementName=HostWindow,
+				   Path=UIPanelHorizontalAlignment, Mode=OneWay}">
+
+			<!-- Items Panel -->
+			<Border Classes="ControlBorder" Margin="{Binding ElementName=HostWindow, Path=ItemsPanelMargin,
+					Mode=OneWay}" DockPanel.Dock="{Binding ElementName=HostWindow, Path=UIPanelOrientationDock,
+					Mode=OneWay}">
+				<StackPanel Orientation="Vertical">
+
+					<Border Classes="UIPanelTitle ItemsPanelTitle">
+						<Grid ColumnDefinitions="Auto,*,Auto">
+
+							<TextBlock Classes="UIPanelTitleText" Grid.Column="0" Text="Items" />
+
+							<!-- Mode Settings Button and Popup -->
+							<Panel Grid.Column="2">
+
+								<Image Source="avares://OpenTracker/Assets/Images/settings.png" PointerReleased="OpenModeSettingsPopup"
+									   ToolTip.Tip="Mode Settings" />
+
+								<view:ModeSettingsControl DataContext="{Binding Path=ModeSettings}" />
+
+							</Panel>
+
+						</Grid>
+					</Border>
+
+					<Border Classes="UIPanelBody ItemsPanelBody">
+						<StackPanel Orientation="Horizontal">
+
+							<ItemsControl Items="{Binding Path=Items}">
+
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="238" MaxHeight="200"
+												   Orientation="Horizontal" HorizontalAlignment="Left"
+												   VerticalAlignment="Top" />
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<view:ItemControl />
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+
+							</ItemsControl>
+
+							<Grid Margin="6,0,4,0" ColumnDefinitions="Auto,Auto,Auto,Auto,Auto"
+								  RowDefinitions="24,Auto" VerticalAlignment="Top" HorizontalAlignment="Left">
+
+								<StackPanel Orientation="Horizontal" IsHitTestVisible="{Binding Path=ModeSettings.SmallKeyShuffle}"
+											IsVisible="{Binding Path=ModeSettings.SmallKeyShuffle}" Grid.Column="0" Grid.ColumnSpan="5"
+											VerticalAlignment="Top">
+
+									<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/hc.png" />
+
+									<ItemsControl Items="{Binding Path=HCItems}">
+
+										<ItemsControl.ItemsPanel>
+											<ItemsPanelTemplate>
+												<Panel Height="16" Width="16" Margin="2,0,1,0" />
+											</ItemsPanelTemplate>
+										</ItemsControl.ItemsPanel>
+
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>
+												<view:DungeonItemControl />
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+
+									</ItemsControl>
+
+									<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/at.png" />
+
+									<ItemsControl Items="{Binding Path=ATItems}">
+
+										<ItemsControl.ItemsPanel>
+											<ItemsPanelTemplate>
+												<Panel Height="16" Width="16" Margin="2,0,0,0" />
+											</ItemsPanelTemplate>
+										</ItemsControl.ItemsPanel>
+
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>
+												<view:DungeonItemControl />
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+
+									</ItemsControl>
+
+								</StackPanel>
+
+								<StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left"
+											Margin="0,0,2,0">
+									<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/ep.png" />
+									<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/dp.png" />
+									<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/th.png" />
+									<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/pd.png" />
+									<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/sp.png" />
+									<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/sw.png" />
+									<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/tt.png" />
+									<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/ip.png" />
+									<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/mm.png" />
+									<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/tr.png" />
+									<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/gt.png"
+										   IsHitTestVisible="{Binding Path=SmallKeyShuffle}" IsVisible="{Binding Path=SmallKeyShuffle}" />
+								</StackPanel>
+
+								<ItemsControl Grid.Column="1" Grid.Row="1" Items="{Binding Path=SmallKeyItems}"
+											  HorizontalAlignment="Left" VerticalAlignment="Top"
+											  IsHitTestVisible="{Binding Path=ModeSettings.SmallKeyShuffle}"
+											  IsVisible="{Binding Path=ModeSettings.SmallKeyShuffle}">
+
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<StackPanel Width="16" Orientation="Vertical" />
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<view:DungeonItemControl />
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+
+								</ItemsControl>
+
+								<ItemsControl Grid.Column="2" Grid.Row="1" Items="{Binding Path=BigKeyItems}"
+											  HorizontalAlignment="Left" VerticalAlignment="Top"
+											  IsHitTestVisible="{Binding Path=ModeSettings.BigKeyShuffle}"
+											  IsVisible="{Binding Path=ModeSettings.BigKeyShuffle}">
+
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<StackPanel Width="16" Orientation="Vertical" />
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<view:DungeonItemControl />
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+
+								</ItemsControl>
+
+								<ItemsControl Grid.Column="3" Grid.Row="1" Items="{Binding Path=Prizes}"
+											  HorizontalAlignment="Left" VerticalAlignment="Top">
+
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<StackPanel Width="16" Orientation="Vertical" />
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<view:DungeonPrizeControl />
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+
+								</ItemsControl>
+
+								<ItemsControl Grid.Column="4" Grid.Row="1" Items="{Binding Path=Bosses}"
+											  HorizontalAlignment="Left" VerticalAlignment="Top">
+
+									<ItemsControl.ItemsPanel>
+										<ItemsPanelTemplate>
+											<StackPanel Width="16" Orientation="Vertical" IsHitTestVisible="{Binding
+													Path=ModeSettings.BossShuffle}" IsVisible="{Binding Path=ModeSettings.BossShuffle}" />
+										</ItemsPanelTemplate>
+									</ItemsControl.ItemsPanel>
+
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<view:BossControl />
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+
+								</ItemsControl>
+
+							</Grid>
+
+						</StackPanel>
+					</Border>
+
+				</StackPanel>
+			</Border>
+
+			<!-- Locations Panel -->
+			<Border Classes="ControlBorder" Margin="{Binding ElementName=HostWindow, Path=LocationsPanelMargin,
+					Mode=OneWay}">
+				<Grid RowDefinitions="Auto, *" VerticalAlignment="Stretch">
+
+					<Border Classes="UIPanelTitle LocationsPanelTitle" Grid.Row="0">
+						<TextBlock Classes="UIPanelTitleText" Text="Locations" />
+					</Border>
+
+					<Border Classes="UIPanelBody LocationsPanelBody" Grid.Row="1">
+						<ItemsControl Items="{Binding Path=Locations}">
+
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<WrapPanel Orientation="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow},
+										   Path=MapPanelOrientation, Mode=OneWay}" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<view:LocationControl Margin="1" />
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+
+						</ItemsControl>
+					</Border>
+
+				</Grid>
+			</Border>
+		
+		</DockPanel>
+
+		<!-- Map Area -->
+		<Panel>
+			<Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+				<ItemsControl x:Name="MapItemsControl" Items="{Binding Path=Maps}">
+					
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Orientation="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow},
+										Path=MapPanelOrientation, Mode=OneWay}" />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<view:MapControl />
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				
+				</ItemsControl>
+			</Viewbox>
+		</Panel>
+	
+	</DockPanel>
 
 </Window>

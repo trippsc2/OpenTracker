@@ -6,6 +6,7 @@ namespace OpenTracker.Models
 {
     public class Game
     {
+        public AutoTracker AutoTracker { get; }
         public Mode Mode { get; }
         public BossDictionary Bosses { get; }
         public ItemDictionary Items { get; }
@@ -14,6 +15,7 @@ namespace OpenTracker.Models
 
         public Game()
         {
+            AutoTracker = new AutoTracker();
             Mode = new Mode()
             {
                 ItemPlacement = ItemPlacement.Advanced,
@@ -30,7 +32,7 @@ namespace OpenTracker.Models
             Locations = new LocationDictionary(Enum.GetValues(typeof(LocationID)).Length);
 
             foreach (ItemType type in Enum.GetValues(typeof(ItemType)))
-                Items.Add(type, new Item(type));
+                Items.Add(type, new Item(this, type));
 
             foreach (BossType type in Enum.GetValues(typeof(BossType)))
                 Bosses.Add(type, new Boss(this, type));

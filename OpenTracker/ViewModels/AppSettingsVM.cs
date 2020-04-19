@@ -9,13 +9,10 @@ using System.ComponentModel;
 namespace OpenTracker.ViewModels
 {
     [Serializable()]
-    public class AppSettingsVM : INotifyPropertyChanged, IDialogRequestClose
+    public class AppSettingsVM : IAppSettingsVM
     {
         [field: NonSerialized()]
         public event PropertyChangedEventHandler PropertyChanged;
-
-        [field: NonSerialized()]
-        public event EventHandler<DialogCloseRequestedEventArgs> CloseRequested;
 
         private bool _displayAllLocations;
         public bool DisplayAllLocations
@@ -27,6 +24,62 @@ namespace OpenTracker.ViewModels
                 {
                     _displayAllLocations = value;
                     OnPropertyChanged(nameof(DisplayAllLocations));
+                }
+            }
+        }
+
+        private LayoutOrientation _layoutOrientation;
+        public LayoutOrientation LayoutOrientation
+        {
+            get => _layoutOrientation;
+            set
+            {
+                if (_layoutOrientation != value)
+                {
+                    _layoutOrientation = value;
+                    OnPropertyChanged(nameof(LayoutOrientation));
+                }
+            }
+        }
+
+        private MapOrientation _mapOrientation;
+        public MapOrientation MapOrientation
+        {
+            get => _mapOrientation;
+            set
+            {
+                if (_mapOrientation != value)
+                {
+                    _mapOrientation = value;
+                    OnPropertyChanged(nameof(MapOrientation));
+                }
+            }
+        }
+
+        private HorizontalItemsPlacement _horizontalItemsPlacement;
+        public HorizontalItemsPlacement HorizontalItemsPlacement
+        {
+            get => _horizontalItemsPlacement;
+            set
+            {
+                if (_horizontalItemsPlacement != value)
+                {
+                    _horizontalItemsPlacement = value;
+                    OnPropertyChanged(nameof(HorizontalItemsPlacement));
+                }
+            }
+        }
+
+        private VerticalItemsPlacement _verticalItemsPlacement;
+        public VerticalItemsPlacement VerticalItemsPlacement
+        {
+            get => _verticalItemsPlacement;
+            set
+            {
+                if (_verticalItemsPlacement != value)
+                {
+                    _verticalItemsPlacement = value;
+                    OnPropertyChanged(nameof(VerticalItemsPlacement));
                 }
             }
         }
@@ -130,8 +183,7 @@ namespace OpenTracker.ViewModels
 
         private void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

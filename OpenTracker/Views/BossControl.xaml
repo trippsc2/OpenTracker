@@ -5,17 +5,14 @@
              xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.BossControl">
-  <UserControl.Resources>
-
-    <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
-
-  </UserControl.Resources>
-
-  <Panel PointerReleased="OnClick" Height="16" Width="16">
-
-    <Image Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}"
-           Height="16" Width="16" />
-
-  </Panel>
-
+	
+	<UserControl.Resources>
+		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />
+	</UserControl.Resources>
+	
+	<Panel Classes="DungeonItem" PointerReleased="OnClick">
+		<Image Classes="DungeonItem" Source="{Binding Path=ImageSource, Converter={StaticResource
+			   BitmapValueConverter}}" />
+	</Panel>
+	
 </UserControl>

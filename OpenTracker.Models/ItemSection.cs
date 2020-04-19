@@ -2,6 +2,7 @@
 using OpenTracker.Models.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 
 namespace OpenTracker.Models
@@ -21,12 +22,18 @@ namespace OpenTracker.Models
         private readonly Dictionary<RegionID, bool> _regionIsSubscribed;
         private readonly Dictionary<ItemType, Mode> _itemSubscriptions;
         private readonly Dictionary<ItemType, bool> _itemIsSubscribed;
+        private readonly Action _autoTrack;
+        private readonly bool _subscribeToRoomMemory;
+        private readonly bool _subscribeToOverworldEventMemory;
+        private readonly bool _subscribeToItemMemory;
+        private readonly bool _subscribeToNPCItemMemory;
 
         public string Name { get; }
         public int Total { get; private set; }
         public bool HasMarking { get; }
         public Mode RequiredMode { get; }
         public Func<AccessibilityLevel> GetAccessibility { get; }
+        public bool UserManipulated { get; set; }
 
         public event PropertyChangingEventHandler PropertyChanging;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -92,6 +99,16 @@ namespace OpenTracker.Models
                     Name = "Pedestal";
                     HasMarking = true;
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 128, 64);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToOverworldEventMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Regions[RegionID.LightWorld].Accessibility >= AccessibilityLevel.SequenceBreak)
@@ -129,6 +146,16 @@ namespace OpenTracker.Models
                     Name = "Cave";
                     HasMarking = true;
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 453, 2);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -165,6 +192,24 @@ namespace OpenTracker.Models
                     _baseTotal = 4;
                     Name = "Main";
 
+                    _autoTrack = () =>
+                    {
+                        (MemorySegmentType, int, byte)[] addressFlags = new (MemorySegmentType, int, byte)[4]
+                        {
+                            (MemorySegmentType.Room, 570, 32),
+                            (MemorySegmentType.Room, 570, 64),
+                            (MemorySegmentType.Room, 570, 128),
+                            (MemorySegmentType.Room, 571, 1)
+                        };
+
+                        int? result = _game.AutoTracker.CheckMemoryFlagArray(addressFlags);
+
+                        if (result.HasValue)
+                            Available = Total - result.Value;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -188,6 +233,16 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Bomb";
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 570, 16);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -213,6 +268,24 @@ namespace OpenTracker.Models
                     _baseTotal = 4;
                     Name = "Cave";
 
+                    _autoTrack = () =>
+                    {
+                        (MemorySegmentType, int, byte)[] addressFlags = new (MemorySegmentType, int, byte)[4]
+                        {
+                            (MemorySegmentType.Room, 94, 32),
+                            (MemorySegmentType.Room, 94, 64),
+                            (MemorySegmentType.Room, 94, 128),
+                            (MemorySegmentType.Room, 95, 1)
+                        };
+
+                        int? result = _game.AutoTracker.CheckMemoryFlagArray(addressFlags);
+
+                        if (result.HasValue)
+                            Available = Total - result.Value;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -237,6 +310,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Bomb";
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 94, 16);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -259,7 +342,18 @@ namespace OpenTracker.Models
                 case LocationID.BottleVendor:
 
                     _baseTotal = 1;
-                    Name = "This Jerk";
+                    Name = "Man";
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 137, 2);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToItemMemory = true;
+
                     GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
@@ -269,6 +363,16 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Bombable Wall";
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 528, 16);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -294,6 +398,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Back Room";
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 518, 16);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -318,6 +432,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "By The Bed";
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 4);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToNPCItemMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Items.Has(ItemType.Bottle))
@@ -335,6 +459,16 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Magic Bowl";
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 128);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToNPCItemMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -399,6 +533,16 @@ namespace OpenTracker.Models
                     Name = "Take This Trash";
                     HasMarking = true;
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 40, 64);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToOverworldEventMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -457,6 +601,16 @@ namespace OpenTracker.Models
                     Name = "On The Shelf";
                     HasMarking = true;
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 128);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToNPCItemMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -492,6 +646,16 @@ namespace OpenTracker.Models
                     Name = "Shroom";
                     HasMarking = true;
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 16);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToNPCItemMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -518,6 +682,16 @@ namespace OpenTracker.Models
 
                     RequiredMode = new Mode() { EntranceShuffle = false };
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 451, 2);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
@@ -527,6 +701,16 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Uncle";
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 134, 1);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToItemMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -552,6 +736,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Hallway";
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 170, 16);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -576,6 +770,22 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "By The Door";
 
+                    _autoTrack = () =>
+                    {
+                        (MemorySegmentType, int, byte)[] addressFlags = new (MemorySegmentType, int, byte)[2]
+                        {
+                            (MemorySegmentType.Room, 1, 4),
+                            (MemorySegmentType.Room, 520, 16)
+                        };
+
+                        int? result = _game.AutoTracker.CheckMemoryFlagArray(addressFlags);
+
+                        if (result.HasValue)
+                            Available = result.Value > 0 ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () => { return _game.Regions[RegionID.LightWorld].Accessibility; };
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
@@ -585,6 +795,16 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Hidden Treasure";
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 32);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToNPCItemMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -614,6 +834,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Ledge";
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 91, 64);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToOverworldEventMemory = true;
+
                     GetAccessibility = () => { return _game.Regions[RegionID.DarkWorldEast].Accessibility; };
 
                     _regionSubscriptions.Add(RegionID.DarkWorldEast, new Mode());
@@ -623,6 +853,22 @@ namespace OpenTracker.Models
 
                     _baseTotal = 2;
                     Name = "Big Bomb Spot";
+
+                    _autoTrack = () =>
+                    {
+                        (MemorySegmentType, int, byte)[] addressFlags = new (MemorySegmentType, int, byte)[2]
+                        {
+                            (MemorySegmentType.Room, 556, 16),
+                            (MemorySegmentType.Room, 556, 32)
+                        };
+
+                        int? result = _game.AutoTracker.CheckMemoryFlagArray(addressFlags);
+
+                        if (result.HasValue)
+                            Available = Total - result.Value;
+                    };
+
+                    _subscribeToRoomMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -683,6 +929,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Stumpy";
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 8);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToNPCItemMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -706,6 +962,25 @@ namespace OpenTracker.Models
 
                     _baseTotal = 5;
                     Name = "Cave";
+
+                    _autoTrack = () =>
+                    {
+                        (MemorySegmentType, int, byte)[] addressFlags = new (MemorySegmentType, int, byte)[5]
+                        {
+                            (MemorySegmentType.Room, 572, 16),
+                            (MemorySegmentType.Room, 572, 32),
+                            (MemorySegmentType.Room, 572, 64),
+                            (MemorySegmentType.Room, 572, 128),
+                            (MemorySegmentType.Room, 573, 4)
+                        };
+
+                        int? result = _game.AutoTracker.CheckMemoryFlagArray(addressFlags);
+
+                        if (result.HasValue)
+                            Available = Total - result.Value;
+                    };
+
+                    _subscribeToRoomMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -731,6 +1006,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Tablet";
                     HasMarking = true;
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 2);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToNPCItemMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -775,6 +1060,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Circle of Bushes";
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 567, 4);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -804,6 +1099,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Dig For Treasure";
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 104, 64);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToOverworldEventMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -827,6 +1132,16 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Assistant";
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 32);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToNPCItemMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -855,6 +1170,22 @@ namespace OpenTracker.Models
 
                     _baseTotal = 2;
                     Name = "Waterfall Cave";
+
+                    _autoTrack = () =>
+                    {
+                        (MemorySegmentType, int, byte)[] addressFlags = new (MemorySegmentType, int, byte)[2]
+                        {
+                            (MemorySegmentType.Room, 552, 16),
+                            (MemorySegmentType.Room, 552, 32)
+                        };
+
+                        int? result = _game.AutoTracker.CheckMemoryFlagArray(addressFlags);
+
+                        if (result.HasValue)
+                            Available = Total - result.Value;
+                    };
+
+                    _subscribeToRoomMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -896,6 +1227,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "King Zora";
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 2);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToNPCItemMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -935,6 +1276,16 @@ namespace OpenTracker.Models
                     Name = "Ledge";
                     HasMarking = true;
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 129, 64);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToOverworldEventMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -972,6 +1323,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Ring of Stones";
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 32);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToNPCItemMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -1000,6 +1361,23 @@ namespace OpenTracker.Models
                     _baseTotal = 3;
                     Name = "Back Room";
 
+                    _autoTrack = () =>
+                    {
+                        (MemorySegmentType, int, byte)[] addressFlags = new (MemorySegmentType, int, byte)[3]
+                        {
+                            (MemorySegmentType.Room, 522, 16),
+                            (MemorySegmentType.Room, 522, 32),
+                            (MemorySegmentType.Room, 522, 64)
+                        };
+
+                        int? result = _game.AutoTracker.CheckMemoryFlagArray(addressFlags);
+
+                        if (result.HasValue)
+                            Available = Total - result.Value;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -1022,7 +1400,17 @@ namespace OpenTracker.Models
                 case LocationID.SahasrahlasHut:
 
                     _baseTotal = 1;
-                    Name = "Shabba";
+                    Name = "Saha";
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 16);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToNPCItemMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -1041,6 +1429,16 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Cave";
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 584, 16);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -1069,6 +1467,16 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "The Crypt";
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 550, 16);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -1113,6 +1521,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Cave";
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 567, 2);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -1142,6 +1560,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Ledge";
                     HasMarking = true;
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 48, 64);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToOverworldEventMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -1202,6 +1630,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Cave";
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 532, 16);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -1225,6 +1663,16 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "House";
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 568, 16);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -1250,6 +1698,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Prize";
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 525, 4);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -1274,6 +1732,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Downstairs";
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 524, 16);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -1297,6 +1765,16 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "House";
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 4);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToNPCItemMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -1354,6 +1832,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Show To Gary";
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 137, 16);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToItemMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -1401,6 +1889,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Cave";
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 591, 4);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -1444,6 +1942,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Ledge";
                     HasMarking = true;
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 74, 64);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToOverworldEventMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -1518,6 +2026,16 @@ namespace OpenTracker.Models
                     Name = "Inside";
                     RequiredMode = new Mode() { EntranceShuffle = false };
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 534, 16);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -1541,6 +2059,16 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Outside";
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 59, 64);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToOverworldEventMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -1566,6 +2094,25 @@ namespace OpenTracker.Models
                     _baseTotal = 5;
                     Name = "Cave";
 
+                    _autoTrack = () =>
+                    {
+                        (MemorySegmentType, int, byte)[] addressFlags = new (MemorySegmentType, int, byte)[5]
+                        {
+                            (MemorySegmentType.Room, 582, 16),
+                            (MemorySegmentType.Room, 582, 32),
+                            (MemorySegmentType.Room, 582, 64),
+                            (MemorySegmentType.Room, 582, 128),
+                            (MemorySegmentType.Room, 583, 4)
+                        };
+
+                        int? result = _game.AutoTracker.CheckMemoryFlagArray(addressFlags);
+
+                        if (result.HasValue)
+                            Available = Total - result.Value;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -1589,6 +2136,16 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Cave";
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 576, 16);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -1614,6 +2171,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Island";
                     HasMarking = true;
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 53, 64);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToOverworldEventMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -1679,6 +2246,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Under The Bridge";
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 137, 1);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToItemMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -1716,6 +2293,22 @@ namespace OpenTracker.Models
                     _baseTotal = 2;
                     Name = "Shack";
 
+                    _autoTrack = () =>
+                    {
+                        (MemorySegmentType, int, byte)[] addressFlags = new (MemorySegmentType, int, byte)[2]
+                        {
+                            (MemorySegmentType.Room, 538, 16),
+                            (MemorySegmentType.Room, 538, 32)
+                        };
+
+                        int? result = _game.AutoTracker.CheckMemoryFlagArray(addressFlags);
+
+                        if (result.HasValue)
+                            Available = Total - result.Value;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -1745,6 +2338,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Cave";
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 589, 2);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -1772,7 +2375,17 @@ namespace OpenTracker.Models
                 case LocationID.OldMan:
 
                     _baseTotal = 1;
-                    Name = "Bring Him Home";
+                    Name = "Old Man";
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 1);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToNPCItemMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -1793,6 +2406,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Cave";
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 469, 4);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     RequiredMode = new Mode() { EntranceShuffle = false };
 
                     GetAccessibility = () => { return _game.Regions[RegionID.DeathMountainWestBottom].Accessibility; };
@@ -1803,8 +2426,18 @@ namespace OpenTracker.Models
                 case LocationID.SpectacleRock:
 
                     _baseTotal = 1;
-                    Name = "Up On Top";
+                    Name = "Top";
                     HasMarking = true;
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 3, 64);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToOverworldEventMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -1846,6 +2479,16 @@ namespace OpenTracker.Models
                     Name = "Tablet";
                     HasMarking = true;
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 1);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToNPCItemMemory = true;
+
                     GetAccessibility = () =>
                     {
                         AccessibilityLevel dMWestTop = AccessibilityLevel.None;
@@ -1876,6 +2519,16 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Cave";
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 558, 16);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -1925,6 +2578,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Cave";
 
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 508, 16);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -1948,6 +2611,22 @@ namespace OpenTracker.Models
 
                     _baseTotal = 2;
                     Name = "Bottom";
+
+                    _autoTrack = () =>
+                    {
+                        (MemorySegmentType, int, byte)[] addressFlags = new (MemorySegmentType, int, byte)[2]
+                        {
+                            (MemorySegmentType.Room, 510, 16),
+                            (MemorySegmentType.Room, 510, 32)
+                        };
+
+                        int? result = _game.AutoTracker.CheckMemoryFlagArray(addressFlags);
+
+                        if (result.HasValue)
+                            Available = Total - result.Value;
+                    };
+
+                    _subscribeToRoomMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -1973,6 +2652,25 @@ namespace OpenTracker.Models
                     _baseTotal = 5;
                     Name = "Top";
 
+                    _autoTrack = () =>
+                    {
+                        (MemorySegmentType, int, byte)[] addressFlags = new (MemorySegmentType, int, byte)[5]
+                        {
+                            (MemorySegmentType.Room, 478, 16),
+                            (MemorySegmentType.Room, 478, 32),
+                            (MemorySegmentType.Room, 478, 64),
+                            (MemorySegmentType.Room, 478, 128),
+                            (MemorySegmentType.Room, 479, 1)
+                        };
+
+                        int? result = _game.AutoTracker.CheckMemoryFlagArray(addressFlags);
+
+                        if (result.HasValue)
+                            Available = Total - result.Value;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -1996,6 +2694,22 @@ namespace OpenTracker.Models
 
                     _baseTotal = 2;
                     Name = "Cave";
+
+                    _autoTrack = () =>
+                    {
+                        (MemorySegmentType, int, byte)[] addressFlags = new (MemorySegmentType, int, byte)[2]
+                        {
+                            (MemorySegmentType.Room, 496, 16),
+                            (MemorySegmentType.Room, 496, 32)
+                        };
+
+                        int? result = _game.AutoTracker.CheckMemoryFlagArray(addressFlags);
+
+                        if (result.HasValue)
+                            Available = Total - result.Value;
+                    };
+
+                    _subscribeToRoomMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -2023,6 +2737,16 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Bonkable Chest";
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 120, 128);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -2068,6 +2792,23 @@ namespace OpenTracker.Models
                     _baseTotal = 3;
                     Name = "Back";
 
+                    _autoTrack = () =>
+                    {
+                        (MemorySegmentType, int, byte)[] addressFlags = new (MemorySegmentType, int, byte)[3]
+                        {
+                            (MemorySegmentType.Room, 120, 16),
+                            (MemorySegmentType.Room, 120, 32),
+                            (MemorySegmentType.Room, 120, 64)
+                        };
+
+                        int? result = _game.AutoTracker.CheckMemoryFlagArray(addressFlags);
+
+                        if (result.HasValue)
+                            Available = Total - result.Value;
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
@@ -2098,6 +2839,16 @@ namespace OpenTracker.Models
                     _baseTotal = 1;
                     Name = "Island";
                     HasMarking = true;
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 5, 64);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToOverworldEventMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -2141,6 +2892,16 @@ namespace OpenTracker.Models
 
                     _baseTotal = 1;
                     Name = "Cave";
+
+                    _autoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 536, 16);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _subscribeToRoomMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -4722,6 +5483,8 @@ namespace OpenTracker.Models
             UpdateItemSubscriptions();
 
             UpdateAccessibility();
+
+            SubscribeToAutoTracker();
         }
 
         private void OnPropertyChanging(string propertyName)
@@ -4769,6 +5532,27 @@ namespace OpenTracker.Models
         private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateAccessibility();
+        }
+
+        private void OnMemoryCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (_game.AutoTracker.IsInGame() && !UserManipulated)
+                _autoTrack();
+        }
+
+        private void SubscribeToAutoTracker()
+        {
+            if (_subscribeToRoomMemory)
+                _game.AutoTracker.NPCItemMemory.CollectionChanged += OnMemoryCollectionChanged;
+
+            if (_subscribeToOverworldEventMemory)
+                _game.AutoTracker.OverworldEventMemory.CollectionChanged += OnMemoryCollectionChanged;
+
+            if (_subscribeToItemMemory)
+                _game.AutoTracker.ItemMemory.CollectionChanged += OnMemoryCollectionChanged;
+
+            if (_subscribeToNPCItemMemory)
+                _game.AutoTracker.NPCItemMemory.CollectionChanged += OnMemoryCollectionChanged;
         }
 
         private void UpdateRegionSubscriptions()

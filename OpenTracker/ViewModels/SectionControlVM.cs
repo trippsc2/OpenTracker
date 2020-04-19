@@ -188,6 +188,7 @@ namespace OpenTracker.ViewModels
             _section.PropertyChanging += OnSectionChanging;
             _section.PropertyChanged += OnSectionChanged;
 
+            UpdateTextColor();
             UpdateImage();
             UpdateBossVisibility();
             UpdateMarkingImage();
@@ -256,7 +257,7 @@ namespace OpenTracker.ViewModels
         private void UpdateTextColor()
         {
             if (_section.Accessibility == AccessibilityLevel.Normal)
-                FontColor = new SolidColorBrush(new Color(255, 245, 245, 245));
+                FontColor = new SolidColorBrush(new Color(255, 255, 255, 255));
             else
                 FontColor = _appSettings.AccessibilityColors[_section.Accessibility];
         }
@@ -349,7 +350,7 @@ namespace OpenTracker.ViewModels
         private void UpdateMarkingImage()
         {
             if (_section.Marking == null)
-                MarkingSource = "avares://OpenTracker/Assets/Images/Items/visible-empty.png";
+                MarkingSource = "avares://OpenTracker/Assets/Images/Items/unknown1.png";
             else
             {
                 int itemNumber = 0;

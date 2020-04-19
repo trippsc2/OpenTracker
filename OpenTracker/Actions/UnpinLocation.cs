@@ -6,12 +6,12 @@ namespace OpenTracker.Actions
 {
     public class UnpinLocation : IUndoable
     {
-        private readonly ObservableCollection<PinnedLocationControlVM> _pinnedLocations;
-        private readonly PinnedLocationControlVM _pinnedLocation;
+        private readonly ObservableCollection<LocationControlVM> _pinnedLocations;
+        private readonly LocationControlVM _pinnedLocation;
         private int? _existingIndex;
 
-        public UnpinLocation(ObservableCollection<PinnedLocationControlVM> pinnedLocations,
-            PinnedLocationControlVM pinnedLocation)
+        public UnpinLocation(ObservableCollection<LocationControlVM> pinnedLocations,
+            LocationControlVM pinnedLocation)
         {
             _pinnedLocations = pinnedLocations;
             _pinnedLocation = pinnedLocation;

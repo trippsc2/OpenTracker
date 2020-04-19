@@ -4,10 +4,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <ApplicationIcon>triforce.ico</ApplicationIcon>
     <Win32Resource />
-    <Version>0.7.6</Version>
+    <Version>0.8.0</Version>
     <Authors>Tripp</Authors>
-    <AssemblyVersion>0.7.6.0</AssemblyVersion>
-    <FileVersion>0.7.6.0</FileVersion>
+    <AssemblyVersion>0.8.0.0</AssemblyVersion>
+    <FileVersion>0.8.0.0</FileVersion>
     <RuntimeIdentifiers>osx-x64;linux-x64;debian-x64;rhel-x64;win-x64;win-x86;win7-x64;win7-x86</RuntimeIdentifiers>
   </PropertyGroup>
   <ItemGroup>
@@ -20,24 +20,29 @@
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
   <ItemGroup>
+    <AvaloniaResource Remove="Views\AutoTrackerDialog.xaml" />
     <AvaloniaResource Remove="Views\BossControl.xaml" />
     <AvaloniaResource Remove="Views\ColorPickerControl.xaml" />
     <AvaloniaResource Remove="Views\ColorSelectDialog.xaml" />
     <AvaloniaResource Remove="Views\DungeonItemControl.xaml" />
     <AvaloniaResource Remove="Views\DungeonPrizeControl.xaml" />
+    <AvaloniaResource Remove="Views\LocationControl.xaml" />
     <AvaloniaResource Remove="Views\MarkingSelectControl.xaml" />
     <AvaloniaResource Remove="Views\MessageBoxDialog.xaml" />
+    <AvaloniaResource Remove="Views\ModeSettingsControl.xaml" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Views\AutoTrackerDialog.xaml" />
     <None Remove="Views\BossControl.xaml" />
     <None Remove="Views\ColorPickerControl.xaml" />
     <None Remove="Views\ColorSelectDialog.xaml" />
     <None Remove="Views\DungeonItemControl.xaml" />
     <None Remove="Views\DungeonPrizeControl.xaml" />
+    <None Remove="Views\LocationControl.xaml" />
     <None Remove="Views\MapLocationControl.xaml" />
     <None Remove="Views\MarkingSelectControl.xaml" />
     <None Remove="Views\MessageBoxDialog.xaml" />
-    <None Remove="Views\PinnedLocationControl.xaml" />
+    <None Remove="Views\ModeSettingsControl.xaml" />
     <None Remove="Views\SectionControl.xaml" />
   </ItemGroup>
   <ItemGroup>
@@ -64,7 +69,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\PinnedLocationControl.xaml">
+    <EmbeddedResource Include="Views\LocationControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
@@ -97,16 +102,17 @@
     <ProjectReference Include="..\OpenTracker.Models\OpenTracker.Models.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
+    <Compile Update="Views\AutoTrackerDialog.xaml.cs">
+      <DependentUpon>AutoTrackerDialog.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\ItemControl.xaml.cs">
       <DependentUpon>ItemControl.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\MessageBoxDialog.xaml.cs">
       <DependentUpon>MessageBoxDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\LocationControl.xaml.cs">
+      <DependentUpon>LocationControl.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\SectionControl.xaml.cs">
       <DependentUpon>SectionControl.xaml</DependentUpon>
@@ -117,12 +123,6 @@
     <Compile Update="Views\MarkingSelectControl.xaml.cs">
       <DependentUpon>MarkingSelectControl.xaml</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Update="Views\ItemControl.xaml">
@@ -141,6 +141,19 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\ColorSelectDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\AutoTrackerDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\ModeSettingsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>

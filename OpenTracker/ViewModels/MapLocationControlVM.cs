@@ -140,7 +140,6 @@ namespace OpenTracker.ViewModels
             {
                 UpdateColor();
                 UpdateVisibility();
-                CheckLocationAvailability();
             }
         }
 
@@ -357,22 +356,6 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        private void CheckLocationAvailability()
-        {
-            ObservableCollection<PinnedLocationControlVM> pinnedLocations = _mainWindow.PinnedLocations;
-            PinnedLocationControlVM thisPinnedLocation = null;
-
-            foreach (PinnedLocationControlVM pinnedLocation in pinnedLocations)
-            {
-                if (pinnedLocation.Location == _mapLocation.Location)
-                    thisPinnedLocation = pinnedLocation;
-            }
-
-            if (thisPinnedLocation != null &&
-                _mapLocation.Location.Accessibility == AccessibilityLevel.Cleared)
-                thisPinnedLocation.Close();
-        }
-
         public void ClearAvailableSections()
         {
             bool canBeCleared = false;
@@ -393,10 +376,10 @@ namespace OpenTracker.ViewModels
 
         public void PinLocation()
         {
-            ObservableCollection<PinnedLocationControlVM> pinnedLocations = _mainWindow.PinnedLocations;
-            PinnedLocationControlVM existingPinnedLocation = null;
+            ObservableCollection<LocationControlVM> pinnedLocations = _mainWindow.Locations;
+            LocationControlVM existingPinnedLocation = null;
 
-            foreach (PinnedLocationControlVM pinnedLocation in pinnedLocations)
+            foreach (LocationControlVM pinnedLocation in pinnedLocations)
             {
                 if (pinnedLocation.Location == _mapLocation.Location)
                     existingPinnedLocation = pinnedLocation;
@@ -405,7 +388,7 @@ namespace OpenTracker.ViewModels
             if (existingPinnedLocation == null)
             {
                 _undoRedoManager.Execute(new PinLocation(pinnedLocations,
-                    new PinnedLocationControlVM(_undoRedoManager, _appSettings, _game, _mainWindow,
+                    new LocationControlVM(_undoRedoManager, _appSettings, _game, _mainWindow,
                     _mapLocation.Location)));
             }
             else if (pinnedLocations[0] != existingPinnedLocation)

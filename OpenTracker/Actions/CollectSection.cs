@@ -11,6 +11,7 @@ namespace OpenTracker.Actions
         private readonly Game _game;
         private readonly ISection _section;
         private MarkingType? _previousMarking;
+        private bool _previousUserManipulated;
         private Item _markedItem;
 
         public CollectSection(Game game, ISection section)
@@ -22,6 +23,9 @@ namespace OpenTracker.Actions
         public void Execute()
         {
             _previousMarking = _section.Marking;
+            _previousUserManipulated = _section.UserManipulated;
+
+            _section.UserManipulated = true;
 
             if (_section is ItemSection && _section.Available == 1 &&
                 _section.Marking.HasValue)
@@ -42,6 +46,7 @@ namespace OpenTracker.Actions
         {
             _section.Available++;
             _section.Marking = _previousMarking;
+            _section.UserManipulated = _previousUserManipulated;
 
             if (_markedItem != null)
                 _markedItem.Change(-1);

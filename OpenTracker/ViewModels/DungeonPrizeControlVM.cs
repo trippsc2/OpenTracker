@@ -60,9 +60,9 @@ namespace OpenTracker.ViewModels
                 if (_prizeSection.Prize == null)
                 {
                     _undoRedoManager.Execute(new ChangePrize(_prizeSection,
-                        _game.Items[ItemType.GreenPendant]));
+                        _game.Items[ItemType.Crystal]));
                 }
-                else if (_prizeSection.Prize.Type == ItemType.RedCrystal)
+                else if (_prizeSection.Prize.Type == ItemType.GreenPendant)
                     _undoRedoManager.Execute(new ChangePrize(_prizeSection, null));
                 else
                 {

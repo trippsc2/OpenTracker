@@ -1,0 +1,40 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="512"
+        WindowStartupLocation="CenterOwner"
+        x:Class="OpenTracker.Views.AutoTrackerDialog"
+        Icon="avares://OpenTracker/Assets/triforce.png"
+        Title="OpenTracker - AutoTracker" Width="420" Height="512">
+	<Border Classes="Dialog">
+		<DockPanel>
+			<StackPanel DockPanel.Dock="Top" Orientation="Vertical">
+
+				<StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
+					<Button Classes="AutoTracker" Command="{Binding Path=StartCommand}">Start</Button>
+					<Button Classes="AutoTracker" Command="{Binding Path=StopCommand}">Stop</Button>
+				</StackPanel>
+
+				<StackPanel Margin="10" HorizontalAlignment="Center" Orientation="Horizontal">
+					<TextBlock Classes="AutoTrackerStatus" Foreground="#FFFFFF">AutoTracking Status is:</TextBlock>
+					<TextBlock Classes="AutoTrackerStatus" Margin="10,0,0,0" Foreground="{Binding Path=StatusTextColor}"
+							   Text="{Binding Path=StatusText}" />
+				</StackPanel>
+
+				<ToggleButton Classes="AutoTracker" IsChecked="{Binding Path=VisibleDebugLog,
+						  Mode=TwoWay}">Show Debug Log</ToggleButton>
+
+			</StackPanel>
+
+			<Border Classes="AutoTrackerDebug" IsVisible="{Binding Path=VisibleDebugLog}"
+					IsHitTestVisible="{Binding Path=VisibleDebugLog}">
+				<ScrollViewer>
+					<TextBlock Classes="AutoTrackerStatus" Foreground="#FFFFFF" Margin="5,0"
+							   Text="{Binding DebugText}" />
+				</ScrollViewer>
+			</Border>
+
+		</DockPanel>
+	</Border>
+</Window>

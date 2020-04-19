@@ -2,6 +2,7 @@
 using OpenTracker.Models.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 
 namespace OpenTracker.Models
@@ -17,11 +18,15 @@ namespace OpenTracker.Models
         private readonly Dictionary<RegionID, bool> _regionIsSubscribed;
         private readonly Dictionary<ItemType, Mode> _itemSubscriptions;
         private readonly Dictionary<ItemType, bool> _itemIsSubscribed;
+        private readonly Action _autoTrack;
+        private readonly bool _subscribeToRoomMemory;
+        private readonly bool _subscribeToItemMemory;
         private Boss _currentBossSubscription;
 
         public string Name { get => "Boss"; }
         public bool HasMarking { get => false; }
         public Mode RequiredMode { get; }
+        public bool UserManipulated { get; set; }
         public MarkingType? Marking { get => null; set { } }
 
         public Func<AccessibilityLevel> GetAccessibility { get; }
@@ -107,6 +112,19 @@ namespace OpenTracker.Models
                     _boss = _game.Bosses[BossType.Aga];
                     Prize = _game.Items[ItemType.Aga];
 
+                    _autoTrack = () =>
+                    {
+                        if (_game.AutoTracker.ItemMemory.Count > 133)
+                        {
+                            if (_game.AutoTracker.ItemMemory[133] >= 3)
+                                Available = 0;
+                            else
+                                Available = 1;
+                        }
+                    };
+
+                    _subscribeToItemMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Regions[RegionID.Agahnim].Accessibility >= AccessibilityLevel.SequenceBreak)
@@ -136,6 +154,19 @@ namespace OpenTracker.Models
                 case LocationID.EasternPalace:
 
                     _defaultBoss = _game.Bosses[BossType.Armos];
+
+                    _autoTrack = () =>
+                    {
+                        if (_game.AutoTracker.RoomMemory.Count > 401)
+                        {
+                            if ((_game.AutoTracker.RoomMemory[401] & 8) != 0)
+                                Available = 0;
+                            else
+                                Available = 1;
+                        }
+                    };
+
+                    _subscribeToRoomMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -173,6 +204,19 @@ namespace OpenTracker.Models
 
                     _defaultBoss = _game.Bosses[BossType.Lanmolas];
 
+                    _autoTrack = () =>
+                    {
+                        if (_game.AutoTracker.RoomMemory.Count > 103)
+                        {
+                            if ((_game.AutoTracker.RoomMemory[103] & 8) != 0)
+                                Available = 0;
+                            else
+                                Available = 1;
+                        }
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Regions[RegionID.DesertPalace].Accessibility >= AccessibilityLevel.SequenceBreak)
@@ -205,6 +249,19 @@ namespace OpenTracker.Models
                 case LocationID.TowerOfHera:
 
                     _defaultBoss = _game.Bosses[BossType.Moldorm];
+
+                    _autoTrack = () =>
+                    {
+                        if (_game.AutoTracker.RoomMemory.Count > 15)
+                        {
+                            if ((_game.AutoTracker.RoomMemory[15] & 8) != 0)
+                                Available = 0;
+                            else
+                                Available = 1;
+                        }
+                    };
+
+                    _subscribeToRoomMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -248,6 +305,19 @@ namespace OpenTracker.Models
 
                     _defaultBoss = _game.Bosses[BossType.HelmasaurKing];
 
+                    _autoTrack = () =>
+                    {
+                        if (_game.AutoTracker.RoomMemory.Count > 181)
+                        {
+                            if ((_game.AutoTracker.RoomMemory[181] & 8) != 0)
+                                Available = 0;
+                            else
+                                Available = 1;
+                        }
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Regions[RegionID.PalaceOfDarkness].Accessibility >= AccessibilityLevel.SequenceBreak)
@@ -281,6 +351,19 @@ namespace OpenTracker.Models
 
                     _defaultBoss = _game.Bosses[BossType.Arrghus];
 
+                    _autoTrack = () =>
+                    {
+                        if (_game.AutoTracker.RoomMemory.Count > 13)
+                        {
+                            if ((_game.AutoTracker.RoomMemory[13] & 8) != 0)
+                                Available = 0;
+                            else
+                                Available = 1;
+                        }
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Regions[RegionID.SwampPalace].Accessibility >= AccessibilityLevel.SequenceBreak)
@@ -308,6 +391,19 @@ namespace OpenTracker.Models
 
                     _defaultBoss = _game.Bosses[BossType.Mothula];
 
+                    _autoTrack = () =>
+                    {
+                        if (_game.AutoTracker.RoomMemory.Count > 83)
+                        {
+                            if ((_game.AutoTracker.RoomMemory[83] & 8) != 0)
+                                Available = 0;
+                            else
+                                Available = 1;
+                        }
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Regions[RegionID.SkullWoods].Accessibility >= AccessibilityLevel.SequenceBreak)
@@ -333,6 +429,19 @@ namespace OpenTracker.Models
 
                     _defaultBoss = _game.Bosses[BossType.Blind];
 
+                    _autoTrack = () =>
+                    {
+                        if (_game.AutoTracker.RoomMemory.Count > 345)
+                        {
+                            if ((_game.AutoTracker.RoomMemory[345] & 8) != 0)
+                                Available = 0;
+                            else
+                                Available = 1;
+                        }
+                    };
+
+                    _subscribeToRoomMemory = true;
+
                     GetAccessibility = () =>
                     {
                         if (_game.Regions[RegionID.ThievesTown].Accessibility >= AccessibilityLevel.SequenceBreak)
@@ -355,6 +464,19 @@ namespace OpenTracker.Models
                 case LocationID.IcePalace:
 
                     _defaultBoss = _game.Bosses[BossType.Kholdstare];
+
+                    _autoTrack = () =>
+                    {
+                        if (_game.AutoTracker.RoomMemory.Count > 445)
+                        {
+                            if ((_game.AutoTracker.RoomMemory[445] & 8) != 0)
+                                Available = 0;
+                            else
+                                Available = 1;
+                        }
+                    };
+
+                    _subscribeToRoomMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -384,6 +506,19 @@ namespace OpenTracker.Models
                 case LocationID.MiseryMire:
 
                     _defaultBoss = _game.Bosses[BossType.Vitreous];
+
+                    _autoTrack = () =>
+                    {
+                        if (_game.AutoTracker.RoomMemory.Count > 289)
+                        {
+                            if ((_game.AutoTracker.RoomMemory[289] & 8) != 0)
+                                Available = 0;
+                            else
+                                Available = 1;
+                        }
+                    };
+
+                    _subscribeToRoomMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -420,6 +555,19 @@ namespace OpenTracker.Models
                 case LocationID.TurtleRock:
 
                     _defaultBoss = _game.Bosses[BossType.Trinexx];
+
+                    _autoTrack = () =>
+                    {
+                        if (_game.AutoTracker.RoomMemory.Count > 329)
+                        {
+                            if ((_game.AutoTracker.RoomMemory[329] & 8) != 0)
+                                Available = 0;
+                            else
+                                Available = 1;
+                        }
+                    };
+
+                    _subscribeToRoomMemory = true;
 
                     GetAccessibility = () =>
                     {
@@ -572,6 +720,8 @@ namespace OpenTracker.Models
             UpdateBossSubscription();
 
             UpdateAccessibility();
+
+            SubscribeToAutoTracker();
         }
 
         private void OnPropertyChanging(string propertyName)
@@ -636,6 +786,21 @@ namespace OpenTracker.Models
         private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateAccessibility();
+        }
+
+        private void OnMemoryCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (_game.AutoTracker.IsInGame() && !UserManipulated)
+                _autoTrack();
+        }
+
+        private void SubscribeToAutoTracker()
+        {
+            if (_subscribeToRoomMemory)
+                _game.AutoTracker.NPCItemMemory.CollectionChanged += OnMemoryCollectionChanged;
+
+            if (_subscribeToItemMemory)
+                _game.AutoTracker.ItemMemory.CollectionChanged += OnMemoryCollectionChanged;
         }
 
         private void UpdateRegionSubscriptions()

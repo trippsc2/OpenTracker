@@ -13,6 +13,7 @@ namespace OpenTracker.Actions
         private readonly Location _location;
         private readonly List<int?> _previousLocationCounts;
         private readonly List<MarkingType?> _previousMarkings;
+        private readonly List<bool?> _previousUserManipulated;
         private readonly List<Item> _markedItems;
 
         public ClearLocation(Game game, Location location)
@@ -21,6 +22,7 @@ namespace OpenTracker.Actions
             _location = location;
             _previousLocationCounts = new List<int?>();
             _previousMarkings = new List<MarkingType?>();
+            _previousUserManipulated = new List<bool?>();
             _markedItems = new List<Item>();
         }
 
@@ -28,6 +30,7 @@ namespace OpenTracker.Actions
         {
             _previousLocationCounts.Clear();
             _previousMarkings.Clear();
+            _previousUserManipulated.Clear();
 
             foreach (ISection section in _location.Sections)
             {
@@ -37,6 +40,9 @@ namespace OpenTracker.Actions
                 {
                     _previousLocationCounts.Add(section.Available);
                     _previousMarkings.Add(section.Marking);
+                    _previousUserManipulated.Add(section.UserManipulated);
+
+                    section.UserManipulated = true;
 
                     if (section is ItemSection && section.Marking.HasValue)
                     {
@@ -64,6 +70,7 @@ namespace OpenTracker.Actions
                 {
                     _previousLocationCounts.Add(null);
                     _previousMarkings.Add(null);
+                    _previousUserManipulated.Add(null);
                     _markedItems.Add(null);
                 }
             }
@@ -78,6 +85,9 @@ namespace OpenTracker.Actions
 
                 if (_previousMarkings[i] != null)
                     _location.Sections[i].Marking = _previousMarkings[i];
+
+                if (_previousUserManipulated[i] != null)
+                    _location.Sections[i].UserManipulated = _previousUserManipulated[i].Value;
 
                 if (_markedItems[i] != null)
                     _markedItems[i].Change(-1);

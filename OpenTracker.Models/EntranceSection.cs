@@ -19,6 +19,7 @@ namespace OpenTracker.Models
         public string Name { get; }
         public bool HasMarking { get => true; }
         public Mode RequiredMode { get; }
+        public bool UserManipulated { get; set; }
 
         public Func<AccessibilityLevel> GetAccessibility { get; }
 

@@ -5,25 +5,20 @@
              xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.ItemControl">
-
-  <UserControl.Resources>
-
-    <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
-
-  </UserControl.Resources>
-
-  <Panel PointerReleased="OnItemClick" Height="32" Width="32" Margin="1,4" >
-
-    <Image Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}" />
-
-    <Border Background="#000000" Padding="4,0" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-
-      <TextBlock Text="{Binding Path=ImageNumber}" Foreground="{Binding Path=TextColor}"
-                 Background="Transparent" FontWeight="SemiBold" FontSize="10"
-                 FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf" />
-
-    </Border>
-
-  </Panel>
+	
+	<UserControl.Resources>
+		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />
+	</UserControl.Resources>
+	
+	<Panel Classes="ItemControl" PointerReleased="OnItemClick">
+		
+		<Image Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}" />
+		
+		<Border Classes="CrystalCount">
+			<TextBlock Classes="CrystalCount" Text="{Binding Path=ImageNumber}"
+					   Foreground="{Binding Path=TextColor}" />
+		</Border>
+	
+	</Panel>
 
 </UserControl>

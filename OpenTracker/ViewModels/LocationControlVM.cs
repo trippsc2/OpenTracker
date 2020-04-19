@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 
 namespace OpenTracker.ViewModels
 {
-    public class PinnedLocationControlVM : ViewModelBase, IPinnedLocationControlVM
+    public class LocationControlVM : ViewModelBase, ILocationControlVM
     {
         private readonly UndoRedoManager _undoRedoManager;
         private readonly MainWindowVM _mainWindow;
@@ -15,7 +15,7 @@ namespace OpenTracker.ViewModels
         public string Name { get; }
         public ObservableCollection<SectionControlVM> Sections { get; }
 
-        public PinnedLocationControlVM(UndoRedoManager undoRedoManager, AppSettingsVM appSettings,
+        public LocationControlVM(UndoRedoManager undoRedoManager, AppSettingsVM appSettings,
             Game game, MainWindowVM mainWindow, Location location)
         {
             _undoRedoManager = undoRedoManager;
@@ -32,7 +32,7 @@ namespace OpenTracker.ViewModels
 
         public void Close()
         {
-            _undoRedoManager.Execute(new UnpinLocation(_mainWindow.PinnedLocations, this));
+            _undoRedoManager.Execute(new UnpinLocation(_mainWindow.Locations, this));
         }
     }
 }

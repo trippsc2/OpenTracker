@@ -5,27 +5,21 @@
              xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.DungeonItemControl">
-  <UserControl.Resources>
 
-    <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
-
-  </UserControl.Resources>
-
-  <Panel PointerReleased="OnClick" Height="16" Width="16">
-
-    <Image Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}"
-           Height="16" Width="16" />
-
-    <Border Height="16" Width="16" Background="#000000" IsVisible="{Binding Path=TextVisible}"
-            IsHitTestVisible="{Binding Path=TextVisible}">
-
-      <TextBlock Text="{Binding Path=ImageNumber}" Foreground="{Binding Path=TextColor}"
-                 Background="Transparent" FontWeight="SemiBold" FontSize="10"
-                 HorizontalAlignment="Center" VerticalAlignment="Center"
-                 FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf" />
-
-    </Border>
-
-  </Panel>
+	<UserControl.Resources>
+		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />
+	</UserControl.Resources>
+	
+	<Panel Classes="DungeonItem" PointerReleased="OnClick">
+		
+		<Image Classes="DungeonItem" Source="{Binding Path=ImageSource, Converter={StaticResource
+			   BitmapValueConverter}}" />
+		
+		<Border Classes="ItemCount" IsVisible="{Binding Path=TextVisible}"
+				IsHitTestVisible="{Binding Path=TextVisible}">
+			<TextBlock Classes="ItemCount" Text="{Binding Path=ImageNumber}" Foreground="{Binding Path=TextColor}" />
+		</Border>
+	
+	</Panel>
   
 </UserControl>

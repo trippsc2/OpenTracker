@@ -1,10 +1,9 @@
 ﻿using Newtonsoft.Json;
-using OpenTracker.Actions;
 using OpenTracker.Interfaces;
 using OpenTracker.JsonConverters;
 using OpenTracker.Models;
 using OpenTracker.Models.Enums;
-using OpenTracker.Models.Interfaces;
+using OpenTracker.Utils;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -22,9 +21,11 @@ namespace OpenTracker.ViewModels
         private readonly UndoRedoManager _undoRedoManager;
         private readonly Game _game;
 
+        public ModeSettingsControlVM ModeSettings { get; }
+        public AutoTrackerDialogVM AutoTracker { get; }
         public ObservableCollection<MapControlVM> Maps { get; }
         public ObservableCollection<ItemControlVM> Items { get; }
-        public ObservableCollection<PinnedLocationControlVM> PinnedLocations { get; }
+        public ObservableCollection<LocationControlVM> Locations { get; }
         public ObservableCollection<DungeonItemControlVM> HCItems { get; }
         public ObservableCollection<DungeonItemControlVM> ATItems { get; }
         public ObservableCollection<DungeonItemControlVM> SmallKeyItems { get; }
@@ -35,12 +36,10 @@ namespace OpenTracker.ViewModels
         public ReactiveCommand<Unit, Unit> UndoCommand { get; }
         public ReactiveCommand<Unit, Unit> RedoCommand { get; }
         public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocationsCommand { get; }
-        public ReactiveCommand<string, Unit> ItemPlacementCommand { get; }
-        public ReactiveCommand<string, Unit> DungeonItemShuffleCommand { get; }
-        public ReactiveCommand<string, Unit> WorldStateCommand { get; }
-        public ReactiveCommand<Unit, Unit> EntranceShuffleCommand { get; }
-        public ReactiveCommand<Unit, Unit> BossShuffleCommand { get; }
-        public ReactiveCommand<Unit, Unit> EnemyShuffleCommand { get; }
+        public ReactiveCommand<string, Unit> SetLayoutOrientationCommand { get; }
+        public ReactiveCommand<string, Unit> SetMapOrientationCommand { get; }
+        public ReactiveCommand<string, Unit> SetHorizontalItemsPlacementCommand { get; }
+        public ReactiveCommand<string, Unit> SetVerticalItemsPlacementCommand { get; }
 
         private bool _canUndo;
         public bool CanUndo
@@ -56,6 +55,76 @@ namespace OpenTracker.ViewModels
             private set => this.RaiseAndSetIfChanged(ref _canRedo, value);
         }
 
+        private bool _dynamicLayoutOrientation;
+        public bool DynamicLayoutOrientation
+        {
+            get => _dynamicLayoutOrientation;
+            set => this.RaiseAndSetIfChanged(ref _dynamicLayoutOrientation, value);
+        }
+
+        private bool _horizontalLayoutOrientation;
+        public bool HorizontalLayoutOrientation
+        {
+            get => _horizontalLayoutOrientation;
+            set => this.RaiseAndSetIfChanged(ref _horizontalLayoutOrientation, value);
+        }
+
+        private bool _verticalLayoutOrientation;
+        public bool VerticalLayoutOrientation
+        {
+            get => _verticalLayoutOrientation;
+            set => this.RaiseAndSetIfChanged(ref _verticalLayoutOrientation, value);
+        }
+
+        private bool _dynamicMapOrientation;
+        public bool DynamicMapOrientation
+        {
+            get => _dynamicMapOrientation;
+            set => this.RaiseAndSetIfChanged(ref _dynamicMapOrientation, value);
+        }
+
+        private bool _horizontalMapOrientation;
+        public bool HorizontalMapOrientation
+        {
+            get => _horizontalMapOrientation;
+            set => this.RaiseAndSetIfChanged(ref _horizontalMapOrientation, value);
+        }
+
+        private bool _verticalMapOrientation;
+        public bool VerticalMapOrientation
+        {
+            get => _verticalMapOrientation;
+            set => this.RaiseAndSetIfChanged(ref _verticalMapOrientation, value);
+        }
+
+        private bool _leftHorizontalItemsPlacement;
+        public bool LeftHorizontalItemsPlacement
+        {
+            get => _leftHorizontalItemsPlacement;
+            set => this.RaiseAndSetIfChanged(ref _leftHorizontalItemsPlacement, value);
+        }
+
+        private bool _rightHorizontalItemsPlacement;
+        public bool RightHorizontalItemsPlacement
+        {
+            get => _rightHorizontalItemsPlacement;
+            set => this.RaiseAndSetIfChanged(ref _rightHorizontalItemsPlacement, value);
+        }
+
+        private bool _topVerticalItemsPlacement;
+        public bool TopVerticalItemsPlacement
+        {
+            get => _topVerticalItemsPlacement;
+            set => this.RaiseAndSetIfChanged(ref _topVerticalItemsPlacement, value);
+        }
+
+        private bool _bottomVerticalItemsPlacement;
+        public bool BottomVerticalItemsPlacement
+        {
+            get => _bottomVerticalItemsPlacement;
+            set => this.RaiseAndSetIfChanged(ref _bottomVerticalItemsPlacement, value);
+        }
+
         private AppSettingsVM _appSettings;
         public AppSettingsVM AppSettings
         {
@@ -63,103 +132,8 @@ namespace OpenTracker.ViewModels
             set => this.RaiseAndSetIfChanged(ref _appSettings, value);
         }
 
-        private bool _modeSettingsPopupOpen;
-        public bool ModeSettingsPopupOpen
-        {
-            get => _modeSettingsPopupOpen;
-            set => this.RaiseAndSetIfChanged(ref _modeSettingsPopupOpen, value);
-        }
-
-        private bool _itemPlacementBasic;
-        public bool ItemPlacementBasic
-        {
-            get => _itemPlacementBasic;
-            set => this.RaiseAndSetIfChanged(ref _itemPlacementBasic, value);
-        }
-
-        private bool _itemPlacementAdvanced;
-        public bool ItemPlacementAdvanced
-        {
-            get => _itemPlacementAdvanced;
-            set => this.RaiseAndSetIfChanged(ref _itemPlacementAdvanced, value);
-        }
-
-        private bool _dungeonItemShuffleStandard;
-        public bool DungeonItemShuffleStandard
-        {
-            get => _dungeonItemShuffleStandard;
-            set => this.RaiseAndSetIfChanged(ref _dungeonItemShuffleStandard, value);
-        }
-
-        private bool _dungeonItemShuffleMapsCompasses;
-        public bool DungeonItemShuffleMapsCompasses
-        {
-            get => _dungeonItemShuffleMapsCompasses;
-            set => this.RaiseAndSetIfChanged(ref _dungeonItemShuffleMapsCompasses, value);
-        }
-
-        private bool _dungeonItemShuffleMapsCompassesSmallKeys;
-        public bool DungeonItemShuffleMapsCompassesSmallKeys
-        {
-            get => _dungeonItemShuffleMapsCompassesSmallKeys;
-            set => this.RaiseAndSetIfChanged(ref _dungeonItemShuffleMapsCompassesSmallKeys, value);
-        }
-
-        private bool _dungeonItemShuffleKeysanity;
-        public bool DungeonItemShuffleKeysanity
-        {
-            get => _dungeonItemShuffleKeysanity;
-            set => this.RaiseAndSetIfChanged(ref _dungeonItemShuffleKeysanity, value);
-        }
-
-        private bool _worldStateStandardOpen;
-        public bool WorldStateStandardOpen
-        {
-            get => _worldStateStandardOpen;
-            set => this.RaiseAndSetIfChanged(ref _worldStateStandardOpen, value);
-        }
-
-        private bool _worldStateInverted;
-        public bool WorldStateInverted
-        {
-            get => _worldStateInverted;
-            set => this.RaiseAndSetIfChanged(ref _worldStateInverted, value);
-        }
-
-        private bool _entranceShuffle;
-        public bool EntranceShuffle
-        {
-            get => _entranceShuffle;
-            set => this.RaiseAndSetIfChanged(ref _entranceShuffle, value);
-        }
-
-        private bool _bossShuffle;
-        public bool BossShuffle
-        {
-            get => _bossShuffle;
-            set => this.RaiseAndSetIfChanged(ref _bossShuffle, value);
-        }
-
-        private bool _enemyShuffle;
-        public bool EnemyShuffle
-        {
-            get => _enemyShuffle;
-            set => this.RaiseAndSetIfChanged(ref _enemyShuffle, value);
-        }
-
-        private bool _smallKeyShuffle;
-        public bool SmallKeyShuffle
-        {
-            get => _smallKeyShuffle;
-            set => this.RaiseAndSetIfChanged(ref _smallKeyShuffle, value);
-        }
-
-        private bool _bigKeyShuffle;
-        public bool BigKeyShuffle
-        {
-            get => _bigKeyShuffle;
-            set => this.RaiseAndSetIfChanged(ref _bigKeyShuffle, value);
-        }
+        public IAppSettingsVM AppSettingsInterface => _appSettings as IAppSettingsVM;
+        public IAutoTrackerDialogVM AutoTrackerInterface => AutoTracker as IAutoTrackerDialogVM;
 
         public MainWindowVM(IDialogService dialogService) : this()
         {
@@ -176,12 +150,10 @@ namespace OpenTracker.ViewModels
             UndoCommand = ReactiveCommand.Create(Undo, this.WhenAnyValue(x => x.CanUndo));
             RedoCommand = ReactiveCommand.Create(Redo, this.WhenAnyValue(x => x.CanRedo));
             ToggleDisplayAllLocationsCommand = ReactiveCommand.Create(ToggleDisplayAllLocations);
-            ItemPlacementCommand = ReactiveCommand.Create<string>(SetItemPlacement, this.WhenAnyValue(x => x.WorldStateStandardOpen));
-            DungeonItemShuffleCommand = ReactiveCommand.Create<string>(SetDungeonItemShuffle);
-            WorldStateCommand = ReactiveCommand.Create<string>(SetWorldState);
-            EntranceShuffleCommand = ReactiveCommand.Create(ToggleEntranceShuffle);
-            BossShuffleCommand = ReactiveCommand.Create(ToggleBossShuffle);
-            EnemyShuffleCommand = ReactiveCommand.Create(ToggleEnemyShuffle);
+            SetLayoutOrientationCommand = ReactiveCommand.Create<string>(SetLayoutOrientation);
+            SetMapOrientationCommand = ReactiveCommand.Create<string>(SetMapOrientation);
+            SetHorizontalItemsPlacementCommand = ReactiveCommand.Create<string>(SetHorizontalItemsPlacement);
+            SetVerticalItemsPlacementCommand = ReactiveCommand.Create<string>(SetVerticalItemsPlacement);
 
             string appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
@@ -194,22 +166,20 @@ namespace OpenTracker.ViewModels
             {
                 string jsonContent = File.ReadAllText(appSettingsPath);
 
-                _appSettings = JsonConvert.DeserializeObject<AppSettingsVM>(jsonContent, new SolidColorBrushConverter());
+                AppSettings = JsonConvert.DeserializeObject<AppSettingsVM>(jsonContent, new SolidColorBrushConverter());
             }
             else
-                _appSettings = new AppSettingsVM();
+                AppSettings = new AppSettingsVM();
+
+            AppSettings.PropertyChanged += OnAppSettingsChanged;
 
             _game = new Game();
 
-            UpdateItemPlacement();
-            UpdateDungeonItemShuffle();
-            UpdateWorldState();
-            UpdateEntranceShuffle();
-            UpdateBossShuffle();
-            UpdateEnemyShuffle();
+            ModeSettings = new ModeSettingsControlVM(_game.Mode, _undoRedoManager);
+            AutoTracker = new AutoTrackerDialogVM(_game.AutoTracker);
 
             Maps = new ObservableCollection<MapControlVM>();
-            PinnedLocations = new ObservableCollection<PinnedLocationControlVM>();
+            Locations = new ObservableCollection<LocationControlVM>();
             HCItems = new ObservableCollection<DungeonItemControlVM>()
             {
                 new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.HCSmallKey])
@@ -330,28 +300,10 @@ namespace OpenTracker.ViewModels
                 }
             }
 
-            _game.Mode.PropertyChanged += OnModeChanged;
-        }
-
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(_game.Mode.ItemPlacement))
-                UpdateItemPlacement();
-
-            if (e.PropertyName == nameof(_game.Mode.DungeonItemShuffle))
-                UpdateDungeonItemShuffle();
-
-            if (e.PropertyName == nameof(_game.Mode.WorldState))
-                UpdateWorldState();
-
-            if (e.PropertyName == nameof(_game.Mode.EntranceShuffle))
-                UpdateEntranceShuffle();
-
-            if (e.PropertyName == nameof(_game.Mode.BossShuffle))
-                UpdateBossShuffle();
-
-            if (e.PropertyName == nameof(_game.Mode.EnemyShuffle))
-                UpdateEnemyShuffle();
+            UpdateLayoutOrientation();
+            UpdateMapOrientation();
+            UpdateHorizontalItemsPlacement();
+            UpdateVerticalItemsPlacement();
         }
 
         private void OnUndoChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -364,146 +316,19 @@ namespace OpenTracker.ViewModels
             UpdateCanRedo();
         }
 
-        private void UpdateItemPlacement()
+        private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
-            switch (_game.Mode.ItemPlacement)
-            {
-                case null:
-                    ItemPlacementBasic = false;
-                    ItemPlacementAdvanced = false;
-                    break;
-                case ItemPlacement.Basic:
-                    ItemPlacementBasic = true;
-                    ItemPlacementAdvanced = false;
-                    break;
-                case ItemPlacement.Advanced:
-                    ItemPlacementBasic = false;
-                    ItemPlacementAdvanced = true;
-                    break;
-            }
-        }
+            if (e.PropertyName == nameof(AppSettingsVM.LayoutOrientation))
+                UpdateLayoutOrientation();
 
-        private void UpdateDungeonItemShuffle()
-        {
-            switch (_game.Mode.DungeonItemShuffle)
-            {
-                case null:
-                    DungeonItemShuffleStandard = false;
-                    DungeonItemShuffleMapsCompasses = false;
-                    DungeonItemShuffleMapsCompassesSmallKeys = false;
-                    DungeonItemShuffleKeysanity = false;
-                    SmallKeyShuffle = false;
-                    BigKeyShuffle = false;
-                    break;
-                case DungeonItemShuffle.Standard:
-                    DungeonItemShuffleStandard = true;
-                    DungeonItemShuffleMapsCompasses = false;
-                    DungeonItemShuffleMapsCompassesSmallKeys = false;
-                    DungeonItemShuffleKeysanity = false;
-                    SmallKeyShuffle = false;
-                    BigKeyShuffle = false;
-                    break;
-                case DungeonItemShuffle.MapsCompasses:
-                    DungeonItemShuffleStandard = false;
-                    DungeonItemShuffleMapsCompasses = true;
-                    DungeonItemShuffleMapsCompassesSmallKeys = false;
-                    DungeonItemShuffleKeysanity = false;
-                    SmallKeyShuffle = false;
-                    BigKeyShuffle = false;
-                    break;
-                case DungeonItemShuffle.MapsCompassesSmallKeys:
-                    DungeonItemShuffleStandard = false;
-                    DungeonItemShuffleMapsCompasses = false;
-                    DungeonItemShuffleMapsCompassesSmallKeys = true;
-                    DungeonItemShuffleKeysanity = false;
-                    SmallKeyShuffle = true;
-                    BigKeyShuffle = false;
-                    break;
-                case DungeonItemShuffle.Keysanity:
-                    DungeonItemShuffleStandard = false;
-                    DungeonItemShuffleMapsCompasses = false;
-                    DungeonItemShuffleMapsCompassesSmallKeys = false;
-                    DungeonItemShuffleKeysanity = true;
-                    SmallKeyShuffle = true;
-                    BigKeyShuffle = true;
-                    break;
-            }
-        }
+            if (e.PropertyName == nameof(AppSettingsVM.MapOrientation))
+                UpdateMapOrientation();
 
-        private void UpdateWorldState()
-        {
-            switch (_game.Mode.WorldState)
-            {
-                case null:
-                    WorldStateStandardOpen = false;
-                    WorldStateInverted = false;
-                    break;
-                case WorldState.StandardOpen:
-                    WorldStateStandardOpen = true;
-                    WorldStateInverted = false;
-                    break;
-                case WorldState.Inverted:
-                    WorldStateStandardOpen = false;
-                    WorldStateInverted = true;
-                    break;
-            }
-        }
+            if (e.PropertyName == nameof(AppSettingsVM.HorizontalItemsPlacement))
+                UpdateHorizontalItemsPlacement();
 
-        private void UpdateEntranceShuffle()
-        {
-            if (_game.Mode.EntranceShuffle.HasValue && _game.Mode.EntranceShuffle.Value)
-                EntranceShuffle = true;
-            else
-                EntranceShuffle = false;
-        }
-
-        private void UpdateBossShuffle()
-        {
-            if (_game.Mode.BossShuffle.HasValue && _game.Mode.BossShuffle.Value)
-                BossShuffle = true;
-            else
-                BossShuffle = false;
-        }
-
-        private void UpdateEnemyShuffle()
-        {
-            if (_game.Mode.EnemyShuffle.HasValue && _game.Mode.EnemyShuffle.Value)
-                EnemyShuffle = true;
-            else
-                EnemyShuffle = false;
-        }
-
-        private void SetItemPlacement(string itemPlacementString)
-        {
-            if (Enum.TryParse(itemPlacementString, out ItemPlacement itemPlacement))
-                _undoRedoManager.Execute(new ChangeItemPlacement(_game.Mode, itemPlacement));
-        }
-
-        private void SetDungeonItemShuffle(string dungeonItemShuffleString)
-        {
-            if (Enum.TryParse(dungeonItemShuffleString, out DungeonItemShuffle dungeonItemShuffle))
-                _undoRedoManager.Execute(new ChangeDungeonItemShuffle(_game.Mode, dungeonItemShuffle));
-        }
-
-        private void SetWorldState(string worldStateString)
-        {
-            if (Enum.TryParse(worldStateString, out WorldState worldState))
-                _undoRedoManager.Execute(new ChangeWorldState(_game.Mode, worldState));
-        }
-
-        private void ToggleEntranceShuffle()
-        {
-            _undoRedoManager.Execute(new ChangeEntranceShuffle(_game.Mode, !_game.Mode.EntranceShuffle.Value));
-        }
-
-        private void ToggleBossShuffle()
-        {
-            _undoRedoManager.Execute(new ChangeBossShuffle(_game.Mode, !_game.Mode.BossShuffle.Value));
-        }
-
-        private void ToggleEnemyShuffle()
-        {
-            _undoRedoManager.Execute(new ChangeEnemyShuffle(_game.Mode, !_game.Mode.EnemyShuffle.Value));
+            if (e.PropertyName == nameof(AppSettingsVM.VerticalItemsPlacement))
+                UpdateVerticalItemsPlacement();
         }
 
         private void UpdateCanUndo()
@@ -524,6 +349,80 @@ namespace OpenTracker.ViewModels
         private void Redo()
         {
             _undoRedoManager.Redo();
+        }
+
+        private void UpdateLayoutOrientation()
+        {
+            switch (AppSettings.LayoutOrientation)
+            {
+                case LayoutOrientation.Dynamic:
+                    DynamicLayoutOrientation = true;
+                    HorizontalLayoutOrientation = false;
+                    VerticalLayoutOrientation = false;
+                    break;
+                case LayoutOrientation.Horizontal:
+                    DynamicLayoutOrientation = false;
+                    HorizontalLayoutOrientation = true;
+                    VerticalLayoutOrientation = false;
+                    break;
+                case LayoutOrientation.Vertical:
+                    DynamicLayoutOrientation = false;
+                    HorizontalLayoutOrientation = false;
+                    VerticalLayoutOrientation = true;
+                    break;
+            }
+        }
+
+        private void UpdateMapOrientation()
+        {
+            switch (AppSettings.MapOrientation)
+            {
+                case MapOrientation.Dynamic:
+                    DynamicMapOrientation = true;
+                    HorizontalMapOrientation = false;
+                    VerticalMapOrientation = false;
+                    break;
+                case MapOrientation.Horizontal:
+                    DynamicMapOrientation = false;
+                    HorizontalMapOrientation = true;
+                    VerticalMapOrientation = false;
+                    break;
+                case MapOrientation.Vertical:
+                    DynamicMapOrientation = false;
+                    HorizontalMapOrientation = false;
+                    VerticalMapOrientation = true;
+                    break;
+            }
+        }
+
+        private void UpdateHorizontalItemsPlacement()
+        {
+            switch (AppSettings.HorizontalItemsPlacement)
+            {
+                case HorizontalItemsPlacement.Left:
+                    LeftHorizontalItemsPlacement = true;
+                    RightHorizontalItemsPlacement = false;
+                    break;
+                case HorizontalItemsPlacement.Right:
+                    LeftHorizontalItemsPlacement = false;
+                    RightHorizontalItemsPlacement = true;
+                    break;
+            }
+        }
+
+        private void UpdateVerticalItemsPlacement()
+        {
+            switch (AppSettings.VerticalItemsPlacement)
+            {
+                case VerticalItemsPlacement.Top:
+                    TopVerticalItemsPlacement = true;
+                    BottomVerticalItemsPlacement = false;
+                    break;
+                case VerticalItemsPlacement.Bottom:
+                    TopVerticalItemsPlacement = false;
+                    BottomVerticalItemsPlacement = true;
+                    break;
+            }
         }
 
         public void Save(string path)
@@ -600,6 +499,30 @@ namespace OpenTracker.ViewModels
             _appSettings.DisplayAllLocations = !_appSettings.DisplayAllLocations;
         }
 
+        private void SetLayoutOrientation(string orientationString)
+        {
+            if (Enum.TryParse(orientationString, out LayoutOrientation orientation))
+                AppSettings.LayoutOrientation = orientation;
+        }
+
+        private void SetMapOrientation(string orientationString)
+        {
+            if (Enum.TryParse(orientationString, out MapOrientation orientation))
+                AppSettings.MapOrientation = orientation;
+        }
+
+        private void SetHorizontalItemsPlacement(string orientationString)
+        {
+            if (Enum.TryParse(orientationString, out HorizontalItemsPlacement orientation))
+                AppSettings.HorizontalItemsPlacement = orientation;
+        }
+
+        private void SetVerticalItemsPlacement(string orientationString)
+        {
+            if (Enum.TryParse(orientationString, out VerticalItemsPlacement orientation))
+                AppSettings.VerticalItemsPlacement = orientation;
+        }
+
         public async Task Reset()
         {
             bool? result = await _dialogService.ShowDialog(
@@ -608,11 +531,6 @@ namespace OpenTracker.ViewModels
 
             if (result.HasValue && result.Value)
                 _game.Reset();
-        }
-
-        public async Task ColorSelect()
-        {
-            bool? result = await _dialogService.ShowDialog(_appSettings);
         }
 
         public void SaveAppSettings()

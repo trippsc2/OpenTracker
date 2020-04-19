@@ -6,92 +6,80 @@
              xmlns:views="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.SectionControl">
+	
+	<UserControl.Resources>
+		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />
+	</UserControl.Resources>
+	
+	<StackPanel Margin="4,0" Orientation="Vertical" IsHitTestVisible="{Binding Path=SectionVisible}"
+				IsVisible="{Binding Path=SectionVisible}">
+		
+		<TextBlock Classes="SectionName" Grid.Column="0" Foreground="{Binding Path=FontColor}"
+				   Text="{Binding Path=Name}" />
+		
+		<StackPanel Orientation="Horizontal">
+			
+			<Panel Name="MarkingPopupTarget" PointerReleased="OnClickVisibleItem">
+				
+				<Image Classes="SectionIcon" Source="{Binding Path=MarkingSource, Converter={StaticResource
+					   BitmapValueConverter}}" IsHitTestVisible="{Binding Path=MarkingVisible}"
+					   IsVisible="{Binding Path=MarkingVisible}" />
 
-  <UserControl.Resources>
-    <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
-  </UserControl.Resources>
-  
-  <StackPanel Margin="4,0" Orientation="Vertical" IsHitTestVisible="{Binding Path=SectionVisible}"
-              IsVisible="{Binding Path=SectionVisible}">
-
-
-    <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-               Grid.Column="0" FontSize="9" FontWeight="Normal" Foreground="{Binding Path=FontColor}"
-               Text="{Binding Path=Name}" HorizontalAlignment="Left" />
-
-    <StackPanel Orientation="Horizontal">
-
-      <Panel Name="MarkingPopupTarget" PointerReleased="OnClickVisibleItem">
-
-        <Image Source="{Binding Path=MarkingSource, Converter={StaticResource BitmapValueConverter}}"
-               Margin="0,0,4,0" Height="32" Width="32" IsHitTestVisible="{Binding Path=MarkingVisible}"
-               IsVisible="{Binding Path=MarkingVisible}" Stretch="Uniform" />
-
-        <Popup IsOpen="{Binding Path=MarkingPopupOpen, Mode=TwoWay}" StaysOpen="False" PlacementMode="Top"
-               PlacementTarget="{Binding RelativeSource={RelativeSource AncestorType=views:SectionControl},
-               Path=MarkingPopupTarget}" HorizontalOffset="16" VerticalOffset="16">
-
-          <Border BorderBrush="#A9A9A9" BorderThickness="3" Background="#212121" Padding="5">
-
-            <StackPanel Orientation="Vertical">
-
-              <ItemsControl Items="{Binding Path=ItemSelect}">
-
-                <ItemsControl.ItemsPanel>
-                  <ItemsPanelTemplate>
-                    <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="{Binding Path=MarkingPopupWidth}"
-                               MaxHeight="{Binding Path=MarkingPopupHeight}" Margin="0,0,0,10"
-                               Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                  </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-
-                <ItemsControl.ItemTemplate>
-                 <DataTemplate>
-                  <views:MarkingSelectControl />
-                 </DataTemplate>
-                </ItemsControl.ItemTemplate>
-
-              </ItemsControl>
-
-              <Border Grid.Row="1" Margin="0,2" Height="1" Background="#F6F6F6" />
-
-              <Button Command="{Binding Path=ClearVisibleItemCommand}">Clear</Button>
-
-            </StackPanel>
-
-          </Border>
-
-        </Popup>
-
-      </Panel>
-
-      <Panel PointerReleased="OnClickSection">
-
-        <Image Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}"
-               Height="32" Width="32" />
-      
-        <Border Background="#000000" Height="16" HorizontalAlignment="Right" Padding="5,-1"
-                VerticalAlignment="Bottom" IsHitTestVisible="{Binding Path=NumberBoxVisible}"
-                IsVisible="{Binding Path=NumberBoxVisible}">
-        
-          <TextBlock FontFamily="avares://OpenTracker/Assets/font-20awesome-205-20free-regular-400.otf"
-                     Foreground="#F6F6F6" FontSize="15" FontWeight="SemiBold" Text="{Binding Path=NumberString}"
-                     HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
-        
-        </Border>
-      
-      </Panel>
-
-      <Panel Margin="4,0,0,0" IsHitTestVisible="{Binding Path=BossImageVisible}"
-             IsVisible="{Binding Path=BossImageVisible}" PointerReleased="OnClickSection">
-
-        <Image Source="{Binding Path=BossImageSource, Converter={StaticResource BitmapValueConverter}}"
-               Height="32" Width="32" />
-
-      </Panel>
-
-    </StackPanel>
-
-  </StackPanel>
+				<Popup IsOpen="{Binding Path=MarkingPopupOpen, Mode=TwoWay}" StaysOpen="False" PlacementMode="Top"
+					   PlacementTarget="{Binding RelativeSource={RelativeSource AncestorType=views:SectionControl},
+					   Path=MarkingPopupTarget}" HorizontalOffset="16" VerticalOffset="16">
+					<Border Classes="Popup">
+						<StackPanel Orientation="Vertical">
+							
+							<ItemsControl Items="{Binding Path=ItemSelect}">
+								
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="{Binding Path=MarkingPopupWidth}"
+												   MaxHeight="{Binding Path=MarkingPopupHeight}" Margin="0,0,0,10"
+												   Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" />
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+								
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<views:MarkingSelectControl />
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							
+							</ItemsControl>
+							
+							<Border Classes="Separator" Grid.Row="1" Margin="0,2" />
+							<Button Classes="ClearMarking"
+									Command="{Binding Path=ClearVisibleItemCommand}">Clear</Button>
+						
+						</StackPanel>
+					</Border>
+				</Popup>
+			
+			</Panel>
+			
+			<Panel PointerReleased="OnClickSection">
+				
+				<Image Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}"
+					   Height="32" Width="32" />
+				
+				<Border Classes="SectionCount" IsHitTestVisible="{Binding Path=NumberBoxVisible}"
+						IsVisible="{Binding Path=NumberBoxVisible}">
+					<TextBlock Classes="SectionCount" Text="{Binding Path=NumberString}"
+							   HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+				</Border>
+			
+			</Panel>
+			
+			<Panel Margin="4,0,0,0" IsHitTestVisible="{Binding Path=BossImageVisible}"
+				   IsVisible="{Binding Path=BossImageVisible}" PointerReleased="OnClickSection">
+				<Image Source="{Binding Path=BossImageSource, Converter={StaticResource BitmapValueConverter}}"
+					   Height="32" Width="32" />
+			</Panel>
+		
+		</StackPanel>
+	
+	</StackPanel>
 
 </UserControl>

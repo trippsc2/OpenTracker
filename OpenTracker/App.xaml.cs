@@ -21,7 +21,7 @@ namespace OpenTracker
             {
                 IDialogService dialogService = new DialogService();
 
-                desktop.MainWindow = new MainWindow
+                desktop.MainWindow = new MainWindow()
                 {
                     DataContext = new MainWindowVM(dialogService),
                 };
@@ -29,7 +29,6 @@ namespace OpenTracker
                 dialogService.Owner = desktop.MainWindow;
 
                 dialogService.Register<MessageBoxDialogVM, MessageBoxDialog>();
-                dialogService.Register<AppSettingsVM, ColorSelectDialog>();
             }
 
             base.OnFrameworkInitializationCompleted();
