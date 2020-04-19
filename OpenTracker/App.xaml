@@ -96,7 +96,15 @@
 			<Setter Property="Background" Value="#2D4848" />
 			<Setter Property="Margin" Value="5" />
 		</Style>
+		
+		<Style Selector="Border.MapLocation">
+			<Setter Property="BorderBrush" Value="#000000" />
+		</Style>
 
+		<Style Selector="Border.MapLocation:pointerover">
+			<Setter Property="BorderBrush" Value="#FFFFFF" />
+		</Style>
+		
 		<Style Selector="Menu.MenuBar">
 			<Setter Property="Background" Value="#262626" />
 		</Style>

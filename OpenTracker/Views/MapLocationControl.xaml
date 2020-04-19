@@ -13,7 +13,7 @@
 	<Panel Width="{Binding Path=Size}" Height="{Binding Path=Size}" IsVisible="{Binding Path=Visible}"
 		   IsHitTestVisible="{Binding Path=Visible}" DoubleTapped="OnDoubleClick"
 		   PointerReleased="OnClick">
-		<Border Width="{Binding Path=Size}" Height="{Binding Path=Size}" BorderBrush="#212121"
+		<Border Classes="MapLocation" Width="{Binding Path=Size}" Height="{Binding Path=Size}"
 				Background="{Binding Path=Color}" IsVisible="{Binding Path=BorderVisible}"
 				IsHitTestVisible="{Binding Path=BorderVisible}" BorderThickness="{Binding Path=BorderSize}" />
 		<Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Uniform"
