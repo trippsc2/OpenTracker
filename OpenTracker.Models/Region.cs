@@ -18,20 +18,6 @@ namespace OpenTracker.Models
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private AccessibilityLevel _directAccessibility;
-        public AccessibilityLevel DirectAccessibility
-        {
-            get => _directAccessibility;
-            private set
-            {
-                if (_directAccessibility != value)
-                {
-                    _directAccessibility = value;
-                    OnPropertyChanged(nameof(DirectAccessibility));
-                }
-            }
-        }
-
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
         {
@@ -62,15 +48,14 @@ namespace OpenTracker.Models
 
                     GetAccessibility = (excludedRegions) =>
                     {
-                        //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        //  Standard, Open, and Retro modes
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             //  Access from start
                             return AccessibilityLevel.Normal;
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             //  Access via Agahnim portal
                             if (_game.Items.Has(ItemType.Aga))
@@ -156,8 +141,8 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        //  Standard, Open, and Retro modes
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             //  Access via mirror from east Dark World
                             if (_game.Items.Has(ItemType.Mirror) && !excludedRegions.Contains(RegionID.DarkWorldEast))
@@ -186,8 +171,8 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        //  Standard, Open, and Retro modes
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl))
                             {
@@ -205,9 +190,8 @@ namespace OpenTracker.Models
                                     return _game.Regions[RegionID.DarkWorldWitchArea].GetAccessibility(newExcludedRegions);
                             }
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             //  Access from the start in non-entrance Inverted mode
                             if (!_game.Mode.EntranceShuffle.Value)
@@ -265,8 +249,8 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        //  Standard, Open, and Retro modes
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             //  Access via north of Dam portal
                             if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Hammer) &&
@@ -287,9 +271,8 @@ namespace OpenTracker.Models
 
                             return (AccessibilityLevel)Math.Max((byte)dWWest, (byte)dWEast);
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             //  Access is provided from the start in non-entrance shuffle
                             if (!_game.Mode.EntranceShuffle.Value)
@@ -313,9 +296,6 @@ namespace OpenTracker.Models
 
                             return (AccessibilityLevel)Math.Max(Math.Max((byte)dWWest, (byte)dWEast), (byte)lightWorld);
                         }
-
-                        //  Default to no access
-                        return AccessibilityLevel.None;
                     };
 
                     _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
@@ -340,8 +320,8 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        //  Standard, Open, and Retro modes
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             //  Access via Agahnim portal
                             if (_game.Items.Has(ItemType.Aga))
@@ -390,9 +370,8 @@ namespace OpenTracker.Models
                             return (AccessibilityLevel)Math.Max(Math.Max((byte)darkWorldWitch, (byte)darkWorldSouth),
                                 (byte)darkWorldSouthEast);
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             AccessibilityLevel dWWitch = AccessibilityLevel.None;
                             AccessibilityLevel dWSouth = AccessibilityLevel.None;
@@ -435,9 +414,6 @@ namespace OpenTracker.Models
                             return (AccessibilityLevel)Math.Max(Math.Max(Math.Max((byte)dWWitch, (byte)dWSouth),
                                 (byte)dWSouthEast), (byte)lightWorld);
                         }
-
-                        //  Default to no access
-                        return AccessibilityLevel.None;
                     };
 
                     _regionSubscriptions.Add(RegionID.DarkWorldWitchArea, new Mode());
@@ -465,8 +441,8 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        //  Standard, Open, and Retro modes
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             AccessibilityLevel darkWorldSouth = AccessibilityLevel.None;
                             AccessibilityLevel darkWorldEast = AccessibilityLevel.None;
@@ -496,9 +472,8 @@ namespace OpenTracker.Models
 
                             return (AccessibilityLevel)Math.Max((byte)darkWorldSouth, (byte)darkWorldEast);
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             AccessibilityLevel dWSouth = AccessibilityLevel.None;
                             AccessibilityLevel dWEast = AccessibilityLevel.None;
@@ -530,9 +505,6 @@ namespace OpenTracker.Models
 
                             return (AccessibilityLevel)Math.Max(Math.Max((byte)dWSouth, (byte)dWEast), (byte)lightWorld);
                         }
-
-                        //  Default to no access
-                        return AccessibilityLevel.None;
                     };
 
                     _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode());
@@ -556,7 +528,7 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
+                        //  Standard, Open, and Retro modes
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             AccessibilityLevel darkWorldEast = AccessibilityLevel.None;
@@ -588,9 +560,8 @@ namespace OpenTracker.Models
 
                             return (AccessibilityLevel)Math.Max((byte)darkWorldEast, (byte)darkWorldWest);
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             AccessibilityLevel darkWorldEast = AccessibilityLevel.None;
                             AccessibilityLevel darkWorldWest = AccessibilityLevel.None;
@@ -635,9 +606,6 @@ namespace OpenTracker.Models
                             return (AccessibilityLevel)Math.Max(Math.Max((byte)darkWorldEast, (byte)darkWorldWest),
                                 (byte)lightWorld);
                         }
-
-                        //  Default to no access
-                        return AccessibilityLevel.None;
                     };
 
                     _regionSubscriptions.Add(RegionID.DarkWorldEast, new Mode());
@@ -664,16 +632,15 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        //  Standard, Open, and Retro modes
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             //  Access via Flute drop spot by Mitts
                             if (_game.Items.Has(ItemType.Flute) && _game.Items.Has(ItemType.Gloves, 2))
                                 return AccessibilityLevel.Normal;
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             //  Access via Flute drop spot (Flute activation requires Light World access + Moon Pearl)
                             //    or Light World by mirror
@@ -706,8 +673,8 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        //  Standard, Open, and Retro modes
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             AccessibilityLevel direct = AccessibilityLevel.None;
                             AccessibilityLevel dMWestTop = AccessibilityLevel.None;
@@ -744,9 +711,8 @@ namespace OpenTracker.Models
                             return (AccessibilityLevel)Math.Max(Math.Max(Math.Max((byte)direct, (byte)dMWestTop),
                                 (byte)dMEastBottom), (byte)dDMWestBottom);
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             AccessibilityLevel dDMWestBottom = AccessibilityLevel.None;
                             AccessibilityLevel dMWestTop = AccessibilityLevel.None;
@@ -767,9 +733,6 @@ namespace OpenTracker.Models
 
                             return (AccessibilityLevel)Math.Max(Math.Max((byte)dDMWestBottom, (byte)dMWestTop), (byte)dMEastBottom);
                         }
-
-                        //  Default to no access
-                        return AccessibilityLevel.None;
                     };
 
                     _regionSubscriptions.Add(RegionID.DeathMountainWestTop, new Mode());
@@ -796,7 +759,7 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
+                        //  Standard, Open, and Retro modes
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             AccessibilityLevel dMEastTop = AccessibilityLevel.None;
@@ -820,9 +783,8 @@ namespace OpenTracker.Models
 
                             return (AccessibilityLevel)Math.Max(Math.Max((byte)dMEastTop, (byte)dDMWestBottom), (byte)dDMTop);
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             //  Access via East Death Mountain top by hammer
                             if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Hammer) &&
@@ -857,8 +819,8 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        //  Standard, Open, and Retro modes
+                        if (_game.Mode.WorldState != WorldState.StandardOpen)
                         {
                             //  Access via Turtle Rock Tunnel by mirror
                             if (_game.Items.Has(ItemType.TurtleRockTunnelAccess) ||
@@ -884,9 +846,8 @@ namespace OpenTracker.Models
 
                             return (AccessibilityLevel)Math.Max(Math.Max((byte)dMEastTop, (byte)dMWestBottom), (byte)dDMEastBottom);
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             AccessibilityLevel dDMEastBottom = AccessibilityLevel.None;
                             AccessibilityLevel dMEastTop = AccessibilityLevel.None;
@@ -907,9 +868,6 @@ namespace OpenTracker.Models
 
                             return (AccessibilityLevel)Math.Max(Math.Max((byte)dDMEastBottom, (byte)dMEastTop), (byte)dMWestBottom);
                         }
-
-                        //  Default to no access
-                        return AccessibilityLevel.None;
                     };
 
                     _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode());
@@ -938,8 +896,8 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        //  Standard, Open, and Retro modes
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             AccessibilityLevel dDMTop = AccessibilityLevel.None;
                             AccessibilityLevel dMWestTop = AccessibilityLevel.None;
@@ -959,9 +917,8 @@ namespace OpenTracker.Models
 
                             return (AccessibilityLevel)Math.Max(Math.Max((byte)dDMTop, (byte)dMWestTop), (byte)dMEastBottom);
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             AccessibilityLevel dMWestTop = AccessibilityLevel.None;
                             AccessibilityLevel dDMTop = AccessibilityLevel.None;
@@ -984,9 +941,6 @@ namespace OpenTracker.Models
 
                             return (AccessibilityLevel)Math.Max(Math.Max((byte)dMWestTop, (byte)dDMTop), (byte)dMEastBottom);
                         }
-
-                        //  Default to no access
-                        return AccessibilityLevel.None;
                     };
 
                     _regionSubscriptions.Add(RegionID.DeathMountainWestTop, new Mode());
@@ -1013,7 +967,7 @@ namespace OpenTracker.Models
                         newExcludedRegions.Add(ID);
 
                         //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             AccessibilityLevel dMEastTop = AccessibilityLevel.None;
                             AccessibilityLevel dDMEastBottom = AccessibilityLevel.None;
@@ -1032,9 +986,8 @@ namespace OpenTracker.Models
 
                             return (AccessibilityLevel)Math.Max((byte)dMEastTop, (byte)dDMEastBottom);
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             AccessibilityLevel dDMWestBottom = AccessibilityLevel.None;
                             AccessibilityLevel dDMEastBottom = AccessibilityLevel.None;
@@ -1063,9 +1016,6 @@ namespace OpenTracker.Models
                             return (AccessibilityLevel)Math.Max(Math.Max(Math.Max((byte)dDMWestBottom, (byte)dDMEastBottom),
                                 (byte)dMWestTop), (byte)dMEastTop);
                         }
-
-                        //  Default to no access
-                        return AccessibilityLevel.None;
                     };
 
                     _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode());
@@ -1092,8 +1042,8 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        //  Standard, Open, and Retro modes
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             AccessibilityLevel dDMTop = AccessibilityLevel.None;
                             AccessibilityLevel dMEastBottom = AccessibilityLevel.None;
@@ -1108,9 +1058,8 @@ namespace OpenTracker.Models
 
                             return (AccessibilityLevel)Math.Max((byte)dDMTop, (byte)dMEastBottom);
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             AccessibilityLevel dDMTop = AccessibilityLevel.None;
                             AccessibilityLevel dMEastBottom = AccessibilityLevel.None;
@@ -1125,9 +1074,6 @@ namespace OpenTracker.Models
 
                             return (AccessibilityLevel)Math.Max((byte)dDMTop, (byte)dMEastBottom);
                         }
-
-                        //  Default to no access
-                        return AccessibilityLevel.None;
                     };
 
                     _regionSubscriptions.Add(RegionID.DarkDeathMountainTop, new Mode());
@@ -1149,8 +1095,8 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        //  Standard, Open, and Retro modes
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             AccessibilityLevel dDMTop = AccessibilityLevel.None;
                             AccessibilityLevel dMWestBottom = AccessibilityLevel.None;
@@ -1165,9 +1111,8 @@ namespace OpenTracker.Models
 
                             return (AccessibilityLevel)Math.Max((byte)dDMTop, (byte)dMWestBottom);
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             AccessibilityLevel direct = AccessibilityLevel.None;
                             AccessibilityLevel lightWorld = AccessibilityLevel.None;
@@ -1201,9 +1146,6 @@ namespace OpenTracker.Models
                             return (AccessibilityLevel)Math.Max(Math.Max(Math.Max((byte)direct, (byte)lightWorld),
                                 (byte)dDMTop), (byte)dMWestBottom);
                         }
-
-                        //  Default to no access
-                        return AccessibilityLevel.None;
                     };
 
                     _regionSubscriptions.Add(RegionID.DeathMountainWestBottom, new Mode());
@@ -1268,12 +1210,11 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        //  Standard, Open, and Retro modes
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                             return AccessibilityLevel.Normal;
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             //  Access via Light World with Moon Pearl
                             if (_game.Items.Has(ItemType.MoonPearl) && !excludedRegions.Contains(RegionID.LightWorld))
@@ -1300,16 +1241,15 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        //  Standard, Open, and Retro modes
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             //  Access via Light World entrance
                             if (_game.Items.CanClearAgaTowerBarrier())
                                 return AccessibilityLevel.Normal;
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             if (!excludedRegions.Contains(RegionID.DarkDeathMountainTop))
                                 return _game.Regions[RegionID.DarkDeathMountainTop].Accessibility;
@@ -1353,12 +1293,11 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        //  Standard, Open, and Retro modes
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                             return AccessibilityLevel.Normal;
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             //  Access via Light World entrance
                             if (_game.Items.Has(ItemType.MoonPearl) && !excludedRegions.Contains(RegionID.LightWorld))
@@ -1393,8 +1332,8 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        //  Standard, Open, and Retro modes
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             //  Access via Light World entrance by book
                             if (_game.Items.Has(ItemType.Book))
@@ -1404,9 +1343,8 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.Mirror))
                                 return _game.Regions[RegionID.MireArea].GetAccessibility(newExcludedRegions);
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             //  Access via Light World entrance by book
                             if (_game.Items.Has(ItemType.Book) && _game.Items.Has(ItemType.MoonPearl) &&
@@ -1446,14 +1384,13 @@ namespace OpenTracker.Models
                         newExcludedRegions.Add(ID);
 
                         //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             if (!excludedRegions.Contains(RegionID.DeathMountainWestTop))
                                 return _game.Regions[RegionID.DeathMountainWestTop].GetAccessibility(newExcludedRegions);
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             //  Access via West Death Mountain top entrance
                             if (_game.Items.Has(ItemType.MoonPearl) && !excludedRegions.Contains(RegionID.DeathMountainWestTop))
@@ -1484,16 +1421,15 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
+                        //  Standard, Open, and Retro modes
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
                             //  Access via East Dark World entrance
                             if (_game.Items.Has(ItemType.MoonPearl) && !excludedRegions.Contains(RegionID.DarkWorldEast))
                                 return _game.Regions[RegionID.DarkWorldEast].GetAccessibility(newExcludedRegions);
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             //  Access via East Dark World entrance
                             if (!excludedRegions.Contains(RegionID.DarkWorldEast))
@@ -1527,13 +1463,12 @@ namespace OpenTracker.Models
                         //  Access to both the Dam and Swamp Palace entrance is required
                         if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Mirror))
                         {
-                            if (_game.Mode.WorldState == WorldState.StandardOpen)
+                            if (_game.Mode.WorldState != WorldState.Inverted)
                             {
                                 if (!excludedRegions.Contains(RegionID.DarkWorldSouth))
                                     return _game.Regions[RegionID.DarkWorldSouth].GetAccessibility(newExcludedRegions);
                             }
-
-                            if (_game.Mode.WorldState == WorldState.Inverted)
+                            else
                             {
                                 if (!excludedRegions.Contains(RegionID.LightWorld))
                                     return _game.Regions[RegionID.LightWorld].GetAccessibility(newExcludedRegions);
@@ -1570,15 +1505,14 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        //  Standard, Open, and Retro modes
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl) && !excludedRegions.Contains(RegionID.DarkWorldWest))
                                 return _game.Regions[RegionID.DarkWorldWest].GetAccessibility(newExcludedRegions);
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             //  Access via West Dark World entrances
                             if (!excludedRegions.Contains(RegionID.DarkWorldWest))
@@ -1609,15 +1543,14 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        //  Standard, Open, and Retro modes
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             if (_game.Items.Has(ItemType.MoonPearl) && !excludedRegions.Contains(RegionID.DarkWorldWest))
                                 return _game.Regions[RegionID.DarkWorldWest].GetAccessibility(newExcludedRegions);
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             //  Access via West Dark World entrance
                             if (!excludedRegions.Contains(RegionID.DarkWorldWest))
@@ -1645,8 +1578,8 @@ namespace OpenTracker.Models
                         if (_game.Mode.EntranceShuffle.Value)
                             return AccessibilityLevel.Normal;
 
-                        //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        //  Standard, Open, and Retro modes
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             //  Access via Lake Hylia portal
                             if (_game.Items.Has(ItemType.Gloves, 2) && _game.Items.Has(ItemType.MoonPearl))
@@ -1659,9 +1592,8 @@ namespace OpenTracker.Models
                                 return AccessibilityLevel.SequenceBreak;
                             }
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             //  Access via South Dark World entrance by flippers
                             if (_game.Items.Has(ItemType.Flippers))
@@ -1699,8 +1631,8 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        //  Standard, Open, and Retro modes
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             //  Access via Mire Area entrance by proper medallion
                             if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.CanUseMedallions() &&
@@ -1718,9 +1650,8 @@ namespace OpenTracker.Models
                                 !excludedRegions.Contains(RegionID.MireArea))
                                 return _game.Regions[RegionID.MireArea].GetAccessibility(newExcludedRegions);
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             //  Access via Mire Area by proper medallion
                             if (_game.Items.CanUseMedallions() &&
@@ -1759,7 +1690,7 @@ namespace OpenTracker.Models
                     _itemSubscriptions.Add(ItemType.QuakeDungeons, new Mode() { EntranceShuffle = false });
 
                     break;
-                case RegionID.TurtleRock:
+                case RegionID.TurtleRockFront:
 
                     GetAccessibility = (excludedRegions) =>
                     {
@@ -1770,8 +1701,8 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        //  Standard, Open, and Retro modes
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             //  Access via Dark Death Mountain top front entrance by proper medallion
                             if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Hammer) &&
@@ -1786,18 +1717,10 @@ namespace OpenTracker.Models
                                 !excludedRegions.Contains(RegionID.DarkDeathMountainTop))
                                 return _game.Regions[RegionID.DarkDeathMountainTop].GetAccessibility(newExcludedRegions);
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
-                            AccessibilityLevel dMEastTop = AccessibilityLevel.None;
-                            AccessibilityLevel dDMTop = AccessibilityLevel.None;
-
-                            //  Access via back entrances by mirror from East Death Mountain top
-                            if (_game.Items.Has(ItemType.Mirror) && !excludedRegions.Contains(RegionID.DeathMountainEastTop))
-                                dMEastTop = _game.Regions[RegionID.DeathMountainEastTop].GetAccessibility(newExcludedRegions);
-
-                            //  Access via Dark Death Mountain top entrance
+                            //  Access via Dark Death Mountain top front entrance by proper medallion
                             if (_game.Items.CanUseMedallions() && ((_game.Items.Has(ItemType.Bombos) &&
                                 _game.Items.Has(ItemType.Ether) && _game.Items.Has(ItemType.Quake)) ||
                                 (_game.Items.Has(ItemType.Bombos) &&
@@ -1807,20 +1730,13 @@ namespace OpenTracker.Models
                                 (_game.Items.Has(ItemType.Quake) &&
                                 _game.Items[ItemType.QuakeDungeons].Current >= 2)) &&
                                 !excludedRegions.Contains(RegionID.DarkDeathMountainTop))
-                                dDMTop = _game.Regions[RegionID.DarkDeathMountainTop].GetAccessibility(newExcludedRegions);
-
-                            return (AccessibilityLevel)Math.Max((byte)dMEastTop, (byte)dDMTop);
+                                return _game.Regions[RegionID.DarkDeathMountainTop].GetAccessibility(newExcludedRegions);
                         }
 
                         //  Default to no access
                         return AccessibilityLevel.None;
                     };
 
-                    _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode()
-                    {
-                        WorldState = WorldState.Inverted,
-                        EntranceShuffle = false
-                    });
                     _regionSubscriptions.Add(RegionID.DarkDeathMountainTop, new Mode() { EntranceShuffle = false });
 
                     _itemSubscriptions.Add(ItemType.MoonPearl, new Mode()
@@ -1840,6 +1756,38 @@ namespace OpenTracker.Models
                     _itemSubscriptions.Add(ItemType.EtherDungeons, new Mode() { EntranceShuffle = false });
                     _itemSubscriptions.Add(ItemType.Quake, new Mode() { EntranceShuffle = false });
                     _itemSubscriptions.Add(ItemType.QuakeDungeons, new Mode() { EntranceShuffle = false });
+
+                    break;
+                case RegionID.TurtleRockBack:
+
+                    GetAccessibility = (excludedRegions) =>
+                    {
+                        //  Access to dungeons assumed available with entrance shuffle
+                        if (_game.Mode.EntranceShuffle.Value)
+                            return AccessibilityLevel.Normal;
+
+                        List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
+                        newExcludedRegions.Add(ID);
+
+                        //  Inverted mode
+                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        {
+                            //  Access via East Death Mountain top by mirror
+                            if (_game.Items.Has(ItemType.Mirror) &&
+                                !excludedRegions.Contains(RegionID.DeathMountainEastTop))
+                                return _game.Regions[RegionID.DeathMountainEastTop].GetAccessibility(newExcludedRegions);
+                        }
+
+                        //  Default to no access
+                        return AccessibilityLevel.None;
+                    };
+
+                    _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode()
+                    {
+                        WorldState = WorldState.Inverted,
+                        EntranceShuffle = false
+                    });
+
                     _itemSubscriptions.Add(ItemType.Mirror, new Mode()
                     {
                         WorldState = WorldState.Inverted,
@@ -1859,16 +1807,15 @@ namespace OpenTracker.Models
                         newExcludedRegions.Add(ID);
 
                         //  Standard and Open modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        if (_game.Mode.WorldState != WorldState.Retro)
                         {
                             //  Access via Dark Death Mountain top entrance with proper number of crystals
                             if (_game.Items.Has(ItemType.TowerCrystals) && _game.Items.Has(ItemType.MoonPearl) &&
                                 !excludedRegions.Contains(RegionID.DarkDeathMountainTop))
                                 return _game.Regions[RegionID.DarkDeathMountainTop].GetAccessibility(newExcludedRegions);
                         }
-
                         //  Inverted mode
-                        if (_game.Mode.WorldState == WorldState.Inverted)
+                        else
                         {
                             //  Access via Light World entrance with proper amount of crystals
                             if (_game.Items.Has(ItemType.TowerCrystals) && _game.Items.Has(ItemType.MoonPearl) &&

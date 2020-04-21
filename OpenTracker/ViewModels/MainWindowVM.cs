@@ -36,6 +36,7 @@ namespace OpenTracker.ViewModels
         public ReactiveCommand<Unit, Unit> UndoCommand { get; }
         public ReactiveCommand<Unit, Unit> RedoCommand { get; }
         public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocationsCommand { get; }
+        public ReactiveCommand<Unit, Unit> ToggleShowItemCountsOnMapCommand { get; }
         public ReactiveCommand<string, Unit> SetLayoutOrientationCommand { get; }
         public ReactiveCommand<string, Unit> SetMapOrientationCommand { get; }
         public ReactiveCommand<string, Unit> SetHorizontalItemsPlacementCommand { get; }
@@ -150,6 +151,7 @@ namespace OpenTracker.ViewModels
             UndoCommand = ReactiveCommand.Create(Undo, this.WhenAnyValue(x => x.CanUndo));
             RedoCommand = ReactiveCommand.Create(Redo, this.WhenAnyValue(x => x.CanRedo));
             ToggleDisplayAllLocationsCommand = ReactiveCommand.Create(ToggleDisplayAllLocations);
+            ToggleShowItemCountsOnMapCommand = ReactiveCommand.Create(ToggleShowItemCountsOnMap);
             SetLayoutOrientationCommand = ReactiveCommand.Create<string>(SetLayoutOrientation);
             SetMapOrientationCommand = ReactiveCommand.Create<string>(SetMapOrientation);
             SetHorizontalItemsPlacementCommand = ReactiveCommand.Create<string>(SetHorizontalItemsPlacement);
@@ -497,6 +499,11 @@ namespace OpenTracker.ViewModels
         private void ToggleDisplayAllLocations()
         {
             _appSettings.DisplayAllLocations = !_appSettings.DisplayAllLocations;
+        }
+
+        private void ToggleShowItemCountsOnMap()
+        {
+            _appSettings.ShowItemCountsOnMap = !_appSettings.ShowItemCountsOnMap;
         }
 
         private void SetLayoutOrientation(string orientationString)

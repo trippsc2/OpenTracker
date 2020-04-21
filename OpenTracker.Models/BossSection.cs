@@ -580,7 +580,7 @@ namespace OpenTracker.Models
 
                         if (_game.Mode.WorldState == WorldState.StandardOpen)
                         {
-                            if (_game.Regions[RegionID.TurtleRock].Accessibility >= AccessibilityLevel.SequenceBreak)
+                            if (_game.Regions[RegionID.TurtleRockFront].Accessibility >= AccessibilityLevel.SequenceBreak)
                             {
                                 if (_game.Items.Has(ItemType.CaneOfSomaria) && _game.Items.Has(ItemType.TRBigKey) &&
                                     _game.Items.Has(ItemType.TRSmallKey, 3))
@@ -637,7 +637,7 @@ namespace OpenTracker.Models
 
                     _updateOnWorldStateChange = true;
 
-                    _regionSubscriptions.Add(RegionID.TurtleRock, new Mode());
+                    _regionSubscriptions.Add(RegionID.TurtleRockFront, new Mode());
                     _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode() { WorldState = WorldState.Inverted });
                     _regionSubscriptions.Add(RegionID.DarkDeathMountainTop, new Mode() { WorldState = WorldState.Inverted });
 

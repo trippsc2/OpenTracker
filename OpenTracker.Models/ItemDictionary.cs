@@ -139,6 +139,16 @@ namespace OpenTracker.Models
             return Has(ItemType.FireRod) || (Has(ItemType.Bombos) && CanUseMedallions());
         }
 
+        public bool CanShootArrows()
+        {
+            return Has(ItemType.Bow);
+        }
+
+        public bool CanClearRedEyegoreGoriyaRooms()
+        {
+            return CanShootArrows() || _mode.EnemyShuffle.Value;
+        }
+
         public void Reset()
         {
             foreach (Item item in Values)

@@ -53,8 +53,13 @@ namespace OpenTracker.ViewModels
 
         private void UpdateMap()
         {
+            WorldState worldState = WorldState.StandardOpen;
+
+            if (_game.Mode.WorldState != WorldState.Retro)
+                worldState = _game.Mode.WorldState.Value;
+
             ImageSource = "avares://OpenTracker/Assets/Images/Maps/" +
-                _game.Mode.WorldState.Value.ToString().ToLower() + "_" +
+                worldState.ToString().ToLower() + "_" +
                 _iD.ToString().ToLower() + ".png";
         }
     }

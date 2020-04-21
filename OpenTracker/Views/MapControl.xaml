@@ -18,7 +18,8 @@
 		</Style>
 	</UserControl.Styles>
 
-	<Border BorderBrush="#081212" Background="Transparent" BorderThickness="3" Margin="12.5,25">
+	<Border BorderBrush="#081212" Background="Transparent" BorderThickness="3" Margin="{Binding Path=MapMargin,
+			RelativeSource={RelativeSource AncestorType=views:MainWindow}}">
 		<Panel>
 
 			<Image Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}"

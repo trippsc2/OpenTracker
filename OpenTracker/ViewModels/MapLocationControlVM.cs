@@ -90,6 +90,20 @@ namespace OpenTracker.ViewModels
             private set => this.RaiseAndSetIfChanged(ref _imageSource, value);
         }
 
+        private bool _textVisible;
+        public bool TextVisible
+        {
+            get => _textVisible;
+            private set => this.RaiseAndSetIfChanged(ref _textVisible, value);
+        }
+
+        private string _text;
+        public string Text
+        {
+            get => _text;
+            private set => this.RaiseAndSetIfChanged(ref _text, value);
+        }
+
         public MapLocationControlVM(UndoRedoManager undoRedoManager, AppSettingsVM appSettings,
             Game game, MainWindowVM mainWindow, MapLocation mapLocation)
         {
@@ -116,22 +130,25 @@ namespace OpenTracker.ViewModels
             UpdateColor();
             UpdateImage();
             UpdateVisibility();
+            UpdateText();
         }
 
         private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(AppSettingsVM.DisplayAllLocations))
                 UpdateVisibility();
-            else if (e.PropertyName != nameof(AppSettingsVM.EmphasisFontColor))
-                UpdateColor();
+
+            if (e.PropertyName == nameof(AppSettingsVM.ShowItemCountsOnMap))
+                UpdateText();
+
+            UpdateColor();
         }
 
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.EntranceShuffle))
-                UpdateSizeAndPosition();
-
+            UpdateSizeAndPosition();
             UpdateVisibility();
+            UpdateText();
         }
 
         private void OnLocationChanged(object sender, PropertyChangedEventArgs e)
@@ -140,6 +157,18 @@ namespace OpenTracker.ViewModels
             {
                 UpdateColor();
                 UpdateVisibility();
+            }
+
+            if (e.PropertyName == nameof(Location.Accessible))
+                UpdateText();
+
+            if (e.PropertyName == nameof(Location.Available))
+                UpdateText();
+
+            if (e.PropertyName == nameof(Location.Total))
+            {
+                UpdateSizeAndPosition();
+                UpdateText();
             }
         }
 
@@ -180,15 +209,39 @@ namespace OpenTracker.ViewModels
             }
             else
             {
-                Size = 70.0;
-                BorderSize = new Thickness(9);
-            }
+                if (_mapLocation.Location.Total > 1)
+                {
+                    switch (_mapLocation.Location.ID)
+                    {
+                        case LocationID.EasternPalace:
+                        case LocationID.DesertPalace:
+                        case LocationID.TowerOfHera:
+                        case LocationID.PalaceOfDarkness:
+                        case LocationID.SwampPalace:
+                        case LocationID.SkullWoods:
+                        case LocationID.ThievesTown:
+                        case LocationID.IcePalace:
+                        case LocationID.MiseryMire:
+                        case LocationID.TurtleRock:
+                        case LocationID.GanonsTower:
+                            Size = 130.0;
+                            break;
+                        default:
+                            Size = 90.0;
+                            break;
+                    }
+                }
+                else
+                    Size = 70.0;
 
-            CanvasX = _mapLocation.X - (Size / 2);
+                BorderSize = new Thickness(9);
+        }
+
+        CanvasX = _mapLocation.X - (Size / 2);
             CanvasY = _mapLocation.Y - (Size / 2);
         }
 
-        private void UpdateColor()
+    private void UpdateColor()
         {
             Color = _appSettings.AccessibilityColors[_mapLocation.Location.Accessibility];
         }
@@ -320,6 +373,54 @@ namespace OpenTracker.ViewModels
             Visible = ImageVisible || BorderVisible;
         }
 
+        private void UpdateText()
+        {
+            if (_game.Mode.EntranceShuffle.Value)
+            {
+                Text = "";
+                TextVisible = false;
+                return;
+            }
+
+            if (!_appSettings.ShowItemCountsOnMap)
+            {
+                Text = "";
+                TextVisible = false;
+                return;
+            }
+
+            if (_mapLocation.Location.Available == 0)
+            {
+                Text = "";
+                TextVisible = false;
+                return;
+            }
+
+            if (_mapLocation.Location.Total <= 1)
+            {
+                Text = "";
+                TextVisible = false;
+                return;
+            }
+
+            if (_mapLocation.Location.Available == _mapLocation.Location.Accessible)
+            {
+                Text = _mapLocation.Location.Available.ToString();
+                TextVisible = true;
+            }
+            else if (_mapLocation.Location.Accessible == 0)
+            {
+                Text = _mapLocation.Location.Available.ToString();
+                TextVisible = true;
+            }
+            else
+            {
+                Text = _mapLocation.Location.Accessible.ToString() + "/" +
+                    _mapLocation.Location.Available.ToString();
+                TextVisible = true;
+            }
+        }
+
         private void UnsubscribeFromMarkingItem(ISection section)
         {
             if (section.Marking.HasValue)
@@ -394,5 +495,5 @@ namespace OpenTracker.ViewModels
             else if (pinnedLocations[0] != existingPinnedLocation)
                 _undoRedoManager.Execute(new PinLocation(pinnedLocations, existingPinnedLocation));
         }
-    }
+}
 }

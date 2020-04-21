@@ -66,8 +66,7 @@
 				
 				<Border Classes="SectionCount" IsHitTestVisible="{Binding Path=NumberBoxVisible}"
 						IsVisible="{Binding Path=NumberBoxVisible}">
-					<TextBlock Classes="SectionCount" Text="{Binding Path=NumberString}"
-							   HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+					<TextBlock Classes="SectionCount" Text="{Binding Path=NumberString}" />
 				</Border>
 			
 			</Panel>

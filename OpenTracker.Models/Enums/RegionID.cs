@@ -29,7 +29,8 @@
         ThievesTown,
         IcePalace,
         MiseryMire,
-        TurtleRock,
+        TurtleRockFront,
+        TurtleRockBack,
         GanonsTower
     }
 }

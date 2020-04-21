@@ -121,6 +121,15 @@
 
 					</MenuItem>
 
+					<MenuItem Classes="Menu InnerMenu" Command="{Binding Path=ToggleShowItemCountsOnMapCommand}"
+							  Header="Show Item Counts on Map">
+
+						<MenuItem.Icon>
+							<CheckBox Classes="Menu" IsChecked="{Binding Path=AppSettings.ShowItemCountsOnMap}" />
+						</MenuItem.Icon>
+
+					</MenuItem>
+
 					<Separator />
 					<MenuItem Classes="Menu InnerMenu" Command="{Binding ElementName=HostWindow, Path=ColorSelect}"
 							  Header="Change Colors..." />

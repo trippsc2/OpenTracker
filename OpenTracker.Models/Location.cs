@@ -33,6 +33,48 @@ namespace OpenTracker.Models
             }
         }
 
+        private int _available;
+        public int Available
+        {
+            get => _available;
+            private set
+            {
+                if (_available != value)
+                {
+                    _available = value;
+                    OnPropertyChanged(nameof(Available));
+                }
+            }
+        }
+
+        private int _accessible;
+        public int Accessible
+        {
+            get => _accessible;
+            private set
+            {
+                if (_accessible != value)
+                {
+                    _accessible = value;
+                    OnPropertyChanged(nameof(Accessible));
+                }
+            }
+        }
+
+        private int _total;
+        public int Total
+        {
+            get => _total;
+            private set
+            {
+                if (_total != value)
+                {
+                    _total = value;
+                    OnPropertyChanged(nameof(Total));
+                }
+            }
+        }
+
         public Location(Game game, LocationID iD)
         {
             _game = game;
@@ -142,8 +184,7 @@ namespace OpenTracker.Models
                         {
                             EntranceShuffle = false
                         }));
-                    itemSections = 1;
-                    itemSections = 1;
+                    itemSections = 2;
                     break;
                 case LocationID.LinksHouse:
                     Name = "Link's House";
@@ -508,11 +549,6 @@ namespace OpenTracker.Models
                         {
                             EntranceShuffle = false
                         }));
-                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1714, 293,
-                        new Mode()
-                        {
-                            EntranceShuffle = false
-                        }));
                     itemSections = 2;
                     break;
                 case LocationID.SuperBunnyCave:
@@ -721,7 +757,7 @@ namespace OpenTracker.Models
                     break;
                 case LocationID.MiseryMire:
                     Name = "Misery Mire";
-                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 150, 1670,
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 150, 1710,
                         new Mode()
                         {
                             EntranceShuffle = false
@@ -757,7 +793,7 @@ namespace OpenTracker.Models
                             WorldState = WorldState.StandardOpen,
                             EntranceShuffle = false
                         }));
-                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1003, 807,
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1003, 797,
                         new Mode()
                         {
                             WorldState = WorldState.Inverted,
@@ -1907,9 +1943,17 @@ namespace OpenTracker.Models
                 Sections.Add(BossSection);
 
             foreach (ISection section in Sections)
+            {
+                if (section is ItemSection itemSection)
+                    Total += itemSection.Total;
+
                 section.PropertyChanged += OnSectionChanged;
+            }
 
             UpdateAccessibility();
+            UpdateAccessible();
+            UpdateAvailable();
+            UpdateTotal();
         }
         
         private void OnPropertyChanged(string propertyName)
@@ -1920,13 +1964,22 @@ namespace OpenTracker.Models
         private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ISection.Available))
+            {
                 UpdateAccessibility();
+                UpdateAvailable();
+            }
 
             if (e.PropertyName == nameof(ISection.Accessibility))
                 UpdateAccessibility();
+
+            if (e.PropertyName == nameof(ItemSection.Accessible))
+                UpdateAccessible();
+
+            if (e.PropertyName == nameof(ItemSection.Total))
+                UpdateTotal();
         }
 
-        public void UpdateAccessibility()
+        private void UpdateAccessibility()
         {
             AccessibilityLevel? leastAccessible = null;
             AccessibilityLevel? mostAccessible = null;
@@ -1964,6 +2017,45 @@ namespace OpenTracker.Models
                     _ => throw new Exception(string.Format("Unknown availability state for location {0}", ID.ToString())),
                 };
             }
+        }
+
+        private void UpdateAvailable()
+        {
+            int available = 0;
+
+            foreach (ISection section in Sections)
+            {
+                if (section is ItemSection itemSection)
+                    available += itemSection.Available;
+            }
+
+            Available = available;
+        }
+
+        private void UpdateAccessible()
+        {
+            int accessible = 0;
+
+            foreach (ISection section in Sections)
+            {
+                if (section is ItemSection itemSection)
+                    accessible += itemSection.Accessible;
+            }
+
+            Accessible = accessible;
+        }
+
+        private void UpdateTotal()
+        {
+            int total = 0;
+
+            foreach (ISection section in Sections)
+            {
+                if (section is ItemSection itemSection)
+                    total += itemSection.Total;
+            }
+
+            Total = total;
         }
 
         public void Reset()

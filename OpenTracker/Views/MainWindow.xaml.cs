@@ -73,6 +73,14 @@ namespace OpenTracker.Views
             set => SetValue(MapPanelOrientationProperty, value);
         }
 
+        public static AvaloniaProperty<Thickness> MapMarginProperty =
+            AvaloniaProperty.Register<MainWindow, Thickness>(nameof(MapMargin));
+        public Thickness MapMargin
+        {
+            get => GetValue(MapMarginProperty);
+            set => SetValue(MapMarginProperty, value);
+        }
+
         public static AvaloniaProperty<bool> ModeSettingsPopupOpenProperty =
             AvaloniaProperty.Register<MainWindow, bool>(nameof(ModeSettingsPopupOpen));
         public bool ModeSettingsPopupOpen
@@ -159,9 +167,15 @@ namespace OpenTracker.Views
             UIPanelVerticalAlignment = VerticalAlignment.Bottom;
 
             if (_viewModel.AppSettingsInterface.MapOrientation == MapOrientation.Vertical)
+            {
                 MapPanelOrientation = Orientation.Vertical;
+                MapMargin = new Thickness(20, 10);
+            }
             else
+            {
                 MapPanelOrientation = Orientation.Horizontal;
+                MapMargin = new Thickness(10, 20);
+            }
 
             if (_viewModel.AppSettingsInterface.HorizontalItemsPlacement == HorizontalItemsPlacement.Left)
             {
@@ -185,9 +199,15 @@ namespace OpenTracker.Views
             UIPanelVerticalAlignment = VerticalAlignment.Stretch;
 
             if (_viewModel.AppSettingsInterface.MapOrientation == MapOrientation.Horizontal)
-                MapPanelOrientation = Orientation.Vertical;
-            else
+            {
                 MapPanelOrientation = Orientation.Horizontal;
+                MapMargin = new Thickness(10, 20);
+            }
+            else
+            {
+                MapPanelOrientation = Orientation.Vertical;
+                MapMargin = new Thickness(20, 10);
+            }
 
             if (_viewModel.AppSettingsInterface.VerticalItemsPlacement == VerticalItemsPlacement.Top)
             {

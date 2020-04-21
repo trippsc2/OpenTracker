@@ -28,6 +28,20 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        private bool _showItemCountsOnMap;
+        public bool ShowItemCountsOnMap
+        {
+            get => _showItemCountsOnMap;
+            set
+            {
+                if (_showItemCountsOnMap != value)
+                {
+                    _showItemCountsOnMap = value;
+                    OnPropertyChanged(nameof(ShowItemCountsOnMap));
+                }
+            }
+        }
+
         private LayoutOrientation _layoutOrientation;
         public LayoutOrientation LayoutOrientation
         {
@@ -168,6 +182,7 @@ namespace OpenTracker.ViewModels
         public AppSettingsVM()
         {
             DisplayAllLocations = false;
+            ShowItemCountsOnMap = true;
             EmphasisFontColor = new SolidColorBrush(Color.Parse("#00ff00"));
 
             AccessibilityColors = new Dictionary<AccessibilityLevel, SolidColorBrush>()

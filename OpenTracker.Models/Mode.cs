@@ -153,9 +153,22 @@ namespace OpenTracker.Models
             }
 
             if (gameMode.WorldState != null &&
-                WorldState != null &&
-                WorldState != gameMode.WorldState)
-                return false;
+                WorldState != null)
+            {
+                switch (gameMode.WorldState.Value)
+                {
+                    case Enums.WorldState.StandardOpen:
+                        if (WorldState.Value != Enums.WorldState.StandardOpen &&
+                            WorldState.Value != Enums.WorldState.Retro)
+                            return false;
+                        break;
+                    case Enums.WorldState.Inverted:
+                    case Enums.WorldState.Retro:
+                        if (WorldState != gameMode.WorldState)
+                            return false;
+                        break;
+                }
+            }
 
             if (gameMode.EntranceShuffle != null &&
                 EntranceShuffle != null &&

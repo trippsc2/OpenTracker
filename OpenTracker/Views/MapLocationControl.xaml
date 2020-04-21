@@ -13,9 +13,16 @@
 	<Panel Width="{Binding Path=Size}" Height="{Binding Path=Size}" IsVisible="{Binding Path=Visible}"
 		   IsHitTestVisible="{Binding Path=Visible}" DoubleTapped="OnDoubleClick"
 		   PointerReleased="OnClick">
+		
 		<Border Classes="MapLocation" Width="{Binding Path=Size}" Height="{Binding Path=Size}"
 				Background="{Binding Path=Color}" IsVisible="{Binding Path=BorderVisible}"
-				IsHitTestVisible="{Binding Path=BorderVisible}" BorderThickness="{Binding Path=BorderSize}" />
+				IsHitTestVisible="{Binding Path=BorderVisible}" BorderThickness="{Binding Path=BorderSize}">
+			<Border Classes="MapLocationNumber" IsHitTestVisible="{Binding Path=TextVisible}"
+					IsVisible="{Binding Path=TextVisible}">
+				<TextBlock Classes="MapLocationNumber" Foreground="{Binding Path=Color}" Text="{Binding Path=Text}" />
+			</Border>
+		</Border>
+		
 		<Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Uniform"
 			   IsVisible="{Binding Path=ImageVisible}" IsHitTestVisible="{Binding Path=ImageVisible}"
 			   Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}" />
