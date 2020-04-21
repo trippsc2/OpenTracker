@@ -3,7 +3,6 @@
     public enum WorldState
     {
         StandardOpen,
-        Inverted,
-        Retro
+        Inverted
     }
 }

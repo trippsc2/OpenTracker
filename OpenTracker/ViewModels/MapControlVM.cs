@@ -55,9 +55,6 @@ namespace OpenTracker.ViewModels
         {
             WorldState worldState = WorldState.StandardOpen;
 
-            if (_game.Mode.WorldState != WorldState.Retro)
-                worldState = _game.Mode.WorldState.Value;
-
             ImageSource = "avares://OpenTracker/Assets/Images/Maps/" +
                 worldState.ToString().ToLower() + "_" +
                 _iD.ToString().ToLower() + ".png";

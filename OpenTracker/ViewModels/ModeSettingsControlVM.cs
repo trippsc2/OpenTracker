@@ -69,11 +69,11 @@ namespace OpenTracker.ViewModels
             set => this.RaiseAndSetIfChanged(ref _dungeonItemShuffleKeysanity, value);
         }
 
-        private bool _worldStateStandardOpen;
-        public bool WorldStateStandardOpen
+        private bool _worldStateStandardOpenRetro;
+        public bool WorldStateStandardOpenRetro
         {
-            get => _worldStateStandardOpen;
-            set => this.RaiseAndSetIfChanged(ref _worldStateStandardOpen, value);
+            get => _worldStateStandardOpenRetro;
+            set => this.RaiseAndSetIfChanged(ref _worldStateStandardOpenRetro, value);
         }
 
         private bool _worldStateInverted;
@@ -81,13 +81,6 @@ namespace OpenTracker.ViewModels
         {
             get => _worldStateInverted;
             set => this.RaiseAndSetIfChanged(ref _worldStateInverted, value);
-        }
-
-        private bool _worldStateRetro;
-        public bool WorldStateRetro
-        {
-            get => _worldStateRetro;
-            set => this.RaiseAndSetIfChanged(ref _worldStateRetro, value);
         }
 
         private bool _entranceShuffle;
@@ -132,7 +125,7 @@ namespace OpenTracker.ViewModels
 
             _mode.PropertyChanged += OnModeChanged;
 
-            ItemPlacementCommand = ReactiveCommand.Create<string>(SetItemPlacement, this.WhenAnyValue(x => x.WorldStateStandardOpen));
+            ItemPlacementCommand = ReactiveCommand.Create<string>(SetItemPlacement, this.WhenAnyValue(x => x.WorldStateStandardOpenRetro));
             DungeonItemShuffleCommand = ReactiveCommand.Create<string>(SetDungeonItemShuffle);
             WorldStateCommand = ReactiveCommand.Create<string>(SetWorldState);
             EntranceShuffleCommand = ReactiveCommand.Create(ToggleEntranceShuffle);
@@ -239,24 +232,16 @@ namespace OpenTracker.ViewModels
             switch (_mode.WorldState)
             {
                 case null:
-                    WorldStateStandardOpen = false;
+                    WorldStateStandardOpenRetro = false;
                     WorldStateInverted = false;
-                    WorldStateRetro = false;
                     break;
                 case WorldState.StandardOpen:
-                    WorldStateStandardOpen = true;
+                    WorldStateStandardOpenRetro = true;
                     WorldStateInverted = false;
-                    WorldStateRetro = false;
                     break;
                 case WorldState.Inverted:
-                    WorldStateStandardOpen = false;
+                    WorldStateStandardOpenRetro = false;
                     WorldStateInverted = true;
-                    WorldStateRetro = false;
-                    break;
-                case WorldState.Retro:
-                    WorldStateStandardOpen = false;
-                    WorldStateInverted = false;
-                    WorldStateRetro = true;
                     break;
             }
         }

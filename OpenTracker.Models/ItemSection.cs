@@ -5882,18 +5882,8 @@ namespace OpenTracker.Models
                     _updateOnDungeonItemShuffleChange = true;
 
                     _regionSubscriptions.Add(RegionID.TurtleRockFront, new Mode());
-                    _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode());
-                    _regionSubscriptions.Add(RegionID.DarkDeathMountainTop, new Mode());
+                    _regionSubscriptions.Add(RegionID.TurtleRockBack, new Mode());
 
-                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
-                    _itemSubscriptions.Add(ItemType.Sword, new Mode());
-                    _itemSubscriptions.Add(ItemType.Bombos, new Mode());
-                    _itemSubscriptions.Add(ItemType.BombosDungeons, new Mode());
-                    _itemSubscriptions.Add(ItemType.Ether, new Mode());
-                    _itemSubscriptions.Add(ItemType.EtherDungeons, new Mode());
-                    _itemSubscriptions.Add(ItemType.Quake, new Mode());
-                    _itemSubscriptions.Add(ItemType.QuakeDungeons, new Mode());
-                    _itemSubscriptions.Add(ItemType.Mirror, new Mode());
                     _itemSubscriptions.Add(ItemType.CaneOfSomaria, new Mode());
                     _itemSubscriptions.Add(ItemType.FireRod, new Mode());
                     _itemSubscriptions.Add(ItemType.Lamp, new Mode());

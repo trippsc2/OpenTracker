@@ -820,7 +820,7 @@ namespace OpenTracker.Models
                         newExcludedRegions.Add(ID);
 
                         //  Standard, Open, and Retro modes
-                        if (_game.Mode.WorldState != WorldState.StandardOpen)
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             //  Access via Turtle Rock Tunnel by mirror
                             if (_game.Items.Has(ItemType.TurtleRockTunnelAccess) ||
@@ -1806,8 +1806,8 @@ namespace OpenTracker.Models
                         List<RegionID> newExcludedRegions = excludedRegions.GetRange(0, excludedRegions.Count);
                         newExcludedRegions.Add(ID);
 
-                        //  Standard and Open modes
-                        if (_game.Mode.WorldState != WorldState.Retro)
+                        //  Standard, Open, and Retro modes
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             //  Access via Dark Death Mountain top entrance with proper number of crystals
                             if (_game.Items.Has(ItemType.TowerCrystals) && _game.Items.Has(ItemType.MoonPearl) &&
