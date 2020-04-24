@@ -109,6 +109,13 @@ namespace OpenTracker.ViewModels
                         {
                             switch ((MarkingType)i)
                             {
+                                case MarkingType.Sword:
+                                case MarkingType.Shield:
+                                case MarkingType.Mail:
+                                case MarkingType.Boots:
+                                case MarkingType.Gloves:
+                                case MarkingType.Flippers:
+                                case MarkingType.MoonPearl:
                                 case MarkingType.Bow:
                                 case MarkingType.SilverArrows:
                                 case MarkingType.Boomerang:
@@ -120,35 +127,26 @@ namespace OpenTracker.ViewModels
                                 case MarkingType.IceRod:
                                 case MarkingType.Bombos:
                                 case MarkingType.Ether:
-                                case MarkingType.Quake:
-                                case MarkingType.Shovel:
                                 case MarkingType.Powder:
                                 case MarkingType.Lamp:
                                 case MarkingType.Hammer:
                                 case MarkingType.Flute:
                                 case MarkingType.Net:
                                 case MarkingType.Book:
+                                case MarkingType.Shovel:
+                                case MarkingType.SmallKey:
                                 case MarkingType.Bottle:
                                 case MarkingType.CaneOfSomaria:
                                 case MarkingType.CaneOfByrna:
                                 case MarkingType.Cape:
-                                case MarkingType.Gloves:
-                                case MarkingType.Boots:
-                                case MarkingType.Flippers:
+                                case MarkingType.Mirror:
                                 case MarkingType.HalfMagic:
-                                case MarkingType.Sword:
-                                case MarkingType.Shield:
-                                case MarkingType.Mail:
+                                case MarkingType.BigKey:
                                     ItemSelect.Add(new MarkingSelectControlVM(_game, this, (MarkingType)i));
                                     break;
-                                case MarkingType.MoonPearl:
+                                case MarkingType.Quake:
                                     ItemSelect.Add(new MarkingSelectControlVM(_game, this, (MarkingType)i));
                                     ItemSelect.Add(new MarkingSelectControlVM(_game, this, null));
-                                    break;
-                                case MarkingType.Mirror:
-                                    ItemSelect.Add(new MarkingSelectControlVM(_game, this, (MarkingType)i));
-                                    ItemSelect.Add(new MarkingSelectControlVM(_game, this, MarkingType.SmallKey));
-                                    ItemSelect.Add(new MarkingSelectControlVM(_game, this, MarkingType.BigKey));
                                     break;
                                 default:
                                     break;

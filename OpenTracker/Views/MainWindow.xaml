@@ -163,6 +163,94 @@
 						
 					</MenuItem>
 
+					<MenuItem Classes="Menu InnerMenu" Header="Horizontal Orientation">
+						
+						<MenuItem Classes="Menu InnerMenu" Header="UI Panel Placement">
+
+							<MenuItem Classes="Menu InnerMenu" Header="Top"
+									  Command="{Binding Path=SetHorizontalUIPanelPlacementCommand}" CommandParameter="Top">
+								<MenuItem.Icon>
+									<RadioButton Classes="Menu" GroupName="HorizontalUIPanelPlacement" IsChecked="{Binding Path=TopHorizontalUIPanelPlacement, Mode=OneWay}"
+												 Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Left" />
+								</MenuItem.Icon>
+							</MenuItem>
+
+							<MenuItem Classes="Menu InnerMenu" Header="Bottom"
+									  Command="{Binding Path=SetHorizontalUIPanelPlacementCommand}" CommandParameter="Bottom">
+								<MenuItem.Icon>
+									<RadioButton Classes="Menu" GroupName="HorizontalUIPanelPlacement" IsChecked="{Binding Path=BottomHorizontalUIPanelPlacement, Mode=OneWay}"
+												 Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Right" />
+								</MenuItem.Icon>
+							</MenuItem>
+
+						</MenuItem>
+
+						<MenuItem Classes="Menu InnerMenu" Header="Items Panel Placement">
+
+							<MenuItem Classes="Menu InnerMenu" Header="Left"
+									  Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Left">
+								<MenuItem.Icon>
+									<RadioButton Classes="Menu" GroupName="HorizontalItemsPlacement" IsChecked="{Binding Path=LeftHorizontalItemsPlacement, Mode=OneWay}"
+												 Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Left" />
+								</MenuItem.Icon>
+							</MenuItem>
+
+							<MenuItem Classes="Menu InnerMenu" Header="Right"
+									  Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Right">
+								<MenuItem.Icon>
+									<RadioButton Classes="Menu" GroupName="HorizontalItemsPlacement" IsChecked="{Binding Path=RightHorizontalItemsPlacement, Mode=OneWay}"
+												 Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Right" />
+								</MenuItem.Icon>
+							</MenuItem>
+
+						</MenuItem>
+					
+					</MenuItem>
+
+					<MenuItem Classes="Menu InnerMenu" Header="Vertical Orientation">
+
+						<MenuItem Classes="Menu InnerMenu" Header="UI Panel Placement">
+
+							<MenuItem Classes="Menu InnerMenu" Header="Left"
+									  Command="{Binding Path=SetVerticalUIPanelPlacementCommand}" CommandParameter="Left">
+								<MenuItem.Icon>
+									<RadioButton Classes="Menu" GroupName="VerticalUIPanelPlacement" IsChecked="{Binding Path=LeftVerticalUIPanelPlacement, Mode=OneWay}"
+												 Command="{Binding Path=SetVerticalUIPanelPlacementCommand}" CommandParameter="Left" />
+								</MenuItem.Icon>
+							</MenuItem>
+
+							<MenuItem Classes="Menu InnerMenu" Header="Right"
+									  Command="{Binding Path=SetVerticalUIPanelPlacementCommand}" CommandParameter="Right">
+								<MenuItem.Icon>
+									<RadioButton Classes="Menu" GroupName="VerticalUIPanelPlacement" IsChecked="{Binding Path=RightVerticalUIPanelPlacement, Mode=OneWay}"
+												 Command="{Binding Path=SetVerticalUIPanelPlacementCommand}" CommandParameter="Right" />
+								</MenuItem.Icon>
+							</MenuItem>
+
+						</MenuItem>
+
+						<MenuItem Classes="Menu InnerMenu" Header="Items Panel Placement">
+
+							<MenuItem Classes="Menu InnerMenu" Header="Top"
+									  Command="{Binding Path=SetVerticalItemsPlacementCommand}" CommandParameter="Top">
+								<MenuItem.Icon>
+									<RadioButton Classes="Menu" GroupName="VerticalItemsPlacement" IsChecked="{Binding Path=TopVerticalItemsPlacement, Mode=OneWay}"
+												 Command="{Binding Path=SetVerticalItemsPlacementCommand}" CommandParameter="Top" />
+								</MenuItem.Icon>
+							</MenuItem>
+
+							<MenuItem Classes="Menu InnerMenu" Header="Bottom"
+									  Command="{Binding Path=SetVerticalItemsPlacementCommand}" CommandParameter="Bottom">
+								<MenuItem.Icon>
+									<RadioButton Classes="Menu" GroupName="VerticalItemsPlacement" IsChecked="{Binding Path=BottomVerticalItemsPlacement, Mode=OneWay}"
+												 Command="{Binding Path=SetVerticalItemsPlacementCommand}" CommandParameter="Bottom" />
+								</MenuItem.Icon>
+							</MenuItem>
+
+						</MenuItem>
+						
+					</MenuItem>
+
 					<MenuItem Classes="Menu InnerMenu" Header="Map Orientation">
 
 						<MenuItem Classes="Menu InnerMenu" Header="Dynamic"
@@ -186,46 +274,6 @@
 							<MenuItem.Icon>
 								<RadioButton Classes="Menu" GroupName="MapOrientation" IsChecked="{Binding Path=VerticalMapOrientation, Mode=OneWay}"
 											 Command="{Binding Path=SetMapOrientationCommand}" CommandParameter="Vertical" />
-							</MenuItem.Icon>
-						</MenuItem>
-
-					</MenuItem>
-
-					<MenuItem Classes="Menu InnerMenu" Header="Horizontal Items Placement">
-
-						<MenuItem Classes="Menu InnerMenu" Header="Left"
-								  Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Left">
-							<MenuItem.Icon>
-								<RadioButton Classes="Menu" GroupName="HorizontalItemsPlacement" IsChecked="{Binding Path=LeftHorizontalItemsPlacement, Mode=OneWay}"
-											 Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Left" />
-							</MenuItem.Icon>
-						</MenuItem>
-
-						<MenuItem Classes="Menu InnerMenu" Header="Right"
-								  Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Right">
-							<MenuItem.Icon>
-								<RadioButton Classes="Menu" GroupName="HorizontalItemsPlacement" IsChecked="{Binding Path=RightHorizontalItemsPlacement, Mode=OneWay}"
-											 Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Right" />
-							</MenuItem.Icon>
-						</MenuItem>
-
-					</MenuItem>
-
-					<MenuItem Classes="Menu InnerMenu" Header="Vertical Items Placement">
-
-						<MenuItem Classes="Menu InnerMenu" Header="Top"
-								  Command="{Binding Path=SetVerticalItemsPlacementCommand}" CommandParameter="Top">
-							<MenuItem.Icon>
-								<RadioButton Classes="Menu" GroupName="VerticalItemsPlacement" IsChecked="{Binding Path=TopVerticalItemsPlacement, Mode=OneWay}"
-											 Command="{Binding Path=SetVerticalItemsPlacementCommand}" CommandParameter="Top" />
-							</MenuItem.Icon>
-						</MenuItem>
-
-						<MenuItem Classes="Menu InnerMenu" Header="Bottom"
-								  Command="{Binding Path=SetVerticalItemsPlacementCommand}" CommandParameter="Bottom">
-							<MenuItem.Icon>
-								<RadioButton Classes="Menu" GroupName="VerticalItemsPlacement" IsChecked="{Binding Path=BottomVerticalItemsPlacement, Mode=OneWay}"
-											 Command="{Binding Path=SetVerticalItemsPlacementCommand}" CommandParameter="Bottom" />
 							</MenuItem.Icon>
 						</MenuItem>
 

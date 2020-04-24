@@ -1,6 +1,6 @@
 ﻿namespace OpenTracker.Utils
 {
-    public enum HorizontalItemsPlacement
+    public enum HorizontalAlignment
     {
         Left,
         Right

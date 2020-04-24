@@ -25,17 +25,17 @@ namespace OpenTracker.Views
             set => SetValue(UIPanelDockProperty, value);
         }
 
-        public static AvaloniaProperty<HorizontalAlignment> UIPanelHorizontalAlignmentProperty =
-            AvaloniaProperty.Register<MainWindow, HorizontalAlignment>(nameof(UIPanelHorizontalAlignment));
-        public HorizontalAlignment UIPanelHorizontalAlignment
+        public static AvaloniaProperty<Avalonia.Layout.HorizontalAlignment> UIPanelHorizontalAlignmentProperty =
+            AvaloniaProperty.Register<MainWindow, Avalonia.Layout.HorizontalAlignment>(nameof(UIPanelHorizontalAlignment));
+        public Avalonia.Layout.HorizontalAlignment UIPanelHorizontalAlignment
         {
             get => GetValue(UIPanelHorizontalAlignmentProperty);
             set => SetValue(UIPanelHorizontalAlignmentProperty, value);
         }
 
-        public static AvaloniaProperty<VerticalAlignment> UIPanelVerticalAlignmentProperty =
-            AvaloniaProperty.Register<MainWindow, VerticalAlignment>(nameof(UIPanelVerticalAlignment));
-        public VerticalAlignment UIPanelVerticalAlignment
+        public static AvaloniaProperty<Avalonia.Layout.VerticalAlignment> UIPanelVerticalAlignmentProperty =
+            AvaloniaProperty.Register<MainWindow, Avalonia.Layout.VerticalAlignment>(nameof(UIPanelVerticalAlignment));
+        public Avalonia.Layout.VerticalAlignment UIPanelVerticalAlignment
         {
             get => GetValue(UIPanelVerticalAlignmentProperty);
             set => SetValue(UIPanelVerticalAlignmentProperty, value);
@@ -124,6 +124,8 @@ namespace OpenTracker.Views
         {
             if (e.PropertyName == nameof(IAppSettingsVM.LayoutOrientation) ||
                 e.PropertyName == nameof(IAppSettingsVM.MapOrientation) ||
+                e.PropertyName == nameof(IAppSettingsVM.HorizontalUIPanelPlacement) ||
+                e.PropertyName == nameof(IAppSettingsVM.VerticalUIPanelPlacement) ||
                 e.PropertyName == nameof(IAppSettingsVM.HorizontalItemsPlacement) ||
                 e.PropertyName == nameof(IAppSettingsVM.VerticalItemsPlacement))
                 UpdateLayoutOrientation();
@@ -162,9 +164,13 @@ namespace OpenTracker.Views
 
         private void HorizontalLayout()
         {
-            UIPanelDock = Dock.Bottom;
-            UIPanelHorizontalAlignment = HorizontalAlignment.Stretch;
-            UIPanelVerticalAlignment = VerticalAlignment.Bottom;
+            if (_viewModel.AppSettingsInterface.HorizontalUIPanelPlacement == Utils.VerticalAlignment.Top)
+                UIPanelDock = Dock.Top;
+            else
+                UIPanelDock = Dock.Bottom;
+
+            UIPanelHorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
+            UIPanelVerticalAlignment = Avalonia.Layout.VerticalAlignment.Bottom;
 
             if (_viewModel.AppSettingsInterface.MapOrientation == MapOrientation.Vertical)
             {
@@ -177,14 +183,14 @@ namespace OpenTracker.Views
                 MapMargin = new Thickness(10, 20);
             }
 
-            if (_viewModel.AppSettingsInterface.HorizontalItemsPlacement == HorizontalItemsPlacement.Left)
+            if (_viewModel.AppSettingsInterface.HorizontalItemsPlacement == Utils.HorizontalAlignment.Left)
             {
                 UIPanelOrientationDock = Dock.Left;
                 ItemsPanelMargin = new Thickness(2, 0, 1, 2);
                 LocationsPanelMargin = new Thickness(1, 0, 2, 2);
             }
 
-            if (_viewModel.AppSettingsInterface.HorizontalItemsPlacement == HorizontalItemsPlacement.Right)
+            if (_viewModel.AppSettingsInterface.HorizontalItemsPlacement == Utils.HorizontalAlignment.Right)
             {
                 UIPanelOrientationDock = Dock.Right;
                 ItemsPanelMargin = new Thickness(1, 0, 2, 2);
@@ -194,9 +200,13 @@ namespace OpenTracker.Views
 
         private void VerticalLayout()
         {
-            UIPanelDock = Dock.Left;
-            UIPanelHorizontalAlignment = HorizontalAlignment.Right;
-            UIPanelVerticalAlignment = VerticalAlignment.Stretch;
+            if (_viewModel.AppSettingsInterface.VerticalUIPanelPlacement == Utils.HorizontalAlignment.Left)
+                UIPanelDock = Dock.Left;
+            else
+                UIPanelDock = Dock.Right;
+
+            UIPanelHorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right;
+            UIPanelVerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
 
             if (_viewModel.AppSettingsInterface.MapOrientation == MapOrientation.Horizontal)
             {
@@ -209,14 +219,14 @@ namespace OpenTracker.Views
                 MapMargin = new Thickness(20, 10);
             }
 
-            if (_viewModel.AppSettingsInterface.VerticalItemsPlacement == VerticalItemsPlacement.Top)
+            if (_viewModel.AppSettingsInterface.VerticalItemsPlacement == Utils.VerticalAlignment.Top)
             {
                 UIPanelOrientationDock = Dock.Top;
                 ItemsPanelMargin = new Thickness(2, 2, 0, 1);
                 LocationsPanelMargin = new Thickness(2, 1, 0, 2);
             }
 
-            if (_viewModel.AppSettingsInterface.VerticalItemsPlacement == VerticalItemsPlacement.Bottom)
+            if (_viewModel.AppSettingsInterface.VerticalItemsPlacement == Utils.VerticalAlignment.Bottom)
             {
                 UIPanelOrientationDock = Dock.Bottom;
                 ItemsPanelMargin = new Thickness(2, 1, 0, 2);

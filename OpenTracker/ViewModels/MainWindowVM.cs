@@ -39,6 +39,8 @@ namespace OpenTracker.ViewModels
         public ReactiveCommand<Unit, Unit> ToggleShowItemCountsOnMapCommand { get; }
         public ReactiveCommand<string, Unit> SetLayoutOrientationCommand { get; }
         public ReactiveCommand<string, Unit> SetMapOrientationCommand { get; }
+        public ReactiveCommand<string, Unit> SetHorizontalUIPanelPlacementCommand { get; }
+        public ReactiveCommand<string, Unit> SetVerticalUIPanelPlacementCommand { get; }
         public ReactiveCommand<string, Unit> SetHorizontalItemsPlacementCommand { get; }
         public ReactiveCommand<string, Unit> SetVerticalItemsPlacementCommand { get; }
 
@@ -98,6 +100,34 @@ namespace OpenTracker.ViewModels
             set => this.RaiseAndSetIfChanged(ref _verticalMapOrientation, value);
         }
 
+        private bool _topHorizontalUIPanelPlacement;
+        public bool TopHorizontalUIPanelPlacement
+        {
+            get => _topHorizontalUIPanelPlacement;
+            private set => this.RaiseAndSetIfChanged(ref _topHorizontalUIPanelPlacement, value);
+        }
+
+        private bool _bottomHorizontalUIPanelPlacement;
+        public bool BottomHorizontalUIPanelPlacement
+        {
+            get => _bottomHorizontalUIPanelPlacement;
+            private set => this.RaiseAndSetIfChanged(ref _bottomHorizontalUIPanelPlacement, value);
+        }
+
+        private bool _leftVerticalUIPanelPlacement;
+        public bool LeftVerticalUIPanelPlacement
+        {
+            get => _leftVerticalUIPanelPlacement;
+            private set => this.RaiseAndSetIfChanged(ref _leftVerticalUIPanelPlacement, value);
+        }
+
+        private bool _rightVerticalUIPanelPlacement;
+        public bool RightVerticalUIPanelPlacement
+        {
+            get => _rightVerticalUIPanelPlacement;
+            private set => this.RaiseAndSetIfChanged(ref _rightVerticalUIPanelPlacement, value);
+        }
+
         private bool _leftHorizontalItemsPlacement;
         public bool LeftHorizontalItemsPlacement
         {
@@ -154,6 +184,8 @@ namespace OpenTracker.ViewModels
             ToggleShowItemCountsOnMapCommand = ReactiveCommand.Create(ToggleShowItemCountsOnMap);
             SetLayoutOrientationCommand = ReactiveCommand.Create<string>(SetLayoutOrientation);
             SetMapOrientationCommand = ReactiveCommand.Create<string>(SetMapOrientation);
+            SetHorizontalUIPanelPlacementCommand = ReactiveCommand.Create<string>(SetHorizontalUIPanelPlacement);
+            SetVerticalUIPanelPlacementCommand = ReactiveCommand.Create<string>(SetVerticalUIPanelPlacement);
             SetHorizontalItemsPlacementCommand = ReactiveCommand.Create<string>(SetHorizontalItemsPlacement);
             SetVerticalItemsPlacementCommand = ReactiveCommand.Create<string>(SetVerticalItemsPlacement);
 
@@ -254,48 +286,52 @@ namespace OpenTracker.ViewModels
             {
                 switch ((ItemType)i)
                 {
+                    case ItemType.Sword:
+                    case ItemType.Shield:
+                    case ItemType.Aga:
+                    case ItemType.TowerCrystals:
+                    case ItemType.GanonCrystals:
+                    case ItemType.Hookshot:
+                    case ItemType.Mushroom:
+                    case ItemType.Boots:
+                    case ItemType.FireRod:
+                    case ItemType.IceRod:
+                    case ItemType.Gloves:
+                    case ItemType.Lamp:
+                    case ItemType.Hammer:
+                    case ItemType.Net:
+                    case ItemType.Book:
+                    case ItemType.Shovel:
+                    case ItemType.Flippers:
+                    case ItemType.Bottle:
+                    case ItemType.CaneOfSomaria:
+                    case ItemType.CaneOfByrna:
+                    case ItemType.Cape:
+                    case ItemType.Mirror:
+                    case ItemType.HalfMagic:
+                    case ItemType.MoonPearl:
+                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, new Item[1] { _game.Items[(ItemType)i] }));
+                        break;
                     case ItemType.Bow:
                     case ItemType.Boomerang:
                     case ItemType.Bomb:
                     case ItemType.Powder:
                     case ItemType.Bombos:
                     case ItemType.Ether:
-                    case ItemType.Quake:
                     case ItemType.Flute:
                         Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, new Item[2] {
                             _game.Items[(ItemType)i], _game.Items[(ItemType)(i + 1)]
                         }));
                         break;
-                    case ItemType.MoonPearl:
-                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, new Item[1] { _game.Items[(ItemType)i] }));
+                    case ItemType.Quake:
+                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, new Item[2] {
+                            _game.Items[(ItemType)i], _game.Items[(ItemType)(i + 1)]
+                        }));
                         Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, null));
                         break;
-                    case ItemType.Hookshot:
-                    case ItemType.Mushroom:
-                    case ItemType.TowerCrystals:
-                    case ItemType.FireRod:
-                    case ItemType.IceRod:
-                    case ItemType.Shovel:
-                    case ItemType.GanonCrystals:
-                    case ItemType.Lamp:
-                    case ItemType.Hammer:
-                    case ItemType.Net:
-                    case ItemType.Book:
-                    case ItemType.Bottle:
-                    case ItemType.CaneOfSomaria:
-                    case ItemType.CaneOfByrna:
-                    case ItemType.Cape:
-                    case ItemType.Mirror:
-                    case ItemType.GoMode:
-                    case ItemType.Aga:
-                    case ItemType.Gloves:
-                    case ItemType.Boots:
-                    case ItemType.Flippers:
-                    case ItemType.HalfMagic:
-                    case ItemType.Sword:
-                    case ItemType.Shield:
                     case ItemType.Mail:
                         Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, new Item[1] { _game.Items[(ItemType)i] }));
+                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, null));
                         break;
                     default:
                         break;
@@ -304,6 +340,8 @@ namespace OpenTracker.ViewModels
 
             UpdateLayoutOrientation();
             UpdateMapOrientation();
+            UpdateHorizontalUIPanelPlacement();
+            UpdateVerticalUIPanelPlacement();
             UpdateHorizontalItemsPlacement();
             UpdateVerticalItemsPlacement();
         }
@@ -325,6 +363,12 @@ namespace OpenTracker.ViewModels
 
             if (e.PropertyName == nameof(AppSettingsVM.MapOrientation))
                 UpdateMapOrientation();
+
+            if (e.PropertyName == nameof(AppSettingsVM.HorizontalUIPanelPlacement))
+                UpdateHorizontalUIPanelPlacement();
+
+            if (e.PropertyName == nameof(AppSettingsVM.VerticalUIPanelPlacement))
+                UpdateVerticalUIPanelPlacement();
 
             if (e.PropertyName == nameof(AppSettingsVM.HorizontalItemsPlacement))
                 UpdateHorizontalItemsPlacement();
@@ -397,15 +441,45 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        private void UpdateHorizontalUIPanelPlacement()
+        {
+            switch (AppSettings.HorizontalUIPanelPlacement)
+            {
+                case VerticalAlignment.Top:
+                    TopHorizontalUIPanelPlacement = true;
+                    BottomHorizontalUIPanelPlacement = false;
+                    break;
+                case VerticalAlignment.Bottom:
+                    TopHorizontalUIPanelPlacement = false;
+                    BottomHorizontalUIPanelPlacement = true;
+                    break;
+            }
+        }
+
+        private void UpdateVerticalUIPanelPlacement()
+        {
+            switch (AppSettings.VerticalUIPanelPlacement)
+            {
+                case HorizontalAlignment.Left:
+                    LeftVerticalUIPanelPlacement = true;
+                    RightVerticalUIPanelPlacement = false;
+                    break;
+                case HorizontalAlignment.Right:
+                    LeftVerticalUIPanelPlacement = false;
+                    RightVerticalUIPanelPlacement = true;
+                    break;
+            }
+        }
+
         private void UpdateHorizontalItemsPlacement()
         {
             switch (AppSettings.HorizontalItemsPlacement)
             {
-                case HorizontalItemsPlacement.Left:
+                case HorizontalAlignment.Left:
                     LeftHorizontalItemsPlacement = true;
                     RightHorizontalItemsPlacement = false;
                     break;
-                case HorizontalItemsPlacement.Right:
+                case HorizontalAlignment.Right:
                     LeftHorizontalItemsPlacement = false;
                     RightHorizontalItemsPlacement = true;
                     break;
@@ -416,11 +490,11 @@ namespace OpenTracker.ViewModels
         {
             switch (AppSettings.VerticalItemsPlacement)
             {
-                case VerticalItemsPlacement.Top:
+                case VerticalAlignment.Top:
                     TopVerticalItemsPlacement = true;
                     BottomVerticalItemsPlacement = false;
                     break;
-                case VerticalItemsPlacement.Bottom:
+                case VerticalAlignment.Bottom:
                     TopVerticalItemsPlacement = false;
                     BottomVerticalItemsPlacement = true;
                     break;
@@ -518,15 +592,27 @@ namespace OpenTracker.ViewModels
                 AppSettings.MapOrientation = orientation;
         }
 
+        private void SetHorizontalUIPanelPlacement(string orientationString)
+        {
+            if (Enum.TryParse(orientationString, out VerticalAlignment orientation))
+                AppSettings.HorizontalUIPanelPlacement = orientation;
+        }
+
+        private void SetVerticalUIPanelPlacement(string orientationString)
+        {
+            if (Enum.TryParse(orientationString, out HorizontalAlignment orientation))
+                AppSettings.VerticalUIPanelPlacement = orientation;
+        }
+
         private void SetHorizontalItemsPlacement(string orientationString)
         {
-            if (Enum.TryParse(orientationString, out HorizontalItemsPlacement orientation))
+            if (Enum.TryParse(orientationString, out HorizontalAlignment orientation))
                 AppSettings.HorizontalItemsPlacement = orientation;
         }
 
         private void SetVerticalItemsPlacement(string orientationString)
         {
-            if (Enum.TryParse(orientationString, out VerticalItemsPlacement orientation))
+            if (Enum.TryParse(orientationString, out VerticalAlignment orientation))
                 AppSettings.VerticalItemsPlacement = orientation;
         }
 

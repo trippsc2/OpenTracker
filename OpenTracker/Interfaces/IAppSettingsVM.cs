@@ -7,7 +7,9 @@ namespace OpenTracker.Interfaces
     {
         LayoutOrientation LayoutOrientation { get; }
         MapOrientation MapOrientation { get; }
-        HorizontalItemsPlacement HorizontalItemsPlacement { get; }
-        VerticalItemsPlacement VerticalItemsPlacement { get; }
+        VerticalAlignment HorizontalUIPanelPlacement { get; }
+        HorizontalAlignment VerticalUIPanelPlacement { get; }
+        HorizontalAlignment HorizontalItemsPlacement { get; }
+        VerticalAlignment VerticalItemsPlacement { get; }
     }
 }

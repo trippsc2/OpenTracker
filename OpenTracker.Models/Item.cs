@@ -200,7 +200,6 @@ namespace OpenTracker.Models
                     Maximum = 1;
                     break;
                 case ItemType.HCSmallKey:
-                case ItemType.GoMode:
                 case ItemType.GreenPendant:
                 case ItemType.DPSmallKey:
                 case ItemType.ToHSmallKey:

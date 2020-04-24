@@ -1,6 +1,6 @@
 ﻿namespace OpenTracker.Utils
 {
-    public enum VerticalItemsPlacement
+    public enum VerticalAlignment
     {
         Top,
         Bottom

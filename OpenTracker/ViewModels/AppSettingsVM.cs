@@ -70,8 +70,36 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        private HorizontalItemsPlacement _horizontalItemsPlacement;
-        public HorizontalItemsPlacement HorizontalItemsPlacement
+        private VerticalAlignment _horizontalUIPanelPlacement;
+        public VerticalAlignment HorizontalUIPanelPlacement
+        {
+            get => _horizontalUIPanelPlacement;
+            set
+            {
+                if (_horizontalUIPanelPlacement != value)
+                {
+                    _horizontalUIPanelPlacement = value;
+                    OnPropertyChanged(nameof(HorizontalUIPanelPlacement));
+                }
+            }
+        }
+
+        private HorizontalAlignment _verticalUIPanelPlacement;
+        public HorizontalAlignment VerticalUIPanelPlacement
+        {
+            get => _verticalUIPanelPlacement;
+            set
+            {
+                if (_verticalUIPanelPlacement != value)
+                {
+                    _verticalUIPanelPlacement = value;
+                    OnPropertyChanged(nameof(VerticalUIPanelPlacement));
+                }
+            }
+        }
+
+        private HorizontalAlignment _horizontalItemsPlacement;
+        public HorizontalAlignment HorizontalItemsPlacement
         {
             get => _horizontalItemsPlacement;
             set
@@ -84,8 +112,8 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        private VerticalItemsPlacement _verticalItemsPlacement;
-        public VerticalItemsPlacement VerticalItemsPlacement
+        private VerticalAlignment _verticalItemsPlacement;
+        public VerticalAlignment VerticalItemsPlacement
         {
             get => _verticalItemsPlacement;
             set
@@ -183,6 +211,8 @@ namespace OpenTracker.ViewModels
         {
             DisplayAllLocations = false;
             ShowItemCountsOnMap = true;
+            HorizontalUIPanelPlacement = VerticalAlignment.Bottom;
+            VerticalUIPanelPlacement = HorizontalAlignment.Left;
             EmphasisFontColor = new SolidColorBrush(Color.Parse("#00ff00"));
 
             AccessibilityColors = new Dictionary<AccessibilityLevel, SolidColorBrush>()

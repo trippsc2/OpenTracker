@@ -113,11 +113,15 @@
 		
 		<Style Selector="Menu.MenuBar">
 			<Setter Property="Background" Value="#262626" />
+			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
+			<Setter Property="FontWeight" Value="SemiBold" />
+			<Setter Property="Foreground" Value="#FFFFFF" />
 		</Style>
 
 		<Style Selector="MenuItem.Menu">
 			<Setter Property="Background" Value="#262626" />
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
+			<Setter Property="FontWeight" Value="SemiBold" />
 			<Setter Property="Foreground" Value="#FFFFFF" />
 		</Style>
 
