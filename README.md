@@ -57,4 +57,12 @@ Coming soon...
 
 ## Development
 
-dsdsdsdsddsdsdsdOpenOopopoopcdssdsdsdsdrrfff
+OpenTracker is developed in the Avalonia framework.  In order to develop using Visual Studio, you'll need to install the Avalonia extensions in the Extensions menu of Visual Studio.
+
+## License
+
+This project is licensed under the MIT License
+
+## Acknowledgments
+
+- EmoSaru - Thank you for creating EmoTracker and providing inspiration for this app
