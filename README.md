@@ -105,5 +105,8 @@ This project is licensed under the MIT License
 
 - My wife - Thank you for your help testing and providing feedback.  Thank you for putting up with me pouring free time into this project and this old game.
 - Serafina Bui - Thank you for your help with the visual presentation.
+- Derian Meyer - Thank you for allowing me to bounce ideas off you and for your help with testing and feedback.
+- Sara Meyer - Thank you for your help with testing and providing new Rando player feedback.
+- Kyle (Kerigyl) - Thank you for your help with testing and providing feedback.
 - KatDevsGames - Thank you for developing ConnectorLib.  It was a great reference for my Autotracker connector code.
 - EmoSaru - Thank you for creating EmoTracker and providing inspiration for this app.
