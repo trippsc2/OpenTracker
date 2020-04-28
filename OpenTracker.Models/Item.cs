@@ -1,6 +1,5 @@
 ﻿using OpenTracker.Models.Enums;
 using System;
-using System.Collections.Specialized;
 using System.ComponentModel;
 
 namespace OpenTracker.Models
@@ -9,13 +8,10 @@ namespace OpenTracker.Models
     {
         private readonly Game _game;
         private readonly int _starting;
-        private readonly Action _autoTrack;
-        private readonly bool _subscribeToRoomMemory;
-        private readonly bool _subscribeToItemMemory;
-        private readonly bool _subscribeToNPCItemMemory;
 
         public ItemType Type { get; }
         public int Maximum { get; }
+        public Action AutoTrack { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -42,20 +38,24 @@ namespace OpenTracker.Models
             {
                 case ItemType.Bow:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
-                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 78, 128);
+                        bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 0);
 
                         if (result.HasValue)
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[0].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.SilverArrows:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 78, 64);
 
@@ -63,12 +63,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[78].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Boomerang:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 76, 128);
 
@@ -76,12 +78,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[76].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.RedBoomerang:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 76, 64);
 
@@ -89,12 +93,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[76].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Powder:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 76, 16);
 
@@ -102,12 +108,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[76].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Bombos:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 7);
 
@@ -115,12 +123,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[7].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Ether:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 8);
 
@@ -128,12 +138,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[8].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Quake:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 9);
 
@@ -141,35 +153,35 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[9].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Flute:
 
-                    _autoTrack = () =>
-                    {
-                        if (_game.AutoTracker.ItemMemory.Count > 76)
-                        {
-                            bool? result1 = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 76, 1);
-                            bool? result2 = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 76, 2);
+                    Maximum = 1;
 
-                            if (result1.HasValue || result2.HasValue)
-                            {
-                                if ((result1.HasValue && result1.Value) ||
-                                    (result2.HasValue && result2.Value))
-                                    Current = 1;
-                                else
-                                    Current = 0;
-                            }
-                        }
+                    AutoTrack = () =>
+                    {
+                        (MemorySegmentType, int, byte)[] addressFlags = new (MemorySegmentType, int, byte)[2]
+                        {
+                            (MemorySegmentType.Item, 76, 1),
+                            (MemorySegmentType.Item, 76, 2)
+                        };
+
+                        int? result = _game.AutoTracker.CheckMemoryFlagArray(addressFlags);
+
+                        if (result.HasValue)
+                            Current = result.Value > 0 ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[76].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.BigBomb:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         (MemorySegmentType, int, byte)[] addressFlags = new (MemorySegmentType, int, byte)[2]
                         {
@@ -183,12 +195,14 @@ namespace OpenTracker.Models
                             Current = result.Value > 0 ? 1 : 0;
                     };
 
-                    _subscribeToRoomMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.RoomMemory[556].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.MagicBat:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 128);
 
@@ -196,8 +210,8 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToNPCItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.HCSmallKey:
                 case ItemType.GreenPendant:
@@ -210,7 +224,9 @@ namespace OpenTracker.Models
                     break;
                 case ItemType.EPBigKey:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 39, 32);
 
@@ -218,12 +234,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[39].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.DPBigKey:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 39, 16);
 
@@ -231,12 +249,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[39].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.ToHBigKey:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 38, 32);
 
@@ -244,12 +264,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[38].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.PoDBigKey:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 39, 2);
 
@@ -257,12 +279,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[39].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.SPBigKey:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 39, 4);
 
@@ -270,12 +294,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[39].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.SWBigKey:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 38, 128);
 
@@ -283,12 +309,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[38].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.TTBigKey:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 38, 16);
 
@@ -296,12 +324,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[38].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.IPBigKey:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 38, 64);
 
@@ -309,12 +339,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[38].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.MMBigKey:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 39, 1);
 
@@ -322,12 +354,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[39].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.TRBigKey:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 38, 8);
 
@@ -335,12 +369,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[38].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.GTBigKey:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 38, 4);
 
@@ -348,12 +384,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[38].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.FluteActivated:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 76, 1);
 
@@ -361,12 +399,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[76].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Hookshot:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 2);
 
@@ -374,12 +414,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[2].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.FireRod:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 5);
 
@@ -387,12 +429,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[5].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.IceRod:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 6);
 
@@ -400,12 +444,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[6].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Shovel:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 76, 4);
 
@@ -413,12 +459,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[76].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Lamp:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 10);
 
@@ -426,12 +474,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[10].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Hammer:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 11);
 
@@ -439,12 +489,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[11].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Net:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 13);
 
@@ -452,12 +504,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[13].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Book:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 14);
 
@@ -465,12 +519,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[14].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.MoonPearl:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 23);
 
@@ -478,12 +534,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[23].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.CaneOfSomaria:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 16);
 
@@ -491,12 +549,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[16].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.CaneOfByrna:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 17);
 
@@ -504,12 +564,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[17].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Cape:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 18);
 
@@ -517,12 +579,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[18].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Mirror:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 19);
 
@@ -530,12 +594,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[19].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Boots:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 21);
 
@@ -543,12 +609,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[21].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Flippers:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 22);
 
@@ -556,12 +624,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[22].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.HalfMagic:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 59);
 
@@ -569,12 +639,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[59].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Bomb:
 
-                    _autoTrack = () =>
+                    Maximum = 1;
+
+                    AutoTrack = () =>
                     {
                         bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 3);
 
@@ -582,12 +654,14 @@ namespace OpenTracker.Models
                             Current = result.Value ? 1 : 0;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 1;
+                    _game.AutoTracker.ItemMemory[3].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Mushroom:
 
-                    _autoTrack = () =>
+                    Maximum = 2;
+
+                    AutoTrack = () =>
                     {
                         bool? witchTurnIn = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 32);
                         bool? mushroom = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 76, 32);
@@ -603,13 +677,15 @@ namespace OpenTracker.Models
                         }
                     };
 
-                    _subscribeToItemMemory = true;
-                    _subscribeToNPCItemMemory = true;
-                    Maximum = 2;
+                    _game.AutoTracker.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
+                    _game.AutoTracker.ItemMemory[76].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Gloves:
 
-                    _autoTrack = () =>
+                    Maximum = 2;
+
+                    AutoTrack = () =>
                     {
                         int? result = _game.AutoTracker.CheckMemoryByteValue(MemorySegmentType.Item, 20);
 
@@ -617,12 +693,14 @@ namespace OpenTracker.Models
                             Current = Math.Min(Maximum, result.Value);
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 2;
+                    _game.AutoTracker.ItemMemory[20].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Mail:
 
-                    _autoTrack = () =>
+                    Maximum = 2;
+
+                    AutoTrack = () =>
                     {
                         int? result = _game.AutoTracker.CheckMemoryByteValue(MemorySegmentType.Item, 27);
 
@@ -630,8 +708,8 @@ namespace OpenTracker.Models
                             Current = Math.Min(Maximum, result.Value);
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 2;
+                    _game.AutoTracker.ItemMemory[27].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Pendant:
                 case ItemType.RedCrystal:
@@ -652,20 +730,24 @@ namespace OpenTracker.Models
                     break;
                 case ItemType.Shield:
 
-                    _autoTrack = () =>
+                    Maximum = 3;
+
+                    AutoTrack = () =>
                     {
                         int? result = _game.AutoTracker.CheckMemoryByteValue(MemorySegmentType.Item, 26);
 
                         if (result.HasValue)
                             Current = Math.Min(Maximum, result.Value);
                     };
-                    
-                    _subscribeToItemMemory = true;
-                    Maximum = 3;
+
+                    _game.AutoTracker.ItemMemory[26].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Bottle:
 
-                    _autoTrack = () =>
+                    Maximum = 4;
+
+                    AutoTrack = () =>
                     {
                         (MemorySegmentType, int)[] addresses = new (MemorySegmentType, int)[4]
                         {
@@ -681,8 +763,11 @@ namespace OpenTracker.Models
                             Current = result.Value;
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 4;
+                    _game.AutoTracker.ItemMemory[28].PropertyChanged += OnMemoryChanged;
+                    _game.AutoTracker.ItemMemory[29].PropertyChanged += OnMemoryChanged;
+                    _game.AutoTracker.ItemMemory[30].PropertyChanged += OnMemoryChanged;
+                    _game.AutoTracker.ItemMemory[31].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.TRSmallKey:
                 case ItemType.GTSmallKey:
@@ -690,21 +775,26 @@ namespace OpenTracker.Models
                     break;
                 case ItemType.Sword:
 
-                    _autoTrack = () =>
+                    _starting = 1;
+                    Current = 1;
+                    Maximum = 5;
+
+                    AutoTrack = () =>
                     {
                         if (Current > 0)
                         {
                             byte? result = _game.AutoTracker.CheckMemoryByteValue(MemorySegmentType.Item, 25);
 
                             if (result.HasValue)
-                                Current = Math.Min(Maximum, result.Value + 1);
+                            {
+                                if (result.Value != 255)
+                                    Current = Math.Min(Maximum, result.Value + 1);
+                            }
                         }
                     };
 
-                    _subscribeToItemMemory = true;
-                    Maximum = 5;
-                    _starting = 1;
-                    Current = 1;
+                    _game.AutoTracker.ItemMemory[25].PropertyChanged += OnMemoryChanged;
+
                     break;
                 case ItemType.Crystal:
                     Maximum = 5;
@@ -713,8 +803,6 @@ namespace OpenTracker.Models
                     Maximum = 6;
                     break;
             }
-
-            SubscribeToAutoTracker();
         }
 
         private void OnPropertyChanged(string propertyName)
@@ -722,22 +810,9 @@ namespace OpenTracker.Models
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private void OnMemoryCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void OnMemoryChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (_game.AutoTracker.IsInGame())
-                _autoTrack();
-        }
-
-        private void SubscribeToAutoTracker()
-        {
-            if (_subscribeToRoomMemory)
-                _game.AutoTracker.RoomMemory.CollectionChanged += OnMemoryCollectionChanged;
-
-            if (_subscribeToItemMemory)
-                _game.AutoTracker.ItemMemory.CollectionChanged += OnMemoryCollectionChanged;
-
-            if (_subscribeToNPCItemMemory)
-                _game.AutoTracker.NPCItemMemory.CollectionChanged += OnMemoryCollectionChanged;
+            AutoTrack();
         }
 
         public void Change(int delta, bool ignoreMaximum = false)

@@ -13,11 +13,19 @@ namespace OpenTracker.ViewModels
         private readonly Game _game;
         private readonly BossSection _bossSection;
 
-        private string _imageSource;
         public string ImageSource
         {
-            get => _imageSource;
-            set => this.RaiseAndSetIfChanged(ref _imageSource, value);
+            get
+            {
+                string imageBaseString = "avares://OpenTracker/Assets/Images/";
+
+                if (_bossSection.Boss == null)
+                    imageBaseString += "Items/unknown1";
+                else
+                    imageBaseString += "Bosses/" + _bossSection.Boss.Type.ToString().ToLower();
+
+                return imageBaseString + ".png";
+            }
         }
 
         public BossControlVM(UndoRedoManager undoRedoManager, Game game,
@@ -28,26 +36,12 @@ namespace OpenTracker.ViewModels
             _bossSection = bossSection;
 
             _bossSection.PropertyChanged += OnSectionChanged;
-
-            UpdateImage();
         }
 
         private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(BossSection.Boss))
-                UpdateImage();
-        }
-
-        private void UpdateImage()
-        {
-            string imageBaseString = "avares://OpenTracker/Assets/Images/";
-
-            if (_bossSection.Boss == null)
-                imageBaseString += "Items/unknown1";
-            else
-                imageBaseString += "Bosses/" + _bossSection.Boss.Type.ToString().ToLower();
-
-            ImageSource = imageBaseString + ".png";
+                this.RaisePropertyChanged(nameof(ImageSource));
         }
 
         public void ChangeItem(bool rightClick = false)

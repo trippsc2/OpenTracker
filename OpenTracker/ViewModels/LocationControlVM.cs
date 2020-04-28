@@ -12,7 +12,7 @@ namespace OpenTracker.ViewModels
         private readonly MainWindowVM _mainWindow;
 
         public Location Location { get; }
-        public string Name { get; }
+        public string Name => Location.Name;
         public ObservableCollection<SectionControlVM> Sections { get; }
 
         public LocationControlVM(UndoRedoManager undoRedoManager, AppSettingsVM appSettings,
@@ -22,7 +22,6 @@ namespace OpenTracker.ViewModels
             _mainWindow = mainWindow;
 
             Location = location;
-            Name = location.Name;
 
             Sections = new ObservableCollection<SectionControlVM>();
 

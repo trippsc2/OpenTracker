@@ -151,7 +151,6 @@ namespace OpenTracker.Models.AutotrackerConnectors
             return false;
         }
 
-
         public bool Read(ulong address, byte[] buffer)
         {
             bool success = false;

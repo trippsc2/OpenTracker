@@ -19,46 +19,242 @@ namespace OpenTracker.ViewModels
         private readonly Game _game;
         private readonly ISection _section;
 
-        public string Name { get => _section.Name; }
-        public bool MarkingVisible { get; }
-        public bool NumberBoxVisible { get; }
-        public double MarkingPopupHeight { get; }
-        public double MarkingPopupWidth { get; }
         public ObservableCollection<MarkingSelectControlVM> ItemSelect { get; }
 
-        private bool _sectionVisible;
-        public bool SectionVisible
+        public string Name => _section.Name;
+        public bool MarkingVisible => _section.HasMarking;
+        public bool NumberBoxVisible => _section is ItemSection;
+
+        public double MarkingPopupHeight
         {
-            get => _sectionVisible;
-            private set => this.RaiseAndSetIfChanged(ref _sectionVisible, value);
+            get
+            {
+                if (_section is EntranceSection)
+                    return 280.0;
+                else
+                    return 200.0;
+            }
         }
 
-        private IBrush _fontColor;
+        public double MarkingPopupWidth
+        {
+            get
+            {
+                if (_section is EntranceSection)
+                    return 272.0;
+                else
+                    return 238.0;
+            }
+        }
+
+        public bool SectionVisible => _game.Mode.Validate(_section.RequiredMode);
+
         public IBrush FontColor
         {
-            get => _fontColor;
-            set => this.RaiseAndSetIfChanged(ref _fontColor, value);
+            get
+            {
+                if (_section.Accessibility == AccessibilityLevel.Normal)
+                    return new SolidColorBrush(new Color(255, 255, 255, 255));
+                else
+                    return _appSettings.AccessibilityColors[_section.Accessibility];
+            }
         }
 
-        private string _markingSource;
         public string MarkingSource
         {
-            get => _markingSource;
-            set => this.RaiseAndSetIfChanged(ref _markingSource, value);
+            get
+            {
+                if (_section.Marking == null)
+                    return "avares://OpenTracker/Assets/Images/Items/unknown1.png";
+                else
+                {
+                    int itemNumber;
+                    switch (_section.Marking)
+                    {
+                        case MarkingType.Bow:
+                        case MarkingType.SilverArrows:
+                        case MarkingType.Boomerang:
+                        case MarkingType.RedBoomerang:
+                        case MarkingType.SmallKey:
+                        case MarkingType.BigKey:
+                            return "avares://OpenTracker/Assets/Images/Items/visible-" +
+                                _section.Marking.ToString().ToLower() + ".png";
+                        case MarkingType.Hookshot:
+                        case MarkingType.Bomb:
+                        case MarkingType.Mushroom:
+                        case MarkingType.Powder:
+                        case MarkingType.FireRod:
+                        case MarkingType.IceRod:
+                        case MarkingType.Bombos:
+                        case MarkingType.Ether:
+                        case MarkingType.Quake:
+                        case MarkingType.Shovel:
+                        case MarkingType.Lamp:
+                        case MarkingType.Hammer:
+                        case MarkingType.Flute:
+                        case MarkingType.Net:
+                        case MarkingType.Book:
+                        case MarkingType.MoonPearl:
+                        case MarkingType.CaneOfSomaria:
+                        case MarkingType.CaneOfByrna:
+                        case MarkingType.Cape:
+                        case MarkingType.Mirror:
+                        case MarkingType.Boots:
+                        case MarkingType.Flippers:
+                        case MarkingType.HalfMagic:
+                        case MarkingType.Aga:
+                            return "avares://OpenTracker/Assets/Images/Items/" +
+                                _section.Marking.ToString().ToLower() + "1.png";
+                        case MarkingType.Bottle:
+                        case MarkingType.Gloves:
+                        case MarkingType.Shield:
+                        case MarkingType.Mail:
+                            Item item = _game.Items[Enum.Parse<ItemType>(_section.Marking.ToString())];
+                            itemNumber = Math.Min(item.Current + 1, item.Maximum);
+                            return "avares://OpenTracker/Assets/Images/Items/" +
+                                _section.Marking.ToString().ToLower() + itemNumber.ToString() + ".png";
+                        case MarkingType.Sword:
+
+                            Item sword = _game.Items[ItemType.Sword];
+
+                            if (sword.Current == 0)
+                                itemNumber = 0;
+                            else
+                                itemNumber = Math.Min(sword.Current + 1, sword.Maximum);
+
+                            return "avares://OpenTracker/Assets/Images/Items/" +
+                                _section.Marking.ToString().ToLower() + itemNumber.ToString() + ".png";
+
+                        case MarkingType.HCFront:
+                        case MarkingType.HCLeft:
+                        case MarkingType.HCRight:
+                        case MarkingType.EP:
+                        case MarkingType.SP:
+                        case MarkingType.SW:
+                        case MarkingType.DPFront:
+                        case MarkingType.DPLeft:
+                        case MarkingType.DPRight:
+                        case MarkingType.DPBack:
+                        case MarkingType.TT:
+                        case MarkingType.IP:
+                        case MarkingType.MM:
+                        case MarkingType.TRFront:
+                        case MarkingType.TRLeft:
+                        case MarkingType.TRRight:
+                        case MarkingType.TRBack:
+                        case MarkingType.GT:
+                            return "avares://OpenTracker/Assets/Images/" +
+                                _section.Marking.ToString().ToLower() + ".png";
+                        case MarkingType.ToH:
+                            return "avares://OpenTracker/Assets/Images/th.png";
+                        case MarkingType.PoD:
+                            return "avares://OpenTracker/Assets/Images/pd.png";
+                        case MarkingType.Ganon:
+                            return "avares://OpenTracker/Assets/Images/ganon.png";
+                    }
+
+                    return null;
+                }
+
+            }
         }
 
-        private string _imageSource;
         public string ImageSource
         {
-            get => _imageSource;
-            set => this.RaiseAndSetIfChanged(ref _imageSource, value);
+            get
+            {
+                switch (_section)
+                {
+                    case ItemSection _:
+
+                        if (_section.IsAvailable())
+                        {
+                            switch (_section.Accessibility)
+                            {
+                                case AccessibilityLevel.None:
+                                case AccessibilityLevel.Inspect:
+                                    return "avares://OpenTracker/Assets/Images/chest0.png";
+                                case AccessibilityLevel.Partial:
+                                case AccessibilityLevel.SequenceBreak:
+                                case AccessibilityLevel.Normal:
+                                    return "avares://OpenTracker/Assets/Images/chest1.png";
+                            }
+                        }
+                        else
+                            return "avares://OpenTracker/Assets/Images/chest2.png";
+
+                        break;
+
+                    case BossSection bossSection:
+
+                        string imageBaseString = "avares://OpenTracker/Assets/Images/Items/";
+
+                        if (bossSection.Prize == null)
+                            imageBaseString += "unknown";
+                        else if (bossSection.Prize.Type == ItemType.Aga2)
+                            imageBaseString += "aga";
+                        else
+                            imageBaseString += bossSection.Prize.Type.ToString().ToLower();
+
+                        return imageBaseString + (bossSection.IsAvailable() ? "0" : "1") + ".png";
+
+                    case EntranceSection entranceSection:
+
+                        string entranceImageBaseString = "avares://OpenTracker/Assets/Images/door";
+
+                        return entranceImageBaseString + (entranceSection.IsAvailable() ? "0" : "1") + ".png";
+                }
+
+                return null;
+            }
         }
 
-        private string _numberString;
         public string NumberString
         {
-            get => _numberString;
-            set => this.RaiseAndSetIfChanged(ref _numberString, value);
+            get
+            {
+                if (_section is ItemSection)
+                    return _section.Available.ToString();
+                else
+                    return null;
+            }
+        }
+
+        public bool BossImageVisible
+        {
+            get
+            {
+                if (_game.Mode.BossShuffle.Value && _section is BossSection bossSection &&
+                    (bossSection.Boss == null || bossSection.Boss.Type != BossType.Aga))
+                    return true;
+                else
+                    return false;
+            }
+        }
+
+        public string BossImageSource
+        {
+            get
+            {
+                if (_section is BossSection bossSection)
+                {
+                    string imageBaseString = "avares://OpenTracker/Assets/Images/";
+
+                    if (bossSection.Boss == null)
+                        imageBaseString += "Items/unknown1";
+                    else if (bossSection.Boss.Type == BossType.Aga)
+                        imageBaseString += "Items/aga1";
+                    else
+                    {
+                        imageBaseString += "Bosses/";
+                        imageBaseString += bossSection.Boss.Type.ToString().ToLower();
+                    }
+
+                    return imageBaseString + ".png";
+                }
+
+                return null;
+            }
         }
 
         private bool _markingPopupOpen;
@@ -66,20 +262,6 @@ namespace OpenTracker.ViewModels
         {
             get => _markingPopupOpen;
             set => this.RaiseAndSetIfChanged(ref _markingPopupOpen, value);
-        }
-
-        private bool _bossImageVisible;
-        public bool BossImageVisible
-        {
-            get => _bossImageVisible;
-            set => this.RaiseAndSetIfChanged(ref _bossImageVisible, value);
-        }
-
-        private string _bossImageSource;
-        public string BossImageSource
-        {
-            get => _bossImageSource;
-            set => this.RaiseAndSetIfChanged(ref _bossImageSource, value);
         }
 
         public ReactiveCommand<Unit, Unit> ClearVisibleItemCommand { get; }
@@ -95,9 +277,6 @@ namespace OpenTracker.ViewModels
             ClearVisibleItemCommand = ReactiveCommand.Create(ClearMarking);
 
             ItemSelect = new ObservableCollection<MarkingSelectControlVM>();
-
-            if (_section.HasMarking)
-                MarkingVisible = true;
 
             switch (_section)
             {
@@ -154,18 +333,6 @@ namespace OpenTracker.ViewModels
                         }
                     }
 
-                    MarkingPopupHeight = 200;
-                    MarkingPopupWidth = 238;
-                    NumberBoxVisible = true;
-
-                    UpdateTextColor();
-                    UpdateNumber();
-
-                    break;
-                case BossSection _:
-
-                    UpdateBossImage();
-
                     break;
                 case EntranceSection _:
 
@@ -175,9 +342,6 @@ namespace OpenTracker.ViewModels
                             ItemSelect.Add(new MarkingSelectControlVM(_game, this, (MarkingType)i));
                     }
 
-                    MarkingPopupHeight = 280;
-                    MarkingPopupWidth = 272;
-
                     break;
             }
 
@@ -186,11 +350,6 @@ namespace OpenTracker.ViewModels
             _section.PropertyChanging += OnSectionChanging;
             _section.PropertyChanged += OnSectionChanged;
 
-            UpdateTextColor();
-            UpdateImage();
-            UpdateBossVisibility();
-            UpdateMarkingImage();
-            UpdateVisibility();
             SubscribeToMarkingItem();
         }
 
@@ -206,7 +365,7 @@ namespace OpenTracker.ViewModels
             if (e.PropertyName == nameof(Mode.BossShuffle))
                 UpdateBossVisibility();
 
-            UpdateVisibility();
+            this.RaisePropertyChanged(nameof(SectionVisible));
         }
 
         private void OnSectionChanging(object sender, PropertyChangingEventArgs e)
@@ -226,7 +385,7 @@ namespace OpenTracker.ViewModels
             if (e.PropertyName == nameof(ISection.Available))
             {
                 if (_section is ItemSection)
-                    UpdateNumber();
+                    this.RaisePropertyChanged(nameof(NumberString));
 
                 UpdateImage();
             }
@@ -239,8 +398,8 @@ namespace OpenTracker.ViewModels
 
             if (e.PropertyName == nameof(BossSection.Boss))
             {
-                UpdateBossImage();
                 UpdateBossVisibility();
+                this.RaisePropertyChanged(nameof(BossImageSource));
             }
 
             if (e.PropertyName == nameof(BossSection.Prize))
@@ -254,204 +413,22 @@ namespace OpenTracker.ViewModels
 
         private void UpdateTextColor()
         {
-            if (_section.Accessibility == AccessibilityLevel.Normal)
-                FontColor = new SolidColorBrush(new Color(255, 255, 255, 255));
-            else
-                FontColor = _appSettings.AccessibilityColors[_section.Accessibility];
-        }
-
-        private void UpdateNumber()
-        {
-            NumberString = _section.Available.ToString();
+            this.RaisePropertyChanged(nameof(FontColor));
         }
 
         private void UpdateImage()
         {
-            switch (_section)
-            {
-                case ItemSection _:
-
-                    if (_section.IsAvailable())
-                    {
-                        switch (_section.Accessibility)
-                        {
-                            case AccessibilityLevel.None:
-                            case AccessibilityLevel.Inspect:
-                                ImageSource = "avares://OpenTracker/Assets/Images/chest0.png";
-                                break;
-                            case AccessibilityLevel.Partial:
-                            case AccessibilityLevel.SequenceBreak:
-                            case AccessibilityLevel.Normal:
-                                ImageSource = "avares://OpenTracker/Assets/Images/chest1.png";
-                                break;
-                        }
-                    }
-                    else
-                        ImageSource = "avares://OpenTracker/Assets/Images/chest2.png";
-
-                    break;
-
-                case BossSection bossSection:
-
-                    string imageBaseString = "avares://OpenTracker/Assets/Images/Items/";
-
-                    if (bossSection.Prize == null)
-                        imageBaseString += "unknown";
-                    else if (bossSection.Prize.Type == ItemType.Aga2)
-                        imageBaseString += "aga";
-                    else
-                        imageBaseString += bossSection.Prize.Type.ToString().ToLower();
-
-                    ImageSource = imageBaseString + (bossSection.IsAvailable() ? "0" : "1") + ".png";
-
-                    break;
-
-                case EntranceSection entranceSection:
-
-                    string entranceImageBaseString = "avares://OpenTracker/Assets/Images/door";
-
-                    ImageSource = entranceImageBaseString + (entranceSection.IsAvailable() ? "0" : "1") + ".png";
-
-                    break;
-            }
-        }
-
-        private void UpdateBossImage()
-        {
-            if (_section is BossSection bossSection)
-            {
-                string imageBaseString = "avares://OpenTracker/Assets/Images/";
-
-                if (bossSection.Boss == null)
-                    imageBaseString += "Items/unknown1";
-                else if (bossSection.Boss.Type == BossType.Aga)
-                    imageBaseString += "Items/aga1";
-                else
-                {
-                    imageBaseString += "Bosses/";
-                    imageBaseString += bossSection.Boss.Type.ToString().ToLower();
-                }
-
-                BossImageSource = imageBaseString + ".png";
-            }
+            this.RaisePropertyChanged(nameof(ImageSource));
         }
 
         private void UpdateBossVisibility()
         {
-            if (_game.Mode.BossShuffle.Value && _section is BossSection bossSection &&
-                bossSection.Boss.Type != BossType.Aga)
-                BossImageVisible = true;
-            else
-                BossImageVisible = false;
+            this.RaisePropertyChanged(nameof(BossImageVisible));
         }
 
         private void UpdateMarkingImage()
         {
-            if (_section.Marking == null)
-                MarkingSource = "avares://OpenTracker/Assets/Images/Items/unknown1.png";
-            else
-            {
-                int itemNumber = 0;
-                switch (_section.Marking)
-                {
-                    case MarkingType.Bow:
-                    case MarkingType.SilverArrows:
-                    case MarkingType.Boomerang:
-                    case MarkingType.RedBoomerang:
-                    case MarkingType.SmallKey:
-                    case MarkingType.BigKey:
-                        MarkingSource = "avares://OpenTracker/Assets/Images/Items/visible-" +
-                            _section.Marking.ToString().ToLower() + ".png";
-                        break;
-                    case MarkingType.Hookshot:
-                    case MarkingType.Bomb:
-                    case MarkingType.Mushroom:
-                    case MarkingType.Powder:
-                    case MarkingType.FireRod:
-                    case MarkingType.IceRod:
-                    case MarkingType.Bombos:
-                    case MarkingType.Ether:
-                    case MarkingType.Quake:
-                    case MarkingType.Shovel:
-                    case MarkingType.Lamp:
-                    case MarkingType.Hammer:
-                    case MarkingType.Flute:
-                    case MarkingType.Net:
-                    case MarkingType.Book:
-                    case MarkingType.MoonPearl:
-                    case MarkingType.CaneOfSomaria:
-                    case MarkingType.CaneOfByrna:
-                    case MarkingType.Cape:
-                    case MarkingType.Mirror:
-                    case MarkingType.Boots:
-                    case MarkingType.Flippers:
-                    case MarkingType.HalfMagic:
-                    case MarkingType.Aga:
-                        MarkingSource = "avares://OpenTracker/Assets/Images/Items/" +
-                            _section.Marking.ToString().ToLower() + "1.png";
-                        break;
-                    case MarkingType.Bottle:
-                    case MarkingType.Gloves:
-                    case MarkingType.Shield:
-                    case MarkingType.Mail:
-                        Item item = _game.Items[Enum.Parse<ItemType>(_section.Marking.ToString())];
-                        itemNumber = Math.Min(item.Current + 1, item.Maximum);
-                        MarkingSource = "avares://OpenTracker/Assets/Images/Items/" +
-                            _section.Marking.ToString().ToLower() + itemNumber.ToString() + ".png";
-                        break;
-                    case MarkingType.Sword:
-
-                        Item sword = _game.Items[ItemType.Sword];
-
-                        if (sword.Current == 0)
-                            itemNumber = 0;
-                        else
-                            itemNumber = Math.Min(sword.Current + 1, sword.Maximum);
-
-                        MarkingSource = "avares://OpenTracker/Assets/Images/Items/" +
-                            _section.Marking.ToString().ToLower() + itemNumber.ToString() + ".png";
-
-                        break;
-                    case MarkingType.HCFront:
-                    case MarkingType.HCLeft:
-                    case MarkingType.HCRight:
-                    case MarkingType.EP:
-                    case MarkingType.SP:
-                    case MarkingType.SW:
-                    case MarkingType.DPFront:
-                    case MarkingType.DPLeft:
-                    case MarkingType.DPRight:
-                    case MarkingType.DPBack:
-                    case MarkingType.TT:
-                    case MarkingType.IP:
-                    case MarkingType.MM:
-                    case MarkingType.TRFront:
-                    case MarkingType.TRLeft:
-                    case MarkingType.TRRight:
-                    case MarkingType.TRBack:
-                    case MarkingType.GT:
-                        MarkingSource = "avares://OpenTracker/Assets/Images/" +
-                            _section.Marking.ToString().ToLower() + ".png";
-                        break;
-                    case MarkingType.ToH:
-                        MarkingSource = "avares://OpenTracker/Assets/Images/th.png";
-                        break;
-                    case MarkingType.PoD:
-                        MarkingSource = "avares://OpenTracker/Assets/Images/pd.png";
-                        break;
-                    case MarkingType.Ganon:
-                        MarkingSource = "avares://OpenTracker/Assets/Images/ganon.png";
-                        break;
-                }
-            }
-        }
-
-        private void UpdateVisibility()
-        {
-            if (_game.Mode.Validate(_section.RequiredMode))
-                SectionVisible = true;
-            else
-                SectionVisible = false;
+            this.RaisePropertyChanged(nameof(MarkingSource));
         }
 
         private void UnsubscribeFromMarkingItem()

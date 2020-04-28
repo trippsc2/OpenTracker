@@ -3,10 +3,8 @@ using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.AutotrackerConnectors;
 using ReactiveUI;
-using System;
 using System.ComponentModel;
 using System.Reactive;
-using WebSocketSharp;
 
 namespace OpenTracker.ViewModels
 {

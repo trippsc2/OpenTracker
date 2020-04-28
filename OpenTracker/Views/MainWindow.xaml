@@ -24,7 +24,7 @@
 		<KeyBinding Gesture="Ctrl+Shift+s" Command="{Binding RelativeSource={RelativeSource Self}, Path=SaveAs}" />
 		<KeyBinding Gesture="Ctrl+z" Command="{Binding Path=UndoCommand}" />
 		<KeyBinding Gesture="Ctrl+y" Command="{Binding Path=RedoCommand}" />
-		<KeyBinding Gesture="F5" Command="{Binding Path=Reset}" />
+		<KeyBinding Gesture="F5" Command="{Binding Path=OpenResetDialog}" />
 		<KeyBinding Gesture="F11" Command="{Binding Path=ToggleDisplayAllLocationsCommand}" />
 	</Window.KeyBindings>
 
@@ -63,7 +63,7 @@
 						</MenuItem.Header>
 					</MenuItem>
 
-					<MenuItem Classes="Menu InnerMenu" Command="{Binding Path=Reset}">
+					<MenuItem Classes="Menu InnerMenu" Command="{Binding Path=OpenResetDialog}">
 						<MenuItem.Header>
 							<Grid ColumnDefinitions="Auto,*,Auto">
 								<TextBlock Text="Reset" />
@@ -393,7 +393,8 @@
 									<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/mm.png" />
 									<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/tr.png" />
 									<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/gt.png"
-										   IsHitTestVisible="{Binding Path=SmallKeyShuffle}" IsVisible="{Binding Path=SmallKeyShuffle}" />
+										   IsHitTestVisible="{Binding Path=ModeSettings.SmallKeyShuffle}"
+										   IsVisible="{Binding Path=ModeSettings.SmallKeyShuffle}" />
 								</StackPanel>
 
 								<ItemsControl Grid.Column="1" Grid.Row="1" Items="{Binding Path=SmallKeyItems}"

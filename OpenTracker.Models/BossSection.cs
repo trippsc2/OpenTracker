@@ -2,7 +2,6 @@
 using OpenTracker.Models.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 
 namespace OpenTracker.Models
@@ -18,8 +17,6 @@ namespace OpenTracker.Models
         private readonly Dictionary<RegionID, bool> _regionIsSubscribed;
         private readonly Dictionary<ItemType, Mode> _itemSubscriptions;
         private readonly Dictionary<ItemType, bool> _itemIsSubscribed;
-        private readonly bool _subscribeToRoomMemory;
-        private readonly bool _subscribeToItemMemory;
         private Boss _currentBossSubscription;
 
         public string Name { get => "Boss"; }
@@ -129,16 +126,18 @@ namespace OpenTracker.Models
 
                     AutoTrack = () =>
                     {
-                        if (_game.AutoTracker.ItemMemory.Count > 133)
+                        bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 133, 2);
+
+                        if (result.HasValue)
                         {
-                            if (_game.AutoTracker.ItemMemory[133] >= 3)
+                            if (result.Value)
                                 Available = 0;
                             else
                                 Available = 1;
                         }
-                    };
+                   };
 
-                    _subscribeToItemMemory = true;
+                    _game.AutoTracker.ItemMemory[133].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.Agahnim, new Mode());
 
@@ -169,16 +168,18 @@ namespace OpenTracker.Models
 
                     AutoTrack = () =>
                     {
-                        if (_game.AutoTracker.RoomMemory.Count > 401)
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 401, 8);
+
+                        if (result.HasValue)
                         {
-                            if ((_game.AutoTracker.RoomMemory[401] & 8) != 0)
+                            if (result.Value)
                                 Available = 0;
                             else
                                 Available = 1;
                         }
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[401].PropertyChanged += OnMemoryChanged;
 
                     _updateOnItemPlacementChange = true;
                     _updateOnEnemyShuffleChange = true;
@@ -214,16 +215,18 @@ namespace OpenTracker.Models
 
                     AutoTrack = () =>
                     {
-                        if (_game.AutoTracker.RoomMemory.Count > 103)
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 103, 8);
+
+                        if (result.HasValue)
                         {
-                            if ((_game.AutoTracker.RoomMemory[103] & 8) != 0)
+                            if (result.Value)
                                 Available = 0;
                             else
                                 Available = 1;
                         }
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[103].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DesertPalace, new Mode());
 
@@ -263,16 +266,18 @@ namespace OpenTracker.Models
 
                     AutoTrack = () =>
                     {
-                        if (_game.AutoTracker.RoomMemory.Count > 15)
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 15, 8);
+
+                        if (result.HasValue)
                         {
-                            if ((_game.AutoTracker.RoomMemory[15] & 8) != 0)
+                            if (result.Value)
                                 Available = 0;
                             else
                                 Available = 1;
                         }
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[15].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.TowerOfHera, new Mode());
 
@@ -304,16 +309,18 @@ namespace OpenTracker.Models
 
                     AutoTrack = () =>
                     {
-                        if (_game.AutoTracker.RoomMemory.Count > 181)
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 181, 8);
+
+                        if (result.HasValue)
                         {
-                            if ((_game.AutoTracker.RoomMemory[181] & 8) != 0)
+                            if (result.Value)
                                 Available = 0;
                             else
                                 Available = 1;
                         }
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[181].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.PalaceOfDarkness, new Mode());
 
@@ -339,16 +346,18 @@ namespace OpenTracker.Models
 
                     AutoTrack = () =>
                     {
-                        if (_game.AutoTracker.RoomMemory.Count > 13)
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 13, 8);
+
+                        if (result.HasValue)
                         {
-                            if ((_game.AutoTracker.RoomMemory[13] & 8) != 0)
+                            if (result.Value)
                                 Available = 0;
                             else
                                 Available = 1;
                         }
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[13].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.SwampPalace, new Mode());
 
@@ -373,16 +382,18 @@ namespace OpenTracker.Models
 
                     AutoTrack = () =>
                     {
-                        if (_game.AutoTracker.RoomMemory.Count > 83)
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 83, 8);
+
+                        if (result.HasValue)
                         {
-                            if ((_game.AutoTracker.RoomMemory[83] & 8) != 0)
+                            if (result.Value)
                                 Available = 0;
                             else
                                 Available = 1;
                         }
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[83].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.SkullWoods, new Mode());
 
@@ -404,16 +415,18 @@ namespace OpenTracker.Models
 
                     AutoTrack = () =>
                     {
-                        if (_game.AutoTracker.RoomMemory.Count > 345)
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 345, 8);
+
+                        if (result.HasValue)
                         {
-                            if ((_game.AutoTracker.RoomMemory[345] & 8) != 0)
+                            if (result.Value)
                                 Available = 0;
                             else
                                 Available = 1;
                         }
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[345].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.ThievesTown, new Mode());
 
@@ -435,16 +448,18 @@ namespace OpenTracker.Models
 
                     AutoTrack = () =>
                     {
-                        if (_game.AutoTracker.RoomMemory.Count > 445)
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 445, 8);
+
+                        if (result.HasValue)
                         {
-                            if ((_game.AutoTracker.RoomMemory[445] & 8) != 0)
+                            if (result.Value)
                                 Available = 0;
                             else
                                 Available = 1;
                         }
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[445].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.IcePalace, new Mode());
 
@@ -479,16 +494,18 @@ namespace OpenTracker.Models
 
                     AutoTrack = () =>
                     {
-                        if (_game.AutoTracker.RoomMemory.Count > 289)
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 289, 8);
+
+                        if (result.HasValue)
                         {
-                            if ((_game.AutoTracker.RoomMemory[289] & 8) != 0)
+                            if (result.Value)
                                 Available = 0;
                             else
                                 Available = 1;
                         }
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[289].PropertyChanged += OnMemoryChanged;
 
                     _updateOnItemPlacementChange = true;
 
@@ -582,16 +599,18 @@ namespace OpenTracker.Models
 
                     AutoTrack = () =>
                     {
-                        if (_game.AutoTracker.RoomMemory.Count > 329)
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 329, 8);
+
+                        if (result.HasValue)
                         {
-                            if ((_game.AutoTracker.RoomMemory[329] & 8) != 0)
+                            if (result.Value)
                                 Available = 0;
                             else
                                 Available = 1;
                         }
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[329].PropertyChanged += OnMemoryChanged;
 
                     _updateOnWorldStateChange = true;
 
@@ -667,8 +686,6 @@ namespace OpenTracker.Models
             UpdateBossSubscription();
 
             UpdateAccessibility();
-
-            SubscribeToAutoTracker();
         }
 
         private void OnPropertyChanging(string propertyName)
@@ -735,19 +752,10 @@ namespace OpenTracker.Models
             UpdateAccessibility();
         }
 
-        private void OnMemoryCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void OnMemoryChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (_game.AutoTracker.IsInGame() && !UserManipulated)
+            if (!UserManipulated)
                 AutoTrack();
-        }
-
-        private void SubscribeToAutoTracker()
-        {
-            if (_subscribeToRoomMemory)
-                _game.AutoTracker.NPCItemMemory.CollectionChanged += OnMemoryCollectionChanged;
-
-            if (_subscribeToItemMemory)
-                _game.AutoTracker.ItemMemory.CollectionChanged += OnMemoryCollectionChanged;
         }
 
         private void UpdateRegionSubscriptions()

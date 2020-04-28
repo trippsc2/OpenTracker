@@ -20,102 +20,37 @@ namespace OpenTracker.ViewModels
         public ReactiveCommand<Unit, Unit> BossShuffleCommand { get; }
         public ReactiveCommand<Unit, Unit> EnemyShuffleCommand { get; }
 
+        public bool BasicItemPlacement => _mode.ItemPlacement == ItemPlacement.Basic;
+        public bool AdvancedItemPlacement => _mode.ItemPlacement == ItemPlacement.Advanced;
+
+        public bool StandardDungeonItemShuffle =>
+            _mode.DungeonItemShuffle == DungeonItemShuffle.Standard;
+        public bool MapsCompassesDungeonItemShuffle =>
+            _mode.DungeonItemShuffle == DungeonItemShuffle.MapsCompasses;
+        public bool MapsCompassesSmallKeysDungeonItemShuffle =>
+            _mode.DungeonItemShuffle == DungeonItemShuffle.MapsCompassesSmallKeys;
+        public bool KeysanityDungeonItemShuffle =>
+            _mode.DungeonItemShuffle == DungeonItemShuffle.Keysanity;
+
+        public bool StandardOpenRetroWorldState =>
+            _mode.WorldState == WorldState.StandardOpen;
+        public bool InvertedWorldState =>
+            _mode.WorldState == WorldState.Inverted;
+
+        public bool EntranceShuffle => _mode.EntranceShuffle.Value;
+        public bool BossShuffle => _mode.BossShuffle.Value;
+        public bool EnemyShuffle => _mode.EnemyShuffle.Value;
+
+        public bool SmallKeyShuffle =>
+            _mode.DungeonItemShuffle >= DungeonItemShuffle.MapsCompassesSmallKeys;
+        public bool BigKeyShuffle =>
+            _mode.DungeonItemShuffle == DungeonItemShuffle.Keysanity;
+
         private bool _modeSettingsPopupOpen;
         public bool ModeSettingsPopupOpen
         {
             get => _modeSettingsPopupOpen;
             set => this.RaiseAndSetIfChanged(ref _modeSettingsPopupOpen, value);
-        }
-
-        private bool _itemPlacementBasic;
-        public bool ItemPlacementBasic
-        {
-            get => _itemPlacementBasic;
-            set => this.RaiseAndSetIfChanged(ref _itemPlacementBasic, value);
-        }
-
-        private bool _itemPlacementAdvanced;
-        public bool ItemPlacementAdvanced
-        {
-            get => _itemPlacementAdvanced;
-            set => this.RaiseAndSetIfChanged(ref _itemPlacementAdvanced, value);
-        }
-
-        private bool _dungeonItemShuffleStandard;
-        public bool DungeonItemShuffleStandard
-        {
-            get => _dungeonItemShuffleStandard;
-            set => this.RaiseAndSetIfChanged(ref _dungeonItemShuffleStandard, value);
-        }
-
-        private bool _dungeonItemShuffleMapsCompasses;
-        public bool DungeonItemShuffleMapsCompasses
-        {
-            get => _dungeonItemShuffleMapsCompasses;
-            set => this.RaiseAndSetIfChanged(ref _dungeonItemShuffleMapsCompasses, value);
-        }
-
-        private bool _dungeonItemShuffleMapsCompassesSmallKeys;
-        public bool DungeonItemShuffleMapsCompassesSmallKeys
-        {
-            get => _dungeonItemShuffleMapsCompassesSmallKeys;
-            set => this.RaiseAndSetIfChanged(ref _dungeonItemShuffleMapsCompassesSmallKeys, value);
-        }
-
-        private bool _dungeonItemShuffleKeysanity;
-        public bool DungeonItemShuffleKeysanity
-        {
-            get => _dungeonItemShuffleKeysanity;
-            set => this.RaiseAndSetIfChanged(ref _dungeonItemShuffleKeysanity, value);
-        }
-
-        private bool _worldStateStandardOpenRetro;
-        public bool WorldStateStandardOpenRetro
-        {
-            get => _worldStateStandardOpenRetro;
-            set => this.RaiseAndSetIfChanged(ref _worldStateStandardOpenRetro, value);
-        }
-
-        private bool _worldStateInverted;
-        public bool WorldStateInverted
-        {
-            get => _worldStateInverted;
-            set => this.RaiseAndSetIfChanged(ref _worldStateInverted, value);
-        }
-
-        private bool _entranceShuffle;
-        public bool EntranceShuffle
-        {
-            get => _entranceShuffle;
-            set => this.RaiseAndSetIfChanged(ref _entranceShuffle, value);
-        }
-
-        private bool _bossShuffle;
-        public bool BossShuffle
-        {
-            get => _bossShuffle;
-            set => this.RaiseAndSetIfChanged(ref _bossShuffle, value);
-        }
-
-        private bool _enemyShuffle;
-        public bool EnemyShuffle
-        {
-            get => _enemyShuffle;
-            set => this.RaiseAndSetIfChanged(ref _enemyShuffle, value);
-        }
-
-        private bool _smallKeyShuffle;
-        public bool SmallKeyShuffle
-        {
-            get => _smallKeyShuffle;
-            set => this.RaiseAndSetIfChanged(ref _smallKeyShuffle, value);
-        }
-
-        private bool _bigKeyShuffle;
-        public bool BigKeyShuffle
-        {
-            get => _bigKeyShuffle;
-            set => this.RaiseAndSetIfChanged(ref _bigKeyShuffle, value);
         }
 
         public ModeSettingsControlVM(Mode mode, UndoRedoManager undoRedoManager)
@@ -125,19 +60,12 @@ namespace OpenTracker.ViewModels
 
             _mode.PropertyChanged += OnModeChanged;
 
-            ItemPlacementCommand = ReactiveCommand.Create<string>(SetItemPlacement, this.WhenAnyValue(x => x.WorldStateStandardOpenRetro));
+            ItemPlacementCommand = ReactiveCommand.Create<string>(SetItemPlacement, this.WhenAnyValue(x => x.StandardOpenRetroWorldState));
             DungeonItemShuffleCommand = ReactiveCommand.Create<string>(SetDungeonItemShuffle);
             WorldStateCommand = ReactiveCommand.Create<string>(SetWorldState);
             EntranceShuffleCommand = ReactiveCommand.Create(ToggleEntranceShuffle);
             BossShuffleCommand = ReactiveCommand.Create(ToggleBossShuffle);
             EnemyShuffleCommand = ReactiveCommand.Create(ToggleEnemyShuffle);
-
-            UpdateItemPlacement();
-            UpdateDungeonItemShuffle();
-            UpdateWorldState();
-            UpdateEntranceShuffle();
-            UpdateBossShuffle();
-            UpdateEnemyShuffle();
         }
 
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
@@ -152,122 +80,35 @@ namespace OpenTracker.ViewModels
                 UpdateWorldState();
 
             if (e.PropertyName == nameof(Mode.EntranceShuffle))
-                UpdateEntranceShuffle();
+                this.RaisePropertyChanged(nameof(EntranceShuffle));
 
             if (e.PropertyName == nameof(Mode.BossShuffle))
-                UpdateBossShuffle();
+                this.RaisePropertyChanged(nameof(BossShuffle));
 
             if (e.PropertyName == nameof(Mode.EnemyShuffle))
-                UpdateEnemyShuffle();
+                this.RaisePropertyChanged(nameof(EnemyShuffle));
         }
 
         private void UpdateItemPlacement()
         {
-            switch (_mode.ItemPlacement)
-            {
-                case null:
-                    ItemPlacementBasic = false;
-                    ItemPlacementAdvanced = false;
-                    break;
-                case ItemPlacement.Basic:
-                    ItemPlacementBasic = true;
-                    ItemPlacementAdvanced = false;
-                    break;
-                case ItemPlacement.Advanced:
-                    ItemPlacementBasic = false;
-                    ItemPlacementAdvanced = true;
-                    break;
-            }
+            this.RaisePropertyChanged(nameof(BasicItemPlacement));
+            this.RaisePropertyChanged(nameof(AdvancedItemPlacement));
         }
 
         private void UpdateDungeonItemShuffle()
         {
-            switch (_mode.DungeonItemShuffle)
-            {
-                case null:
-                    DungeonItemShuffleStandard = false;
-                    DungeonItemShuffleMapsCompasses = false;
-                    DungeonItemShuffleMapsCompassesSmallKeys = false;
-                    DungeonItemShuffleKeysanity = false;
-                    SmallKeyShuffle = false;
-                    BigKeyShuffle = false;
-                    break;
-                case DungeonItemShuffle.Standard:
-                    DungeonItemShuffleStandard = true;
-                    DungeonItemShuffleMapsCompasses = false;
-                    DungeonItemShuffleMapsCompassesSmallKeys = false;
-                    DungeonItemShuffleKeysanity = false;
-                    SmallKeyShuffle = false;
-                    BigKeyShuffle = false;
-                    break;
-                case DungeonItemShuffle.MapsCompasses:
-                    DungeonItemShuffleStandard = false;
-                    DungeonItemShuffleMapsCompasses = true;
-                    DungeonItemShuffleMapsCompassesSmallKeys = false;
-                    DungeonItemShuffleKeysanity = false;
-                    SmallKeyShuffle = false;
-                    BigKeyShuffle = false;
-                    break;
-                case DungeonItemShuffle.MapsCompassesSmallKeys:
-                    DungeonItemShuffleStandard = false;
-                    DungeonItemShuffleMapsCompasses = false;
-                    DungeonItemShuffleMapsCompassesSmallKeys = true;
-                    DungeonItemShuffleKeysanity = false;
-                    SmallKeyShuffle = true;
-                    BigKeyShuffle = false;
-                    break;
-                case DungeonItemShuffle.Keysanity:
-                    DungeonItemShuffleStandard = false;
-                    DungeonItemShuffleMapsCompasses = false;
-                    DungeonItemShuffleMapsCompassesSmallKeys = false;
-                    DungeonItemShuffleKeysanity = true;
-                    SmallKeyShuffle = true;
-                    BigKeyShuffle = true;
-                    break;
-            }
+            this.RaisePropertyChanged(nameof(StandardDungeonItemShuffle));
+            this.RaisePropertyChanged(nameof(MapsCompassesDungeonItemShuffle));
+            this.RaisePropertyChanged(nameof(MapsCompassesSmallKeysDungeonItemShuffle));
+            this.RaisePropertyChanged(nameof(KeysanityDungeonItemShuffle));
+            this.RaisePropertyChanged(nameof(SmallKeyShuffle));
+            this.RaisePropertyChanged(nameof(BigKeyShuffle));
         }
 
         private void UpdateWorldState()
         {
-            switch (_mode.WorldState)
-            {
-                case null:
-                    WorldStateStandardOpenRetro = false;
-                    WorldStateInverted = false;
-                    break;
-                case WorldState.StandardOpen:
-                    WorldStateStandardOpenRetro = true;
-                    WorldStateInverted = false;
-                    break;
-                case WorldState.Inverted:
-                    WorldStateStandardOpenRetro = false;
-                    WorldStateInverted = true;
-                    break;
-            }
-        }
-
-        private void UpdateEntranceShuffle()
-        {
-            if (_mode.EntranceShuffle.HasValue && _mode.EntranceShuffle.Value)
-                EntranceShuffle = true;
-            else
-                EntranceShuffle = false;
-        }
-
-        private void UpdateBossShuffle()
-        {
-            if (_mode.BossShuffle.HasValue && _mode.BossShuffle.Value)
-                BossShuffle = true;
-            else
-                BossShuffle = false;
-        }
-
-        private void UpdateEnemyShuffle()
-        {
-            if (_mode.EnemyShuffle.HasValue && _mode.EnemyShuffle.Value)
-                EnemyShuffle = true;
-            else
-                EnemyShuffle = false;
+            this.RaisePropertyChanged(nameof(StandardOpenRetroWorldState));
+            this.RaisePropertyChanged(nameof(InvertedWorldState));
         }
 
         private void SetItemPlacement(string itemPlacementString)

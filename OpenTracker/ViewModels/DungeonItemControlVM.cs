@@ -16,32 +16,42 @@ namespace OpenTracker.ViewModels
         private readonly Item _item;
         private readonly bool _smallKey;
 
-        private string _imageSource;
         public string ImageSource
         {
-            get => _imageSource;
-            private set => this.RaiseAndSetIfChanged(ref _imageSource, value);
+            get
+            {
+                if (_item == null)
+                    return null;
+
+                return _imageSourceBase + (_item.Current > 0 ? "1" : "0") + ".png";
+            }
         }
 
-        private string _imageNumber;
         public string ImageNumber
         {
-            get => _imageNumber;
-            private set => this.RaiseAndSetIfChanged(ref _imageNumber, value);
+            get
+            {
+                if (_smallKey)
+                    return _item.Current.ToString() + (_item.Current == _item.Maximum ? "*" : "");
+
+                return null;
+            }
         }
 
-        private IBrush _textColor;
+        public bool TextVisible => _smallKey && _item.Current > 0;
+
         public IBrush TextColor
         {
-            get => _textColor;
-            private set => this.RaiseAndSetIfChanged(ref _textColor, value);
-        }
+            get
+            {
+                if (_item == null)
+                    return Brushes.White;
 
-        private bool _textVisible;
-        public bool TextVisible
-        {
-            get => _textVisible;
-            private set => this.RaiseAndSetIfChanged(ref _textVisible, value);
+                if (_item.Current == _item.Maximum)
+                    return _appSettings.EmphasisFontColor;
+                else
+                    return Brushes.White;
+            }
         }
 
         public DungeonItemControlVM(UndoRedoManager undoRedoManager, AppSettingsVM appSettings,
@@ -85,56 +95,25 @@ namespace OpenTracker.ViewModels
                         break;
                 }
 
-                UpdateImage();
-
-                if (_smallKey)
-                {
-                    UpdateText();
-                    UpdateTextColor();
-                }
-                
                 item.PropertyChanged += OnItemChanged;
             }
         }
 
         private void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (_item != null)
+            this.RaisePropertyChanged(nameof(ImageSource));
+            
+            if (_smallKey)
             {
-                UpdateImage();
-
-                if (_smallKey)
-                {
-                    UpdateText();
-                    UpdateTextColor();
-                }
+                UpdateText();
+                this.RaisePropertyChanged(nameof(TextColor));
             }
-        }
-
-        private void UpdateImage()
-        {
-            ImageSource = _imageSourceBase + (_item.Current > 0 ? "1" : "0") + ".png";
         }
 
         private void UpdateText()
         {
-            if (_item.Current > 0)
-                TextVisible = true;
-            else
-                TextVisible = false;
-
-            ImageNumber = _item.Current.ToString();
-
-            if (_item.Current == _item.Maximum)
-                ImageNumber += "*";
-        }
-
-        private void UpdateTextColor()
-        {
-            if (_item.Current == _item.Maximum)
-                TextColor = _appSettings.EmphasisFontColor;
-            else
-                TextColor = Brushes.White;
+            this.RaisePropertyChanged(nameof(TextVisible));
+            this.RaisePropertyChanged(nameof(ImageNumber));
         }
 
         public void ChangeItem(bool rightClick = false)

@@ -45,17 +45,31 @@ namespace OpenTracker.Models
             }
         }
 
-        public ObservableCollection<byte> RoomMemory { get; }
-        public ObservableCollection<byte> OverworldEventMemory { get; }
-        public ObservableCollection<byte> ItemMemory { get; }
-        public ObservableCollection<byte> NPCItemMemory { get; }
+        public MemoryAddress[] RoomMemory { get; }
+        public MemoryAddress[] OverworldEventMemory { get; }
+        public MemoryAddress[] ItemMemory { get; }
+        public MemoryAddress[] NPCItemMemory { get; }
 
         public AutoTracker()
         {
-            RoomMemory = new ObservableCollection<byte>();
-            OverworldEventMemory = new ObservableCollection<byte>();
-            ItemMemory = new ObservableCollection<byte>();
-            NPCItemMemory = new ObservableCollection<byte>();
+            RoomMemory = new MemoryAddress[592];
+            OverworldEventMemory = new MemoryAddress[130];
+            ItemMemory = new MemoryAddress[144];
+            NPCItemMemory = new MemoryAddress[2];
+
+            for (int i = 0; i < RoomMemory.Length; i++)
+            {
+                RoomMemory[i] = new MemoryAddress();
+
+                if (i < OverworldEventMemory.Length)
+                    OverworldEventMemory[i] = new MemoryAddress();
+
+                if (i < ItemMemory.Length)
+                    ItemMemory[i] = new MemoryAddress();
+
+                if (i < NPCItemMemory.Length)
+                    NPCItemMemory[i] = new MemoryAddress();
+            }
         }
 
         private void OnPropertyChanging(string propertyName)
@@ -91,39 +105,36 @@ namespace OpenTracker.Models
                 {
                     _connector.ReadByte(0x7e0010, out byte inGameStatus);
                     InGameStatus = inGameStatus;
+                }, TimeSpan.FromMilliseconds(250), _token.Value);
+                MemoryCheck(() =>
+                {
+                    if (IsInGame())
+                    {
+                        byte[] buffer = new byte[592];
+                        _connector.Read(0x7ef000, buffer);
 
-                    byte[] buffer = new byte[592];
-                    _connector.Read(0x7ef000, buffer);
+                        for (int i = 0; i < buffer.Length; i++)
+                            RoomMemory[i].Value = buffer[i];
 
-                    RoomMemory.Clear();
+                        buffer = new byte[130];
+                        _connector.Read(0x7ef280, buffer);
 
-                    foreach (byte value in buffer)
-                        RoomMemory.Add(value);
+                        for (int i = 0; i < buffer.Length; i++)
+                            OverworldEventMemory[i].Value = buffer[i];
 
-                    buffer = new byte[130];
-                    _connector.Read(0x7ef280, buffer);
+                        buffer = new byte[144];
+                        _connector.Read(0x7ef340, buffer);
 
-                    OverworldEventMemory.Clear();
+                        for (int i = 0; i < buffer.Length; i++)
+                            ItemMemory[i].Value = buffer[i];
 
-                    foreach (byte value in buffer)
-                        OverworldEventMemory.Add(value);
+                        buffer = new byte[2];
+                        _connector.Read(0x7ef410, buffer);
 
-                    buffer = new byte[144];
-                    _connector.Read(0x7ef340, buffer);
-
-                    ItemMemory.Clear();
-
-                    foreach (byte value in buffer)
-                        ItemMemory.Add(value);
-
-                    buffer = new byte[2];
-                    _connector.Read(0x7ef410, buffer);
-
-                    NPCItemMemory.Clear();
-
-                    foreach (byte value in buffer)
-                        NPCItemMemory.Add(value);
-                }, TimeSpan.FromMilliseconds(5000), _token.Value);
+                        for (int i = 0; i < buffer.Length; i++)
+                            NPCItemMemory[i].Value = buffer[i];
+                    }
+                }, TimeSpan.FromMilliseconds(2000), _token.Value);
             }
         }
 
@@ -137,13 +148,28 @@ namespace OpenTracker.Models
                 _token = null;
             }
 
-            Connector.Dispose();
-            Connector = null;
+            if (Connector != null)
+            {
+                Connector.Dispose();
+                Connector = null;
+            }
+
             GC.Collect();
             GC.WaitForPendingFinalizers();
 
             InGameStatus = null;
-            ItemMemory.Clear();
+
+            foreach (MemoryAddress address in RoomMemory)
+                address.Reset();
+
+            foreach (MemoryAddress address in OverworldEventMemory)
+                address.Reset();
+
+            foreach (MemoryAddress address in ItemMemory)
+                address.Reset();
+
+            foreach (MemoryAddress address in NPCItemMemory)
+                address.Reset();
         }
 
         public bool IsInGame()
@@ -164,7 +190,7 @@ namespace OpenTracker.Models
                     {
                         try { action(); }
                         catch { }
-                        
+
                         await Task.Delay(interval, token);
                     }
                 }, token);
@@ -173,7 +199,7 @@ namespace OpenTracker.Models
 
         public bool? CheckMemoryFlag(MemorySegmentType segment, int index, byte flag)
         {
-            ObservableCollection<byte> memory = null;
+            MemoryAddress[] memory = null;
 
             switch (segment)
             {
@@ -194,14 +220,14 @@ namespace OpenTracker.Models
             if (memory == null)
                 throw new ArgumentOutOfRangeException(nameof(segment));
 
-            if (memory.Count > index)
+            if (memory.Length > index)
             {
-                if ((memory[index] & flag) != 0)
+                if ((memory[index].Value & flag) != 0)
                     return true;
                 else
                     return false;
             }
-            
+
             return null;
         }
 
@@ -232,7 +258,7 @@ namespace OpenTracker.Models
 
         public bool? CheckMemoryByte(MemorySegmentType segment, int index, byte minValue = 0)
         {
-            ObservableCollection<byte> memory = null;
+            MemoryAddress[] memory = null;
 
             switch (segment)
             {
@@ -253,9 +279,9 @@ namespace OpenTracker.Models
             if (memory == null)
                 throw new ArgumentOutOfRangeException(nameof(segment));
 
-            if (memory.Count > index)
+            if (memory.Length > index)
             {
-                if (memory[index] > minValue)
+                if (memory[index].Value > minValue)
                     return true;
                 else
                     return false;
@@ -266,7 +292,7 @@ namespace OpenTracker.Models
 
         public byte? CheckMemoryByteValue(MemorySegmentType segment, int index)
         {
-            ObservableCollection<byte> memory = null;
+            MemoryAddress[] memory = null;
 
             switch (segment)
             {
@@ -287,8 +313,8 @@ namespace OpenTracker.Models
             if (memory == null)
                 throw new ArgumentOutOfRangeException(nameof(segment));
 
-            if (memory.Count > index)
-                return memory[index];
+            if (memory.Length > index)
+                return memory[index].Value;
 
             return null;
         }

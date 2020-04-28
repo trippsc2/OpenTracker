@@ -51,5 +51,11 @@ namespace OpenTracker.ViewModels
                 Execute(action, false);
             }
         }
+
+        public void Reset()
+        {
+            UndoableActions.Clear();
+            RedoableActions.Clear();
+        }
     }
 }

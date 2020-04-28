@@ -15,25 +15,53 @@ namespace OpenTracker.ViewModels
         private readonly string _imageSourceBase;
         private readonly Item[] _items;
 
-        private string _imageSource;
         public string ImageSource
         {
-            get => _imageSource;
-            private set => this.RaiseAndSetIfChanged(ref _imageSource, value);
+            get
+            {
+                if (_items == null || _items[0] == null)
+                    return null;
+
+                if (_items[0].Type == ItemType.TowerCrystals || _items[0].Type == ItemType.GanonCrystals)
+                    return _imageSourceBase + ".png";
+                else
+                {
+                    int imageNumber = _items[0].Current;
+
+                    if (_items.Length == 2)
+                        imageNumber += _items[1].Current * (_items[0].Maximum + 1);
+
+                    return _imageSourceBase + imageNumber.ToString() + ".png";
+                }
+            }
         }
 
-        private string _imageNumber;
         public string ImageNumber
         {
-            get => _imageNumber;
-            private set => this.RaiseAndSetIfChanged(ref _imageNumber, value);
-        }
+            get
+            {
+                if (_items == null || _items[0] == null)
+                    return null;
 
-        private IBrush _textColor;
+                if (_items[0].Type == ItemType.TowerCrystals || _items[0].Type == ItemType.GanonCrystals)
+                    return (7 - _items[0].Current).ToString();
+
+                return null;
+            }
+        }
+        
         public IBrush TextColor
         {
-            get => _textColor;
-            private set => this.RaiseAndSetIfChanged(ref _textColor, value);
+            get
+            {
+                if (_items == null || _items[0] == null)
+                    return Brushes.White;
+
+                if (_items[0].Current == 0)
+                    return _appSettings.EmphasisFontColor;
+                else
+                    return Brushes.White;
+            }
         }
 
         public ItemControlVM(UndoRedoManager undoRedoManager, AppSettingsVM appSettings,
@@ -47,14 +75,6 @@ namespace OpenTracker.ViewModels
             {
                 _imageSourceBase = "avares://OpenTracker/Assets/Images/Items/" + _items[0].Type.ToString().ToLower();
 
-                UpdateImage();
-
-                if (_items[0].Type == ItemType.TowerCrystals || _items[0].Type == ItemType.GanonCrystals)
-                {
-                    UpdateText();
-                    UpdateTextColor();
-                }
-
                 foreach (Item item in _items)
                     item.PropertyChanged += OnItemChanged;
             }
@@ -62,42 +82,13 @@ namespace OpenTracker.ViewModels
 
         private void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateImage();
+            this.RaisePropertyChanged(nameof(ImageSource));
 
             if (_items[0].Type == ItemType.TowerCrystals || _items[0].Type == ItemType.GanonCrystals)
             {
-                UpdateText();
-                UpdateTextColor();
+                this.RaisePropertyChanged(nameof(ImageNumber));
+                this.RaisePropertyChanged(nameof(TextColor));
             }
-        }
-
-        private void UpdateImage()
-        {
-            if (_items[0].Type == ItemType.TowerCrystals || _items[0].Type == ItemType.GanonCrystals)
-                ImageSource = _imageSourceBase + ".png";
-            else
-            {
-                int imageNumber = _items[0].Current;
-
-                if (_items.Length == 2)
-                    imageNumber += _items[1].Current * (_items[0].Maximum + 1);
-
-                ImageSource = _imageSourceBase + imageNumber.ToString() + ".png";
-            }
-        }
-
-        private void UpdateText()
-        {
-            if (_items[0].Type == ItemType.TowerCrystals || _items[0].Type == ItemType.GanonCrystals)
-                ImageNumber = (7 - _items[0].Current).ToString();
-        }
-
-        private void UpdateTextColor()
-        {
-            if (_items[0].Current == 0)
-                TextColor = _appSettings.EmphasisFontColor;
-            else
-                TextColor = Brushes.White;
         }
 
         public void ChangeItem(bool rightClick = false)

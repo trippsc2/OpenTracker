@@ -54,6 +54,7 @@ namespace OpenTracker.Models
 
         public void Reset()
         {
+            AutoTracker.Stop();
             Locations.Reset();
             Items.Reset();
         }

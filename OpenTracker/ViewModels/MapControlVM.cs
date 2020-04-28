@@ -13,11 +13,21 @@ namespace OpenTracker.ViewModels
 
         public ObservableCollection<MapLocationControlVM> MapLocations { get; }
 
-        private string _imageSource;
-        public string ImageSource
+        public string ImageSource 
         {
-            get => _imageSource;
-            private set => this.RaiseAndSetIfChanged(ref _imageSource, value);
+            get
+            {
+                WorldState worldState;
+
+                if (_game.Mode.WorldState == WorldState.Inverted)
+                    worldState = WorldState.Inverted;
+                else
+                    worldState = WorldState.StandardOpen;
+
+                return "avares://OpenTracker/Assets/Images/Maps/" +
+                    worldState.ToString().ToLower() + "_" +
+                    _iD.ToString().ToLower() + ".png";
+            }
         }
 
         public MapControlVM(UndoRedoManager undoRedoManager, AppSettingsVM appSettings,
@@ -41,23 +51,12 @@ namespace OpenTracker.ViewModels
                     }
                 }
             }
-
-            UpdateMap();
         }
 
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Mode.WorldState))
-                UpdateMap();
-        }
-
-        private void UpdateMap()
-        {
-            WorldState worldState = WorldState.StandardOpen;
-
-            ImageSource = "avares://OpenTracker/Assets/Images/Maps/" +
-                worldState.ToString().ToLower() + "_" +
-                _iD.ToString().ToLower() + ".png";
+                this.RaisePropertyChanged(nameof(ImageSource));
         }
     }
 }

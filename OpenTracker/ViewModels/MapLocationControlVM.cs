@@ -20,88 +20,243 @@ namespace OpenTracker.ViewModels
         private readonly MainWindowVM _mainWindow;
         private readonly MapLocation _mapLocation;
 
-        private double _canvasX;
-        public double CanvasX
-        {
-            get => _canvasX;
-            private set => this.RaiseAndSetIfChanged(ref _canvasX, value);
-        }
+        public double CanvasX => _mapLocation.X - (Size / 2);
+        public double CanvasY => _mapLocation.Y - (Size / 2);
 
-        private double _canvasY;
-        public double CanvasY
-        {
-            get => _canvasY;
-            private set => this.RaiseAndSetIfChanged(ref _canvasY, value);
-        }
-
-        private double _size;
         public double Size
         {
-            get => _size;
-            private set => this.RaiseAndSetIfChanged(ref _size, value);
+            get
+            {
+                if (_game.Mode.EntranceShuffle.HasValue &&
+                    _game.Mode.EntranceShuffle.Value)
+                {
+                    if (_mapLocation.Location.Sections[0] is EntranceSection &&
+                        _mapLocation.Location.Sections[0].Marking != null)
+                        return 55.0;
+                    else
+                        return 40.0;
+                }
+                else
+                {
+                    if (_mapLocation.Location.Total > 1)
+                    {
+                        switch (_mapLocation.Location.ID)
+                        {
+                            case LocationID.EasternPalace:
+                            case LocationID.DesertPalace:
+                            case LocationID.TowerOfHera:
+                            case LocationID.PalaceOfDarkness:
+                            case LocationID.SwampPalace:
+                            case LocationID.SkullWoods:
+                            case LocationID.ThievesTown:
+                            case LocationID.IcePalace:
+                            case LocationID.MiseryMire:
+                            case LocationID.TurtleRock:
+                            case LocationID.GanonsTower:
+                                return 130.0;
+                            default:
+                                return 90.0;
+                        }
+                    }
+                    else
+                        return 70.0;
+                }
+
+            }
         }
 
-        private Thickness _borderSize;
         public Thickness BorderSize
         {
-            get => _borderSize;
-            private set => this.RaiseAndSetIfChanged(ref _borderSize, value);
+            get
+            {
+                if (_game.Mode.EntranceShuffle.HasValue &&
+                    _game.Mode.EntranceShuffle.Value)
+                    return new Thickness(5);
+                else
+                    return new Thickness(9);
+            }
         }
 
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set => this.RaiseAndSetIfChanged(ref _accessibility, value);
-        }
+        public IBrush Color => 
+            _appSettings.AccessibilityColors[_mapLocation.Location.Accessibility];
 
-        private IBrush _color;
-        public IBrush Color
-        {
-            get => _color;
-            set => this.RaiseAndSetIfChanged(ref _color, value);
-        }
-
-        private bool _visible;
-        public bool Visible
-        {
-            get => _visible;
-            private set => this.RaiseAndSetIfChanged(ref _visible, value);
-        }
-
-        private bool _imageVisible;
         public bool ImageVisible
         {
-            get => _imageVisible;
-            private set => this.RaiseAndSetIfChanged(ref _imageVisible, value);
+            get
+            {
+                if (_game.Mode.Validate(_mapLocation.VisibilityMode))
+                {
+                    if (_mapLocation.Location.Sections[0] is EntranceSection entranceSection &&
+                        entranceSection.Marking != null)
+                        return true;
+                    else
+                        return false;
+                }
+                else
+                    return false;
+            }
         }
 
-        private bool _borderVisible;
         public bool BorderVisible
         {
-            get => _borderVisible;
-            set => this.RaiseAndSetIfChanged(ref _borderVisible, value);
+            get
+            {
+                if (_game.Mode.Validate(_mapLocation.VisibilityMode))
+                    return !ImageVisible && (_appSettings.DisplayAllLocations ||
+                        (_mapLocation.Location.Accessibility != AccessibilityLevel.Cleared &&
+                        _mapLocation.Location.Accessibility != AccessibilityLevel.None));
+                else
+                    return false;
+            }
         }
 
-        private string _imageSource;
+        public bool Visible => ImageVisible || BorderVisible;
+
         public string ImageSource
         {
-            get => _imageSource;
-            private set => this.RaiseAndSetIfChanged(ref _imageSource, value);
+            get
+            {
+                if (_mapLocation.Location.Sections[0] is EntranceSection entranceSection)
+                {
+                    if (entranceSection.Marking == null)
+                        return "avares://OpenTracker/Assets/Images/Items/visible-empty.png";
+                    else
+                    {
+                        int itemNumber = 0;
+                        switch (entranceSection.Marking)
+                        {
+                            case MarkingType.Bow:
+                            case MarkingType.SilverArrows:
+                            case MarkingType.Boomerang:
+                            case MarkingType.RedBoomerang:
+                            case MarkingType.SmallKey:
+                            case MarkingType.BigKey:
+                                return "avares://OpenTracker/Assets/Images/Items/visible-" +
+                                    entranceSection.Marking.ToString().ToLower() + ".png";
+                            case MarkingType.Hookshot:
+                            case MarkingType.Bomb:
+                            case MarkingType.Mushroom:
+                            case MarkingType.Powder:
+                            case MarkingType.FireRod:
+                            case MarkingType.IceRod:
+                            case MarkingType.Bombos:
+                            case MarkingType.Ether:
+                            case MarkingType.Quake:
+                            case MarkingType.Shovel:
+                            case MarkingType.Lamp:
+                            case MarkingType.Hammer:
+                            case MarkingType.Flute:
+                            case MarkingType.Net:
+                            case MarkingType.Book:
+                            case MarkingType.MoonPearl:
+                            case MarkingType.CaneOfSomaria:
+                            case MarkingType.CaneOfByrna:
+                            case MarkingType.Cape:
+                            case MarkingType.Mirror:
+                            case MarkingType.Boots:
+                            case MarkingType.Flippers:
+                            case MarkingType.HalfMagic:
+                            case MarkingType.Aga:
+                                return "avares://OpenTracker/Assets/Images/Items/" +
+                                    entranceSection.Marking.ToString().ToLower() + "1.png";
+                            case MarkingType.Bottle:
+                            case MarkingType.Gloves:
+                            case MarkingType.Shield:
+                            case MarkingType.Mail:
+                                Item item = _game.Items[Enum.Parse<ItemType>(entranceSection.Marking.ToString())];
+                                itemNumber = Math.Min(item.Current + 1, item.Maximum);
+                                return "avares://OpenTracker/Assets/Images/Items/" +
+                                    entranceSection.Marking.ToString().ToLower() + itemNumber.ToString() + ".png";
+                            case MarkingType.Sword:
+
+                                Item sword = _game.Items[ItemType.Sword];
+
+                                if (sword.Current == 0)
+                                    itemNumber = 0;
+                                else
+                                    itemNumber = Math.Min(sword.Current + 1, sword.Maximum);
+
+                                return "avares://OpenTracker/Assets/Images/Items/" +
+                                    entranceSection.Marking.ToString().ToLower() + itemNumber.ToString() + ".png";
+
+                            case MarkingType.HCFront:
+                            case MarkingType.HCLeft:
+                            case MarkingType.HCRight:
+                            case MarkingType.EP:
+                            case MarkingType.SP:
+                            case MarkingType.SW:
+                            case MarkingType.DPFront:
+                            case MarkingType.DPLeft:
+                            case MarkingType.DPRight:
+                            case MarkingType.DPBack:
+                            case MarkingType.TT:
+                            case MarkingType.IP:
+                            case MarkingType.MM:
+                            case MarkingType.TRFront:
+                            case MarkingType.TRLeft:
+                            case MarkingType.TRRight:
+                            case MarkingType.TRBack:
+                            case MarkingType.GT:
+                                return "avares://OpenTracker/Assets/Images/" +
+                                    entranceSection.Marking.ToString().ToLower() + ".png";
+                            case MarkingType.ToH:
+                                return "avares://OpenTracker/Assets/Images/th.png";
+                            case MarkingType.PoD:
+                                return "avares://OpenTracker/Assets/Images/pd.png";
+                            case MarkingType.Ganon:
+                                return "avares://OpenTracker/Assets/Images/ganon.png";
+                        }
+                    }
+                }
+
+                return null;
+            }
         }
 
-        private bool _textVisible;
         public bool TextVisible
         {
-            get => _textVisible;
-            private set => this.RaiseAndSetIfChanged(ref _textVisible, value);
+            get
+            {
+                if (_game.Mode.EntranceShuffle.Value)
+                    return false;
+
+                if (!_appSettings.ShowItemCountsOnMap)
+                    return false;
+
+                if (_mapLocation.Location.Available == 0)
+                    return false;
+
+                if (_mapLocation.Location.Total <= 1)
+                    return false;
+
+                return true;
+            }
         }
 
-        private string _text;
         public string Text
         {
-            get => _text;
-            private set => this.RaiseAndSetIfChanged(ref _text, value);
+            get
+            {
+                if (_game.Mode.EntranceShuffle.Value)
+                    return null;
+
+                if (!_appSettings.ShowItemCountsOnMap)
+                    return null;
+
+                if (_mapLocation.Location.Available == 0)
+                    return null;
+
+                if (_mapLocation.Location.Total <= 1)
+                    return null;
+
+                if (_mapLocation.Location.Available == _mapLocation.Location.Accessible)
+                    return _mapLocation.Location.Available.ToString();
+                else if (_mapLocation.Location.Accessible == 0)
+                    return _mapLocation.Location.Available.ToString();
+                else
+                    return _mapLocation.Location.Accessible.ToString() + "/" +
+                        _mapLocation.Location.Available.ToString();
+            }
         }
 
         public MapLocationControlVM(UndoRedoManager undoRedoManager, AppSettingsVM appSettings,
@@ -125,12 +280,6 @@ namespace OpenTracker.ViewModels
                     section.PropertyChanged += OnSectionChanged;
                 }
             }
-
-            UpdateSizeAndPosition();
-            UpdateColor();
-            UpdateImage();
-            UpdateVisibility();
-            UpdateText();
         }
 
         private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
@@ -196,229 +345,33 @@ namespace OpenTracker.ViewModels
 
         private void UpdateSizeAndPosition()
         {
-            if (_game.Mode.EntranceShuffle.HasValue &&
-                _game.Mode.EntranceShuffle.Value)
-            {
-                if (_mapLocation.Location.Sections[0] is EntranceSection &&
-                    _mapLocation.Location.Sections[0].Marking != null)
-                    Size = 55.0;
-                else
-                    Size = 40.0;
-
-                BorderSize = new Thickness(5);
-            }
-            else
-            {
-                if (_mapLocation.Location.Total > 1)
-                {
-                    switch (_mapLocation.Location.ID)
-                    {
-                        case LocationID.EasternPalace:
-                        case LocationID.DesertPalace:
-                        case LocationID.TowerOfHera:
-                        case LocationID.PalaceOfDarkness:
-                        case LocationID.SwampPalace:
-                        case LocationID.SkullWoods:
-                        case LocationID.ThievesTown:
-                        case LocationID.IcePalace:
-                        case LocationID.MiseryMire:
-                        case LocationID.TurtleRock:
-                        case LocationID.GanonsTower:
-                            Size = 130.0;
-                            break;
-                        default:
-                            Size = 90.0;
-                            break;
-                    }
-                }
-                else
-                    Size = 70.0;
-
-                BorderSize = new Thickness(9);
+            this.RaisePropertyChanged(nameof(BorderSize));
+            this.RaisePropertyChanged(nameof(Size));
+            this.RaisePropertyChanged(nameof(CanvasX));
+            this.RaisePropertyChanged(nameof(CanvasY));
         }
-
-        CanvasX = _mapLocation.X - (Size / 2);
-            CanvasY = _mapLocation.Y - (Size / 2);
-        }
-
-    private void UpdateColor()
+        
+        private void UpdateColor()
         {
-            Color = _appSettings.AccessibilityColors[_mapLocation.Location.Accessibility];
-        }
-
-        private void UpdateImage()
-        {
-            if (_mapLocation.Location.Sections[0] is EntranceSection entranceSection)
-            {
-                if (entranceSection.Marking == null)
-                    ImageSource = "avares://OpenTracker/Assets/Images/Items/visible-empty.png";
-                else
-                {
-                    int itemNumber = 0;
-                    switch (entranceSection.Marking)
-                    {
-                        case MarkingType.Bow:
-                        case MarkingType.SilverArrows:
-                        case MarkingType.Boomerang:
-                        case MarkingType.RedBoomerang:
-                        case MarkingType.SmallKey:
-                        case MarkingType.BigKey:
-                            ImageSource = "avares://OpenTracker/Assets/Images/Items/visible-" +
-                                entranceSection.Marking.ToString().ToLower() + ".png";
-                            break;
-                        case MarkingType.Hookshot:
-                        case MarkingType.Bomb:
-                        case MarkingType.Mushroom:
-                        case MarkingType.Powder:
-                        case MarkingType.FireRod:
-                        case MarkingType.IceRod:
-                        case MarkingType.Bombos:
-                        case MarkingType.Ether:
-                        case MarkingType.Quake:
-                        case MarkingType.Shovel:
-                        case MarkingType.Lamp:
-                        case MarkingType.Hammer:
-                        case MarkingType.Flute:
-                        case MarkingType.Net:
-                        case MarkingType.Book:
-                        case MarkingType.MoonPearl:
-                        case MarkingType.CaneOfSomaria:
-                        case MarkingType.CaneOfByrna:
-                        case MarkingType.Cape:
-                        case MarkingType.Mirror:
-                        case MarkingType.Boots:
-                        case MarkingType.Flippers:
-                        case MarkingType.HalfMagic:
-                        case MarkingType.Aga:
-                            ImageSource = "avares://OpenTracker/Assets/Images/Items/" +
-                                entranceSection.Marking.ToString().ToLower() + "1.png";
-                            break;
-                        case MarkingType.Bottle:
-                        case MarkingType.Gloves:
-                        case MarkingType.Shield:
-                        case MarkingType.Mail:
-                            Item item = _game.Items[Enum.Parse<ItemType>(entranceSection.Marking.ToString())];
-                            itemNumber = Math.Min(item.Current + 1, item.Maximum);
-                            ImageSource = "avares://OpenTracker/Assets/Images/Items/" +
-                                entranceSection.Marking.ToString().ToLower() + itemNumber.ToString() + ".png";
-                            break;
-                        case MarkingType.Sword:
-
-                            Item sword = _game.Items[ItemType.Sword];
-
-                            if (sword.Current == 0)
-                                itemNumber = 0;
-                            else
-                                itemNumber = Math.Min(sword.Current + 1, sword.Maximum);
-
-                            ImageSource = "avares://OpenTracker/Assets/Images/Items/" +
-                                entranceSection.Marking.ToString().ToLower() + itemNumber.ToString() + ".png";
-
-                            break;
-                        case MarkingType.HCFront:
-                        case MarkingType.HCLeft:
-                        case MarkingType.HCRight:
-                        case MarkingType.EP:
-                        case MarkingType.SP:
-                        case MarkingType.SW:
-                        case MarkingType.DPFront:
-                        case MarkingType.DPLeft:
-                        case MarkingType.DPRight:
-                        case MarkingType.DPBack:
-                        case MarkingType.TT:
-                        case MarkingType.IP:
-                        case MarkingType.MM:
-                        case MarkingType.TRFront:
-                        case MarkingType.TRLeft:
-                        case MarkingType.TRRight:
-                        case MarkingType.TRBack:
-                        case MarkingType.GT:
-                            ImageSource = "avares://OpenTracker/Assets/Images/" +
-                                entranceSection.Marking.ToString().ToLower() + ".png";
-                            break;
-                        case MarkingType.ToH:
-                            ImageSource = "avares://OpenTracker/Assets/Images/th.png";
-                            break;
-                        case MarkingType.PoD:
-                            ImageSource = "avares://OpenTracker/Assets/Images/pd.png";
-                            break;
-                        case MarkingType.Ganon:
-                            ImageSource = "avares://OpenTracker/Assets/Images/ganon.png";
-                            break;
-                    }
-                }
-            }
+            this.RaisePropertyChanged(nameof(Color));
         }
 
         private void UpdateVisibility()
         {
-            if (_game.Mode.Validate(_mapLocation.VisibilityMode))
-            {
-                if (_mapLocation.Location.Sections[0] is EntranceSection entranceSection &&
-                    entranceSection.Marking != null)
-                    ImageVisible = true;
-                else
-                    ImageVisible = false;
+            this.RaisePropertyChanged(nameof(ImageVisible));
+            this.RaisePropertyChanged(nameof(BorderVisible));
+            this.RaisePropertyChanged(nameof(Visible));
+        }
 
-                BorderVisible = !ImageVisible && (_appSettings.DisplayAllLocations ||
-                    (_mapLocation.Location.Accessibility != AccessibilityLevel.Cleared &&
-                    _mapLocation.Location.Accessibility != AccessibilityLevel.None));
-            }
-            else
-            {
-                ImageVisible = false;
-                BorderVisible = false;
-            }
-
-            Visible = ImageVisible || BorderVisible;
+        private void UpdateImage()
+        {
+            this.RaisePropertyChanged(nameof(ImageSource));
         }
 
         private void UpdateText()
         {
-            if (_game.Mode.EntranceShuffle.Value)
-            {
-                Text = "";
-                TextVisible = false;
-                return;
-            }
-
-            if (!_appSettings.ShowItemCountsOnMap)
-            {
-                Text = "";
-                TextVisible = false;
-                return;
-            }
-
-            if (_mapLocation.Location.Available == 0)
-            {
-                Text = "";
-                TextVisible = false;
-                return;
-            }
-
-            if (_mapLocation.Location.Total <= 1)
-            {
-                Text = "";
-                TextVisible = false;
-                return;
-            }
-
-            if (_mapLocation.Location.Available == _mapLocation.Location.Accessible)
-            {
-                Text = _mapLocation.Location.Available.ToString();
-                TextVisible = true;
-            }
-            else if (_mapLocation.Location.Accessible == 0)
-            {
-                Text = _mapLocation.Location.Available.ToString();
-                TextVisible = true;
-            }
-            else
-            {
-                Text = _mapLocation.Location.Accessible.ToString() + "/" +
-                    _mapLocation.Location.Available.ToString();
-                TextVisible = true;
-            }
+            this.RaisePropertyChanged(nameof(TextVisible));
+            this.RaisePropertyChanged(nameof(Text));
         }
 
         private void UnsubscribeFromMarkingItem(ISection section)

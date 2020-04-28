@@ -13,11 +13,19 @@ namespace OpenTracker.ViewModels
         private readonly Game _game;
         private readonly BossSection _prizeSection;
 
-        private string _imageSource;
         public string ImageSource
         {
-            get => _imageSource;
-            set => this.RaiseAndSetIfChanged(ref _imageSource, value);
+            get
+            {
+                string imageBaseString = "avares://OpenTracker/Assets/Images/Items/";
+
+                if (_prizeSection.Prize == null)
+                    imageBaseString += "unknown";
+                else
+                    imageBaseString += _prizeSection.Prize.Type.ToString().ToLower();
+
+                return imageBaseString + (_prizeSection.IsAvailable() ? "0" : "1") + ".png";
+            }
         }
 
         public DungeonPrizeControlVM(UndoRedoManager undoRedoManager,
@@ -28,8 +36,6 @@ namespace OpenTracker.ViewModels
             _prizeSection = prizeSection;
 
             _prizeSection.PropertyChanged += OnSectionChanged;
-
-            UpdateImage();
         }
 
         private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
@@ -43,14 +49,7 @@ namespace OpenTracker.ViewModels
 
         private void UpdateImage()
         {
-            string imageBaseString = "avares://OpenTracker/Assets/Images/Items/";
-
-            if (_prizeSection.Prize == null)
-                imageBaseString += "unknown";
-            else
-                imageBaseString += _prizeSection.Prize.Type.ToString().ToLower();
-
-            ImageSource = imageBaseString + (_prizeSection.IsAvailable() ? "0" : "1") + ".png";
+            this.RaisePropertyChanged(nameof(ImageSource));
         }
 
         public void ChangeItem(bool rightClick = false)

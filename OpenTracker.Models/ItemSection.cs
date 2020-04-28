@@ -2,7 +2,6 @@
 using OpenTracker.Models.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 
 namespace OpenTracker.Models
@@ -22,10 +21,6 @@ namespace OpenTracker.Models
         private readonly Dictionary<RegionID, bool> _regionIsSubscribed;
         private readonly Dictionary<ItemType, Mode> _itemSubscriptions;
         private readonly Dictionary<ItemType, bool> _itemIsSubscribed;
-        private readonly bool _subscribeToRoomMemory;
-        private readonly bool _subscribeToOverworldEventMemory;
-        private readonly bool _subscribeToItemMemory;
-        private readonly bool _subscribeToNPCItemMemory;
 
         public string Name { get; }
         public bool HasMarking { get; }
@@ -163,7 +158,8 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToOverworldEventMemory = true;
+                    _game.AutoTracker.OverworldEventMemory[128].PropertyChanged += OnMemoryChanged;
+
                     _updateOnItemPlacementChange = true;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
@@ -208,7 +204,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[453].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -255,7 +251,8 @@ namespace OpenTracker.Models
                             Available = Total - result.Value;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[570].PropertyChanged += OnMemoryChanged;
+                    _game.AutoTracker.RoomMemory[571].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -292,7 +289,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[570].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -337,7 +334,8 @@ namespace OpenTracker.Models
                             Available = Total - result.Value;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[94].PropertyChanged += OnMemoryChanged;
+                    _game.AutoTracker.RoomMemory[95].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -374,7 +372,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[94].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -404,7 +402,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToItemMemory = true;
+                    _game.AutoTracker.ItemMemory[137].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -439,7 +437,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[528].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -476,7 +474,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[518].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -513,7 +511,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToNPCItemMemory = true;
+                    _game.AutoTracker.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -601,7 +599,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToNPCItemMemory = true;
+                    _game.AutoTracker.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -699,7 +697,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToOverworldEventMemory = true;
+                    _game.AutoTracker.OverworldEventMemory[40].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
                     _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode() { WorldState = WorldState.StandardOpen });
@@ -745,7 +743,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToNPCItemMemory = true;
+                    _game.AutoTracker.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -784,7 +782,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToNPCItemMemory = true;
+                    _game.AutoTracker.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -816,7 +814,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[451].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -851,7 +849,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToItemMemory = true;
+                    _game.AutoTracker.ItemMemory[134].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -888,7 +886,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[170].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -917,7 +915,8 @@ namespace OpenTracker.Models
                             Available = result.Value > 0 ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[1].PropertyChanged += OnMemoryChanged;
+                    _game.AutoTracker.RoomMemory[520].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -938,8 +937,8 @@ namespace OpenTracker.Models
 
                     GetAccessible = () =>
                     {
-                        if ((_game.Items.Has(ItemType.Shovel) &&
-                            (_game.Mode.WorldState != WorldState.Inverted || _game.Items.Has(ItemType.MoonPearl))) &&
+                        if (_game.Items.Has(ItemType.Shovel) &&
+                            (_game.Mode.WorldState != WorldState.Inverted || _game.Items.Has(ItemType.MoonPearl)) &&
                             _game.Regions[RegionID.LightWorld].Accessibility >= AccessibilityLevel.SequenceBreak)
                             return Available;
 
@@ -948,13 +947,13 @@ namespace OpenTracker.Models
 
                     AutoTrack = () =>
                     {
-                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 32);
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 42, 64);
 
                         if (result.HasValue)
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToNPCItemMemory = true;
+                    _game.AutoTracker.OverworldEventMemory[42].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -985,7 +984,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToOverworldEventMemory = true;
+                    _game.AutoTracker.OverworldEventMemory[91].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DarkWorldEast, new Mode());
 
@@ -1090,7 +1089,7 @@ namespace OpenTracker.Models
                             Available = Total - result.Value;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[556].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -1134,7 +1133,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToNPCItemMemory = true;
+                    _game.AutoTracker.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode());
 
@@ -1180,7 +1179,8 @@ namespace OpenTracker.Models
                             Available = Total - result.Value;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[572].PropertyChanged += OnMemoryChanged;
+                    _game.AutoTracker.RoomMemory[573].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode());
 
@@ -1250,7 +1250,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToNPCItemMemory = true;
+                    _game.AutoTracker.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode() { WorldState = WorldState.StandardOpen });
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode() { WorldState = WorldState.Inverted });
@@ -1308,7 +1308,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[567].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode() { WorldState = WorldState.StandardOpen });
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode() { WorldState = WorldState.Inverted });
@@ -1347,7 +1347,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToOverworldEventMemory = true;
+                    _game.AutoTracker.OverworldEventMemory[104].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DarkWorldSouth, new Mode());
 
@@ -1386,7 +1386,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToNPCItemMemory = true;
+                    _game.AutoTracker.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -1439,7 +1439,7 @@ namespace OpenTracker.Models
                             Available = Total - result.Value;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[552].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -1484,7 +1484,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToNPCItemMemory = true;
+                    _game.AutoTracker.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -1531,7 +1531,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToOverworldEventMemory = true;
+                    _game.AutoTracker.OverworldEventMemory[129].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -1571,7 +1571,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToNPCItemMemory = true;
+                    _game.AutoTracker.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DarkWorldEast, new Mode());
 
@@ -1616,7 +1616,7 @@ namespace OpenTracker.Models
                             Available = Total - result.Value;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[522].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -1653,7 +1653,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToNPCItemMemory = true;
+                    _game.AutoTracker.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -1691,7 +1691,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[584].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -1765,7 +1765,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[550].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
                     _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode() { WorldState = WorldState.StandardOpen });
@@ -1823,7 +1823,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[567].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode() { WorldState = WorldState.StandardOpen });
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode() { WorldState = WorldState.Inverted });
@@ -1920,7 +1920,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToOverworldEventMemory = true;
+                    _game.AutoTracker.OverworldEventMemory[48].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
                     _regionSubscriptions.Add(RegionID.MireArea, new Mode() { WorldState = WorldState.StandardOpen });
@@ -1963,7 +1963,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[532].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -2000,7 +2000,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[568].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
 
@@ -2037,7 +2037,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[525].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
 
@@ -2074,7 +2074,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[524].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
 
@@ -2155,7 +2155,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToNPCItemMemory = true;
+                    _game.AutoTracker.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
 
                     _updateOnItemPlacementChange = true;
 
@@ -2234,7 +2234,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToItemMemory = true;
+                    _game.AutoTracker.ItemMemory[137].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
@@ -2311,7 +2311,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[591].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DarkWorldWest, new Mode());
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode() { WorldState = WorldState.Inverted });
@@ -2415,7 +2415,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToOverworldEventMemory = true;
+                    _game.AutoTracker.OverworldEventMemory[74].PropertyChanged += OnMemoryChanged;
 
                     _updateOnItemPlacementChange = true;
 
@@ -2463,7 +2463,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[534].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -2502,7 +2502,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToOverworldEventMemory = true;
+                    _game.AutoTracker.OverworldEventMemory[59].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -2547,7 +2547,8 @@ namespace OpenTracker.Models
                             Available = Total - result.Value;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[582].PropertyChanged += OnMemoryChanged;
+                    _game.AutoTracker.RoomMemory[583].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -2583,7 +2584,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[576].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -2673,7 +2674,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToOverworldEventMemory = true;
+                    _game.AutoTracker.OverworldEventMemory[53].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
                     _regionSubscriptions.Add(RegionID.DarkWorldEast, new Mode() { WorldState = WorldState.StandardOpen });
@@ -2721,7 +2722,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToItemMemory = true;
+                    _game.AutoTracker.ItemMemory[137].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
@@ -2776,7 +2777,7 @@ namespace OpenTracker.Models
                             Available = Total - result.Value;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[538].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.MireArea, new Mode());
 
@@ -2831,7 +2832,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[589].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.MireArea, new Mode() { WorldState = WorldState.StandardOpen });
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode() { WorldState = WorldState.Inverted });
@@ -2872,7 +2873,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToNPCItemMemory = true;
+                    _game.AutoTracker.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DeathMountainWestBottom, new Mode());
 
@@ -2904,7 +2905,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[469].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DeathMountainWestBottom, new Mode());
 
@@ -2963,7 +2964,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToOverworldEventMemory = true;
+                    _game.AutoTracker.OverworldEventMemory[3].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DeathMountainWestBottom, new Mode());
                     _regionSubscriptions.Add(RegionID.DeathMountainWestTop, new Mode() { WorldState = WorldState.Inverted });
@@ -3013,7 +3014,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToNPCItemMemory = true;
+                    _game.AutoTracker.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DeathMountainWestTop, new Mode());
 
@@ -3083,7 +3084,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[558].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DarkDeathMountainWestBottom, new Mode());
 
@@ -3126,7 +3127,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[508].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode());
 
@@ -3169,7 +3170,7 @@ namespace OpenTracker.Models
                             Available = Total - result.Value;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[510].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode());
 
@@ -3215,7 +3216,8 @@ namespace OpenTracker.Models
                             Available = Total - result.Value;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[478].PropertyChanged += OnMemoryChanged;
+                    _game.AutoTracker.RoomMemory[479].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode());
 
@@ -3263,7 +3265,7 @@ namespace OpenTracker.Models
                             Available = Total - result.Value;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[496].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DarkDeathMountainTop, new Mode());
 
@@ -3304,17 +3306,20 @@ namespace OpenTracker.Models
 
                     GetAccessible = () =>
                     {
-                        if (_game.Mode.WorldState != WorldState.Inverted)
+                        if (_game.Regions[RegionID.DarkDeathMountainTop].Accessibility >= AccessibilityLevel.SequenceBreak)
                         {
-                            if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Gloves) &&
-                            _game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.Boots))
-                                return Available;
-                        }
-                        else
-                        {
-                            if (_game.Items.Has(ItemType.Gloves) &&
-                                (_game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.Boots)))
-                                return Available;
+                            if (_game.Mode.WorldState != WorldState.Inverted)
+                            {
+                                if (_game.Items.Has(ItemType.MoonPearl) && _game.Items.Has(ItemType.Gloves) &&
+                                _game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.Boots))
+                                    return Available;
+                            }
+                            else
+                            {
+                                if (_game.Items.Has(ItemType.Gloves) &&
+                                    (_game.Items.Has(ItemType.Hookshot) || _game.Items.Has(ItemType.Boots)))
+                                    return Available;
+                            }
                         }
 
                         return 0;
@@ -3328,7 +3333,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[120].PropertyChanged += OnMemoryChanged;
 
                     _updateOnItemPlacementChange = true;
 
@@ -3394,7 +3399,7 @@ namespace OpenTracker.Models
                             Available = Total - result.Value;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[120].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DarkDeathMountainTop, new Mode());
 
@@ -3467,7 +3472,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToOverworldEventMemory = true;
+                    _game.AutoTracker.OverworldEventMemory[5].PropertyChanged += OnMemoryChanged;
 
                     _regionSubscriptions.Add(RegionID.DarkDeathMountainTop, new Mode() { WorldState = WorldState.StandardOpen });
                     _regionSubscriptions.Add(RegionID.DeathMountainEastTop, new Mode());
@@ -3535,7 +3540,7 @@ namespace OpenTracker.Models
                             Available = result.Value ? 0 : 1;
                     };
 
-                    _subscribeToRoomMemory = true;
+                    _game.AutoTracker.RoomMemory[536].PropertyChanged += OnMemoryChanged;
 
                     _updateOnDungeonItemShuffleChange = true;
 
@@ -6563,8 +6568,6 @@ namespace OpenTracker.Models
             UpdateItemSubscriptions();
 
             UpdateAccessibility();
-
-            SubscribeToAutoTracker();
         }
 
         private void OnPropertyChanging(string propertyName)
@@ -6614,25 +6617,10 @@ namespace OpenTracker.Models
             UpdateAccessibility();
         }
 
-        private void OnMemoryCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void OnMemoryChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (_game.AutoTracker.IsInGame() && !UserManipulated)
+            if (!UserManipulated)
                 AutoTrack();
-        }
-
-        private void SubscribeToAutoTracker()
-        {
-            if (_subscribeToRoomMemory)
-                _game.AutoTracker.NPCItemMemory.CollectionChanged += OnMemoryCollectionChanged;
-
-            if (_subscribeToOverworldEventMemory)
-                _game.AutoTracker.OverworldEventMemory.CollectionChanged += OnMemoryCollectionChanged;
-
-            if (_subscribeToItemMemory)
-                _game.AutoTracker.ItemMemory.CollectionChanged += OnMemoryCollectionChanged;
-
-            if (_subscribeToNPCItemMemory)
-                _game.AutoTracker.NPCItemMemory.CollectionChanged += OnMemoryCollectionChanged;
         }
 
         private void UpdateRegionSubscriptions()
