@@ -1,7 +1,7 @@
 ﻿using Avalonia.Media;
-using OpenTracker.Actions;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
+using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
 using OpenTracker.Models.Interfaces;
 using ReactiveUI;
@@ -12,10 +12,10 @@ using System.Reactive;
 
 namespace OpenTracker.ViewModels
 {
-    public class SectionControlVM : ViewModelBase, ISectionControlVM
+    public class SectionControlVM : ViewModelBase, IClickHandler, IOpenMarkingSelect
     {
         private readonly UndoRedoManager _undoRedoManager;
-        private readonly AppSettingsVM _appSettings;
+        private readonly AppSettings _appSettings;
         private readonly Game _game;
         private readonly ISection _section;
 
@@ -56,7 +56,7 @@ namespace OpenTracker.ViewModels
                 if (_section.Accessibility == AccessibilityLevel.Normal)
                     return new SolidColorBrush(new Color(255, 255, 255, 255));
                 else
-                    return _appSettings.AccessibilityColors[_section.Accessibility];
+                    return SolidColorBrush.Parse(_appSettings.AccessibilityColors[_section.Accessibility]);
             }
         }
 
@@ -266,7 +266,7 @@ namespace OpenTracker.ViewModels
 
         public ReactiveCommand<Unit, Unit> ClearVisibleItemCommand { get; }
 
-        public SectionControlVM(UndoRedoManager undoRedoManager, AppSettingsVM appSettings,
+        public SectionControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
             Game game, ISection section)
         {
             _undoRedoManager = undoRedoManager;
@@ -345,7 +345,7 @@ namespace OpenTracker.ViewModels
                     break;
             }
 
-            _appSettings.PropertyChanged += OnAppSettingsChanged;
+            _appSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
             _game.Mode.PropertyChanged += OnModeChanged;
             _section.PropertyChanging += OnSectionChanging;
             _section.PropertyChanged += OnSectionChanged;
@@ -353,11 +353,9 @@ namespace OpenTracker.ViewModels
             SubscribeToMarkingItem();
         }
 
-        private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
+        private void OnColorChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName != nameof(AppSettingsVM.EmphasisFontColor) &&
-                e.PropertyName != nameof(AppSettingsVM.DisplayAllLocations))
-                UpdateTextColor();
+            UpdateTextColor();
         }
 
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
@@ -473,6 +471,16 @@ namespace OpenTracker.ViewModels
             MarkingPopupOpen = false;
         }
 
+        private void CollectSection()
+        {
+            _undoRedoManager.Execute(new CollectSection(_game, _section));
+        }
+
+        private void UncollectSection()
+        {
+            _undoRedoManager.Execute(new UncollectSection(_section));
+        }
+
         public void ChangeMarking(MarkingType? marking)
         {
             if (marking != null)
@@ -519,36 +527,27 @@ namespace OpenTracker.ViewModels
             MarkingPopupOpen = true;
         }
 
-        public void ChangeAvailable(bool rightClick = false)
+        public void OnLeftClick()
         {
-            if (rightClick)
+            if ((_section is EntranceSection || (_section is BossSection bossSection &&
+                bossSection.Prize != null && bossSection.Prize.Type == ItemType.Aga2) ||
+                _section.Accessibility >= AccessibilityLevel.Partial) && _section.IsAvailable())
+                CollectSection();
+        }
+
+        public void OnRightClick()
+        {
+            switch (_section)
             {
-                switch (_section)
-                {
-                    case BossSection bossSectionUncollect:
-                        if (!bossSectionUncollect.IsAvailable())
-                            _undoRedoManager.Execute(new UncollectSection(_section));
-                        break;
-                    case EntranceSection entranceSectionUncollect:
-                        if (!entranceSectionUncollect.IsAvailable())
-                            _undoRedoManager.Execute(new UncollectSection(_section));
-                        break;
-                    case ItemSection itemSectionUncollect:
-                        if (itemSectionUncollect.Available < itemSectionUncollect.Total)
-                            _undoRedoManager.Execute(new UncollectSection(_section));
-                        break;
-                }
-            }
-            else
-            {
-                if (_section is EntranceSection ||
-                    (_section is BossSection bossSection &&
-                    bossSection.Prize != null && bossSection.Prize.Type == ItemType.Aga2) ||
-                    _section.Accessibility >= AccessibilityLevel.Partial)
-                {
-                    if (_section.IsAvailable())
-                        _undoRedoManager.Execute(new CollectSection(_game, _section));
-                }
+                case BossSection _:
+                case EntranceSection _:
+                    if (!_section.IsAvailable())
+                        UncollectSection();
+                    break;
+                case ItemSection itemSection:
+                    if (_section.Available < itemSection.Total)
+                        UncollectSection();
+                    break;
             }
         }
     }

@@ -1,17 +1,17 @@
 ﻿using Avalonia.Media;
-using OpenTracker.Actions;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
+using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
 using ReactiveUI;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels
 {
-    public class ItemControlVM : ViewModelBase, IItemControlVM
+    public class ItemControlVM : ViewModelBase, IClickHandler
     {
         private readonly UndoRedoManager _undoRedoManager;
-        private readonly AppSettingsVM _appSettings;
+        private readonly AppSettings _appSettings;
         private readonly string _imageSourceBase;
         private readonly Item[] _items;
 
@@ -58,18 +58,20 @@ namespace OpenTracker.ViewModels
                     return Brushes.White;
 
                 if (_items[0].Current == 0)
-                    return _appSettings.EmphasisFontColor;
+                    return SolidColorBrush.Parse(_appSettings.EmphasisFontColor);
                 else
                     return Brushes.White;
             }
         }
 
-        public ItemControlVM(UndoRedoManager undoRedoManager, AppSettingsVM appSettings,
+        public ItemControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
             Item[] items)
         {
             _undoRedoManager = undoRedoManager;
             _appSettings = appSettings;
             _items = items;
+
+            _appSettings.PropertyChanged += OnAppSettingsChanged;
 
             if (_items != null)
             {
@@ -78,6 +80,12 @@ namespace OpenTracker.ViewModels
                 foreach (Item item in _items)
                     item.PropertyChanged += OnItemChanged;
             }
+        }
+
+        private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(AppSettings.EmphasisFontColor))
+                this.RaisePropertyChanged(nameof(TextColor));
         }
 
         private void OnItemChanged(object sender, PropertyChangedEventArgs e)
@@ -91,30 +99,40 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        public void ChangeItem(bool rightClick = false)
+        private void AddItem(int index)
+        {
+            _undoRedoManager.Execute(new AddItem(_items[index]));
+        }
+
+        private void RemoveItem(int index)
+        {
+            _undoRedoManager.Execute(new RemoveItem(_items[index]));
+        }
+
+        private void CycleItem(int index)
+        {
+            _undoRedoManager.Execute(new CycleItem(_items[index]));
+        }
+
+        public void OnLeftClick()
         {
             if (_items != null)
             {
-                if (_items.Length == 2)
-                {
-                    if (rightClick)
-                        _undoRedoManager.Execute(new CycleItem(_items[1]));
-                    else
-                        _undoRedoManager.Execute(new CycleItem(_items[0]));
-                }
-                else
-                {
-                    if (rightClick)
-                    {
-                        if (_items[0].Current > 0)
-                            _undoRedoManager.Execute(new RemoveItem(_items[0]));
-                    }
-                    else
-                    {
-                        if (_items[0].Current < _items[0].Maximum)
-                            _undoRedoManager.Execute(new AddItem(_items[0]));
-                    }
-                }
+                if (_items.Length > 1)
+                    CycleItem(0);
+                else if (_items[0].Current < _items[0].Maximum)
+                    AddItem(0);
+            }
+        }
+
+        public void OnRightClick()
+        {
+            if (_items != null)
+            {
+                if (_items.Length > 1)
+                    CycleItem(1);
+                else if (_items[0].Current > 0)
+                    RemoveItem(0);
             }
         }
     }

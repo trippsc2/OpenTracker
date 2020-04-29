@@ -7,7 +7,8 @@ namespace OpenTracker.Views
 {
     public class SectionControl : UserControl
     {
-        private ISectionControlVM _viewModel => DataContext as ISectionControlVM;
+        public IClickHandler ViewModelClickHandler => DataContext as IClickHandler;
+        public IOpenMarkingSelect ViewModelOpenMarkingSelect => DataContext as IOpenMarkingSelect;
 
         public SectionControl()
         {
@@ -21,26 +22,17 @@ namespace OpenTracker.Views
 
         private void OnClickVisibleItem(object sender, PointerReleasedEventArgs e)
         {
-            switch (e.InitialPressMouseButton)
-            {
-                case MouseButton.Left:
-                    _viewModel.OpenMarkingSelect();
-                    break;
-            }
+            if (e.InitialPressMouseButton == MouseButton.Left)
+                ViewModelOpenMarkingSelect.OpenMarkingSelect();
         }
 
         private void OnClickSection(object sender, PointerReleasedEventArgs e)
         {
-            switch (e.InitialPressMouseButton)
-            {
-                case MouseButton.Left:
-                    _viewModel.ChangeAvailable();
-                    break;
-                case MouseButton.Right:
-                    _viewModel.ChangeAvailable(true);
-                    break;
-            
-            }
+            if (e.InitialPressMouseButton == MouseButton.Left)
+                ViewModelClickHandler.OnLeftClick();
+
+            if (e.InitialPressMouseButton == MouseButton.Right)
+                ViewModelClickHandler.OnRightClick();
         }
     }
 }

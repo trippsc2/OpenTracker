@@ -8,7 +8,8 @@ namespace OpenTracker.Views
 {
     public class MapLocationControl : UserControl
     {
-        private IMapLocationControlVM _viewModel => DataContext as IMapLocationControlVM;
+        private IClearAvailableSections ViewModelClearAvailableSections => DataContext as IClearAvailableSections;
+        public IPinLocation ViewModelPinLocation => DataContext as IPinLocation;
         
         public MapLocationControl()
         {
@@ -23,12 +24,12 @@ namespace OpenTracker.Views
         private void OnClick(object sender, PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Right)
-                _viewModel.ClearAvailableSections();
+                ViewModelClearAvailableSections.ClearAvailableSections();
         }
 
         private void OnDoubleClick(object sender, RoutedEventArgs e)
         {
-            _viewModel.PinLocation();
+            ViewModelPinLocation.PinLocation();
         }
     }
 }

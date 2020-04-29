@@ -7,7 +7,7 @@ namespace OpenTracker.Views
 {
     public class DungeonPrizeControl : UserControl
     {
-        private IItemControlVM _viewModel => DataContext as IItemControlVM;
+        private IClickHandler ViewModelClickHandler => DataContext as IClickHandler;
 
         public DungeonPrizeControl()
         {
@@ -21,15 +21,11 @@ namespace OpenTracker.Views
 
         private void OnClick(object sender, PointerReleasedEventArgs e)
         {
-            switch (e.InitialPressMouseButton)
-            {
-                case MouseButton.Left:
-                    _viewModel.ChangeItem();
-                    break;
-                case MouseButton.Right:
-                    _viewModel.ChangeItem(true);
-                    break;
-            }
+            if (e.InitialPressMouseButton == MouseButton.Left)
+                ViewModelClickHandler.OnLeftClick();
+
+            if (e.InitialPressMouseButton == MouseButton.Right)
+                ViewModelClickHandler.OnRightClick();
         }
     }
 }

@@ -7,7 +7,8 @@ namespace OpenTracker.Views
 {
     public class MarkingSelectControl : UserControl
     {
-        private IMarkingSelectControlVM _viewModel => DataContext as IMarkingSelectControlVM;
+        public ISelectItem ViewModelSelectItem => DataContext as ISelectItem;
+
         public MarkingSelectControl()
         {
             this.InitializeComponent();
@@ -21,7 +22,7 @@ namespace OpenTracker.Views
         private void OnClick(object sender, PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Left)
-                _viewModel.SelectItem();
+                ViewModelSelectItem.SelectItem();
         }
     }
 }

@@ -7,7 +7,7 @@ namespace OpenTracker.Views
 {
     public class LocationControl : UserControl
     {
-        private ILocationControlVM _viewModel => DataContext as ILocationControlVM;
+        public IClose ViewModelClose => DataContext as IClose;
 
         public LocationControl()
         {
@@ -22,7 +22,7 @@ namespace OpenTracker.Views
         private void OnClick(object sender, PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Left)
-                _viewModel.Close();
+                ViewModelClose.Close();
         }
     }
 }

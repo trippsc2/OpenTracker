@@ -1,8 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.Media;
-using OpenTracker.Actions;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
+using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
 using OpenTracker.Models.Interfaces;
 using ReactiveUI;
@@ -12,10 +12,10 @@ using System.ComponentModel;
 
 namespace OpenTracker.ViewModels
 {
-    public class MapLocationControlVM : ViewModelBase, IMapLocationControlVM
+    public class MapLocationControlVM : ViewModelBase, IClearAvailableSections, IPinLocation
     {
         private readonly UndoRedoManager _undoRedoManager;
-        private readonly AppSettingsVM _appSettings;
+        private readonly AppSettings _appSettings;
         private readonly Game _game;
         private readonly MainWindowVM _mainWindow;
         private readonly MapLocation _mapLocation;
@@ -77,8 +77,12 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        public IBrush Color => 
-            _appSettings.AccessibilityColors[_mapLocation.Location.Accessibility];
+        private IBrush _color;
+        public IBrush Color
+        {
+            get => _color;
+            set => this.RaiseAndSetIfChanged(ref _color, value);
+        }
 
         public bool ImageVisible
         {
@@ -122,7 +126,7 @@ namespace OpenTracker.ViewModels
                         return "avares://OpenTracker/Assets/Images/Items/visible-empty.png";
                     else
                     {
-                        int itemNumber = 0;
+                        int itemNumber;
                         switch (entranceSection.Marking)
                         {
                             case MarkingType.Bow:
@@ -259,7 +263,7 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        public MapLocationControlVM(UndoRedoManager undoRedoManager, AppSettingsVM appSettings,
+        public MapLocationControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
             Game game, MainWindowVM mainWindow, MapLocation mapLocation)
         {
             _undoRedoManager = undoRedoManager;
@@ -269,6 +273,7 @@ namespace OpenTracker.ViewModels
             _mapLocation = mapLocation;
 
             appSettings.PropertyChanged += OnAppSettingsChanged;
+            appSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
             game.Mode.PropertyChanged += OnModeChanged;
             mapLocation.Location.PropertyChanged += OnLocationChanged;
 
@@ -280,16 +285,21 @@ namespace OpenTracker.ViewModels
                     section.PropertyChanged += OnSectionChanged;
                 }
             }
+
+            UpdateColor();
         }
 
         private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(AppSettingsVM.DisplayAllLocations))
+            if (e.PropertyName == nameof(AppSettings.DisplayAllLocations))
                 UpdateVisibility();
 
-            if (e.PropertyName == nameof(AppSettingsVM.ShowItemCountsOnMap))
+            if (e.PropertyName == nameof(AppSettings.ShowItemCountsOnMap))
                 UpdateText();
+        }
 
+        private void OnColorChanged(object sender, PropertyChangedEventArgs e)
+        {
             UpdateColor();
         }
 
@@ -353,7 +363,7 @@ namespace OpenTracker.ViewModels
         
         private void UpdateColor()
         {
-            this.RaisePropertyChanged(nameof(Color));
+            Color = SolidColorBrush.Parse(_appSettings.AccessibilityColors[_mapLocation.Location.Accessibility]);
         }
 
         private void UpdateVisibility()

@@ -7,7 +7,7 @@ namespace OpenTracker.Views
 {
     public class BossControl : UserControl
     {
-        private IItemControlVM _viewModel => DataContext as IItemControlVM;
+        public IClickHandler ViewModelClickHandler => DataContext as IClickHandler;
 
         public BossControl()
         {
@@ -21,8 +21,11 @@ namespace OpenTracker.Views
 
         private void OnClick(object sender, PointerReleasedEventArgs e)
         {
+            if (e.InitialPressMouseButton == MouseButton.Left)
+                ViewModelClickHandler.OnLeftClick();
+
             if (e.InitialPressMouseButton == MouseButton.Right)
-                _viewModel.ChangeItem();
+                ViewModelClickHandler.OnRightClick();
         }
     }
 }

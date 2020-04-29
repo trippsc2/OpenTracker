@@ -1,9 +1,7 @@
 ﻿using Newtonsoft.Json;
 using OpenTracker.Interfaces;
-using OpenTracker.JsonConverters;
 using OpenTracker.Models;
 using OpenTracker.Models.Enums;
-using OpenTracker.Utils;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -15,15 +13,16 @@ using System.Threading.Tasks;
 
 namespace OpenTracker.ViewModels
 {
-    public class MainWindowVM : ViewModelBase, IMainWindowVM
+    public class MainWindowVM : ViewModelBase, IAutoTrackerAccess, IColorSelectAccess,
+        IOpen, ISave, ISaveAppSettings, IAppSettings
     {
         private readonly IDialogService _dialogService;
         private readonly UndoRedoManager _undoRedoManager;
+        private readonly AppSettings _appSettings;
         private readonly Game _game;
 
-        public AppSettingsVM AppSettings { get; }
         public ModeSettingsControlVM ModeSettings { get; }
-        public AutoTrackerDialogVM AutoTracker { get; }
+
         public ObservableCollection<MapControlVM> Maps { get; }
         public ObservableCollection<ItemControlVM> Items { get; }
         public ObservableCollection<LocationControlVM> Locations { get; }
@@ -59,42 +58,64 @@ namespace OpenTracker.ViewModels
             private set => this.RaiseAndSetIfChanged(ref _canRedo, value);
         }
 
+        public bool DisplayAllLocations =>
+            _appSettings.DisplayAllLocations;
+        public bool ShowItemCountsOnMap =>
+            _appSettings.ShowItemCountsOnMap;
+
+        public LayoutOrientation LayoutOrientation =>
+            _appSettings.LayoutOrientation;
+        public MapOrientation MapOrientation =>
+            _appSettings.MapOrientation;
+        public VerticalAlignment HorizontalUIPanelPlacement =>
+            _appSettings.HorizontalUIPanelPlacement;
+        public HorizontalAlignment VerticalUIPanelPlacement =>
+            _appSettings.VerticalUIPanelPlacement;
+        public HorizontalAlignment HorizontalItemsPlacement =>
+            _appSettings.HorizontalItemsPlacement;
+        public VerticalAlignment VerticalItemsPlacement =>
+            _appSettings.VerticalItemsPlacement;
+
         public bool DynamicLayoutOrientation => 
-            AppSettings.LayoutOrientation == LayoutOrientation.Dynamic;
+            _appSettings.LayoutOrientation == LayoutOrientation.Dynamic;
         public bool HorizontalLayoutOrientation =>
-            AppSettings.LayoutOrientation == LayoutOrientation.Horizontal;
+            _appSettings.LayoutOrientation == LayoutOrientation.Horizontal;
         public bool VerticalLayoutOrientation =>
-            AppSettings.LayoutOrientation == LayoutOrientation.Vertical;
+            _appSettings.LayoutOrientation == LayoutOrientation.Vertical;
 
         public bool DynamicMapOrientation =>
-            AppSettings.MapOrientation == MapOrientation.Dynamic;
+            _appSettings.MapOrientation == MapOrientation.Dynamic;
         public bool HorizontalMapOrientation =>
-            AppSettings.MapOrientation == MapOrientation.Horizontal;
+            _appSettings.MapOrientation == MapOrientation.Horizontal;
         public bool VerticalMapOrientation => 
-            AppSettings.MapOrientation == MapOrientation.Vertical;
+            _appSettings.MapOrientation == MapOrientation.Vertical;
 
         public bool TopHorizontalUIPanelPlacement =>
-            AppSettings.HorizontalUIPanelPlacement == VerticalAlignment.Top;
+            _appSettings.HorizontalUIPanelPlacement == VerticalAlignment.Top;
         public bool BottomHorizontalUIPanelPlacement =>
-            AppSettings.HorizontalUIPanelPlacement == VerticalAlignment.Bottom;
+            _appSettings.HorizontalUIPanelPlacement == VerticalAlignment.Bottom;
 
         public bool LeftVerticalUIPanelPlacement => 
-            AppSettings.VerticalUIPanelPlacement == HorizontalAlignment.Left;
+            _appSettings.VerticalUIPanelPlacement == HorizontalAlignment.Left;
         public bool RightVerticalUIPanelPlacement =>
-            AppSettings.VerticalUIPanelPlacement == HorizontalAlignment.Right;
+            _appSettings.VerticalUIPanelPlacement == HorizontalAlignment.Right;
 
         public bool LeftHorizontalItemsPlacement =>
-            AppSettings.HorizontalItemsPlacement == HorizontalAlignment.Left;
+            _appSettings.HorizontalItemsPlacement == HorizontalAlignment.Left;
         public bool RightHorizontalItemsPlacement =>
-            AppSettings.HorizontalItemsPlacement == HorizontalAlignment.Right;
+            _appSettings.HorizontalItemsPlacement == HorizontalAlignment.Right;
 
         public bool TopVerticalItemsPlacement =>
-            AppSettings.VerticalItemsPlacement == VerticalAlignment.Top;
+            _appSettings.VerticalItemsPlacement == VerticalAlignment.Top;
         public bool BottomVerticalItemsPlacement =>
-            AppSettings.VerticalItemsPlacement == VerticalAlignment.Bottom;
+            _appSettings.VerticalItemsPlacement == VerticalAlignment.Bottom;
 
-        public IAppSettingsVM AppSettingsInterface => AppSettings as IAppSettingsVM;
-        public IAutoTrackerDialogVM AutoTrackerInterface => AutoTracker as IAutoTrackerDialogVM;
+        public bool SmallKeyShuffle =>
+            _game.Mode.DungeonItemShuffle.Value >= DungeonItemShuffle.MapsCompassesSmallKeys;
+        public bool BigKeyShuffle =>
+            _game.Mode.DungeonItemShuffle.Value == DungeonItemShuffle.Keysanity;
+
+        public bool BossShuffle => _game.Mode.BossShuffle.Value;
 
         public MainWindowVM(IDialogService dialogService) : this()
         {
@@ -130,55 +151,56 @@ namespace OpenTracker.ViewModels
             {
                 string jsonContent = File.ReadAllText(appSettingsPath);
 
-                AppSettings = JsonConvert.DeserializeObject<AppSettingsVM>(jsonContent, new SolidColorBrushConverter());
+                _appSettings = JsonConvert.DeserializeObject<AppSettings>(jsonContent);
             }
             else
-                AppSettings = new AppSettingsVM();
+                _appSettings = new AppSettings();
 
-            AppSettings.PropertyChanged += OnAppSettingsChanged;
+            _appSettings.PropertyChanged += OnAppSettingsChanged;
 
             _game = new Game();
 
+            _game.Mode.PropertyChanged += OnModeChanged;
+
             ModeSettings = new ModeSettingsControlVM(_game.Mode, _undoRedoManager);
-            AutoTracker = new AutoTrackerDialogVM(_game.AutoTracker);
 
             Maps = new ObservableCollection<MapControlVM>();
             Locations = new ObservableCollection<LocationControlVM>();
             HCItems = new ObservableCollection<DungeonItemControlVM>()
             {
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.HCSmallKey])
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.HCSmallKey])
             };
             ATItems = new ObservableCollection<DungeonItemControlVM>()
             {
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.ATSmallKey])
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.ATSmallKey])
             };
             SmallKeyItems = new ObservableCollection<DungeonItemControlVM>()
             {
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, null),
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.DPSmallKey]),
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.ToHSmallKey]),
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.PoDSmallKey]),
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.SPSmallKey]),
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.SWSmallKey]),
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.TTSmallKey]),
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.IPSmallKey]),
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.MMSmallKey]),
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.TRSmallKey]),
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.GTSmallKey])
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, null),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.DPSmallKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.ToHSmallKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.PoDSmallKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.SPSmallKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.SWSmallKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.TTSmallKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.IPSmallKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.MMSmallKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.TRSmallKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.GTSmallKey])
             };
             BigKeyItems = new ObservableCollection<DungeonItemControlVM>()
             {
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.EPBigKey]),
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.DPBigKey]),
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.ToHBigKey]),
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.PoDBigKey]),
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.SPBigKey]),
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.SWBigKey]),
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.TTBigKey]),
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.IPBigKey]),
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.MMBigKey]),
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.TRBigKey]),
-                new DungeonItemControlVM(_undoRedoManager, AppSettings, _game.Items[ItemType.GTBigKey])
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.EPBigKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.DPBigKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.ToHBigKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.PoDBigKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.SPBigKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.SWBigKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.TTBigKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.IPBigKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.MMBigKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.TRBigKey]),
+                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.GTBigKey])
             };
             Prizes = new ObservableCollection<DungeonPrizeControlVM>()
             {
@@ -208,7 +230,7 @@ namespace OpenTracker.ViewModels
             };
 
             for (int i = 0; i < Enum.GetValues(typeof(MapID)).Length; i++)
-                Maps.Add(new MapControlVM(_undoRedoManager, AppSettings, _game, this, (MapID)i));
+                Maps.Add(new MapControlVM(_undoRedoManager, _appSettings, _game, this, (MapID)i));
 
             Items = new ObservableCollection<ItemControlVM>();
 
@@ -240,7 +262,7 @@ namespace OpenTracker.ViewModels
                     case ItemType.Mirror:
                     case ItemType.HalfMagic:
                     case ItemType.MoonPearl:
-                        Items.Add(new ItemControlVM(_undoRedoManager, AppSettings, new Item[1] { _game.Items[(ItemType)i] }));
+                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, new Item[1] { _game.Items[(ItemType)i] }));
                         break;
                     case ItemType.Bow:
                     case ItemType.Boomerang:
@@ -249,31 +271,24 @@ namespace OpenTracker.ViewModels
                     case ItemType.Bombos:
                     case ItemType.Ether:
                     case ItemType.Flute:
-                        Items.Add(new ItemControlVM(_undoRedoManager, AppSettings, new Item[2] {
+                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, new Item[2] {
                             _game.Items[(ItemType)i], _game.Items[(ItemType)(i + 1)]
                         }));
                         break;
                     case ItemType.Quake:
-                        Items.Add(new ItemControlVM(_undoRedoManager, AppSettings, new Item[2] {
+                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, new Item[2] {
                             _game.Items[(ItemType)i], _game.Items[(ItemType)(i + 1)]
                         }));
-                        Items.Add(new ItemControlVM(_undoRedoManager, AppSettings, null));
+                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, null));
                         break;
                     case ItemType.Mail:
-                        Items.Add(new ItemControlVM(_undoRedoManager, AppSettings, new Item[1] { _game.Items[(ItemType)i] }));
-                        Items.Add(new ItemControlVM(_undoRedoManager, AppSettings, null));
+                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, new Item[1] { _game.Items[(ItemType)i] }));
+                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, null));
                         break;
                     default:
                         break;
                 }
             }
-
-            UpdateLayoutOrientation();
-            UpdateMapOrientation();
-            UpdateHorizontalUIPanelPlacement();
-            UpdateVerticalUIPanelPlacement();
-            UpdateHorizontalItemsPlacement();
-            UpdateVerticalItemsPlacement();
         }
 
         private void OnUndoChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -288,23 +303,41 @@ namespace OpenTracker.ViewModels
 
         private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(AppSettingsVM.LayoutOrientation))
+            if (e.PropertyName == nameof(AppSettings.DisplayAllLocations))
+                this.RaisePropertyChanged(nameof(DisplayAllLocations));
+
+            if (e.PropertyName == nameof(AppSettings.ShowItemCountsOnMap))
+                this.RaisePropertyChanged(nameof(ShowItemCountsOnMap));
+
+            if (e.PropertyName == nameof(AppSettings.LayoutOrientation))
                 UpdateLayoutOrientation();
 
-            if (e.PropertyName == nameof(AppSettingsVM.MapOrientation))
+            if (e.PropertyName == nameof(AppSettings.MapOrientation))
                 UpdateMapOrientation();
 
-            if (e.PropertyName == nameof(AppSettingsVM.HorizontalUIPanelPlacement))
+            if (e.PropertyName == nameof(AppSettings.HorizontalUIPanelPlacement))
                 UpdateHorizontalUIPanelPlacement();
 
-            if (e.PropertyName == nameof(AppSettingsVM.VerticalUIPanelPlacement))
+            if (e.PropertyName == nameof(AppSettings.VerticalUIPanelPlacement))
                 UpdateVerticalUIPanelPlacement();
 
-            if (e.PropertyName == nameof(AppSettingsVM.HorizontalItemsPlacement))
+            if (e.PropertyName == nameof(AppSettings.HorizontalItemsPlacement))
                 UpdateHorizontalItemsPlacement();
 
-            if (e.PropertyName == nameof(AppSettingsVM.VerticalItemsPlacement))
+            if (e.PropertyName == nameof(AppSettings.VerticalItemsPlacement))
                 UpdateVerticalItemsPlacement();
+        }
+
+        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Mode.DungeonItemShuffle))
+            {
+                this.RaisePropertyChanged(nameof(SmallKeyShuffle));
+                this.RaisePropertyChanged(nameof(BigKeyShuffle));
+            }
+
+            if (e.PropertyName == nameof(Mode.BossShuffle))
+                this.RaisePropertyChanged(nameof(BossShuffle));
         }
 
         private void UpdateCanUndo()
@@ -329,6 +362,7 @@ namespace OpenTracker.ViewModels
 
         private void UpdateLayoutOrientation()
         {
+            this.RaisePropertyChanged(nameof(LayoutOrientation));
             this.RaisePropertyChanged(nameof(DynamicLayoutOrientation));
             this.RaisePropertyChanged(nameof(HorizontalLayoutOrientation));
             this.RaisePropertyChanged(nameof(VerticalLayoutOrientation));
@@ -336,6 +370,7 @@ namespace OpenTracker.ViewModels
 
         private void UpdateMapOrientation()
         {
+            this.RaisePropertyChanged(nameof(MapOrientation));
             this.RaisePropertyChanged(nameof(DynamicMapOrientation));
             this.RaisePropertyChanged(nameof(HorizontalMapOrientation));
             this.RaisePropertyChanged(nameof(VerticalMapOrientation));
@@ -343,24 +378,28 @@ namespace OpenTracker.ViewModels
 
         private void UpdateHorizontalUIPanelPlacement()
         {
+            this.RaisePropertyChanged(nameof(HorizontalUIPanelPlacement));
             this.RaisePropertyChanged(nameof(TopHorizontalUIPanelPlacement));
             this.RaisePropertyChanged(nameof(BottomHorizontalUIPanelPlacement));
         }
 
         private void UpdateVerticalUIPanelPlacement()
         {
+            this.RaisePropertyChanged(nameof(VerticalUIPanelPlacement));
             this.RaisePropertyChanged(nameof(LeftVerticalUIPanelPlacement));
             this.RaisePropertyChanged(nameof(RightVerticalUIPanelPlacement));
         }
 
         private void UpdateHorizontalItemsPlacement()
         {
+            this.RaisePropertyChanged(nameof(HorizontalItemsPlacement));
             this.RaisePropertyChanged(nameof(LeftHorizontalItemsPlacement));
             this.RaisePropertyChanged(nameof(RightHorizontalItemsPlacement));
         }
 
         private void UpdateVerticalItemsPlacement()
         {
+            this.RaisePropertyChanged(nameof(VerticalItemsPlacement));
             this.RaisePropertyChanged(nameof(TopVerticalItemsPlacement));
             this.RaisePropertyChanged(nameof(BottomVerticalItemsPlacement));
         }
@@ -436,48 +475,48 @@ namespace OpenTracker.ViewModels
 
         private void ToggleDisplayAllLocations()
         {
-            AppSettings.DisplayAllLocations = !AppSettings.DisplayAllLocations;
+            _appSettings.DisplayAllLocations = !_appSettings.DisplayAllLocations;
         }
 
         private void ToggleShowItemCountsOnMap()
         {
-            AppSettings.ShowItemCountsOnMap = !AppSettings.ShowItemCountsOnMap;
+            _appSettings.ShowItemCountsOnMap = !_appSettings.ShowItemCountsOnMap;
         }
 
         private void SetLayoutOrientation(string orientationString)
         {
             if (Enum.TryParse(orientationString, out LayoutOrientation orientation))
-                AppSettings.LayoutOrientation = orientation;
+                _appSettings.LayoutOrientation = orientation;
         }
 
         private void SetMapOrientation(string orientationString)
         {
             if (Enum.TryParse(orientationString, out MapOrientation orientation))
-                AppSettings.MapOrientation = orientation;
+                _appSettings.MapOrientation = orientation;
         }
 
         private void SetHorizontalUIPanelPlacement(string orientationString)
         {
             if (Enum.TryParse(orientationString, out VerticalAlignment orientation))
-                AppSettings.HorizontalUIPanelPlacement = orientation;
+                _appSettings.HorizontalUIPanelPlacement = orientation;
         }
 
         private void SetVerticalUIPanelPlacement(string orientationString)
         {
             if (Enum.TryParse(orientationString, out HorizontalAlignment orientation))
-                AppSettings.VerticalUIPanelPlacement = orientation;
+                _appSettings.VerticalUIPanelPlacement = orientation;
         }
 
         private void SetHorizontalItemsPlacement(string orientationString)
         {
             if (Enum.TryParse(orientationString, out HorizontalAlignment orientation))
-                AppSettings.HorizontalItemsPlacement = orientation;
+                _appSettings.HorizontalItemsPlacement = orientation;
         }
 
         private void SetVerticalItemsPlacement(string orientationString)
         {
             if (Enum.TryParse(orientationString, out VerticalAlignment orientation))
-                AppSettings.VerticalItemsPlacement = orientation;
+                _appSettings.VerticalItemsPlacement = orientation;
         }
 
         private void Reset()
@@ -509,9 +548,19 @@ namespace OpenTracker.ViewModels
             if (File.Exists(appSettingsPath))
                 File.Delete(appSettingsPath);
 
-            string json = JsonConvert.SerializeObject(AppSettings, Formatting.Indented, new SolidColorBrushConverter());
+            string json = JsonConvert.SerializeObject(_appSettings, Formatting.Indented);
 
             File.WriteAllText(appSettingsPath, json);
+        }
+
+        public object GetAutoTrackerViewModel()
+        {
+            return new AutoTrackerDialogVM(_game.AutoTracker);
+        }
+
+        public object GetColorSelectViewModel()
+        {
+            return new ColorSelectDialogVM(_appSettings);
         }
     }
 }

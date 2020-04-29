@@ -1,5 +1,5 @@
-﻿using OpenTracker.Actions;
-using OpenTracker.Models;
+﻿using OpenTracker.Models;
+using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
 using ReactiveUI;
 using System;
@@ -40,11 +40,6 @@ namespace OpenTracker.ViewModels
         public bool EntranceShuffle => _mode.EntranceShuffle.Value;
         public bool BossShuffle => _mode.BossShuffle.Value;
         public bool EnemyShuffle => _mode.EnemyShuffle.Value;
-
-        public bool SmallKeyShuffle =>
-            _mode.DungeonItemShuffle >= DungeonItemShuffle.MapsCompassesSmallKeys;
-        public bool BigKeyShuffle =>
-            _mode.DungeonItemShuffle == DungeonItemShuffle.Keysanity;
 
         private bool _modeSettingsPopupOpen;
         public bool ModeSettingsPopupOpen
@@ -101,8 +96,6 @@ namespace OpenTracker.ViewModels
             this.RaisePropertyChanged(nameof(MapsCompassesDungeonItemShuffle));
             this.RaisePropertyChanged(nameof(MapsCompassesSmallKeysDungeonItemShuffle));
             this.RaisePropertyChanged(nameof(KeysanityDungeonItemShuffle));
-            this.RaisePropertyChanged(nameof(SmallKeyShuffle));
-            this.RaisePropertyChanged(nameof(BigKeyShuffle));
         }
 
         private void UpdateWorldState()

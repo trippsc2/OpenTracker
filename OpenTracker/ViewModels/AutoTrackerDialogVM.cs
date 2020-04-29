@@ -1,5 +1,4 @@
 ﻿using Avalonia.Media;
-using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.AutotrackerConnectors;
 using ReactiveUI;
@@ -8,7 +7,7 @@ using System.Reactive;
 
 namespace OpenTracker.ViewModels
 {
-    public class AutoTrackerDialogVM : ViewModelBase, IAutoTrackerDialogVM
+    public class AutoTrackerDialogVM : ViewModelBase
     {
         private readonly AutoTracker _autoTracker;
 

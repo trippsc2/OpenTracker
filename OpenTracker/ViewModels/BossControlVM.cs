@@ -1,13 +1,14 @@
-﻿using OpenTracker.Actions;
-using OpenTracker.Interfaces;
+﻿using OpenTracker.Interfaces;
 using OpenTracker.Models;
+using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
+using OpenTracker.Models.Interfaces;
 using ReactiveUI;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels
 {
-    public class BossControlVM : ViewModelBase, IItemControlVM
+    public class BossControlVM : ViewModelBase, IClickHandler
     {
         private readonly UndoRedoManager _undoRedoManager;
         private readonly Game _game;
@@ -44,20 +45,48 @@ namespace OpenTracker.ViewModels
                 this.RaisePropertyChanged(nameof(ImageSource));
         }
 
-        public void ChangeItem(bool rightClick = false)
+        private void ChangeBoss(bool backward = false)
         {
-            if (_bossSection.Boss == null)
+            if (backward)
             {
-                _undoRedoManager.Execute(new ChangeBoss(_bossSection,
-                    _game.Bosses[BossType.Armos]));
+                if (_bossSection.Boss == null)
+                {
+                    _undoRedoManager.Execute(new ChangeBoss(_bossSection,
+                        _game.Bosses[BossType.Trinexx]));
+                }
+                else if (_bossSection.Boss.Type == BossType.Armos)
+                    _undoRedoManager.Execute(new ChangeBoss(_bossSection, null));
+                else
+                {
+                    Boss newBoss = _game.Bosses[_bossSection.Boss.Type - 1];
+                    _undoRedoManager.Execute(new ChangeBoss(_bossSection, newBoss));
+                }
             }
-            else if (_bossSection.Boss.Type == BossType.Trinexx)
-                _undoRedoManager.Execute(new ChangeBoss(_bossSection, null));
             else
             {
-                Boss newBoss = _game.Bosses[_bossSection.Boss.Type + 1];
-                _undoRedoManager.Execute(new ChangeBoss(_bossSection, newBoss));
+                if (_bossSection.Boss == null)
+                {
+                    _undoRedoManager.Execute(new ChangeBoss(_bossSection,
+                        _game.Bosses[BossType.Armos]));
+                }
+                else if (_bossSection.Boss.Type == BossType.Trinexx)
+                    _undoRedoManager.Execute(new ChangeBoss(_bossSection, null));
+                else
+                {
+                    Boss newBoss = _game.Bosses[_bossSection.Boss.Type + 1];
+                    _undoRedoManager.Execute(new ChangeBoss(_bossSection, newBoss));
+                }
             }
+        }
+
+        public void OnLeftClick()
+        {
+            ChangeBoss();
+        }
+
+        public void OnRightClick()
+        {
+            ChangeBoss(true);
         }
     }
 }

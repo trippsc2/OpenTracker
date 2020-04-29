@@ -4,7 +4,7 @@ using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using OpenTracker.Interfaces;
-using OpenTracker.Utils;
+using OpenTracker.Models.Enums;
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -13,9 +13,15 @@ namespace OpenTracker.Views
 {
     public class MainWindow : Window
     {
-        private IMainWindowVM _viewModel => DataContext as IMainWindowVM;
         private AutoTrackerDialog _autoTrackerDialog;
         private ColorSelectDialog _colorSelectDialog;
+
+        public IAutoTrackerAccess ViewModelAutoTrackerAccess => DataContext as IAutoTrackerAccess;
+        public IColorSelectAccess ViewModelColorSelectAccess => DataContext as IColorSelectAccess;
+        public IOpen ViewModelOpen => DataContext as IOpen;
+        public ISave ViewModelSave => DataContext as ISave;
+        public ISaveAppSettings ViewModelSaveAppSettings => DataContext as ISaveAppSettings;
+        private IAppSettings ViewModel => DataContext as IAppSettings;
 
         public static AvaloniaProperty<Dock> UIPanelDockProperty =
             AvaloniaProperty.Register<MainWindow, Dock>(nameof(UIPanelDock));
@@ -114,32 +120,32 @@ namespace OpenTracker.Views
 
         private void OnDataContextChanged(object sender, EventArgs e)
         {
-            if (_viewModel != null)
-                _viewModel.AppSettingsInterface.PropertyChanged += OnAppSettingsChanged;
+            if (ViewModel != null)
+                ViewModel.PropertyChanged += OnViewModelChanged;
 
             UpdateLayoutOrientation();
         }
 
-        private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
+        private void OnViewModelChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IAppSettingsVM.LayoutOrientation) ||
-                e.PropertyName == nameof(IAppSettingsVM.MapOrientation) ||
-                e.PropertyName == nameof(IAppSettingsVM.HorizontalUIPanelPlacement) ||
-                e.PropertyName == nameof(IAppSettingsVM.VerticalUIPanelPlacement) ||
-                e.PropertyName == nameof(IAppSettingsVM.HorizontalItemsPlacement) ||
-                e.PropertyName == nameof(IAppSettingsVM.VerticalItemsPlacement))
+            if (e.PropertyName == nameof(IAppSettings.LayoutOrientation) ||
+                e.PropertyName == nameof(IAppSettings.MapOrientation) ||
+                e.PropertyName == nameof(IAppSettings.HorizontalUIPanelPlacement) ||
+                e.PropertyName == nameof(IAppSettings.VerticalUIPanelPlacement) ||
+                e.PropertyName == nameof(IAppSettings.HorizontalItemsPlacement) ||
+                e.PropertyName == nameof(IAppSettings.VerticalItemsPlacement))
                 UpdateLayoutOrientation();
         }
 
         private void OnBoundsChanged(MainWindow window, AvaloniaPropertyChangedEventArgs e)
         {
-            if (_viewModel.AppSettingsInterface.LayoutOrientation == LayoutOrientation.Dynamic)
+            if (ViewModel.LayoutOrientation == LayoutOrientation.Dynamic)
                 ChangeLayout((Rect)e.NewValue);
         }
 
         private void UpdateLayoutOrientation()
         {
-            switch (_viewModel.AppSettingsInterface.LayoutOrientation)
+            switch (ViewModel.LayoutOrientation)
             {
                 case LayoutOrientation.Dynamic:
                     ChangeLayout(Bounds);
@@ -164,7 +170,7 @@ namespace OpenTracker.Views
 
         private void HorizontalLayout()
         {
-            if (_viewModel.AppSettingsInterface.HorizontalUIPanelPlacement == Utils.VerticalAlignment.Top)
+            if (ViewModel.HorizontalUIPanelPlacement == Models.Enums.VerticalAlignment.Top)
                 UIPanelDock = Dock.Top;
             else
                 UIPanelDock = Dock.Bottom;
@@ -172,7 +178,7 @@ namespace OpenTracker.Views
             UIPanelHorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
             UIPanelVerticalAlignment = Avalonia.Layout.VerticalAlignment.Bottom;
 
-            if (_viewModel.AppSettingsInterface.MapOrientation == MapOrientation.Vertical)
+            if (ViewModel.MapOrientation == MapOrientation.Vertical)
             {
                 MapPanelOrientation = Orientation.Vertical;
                 MapMargin = new Thickness(20, 10);
@@ -183,14 +189,14 @@ namespace OpenTracker.Views
                 MapMargin = new Thickness(10, 20);
             }
 
-            if (_viewModel.AppSettingsInterface.HorizontalItemsPlacement == Utils.HorizontalAlignment.Left)
+            if (ViewModel.HorizontalItemsPlacement == Models.Enums.HorizontalAlignment.Left)
             {
                 UIPanelOrientationDock = Dock.Left;
                 ItemsPanelMargin = new Thickness(2, 0, 1, 2);
                 LocationsPanelMargin = new Thickness(1, 0, 2, 2);
             }
 
-            if (_viewModel.AppSettingsInterface.HorizontalItemsPlacement == Utils.HorizontalAlignment.Right)
+            if (ViewModel.HorizontalItemsPlacement == Models.Enums.HorizontalAlignment.Right)
             {
                 UIPanelOrientationDock = Dock.Right;
                 ItemsPanelMargin = new Thickness(1, 0, 2, 2);
@@ -200,7 +206,7 @@ namespace OpenTracker.Views
 
         private void VerticalLayout()
         {
-            if (_viewModel.AppSettingsInterface.VerticalUIPanelPlacement == Utils.HorizontalAlignment.Left)
+            if (ViewModel.VerticalUIPanelPlacement == Models.Enums.HorizontalAlignment.Left)
                 UIPanelDock = Dock.Left;
             else
                 UIPanelDock = Dock.Right;
@@ -208,7 +214,7 @@ namespace OpenTracker.Views
             UIPanelHorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right;
             UIPanelVerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
 
-            if (_viewModel.AppSettingsInterface.MapOrientation == MapOrientation.Horizontal)
+            if (ViewModel.MapOrientation == MapOrientation.Horizontal)
             {
                 MapPanelOrientation = Orientation.Horizontal;
                 MapMargin = new Thickness(10, 20);
@@ -219,14 +225,14 @@ namespace OpenTracker.Views
                 MapMargin = new Thickness(20, 10);
             }
 
-            if (_viewModel.AppSettingsInterface.VerticalItemsPlacement == Utils.VerticalAlignment.Top)
+            if (ViewModel.VerticalItemsPlacement == Models.Enums.VerticalAlignment.Top)
             {
                 UIPanelOrientationDock = Dock.Top;
                 ItemsPanelMargin = new Thickness(2, 2, 0, 1);
                 LocationsPanelMargin = new Thickness(2, 1, 0, 2);
             }
 
-            if (_viewModel.AppSettingsInterface.VerticalItemsPlacement == Utils.VerticalAlignment.Bottom)
+            if (ViewModel.VerticalItemsPlacement == Models.Enums.VerticalAlignment.Bottom)
             {
                 UIPanelOrientationDock = Dock.Bottom;
                 ItemsPanelMargin = new Thickness(2, 1, 0, 2);
@@ -237,7 +243,7 @@ namespace OpenTracker.Views
         public async Task Save()
         {
             if (CurrentFilePath != null)
-                _viewModel.Save(CurrentFilePath);
+                ViewModelSave.Save(CurrentFilePath);
             else
                 await SaveAs();
         }
@@ -251,7 +257,7 @@ namespace OpenTracker.Views
 
             CurrentFilePath = path;
 
-            _viewModel.Save(CurrentFilePath);
+            ViewModelSave.Save(CurrentFilePath);
         }
 
         public async Task Open()
@@ -267,7 +273,7 @@ namespace OpenTracker.Views
 
             CurrentFilePath = path[0];
 
-            _viewModel.Open(CurrentFilePath);
+            ViewModelOpen.Open(CurrentFilePath);
         }
 
         private void OpenModeSettingsPopup(object sender, PointerReleasedEventArgs e)
@@ -278,7 +284,7 @@ namespace OpenTracker.Views
 
         private void OnClose(object sender, CancelEventArgs e)
         {
-            _viewModel.SaveAppSettings();
+            ViewModelSaveAppSettings.SaveAppSettings();
 
             if (_autoTrackerDialog != null && _autoTrackerDialog.IsVisible)
                 _autoTrackerDialog?.Close();
@@ -293,7 +299,10 @@ namespace OpenTracker.Views
                 _autoTrackerDialog.Activate();
             else
             {
-                _autoTrackerDialog = new AutoTrackerDialog() { DataContext = _viewModel.AutoTrackerInterface };
+                _autoTrackerDialog = new AutoTrackerDialog()
+                {
+                    DataContext = ViewModelAutoTrackerAccess.GetAutoTrackerViewModel()
+                };
                 _autoTrackerDialog.Show();
             }
         }
@@ -304,7 +313,7 @@ namespace OpenTracker.Views
                 _colorSelectDialog.Activate();
             else
             {
-                _colorSelectDialog = new ColorSelectDialog() { DataContext = _viewModel.AppSettingsInterface };
+                _colorSelectDialog = new ColorSelectDialog() { DataContext = ViewModelColorSelectAccess.GetColorSelectViewModel() };
                 _colorSelectDialog.Show();
             }
         }

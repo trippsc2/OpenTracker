@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace OpenTracker.ViewModels
 {
-    public class MarkingSelectControlVM : ViewModelBase, IMarkingSelectControlVM
+    public class MarkingSelectControlVM : ViewModelBase, ISelectItem
     {
         private readonly Game _game;
         private readonly SectionControlVM _section;

@@ -16,8 +16,8 @@ namespace OpenTracker.Models
         private readonly Dictionary<ItemType, Mode> _itemSubscriptions;
         private readonly Dictionary<ItemType, bool> _itemIsSubscribed;
 
+        public bool HasMarking => true;
         public string Name { get; }
-        public bool HasMarking { get => true; }
         public Mode RequiredMode { get; }
         public bool UserManipulated { get; set; }
 

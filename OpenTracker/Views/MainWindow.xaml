@@ -109,7 +109,7 @@
 					<MenuItem Classes="Menu InnerMenu" Command="{Binding Path=ToggleDisplayAllLocationsCommand}">
 
 						<MenuItem.Icon>
-							<CheckBox Classes="Menu" IsChecked="{Binding Path=AppSettings.DisplayAllLocations}" />
+							<CheckBox Classes="Menu" IsChecked="{Binding Path=DisplayAllLocations}" />
 						</MenuItem.Icon>
 
 						<MenuItem.Header>
@@ -125,7 +125,7 @@
 							  Header="Show Item Counts on Map">
 
 						<MenuItem.Icon>
-							<CheckBox Classes="Menu" IsChecked="{Binding Path=AppSettings.ShowItemCountsOnMap}" />
+							<CheckBox Classes="Menu" IsChecked="{Binding Path=ShowItemCountsOnMap}" />
 						</MenuItem.Icon>
 
 					</MenuItem>
@@ -303,12 +303,9 @@
 
 							<!-- Mode Settings Button and Popup -->
 							<Panel Grid.Column="2">
-
 								<Image Source="avares://OpenTracker/Assets/Images/settings.png" PointerReleased="OpenModeSettingsPopup"
 									   ToolTip.Tip="Mode Settings" />
-
 								<view:ModeSettingsControl DataContext="{Binding Path=ModeSettings}" />
-
 							</Panel>
 
 						</Grid>
@@ -338,8 +335,8 @@
 							<Grid Margin="6,0,4,0" ColumnDefinitions="Auto,Auto,Auto,Auto,Auto"
 								  RowDefinitions="24,Auto" VerticalAlignment="Top" HorizontalAlignment="Left">
 
-								<StackPanel Orientation="Horizontal" IsHitTestVisible="{Binding Path=ModeSettings.SmallKeyShuffle}"
-											IsVisible="{Binding Path=ModeSettings.SmallKeyShuffle}" Grid.Column="0" Grid.ColumnSpan="5"
+								<StackPanel Orientation="Horizontal" IsHitTestVisible="{Binding Path=SmallKeyShuffle}"
+											IsVisible="{Binding Path=SmallKeyShuffle}" Grid.Column="0" Grid.ColumnSpan="5"
 											VerticalAlignment="Top">
 
 									<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/hc.png" />
@@ -393,14 +390,14 @@
 									<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/mm.png" />
 									<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/tr.png" />
 									<Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/gt.png"
-										   IsHitTestVisible="{Binding Path=ModeSettings.SmallKeyShuffle}"
-										   IsVisible="{Binding Path=ModeSettings.SmallKeyShuffle}" />
+										   IsHitTestVisible="{Binding Path=SmallKeyShuffle}"
+										   IsVisible="{Binding Path=SmallKeyShuffle}" />
 								</StackPanel>
 
 								<ItemsControl Grid.Column="1" Grid.Row="1" Items="{Binding Path=SmallKeyItems}"
 											  HorizontalAlignment="Left" VerticalAlignment="Top"
-											  IsHitTestVisible="{Binding Path=ModeSettings.SmallKeyShuffle}"
-											  IsVisible="{Binding Path=ModeSettings.SmallKeyShuffle}">
+											  IsHitTestVisible="{Binding Path=SmallKeyShuffle}"
+											  IsVisible="{Binding Path=SmallKeyShuffle}">
 
 									<ItemsControl.ItemsPanel>
 										<ItemsPanelTemplate>
@@ -418,8 +415,8 @@
 
 								<ItemsControl Grid.Column="2" Grid.Row="1" Items="{Binding Path=BigKeyItems}"
 											  HorizontalAlignment="Left" VerticalAlignment="Top"
-											  IsHitTestVisible="{Binding Path=ModeSettings.BigKeyShuffle}"
-											  IsVisible="{Binding Path=ModeSettings.BigKeyShuffle}">
+											  IsHitTestVisible="{Binding Path=BigKeyShuffle}"
+											  IsVisible="{Binding Path=BigKeyShuffle}">
 
 									<ItemsControl.ItemsPanel>
 										<ItemsPanelTemplate>
@@ -458,7 +455,7 @@
 									<ItemsControl.ItemsPanel>
 										<ItemsPanelTemplate>
 											<StackPanel Width="16" Orientation="Vertical" IsHitTestVisible="{Binding
-													Path=ModeSettings.BossShuffle}" IsVisible="{Binding Path=ModeSettings.BossShuffle}" />
+													Path=BossShuffle}" IsVisible="{Binding Path=BossShuffle}" />
 										</ItemsPanelTemplate>
 									</ItemsControl.ItemsPanel>
 

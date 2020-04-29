@@ -1,17 +1,17 @@
 ﻿using Avalonia.Media;
-using OpenTracker.Actions;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
+using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
 using ReactiveUI;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels
 {
-    public class DungeonItemControlVM : ViewModelBase, IItemControlVM
+    public class DungeonItemControlVM : ViewModelBase, IClickHandler
     {
         private readonly UndoRedoManager _undoRedoManager;
-        private readonly AppSettingsVM _appSettings;
+        private readonly AppSettings _appSettings;
         private readonly string _imageSourceBase;
         private readonly Item _item;
         private readonly bool _smallKey;
@@ -48,18 +48,20 @@ namespace OpenTracker.ViewModels
                     return Brushes.White;
 
                 if (_item.Current == _item.Maximum)
-                    return _appSettings.EmphasisFontColor;
+                    return SolidColorBrush.Parse(_appSettings.EmphasisFontColor);
                 else
                     return Brushes.White;
             }
         }
 
-        public DungeonItemControlVM(UndoRedoManager undoRedoManager, AppSettingsVM appSettings,
+        public DungeonItemControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
             Item item)
         {
             _undoRedoManager = undoRedoManager;
             _appSettings = appSettings;
             _item = item;
+
+            _appSettings.PropertyChanged += OnAppSettingsChanged;
 
             if (_item != null)
             {
@@ -99,6 +101,12 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(AppSettings.EmphasisFontColor))
+                this.RaisePropertyChanged(nameof(TextColor));
+        }
+
         private void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
             this.RaisePropertyChanged(nameof(ImageSource));
@@ -116,21 +124,26 @@ namespace OpenTracker.ViewModels
             this.RaisePropertyChanged(nameof(ImageNumber));
         }
 
-        public void ChangeItem(bool rightClick = false)
+        private void AddItem()
         {
-            if (_item != null)
-            {
-                if (rightClick)
-                {
-                    if (_item.Current > 0)
-                        _undoRedoManager.Execute(new RemoveItem(_item));
-                }
-                else
-                {
-                    if (_item.Current < _item.Maximum)
-                        _undoRedoManager.Execute(new AddItem(_item));
-                }
-            }
+            _undoRedoManager.Execute(new AddItem(_item));
+        }
+
+        private void RemoveItem()
+        {
+            _undoRedoManager.Execute(new RemoveItem(_item));
+        }
+
+        public void OnLeftClick()
+        {
+            if (_item != null && _item.Current < _item.Maximum)
+                AddItem();
+        }
+
+        public void OnRightClick()
+        {
+            if (_item != null && _item.Current > 0)
+                RemoveItem();
         }
     }
 }

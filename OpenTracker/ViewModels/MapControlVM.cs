@@ -30,7 +30,7 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        public MapControlVM(UndoRedoManager undoRedoManager, AppSettingsVM appSettings,
+        public MapControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
             Game game, MainWindowVM mainWindow, MapID iD)
         {
             _game = game;
