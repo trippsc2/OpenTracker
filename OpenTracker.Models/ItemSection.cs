@@ -1408,7 +1408,7 @@ namespace OpenTracker.Models
                             if (_game.Items.Has(ItemType.Flippers))
                                 return lightWorld;
 
-                            if (_game.Items.Has(ItemType.MoonPearl))
+                            if (_game.Items.Has(ItemType.MoonPearl) || _game.Items.Has(ItemType.Boots))
                                 return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak, (byte)lightWorld);
                         }
 
@@ -1418,7 +1418,8 @@ namespace OpenTracker.Models
                     GetAccessible = () =>
                     {
                         if ((_game.Items.Has(ItemType.MoonPearl) ||
-                            (_game.Items.Has(ItemType.Flippers) && _game.Mode.WorldState != WorldState.Inverted)) &&
+                            ((_game.Items.Has(ItemType.Flippers) || _game.Items.Has(ItemType.Boots)) &&
+                            _game.Mode.WorldState != WorldState.Inverted)) &&
                             _game.Regions[RegionID.LightWorld].Accessibility >= AccessibilityLevel.SequenceBreak)
                             return Available;
 
@@ -3839,17 +3840,18 @@ namespace OpenTracker.Models
                                     (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
                                     return dP;
 
-                                if (_game.Items.Has(ItemType.DPSmallKey) &&
-                                    (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
-                                    (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
-                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak, (byte)dP);
+                                if (_game.Items.Has(ItemType.DPSmallKey))
+                                {
+                                    if ((_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
+                                        (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak, (byte)dP);
 
-                                if (Available > 1 && _game.Items.Has(ItemType.DPSmallKey))
-                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial, (byte)dP);
+                                    if (Available > 1)
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial, (byte)dP);
+                                }
 
-                                if (Available > 2 && 
-                                    (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
-                                    (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
+                                if (Available > 1 &&
+                                    (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value))
                                     return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial, (byte)dP);
 
                                 if (Available > 3)
@@ -3864,21 +3866,28 @@ namespace OpenTracker.Models
                                     (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
                                     return dP;
 
-                                if (_game.Items.Has(ItemType.DPBigKey) && _game.Items.Has(ItemType.DPSmallKey) &&
-                                    (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
-                                    (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
-                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak, (byte)dP);
+                                if (_game.Items.Has(ItemType.DPSmallKey))
+                                {
+                                    if (_game.Items.Has(ItemType.DPBigKey) &&
+                                        (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
+                                        (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak, (byte)dP);
 
-                                if (Available > 1 && _game.Items.Has(ItemType.DPBigKey) && _game.Items.Has(ItemType.DPSmallKey))
-                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial, (byte)dP);
+                                    if (Available > 1 && _game.Items.Has(ItemType.DPBigKey))
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial, (byte)dP);
 
-                                if (Available < 2 && _game.Items.Has(ItemType.DPBigKey) &&
-                                    (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
-                                    (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
-                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial, (byte)dP);
+                                    if (Available > 2)
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial, (byte)dP);
+                                }
 
-                                if (Available > 2 && _game.Items.Has(ItemType.DPSmallKey))
-                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial, (byte)dP);
+                                if (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value)
+                                {
+                                    if (Available > 1 && _game.Items.Has(ItemType.DPBigKey))
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial, (byte)dP);
+
+                                    if (Available > 2)
+                                        return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial, (byte)dP);
+                                }
 
                                 if (Available > 3 && _game.Items.Has(ItemType.DPBigKey))
                                     return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.Partial, (byte)dP);
@@ -3910,37 +3919,42 @@ namespace OpenTracker.Models
 
                                 case DungeonItemShuffle.MapsCompassesSmallKeys:
 
-                                    if (_game.Items.Has(ItemType.DPSmallKey) &&
-                                        (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
-                                        (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
-                                        return Available;
-
                                     if (_game.Items.Has(ItemType.DPSmallKey))
+                                    {
+                                        if ((_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
+                                            (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
+                                            return Available;
+
+                                        return Math.Max(0, Available - 1);
+                                    }
+
+                                    if (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value)
                                         return Math.Max(0, Available - 1);
 
-                                    if ((_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
-                                        (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
-                                        return Math.Max(0, Available - 2);
-                                    
                                     return Math.Max(0, Available - 3);
 
                                 case DungeonItemShuffle.Keysanity:
 
-                                    if (_game.Items.Has(ItemType.DPBigKey) && _game.Items.Has(ItemType.DPSmallKey) &&
-                                        (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
-                                        (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
-                                        return Available;
-
-                                    if (_game.Items.Has(ItemType.DPBigKey) && _game.Items.Has(ItemType.DPSmallKey))
-                                        return Math.Max(0, Available - 1);
-
-                                    if (_game.Items.Has(ItemType.DPBigKey) &&
-                                        (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
-                                        (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
-                                        return Math.Max(0, Available - 2);
-
                                     if (_game.Items.Has(ItemType.DPSmallKey))
+                                    {
+                                        if (_game.Items.Has(ItemType.DPBigKey) &&
+                                            (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value) &&
+                                            (_game.Items.Has(ItemType.Lamp) || _game.Items.Has(ItemType.FireRod)))
+                                            return Available;
+
+                                        if (_game.Items.Has(ItemType.DPBigKey))
+                                            return Math.Max(0, Available - 1);
+
                                         return Math.Max(0, Available - 2);
+                                    }
+
+                                    if (_game.Items.Has(ItemType.Gloves) || _game.Mode.EntranceShuffle.Value)
+                                    {
+                                        if (_game.Items.Has(ItemType.DPBigKey))
+                                            return Math.Max(0, Available - 1);
+                                        
+                                        return Math.Max(0, Available - 2);
+                                    }
 
                                     if (_game.Items.Has(ItemType.DPBigKey))
                                         return Math.Max(0, Available - 3);
