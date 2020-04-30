@@ -1,7 +1,8 @@
-﻿using Avalonia.Media;
+﻿using Avalonia.Threading;
 using OpenTracker.Models;
 using OpenTracker.Models.AutotrackerConnectors;
 using ReactiveUI;
+using System;
 using System.ComponentModel;
 using System.Reactive;
 
@@ -10,6 +11,7 @@ namespace OpenTracker.ViewModels
     public class AutoTrackerDialogVM : ViewModelBase
     {
         private readonly AutoTracker _autoTracker;
+        private DispatcherTimer _timer;
 
         public ReactiveCommand<Unit, Unit> StartCommand { get; }
         public ReactiveCommand<Unit, Unit> StopCommand { get; }
@@ -29,8 +31,8 @@ namespace OpenTracker.ViewModels
             private set => this.RaiseAndSetIfChanged(ref _canStop, value);
         }
 
-        private IBrush _statusTextColor;
-        public IBrush StatusTextColor
+        private string _statusTextColor;
+        public string StatusTextColor
         {
             get => _statusTextColor;
             private set => this.RaiseAndSetIfChanged(ref _statusTextColor, value);
@@ -60,6 +62,9 @@ namespace OpenTracker.ViewModels
         public AutoTrackerDialogVM(AutoTracker autoTracker)
         {
             _autoTracker = autoTracker;
+            _timer = new DispatcherTimer();
+            _timer.Interval = TimeSpan.FromSeconds(2);
+            _timer.Tick += OnTick;
 
             DebugText = "";
             StartCommand = ReactiveCommand.Create(Start, this.WhenAnyValue(x => x.CanStart));
@@ -72,6 +77,14 @@ namespace OpenTracker.ViewModels
             UpdateCanStart();
             UpdateCanStop();
             UpdateStatusText();
+        }
+
+        private void OnTick(object sender, EventArgs e)
+        {
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                _autoTracker.MemoryCheck();
+            });
         }
 
         private void OnAutoTrackerChanging(object sender, PropertyChangingEventArgs e)
@@ -129,17 +142,17 @@ namespace OpenTracker.ViewModels
         {
             if (_autoTracker.Connector == null)
             {
-                StatusTextColor = SolidColorBrush.Parse("#f5f5f5");
+                StatusTextColor = "#f5f5f5";
                 StatusText = "NOT STARTED";
             }
             else if (_autoTracker.Connector.Connected)
             {
-                StatusTextColor = SolidColorBrush.Parse("#00ff00");
+                StatusTextColor = "#00ff00";
                 StatusText = "CONNECTED";
             }
             else
             {
-                StatusTextColor = SolidColorBrush.Parse("#ff3030");
+                StatusTextColor = "#ff3030";
                 StatusText = "ERROR";
             }
         }
@@ -152,10 +165,13 @@ namespace OpenTracker.ViewModels
             DebugText = "";
 
             _autoTracker.Start(PushToDebugLog);
+
+            _timer.Start();
         }
 
         private void Stop()
         {
+            _timer.Stop();
             _autoTracker.Stop();
         }
 

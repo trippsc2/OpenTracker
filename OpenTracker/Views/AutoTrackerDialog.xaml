@@ -3,7 +3,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="512"
-        WindowStartupLocation="CenterOwner"
         x:Class="OpenTracker.Views.AutoTrackerDialog"
         Icon="avares://OpenTracker/Assets/triforce.png"
         Title="OpenTracker - AutoTracker" Width="420" Height="512">
@@ -18,8 +17,8 @@
 
 				<StackPanel Margin="10" HorizontalAlignment="Center" Orientation="Horizontal">
 					<TextBlock Classes="AutoTrackerStatus" Foreground="#FFFFFF">AutoTracking Status is:</TextBlock>
-					<TextBlock Classes="AutoTrackerStatus" Margin="10,0,0,0" Foreground="{Binding Path=StatusTextColor}"
-							   Text="{Binding Path=StatusText}" />
+					<TextBlock Classes="AutoTrackerStatus" Margin="10,0,0,0" Foreground="{Binding Path=StatusTextColor,
+                     Mode=OneWay}" Text="{Binding Path=StatusText}" />
 				</StackPanel>
 
 				<ToggleButton Classes="AutoTracker" IsChecked="{Binding Path=VisibleDebugLog,

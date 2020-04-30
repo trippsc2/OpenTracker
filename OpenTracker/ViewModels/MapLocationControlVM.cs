@@ -1,5 +1,4 @@
 ﻿using Avalonia;
-using Avalonia.Media;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.Actions;
@@ -77,12 +76,8 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        private IBrush _color;
-        public IBrush Color
-        {
-            get => _color;
-            set => this.RaiseAndSetIfChanged(ref _color, value);
-        }
+        public string Color =>
+            _appSettings.AccessibilityColors[_mapLocation.Location.Accessibility];
 
         public bool ImageVisible
         {
@@ -285,8 +280,6 @@ namespace OpenTracker.ViewModels
                     section.PropertyChanged += OnSectionChanged;
                 }
             }
-
-            UpdateColor();
         }
 
         private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
@@ -363,7 +356,7 @@ namespace OpenTracker.ViewModels
         
         private void UpdateColor()
         {
-            Color = SolidColorBrush.Parse(_appSettings.AccessibilityColors[_mapLocation.Location.Accessibility]);
+            this.RaisePropertyChanged(nameof(Color));
         }
 
         private void UpdateVisibility()

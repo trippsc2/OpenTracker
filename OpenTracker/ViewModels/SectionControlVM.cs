@@ -49,14 +49,14 @@ namespace OpenTracker.ViewModels
 
         public bool SectionVisible => _game.Mode.Validate(_section.RequiredMode);
 
-        public IBrush FontColor
+        public string FontColor
         {
             get
             {
                 if (_section.Accessibility == AccessibilityLevel.Normal)
-                    return new SolidColorBrush(new Color(255, 255, 255, 255));
+                    return "#ffffffff";
                 else
-                    return SolidColorBrush.Parse(_appSettings.AccessibilityColors[_section.Accessibility]);
+                    return _appSettings.AccessibilityColors[_section.Accessibility];
             }
         }
 

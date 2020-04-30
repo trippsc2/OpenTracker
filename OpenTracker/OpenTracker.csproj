@@ -24,6 +24,7 @@
     <AvaloniaResource Remove="Views\BossControl.xaml" />
     <AvaloniaResource Remove="Views\ColorPickerControl.xaml" />
     <AvaloniaResource Remove="Views\ColorSelectDialog.xaml" />
+    <AvaloniaResource Remove="Views\DeveloperConsoleDialog.xaml" />
     <AvaloniaResource Remove="Views\DungeonItemControl.xaml" />
     <AvaloniaResource Remove="Views\DungeonPrizeControl.xaml" />
     <AvaloniaResource Remove="Views\LocationControl.xaml" />
@@ -36,6 +37,7 @@
     <None Remove="Views\BossControl.xaml" />
     <None Remove="Views\ColorPickerControl.xaml" />
     <None Remove="Views\ColorSelectDialog.xaml" />
+    <None Remove="Views\DeveloperConsoleDialog.xaml" />
     <None Remove="Views\DungeonItemControl.xaml" />
     <None Remove="Views\DungeonPrizeControl.xaml" />
     <None Remove="Views\LocationControl.xaml" />
@@ -154,6 +156,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\ModeSettingsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\DeveloperConsoleDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>

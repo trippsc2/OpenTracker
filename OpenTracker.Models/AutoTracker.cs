@@ -1,18 +1,13 @@
 ﻿using OpenTracker.Models.AutotrackerConnectors;
 using OpenTracker.Models.Enums;
 using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace OpenTracker.Models
 {
     public class AutoTracker : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        private CancellationTokenSource _tokenSource;
-        private CancellationToken? _token;
-
         public event PropertyChangingEventHandler PropertyChanging;
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -87,67 +82,19 @@ namespace OpenTracker.Models
 
         public void Start(Action<string> messageHandler)
         {
-            _tokenSource = new CancellationTokenSource();
-            _token = _tokenSource.Token;
             Connector = new USB2SNESConnector(messageHandler);
 
             int i = 0;
 
-            while (!Connector.Connected && i <= 5)
+            while (!Connector.Connected && i <= 3)
             {
                 Thread.Sleep(1000);
                 i++;
-            }
-
-            if (Connector.Connected)
-            {
-                MemoryCheck(() =>
-                {
-                    _connector.ReadByte(0x7e0010, out byte inGameStatus);
-                    InGameStatus = inGameStatus;
-                }, TimeSpan.FromMilliseconds(250), _token.Value);
-                MemoryCheck(() =>
-                {
-                    if (IsInGame())
-                    {
-                        byte[] buffer = new byte[592];
-                        _connector.Read(0x7ef000, buffer);
-
-                        for (int i = 0; i < buffer.Length; i++)
-                            RoomMemory[i].Value = buffer[i];
-
-                        buffer = new byte[130];
-                        _connector.Read(0x7ef280, buffer);
-
-                        for (int i = 0; i < buffer.Length; i++)
-                            OverworldEventMemory[i].Value = buffer[i];
-
-                        buffer = new byte[144];
-                        _connector.Read(0x7ef340, buffer);
-
-                        for (int i = 0; i < buffer.Length; i++)
-                            ItemMemory[i].Value = buffer[i];
-
-                        buffer = new byte[2];
-                        _connector.Read(0x7ef410, buffer);
-
-                        for (int i = 0; i < buffer.Length; i++)
-                            NPCItemMemory[i].Value = buffer[i];
-                    }
-                }, TimeSpan.FromMilliseconds(2000), _token.Value);
             }
         }
 
         public void Stop()
         {
-            if (_tokenSource != null)
-            {
-                _tokenSource.Cancel();
-                _tokenSource.Dispose();
-                _tokenSource = null;
-                _token = null;
-            }
-
             if (Connector != null)
             {
                 Connector.Dispose();
@@ -180,20 +127,43 @@ namespace OpenTracker.Models
             return false;
         }
 
-        private static void MemoryCheck(Action action, TimeSpan interval, CancellationToken token)
+        public void MemoryCheck()
         {
-            if (action != null)
+            if (Connector.Connected)
             {
-                Task.Run(async () =>
+                try
                 {
-                    while (!token.IsCancellationRequested)
-                    {
-                        try { action(); }
-                        catch { }
+                    _connector.ReadByte(0x7e0010, out byte inGameStatus);
+                    InGameStatus = inGameStatus;
 
-                        await Task.Delay(interval, token);
+                    if (IsInGame())
+                    {
+                        byte[] buffer = new byte[592];
+                        _connector.Read(0x7ef000, buffer);
+
+                        for (int i = 0; i < buffer.Length; i++)
+                            RoomMemory[i].Value = buffer[i];
+
+                        buffer = new byte[130];
+                        _connector.Read(0x7ef280, buffer);
+
+                        for (int i = 0; i < buffer.Length; i++)
+                            OverworldEventMemory[i].Value = buffer[i];
+
+                        buffer = new byte[144];
+                        _connector.Read(0x7ef340, buffer);
+
+                        for (int i = 0; i < buffer.Length; i++)
+                            ItemMemory[i].Value = buffer[i];
+
+                        buffer = new byte[2];
+                        _connector.Read(0x7ef410, buffer);
+
+                        for (int i = 0; i < buffer.Length; i++)
+                            NPCItemMemory[i].Value = buffer[i];
                     }
-                }, token);
+                }
+                catch { }
             }
         }
 

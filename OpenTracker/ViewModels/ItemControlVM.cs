@@ -50,17 +50,17 @@ namespace OpenTracker.ViewModels
             }
         }
         
-        public IBrush TextColor
+        public string TextColor
         {
             get
             {
                 if (_items == null || _items[0] == null)
-                    return Brushes.White;
+                    return "#ffffffff";
 
                 if (_items[0].Current == 0)
-                    return SolidColorBrush.Parse(_appSettings.EmphasisFontColor);
+                    return _appSettings.EmphasisFontColor;
                 else
-                    return Brushes.White;
+                    return "#ffffffff";
             }
         }
 

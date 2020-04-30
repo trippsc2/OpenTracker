@@ -40,17 +40,17 @@ namespace OpenTracker.ViewModels
 
         public bool TextVisible => _smallKey && _item.Current > 0;
 
-        public IBrush TextColor
+        public string TextColor
         {
             get
             {
                 if (_item == null)
-                    return Brushes.White;
+                    return "#ffffffff";
 
                 if (_item.Current == _item.Maximum)
-                    return SolidColorBrush.Parse(_appSettings.EmphasisFontColor);
+                    return _appSettings.EmphasisFontColor;
                 else
-                    return Brushes.White;
+                    return "#ffffffff";
             }
         }
 

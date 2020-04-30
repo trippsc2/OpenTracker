@@ -1444,6 +1444,7 @@ namespace OpenTracker.Models
 
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
+                    _itemSubscriptions.Add(ItemType.Boots, new Mode());
                     _itemSubscriptions.Add(ItemType.Flippers, new Mode());
                     _itemSubscriptions.Add(ItemType.MoonPearl, new Mode());
 
@@ -6576,8 +6577,6 @@ namespace OpenTracker.Models
 
             _game.Mode.PropertyChanged += OnModeChanged;
 
-            PropertyChanged += OnRequirementChanged;
-
             UpdateRegionSubscriptions();
             UpdateItemSubscriptions();
 
@@ -6593,8 +6592,13 @@ namespace OpenTracker.Models
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-            if (propertyName == nameof(Available) && !IsAvailable())
-                CollectMarkingItem();
+            if (propertyName == nameof(Available))
+            {
+                UpdateAccessibility();
+
+                if (!IsAvailable())
+                    CollectMarkingItem();
+            }
         }
 
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
@@ -6758,6 +6762,7 @@ namespace OpenTracker.Models
         {
             Marking = null;
             Available = Total;
+            UserManipulated = false;
         }
     }
 }

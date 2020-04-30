@@ -15,7 +15,7 @@
 		   PointerReleased="OnClick">
 		
 		<Border Classes="MapLocation" Width="{Binding Path=Size}" Height="{Binding Path=Size}"
-				Background="{Binding Path=Color}" IsVisible="{Binding Path=BorderVisible}"
+				Background="{Binding Path=Color, Mode=OneWay}" IsVisible="{Binding Path=BorderVisible}"
 				IsHitTestVisible="{Binding Path=BorderVisible}" BorderThickness="{Binding Path=BorderSize}">
 			<Border Classes="MapLocationNumber" IsHitTestVisible="{Binding Path=TextVisible}"
 					IsVisible="{Binding Path=TextVisible}">
