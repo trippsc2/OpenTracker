@@ -165,6 +165,7 @@ namespace OpenTracker.ViewModels
             {
                 switch (_section)
                 {
+                    case TakeAnySection _:
                     case ItemSection _:
 
                         if (_section.IsAvailable())
@@ -541,6 +542,7 @@ namespace OpenTracker.ViewModels
             {
                 case BossSection _:
                 case EntranceSection _:
+                case TakeAnySection _:
                     if (!_section.IsAvailable())
                         UncollectSection();
                     break;

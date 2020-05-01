@@ -86,6 +86,7 @@ namespace OpenTracker.Models
 
             int itemSections = 0;
             bool entranceSection = false;
+            bool takeAnySection = false;
 
             switch (iD)
             {
@@ -807,7 +808,7 @@ namespace OpenTracker.Models
                     itemSections = 1;
                     BossSection = new BossSection(game, iD);
                     break;
-                case LocationID.LumberjackHouse:
+                case LocationID.LumberjackHouseEntrance:
                     Name = "Lumber House";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 675, 120,
                         new Mode()
@@ -843,7 +844,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.KakarikoFortuneTeller:
+                case LocationID.KakarikoFortuneTellerEntrance:
                     Name = "Kak Fortune";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 375, 645,
                         new Mode()
@@ -870,7 +871,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.LeftSnitchHouse:
+                case LocationID.LeftSnitchHouseEntrance:
                     Name = "Left Snitch";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 100, 940,
                         new Mode()
@@ -879,7 +880,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.RightSnitchHouse:
+                case LocationID.RightSnitchHouseEntrance:
                     Name = "Right Snitch";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 415, 965,
                         new Mode()
@@ -915,7 +916,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.GrassHouse:
+                case LocationID.GrassHouseEntrance:
                     Name = "Grass House";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 410, 1075,
                         new Mode()
@@ -942,7 +943,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.BombHut:
+                case LocationID.BombHutEntrance:
                     Name = "Bomb Hut";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 55, 1195,
                         new Mode()
@@ -978,7 +979,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.ChestGame:
+                case LocationID.ChestGameEntrance:
                     Name = "Chest Game";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 425, 1410,
                         new Mode()
@@ -1023,7 +1024,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.ForestChestGame:
+                case LocationID.ForestChestGameEntrance:
                     Name = "Forest Chest Game";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 370, 40,
                         new Mode()
@@ -1086,7 +1087,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.CentralBonkRocks:
+                case LocationID.CentralBonkRocksEntrance:
                     Name = "Central Bonk Rocks";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 945, 1310,
                         new Mode()
@@ -1122,7 +1123,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.TreesFairyCave:
+                case LocationID.TreesFairyCaveEntrance:
                     Name = "Trees Fairy Cave";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1650, 1295,
                         new Mode()
@@ -1131,7 +1132,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.PegsFairyCave:
+                case LocationID.PegsFairyCaveEntrance:
                     Name = "Pegs Fairy Cave";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1970, 1405,
                         new Mode()
@@ -1239,7 +1240,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.ThiefCave:
+                case LocationID.ThiefCaveEntrance:
                     Name = "Thief Cave";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 555, 1790,
                         new Mode()
@@ -1248,7 +1249,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.RupeeCave:
+                case LocationID.RupeeCaveEntrance:
                     Name = "Rupee Cave";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 625, 1920,
                         new Mode()
@@ -1293,7 +1294,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.DarkVillageFortuneTeller:
+                case LocationID.DarkVillageFortuneTellerEntrance:
                     Name = "Dark Village Fortune Teller";
                     MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 377, 647,
                         new Mode()
@@ -1302,7 +1303,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.DarkChapel:
+                case LocationID.DarkChapelEntrance:
                     Name = "Dark Chapel";
                     MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 924, 551,
                         new Mode()
@@ -1392,7 +1393,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.DarkCentralBonkRocks:
+                case LocationID.DarkCentralBonkRocksEntrance:
                     Name = "Bonk Rocks";
                     MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 945, 1310,
                         new Mode()
@@ -1419,7 +1420,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.ArrowGame:
+                case LocationID.ArrowGameEntrance:
                     Name = "Arrow Game";
                     MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 431, 1409,
                         new Mode()
@@ -1437,7 +1438,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.DarkTreesFairyCave:
+                case LocationID.DarkTreesFairyCaveEntrance:
                     Name = "Dark Trees Fairy Cave";
                     MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1656, 1296,
                         new Mode()
@@ -1446,7 +1447,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.DarkSahasrahla:
+                case LocationID.DarkSahasrahlaEntrance:
                     Name = "Dark Saha";
                     MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1706, 1008,
                         new Mode()
@@ -1473,7 +1474,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.DarkFluteSpotFive:
+                case LocationID.DarkFluteSpotFiveEntrance:
                     Name = "Dark Flute Spot 5";
                     MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1968, 1405,
                         new Mode()
@@ -1507,7 +1508,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.DarkIceRodCave:
+                case LocationID.DarkIceRodCaveEntrance:
                     Name = "Dark Ice Rod Cave";
                     MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1795, 1545,
                         new Mode()
@@ -1516,7 +1517,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.DarkFakeIceRodCave:
+                case LocationID.DarkFakeIceRodCaveEntrance:
                     Name = "Dark Fake Ice Rod Cave";
                     MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1835, 1545,
                         new Mode()
@@ -1525,7 +1526,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.DarkIceRodRock:
+                case LocationID.DarkIceRodRockEntrance:
                     Name = "Dark Ice Rod Rock";
                     MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1810, 1585,
                         new Mode()
@@ -1534,7 +1535,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.HypeFairyCave:
+                case LocationID.HypeFairyCaveEntrance:
                     Name = "Hype Fairy Cave";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1200, 1565,
                         new Mode()
@@ -1543,7 +1544,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.FortuneTeller:
+                case LocationID.FortuneTellerEntrance:
                     Name = "Fortune Teller";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1300, 1615,
                         new Mode()
@@ -1588,7 +1589,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.IceBeeCave:
+                case LocationID.IceBeeCaveEntrance:
                     Name = "Ice Bee Cave";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1835, 1545,
                         new Mode()
@@ -1597,7 +1598,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.IceFairyCave:
+                case LocationID.IceFairyCaveEntrance:
                     Name = "Ice Fairy Cave";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1810, 1585,
                         new Mode()
@@ -1633,7 +1634,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.MireRightShack:
+                case LocationID.MireRightShackEntrance:
                     Name = "Mire Right Shack";
                     MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 220, 1610,
                         new Mode()
@@ -1642,7 +1643,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.MireCave:
+                case LocationID.MireCaveEntrance:
                     Name = "Mire Cave";
                     MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 400, 1655,
                         new Mode()
@@ -1732,7 +1733,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.DarkMountainFairy:
+                case LocationID.DarkMountainFairyEntrance:
                     Name = "Dark Mountain Fairy";
                     MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 815, 376,
                         new Mode()
@@ -1759,7 +1760,7 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.EDMFairyCave:
+                case LocationID.EDMFairyCaveEntrance:
                     Name = "EDM Fairy Cave";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1695, 290,
                         new Mode()
@@ -1931,6 +1932,316 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
+                case LocationID.TreesFairyCaveTakeAny:
+                    Name = "Trees Fairy Cave";
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1650, 1295,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.PegsFairyCaveTakeAny:
+                    Name = "Pegs Fairy Cave";
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1970, 1405,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.KakarikoFortuneTellerTakeAny:
+                    Name = "Kak Fortune";
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 375, 645,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.GrassHouseTakeAny:
+                    Name = "Grass House";
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 410, 1075,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.ForestChestGameTakeAny:
+                    Name = "Forest Chest Game";
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 370, 40,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.LumberjackHouseTakeAny:
+                    Name = "Lumber House";
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 688, 120,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.LeftSnitchHouseTakeAny:
+                    Name = "Left Snitch";
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 100, 940,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.RightSnitchHouseTakeAny:
+                    Name = "Right Snitch";
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 415, 965,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.BombHutTakeAny:
+                    Name = "Bomb Hut";
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 55, 1195,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.IceFairyCaveTakeAny:
+                    Name = "Ice Fairy Cave";
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1810, 1602,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.RupeeCaveTakeAny:
+                    Name = "Rupee Cave";
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 625, 1920,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.CentralBonkRocksTakeAny:
+                    Name = "Central Bonk Rocks";
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 945, 1310,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.ThiefCaveTakeAny:
+                    Name = "Thief Cave";
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 555, 1790,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.IceBeeCaveTakeAny:
+                    Name = "Ice Bee Cave";
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1850, 1545,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.FortuneTellerTakeAny:
+                    Name = "Fortune Teller";
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1300, 1615,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.HypeFairyCaveTakeAny:
+                    Name = "Hype Fairy Cave";
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1200, 1565,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.ChestGameTakeAny:
+                    Name = "Chest Game";
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 425, 1410,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.EDMFairyCaveTakeAny:
+                    Name = "EDM Fairy Cave";
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1695, 290,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.DarkChapelTakeAny:
+                    Name = "Dark Chapel";
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 924, 551,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.DarkVillageFortuneTellerTakeAny:
+                    Name = "Dark Village Fortune Teller";
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 377, 647,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.DarkTreesFairyCaveTakeAny:
+                    Name = "Dark Trees Fairy Cave";
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1656, 1296,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.DarkSahasrahlaTakeAny:
+                    Name = "Dark Saha";
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1706, 1008,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.DarkFluteSpotFiveTakeAny:
+                    Name = "Dark Flute Spot 5";
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1968, 1405,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.ArrowGameTakeAny:
+                    Name = "Arrow Game";
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 431, 1409,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.DarkCentralBonkRocksTakeAny:
+                    Name = "Bonk Rocks";
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 945, 1310,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.DarkIceRodCaveTakeAny:
+                    Name = "Dark Ice Rod Cave";
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1795, 1545,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.DarkFakeIceRodCaveTakeAny:
+                    Name = "Dark Fake Ice Rod Cave";
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1835, 1545,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.DarkIceRodRockTakeAny:
+                    Name = "Dark Ice Rod Rock";
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 1810, 1585,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.DarkMountainFairyTakeAny:
+                    Name = "Dark Mountain Fairy";
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 815, 376,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.MireRightShackTakeAny:
+                    Name = "Mire Right Shack";
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 220, 1610,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
+                case LocationID.MireCaveTakeAny:
+                    Name = "Mire Cave";
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 400, 1655,
+                        new Mode()
+                        {
+                            WorldState = WorldState.Retro,
+                            EntranceShuffle = false
+                        }));
+                    takeAnySection = true;
+                    break;
             }
 
             for (int i = 0; i < itemSections; i++)
@@ -1938,6 +2249,9 @@ namespace OpenTracker.Models
 
             if (entranceSection)
                 Sections.Add(new EntranceSection(game, ID));
+
+            if (takeAnySection)
+                Sections.Add(new TakeAnySection(game, ID));
 
             if (BossSection != null)
                 Sections.Add(BossSection);
@@ -1955,7 +2269,7 @@ namespace OpenTracker.Models
             UpdateAvailable();
             UpdateTotal();
         }
-        
+
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

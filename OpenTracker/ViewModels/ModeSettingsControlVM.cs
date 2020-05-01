@@ -36,6 +36,8 @@ namespace OpenTracker.ViewModels
             _mode.WorldState == WorldState.StandardOpen;
         public bool InvertedWorldState =>
             _mode.WorldState == WorldState.Inverted;
+        public bool RetroWorldState =>
+            _mode.WorldState == WorldState.Retro;
 
         public bool EntranceShuffle => _mode.EntranceShuffle.Value;
         public bool BossShuffle => _mode.BossShuffle.Value;
@@ -102,6 +104,7 @@ namespace OpenTracker.ViewModels
         {
             this.RaisePropertyChanged(nameof(StandardOpenRetroWorldState));
             this.RaisePropertyChanged(nameof(InvertedWorldState));
+            this.RaisePropertyChanged(nameof(RetroWorldState));
         }
 
         private void SetItemPlacement(string itemPlacementString)

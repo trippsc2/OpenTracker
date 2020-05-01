@@ -35,6 +35,8 @@ namespace OpenTracker.ViewModels
                     else
                         return 40.0;
                 }
+                else if (_mapLocation.Location.Sections[0] is TakeAnySection)
+                    return 40.0;
                 else
                 {
                     if (_mapLocation.Location.Total > 1)
@@ -68,8 +70,9 @@ namespace OpenTracker.ViewModels
         {
             get
             {
-                if (_game.Mode.EntranceShuffle.HasValue &&
-                    _game.Mode.EntranceShuffle.Value)
+                if ((_game.Mode.EntranceShuffle.HasValue &&
+                    _game.Mode.EntranceShuffle.Value) ||
+                    _mapLocation.Location.Sections[0] is TakeAnySection)
                     return new Thickness(5);
                 else
                     return new Thickness(9);
@@ -255,6 +258,17 @@ namespace OpenTracker.ViewModels
                 else
                     return _mapLocation.Location.Accessible.ToString() + "/" +
                         _mapLocation.Location.Available.ToString();
+            }
+        }
+
+        public CornerRadius CornerRadius
+        {
+            get
+            {
+                if (_mapLocation.Location.Sections[0] is TakeAnySection)
+                    return new CornerRadius(40);
+                else
+                    return new CornerRadius(0);
             }
         }
 
