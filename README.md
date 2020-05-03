@@ -67,8 +67,8 @@ Some notable differences from other map trackers:
 - Game mode settings can be changed by clicking the Gear icon on the top right of the Items panel and modifying the settings listed.
 - The Dungeon Item Placement settings change the number of available checks in a dungeon to the number of non-dungeon items applicible for that mode.  (e.g. If Standard Dungeon Item Placement is set, Palace of Darkness has 5 items.  If Maps/Compasses is set, PoD has 7 items.)
 - To allow for mystery seed friendliness, all mode settings can be changed without affecting the tracker state.  Modifying Dungeon Item Placement adds or subtracts remaining items from relevant dungeons when the mode is changed.
-- More complete Retro support is planned for the future.  The current design intent is to add a generic key to the Items panel to represent keys in inventory and to use the Small Key shuffle icons for each dungeon to represent keys used in the dungeon.  This is coming soon.
-- Currently, you are assumed to always have the Rupee quiver in Retro mode.  This will likely change when more complete Retro support is added.
+- In Retro, you can use the generic key in the Items panel to indicate keys in inventory.  Any keys used in a dungeon should be tracked using the dungeon key icons.  The dungeon logic will take the total of the generic keys and dungeon keys, so to give you a better sense of what you can currently do.
+- The Rupee quiver is assumed to be had in Retro mode, but is trackable.
 
 ### Autotracking
 
@@ -79,15 +79,14 @@ To start Autotracking, have QUSB2SNES or USB2SNES open and connected to your gam
 Some notes about Autotracking:
 
 - Autotracking will track most inventory items.
-- The Retro mode rupee quiver is not autotracked at this time.
-- Small keys are not autotracked in any way at this time.
+- Small keys are not autotracked.
 - Big keys are autotracked.
-- Autotracking will not track the prize of a dungeon, this needs to be manually tracked.
+- Autotracking will not track the prize of a dungeon, this must to be manually tracked.
 - Autotracking will track all non-dungeon item locations.
 - Dungeons (including Hyrule Castle, Agahnim's Tower, and Ganon's Tower) will need to be manually tracked.
-- An issue has been occurring that causes the Items panel UI to not show the correct image when an item is added via Autotracking.  If this occurs, you can manipulate the item manually to correct this.
 - Crystal requirements for GT and Ganon Vulnerability are not autotracked.
 - Entrances in Entrance Shuffle mode are not autotracked.
+- Take Any locations are not autotracked.
 
 ### Entrance Shuffle
 
