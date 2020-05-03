@@ -439,9 +439,26 @@ namespace OpenTracker.Models
 
                     GetAccessibility = () =>
                     {
+                        AccessibilityLevel iP = _game.Regions[RegionID.IcePalace].Accessibility;
+                        
                         if (_game.Items.CanMeltThings() && _game.Items.Has(ItemType.Hammer) &&
-                            (_game.Items.Has(ItemType.CaneOfSomaria) || _game.Items.Has(ItemType.IPSmallKey)))
-                            return _game.Regions[RegionID.IcePalace].Accessibility;
+                            _game.Items.Has(ItemType.Gloves))
+                        {
+                            if (_game.Mode.DungeonItemShuffle.Value >= DungeonItemShuffle.MapsCompassesSmallKeys)
+                            {
+                                if (_game.Items.Has(ItemType.IPBigKey) &&
+                                    ((_game.Items.Has(ItemType.CaneOfSomaria) && _game.Items.Has(ItemType.IPSmallKey)) ||
+                                    _game.Items.Has(ItemType.IPSmallKey, 2)))
+                                    return iP;
+                            }
+                            else
+                            {
+                                if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                    return iP;
+                            }
+
+                            return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak, (byte)iP);
+                        }
                         
                         return AccessibilityLevel.None;
                     };
@@ -467,6 +484,7 @@ namespace OpenTracker.Models
                     _itemSubscriptions.Add(ItemType.Bombos, new Mode());
                     _itemSubscriptions.Add(ItemType.Sword, new Mode());
                     _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.Gloves, new Mode());
                     _itemSubscriptions.Add(ItemType.CaneOfSomaria, new Mode());
                     _itemSubscriptions.Add(ItemType.IPSmallKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys });
 

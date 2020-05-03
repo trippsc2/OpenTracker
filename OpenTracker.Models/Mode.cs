@@ -8,6 +8,14 @@ namespace OpenTracker.Models
         public event PropertyChangingEventHandler PropertyChanging;
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public bool MapCompassShuffle =>
+            DungeonItemShuffle.Value >= Enums.DungeonItemShuffle.MapsCompasses;
+        public bool SmallKeyShuffle =>
+            DungeonItemShuffle.Value >= Enums.DungeonItemShuffle.MapsCompassesSmallKeys ||
+            WorldState.Value == Enums.WorldState.Retro;
+        public bool BigKeyShuffle =>
+            DungeonItemShuffle.Value >= Enums.DungeonItemShuffle.Keysanity;
+
         private ItemPlacement? _itemPlacement;
         public ItemPlacement? ItemPlacement
         {

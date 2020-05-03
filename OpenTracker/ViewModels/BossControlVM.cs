@@ -2,7 +2,6 @@
 using OpenTracker.Models;
 using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
-using OpenTracker.Models.Interfaces;
 using ReactiveUI;
 using System.ComponentModel;
 

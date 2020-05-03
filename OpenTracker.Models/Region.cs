@@ -529,7 +529,7 @@ namespace OpenTracker.Models
                         newExcludedRegions.Add(ID);
 
                         //  Standard, Open, and Retro modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             AccessibilityLevel darkWorldEast = AccessibilityLevel.None;
                             AccessibilityLevel darkWorldWest = AccessibilityLevel.None;
@@ -760,7 +760,7 @@ namespace OpenTracker.Models
                         newExcludedRegions.Add(ID);
 
                         //  Standard, Open, and Retro modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             AccessibilityLevel dMEastTop = AccessibilityLevel.None;
                             AccessibilityLevel dDMWestBottom = AccessibilityLevel.None;

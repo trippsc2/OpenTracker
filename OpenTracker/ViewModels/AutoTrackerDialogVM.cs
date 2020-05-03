@@ -11,7 +11,7 @@ namespace OpenTracker.ViewModels
     public class AutoTrackerDialogVM : ViewModelBase
     {
         private readonly AutoTracker _autoTracker;
-        private DispatcherTimer _timer;
+        private readonly DispatcherTimer _timer;
 
         public ReactiveCommand<Unit, Unit> StartCommand { get; }
         public ReactiveCommand<Unit, Unit> StopCommand { get; }
@@ -62,8 +62,10 @@ namespace OpenTracker.ViewModels
         public AutoTrackerDialogVM(AutoTracker autoTracker)
         {
             _autoTracker = autoTracker;
-            _timer = new DispatcherTimer();
-            _timer.Interval = TimeSpan.FromSeconds(2);
+            _timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(2)
+            };
             _timer.Tick += OnTick;
 
             DebugText = "";

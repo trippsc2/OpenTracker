@@ -35,7 +35,12 @@ namespace OpenTracker.Models
                 case ItemType.MMSmallKey:
                 case ItemType.TRSmallKey:
                 case ItemType.GTSmallKey:
+
+                    if (_mode.WorldState == WorldState.Retro)
+                        return this[type].Current + this[ItemType.SmallKey].Current >= atLeast;
+                    
                     return _mode.DungeonItemShuffle < DungeonItemShuffle.MapsCompassesSmallKeys || this[type].Current >= atLeast;
+
                 case ItemType.EPBigKey:
                 case ItemType.DPBigKey:
                 case ItemType.ToHBigKey:

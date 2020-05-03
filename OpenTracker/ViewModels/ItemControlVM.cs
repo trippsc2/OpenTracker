@@ -1,5 +1,4 @@
-﻿using Avalonia.Media;
-using OpenTracker.Interfaces;
+﻿using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
@@ -13,6 +12,7 @@ namespace OpenTracker.ViewModels
         private readonly UndoRedoManager _undoRedoManager;
         private readonly AppSettings _appSettings;
         private readonly string _imageSourceBase;
+        private readonly Game _game;
         private readonly Item[] _items;
 
         public string ImageSource
@@ -24,6 +24,13 @@ namespace OpenTracker.ViewModels
 
                 if (_items[0].Type == ItemType.TowerCrystals || _items[0].Type == ItemType.GanonCrystals)
                     return _imageSourceBase + ".png";
+                else if (_items[0].Type == ItemType.SmallKey)
+                {
+                    if (_game.Mode.WorldState == WorldState.Retro)
+                        return _imageSourceBase + ".png";
+                    else
+                        return null;
+                }
                 else
                 {
                     int imageNumber = _items[0].Current;
@@ -46,6 +53,9 @@ namespace OpenTracker.ViewModels
                 if (_items[0].Type == ItemType.TowerCrystals || _items[0].Type == ItemType.GanonCrystals)
                     return (7 - _items[0].Current).ToString();
 
+                if (_items[0].Type == ItemType.SmallKey && _game.Mode.WorldState == WorldState.Retro)
+                    return _items[0].Current.ToString();
+
                 return null;
             }
         }
@@ -57,7 +67,11 @@ namespace OpenTracker.ViewModels
                 if (_items == null || _items[0] == null)
                     return "#ffffffff";
 
-                if (_items[0].Current == 0)
+                if ((_items[0].Type == ItemType.TowerCrystals || _items[0].Type == ItemType.GanonCrystals) &&
+                    _items[0].Current == 0)
+                    return _appSettings.EmphasisFontColor;
+                else if (_items[0].Type == ItemType.SmallKey && _game.Mode.WorldState == WorldState.Retro &&
+                    _items[0].Current == _items[0].Maximum)
                     return _appSettings.EmphasisFontColor;
                 else
                     return "#ffffffff";
@@ -65,10 +79,11 @@ namespace OpenTracker.ViewModels
         }
 
         public ItemControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
-            Item[] items)
+            Game game, Item[] items)
         {
             _undoRedoManager = undoRedoManager;
             _appSettings = appSettings;
+            _game = game;
             _items = items;
 
             _appSettings.PropertyChanged += OnAppSettingsChanged;
@@ -79,24 +94,56 @@ namespace OpenTracker.ViewModels
 
                 foreach (Item item in _items)
                     item.PropertyChanged += OnItemChanged;
+
+                if (_items[0].Type == ItemType.SmallKey)
+                {
+                    _game.Mode.PropertyChanged += OnModeChanged;
+                    _imageSourceBase = "avares://OpenTracker/Assets/Images/Items/visible-smallkey";
+                }
             }
         }
 
         private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(AppSettings.EmphasisFontColor))
-                this.RaisePropertyChanged(nameof(TextColor));
+                UpdateTextColor();
         }
 
         private void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
-            this.RaisePropertyChanged(nameof(ImageSource));
+            UpdateImageSource();
 
-            if (_items[0].Type == ItemType.TowerCrystals || _items[0].Type == ItemType.GanonCrystals)
+            if (_items[0].Type == ItemType.TowerCrystals || _items[0].Type == ItemType.GanonCrystals ||
+                _items[0].Type == ItemType.SmallKey)
             {
-                this.RaisePropertyChanged(nameof(ImageNumber));
-                this.RaisePropertyChanged(nameof(TextColor));
+                UpdateText();
+                UpdateTextColor();
             }
+        }
+
+        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Mode.WorldState))
+            {
+                UpdateImageSource();
+                UpdateText();
+                UpdateTextColor();
+            }
+        }
+
+        private void UpdateImageSource()
+        {
+            this.RaisePropertyChanged(nameof(ImageSource));
+        }
+
+        private void UpdateText()
+        {
+            this.RaisePropertyChanged(nameof(ImageNumber));
+        }
+
+        private void UpdateTextColor()
+        {
+            this.RaisePropertyChanged(nameof(TextColor));
         }
 
         private void AddItem(int index)
@@ -120,7 +167,8 @@ namespace OpenTracker.ViewModels
             {
                 if (_items.Length > 1)
                     CycleItem(0);
-                else if (_items[0].Current < _items[0].Maximum)
+                else if ((_items[0].Type != ItemType.SmallKey || _game.Mode.WorldState == WorldState.Retro) &&
+                    _items[0].Current < _items[0].Maximum)
                     AddItem(0);
             }
         }
@@ -131,7 +179,8 @@ namespace OpenTracker.ViewModels
             {
                 if (_items.Length > 1)
                     CycleItem(1);
-                else if (_items[0].Current > 0)
+                else if ((_items[0].Type != ItemType.SmallKey || _game.Mode.WorldState == WorldState.Retro) && 
+                    _items[0].Current > 0)
                     RemoveItem(0);
             }
         }

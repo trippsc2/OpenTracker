@@ -32,7 +32,7 @@ namespace OpenTracker.ViewModels
         public bool KeysanityDungeonItemShuffle =>
             _mode.DungeonItemShuffle == DungeonItemShuffle.Keysanity;
 
-        public bool StandardOpenRetroWorldState =>
+        public bool StandardOpenWorldState =>
             _mode.WorldState == WorldState.StandardOpen;
         public bool InvertedWorldState =>
             _mode.WorldState == WorldState.Inverted;
@@ -57,7 +57,7 @@ namespace OpenTracker.ViewModels
 
             _mode.PropertyChanged += OnModeChanged;
 
-            ItemPlacementCommand = ReactiveCommand.Create<string>(SetItemPlacement, this.WhenAnyValue(x => x.StandardOpenRetroWorldState));
+            ItemPlacementCommand = ReactiveCommand.Create<string>(SetItemPlacement, this.WhenAnyValue(x => x.StandardOpenWorldState));
             DungeonItemShuffleCommand = ReactiveCommand.Create<string>(SetDungeonItemShuffle);
             WorldStateCommand = ReactiveCommand.Create<string>(SetWorldState);
             EntranceShuffleCommand = ReactiveCommand.Create(ToggleEntranceShuffle);
@@ -102,7 +102,7 @@ namespace OpenTracker.ViewModels
 
         private void UpdateWorldState()
         {
-            this.RaisePropertyChanged(nameof(StandardOpenRetroWorldState));
+            this.RaisePropertyChanged(nameof(StandardOpenWorldState));
             this.RaisePropertyChanged(nameof(InvertedWorldState));
             this.RaisePropertyChanged(nameof(RetroWorldState));
         }

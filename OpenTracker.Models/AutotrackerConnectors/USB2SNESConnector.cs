@@ -163,62 +163,60 @@ namespace OpenTracker.Models.AutotrackerConnectors
 
                 try
                 {
-                    using (ManualResetEvent readEvent = new ManualResetEvent(false))
+                    using ManualResetEvent readEvent = new ManualResetEvent(false);
+                    lock (_transmitLock)
                     {
-                        lock (_transmitLock)
+                        RequestType requestType = new RequestType()
                         {
-                            RequestType requestType = new RequestType()
-                            {
-                                Opcode = OpcodeType.GetAddress.ToString(),
-                                Space = "SNES",
-                                Operands = new List<string>()
+                            Opcode = OpcodeType.GetAddress.ToString(),
+                            Space = "SNES",
+                            Operands = new List<string>()
                                 {
                                     TranslateAddress((uint)address, TranslationMode.Read).ToString("X"),
                                     buffer.Length.ToString("X")
                                 }
-                            };
+                        };
 
-                            PendingMessageHandler = e =>
-                            {
-                                try
-                                {
-                                    if (!e.IsBinary || e.RawData == null)
-                                        return;
-
-                                    for (int i = 0; i < buffer.Length; ++i)
-                                        buffer[i] = e.RawData[Math.Min(i, e.RawData.Length - 1)];
-
-                                    success = true;
-                                }
-                                catch { }
-                                finally { readEvent.Set(); }
-                            };
-
-                            if (Socket == null || !Socket.IsAlive)
-                            {
-                                Output("ERROR: Connection to USB2SNES lost.");
-
-                                ConnectionStatusChanged?.Invoke(this, (ConnectionStatus.Closed,
-                                    "Connection to USB2SNES lost."));
-                            }
-                            else
-                                Socket?.Send(JsonConvert.SerializeObject(requestType));
-
+                        PendingMessageHandler = e =>
+                        {
                             try
                             {
-                                if (!readEvent.WaitOne(4096))
-                                {
-                                    Disconnect(false);
-                                    return false;
-                                }
+                                if (!e.IsBinary || e.RawData == null)
+                                    return;
+
+                                for (int i = 0; i < buffer.Length; ++i)
+                                    buffer[i] = e.RawData[Math.Min(i, e.RawData.Length - 1)];
+
+                                success = true;
                             }
-                            catch
+                            catch { }
+                            finally { readEvent.Set(); }
+                        };
+
+                        if (Socket == null || !Socket.IsAlive)
+                        {
+                            Output("ERROR: Connection to USB2SNES lost.");
+
+                            ConnectionStatusChanged?.Invoke(this, (ConnectionStatus.Closed,
+                                "Connection to USB2SNES lost."));
+                        }
+                        else
+                            Socket?.Send(JsonConvert.SerializeObject(requestType));
+
+                        try
+                        {
+                            if (!readEvent.WaitOne(4096))
                             {
                                 Disconnect(false);
                                 return false;
                             }
-                            finally { readEvent.Reset(); }
                         }
+                        catch
+                        {
+                            Disconnect(false);
+                            return false;
+                        }
+                        finally { readEvent.Reset(); }
                     }
                 }
                 catch { return false; }
@@ -229,8 +227,7 @@ namespace OpenTracker.Models.AutotrackerConnectors
 
         public static uint TranslateAddress(uint address, TranslationMode mode)
         {
-            uint mappedAddress;
-            if (mode == TranslationMode.Read && MapAddressInRange(address, 8257536U, 8388607U, 16056320U, out mappedAddress))
+            if (mode == TranslationMode.Read && MapAddressInRange(address, 8257536U, 8388607U, 16056320U, out uint mappedAddress))
                 return mappedAddress;
 
             for (uint index = 0; index < 63U; ++index)

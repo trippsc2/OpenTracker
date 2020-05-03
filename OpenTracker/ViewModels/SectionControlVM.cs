@@ -47,7 +47,16 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        public bool SectionVisible => _game.Mode.Validate(_section.RequiredMode);
+        public bool SectionVisible
+        {
+            get
+            {
+                if (_section is ItemSection itemSection && itemSection.Total <= 0)
+                    return false;
+
+                return _game.Mode.Validate(_section.RequiredMode);
+            }
+        }
 
         public string FontColor
         {

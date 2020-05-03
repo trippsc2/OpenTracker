@@ -110,10 +110,8 @@ namespace OpenTracker.ViewModels
         public bool BottomVerticalItemsPlacement =>
             _appSettings.VerticalItemsPlacement == VerticalAlignment.Bottom;
 
-        public bool SmallKeyShuffle =>
-            _game.Mode.DungeonItemShuffle.Value >= DungeonItemShuffle.MapsCompassesSmallKeys;
-        public bool BigKeyShuffle =>
-            _game.Mode.DungeonItemShuffle.Value == DungeonItemShuffle.Keysanity;
+        public bool SmallKeyShuffle => _game.Mode.SmallKeyShuffle;
+        public bool BigKeyShuffle => _game.Mode.BigKeyShuffle;
 
         public bool BossShuffle => _game.Mode.BossShuffle.Value;
 
@@ -248,6 +246,7 @@ namespace OpenTracker.ViewModels
                     case ItemType.Boots:
                     case ItemType.FireRod:
                     case ItemType.IceRod:
+                    case ItemType.SmallKey:
                     case ItemType.Gloves:
                     case ItemType.Lamp:
                     case ItemType.Hammer:
@@ -262,7 +261,8 @@ namespace OpenTracker.ViewModels
                     case ItemType.Mirror:
                     case ItemType.HalfMagic:
                     case ItemType.MoonPearl:
-                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, new Item[1] { _game.Items[(ItemType)i] }));
+                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, _game,
+                            new Item[1] { _game.Items[(ItemType)i] }));
                         break;
                     case ItemType.Bow:
                     case ItemType.Boomerang:
@@ -270,20 +270,17 @@ namespace OpenTracker.ViewModels
                     case ItemType.Powder:
                     case ItemType.Bombos:
                     case ItemType.Ether:
-                    case ItemType.Flute:
-                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, new Item[2] {
-                            _game.Items[(ItemType)i], _game.Items[(ItemType)(i + 1)]
-                        }));
-                        break;
                     case ItemType.Quake:
-                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, new Item[2] {
+                    case ItemType.Flute:
+                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, _game,
+                            new Item[2] {
                             _game.Items[(ItemType)i], _game.Items[(ItemType)(i + 1)]
                         }));
-                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, null));
                         break;
                     case ItemType.Mail:
-                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, new Item[1] { _game.Items[(ItemType)i] }));
-                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, null));
+                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, _game,
+                            new Item[1] { _game.Items[(ItemType)i] }));
+                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, _game, null));
                         break;
                     default:
                         break;
@@ -335,6 +332,9 @@ namespace OpenTracker.ViewModels
                 this.RaisePropertyChanged(nameof(SmallKeyShuffle));
                 this.RaisePropertyChanged(nameof(BigKeyShuffle));
             }
+
+            if (e.PropertyName == nameof(Mode.WorldState))
+                this.RaisePropertyChanged(nameof(SmallKeyShuffle));
 
             if (e.PropertyName == nameof(Mode.BossShuffle))
                 this.RaisePropertyChanged(nameof(BossShuffle));

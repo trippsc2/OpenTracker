@@ -41,9 +41,9 @@
 				<TextBlock Classes="ModeSettingsTitle" Grid.Column="0" Grid.ColumnSpan="12" Grid.Row="4"
 						   Text="World State" />
 				<RadioButton Classes="ModeSettings" Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="5"
-							 IsChecked="{Binding Path=StandardOpenRetroWorldState, Mode=OneWay}"
+							 IsChecked="{Binding Path=StandardOpenWorldState, Mode=OneWay}"
 							 GroupName="WorldState" Command="{Binding Path=WorldStateCommand}"
-							 CommandParameter="StandardOpen">Standard/Open/Retro</RadioButton>
+							 CommandParameter="StandardOpen">Standard/Open</RadioButton>
 				<RadioButton Classes="ModeSettings" Grid.Column="4" Grid.ColumnSpan="4" Grid.Row="5"
 							 IsChecked="{Binding Path=InvertedWorldState, Mode=OneWay}"
 							 GroupName="WorldState" Command="{Binding Path=WorldStateCommand}"
