@@ -3,16 +3,30 @@ An open-source cross-platform tracking app for A Link to the Past Randomizer.
 
 This project is intended to provide a tracker with the following features:
 - Mystery seed friendly
-- Support for most game modes (no Door shuffle yet)
+- Support for most game modes (No Glitches logic only and no Door shuffle yet)
 - Autotracking
 - Support for Windows, Linux, and MacOS
 - Customizable from the GUI
 
 The following is on my roadmap for future updates:
-- Improvements to AutoTracking (stability, detect whether ALttP is running, better logging, etc.)
-- Stream Capture view (a view of the tracker that can be captured more easily on stream and edited in GUI)
-- Color Themes (preset color sets to choose from)
-- Improvements to package manager support (APT/YUM repo, package requirements added to .deb and .rpm, AUR inclusion, App Store inclusion, and Chocolatey package for Win)
+- Improve AutoTracking
+  - Make edge cases more stable (disconnects, USB2SNES closed, etc.)
+  - Improve logging (more descriptive messages and logging levels)
+- Stream Capture view
+  - Provide a Window view that is friendly to capture with OBS.
+  - Consider NDI support for remote streaming.
+  - Allow Stream Capture window to be customized from the GUI.
+- Color Themes
+  - Provide preset color themes for GUI elements.
+- Improve package manager support
+  - Host an apt and yum repo containing the app package
+  - Add package requirements (.NET Core) added to the .deb and .rpm packages
+  - Add package to the AUR
+  - Add software to the Apple App Store
+  - Add Chocolatey package to community repository for Windows
+- Add glitched logic options
+  - Add Overworld/Major Glitches logic to the tracker
+  - This feature will not be taken on until the v32 graph-based logic is made public, as I will be converting my logic to follow Veetorp's lead.
 
 ## Getting Started
 
