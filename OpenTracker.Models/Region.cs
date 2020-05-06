@@ -823,8 +823,8 @@ namespace OpenTracker.Models
                         if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             //  Access via Turtle Rock Tunnel by mirror
-                            if (_game.Items.Has(ItemType.TurtleRockTunnelAccess) ||
-                                _game.Items.Has(ItemType.TurtleRockSafetyDoorAccess) &&
+                            if ((_game.Items.Has(ItemType.TurtleRockTunnelAccess) ||
+                                _game.Items.Has(ItemType.TurtleRockSafetyDoorAccess)) &&
                                 _game.Items.Has(ItemType.Mirror))
                                 return AccessibilityLevel.Normal;
 
@@ -1422,7 +1422,7 @@ namespace OpenTracker.Models
                         newExcludedRegions.Add(ID);
 
                         //  Standard, Open, and Retro modes
-                        if (_game.Mode.WorldState == WorldState.StandardOpen)
+                        if (_game.Mode.WorldState != WorldState.Inverted)
                         {
                             //  Access via East Dark World entrance
                             if (_game.Items.Has(ItemType.MoonPearl) && !excludedRegions.Contains(RegionID.DarkWorldEast))
