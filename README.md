@@ -92,14 +92,14 @@ To start Autotracking, have QUSB2SNES or USB2SNES open and connected to your gam
 
 Some notes about Autotracking:
 
-- Autotracking will track most inventory items.
+- Most inventory items are autotracked.
 - Small keys are not autotracked.
 - Big keys are autotracked.
-- Autotracking will not track the prize of a dungeon, this must to be manually tracked.
-- Autotracking will track all non-dungeon item locations.
-- Dungeons (including Hyrule Castle, Agahnim's Tower, and Ganon's Tower) will need to be manually tracked.
+- The dungeon prize type is not autotracked, but whether or not the dungeon prize has been acquired is autotracked.
+- All non-dungeon item locations are autotracked.
+- Dungeon item locations (including Hyrule Castle, Agahnim's Tower, and Ganon's Tower) are not autotracked.
 - Crystal requirements for GT and Ganon Vulnerability are not autotracked.
-- Entrances in Entrance Shuffle mode are not autotracked.
+- Entrance locations in Entrance Shuffle mode are not autotracked.
 - Take Any locations are not autotracked.
 
 ### Entrance Shuffle
