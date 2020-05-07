@@ -91,7 +91,7 @@
 			<Setter Property="Margin" Value="0,4" />
 		</Style>
 
-		<Style Selector="Border.AutoTrackerDebug">
+		<Style Selector="Border.AutoTrackerLog">
 			<Setter Property="Background" Value="#2D4848" />
 			<Setter Property="Margin" Value="5" />
 		</Style>
@@ -209,7 +209,7 @@
 			<Setter Property="VerticalAlignment" Value="Center" />
 		</Style>
 
-		<Style Selector="TextBlock.AutoTrackerStatus">
+		<Style Selector="TextBlock.AutoTrackerLog">
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
 		</Style>
 
@@ -324,18 +324,6 @@
 			<Setter Property="HorizontalAlignment" Value="Center" />
 		</Style>
 
-		<Style Selector="Rectangle.MarkingSelect">
-			<Setter Property="Height" Value="28" />
-			<Setter Property="Width" Value="28" />
-			<Setter Property="Margin" Value="0,0,4,0" />
-			<Setter Property="Fill" Value="Transparent" />
-			<Setter Property="Stroke" Value="#FFFFFF" />
-			<Setter Property="StrokeDashOffset" Value="4" />
-			<Setter Property="StrokeThickness" Value="2" />
-			<Setter Property="HorizontalAlignment" Value="Center" />
-			<Setter Property="VerticalAlignment" Value="Center" />
-		</Style>
-		
 	</Application.Styles>
 
 </Application>
