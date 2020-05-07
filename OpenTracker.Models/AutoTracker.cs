@@ -3,6 +3,7 @@ using OpenTracker.Models.Enums;
 using System;
 using System.ComponentModel;
 using System.Threading;
+using WebSocketSharp;
 
 namespace OpenTracker.Models
 {
@@ -80,7 +81,7 @@ namespace OpenTracker.Models
                 return;
         }
 
-        public void Start(Action<string> messageHandler)
+        public void Start(Action<string, LogLevel> messageHandler)
         {
             Connector = new USB2SNESConnector(messageHandler);
 
@@ -127,7 +128,7 @@ namespace OpenTracker.Models
             return false;
         }
 
-        public void MemoryCheck()
+        public void InGameCheck()
         {
             if (Connector.Connected)
             {
@@ -135,7 +136,17 @@ namespace OpenTracker.Models
                 {
                     _connector.ReadByte(0x7e0010, out byte inGameStatus);
                     InGameStatus = inGameStatus;
+                }
+                catch { }
+            }
+        }
 
+        public void MemoryCheck()
+        {
+            if (Connector.Connected)
+            {
+                try
+                {
                     if (IsInGame())
                     {
                         byte[] buffer = new byte[592];

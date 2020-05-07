@@ -3,19 +3,25 @@ using OpenTracker.Models;
 using OpenTracker.Models.AutotrackerConnectors;
 using ReactiveUI;
 using System;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Reactive;
+using WebSocketSharp;
 
 namespace OpenTracker.ViewModels
 {
     public class AutoTrackerDialogVM : ViewModelBase
     {
         private readonly AutoTracker _autoTracker;
-        private readonly DispatcherTimer _timer;
+        private readonly DispatcherTimer _inGameTimer;
+        private readonly DispatcherTimer _memoryCheckTimer;
 
         public ReactiveCommand<Unit, Unit> StartCommand { get; }
         public ReactiveCommand<Unit, Unit> StopCommand { get; }
         public ReactiveCommand<Unit, Unit> ToggleDebugLogCommand { get; }
+
+        public ObservableCollection<(string, LogLevel)> LogMessages { get; }
 
         private bool _canStart;
         public bool CanStart
@@ -45,33 +51,50 @@ namespace OpenTracker.ViewModels
             private set => this.RaiseAndSetIfChanged(ref _statusText, value);
         }
 
-        private bool _visibleDebugLog;
-        public bool VisibleDebugLog
+        private LogLevel _logLevel;
+        public LogLevel LogLevel
         {
-            get => _visibleDebugLog;
-            set => this.RaiseAndSetIfChanged(ref _visibleDebugLog, value);
+            get => _logLevel;
+            set => this.RaiseAndSetIfChanged(ref _logLevel, value);
         }
 
-        private string _debugText;
-        public string DebugText
+        private bool _visibleLog;
+        public bool VisibleLog
         {
-            get => _debugText;
-            private set => this.RaiseAndSetIfChanged(ref _debugText, value);
+            get => _visibleLog;
+            set => this.RaiseAndSetIfChanged(ref _visibleLog, value);
+        }
+
+        private string _logText;
+        public string LogText
+        {
+            get => _logText;
+            private set => this.RaiseAndSetIfChanged(ref _logText, value);
         }
 
         public AutoTrackerDialogVM(AutoTracker autoTracker)
         {
             _autoTracker = autoTracker;
-            _timer = new DispatcherTimer
+
+            _inGameTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(500)
+            };
+            _inGameTimer.Tick += OnInGameTimerTick;
+
+            _memoryCheckTimer = new DispatcherTimer
             {
                 Interval = TimeSpan.FromSeconds(2)
             };
-            _timer.Tick += OnTick;
+            _memoryCheckTimer.Tick += OnMemoryCheckTimerTick;
 
-            DebugText = "";
             StartCommand = ReactiveCommand.Create(Start, this.WhenAnyValue(x => x.CanStart));
             StopCommand = ReactiveCommand.Create(Stop, this.WhenAnyValue(x => x.CanStop));
-            ToggleDebugLogCommand = ReactiveCommand.Create(ToggleDebugLog);
+            ToggleDebugLogCommand = ReactiveCommand.Create(ToggleLog);
+
+            LogMessages = new ObservableCollection<(string, LogLevel)>();
+
+            LogMessages.CollectionChanged += OnLogMessageChanged;
 
             _autoTracker.PropertyChanging += OnAutoTrackerChanging;
             _autoTracker.PropertyChanged += OnAutoTrackerChanged;
@@ -81,11 +104,35 @@ namespace OpenTracker.ViewModels
             UpdateStatusText();
         }
 
-        private void OnTick(object sender, EventArgs e)
+        private void OnInGameTimerTick(object sender, EventArgs e)
+        {
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                _autoTracker.InGameCheck();
+            });
+        }
+
+        private void OnMemoryCheckTimerTick(object sender, EventArgs e)
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
                 _autoTracker.MemoryCheck();
+            });
+        }
+
+        private void OnLogMessageChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            string logText = "";
+            
+            foreach ((string, LogLevel) message in LogMessages)
+            {
+                if (message.Item2 >= LogLevel)
+                    logText += message.Item1 + "\n";
+            }
+
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                LogText = logText;
             });
         }
 
@@ -142,21 +189,24 @@ namespace OpenTracker.ViewModels
 
         private void UpdateStatusText()
         {
-            if (_autoTracker.Connector == null)
+            Dispatcher.UIThread.InvokeAsync(() =>
             {
-                StatusTextColor = "#f5f5f5";
-                StatusText = "NOT STARTED";
-            }
-            else if (_autoTracker.Connector.Connected)
-            {
-                StatusTextColor = "#00ff00";
-                StatusText = "CONNECTED";
-            }
-            else
-            {
-                StatusTextColor = "#ff3030";
-                StatusText = "ERROR";
-            }
+                if (_autoTracker.Connector == null)
+                {
+                    StatusTextColor = "#f5f5f5";
+                    StatusText = "NOT STARTED";
+                }
+                else if (_autoTracker.Connector.Connected)
+                {
+                    StatusTextColor = "#00ff00";
+                    StatusText = "CONNECTED";
+                }
+                else
+                {
+                    StatusTextColor = "#ff3030";
+                    StatusText = "ERROR";
+                }
+            });
         }
 
         private void Start()
@@ -164,27 +214,29 @@ namespace OpenTracker.ViewModels
             if (_autoTracker.Connector != null)
                 Stop();
 
-            DebugText = "";
+            LogMessages.Clear();
 
-            _autoTracker.Start(PushToDebugLog);
+            _autoTracker.Start(PushToLog);
 
-            _timer.Start();
+            _inGameTimer.Start();
+            _memoryCheckTimer.Start();
         }
 
         private void Stop()
         {
-            _timer.Stop();
+            _inGameTimer.Stop();
+            _memoryCheckTimer.Stop();
             _autoTracker.Stop();
         }
 
-        private void ToggleDebugLog()
+        private void ToggleLog()
         {
-            VisibleDebugLog = !VisibleDebugLog;
+            VisibleLog = !VisibleLog;
         }
 
-        private void PushToDebugLog(string rawMessage)
+        private void PushToLog(string rawMessage, LogLevel level)
         {
-            DebugText += rawMessage + "\n";
+            LogMessages.Add((rawMessage, level));
         }
     }
 }

@@ -10,7 +10,7 @@ namespace OpenTracker.Models.AutotrackerConnectors
 {
     public class USB2SNESConnector : INotifyPropertyChanging, INotifyPropertyChanged, IDisposable
     {
-        private readonly Action<string> _messageHandler;
+        private readonly Action<string, LogLevel> _messageHandler;
         private bool _shutdown;
         private volatile bool _open;
         private readonly ManualResetEvent _memoryReadEvent = new ManualResetEvent(false);
@@ -55,7 +55,7 @@ namespace OpenTracker.Models.AutotrackerConnectors
         public Action<MessageEventArgs> PendingMessageHandler { get; private set; }
         public string Usb2SnesApplicationName { get; set; } = "OpenTracker";
 
-        public USB2SNESConnector(Action<string> messageHandler = null)
+        public USB2SNESConnector(Action<string, LogLevel> messageHandler = null)
         {
             _messageHandler = messageHandler;
             ConnectIfNecessary();
@@ -110,9 +110,9 @@ namespace OpenTracker.Models.AutotrackerConnectors
             ConnectionStatusChanged?.Invoke(this, (ConnectionStatus.Closed, "Disconnected from usb2snes websocket."));
         }
 
-        private void Output(string message, params object[] tokens)
+        private void Output(string message, LogLevel level, params object[] tokens)
         {
-            _messageHandler?.Invoke(string.Format(message, tokens));
+            _messageHandler?.Invoke(string.Format(message, tokens), level);
         }
 
         private void KeepAlive()
@@ -122,20 +122,20 @@ namespace OpenTracker.Models.AutotrackerConnectors
 
         public byte? ReadByte(ulong address)
         {
-            Output(string.Format("USB2SNESConnector is reading a byte: [${0:X6}]", address));
+            Output(string.Format("USB2SNESConnector is reading a byte: [${0:X6}]", address), LogLevel.Info);
             byte[] buffer = new byte[1];
 
             if (Read(address, buffer))
                 return buffer[0];
 
-            Output(string.Format("USB2SNESConnector failed to read a byte: [${0:X6}]", address));
+            Output(string.Format("USB2SNESConnector failed to read a byte: [${0:X6}]", address), LogLevel.Error);
 
             return null;
         }
 
         public bool ReadByte(ulong address, out byte value)
         {
-            Output(string.Format("USB2SNESConnector is reading a byte: [${0:X6}]", address));
+            Output(string.Format("USB2SNESConnector is reading a byte: [${0:X6}]", address), LogLevel.Info);
 
             byte[] buffer = new byte[1];
 
@@ -145,7 +145,7 @@ namespace OpenTracker.Models.AutotrackerConnectors
                 return true;
             }
 
-            Output(string.Format("USB2SNESConnector failed to read a byte: [${0:X6}]", address));
+            Output(string.Format("USB2SNESConnector failed to read a byte: [${0:X6}]", address), LogLevel.Error);
             value = (byte)0;
 
             return false;
@@ -195,7 +195,7 @@ namespace OpenTracker.Models.AutotrackerConnectors
 
                         if (Socket == null || !Socket.IsAlive)
                         {
-                            Output("ERROR: Connection to USB2SNES lost.");
+                            Output("ERROR: Connection to USB2SNES lost.", LogLevel.Error);
 
                             ConnectionStatusChanged?.Invoke(this, (ConnectionStatus.Closed,
                                 "Connection to USB2SNES lost."));
@@ -274,7 +274,7 @@ namespace OpenTracker.Models.AutotrackerConnectors
             Socket.Log.Output = (data, message) =>
             {
                 if (!string.IsNullOrWhiteSpace(data.Message))
-                    Output(data.Message);
+                    Output(data.Message, LogLevel.Info);
             };
 
             Socket.Connect();
@@ -282,7 +282,7 @@ namespace OpenTracker.Models.AutotrackerConnectors
 
             if (Socket.IsAlive)
             {
-                Output("Connected to WebSocket");
+                Output("Connected to WebSocket", LogLevel.Info);
                 string port = null;
 
                 PendingMessageHandler = e =>
@@ -316,7 +316,7 @@ namespace OpenTracker.Models.AutotrackerConnectors
 
                 if (!string.IsNullOrWhiteSpace(port))
                 {
-                    Output("Connected to SNES via {0}", port);
+                    Output(string.Format("Connected to SNES via {0}", port), LogLevel.Info);
 
                     Socket.Send(JsonConvert.SerializeObject(new RequestType()
                     {
@@ -349,13 +349,13 @@ namespace OpenTracker.Models.AutotrackerConnectors
                                 Thread.Sleep(1500);
                             }
 
-                            _messageHandler?.Invoke("USB2SNESConnector keepalive is quitting.");
+                            _messageHandler?.Invoke("USB2SNESConnector keepalive is quitting.", LogLevel.Fatal);
                         }, TaskCreationOptions.LongRunning);
                     }
                     return true;
                 }
 
-                Output("ERROR: No SNES was detected by the system.");
+                Output("ERROR: No SNES was detected by the system.", LogLevel.Error);
                 
                 ConnectionStatusChanged?.Invoke(this, (ConnectionStatus.Closed,
                     "No SNES was detected by the system."));
@@ -363,7 +363,7 @@ namespace OpenTracker.Models.AutotrackerConnectors
                 return false;
             }
 
-            Output("ERROR: Failed to connect to web socket; the USB2SNES websocket application may not be running.");
+            Output("ERROR: Failed to connect to web socket; the USB2SNES websocket application may not be running.", LogLevel.Error);
 
             ConnectionStatusChanged?.Invoke(this, (ConnectionStatus.Closed,
                 "Failed to connect to websocket; the USB2SNES websocket application may not be running."));
