@@ -17,6 +17,7 @@ namespace OpenTracker
             => AppBuilder.Configure<App>()
                 .UsePlatformDetect()
                 .LogToDebug()
-                .UseReactiveUI();
+                .UseReactiveUI()
+                .With(new AvaloniaNativePlatformOptions { UseGpu = false });
     }
 }

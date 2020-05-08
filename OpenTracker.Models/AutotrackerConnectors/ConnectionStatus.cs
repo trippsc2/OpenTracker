@@ -2,8 +2,9 @@
 {
     public enum ConnectionStatus : byte
     {
-        Closed,
+        NotConnected,
         Connecting,
         Open,
+        Error
     }
 }

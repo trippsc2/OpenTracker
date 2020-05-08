@@ -2,11 +2,13 @@
 using OpenTracker.Models;
 using OpenTracker.Models.AutotrackerConnectors;
 using ReactiveUI;
+using Splat;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Reactive;
+using System.Reactive.Linq;
 using WebSocketSharp;
 
 namespace OpenTracker.ViewModels
@@ -19,9 +21,33 @@ namespace OpenTracker.ViewModels
 
         public ReactiveCommand<Unit, Unit> StartCommand { get; }
         public ReactiveCommand<Unit, Unit> StopCommand { get; }
-        public ReactiveCommand<Unit, Unit> ToggleDebugLogCommand { get; }
 
-        public ObservableCollection<(string, LogLevel)> LogMessages { get; }
+        private readonly ObservableAsPropertyHelper<bool> _isStarting;
+        public bool IsStarting => _isStarting.Value;
+
+        private readonly ObservableAsPropertyHelper<bool> _isStopping;
+        public bool IsStopping => _isStopping.Value;
+
+        public ObservableCollection<(string, WebSocketSharp.LogLevel)> LogMessages { get; }
+        public ObservableCollection<string> LogLevelOptions
+        {
+            get
+            {
+                ObservableCollection<string> options = new ObservableCollection<string>();
+
+                foreach (WebSocketSharp.LogLevel level in Enum.GetValues(typeof(WebSocketSharp.LogLevel)))
+                    options.Add(level.ToString());
+
+                return options;
+            }
+        }
+
+        private string _uriString = "ws://localhost:8080";
+        public string URIString
+        {
+            get => _uriString;
+            set => this.RaiseAndSetIfChanged(ref _uriString, value);
+        }
 
         private bool _canStart;
         public bool CanStart
@@ -37,25 +63,25 @@ namespace OpenTracker.ViewModels
             private set => this.RaiseAndSetIfChanged(ref _canStop, value);
         }
 
-        private string _statusTextColor;
+        private string _statusTextColor = "#ffffff";
         public string StatusTextColor
         {
             get => _statusTextColor;
             private set => this.RaiseAndSetIfChanged(ref _statusTextColor, value);
         }
 
-        private string _statusText;
+        private string _statusText = "NOT CONNECTED";
         public string StatusText
         {
             get => _statusText;
             private set => this.RaiseAndSetIfChanged(ref _statusText, value);
         }
 
-        private LogLevel _logLevel;
-        public LogLevel LogLevel
+        private WebSocketSharp.LogLevel _logLevel = WebSocketSharp.LogLevel.Info;
+        public string LogLevel
         {
-            get => _logLevel;
-            set => this.RaiseAndSetIfChanged(ref _logLevel, value);
+            get => _logLevel.ToString();
+            set => this.RaiseAndSetIfChanged(ref _logLevel, Enum.Parse<WebSocketSharp.LogLevel>(value));
         }
 
         private bool _visibleLog;
@@ -88,11 +114,15 @@ namespace OpenTracker.ViewModels
             };
             _memoryCheckTimer.Tick += OnMemoryCheckTimerTick;
 
-            StartCommand = ReactiveCommand.Create(Start, this.WhenAnyValue(x => x.CanStart));
-            StopCommand = ReactiveCommand.Create(Stop, this.WhenAnyValue(x => x.CanStop));
-            ToggleDebugLogCommand = ReactiveCommand.Create(ToggleLog);
+            StartCommand = ReactiveCommand.CreateFromObservable(StartAsync, this.WhenAnyValue(x => x.CanStart));
+            StartCommand.IsExecuting.ToProperty(this, x => x.IsStarting, out _isStarting);
 
-            LogMessages = new ObservableCollection<(string, LogLevel)>();
+            StopCommand = ReactiveCommand.CreateFromObservable(StopAsync, this.WhenAnyValue(x => x.CanStop));
+            StopCommand.IsExecuting.ToProperty(this, x => x.IsStopping, out _isStopping);
+
+            LogMessages = new ObservableCollection<(string, WebSocketSharp.LogLevel)>();
+
+            PropertyChanged += OnPropertyChanged;
 
             LogMessages.CollectionChanged += OnLogMessageChanged;
 
@@ -101,8 +131,16 @@ namespace OpenTracker.ViewModels
 
             UpdateCanStart();
             UpdateCanStop();
-            UpdateStatusText();
         }
+
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(LogLevel))
+                LogMessages.Clear();
+
+            if (e.PropertyName == nameof(URIString))
+                UpdateCanStart();
+        }    
 
         private void OnInGameTimerTick(object sender, EventArgs e)
         {
@@ -123,11 +161,11 @@ namespace OpenTracker.ViewModels
         private void OnLogMessageChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             string logText = "";
-            
-            foreach ((string, LogLevel) message in LogMessages)
+
+            foreach ((string, WebSocketSharp.LogLevel) message in LogMessages)
             {
-                if (message.Item2 >= LogLevel)
-                    logText += message.Item1 + "\n";
+                logText += string.Format("{0}: " + message.Item1 + "\n",
+                    message.Item2.ToString().ToUpper());
             }
 
             Dispatcher.UIThread.InvokeAsync(() =>
@@ -140,7 +178,7 @@ namespace OpenTracker.ViewModels
         {
             if (e.PropertyName == nameof(AutoTracker.Connector) && _autoTracker.Connector != null)
             {
-                _autoTracker.Connector.ConnectionStatusChanged -= OnConnectorChanged;
+                _autoTracker.Connector.ConnectionStatusChanged -= OnConnectorStatusChanged;
                 _autoTracker.Connector.PropertyChanged -= OnConnectorPropertyChanged;
             }
         }
@@ -149,20 +187,19 @@ namespace OpenTracker.ViewModels
         {
             if (e.PropertyName == nameof(AutoTracker.Connector) && _autoTracker.Connector != null)
             {
-                _autoTracker.Connector.ConnectionStatusChanged += OnConnectorChanged;
+                _autoTracker.Connector.ConnectionStatusChanged += OnConnectorStatusChanged;
                 _autoTracker.Connector.PropertyChanged += OnConnectorPropertyChanged;
             }
 
             UpdateCanStart();
             UpdateCanStop();
-            UpdateStatusText();
         }
 
-        private void OnConnectorChanged(object sender, (ConnectionStatus, string) e)
+        private void OnConnectorStatusChanged(object sender, (ConnectionStatus, string) e)
         {
             UpdateCanStart();
             UpdateCanStop();
-            UpdateStatusText();
+            UpdateStatusText(e.Item1);
         }
 
         private void OnConnectorPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -173,39 +210,12 @@ namespace OpenTracker.ViewModels
 
         private void UpdateCanStart()
         {
-            if (_autoTracker.Connector == null)
-                CanStart = true;
-            else
-                CanStart = false;
-        }
-
-        private void UpdateCanStop()
-        {
-            if (_autoTracker.Connector != null)
-                CanStop = true;
-            else
-                CanStop = false;
-        }
-
-        private void UpdateStatusText()
-        {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                if (_autoTracker.Connector == null)
-                {
-                    StatusTextColor = "#f5f5f5";
-                    StatusText = "NOT STARTED";
-                }
-                else if (_autoTracker.Connector.Connected)
-                {
-                    StatusTextColor = "#00ff00";
-                    StatusText = "CONNECTED";
-                }
+                if (_autoTracker.Connector == null && CanCreateWebSocketUri())
+                    CanStart = true;
                 else
-                {
-                    StatusTextColor = "#ff3030";
-                    StatusText = "ERROR";
-                }
+                    CanStart = false;
             });
         }
 
@@ -216,10 +226,26 @@ namespace OpenTracker.ViewModels
 
             LogMessages.Clear();
 
-            _autoTracker.Start(PushToLog);
+            _autoTracker.Start(URIString, PushToLog);
 
             _inGameTimer.Start();
             _memoryCheckTimer.Start();
+        }
+
+        private IObservable<Unit> StartAsync()
+        {
+            return Observable.Start(() => { Start(); });
+        }
+
+        private void UpdateCanStop()
+        {
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (_autoTracker.Connector != null)
+                    CanStop = true;
+                else
+                    CanStop = false;
+            });
         }
 
         private void Stop()
@@ -229,14 +255,67 @@ namespace OpenTracker.ViewModels
             _autoTracker.Stop();
         }
 
-        private void ToggleLog()
+        private IObservable<Unit> StopAsync()
         {
-            VisibleLog = !VisibleLog;
+            return Observable.Start(() => { Stop(); });
         }
 
-        private void PushToLog(string rawMessage, LogLevel level)
+        private void UpdateStatusText(ConnectionStatus status)
         {
-            LogMessages.Add((rawMessage, level));
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                switch (status)
+                {
+                    case ConnectionStatus.NotConnected:
+                        StatusTextColor = "#ffffff";
+                        StatusText = "NOT CONNECTED";
+                        break;
+                    case ConnectionStatus.Connecting:
+                        StatusTextColor = "#ffff00";
+                        StatusText = "CONNECTING";
+                        break;
+                    case ConnectionStatus.Open:
+                        StatusTextColor = "#00ff00";
+                        StatusText = "CONNECTED";
+                        break;
+                    case ConnectionStatus.Error:
+                        StatusTextColor = "#ff3030";
+                        StatusText = "ERROR";
+                        break;
+                }
+            });
+        }
+
+        private void PushToLog(string rawMessage, WebSocketSharp.LogLevel level)
+        {
+            if (_logLevel <= level)
+                LogMessages.Add((rawMessage, level));
+        }
+
+        private bool CanCreateWebSocketUri()
+        {
+            var uri = URIString.ToUri();
+
+            if (uri == null)
+                return false;
+
+            if (!uri.IsAbsoluteUri)
+                return false;
+
+            var schm = uri.Scheme;
+
+            if (!(schm == "ws" || schm == "wss"))
+                return false;
+
+            var port = uri.Port;
+
+            if (port == 0)
+                return false;
+
+            if (uri.Fragment.Length > 0)
+                return false;
+
+            return true;
         }
     }
 }

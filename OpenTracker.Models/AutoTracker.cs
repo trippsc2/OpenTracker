@@ -81,9 +81,11 @@ namespace OpenTracker.Models
                 return;
         }
 
-        public void Start(Action<string, LogLevel> messageHandler)
+        public void Start(string uriString, Action<string, LogLevel> messageHandler)
         {
-            Connector = new USB2SNESConnector(messageHandler);
+            Connector = new USB2SNESConnector(uriString, messageHandler);
+
+            Connector.ConnectIfNecessary();
 
             int i = 0;
 
@@ -122,7 +124,8 @@ namespace OpenTracker.Models
 
         public bool IsInGame()
         {
-            if (InGameStatus != null && InGameStatus.Value > 0x05 && InGameStatus.Value != 0x14)
+            if (InGameStatus.HasValue && InGameStatus.Value > 0x05 &&
+                InGameStatus.Value != 0x14)
                 return true;
 
             return false;

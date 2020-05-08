@@ -2,13 +2,18 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="512"
+        mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="550"
         x:Class="OpenTracker.Views.AutoTrackerDialog"
         Icon="avares://OpenTracker/Assets/triforce.png"
-        Title="OpenTracker - AutoTracker" Width="420" Height="512">
+        Title="OpenTracker - AutoTracker" Width="420" Height="550">
 	<Border Classes="Dialog">
 		<DockPanel>
 			<StackPanel DockPanel.Dock="Top" Orientation="Vertical">
+
+        <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
+          <TextBlock Classes="AutoTrackerLabel" Foreground="#FFFFFF">USB2SNES URI:</TextBlock>
+          <TextBox Classes="AutoTrackerURI" Text="{Binding Path=URIString, Mode=TwoWay}" />
+        </StackPanel>
 
 				<StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
 					<Button Classes="AutoTracker" Command="{Binding Path=StartCommand}">Start</Button>
@@ -16,18 +21,24 @@
 				</StackPanel>
 
 				<StackPanel Margin="10" HorizontalAlignment="Center" Orientation="Horizontal">
-					<TextBlock Classes="AutoTrackerStatus" Foreground="#FFFFFF">AutoTracking Status is:</TextBlock>
-					<TextBlock Classes="AutoTrackerStatus" Margin="10,0,0,0" Foreground="{Binding Path=StatusTextColor,
+					<TextBlock Classes="AutoTrackerLabel" Foreground="#FFFFFF">AutoTracking Status is:</TextBlock>
+					<TextBlock Classes="AutoTrackerStatus" Foreground="{Binding Path=StatusTextColor,
                      Mode=OneWay}" Text="{Binding Path=StatusText}" />
 				</StackPanel>
 
-				<ToggleButton Classes="AutoTracker" IsChecked="{Binding Path=VisibleLog,
+        <StackPanel Margin="10" HorizontalAlignment="Center" Orientation="Horizontal">
+          <TextBlock Classes="AutoTrackerLabel" Foreground="#FFFFFF">Logging Level:</TextBlock>
+          <ComboBox Classes="AutoTrackerLogLevel" Items="{Binding Path=LogLevelOptions,
+                    Mode=OneWay}" SelectedItem="{Binding Path=LogLevel, Mode=TwoWay}" />
+        </StackPanel>
+
+        <ToggleButton Classes="AutoTracker" IsChecked="{Binding Path=VisibleLog,
 						  Mode=TwoWay}">Show Log</ToggleButton>
 
 			</StackPanel>
 
 			<Border Classes="AutoTrackerLog" IsVisible="{Binding Path=VisibleLog}"
-					IsHitTestVisible="{Binding Path=VisibleDebugLog}">
+					IsHitTestVisible="{Binding Path=VisibleLog}">
 				<ScrollViewer>
 					<TextBlock Classes="AutoTrackerLog" Foreground="#FFFFFF" Margin="5,0"
 							   Text="{Binding LogText}" />

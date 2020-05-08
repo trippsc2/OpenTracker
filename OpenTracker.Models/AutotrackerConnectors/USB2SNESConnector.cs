@@ -10,6 +10,7 @@ namespace OpenTracker.Models.AutotrackerConnectors
 {
     public class USB2SNESConnector : INotifyPropertyChanging, INotifyPropertyChanged, IDisposable
     {
+        private readonly string _webSocketURI;
         private readonly Action<string, LogLevel> _messageHandler;
         private bool _shutdown;
         private volatile bool _open;
@@ -55,10 +56,10 @@ namespace OpenTracker.Models.AutotrackerConnectors
         public Action<MessageEventArgs> PendingMessageHandler { get; private set; }
         public string Usb2SnesApplicationName { get; set; } = "OpenTracker";
 
-        public USB2SNESConnector(Action<string, LogLevel> messageHandler = null)
+        public USB2SNESConnector(string webSocketURI, Action<string, LogLevel> messageHandler = null)
         {
+            _webSocketURI = webSocketURI;
             _messageHandler = messageHandler;
-            ConnectIfNecessary();
         }
 
         private void OnPropertyChanging(string propertyName)
@@ -107,7 +108,7 @@ namespace OpenTracker.Models.AutotrackerConnectors
                 _open = false;
             }
 
-            ConnectionStatusChanged?.Invoke(this, (ConnectionStatus.Closed, "Disconnected from usb2snes websocket."));
+            ConnectionStatusChanged?.Invoke(this, (ConnectionStatus.NotConnected, "Disconnected from usb2snes websocket."));
         }
 
         private void Output(string message, LogLevel level, params object[] tokens)
@@ -154,6 +155,7 @@ namespace OpenTracker.Models.AutotrackerConnectors
         public bool Read(ulong address, byte[] buffer)
         {
             bool success = false;
+
             while (!success)
             {
                 ConnectIfNecessary();
@@ -197,7 +199,7 @@ namespace OpenTracker.Models.AutotrackerConnectors
                         {
                             Output("ERROR: Connection to USB2SNES lost.", LogLevel.Error);
 
-                            ConnectionStatusChanged?.Invoke(this, (ConnectionStatus.Closed,
+                            ConnectionStatusChanged?.Invoke(this, (ConnectionStatus.Error,
                                 "Connection to USB2SNES lost."));
                         }
                         else
@@ -263,14 +265,21 @@ namespace OpenTracker.Models.AutotrackerConnectors
             return false;
         }
 
-        private bool? ConnectIfNecessary()
+        public bool? ConnectIfNecessary()
         {
+            Output("Attempting to connect to USB2SNES", LogLevel.Debug);
+
             if (Connected || _shutdown)
+            {
+                Output("Already connected to USB2SNES or connector is shut down.", LogLevel.Debug);
                 return null;
+            }
 
             Disconnect();
 
-            Socket = new WebSocket("ws://localhost:8080");
+            ConnectionStatusChanged?.Invoke(this, (ConnectionStatus.Connecting, "Connecting to USB2SNES websocket."));
+
+            Socket = new WebSocket(_webSocketURI);
             Socket.Log.Output = (data, message) =>
             {
                 if (!string.IsNullOrWhiteSpace(data.Message))
@@ -280,7 +289,7 @@ namespace OpenTracker.Models.AutotrackerConnectors
             Socket.Connect();
             Thread.Sleep(1000);
 
-            if (Socket.IsAlive)
+            if (Socket != null && Socket.IsAlive)
             {
                 Output("Connected to WebSocket", LogLevel.Info);
                 string port = null;
@@ -289,19 +298,35 @@ namespace OpenTracker.Models.AutotrackerConnectors
                 {
                     try
                     {
+                        Output("Message received from websocket.", LogLevel.Debug);
+
                         if (JsonConvert.DeserializeObject<Dictionary<string, string[]>>(e.Data) is Dictionary<string, string[]> dictionary &&
                             dictionary.TryGetValue("Results", out string[] results))
                         {
+                            Output("Message successfully deserialized.", LogLevel.Debug);
+
                             foreach (string result in (results as IEnumerable<string>) ?? new string[0])
                             {
+
                                 port = result as string;
 
+
                                 if (!string.IsNullOrWhiteSpace(port))
+                                {
+                                    Output(string.Format("SNES port {0} found.", port), LogLevel.Debug);
                                     break;
+                                }
+                                else
+                                    Output("Received empty response.", LogLevel.Debug);
                             }
                         }
+                        else
+                            Output("Message could not be deserialized.", LogLevel.Warn);
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        Output(ex.Message, LogLevel.Fatal);
+                    }
                     finally { _memoryReadEvent.Set(); }
                 };
 
@@ -318,6 +343,9 @@ namespace OpenTracker.Models.AutotrackerConnectors
                 {
                     Output(string.Format("Connected to SNES via {0}", port), LogLevel.Info);
 
+                    ConnectionStatusChanged?.Invoke(this, (ConnectionStatus.Open,
+                        "Connection to USB2SNES socket service established."));
+
                     Socket.Send(JsonConvert.SerializeObject(new RequestType()
                     {
                         Opcode = OpcodeType.Attach.ToString(),
@@ -332,9 +360,6 @@ namespace OpenTracker.Models.AutotrackerConnectors
                         Operands = new List<string>() { Usb2SnesApplicationName }
                     }));
 
-                    ConnectionStatusChanged?.Invoke(this, (ConnectionStatus.Open,
-                        "Connection to USB2SNES socket service established."));
-
                     _open = true;
 
                     if (_keepAliveTask == null)
@@ -343,29 +368,36 @@ namespace OpenTracker.Models.AutotrackerConnectors
                         {
                             while (_open)
                             {
-                                try { KeepAlive(); }
-                                catch { }
+                                try
+                                {
+                                    Output("Keepalive sent.", LogLevel.Debug);
+                                    KeepAlive();
+                                }
+                                catch (Exception ex)
+                                {
+                                    Output(ex.Message, LogLevel.Fatal);
+                                }
 
                                 Thread.Sleep(1500);
                             }
 
-                            _messageHandler?.Invoke("USB2SNESConnector keepalive is quitting.", LogLevel.Fatal);
+                            _messageHandler?.Invoke("USB2SNESConnector keepalive is quitting.", LogLevel.Error);
                         }, TaskCreationOptions.LongRunning);
                     }
                     return true;
                 }
 
-                Output("ERROR: No SNES was detected by the system.", LogLevel.Error);
+                Output("No SNES was detected by the system.", LogLevel.Error);
                 
-                ConnectionStatusChanged?.Invoke(this, (ConnectionStatus.Closed,
+                ConnectionStatusChanged?.Invoke(this, (ConnectionStatus.Error,
                     "No SNES was detected by the system."));
                 
                 return false;
             }
 
-            Output("ERROR: Failed to connect to web socket; the USB2SNES websocket application may not be running.", LogLevel.Error);
+            Output("Failed to connect to web socket. The USB2SNES websocket application may not be running.", LogLevel.Error);
 
-            ConnectionStatusChanged?.Invoke(this, (ConnectionStatus.Closed,
+            ConnectionStatusChanged?.Invoke(this, (ConnectionStatus.Error,
                 "Failed to connect to websocket; the USB2SNES websocket application may not be running."));
             
             return false;
