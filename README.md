@@ -9,9 +9,6 @@ This project is intended to provide a tracker with the following features:
 - Customizable from the GUI
 
 The following is on my roadmap for future updates:
-- Improve AutoTracking
-  - Make edge cases more stable (disconnects, USB2SNES closed, etc.)
-  - Improve logging (more descriptive messages and logging levels)
 - Stream Capture view
   - Provide a Window view that is friendly to capture with OBS.
   - Consider NDI support for remote streaming.
@@ -47,21 +44,21 @@ NOTE: The Windows MSI has been known to not install properly over an existing in
 If you are running a Debian-based (Ubuntu, Mint, PopOS, etc.) distribution, run the following commands:
 
 ```
-wget https://github.com/trippsc2/OpenTracker/releases/download/<version>-beta/OpenTracker.<version>.deb
+wget https://github.com/trippsc2/OpenTracker/releases/download/<version>/OpenTracker.<version>.deb
 sudo apt install ./OpenTracker.<version>.deb
 ```
 
 If you are running a RHEL-based (Fedora, etc.) distribution, run the following commands:
 
 ```
-wget https://github.com/trippsc2/OpenTracker/releases/download/<version>-beta/OpenTracker.<version>.rpm
+wget https://github.com/trippsc2/OpenTracker/releases/download/<version>/OpenTracker.<version>.rpm
 sudo rpm -i ./OpenTracker.<version>.rpm
 ```
 
 If you are running a different distribution, run the following commands:
 
 ```
-wget https://github.com/trippsc2/OpenTracker/releases/download/<version>-beta/OpenTracker.<version>.tar.gz
+wget https://github.com/trippsc2/OpenTracker/releases/download/<version>/OpenTracker.<version>.tar.gz
 tar xvzf ./OpenTracker.<version>.tar.gz
 ```
 
@@ -69,7 +66,7 @@ To run the application, run the OpenTracker binary file.  It will be located in 
 
 ### MacOS
 
-Coming soon...
+Download the OpenTracker.<version>.macOS.zip file from the Releases page.  This contains an .app bundle that can be moved to your Applications folder or run directly.
 
 ## How it Works
 
