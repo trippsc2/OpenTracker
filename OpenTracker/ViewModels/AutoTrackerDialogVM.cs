@@ -228,8 +228,11 @@ namespace OpenTracker.ViewModels
 
             _autoTracker.Start(URIString, PushToLog);
 
-            _inGameTimer.Start();
-            _memoryCheckTimer.Start();
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                _inGameTimer.Start();
+                _memoryCheckTimer.Start();
+            });
         }
 
         private IObservable<Unit> StartAsync()
