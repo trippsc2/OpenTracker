@@ -286,9 +286,9 @@
 
 		<!-- UI Panels -->
 		<DockPanel DockPanel.Dock="{Binding ElementName=HostWindow, Path=UIPanelDock, Mode=OneWay}"
-				   HorizontalAlignment="{Binding ElementName=HostWindow, Path=UIPanelHorizontalAlignment,
-				   Mode=OneWay}" VerticalAlignment="{Binding ElementName=HostWindow,
-				   Path=UIPanelHorizontalAlignment, Mode=OneWay}">
+               HorizontalAlignment="{Binding ElementName=HostWindow, Path=UIPanelHorizontalAlignment,
+               Mode=OneWay}" VerticalAlignment="{Binding ElementName=HostWindow,
+               Path=UIPanelHorizontalAlignment, Mode=OneWay}">
 
 			<!-- Items Panel -->
 			<Border Classes="ControlBorder" Margin="{Binding ElementName=HostWindow, Path=ItemsPanelMargin,

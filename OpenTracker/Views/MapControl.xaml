@@ -12,7 +12,7 @@
 	</UserControl.Resources>
 	
 	<UserControl.Styles>
-		<Style Selector="ItemsControl > ContentPresenter">
+		<Style Selector="ItemsControl.Canvas > ContentPresenter">
 			<Setter Property="Canvas.Left" Value="{Binding Path=CanvasX}" />
 			<Setter Property="Canvas.Top" Value="{Binding Path=CanvasY}" />
 		</Style>

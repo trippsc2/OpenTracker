@@ -3846,7 +3846,18 @@ namespace OpenTracker.Models
                                 }
                                 else
                                 {
+                                    inaccessible = 2;
 
+                                    if (_game.Items.Has(ItemType.FireRod) || _game.Mode.EntranceShuffle.Value)
+                                    {
+                                        inaccessible = 1;
+
+                                        if (_game.Items.CanRemoveCurtains())
+                                        {
+                                            inaccessible = 0;
+                                            sequenceBreak = false;
+                                        }
+                                    }
                                 }
                             }
 

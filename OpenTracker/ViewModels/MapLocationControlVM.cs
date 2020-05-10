@@ -86,16 +86,12 @@ namespace OpenTracker.ViewModels
         {
             get
             {
-                if (_game.Mode.Validate(_mapLocation.VisibilityMode))
-                {
-                    if (_mapLocation.Location.Sections[0] is EntranceSection entranceSection &&
-                        entranceSection.Marking != null)
-                        return true;
-                    else
-                        return false;
-                }
-                else
-                    return false;
+                if (_game.Mode.Validate(_mapLocation.VisibilityMode) &&
+                    _mapLocation.Location.Sections[0] is EntranceSection entranceSection &&
+                    entranceSection.Marking != null)
+                    return true;
+                
+                return false;
             }
         }
 
@@ -106,9 +102,10 @@ namespace OpenTracker.ViewModels
                 if (_game.Mode.Validate(_mapLocation.VisibilityMode))
                     return !ImageVisible && (_appSettings.DisplayAllLocations ||
                         (_mapLocation.Location.Accessibility != AccessibilityLevel.Cleared &&
-                        _mapLocation.Location.Accessibility != AccessibilityLevel.None));
-                else
-                    return false;
+                        (_mapLocation.Location.Sections[0] is EntranceSection ||
+                        _mapLocation.Location.Accessibility != AccessibilityLevel.None)));
+                
+                return false;
             }
         }
 
