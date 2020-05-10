@@ -3818,45 +3818,40 @@ namespace OpenTracker.Models
                                 }
                                 else
                                 {
-                                    inaccessible = 0;
+                                    inaccessible = 1;
 
                                     if ((_game.Items.Has(ItemType.FireRod) || _game.Mode.EntranceShuffle.Value) &&
                                         _game.Items.CanRemoveCurtains() && _game.Items.Has(ItemType.SWBigKey))
+                                    {
+                                        inaccessible = 0;
                                         sequenceBreak = false;
+                                    }
                                 }
                             }
                             else
                             {
                                 if (_game.Mode.SmallKeyShuffle)
                                 {
-                                    inaccessible = 2;
+                                    inaccessible = 1;
 
-                                    if (_game.Items.Has(ItemType.FireRod) || _game.Mode.EntranceShuffle.Value)
+                                    if ((_game.Items.Has(ItemType.FireRod) || _game.Mode.EntranceShuffle.Value) &&
+                                        _game.Items.CanRemoveCurtains())
                                     {
-                                        inaccessible = 1;
-
-                                        if (_game.Items.CanRemoveCurtains())
-                                        {
-                                            inaccessible = 0;
-
-                                            if (_game.Items.Has(ItemType.SWSmallKey))
-                                                sequenceBreak = false;
-                                        }
+                                        inaccessible = 0;
+                                        
+                                        if (_game.Items.Has(ItemType.SWSmallKey))
+                                            sequenceBreak = false;
                                     }
                                 }
                                 else
                                 {
-                                    inaccessible = 2;
+                                    inaccessible = 1;
 
-                                    if (_game.Items.Has(ItemType.FireRod) || _game.Mode.EntranceShuffle.Value)
+                                    if ((_game.Items.Has(ItemType.FireRod) || _game.Mode.EntranceShuffle.Value) &&
+                                        _game.Items.CanRemoveCurtains())
                                     {
-                                        inaccessible = 1;
-
-                                        if (_game.Items.CanRemoveCurtains())
-                                        {
-                                            inaccessible = 0;
-                                            sequenceBreak = false;
-                                        }
+                                        inaccessible = 0;
+                                        sequenceBreak = false;
                                     }
                                 }
                             }
