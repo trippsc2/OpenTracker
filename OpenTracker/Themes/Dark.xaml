@@ -8,7 +8,7 @@
         <Color x:Key="ThemeAccentColor4">#FF323232</Color>
 
         <Color x:Key="ThemeBackgroundColor">#FF242424</Color>
-        <Color x:Key="ThemeBorderLowColor">#FF505050</Color>
+        <Color x:Key="ThemeBorderLowColor">#FF121212</Color>
         <Color x:Key="ThemeBorderMidColor">#FF808080</Color>
         <Color x:Key="ThemeBorderHighColor">#FFA0A0A0</Color>
         <Color x:Key="ThemeControlLowColor">#FF282828</Color>
