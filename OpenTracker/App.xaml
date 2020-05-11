@@ -9,11 +9,10 @@
 
 	<Application.Styles>
 		<StyleInclude Source="avares://Avalonia.Themes.Default/DefaultTheme.xaml"/>
-		<StyleInclude Source="avares://Avalonia.Themes.Default/Accents/BaseLight.xaml"/>
 		<StyleInclude Source="avares://ThemeEditor.Controls.ColorPicker/ColorPicker.xaml"/>
 
 		<Style Selector="Border.ControlBorder">
-			<Setter Property="BorderBrush" Value="#081212" />
+			<Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderLowBrush}" />
 			<Setter Property="BorderThickness" Value="1" />
 		</Style>
 
@@ -21,12 +20,8 @@
 			<Setter Property="Padding" Value="10,5" />
 		</Style>
 
-		<Style Selector="Border.ItemsPanelTitle">
-			<Setter Property="Background" Value="#262626" />
-		</Style>
-
-		<Style Selector="Border.LocationsPanelTitle">
-			<Setter Property="Background" Value="#242424" />
+		<Style Selector="Border.UIPanelTitle">
+			<Setter Property="Background" Value="{DynamicResource ThemeControlLowBrush}" />
 		</Style>
 
 		<Style Selector="Border.UIPanelBody">
@@ -34,21 +29,21 @@
 		</Style>
 
 		<Style Selector="Border.ItemsPanelBody">
-			<Setter Property="Background" Value="#2D4848" />
+			<Setter Property="Background" Value="{DynamicResource ThemeAccentBrush3}" />
 		</Style>
 
 		<Style Selector="Border.LocationsPanelBody">
-			<Setter Property="Background" Value="#233939" />
+			<Setter Property="Background" Value="{DynamicResource ThemeAccentBrush4}" />
 		</Style>
 
 		<Style Selector="Border.Separator">
-			<Setter Property="Background" Value="#FFFFFF" />
+			<Setter Property="Background" Value="{DynamicResource ThemeForegroundBrush}" />
 			<Setter Property="Height" Value="1" />
 		</Style>
 
 		<Style Selector="Border.Popup">
-			<Setter Property="Background" Value="#262626" />
-			<Setter Property="BorderBrush" Value="#000000" />
+			<Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}" />
+			<Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderLowBrush}" />
 			<Setter Property="BorderThickness" Value="3" />
 			<Setter Property="Padding" Value="5" />
 		</Style>
@@ -67,7 +62,7 @@
 		</Style>
 
 		<Style Selector="Border.Location">
-			<Setter Property="Background" Value="#242424" />
+			<Setter Property="Background" Value="{DynamicResource ThemeControlLowBrush}" />
 		</Style>
 
 		<Style Selector="Border.SectionCount">
@@ -78,24 +73,23 @@
 		</Style>
 
 		<Style Selector="Border.Dialog">
-			<Setter Property="Background" Value="#262626" />
+			<Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}" />
 			<Setter Property="BorderBrush" Value="#000000" />
 			<Setter Property="BorderThickness" Value="3" />
 			<Setter Property="Padding" Value="5" />
 		</Style>
 
 		<Style Selector="Border.ColorPicker">
-			<Setter Property="Background" Value="#FFFFFF" />
 			<Setter Property="Height" Value="300" />
 			<Setter Property="Width" Value="400" />
 			<Setter Property="Margin" Value="0,4" />
 		</Style>
 
 		<Style Selector="Border.AutoTrackerLog">
-			<Setter Property="Background" Value="#2D4848" />
-      <Setter Property="BorderBrush" Value="#081212" />
-      <Setter Property="BorderThickness" Value="1" />
-      <Setter Property="Margin" Value="5" />
+			<Setter Property="Background" Value="{DynamicResource ThemeAccentBrush}" />
+			<Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderLowBrush}" />
+			<Setter Property="BorderThickness" Value="1" />
+			<Setter Property="Margin" Value="5" />
 		</Style>
 		
 		<Style Selector="Border.MapLocation">
@@ -103,28 +97,24 @@
 		</Style>
 
 		<Style Selector="Border.MapLocation:pointerover">
-			<Setter Property="BorderBrush" Value="#FFFFFF" />
+			<Setter Property="BorderBrush" Value="#FFFFFFFF" />
 		</Style>
 
 		<Style Selector="Border.MapLocationNumber">
-			<Setter Property="Background" Value="#000000" />
+			<Setter Property="Background" Value="#FF000000" />
 			<Setter Property="Padding" Value="8,0" />
 			<Setter Property="HorizontalAlignment" Value="Center" />
 			<Setter Property="VerticalAlignment" Value="Center" />
 		</Style>
 		
 		<Style Selector="Menu.MenuBar">
-			<Setter Property="Background" Value="#262626" />
+			<Setter Property="Background" Value="{DynamicResource ThemeControlLowBrush}" />
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
-			<Setter Property="FontWeight" Value="SemiBold" />
-			<Setter Property="Foreground" Value="#FFFFFF" />
 		</Style>
 
 		<Style Selector="MenuItem.Menu">
-			<Setter Property="Background" Value="#262626" />
+			<Setter Property="Background" Value="{DynamicResource ThemeControlLowBrush}" />
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
-			<Setter Property="FontWeight" Value="SemiBold" />
-			<Setter Property="Foreground" Value="#FFFFFF" />
 		</Style>
 
 		<Style Selector="MenuItem.InnerMenu">
@@ -135,14 +125,12 @@
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
 			<Setter Property="FontSize" Value="12" />
 			<Setter Property="FontWeight" Value="SemiBold" />
-			<Setter Property="Foreground" Value="#FFFFFF" />
 		</Style>
 
 		<Style Selector="TextBlock.ModeSettingsTitle">
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
 			<Setter Property="FontSize" Value="12" />
 			<Setter Property="FontWeight" Value="SemiBold" />
-			<Setter Property="Foreground" Value="#FFFFFF" />
 			<Setter Property="Margin" Value="4" />
 		</Style>
 
@@ -164,7 +152,6 @@
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
 			<Setter Property="FontSize" Value="11" />
 			<Setter Property="FontWeight" Value="SemiBold" />
-			<Setter Property="Foreground" Value="#FFFFFF" />
 			<Setter Property="HorizontalAlignment" Value="Left" />
 			<Setter Property="VerticalAlignment" Value="Center" />
 		</Style>
@@ -180,7 +167,6 @@
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
 			<Setter Property="FontSize" Value="13" />
 			<Setter Property="FontWeight" Value="SemiBold" />
-			<Setter Property="Foreground" Value="#FFFFFF" />
 			<Setter Property="HorizontalAlignment" Value="Center" />
 			<Setter Property="VerticalAlignment" Value="Center" />
 		</Style>
@@ -189,7 +175,6 @@
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
 			<Setter Property="FontSize" Value="12" />
 			<Setter Property="FontWeight" Value="SemiBold" />
-			<Setter Property="Foreground" Value="#FFFFFF" />
 			<Setter Property="Margin" Value="30" />
 			<Setter Property="TextWrapping" Value="Wrap" />
 		</Style>
@@ -198,14 +183,12 @@
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
 			<Setter Property="FontSize" Value="12" />
 			<Setter Property="FontWeight" Value="SemiBold" />
-			<Setter Property="Foreground" Value="#FFFFFF" />
 			<Setter Property="Margin" Value="4" />
 		</Style>
 
 		<Style Selector="TextBlock.ColorSelectLabel">
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
 			<Setter Property="FontSize" Value="11" />
-			<Setter Property="Foreground" Value="#FFFFFF" />
 			<Setter Property="Margin" Value="4" />
 			<Setter Property="HorizontalAlignment" Value="Right" />
 			<Setter Property="VerticalAlignment" Value="Center" />
@@ -215,7 +198,6 @@
       <Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
       <Setter Property="FontSize" Value="12" />
       <Setter Property="FontWeight" Value="SemiBold" />
-      <Setter Property="Foreground" Value="#FFFFFF" />
       <Setter Property="Margin" Value="0,0,10,0" />
       <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
@@ -223,7 +205,6 @@
     <Style Selector="TextBlock.AutoTrackerStatus">
       <Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
       <Setter Property="FontSize" Value="12" />
-      <Setter Property="Foreground" Value="#FFFFFF" />
       <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
@@ -243,26 +224,24 @@
 		<Style Selector="RadioButton.ModeSettings">
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
 			<Setter Property="FontSize" Value="11" />
-			<Setter Property="Foreground" Value="#FFFFFF" />
 			<Setter Property="Margin" Value="4" />
 		</Style>
 
 		<Style Selector="RadioButton.Menu">
-			<Setter Property="HorizontalAlignment" Value="Stretch" />
-			<Setter Property="VerticalAlignment" Value="Stretch" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="IsHitTestVisible" Value="False" />
 		</Style>
 
 		<Style Selector="CheckBox.ModeSettings">
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/#Open Sans" />
 			<Setter Property="FontSize" Value="11" />
-			<Setter Property="Foreground" Value="#FFFFFF" />
 			<Setter Property="Margin" Value="4" />
 		</Style>
 
 		<Style Selector="CheckBox.Menu">
-			<Setter Property="HorizontalAlignment" Value="Stretch" />
-			<Setter Property="VerticalAlignment" Value="Stretch" />
-		</Style>
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="IsHitTestVisible" Value="False" />
+    </Style>
 
 		<Style Selector="Panel.ItemControl">
 			<Setter Property="Margin" Value="1,4" />
@@ -301,24 +280,21 @@
 		</Style>
 
 		<Style Selector="Button.ClearMarking">
-			<Setter Property="Background" Value="#233939" />
+			<Setter Property="Background" Value="{DynamicResource ThemeAccentBrush2}" />
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
-			<Setter Property="Foreground" Value="#FFFFFF" />
 		</Style>
 
 		<Style Selector="Button.MessageBox">
-			<Setter Property="Background" Value="#233939" />
+			<Setter Property="Background" Value="{DynamicResource ThemeAccentBrush2}" />
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
-			<Setter Property="Foreground" Value="#FFFFFF" />
 			<Setter Property="Margin" Value="15,0,0,0" />
 			<Setter Property="MinHeight" Value="24" />
 			<Setter Property="MinWidth" Value="75" />
 		</Style>
 
 		<Style Selector="Button.AutoTracker">
-			<Setter Property="Background" Value="#233939" />
+			<Setter Property="Background" Value="{DynamicResource ThemeAccentBrush2}" />
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
-			<Setter Property="Foreground" Value="#FFFFFF" />
 			<Setter Property="Margin" Value="20,0" />
 			<Setter Property="MinHeight" Value="24" />
 			<Setter Property="MinWidth" Value="75" />
@@ -333,36 +309,27 @@
 		</Style>
 
 		<Style Selector="ToggleButton.AutoTracker">
-			<Setter Property="Background" Value="#233939" />
+			<Setter Property="Background" Value="{DynamicResource ThemeAccentBrush2}" />
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
-			<Setter Property="Foreground" Value="#FFFFFF" />
 			<Setter Property="Margin" Value="10" />
 			<Setter Property="MinHeight" Value="24" />
 			<Setter Property="MinWidth" Value="150" />
 			<Setter Property="HorizontalAlignment" Value="Center" />
 		</Style>
 
-    <Style Selector="TextBox.AutoTrackerURI">
-      <Setter Property="Background" Value="#2D4848" />
-      <Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
-      <Setter Property="FontSize" Value="12" />
-      <Setter Property="Foreground" Value="#FFFFFF" />
-      <Setter Property="HorizontalAlignment" Value="Center" />
-      <Setter Property="Width" Value="150" />
-    </Style>
+		<Style Selector="TextBox.AutoTrackerURI">
+			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
+			<Setter Property="FontSize" Value="12" />
+			<Setter Property="HorizontalAlignment" Value="Center" />
+			<Setter Property="Width" Value="150" />
+		</Style>
 
-    <Style Selector="ComboBox.AutoTrackerLogLevel">
-      <Setter Property="Background" Value="#2D4848" />
-      <Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
-      <Setter Property="FontSize" Value="12" />
-      <Setter Property="Foreground" Value="#FFFFFF" />
-      <Setter Property="HorizontalAlignment" Value="Center" />
-      <Setter Property="Width" Value="100" />
-    </Style>
-
-    <Style Selector="ComboBox.AutoTrackerLogLevel > ComboBoxItem">
-      <Setter Property="Background" Value="#2D4848" />
-    </Style>
+		<Style Selector="ComboBox.AutoTrackerLogLevel">
+			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
+			<Setter Property="FontSize" Value="12" />
+			<Setter Property="HorizontalAlignment" Value="Center" />
+			<Setter Property="Width" Value="100" />
+		</Style>
 
 	</Application.Styles>
 

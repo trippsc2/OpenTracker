@@ -93,6 +93,7 @@ namespace OpenTracker.Models.AutotrackerConnectors
         public void Dispose()
         {
             Disconnect(true);
+            _memoryReadEvent.Dispose();
         }
 
         private void Disconnect(bool shutdown = false)
