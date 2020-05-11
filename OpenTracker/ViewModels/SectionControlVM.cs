@@ -59,16 +59,11 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        public string FontColor
-        {
-            get
-            {
-                if (_section.Accessibility == AccessibilityLevel.Normal)
-                    return "#ffffffff";
-                else
-                    return _appSettings.AccessibilityColors[_section.Accessibility];
-            }
-        }
+        public Color FontColor =>
+            Color.Parse(_appSettings.AccessibilityColors[_section.Accessibility]);
+
+        public bool NormalAccessibility =>
+            _section.Accessibility == AccessibilityLevel.Normal;
 
         public string MarkingSource
         {
@@ -425,6 +420,7 @@ namespace OpenTracker.ViewModels
         private void UpdateTextColor()
         {
             this.RaisePropertyChanged(nameof(FontColor));
+            this.RaisePropertyChanged(nameof(NormalAccessibility));
         }
 
         private void UpdateImage()

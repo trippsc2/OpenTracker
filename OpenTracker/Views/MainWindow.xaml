@@ -9,7 +9,7 @@
         x:Class="OpenTracker.Views.MainWindow"
         x:Name="HostWindow"
         Closing="OnClose"
-        Background="#132525"
+        Background="{DynamicResource ThemeBackgroundBrush}"
         UseLayoutRounding="True"
         Icon="avares://OpenTracker/Assets/triforce.png"
         Title="OpenTracker">
@@ -31,7 +31,7 @@
 	<DockPanel>
 
 		<!-- Window MenuBar -->
-		<Border Classes="ControlBorder" DockPanel.Dock="Top">
+		<Border Classes="ControlBorder" BorderThickness="0,0,0,1" DockPanel.Dock="Top">
 			<Menu Classes="MenuBar">
 				
 				<MenuItem Classes="Menu" Header="File">
@@ -105,6 +105,19 @@
 				</MenuItem>
 
 				<MenuItem Classes="Menu" Header="View">
+
+          <MenuItem Classes="Menu InnerMenu" Header="Theme" DataContext="{Binding Path=Selector,
+                    ElementName=HostWindow}" Items="{Binding Path=Themes}">
+            <MenuItem.Styles>
+              <Style Selector="MenuItem">
+                <Setter Property="Header" Value="{Binding Name}"/>
+                <Setter Property="Command" Value="{Binding ApplyTheme}"/>
+                <Setter Property="CommandParameter" Value="{Binding}"/>
+              </Style>
+            </MenuItem.Styles>
+          </MenuItem>
+
+          <Separator />
 					
 					<MenuItem Classes="Menu InnerMenu" Command="{Binding Path=ToggleDisplayAllLocationsCommand}">
 
@@ -140,7 +153,7 @@
 						<MenuItem Classes="Menu InnerMenu" Header="Dynamic"
 								  Command="{Binding Path=SetLayoutOrientationCommand}" CommandParameter="Dynamic">
 							<MenuItem.Icon>
-								<RadioButton Classes="Menu" GroupName="LayoutOrientation" IsChecked="{Binding Path=DynamicLayoutOrientation, Mode=OneWay}"
+								<CheckBox Classes="Menu" IsChecked="{Binding Path=DynamicLayoutOrientation, Mode=OneWay}"
 											 Command="{Binding Path=SetLayoutOrientationCommand}" CommandParameter="Dynamic" />
 							</MenuItem.Icon>
 						</MenuItem>
@@ -148,7 +161,7 @@
 						<MenuItem Classes="Menu InnerMenu" Header="Horizontal"
 								  Command="{Binding Path=SetLayoutOrientationCommand}" CommandParameter="Horizontal">
 							<MenuItem.Icon>
-								<RadioButton Classes="Menu" GroupName="LayoutOrientation" IsChecked="{Binding Path=HorizontalLayoutOrientation, Mode=OneWay}"
+								<CheckBox Classes="Menu" IsChecked="{Binding Path=HorizontalLayoutOrientation, Mode=OneWay}"
 											 Command="{Binding Path=SetLayoutOrientationCommand}" CommandParameter="Horizontal" />
 							</MenuItem.Icon>
 						</MenuItem>
@@ -156,7 +169,7 @@
 						<MenuItem Classes="Menu InnerMenu" Header="Vertical"
 								  Command="{Binding Path=SetLayoutOrientationCommand}" CommandParameter="Vertical">
 							<MenuItem.Icon>
-								<RadioButton Classes="Menu" GroupName="LayoutOrientation" IsChecked="{Binding Path=VerticalLayoutOrientation, Mode=OneWay}"
+								<CheckBox Classes="Menu" IsChecked="{Binding Path=VerticalLayoutOrientation, Mode=OneWay}"
 											 Command="{Binding Path=SetLayoutOrientationCommand}" CommandParameter="Vertical" />
 							</MenuItem.Icon>
 						</MenuItem>
@@ -170,7 +183,7 @@
 							<MenuItem Classes="Menu InnerMenu" Header="Top"
 									  Command="{Binding Path=SetHorizontalUIPanelPlacementCommand}" CommandParameter="Top">
 								<MenuItem.Icon>
-									<RadioButton Classes="Menu" GroupName="HorizontalUIPanelPlacement" IsChecked="{Binding Path=TopHorizontalUIPanelPlacement, Mode=OneWay}"
+									<CheckBox Classes="Menu" IsChecked="{Binding Path=TopHorizontalUIPanelPlacement, Mode=OneWay}"
 												 Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Left" />
 								</MenuItem.Icon>
 							</MenuItem>
@@ -178,7 +191,7 @@
 							<MenuItem Classes="Menu InnerMenu" Header="Bottom"
 									  Command="{Binding Path=SetHorizontalUIPanelPlacementCommand}" CommandParameter="Bottom">
 								<MenuItem.Icon>
-									<RadioButton Classes="Menu" GroupName="HorizontalUIPanelPlacement" IsChecked="{Binding Path=BottomHorizontalUIPanelPlacement, Mode=OneWay}"
+									<CheckBox Classes="Menu" IsChecked="{Binding Path=BottomHorizontalUIPanelPlacement, Mode=OneWay}"
 												 Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Right" />
 								</MenuItem.Icon>
 							</MenuItem>
@@ -190,7 +203,7 @@
 							<MenuItem Classes="Menu InnerMenu" Header="Left"
 									  Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Left">
 								<MenuItem.Icon>
-									<RadioButton Classes="Menu" GroupName="HorizontalItemsPlacement" IsChecked="{Binding Path=LeftHorizontalItemsPlacement, Mode=OneWay}"
+									<CheckBox Classes="Menu" IsChecked="{Binding Path=LeftHorizontalItemsPlacement, Mode=OneWay}"
 												 Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Left" />
 								</MenuItem.Icon>
 							</MenuItem>
@@ -198,7 +211,7 @@
 							<MenuItem Classes="Menu InnerMenu" Header="Right"
 									  Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Right">
 								<MenuItem.Icon>
-									<RadioButton Classes="Menu" GroupName="HorizontalItemsPlacement" IsChecked="{Binding Path=RightHorizontalItemsPlacement, Mode=OneWay}"
+									<CheckBox Classes="Menu" IsChecked="{Binding Path=RightHorizontalItemsPlacement, Mode=OneWay}"
 												 Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Right" />
 								</MenuItem.Icon>
 							</MenuItem>
@@ -214,7 +227,7 @@
 							<MenuItem Classes="Menu InnerMenu" Header="Left"
 									  Command="{Binding Path=SetVerticalUIPanelPlacementCommand}" CommandParameter="Left">
 								<MenuItem.Icon>
-									<RadioButton Classes="Menu" GroupName="VerticalUIPanelPlacement" IsChecked="{Binding Path=LeftVerticalUIPanelPlacement, Mode=OneWay}"
+									<CheckBox Classes="Menu" IsChecked="{Binding Path=LeftVerticalUIPanelPlacement, Mode=OneWay}"
 												 Command="{Binding Path=SetVerticalUIPanelPlacementCommand}" CommandParameter="Left" />
 								</MenuItem.Icon>
 							</MenuItem>
@@ -222,7 +235,7 @@
 							<MenuItem Classes="Menu InnerMenu" Header="Right"
 									  Command="{Binding Path=SetVerticalUIPanelPlacementCommand}" CommandParameter="Right">
 								<MenuItem.Icon>
-									<RadioButton Classes="Menu" GroupName="VerticalUIPanelPlacement" IsChecked="{Binding Path=RightVerticalUIPanelPlacement, Mode=OneWay}"
+									<CheckBox Classes="Menu" IsChecked="{Binding Path=RightVerticalUIPanelPlacement, Mode=OneWay}"
 												 Command="{Binding Path=SetVerticalUIPanelPlacementCommand}" CommandParameter="Right" />
 								</MenuItem.Icon>
 							</MenuItem>
@@ -234,7 +247,7 @@
 							<MenuItem Classes="Menu InnerMenu" Header="Top"
 									  Command="{Binding Path=SetVerticalItemsPlacementCommand}" CommandParameter="Top">
 								<MenuItem.Icon>
-									<RadioButton Classes="Menu" GroupName="VerticalItemsPlacement" IsChecked="{Binding Path=TopVerticalItemsPlacement, Mode=OneWay}"
+									<CheckBox Classes="Menu" IsChecked="{Binding Path=TopVerticalItemsPlacement, Mode=OneWay}"
 												 Command="{Binding Path=SetVerticalItemsPlacementCommand}" CommandParameter="Top" />
 								</MenuItem.Icon>
 							</MenuItem>
@@ -242,7 +255,7 @@
 							<MenuItem Classes="Menu InnerMenu" Header="Bottom"
 									  Command="{Binding Path=SetVerticalItemsPlacementCommand}" CommandParameter="Bottom">
 								<MenuItem.Icon>
-									<RadioButton Classes="Menu" GroupName="VerticalItemsPlacement" IsChecked="{Binding Path=BottomVerticalItemsPlacement, Mode=OneWay}"
+									<CheckBox Classes="Menu" IsChecked="{Binding Path=BottomVerticalItemsPlacement, Mode=OneWay}"
 												 Command="{Binding Path=SetVerticalItemsPlacementCommand}" CommandParameter="Bottom" />
 								</MenuItem.Icon>
 							</MenuItem>
@@ -256,7 +269,7 @@
 						<MenuItem Classes="Menu InnerMenu" Header="Dynamic"
 								  Command="{Binding Path=SetMapOrientationCommand}" CommandParameter="Dynamic">
 							<MenuItem.Icon>
-								<RadioButton Classes="Menu" GroupName="MapOrientation" IsChecked="{Binding Path=DynamicMapOrientation, Mode=OneWay}"
+								<CheckBox Classes="Menu" IsChecked="{Binding Path=DynamicMapOrientation, Mode=OneWay}"
 											 Command="{Binding Path=SetMapOrientationCommand}" CommandParameter="Dynamic" />
 							</MenuItem.Icon>
 						</MenuItem>
@@ -264,7 +277,7 @@
 						<MenuItem Classes="Menu InnerMenu" Header="Horizontal"
 								  Command="{Binding Path=SetMapOrientationCommand}" CommandParameter="Horizontal">
 							<MenuItem.Icon>
-								<RadioButton Classes="Menu" GroupName="MapOrientation" IsChecked="{Binding Path=HorizontalMapOrientation, Mode=OneWay}"
+								<CheckBox Classes="Menu" IsChecked="{Binding Path=HorizontalMapOrientation, Mode=OneWay}"
 											 Command="{Binding Path=SetMapOrientationCommand}" CommandParameter="Horizontal" />
 							</MenuItem.Icon>
 						</MenuItem>
@@ -272,7 +285,7 @@
 						<MenuItem Classes="Menu InnerMenu" Header="Vertical"
 								  Command="{Binding Path=SetMapOrientationCommand}" CommandParameter="Vertical">
 							<MenuItem.Icon>
-								<RadioButton Classes="Menu" GroupName="MapOrientation" IsChecked="{Binding Path=VerticalMapOrientation, Mode=OneWay}"
+								<CheckBox Classes="Menu" IsChecked="{Binding Path=VerticalMapOrientation, Mode=OneWay}"
 											 Command="{Binding Path=SetMapOrientationCommand}" CommandParameter="Vertical" />
 							</MenuItem.Icon>
 						</MenuItem>

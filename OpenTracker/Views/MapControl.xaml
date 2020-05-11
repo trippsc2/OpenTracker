@@ -18,7 +18,7 @@
 		</Style>
 	</UserControl.Styles>
 
-	<Border BorderBrush="#081212" Background="Transparent" BorderThickness="3" Margin="{Binding Path=MapMargin,
+	<Border BorderBrush="{DynamicResource ThemeBorderLowBrush}" Background="Transparent" BorderThickness="3" Margin="{Binding Path=MapMargin,
 			RelativeSource={RelativeSource AncestorType=views:MainWindow}}">
 		<Panel>
 

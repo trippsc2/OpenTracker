@@ -1,4 +1,5 @@
-﻿using Avalonia.Threading;
+﻿using Avalonia.ThemeManager;
+using Avalonia.Threading;
 using Newtonsoft.Json;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
@@ -23,6 +24,7 @@ namespace OpenTracker.ViewModels
         private readonly Game _game;
 
         public ModeSettingsControlVM ModeSettings { get; }
+        public ThemeSelector Selector { get; }
 
         public ObservableCollection<MapControlVM> Maps { get; }
         public ObservableCollection<ItemControlVM> Items { get; }

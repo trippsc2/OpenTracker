@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
+using Avalonia.ThemeManager;
 using Avalonia.Threading;
 using OpenTracker.Interfaces;
 using OpenTracker.Models.Enums;
@@ -23,6 +24,14 @@ namespace OpenTracker.Views
         public ISave ViewModelSave => DataContext as ISave;
         public ISaveAppSettings ViewModelSaveAppSettings => DataContext as ISaveAppSettings;
         private IAppSettings ViewModel => DataContext as IAppSettings;
+
+        public static AvaloniaProperty<IThemeSelector> SelectorProperty =
+            AvaloniaProperty.Register<MainWindow, IThemeSelector>(nameof(Selector));
+        public IThemeSelector Selector
+        {
+            get => GetValue(SelectorProperty);
+            set => SetValue(SelectorProperty, value);
+        }
 
         public static AvaloniaProperty<Dock> UIPanelDockProperty =
             AvaloniaProperty.Register<MainWindow, Dock>(nameof(UIPanelDock));
@@ -112,6 +121,7 @@ namespace OpenTracker.Views
 #if DEBUG
             this.AttachDevTools();
 #endif
+            App.Selector.EnableThemes(this);
         }
 
         private void InitializeComponent()

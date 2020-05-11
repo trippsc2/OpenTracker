@@ -4,18 +4,32 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
              xmlns:views="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
+             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.SectionControl">
 	
 	<UserControl.Resources>
 		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />
+    <SolidColorBrush x:Key="NormalBrush" Color="{DynamicResource ThemeForegroundColor}" />
+    <SolidColorBrush x:Key="AccessibilityBrush" Color="{Binding Path=FontColor, Mode=OneWay}" />
 	</UserControl.Resources>
-	
+
 	<StackPanel Margin="4,0" Orientation="Vertical" IsHitTestVisible="{Binding Path=SectionVisible}"
 				IsVisible="{Binding Path=SectionVisible}">
-		
-		<TextBlock Classes="SectionName" Grid.Column="0" Foreground="{Binding Path=FontColor}"
-				   Text="{Binding Path=Name}" />
+
+    <TextBlock Name="SectionName" Classes="SectionName" Grid.Column="0" Text="{Binding Path=Name}">
+      <i:Interaction.Behaviors>
+        <ia:DataTriggerBehavior Binding="{Binding Path=NormalAccessibility}" ComparisonCondition="Equal" Value="True">
+          <ia:ChangePropertyAction TargetObject="{Binding #SectionName}" PropertyName="Foreground"
+                                   Value="{DynamicResource NormalBrush}"/>
+        </ia:DataTriggerBehavior>
+        <ia:DataTriggerBehavior Binding="{Binding Path=NormalAccessibility}" ComparisonCondition="NotEqual" Value="True">
+          <ia:ChangePropertyAction TargetObject="{Binding #SectionName}" PropertyName="Foreground"
+                                   Value="{DynamicResource AccessibilityBrush}"/>
+        </ia:DataTriggerBehavior>
+      </i:Interaction.Behaviors>
+    </TextBlock>
 		
 		<StackPanel Orientation="Horizontal">
 			
@@ -26,8 +40,8 @@
 					   IsVisible="{Binding Path=MarkingVisible}" />
 
 				<Popup IsOpen="{Binding Path=MarkingPopupOpen, Mode=TwoWay}" StaysOpen="False" PlacementMode="Top"
-					   PlacementTarget="{Binding RelativeSource={RelativeSource AncestorType=views:SectionControl},
-					   Path=MarkingPopupTarget}" HorizontalOffset="16" VerticalOffset="16">
+               PlacementTarget="{Binding RelativeSource={RelativeSource AncestorType=views:SectionControl},
+               Path=MarkingPopupTarget}" HorizontalOffset="16" VerticalOffset="16">
 					<Border Classes="Popup">
 						<StackPanel Orientation="Vertical">
 							
@@ -36,8 +50,8 @@
 								<ItemsControl.ItemsPanel>
 									<ItemsPanelTemplate>
 										<WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="{Binding Path=MarkingPopupWidth}"
-												   MaxHeight="{Binding Path=MarkingPopupHeight}" Margin="0,0,0,10"
-												   Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                               MaxHeight="{Binding Path=MarkingPopupHeight}" Margin="0,0,0,10"
+                               Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" />
 									</ItemsPanelTemplate>
 								</ItemsControl.ItemsPanel>
 								
