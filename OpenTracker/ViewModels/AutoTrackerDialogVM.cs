@@ -1,19 +1,21 @@
 ﻿using Avalonia.Threading;
+using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.AutotrackerConnectors;
 using ReactiveUI;
-using Splat;
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Globalization;
+using System.IO;
 using System.Reactive;
 using System.Reactive.Linq;
 using WebSocketSharp;
 
 namespace OpenTracker.ViewModels
 {
-    public class AutoTrackerDialogVM : ViewModelBase
+    public class AutoTrackerDialogVM : ViewModelBase, ISave
     {
         private readonly AutoTracker _autoTracker;
         private readonly DispatcherTimer _inGameTimer;
@@ -21,6 +23,7 @@ namespace OpenTracker.ViewModels
 
         public ReactiveCommand<Unit, Unit> StartCommand { get; }
         public ReactiveCommand<Unit, Unit> StopCommand { get; }
+        public ReactiveCommand<Unit, Unit> ResetLogCommand { get; }
 
         private readonly ObservableAsPropertyHelper<bool> _isStarting;
         public bool IsStarting => _isStarting.Value;
@@ -28,19 +31,8 @@ namespace OpenTracker.ViewModels
         private readonly ObservableAsPropertyHelper<bool> _isStopping;
         public bool IsStopping => _isStopping.Value;
 
-        public ObservableCollection<(string, WebSocketSharp.LogLevel)> LogMessages { get; }
-        public ObservableCollection<string> LogLevelOptions
-        {
-            get
-            {
-                ObservableCollection<string> options = new ObservableCollection<string>();
-
-                foreach (WebSocketSharp.LogLevel level in Enum.GetValues(typeof(WebSocketSharp.LogLevel)))
-                    options.Add(level.ToString());
-
-                return options;
-            }
-        }
+        public ObservableCollection<(string, LogLevel)> LogMessages { get; }
+        public ObservableCollection<string> LogLevelOptions { get; }
 
         private string _uriString = "ws://localhost:8080";
         public string URIString
@@ -77,7 +69,7 @@ namespace OpenTracker.ViewModels
             private set => this.RaiseAndSetIfChanged(ref _statusText, value);
         }
 
-        private WebSocketSharp.LogLevel _logLevel = WebSocketSharp.LogLevel.Info;
+        private LogLevel _logLevel = WebSocketSharp.LogLevel.Info;
         public string LogLevel
         {
             get => _logLevel.ToString();
@@ -100,7 +92,8 @@ namespace OpenTracker.ViewModels
 
         public AutoTrackerDialogVM(AutoTracker autoTracker)
         {
-            _autoTracker = autoTracker;
+            _autoTracker = autoTracker ?? throw new ArgumentNullException(nameof(autoTracker));
+            _autoTracker.MessageHandler = PushToLog;
 
             _inGameTimer = new DispatcherTimer
             {
@@ -120,7 +113,14 @@ namespace OpenTracker.ViewModels
             StopCommand = ReactiveCommand.CreateFromObservable(StopAsync, this.WhenAnyValue(x => x.CanStop));
             StopCommand.IsExecuting.ToProperty(this, x => x.IsStopping, out _isStopping);
 
-            LogMessages = new ObservableCollection<(string, WebSocketSharp.LogLevel)>();
+            ResetLogCommand = ReactiveCommand.Create(ResetLog);
+
+            LogMessages = new ObservableCollection<(string, LogLevel)>();
+
+            LogLevelOptions = new ObservableCollection<string>();
+
+            foreach (LogLevel level in Enum.GetValues(typeof(LogLevel)))
+                LogLevelOptions.Add(level.ToString());
 
             PropertyChanged += OnPropertyChanged;
 
@@ -136,7 +136,7 @@ namespace OpenTracker.ViewModels
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(LogLevel))
-                LogMessages.Clear();
+                RefreshLog();
 
             if (e.PropertyName == nameof(URIString))
                 UpdateCanStart();
@@ -160,18 +160,20 @@ namespace OpenTracker.ViewModels
 
         private void OnLogMessageChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            string logText = "";
-
-            foreach ((string, WebSocketSharp.LogLevel) message in LogMessages)
+            if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                logText += string.Format("{0}: " + message.Item1 + "\n",
-                    message.Item2.ToString().ToUpper());
+                foreach (var item in e.NewItems)
+                {
+                    try
+                    {
+                        (string, LogLevel) message = ((string, LogLevel))item;
+
+                        if (message.Item2 >= _logLevel)
+                            AddLog(message);
+                    }
+                    finally { }
+                }
             }
-
-            Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                LogText = logText;
-            });
         }
 
         private void OnAutoTrackerChanging(object sender, PropertyChangingEventArgs e)
@@ -224,9 +226,9 @@ namespace OpenTracker.ViewModels
             if (_autoTracker.Connector != null)
                 Stop();
 
-            LogMessages.Clear();
+            ResetLog();
 
-            _autoTracker.Start(URIString, PushToLog);
+            _autoTracker.Start(URIString);
 
             Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -289,10 +291,40 @@ namespace OpenTracker.ViewModels
             });
         }
 
-        private void PushToLog(string rawMessage, WebSocketSharp.LogLevel level)
+        private void AddLog((string, LogLevel) message)
         {
-            if (_logLevel <= level)
-                LogMessages.Add((rawMessage, level));
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                LogText += message.Item2.ToString().ToUpper(CultureInfo.CurrentCulture) + ": " + message.Item1 + "\n";
+            });
+        }
+
+        private void ResetLog()
+        {
+            LogMessages.Clear();
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                LogText = "";
+            });
+        }
+
+        private void RefreshLog()
+        {
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                LogText = "";
+            });
+
+            foreach ((string, LogLevel) message in LogMessages)
+            {
+                if (message.Item2 >= _logLevel)
+                    AddLog(message);
+            }
+        }
+
+        private void PushToLog(string rawMessage, LogLevel level)
+        {
+            LogMessages.Add((rawMessage, level));
         }
 
         private bool CanCreateWebSocketUri()
@@ -319,6 +351,13 @@ namespace OpenTracker.ViewModels
                 return false;
 
             return true;
+        }
+
+        public void Save(string path)
+        {
+            using StreamWriter file = new StreamWriter(path);
+            foreach ((string, LogLevel) message in LogMessages)
+                file.WriteLine(message.Item2.ToString().ToUpper(CultureInfo.CurrentCulture) + ": " + message.Item1);
         }
     }
 }

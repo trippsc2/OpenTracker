@@ -2,6 +2,7 @@
 using OpenTracker.Models;
 using OpenTracker.Models.Actions;
 using OpenTracker.Models.Interfaces;
+using System;
 using System.Collections.ObjectModel;
 
 namespace OpenTracker.ViewModels
@@ -21,7 +22,7 @@ namespace OpenTracker.ViewModels
             _undoRedoManager = undoRedoManager;
             _mainWindow = mainWindow;
 
-            Location = location;
+            Location = location ?? throw new ArgumentNullException(nameof(location));
 
             Sections = new ObservableCollection<SectionControlVM>();
 

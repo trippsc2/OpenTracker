@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using OpenTracker.Interfaces;
 using OpenTracker.Models.Enums;
 using System;
@@ -245,7 +246,7 @@ namespace OpenTracker.Views
             if (CurrentFilePath != null)
                 ViewModelSave.Save(CurrentFilePath);
             else
-                await SaveAs();
+                await SaveAs().ConfigureAwait(false);
         }
 
         public async Task SaveAs()
@@ -253,11 +254,16 @@ namespace OpenTracker.Views
             SaveFileDialog dialog = new SaveFileDialog();
             dialog.Filters.Add(new FileDialogFilter() { Name = "JSON", Extensions = { "json" } });
 
-            string path = await dialog.ShowAsync(this);
+            string path = await dialog.ShowAsync(this).ConfigureAwait(false);
 
-            CurrentFilePath = path;
-
-            ViewModelSave.Save(CurrentFilePath);
+            if (path != null)
+            {
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    CurrentFilePath = path;
+                    ViewModelSave.Save(CurrentFilePath);
+                }).ConfigureAwait(false);
+            }
         }
 
         public async Task Open()
@@ -269,11 +275,16 @@ namespace OpenTracker.Views
             if (CurrentFilePath != null)
                 dialog.InitialFileName = CurrentFilePath;
 
-            string[] path = await dialog.ShowAsync(this);
+            string[] path = await dialog.ShowAsync(this).ConfigureAwait(false);
 
-            CurrentFilePath = path[0];
-
-            ViewModelOpen.Open(CurrentFilePath);
+            if (path != null)
+            {
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    CurrentFilePath = path[0];
+                    ViewModelOpen.Open(CurrentFilePath);
+                }).ConfigureAwait(false);
+            }
         }
 
         private void OpenModeSettingsPopup(object sender, PointerReleasedEventArgs e)

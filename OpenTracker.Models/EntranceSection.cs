@@ -3,6 +3,7 @@ using OpenTracker.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace OpenTracker.Models
 {
@@ -71,7 +72,7 @@ namespace OpenTracker.Models
 
         public EntranceSection(Game game, LocationID iD)
         {
-            _game = game;
+            _game = game ?? throw new ArgumentNullException(nameof(game));
 
             _regionSubscriptions = new Dictionary<RegionID, Mode>();
             _regionIsSubscribed = new Dictionary<RegionID, bool>();

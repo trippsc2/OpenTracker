@@ -8,6 +8,7 @@ using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Reactive;
 
 namespace OpenTracker.ViewModels
@@ -87,7 +88,7 @@ namespace OpenTracker.ViewModels
                         case MarkingType.SmallKey:
                         case MarkingType.BigKey:
                             return "avares://OpenTracker/Assets/Images/Items/visible-" +
-                                _section.Marking.ToString().ToLower() + ".png";
+                                _section.Marking.ToString().ToLowerInvariant() + ".png";
                         case MarkingType.Hookshot:
                         case MarkingType.Bomb:
                         case MarkingType.Mushroom:
@@ -113,7 +114,7 @@ namespace OpenTracker.ViewModels
                         case MarkingType.HalfMagic:
                         case MarkingType.Aga:
                             return "avares://OpenTracker/Assets/Images/Items/" +
-                                _section.Marking.ToString().ToLower() + "1.png";
+                                _section.Marking.ToString().ToLowerInvariant() + "1.png";
                         case MarkingType.Bottle:
                         case MarkingType.Gloves:
                         case MarkingType.Shield:
@@ -121,7 +122,8 @@ namespace OpenTracker.ViewModels
                             Item item = _game.Items[Enum.Parse<ItemType>(_section.Marking.ToString())];
                             itemNumber = Math.Min(item.Current + 1, item.Maximum);
                             return "avares://OpenTracker/Assets/Images/Items/" +
-                                _section.Marking.ToString().ToLower() + itemNumber.ToString() + ".png";
+                                _section.Marking.ToString().ToLowerInvariant() +
+                                itemNumber.ToString(CultureInfo.InvariantCulture) + ".png";
                         case MarkingType.Sword:
 
                             Item sword = _game.Items[ItemType.Sword];
@@ -132,7 +134,8 @@ namespace OpenTracker.ViewModels
                                 itemNumber = Math.Min(sword.Current + 1, sword.Maximum);
 
                             return "avares://OpenTracker/Assets/Images/Items/" +
-                                _section.Marking.ToString().ToLower() + itemNumber.ToString() + ".png";
+                                _section.Marking.ToString().ToLowerInvariant() +
+                                itemNumber.ToString(CultureInfo.InvariantCulture) + ".png";
 
                         case MarkingType.HCFront:
                         case MarkingType.HCLeft:
@@ -153,7 +156,7 @@ namespace OpenTracker.ViewModels
                         case MarkingType.TRBack:
                         case MarkingType.GT:
                             return "avares://OpenTracker/Assets/Images/" +
-                                _section.Marking.ToString().ToLower() + ".png";
+                                _section.Marking.ToString().ToLowerInvariant() + ".png";
                         case MarkingType.ToH:
                             return "avares://OpenTracker/Assets/Images/th.png";
                         case MarkingType.PoD:
@@ -204,7 +207,7 @@ namespace OpenTracker.ViewModels
                         else if (bossSection.Prize.Type == ItemType.Aga2)
                             imageBaseString += "aga";
                         else
-                            imageBaseString += bossSection.Prize.Type.ToString().ToLower();
+                            imageBaseString += bossSection.Prize.Type.ToString().ToLowerInvariant();
 
                         return imageBaseString + (bossSection.IsAvailable() ? "0" : "1") + ".png";
 
@@ -224,7 +227,7 @@ namespace OpenTracker.ViewModels
             get
             {
                 if (_section is ItemSection)
-                    return _section.Available.ToString();
+                    return _section.Available.ToString(CultureInfo.InvariantCulture);
                 else
                     return null;
             }
@@ -257,7 +260,7 @@ namespace OpenTracker.ViewModels
                     else
                     {
                         imageBaseString += "Bosses/";
-                        imageBaseString += bossSection.Boss.Type.ToString().ToLower();
+                        imageBaseString += bossSection.Boss.Type.ToString().ToLowerInvariant();
                     }
 
                     return imageBaseString + ".png";
@@ -280,9 +283,9 @@ namespace OpenTracker.ViewModels
             Game game, ISection section)
         {
             _undoRedoManager = undoRedoManager;
-            _appSettings = appSettings;
-            _game = game;
-            _section = section;
+            _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
+            _game = game ?? throw new ArgumentNullException(nameof(game));
+            _section = section ?? throw new ArgumentNullException(nameof(section));
 
             ClearVisibleItemCommand = ReactiveCommand.Create(ClearMarking);
 

@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.Interfaces;
 using OpenTracker.Models.Utils;
+using System;
 
 namespace OpenTracker.ViewModels
 {
@@ -26,6 +27,9 @@ namespace OpenTracker.ViewModels
 
         public void Execute(IUndoable action, bool clearRedo = true)
         {
+            if (action == null)
+                throw new ArgumentNullException(nameof(action));
+
             UndoableActions.Push(action);
             action.Execute();
 

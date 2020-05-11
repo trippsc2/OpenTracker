@@ -105,8 +105,8 @@ namespace OpenTracker.Models
 
         public ItemSection(Game game, Location location, int index = 0)
         {
-            _game = game;
-            _location = location;
+            _game = game ?? throw new ArgumentNullException(nameof(game));
+            _location = location ?? throw new ArgumentNullException(nameof(location));
 
             _regionSubscriptions = new Dictionary<RegionID, Mode>();
             _regionIsSubscribed = new Dictionary<RegionID, bool>();

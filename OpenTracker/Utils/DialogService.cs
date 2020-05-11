@@ -48,7 +48,7 @@ namespace OpenTracker.Utils
             dialog.DataContext = viewModel;
             dialog.Owner = Owner;
 
-            bool? result = await dialog.ShowDialog<bool?>(Owner);
+            bool? result = await dialog.ShowDialog<bool?>(Owner).ConfigureAwait(false);
 
             return result;
         }

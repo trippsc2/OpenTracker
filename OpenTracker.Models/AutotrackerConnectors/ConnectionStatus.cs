@@ -1,6 +1,6 @@
 ﻿namespace OpenTracker.Models.AutotrackerConnectors
 {
-    public enum ConnectionStatus : byte
+    public enum ConnectionStatus 
     {
         NotConnected,
         Connecting,

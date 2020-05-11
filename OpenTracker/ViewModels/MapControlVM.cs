@@ -1,6 +1,7 @@
 ﻿using OpenTracker.Models;
 using OpenTracker.Models.Enums;
 using ReactiveUI;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
@@ -25,15 +26,15 @@ namespace OpenTracker.ViewModels
                     worldState = WorldState.StandardOpen;
 
                 return "avares://OpenTracker/Assets/Images/Maps/" +
-                    worldState.ToString().ToLower() + "_" +
-                    _iD.ToString().ToLower() + ".png";
+                    worldState.ToString().ToLowerInvariant() + "_" +
+                    _iD.ToString().ToLowerInvariant() + ".png";
             }
         }
 
         public MapControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
             Game game, MainWindowVM mainWindow, MapID iD)
         {
-            _game = game;
+            _game = game ?? throw new ArgumentNullException(nameof(game));
             _iD = iD;
 
             game.Mode.PropertyChanged += OnModeChanged;

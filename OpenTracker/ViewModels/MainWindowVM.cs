@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Avalonia.Threading;
+using Newtonsoft.Json;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.Enums;
@@ -521,16 +522,20 @@ namespace OpenTracker.ViewModels
 
         private void Reset()
         {
-            _undoRedoManager.Reset();
-            Locations.Clear();
-            _game.Reset();
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                _undoRedoManager.Reset();
+                Locations.Clear();
+                _game.Reset();
+            });
         }
 
         public async Task OpenResetDialog()
         {
             bool? result = await _dialogService.ShowDialog(
                 new MessageBoxDialogVM("Warning",
-                "Resetting the tracker will set all items and locations back to their starting values.  This cannot be undone.\nDo you wish to proceed?"));
+                "Resetting the tracker will set all items and locations back to their starting values.  This cannot be undone.\nDo you wish to proceed?"))
+                .ConfigureAwait(false);
 
             if (result.HasValue && result.Value)
                 Reset();

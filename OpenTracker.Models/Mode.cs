@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.Enums;
+using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models
@@ -112,6 +113,9 @@ namespace OpenTracker.Models
 
         public Mode(Mode source)
         {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
             ItemPlacement = source.ItemPlacement;
             DungeonItemShuffle = source.DungeonItemShuffle;
             WorldState = source.WorldState;
@@ -137,6 +141,9 @@ namespace OpenTracker.Models
 
         public bool Validate(Mode gameMode)
         {
+            if (gameMode == null)
+                throw new ArgumentNullException(nameof(gameMode));
+
             if (gameMode.ItemPlacement != null &&
                 ItemPlacement != null &&
                 ItemPlacement != gameMode.ItemPlacement)

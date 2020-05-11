@@ -3,7 +3,9 @@ using OpenTracker.Models;
 using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
 using ReactiveUI;
+using System;
 using System.ComponentModel;
+using System.Globalization;
 
 namespace OpenTracker.ViewModels
 {
@@ -38,7 +40,7 @@ namespace OpenTracker.ViewModels
                     if (_items.Length == 2)
                         imageNumber += _items[1].Current * (_items[0].Maximum + 1);
 
-                    return _imageSourceBase + imageNumber.ToString() + ".png";
+                    return _imageSourceBase + imageNumber.ToString(CultureInfo.InvariantCulture) + ".png";
                 }
             }
         }
@@ -51,10 +53,10 @@ namespace OpenTracker.ViewModels
                     return null;
 
                 if (_items[0].Type == ItemType.TowerCrystals || _items[0].Type == ItemType.GanonCrystals)
-                    return (7 - _items[0].Current).ToString();
+                    return (7 - _items[0].Current).ToString(CultureInfo.InvariantCulture);
 
                 if (_items[0].Type == ItemType.SmallKey && _game.Mode.WorldState == WorldState.Retro)
-                    return _items[0].Current.ToString();
+                    return _items[0].Current.ToString(CultureInfo.InvariantCulture);
 
                 return null;
             }
@@ -82,15 +84,15 @@ namespace OpenTracker.ViewModels
             Game game, Item[] items)
         {
             _undoRedoManager = undoRedoManager;
-            _appSettings = appSettings;
-            _game = game;
+            _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
+            _game = game ?? throw new ArgumentNullException(nameof(game));
             _items = items;
 
             _appSettings.PropertyChanged += OnAppSettingsChanged;
 
             if (_items != null)
             {
-                _imageSourceBase = "avares://OpenTracker/Assets/Images/Items/" + _items[0].Type.ToString().ToLower();
+                _imageSourceBase = "avares://OpenTracker/Assets/Images/Items/" + _items[0].Type.ToString().ToLowerInvariant();
 
                 foreach (Item item in _items)
                     item.PropertyChanged += OnItemChanged;

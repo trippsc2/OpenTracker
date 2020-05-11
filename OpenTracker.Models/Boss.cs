@@ -33,7 +33,7 @@ namespace OpenTracker.Models
 
         public Boss(Game game, BossType type)
         {
-            _game = game;
+            _game = game ?? throw new ArgumentNullException(nameof(game));
 
             _itemSubscriptions = new Dictionary<ItemType, Mode>();
             _itemIsSubscribed = new Dictionary<ItemType, bool>();

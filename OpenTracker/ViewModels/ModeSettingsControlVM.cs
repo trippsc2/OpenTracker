@@ -53,7 +53,7 @@ namespace OpenTracker.ViewModels
         public ModeSettingsControlVM(Mode mode, UndoRedoManager undoRedoManager)
         {
             _undoRedoManager = undoRedoManager;
-            _mode = mode;
+            _mode = mode ?? throw new ArgumentNullException(nameof(mode));
 
             _mode.PropertyChanged += OnModeChanged;
 

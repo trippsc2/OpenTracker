@@ -2,13 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using WebSocketSharp;
 
 namespace OpenTracker.Models.AutotrackerConnectors
 {
-    public class USB2SNESConnector : INotifyPropertyChanging, INotifyPropertyChanged, IDisposable
+    public sealed class USB2SNESConnector : INotifyPropertyChanging, INotifyPropertyChanged, IDisposable
     {
         private readonly string _webSocketURI;
         private readonly Action<string, LogLevel> _messageHandler;
@@ -113,7 +114,7 @@ namespace OpenTracker.Models.AutotrackerConnectors
 
         private void Output(string message, LogLevel level, params object[] tokens)
         {
-            _messageHandler?.Invoke(string.Format(message, tokens), level);
+            _messageHandler?.Invoke(string.Format(CultureInfo.InvariantCulture, message, tokens), level);
         }
 
         private void KeepAlive()
@@ -123,20 +124,20 @@ namespace OpenTracker.Models.AutotrackerConnectors
 
         public byte? ReadByte(ulong address)
         {
-            Output(string.Format("USB2SNESConnector is reading a byte: [${0:X6}]", address), LogLevel.Info);
+            Output(string.Format(CultureInfo.InvariantCulture, "USB2SNESConnector is reading a byte: [${0:X6}]", address), LogLevel.Info);
             byte[] buffer = new byte[1];
 
             if (Read(address, buffer))
                 return buffer[0];
 
-            Output(string.Format("USB2SNESConnector failed to read a byte: [${0:X6}]", address), LogLevel.Error);
+            Output(string.Format(CultureInfo.InvariantCulture, "USB2SNESConnector failed to read a byte: [${0:X6}]", address), LogLevel.Error);
 
             return null;
         }
 
         public bool ReadByte(ulong address, out byte value)
         {
-            Output(string.Format("USB2SNESConnector is reading a byte: [${0:X6}]", address), LogLevel.Info);
+            Output(string.Format(CultureInfo.InvariantCulture, "USB2SNESConnector is reading a byte: [${0:X6}]", address), LogLevel.Info);
 
             byte[] buffer = new byte[1];
 
@@ -146,7 +147,7 @@ namespace OpenTracker.Models.AutotrackerConnectors
                 return true;
             }
 
-            Output(string.Format("USB2SNESConnector failed to read a byte: [${0:X6}]", address), LogLevel.Error);
+            Output(string.Format(CultureInfo.InvariantCulture, "USB2SNESConnector failed to read a byte: [${0:X6}]", address), LogLevel.Error);
             value = (byte)0;
 
             return false;
@@ -168,16 +169,15 @@ namespace OpenTracker.Models.AutotrackerConnectors
                     using ManualResetEvent readEvent = new ManualResetEvent(false);
                     lock (_transmitLock)
                     {
-                        RequestType requestType = new RequestType()
-                        {
-                            Opcode = OpcodeType.GetAddress.ToString(),
-                            Space = "SNES",
-                            Operands = new List<string>()
-                                {
-                                    TranslateAddress((uint)address, TranslationMode.Read).ToString("X"),
-                                    buffer.Length.ToString("X")
-                                }
-                        };
+                        RequestType requestType = new RequestType(
+                            OpcodeType.GetAddress.ToString(),
+                            "SNES",
+                            new List<string>(0),
+                            new List<string>(2)
+                            {
+                                TranslateAddress((uint)address, TranslationMode.Read).ToString("X", CultureInfo.InvariantCulture),
+                                buffer.Length.ToString("X", CultureInfo.InvariantCulture)
+                            });
 
                         PendingMessageHandler = e =>
                         {
@@ -191,7 +191,10 @@ namespace OpenTracker.Models.AutotrackerConnectors
 
                                 success = true;
                             }
-                            catch { }
+                            catch (Exception ex)
+                            {
+                                _messageHandler(ex.Message, LogLevel.Warn);
+                            }
                             finally { readEvent.Set(); }
                         };
 
@@ -305,7 +308,7 @@ namespace OpenTracker.Models.AutotrackerConnectors
                         {
                             Output("Message successfully deserialized.", LogLevel.Debug);
 
-                            foreach (string result in (results as IEnumerable<string>) ?? new string[0])
+                            foreach (string result in (results as IEnumerable<string>) ?? Array.Empty<string>())
                             {
 
                                 port = result as string;
@@ -313,7 +316,7 @@ namespace OpenTracker.Models.AutotrackerConnectors
 
                                 if (!string.IsNullOrWhiteSpace(port))
                                 {
-                                    Output(string.Format("SNES port {0} found.", port), LogLevel.Debug);
+                                    Output(string.Format(CultureInfo.InvariantCulture, "SNES port {0} found.", port), LogLevel.Debug);
                                     break;
                                 }
                                 else
@@ -330,35 +333,33 @@ namespace OpenTracker.Models.AutotrackerConnectors
                     finally { _memoryReadEvent.Set(); }
                 };
 
-                Socket.Send(JsonConvert.SerializeObject(new RequestType()
-                {
-                    Opcode = OpcodeType.DeviceList.ToString(),
-                    Space = "SNES"
-                }));
+                Socket.Send(JsonConvert.SerializeObject(new RequestType(
+                    OpcodeType.DeviceList.ToString(),
+                    "SNES",
+                    new List<string>(0),
+                    new List<string>(0))));
 
                 _memoryReadEvent.WaitOne();
                 _memoryReadEvent.Reset();
 
                 if (!string.IsNullOrWhiteSpace(port))
                 {
-                    Output(string.Format("Connected to SNES via {0}", port), LogLevel.Info);
+                    Output(string.Format(CultureInfo.InvariantCulture, "Connected to SNES via {0}", port), LogLevel.Info);
 
                     ConnectionStatusChanged?.Invoke(this, (ConnectionStatus.Open,
                         "Connection to USB2SNES socket service established."));
 
-                    Socket.Send(JsonConvert.SerializeObject(new RequestType()
-                    {
-                        Opcode = OpcodeType.Attach.ToString(),
-                        Space = "SNES",
-                        Operands = new List<string>() { port }
-                    }));
+                    Socket.Send(JsonConvert.SerializeObject(new RequestType(
+                        OpcodeType.Attach.ToString(),
+                        "SNES",
+                        new List<string>(0),
+                        new List<string>(port.Length) { port })));
 
-                    Socket.Send(JsonConvert.SerializeObject(new RequestType()
-                    {
-                        Opcode = OpcodeType.Name.ToString(),
-                        Space = "SNES",
-                        Operands = new List<string>() { Usb2SnesApplicationName }
-                    }));
+                    Socket.Send(JsonConvert.SerializeObject(new RequestType(
+                        OpcodeType.Name.ToString(),
+                        "SNES",
+                        new List<string>(0),
+                        new List<string>() { Usb2SnesApplicationName })));
 
                     _open = true;
 

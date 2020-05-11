@@ -34,7 +34,7 @@ namespace OpenTracker.Models
 
         public Region(Game game, RegionID iD)
         {
-            _game = game;
+            _game = game ?? throw new ArgumentNullException(nameof(game));
             ID = iD;
 
             _regionSubscriptions = new Dictionary<RegionID, Mode>();

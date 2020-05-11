@@ -91,7 +91,7 @@ namespace OpenTracker.Models
 
         public BossSection(Game game, LocationID iD)
         {
-            _game = game;
+            _game = game ?? throw new ArgumentNullException(nameof(game));
 
             _regionSubscriptions = new Dictionary<RegionID, Mode>();
             _regionIsSubscribed = new Dictionary<RegionID, bool>();

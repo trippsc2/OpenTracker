@@ -1,6 +1,7 @@
 ﻿using OpenTracker.Models.AutotrackerConnectors;
 using OpenTracker.Models.Enums;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
 using WebSocketSharp;
@@ -9,6 +10,7 @@ namespace OpenTracker.Models
 {
     public class AutoTracker : INotifyPropertyChanging, INotifyPropertyChanged
     {
+
         public event PropertyChangingEventHandler PropertyChanging;
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -41,30 +43,32 @@ namespace OpenTracker.Models
             }
         }
 
-        public MemoryAddress[] RoomMemory { get; }
-        public MemoryAddress[] OverworldEventMemory { get; }
-        public MemoryAddress[] ItemMemory { get; }
-        public MemoryAddress[] NPCItemMemory { get; }
+        public List<MemoryAddress> RoomMemory { get; }
+        public List<MemoryAddress> OverworldEventMemory { get; }
+        public List<MemoryAddress> ItemMemory { get; }
+        public List<MemoryAddress> NPCItemMemory { get; }
+
+        public Action<string, LogLevel> MessageHandler { get; set; }
 
         public AutoTracker()
         {
-            RoomMemory = new MemoryAddress[592];
-            OverworldEventMemory = new MemoryAddress[130];
-            ItemMemory = new MemoryAddress[144];
-            NPCItemMemory = new MemoryAddress[2];
+            RoomMemory = new List<MemoryAddress>(592);
+            OverworldEventMemory = new List<MemoryAddress>(130);
+            ItemMemory = new List<MemoryAddress>(144);
+            NPCItemMemory = new List<MemoryAddress>(2);
 
-            for (int i = 0; i < RoomMemory.Length; i++)
+            for (int i = 0; i < 592; i++)
             {
-                RoomMemory[i] = new MemoryAddress();
+                RoomMemory.Add(new MemoryAddress());
 
-                if (i < OverworldEventMemory.Length)
-                    OverworldEventMemory[i] = new MemoryAddress();
+                if (i < 130)
+                    OverworldEventMemory.Add(new MemoryAddress());
 
-                if (i < ItemMemory.Length)
-                    ItemMemory[i] = new MemoryAddress();
+                if (i < 144)
+                    ItemMemory.Add(new MemoryAddress());
 
-                if (i < NPCItemMemory.Length)
-                    NPCItemMemory[i] = new MemoryAddress();
+                if (i < 2)
+                    NPCItemMemory.Add(new MemoryAddress());
             }
         }
 
@@ -81,15 +85,15 @@ namespace OpenTracker.Models
                 return;
         }
 
-        public void Start(string uriString, Action<string, LogLevel> messageHandler)
+        public void Start(string uriString)
         {
-            Connector = new USB2SNESConnector(uriString, messageHandler);
+            Connector = new USB2SNESConnector(uriString, MessageHandler);
 
             Connector.ConnectIfNecessary();
 
             int i = 0;
 
-            while (!Connector.Connected && i <= 3)
+            while (Connector != null && !Connector.Connected && i <= 3)
             {
                 Thread.Sleep(1000);
                 i++;
@@ -133,20 +137,23 @@ namespace OpenTracker.Models
 
         public void InGameCheck()
         {
-            if (Connector.Connected)
+            if (Connector != null && Connector.Connected)
             {
                 try
                 {
                     _connector.ReadByte(0x7e0010, out byte inGameStatus);
                     InGameStatus = inGameStatus;
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    MessageHandler?.Invoke(ex.Message, LogLevel.Warn);
+                }
             }
         }
 
         public void MemoryCheck()
         {
-            if (Connector.Connected)
+            if (Connector != null && Connector.Connected)
             {
                 try
                 {
@@ -177,13 +184,16 @@ namespace OpenTracker.Models
                             NPCItemMemory[i].Value = buffer[i];
                     }
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    MessageHandler?.Invoke(ex.Message, LogLevel.Warn);
+                }
             }
         }
 
         public bool? CheckMemoryFlag(MemorySegmentType segment, int index, byte flag)
         {
-            MemoryAddress[] memory = null;
+            List<MemoryAddress> memory = null;
 
             switch (segment)
             {
@@ -204,7 +214,7 @@ namespace OpenTracker.Models
             if (memory == null)
                 throw new ArgumentOutOfRangeException(nameof(segment));
 
-            if (memory.Length > index)
+            if (memory.Count > index)
             {
                 if ((memory[index].Value & flag) != 0)
                     return true;
@@ -217,6 +227,9 @@ namespace OpenTracker.Models
 
         public int? CheckMemoryFlagArray((MemorySegmentType, int, byte)[] addressFlags)
         {
+            if (addressFlags == null)
+                throw new ArgumentNullException(nameof(addressFlags));
+            
             int? result = null;
 
             foreach ((MemorySegmentType, int, byte) address in addressFlags)
@@ -242,7 +255,7 @@ namespace OpenTracker.Models
 
         public bool? CheckMemoryByte(MemorySegmentType segment, int index, byte minValue = 0)
         {
-            MemoryAddress[] memory = null;
+            List<MemoryAddress> memory = null;
 
             switch (segment)
             {
@@ -263,7 +276,7 @@ namespace OpenTracker.Models
             if (memory == null)
                 throw new ArgumentOutOfRangeException(nameof(segment));
 
-            if (memory.Length > index)
+            if (memory.Count > index)
             {
                 if (memory[index].Value > minValue)
                     return true;
@@ -276,7 +289,7 @@ namespace OpenTracker.Models
 
         public byte? CheckMemoryByteValue(MemorySegmentType segment, int index)
         {
-            MemoryAddress[] memory = null;
+            List<MemoryAddress> memory = null;
 
             switch (segment)
             {
@@ -297,7 +310,7 @@ namespace OpenTracker.Models
             if (memory == null)
                 throw new ArgumentOutOfRangeException(nameof(segment));
 
-            if (memory.Length > index)
+            if (memory.Count > index)
                 return memory[index].Value;
 
             return null;
@@ -305,6 +318,9 @@ namespace OpenTracker.Models
 
         public int? CheckMemoryByteArray((MemorySegmentType, int)[] addresses)
         {
+            if (addresses == null)
+                throw new ArgumentNullException(nameof(addresses));
+
             int? result = null;
 
             foreach ((MemorySegmentType, int) address in addresses)

@@ -3,6 +3,7 @@ using Avalonia.Media;
 using OpenTracker.Models;
 using OpenTracker.Models.Enums;
 using ReactiveUI;
+using System;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels
@@ -55,7 +56,7 @@ namespace OpenTracker.ViewModels
 
         public ColorSelectDialogVM(AppSettings appSettings)
         {
-            _appSettings = appSettings;
+            _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
 
             appSettings.PropertyChanged += OnAppSettingsChanged;
             appSettings.AccessibilityColors.PropertyChanged += OnAccessibilityColorsChanged;

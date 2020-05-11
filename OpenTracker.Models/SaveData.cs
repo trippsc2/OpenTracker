@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models
@@ -18,6 +19,9 @@ namespace OpenTracker.Models
 
         public SaveData(Game game)
         {
+            if (game == null)
+                throw new ArgumentNullException(nameof(game));
+
             Mode = new Mode(game.Mode);
 
             ItemCounts = new Dictionary<ItemType, int>();

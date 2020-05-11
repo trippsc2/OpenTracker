@@ -1,4 +1,5 @@
 ﻿using Avalonia;
+using Avalonia.Platform;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.Actions;
@@ -8,6 +9,7 @@ using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 
 namespace OpenTracker.ViewModels
 {
@@ -131,7 +133,7 @@ namespace OpenTracker.ViewModels
                             case MarkingType.SmallKey:
                             case MarkingType.BigKey:
                                 return "avares://OpenTracker/Assets/Images/Items/visible-" +
-                                    entranceSection.Marking.ToString().ToLower() + ".png";
+                                    entranceSection.Marking.ToString().ToLowerInvariant() + ".png";
                             case MarkingType.Hookshot:
                             case MarkingType.Bomb:
                             case MarkingType.Mushroom:
@@ -157,7 +159,7 @@ namespace OpenTracker.ViewModels
                             case MarkingType.HalfMagic:
                             case MarkingType.Aga:
                                 return "avares://OpenTracker/Assets/Images/Items/" +
-                                    entranceSection.Marking.ToString().ToLower() + "1.png";
+                                    entranceSection.Marking.ToString().ToLowerInvariant() + "1.png";
                             case MarkingType.Bottle:
                             case MarkingType.Gloves:
                             case MarkingType.Shield:
@@ -165,7 +167,8 @@ namespace OpenTracker.ViewModels
                                 Item item = _game.Items[Enum.Parse<ItemType>(entranceSection.Marking.ToString())];
                                 itemNumber = Math.Min(item.Current + 1, item.Maximum);
                                 return "avares://OpenTracker/Assets/Images/Items/" +
-                                    entranceSection.Marking.ToString().ToLower() + itemNumber.ToString() + ".png";
+                                    entranceSection.Marking.ToString().ToLowerInvariant() +
+                                    itemNumber.ToString(CultureInfo.InvariantCulture) + ".png";
                             case MarkingType.Sword:
 
                                 Item sword = _game.Items[ItemType.Sword];
@@ -176,7 +179,8 @@ namespace OpenTracker.ViewModels
                                     itemNumber = Math.Min(sword.Current + 1, sword.Maximum);
 
                                 return "avares://OpenTracker/Assets/Images/Items/" +
-                                    entranceSection.Marking.ToString().ToLower() + itemNumber.ToString() + ".png";
+                                    entranceSection.Marking.ToString().ToLowerInvariant() +
+                                    itemNumber.ToString(CultureInfo.InvariantCulture) + ".png";
 
                             case MarkingType.HCFront:
                             case MarkingType.HCLeft:
@@ -197,7 +201,7 @@ namespace OpenTracker.ViewModels
                             case MarkingType.TRBack:
                             case MarkingType.GT:
                                 return "avares://OpenTracker/Assets/Images/" +
-                                    entranceSection.Marking.ToString().ToLower() + ".png";
+                                    entranceSection.Marking.ToString().ToLowerInvariant() + ".png";
                             case MarkingType.ToH:
                                 return "avares://OpenTracker/Assets/Images/th.png";
                             case MarkingType.PoD:
@@ -249,12 +253,12 @@ namespace OpenTracker.ViewModels
                     return null;
 
                 if (_mapLocation.Location.Available == _mapLocation.Location.Accessible)
-                    return _mapLocation.Location.Available.ToString();
+                    return _mapLocation.Location.Available.ToString(CultureInfo.InvariantCulture);
                 else if (_mapLocation.Location.Accessible == 0)
-                    return _mapLocation.Location.Available.ToString();
+                    return _mapLocation.Location.Available.ToString(CultureInfo.InvariantCulture);
                 else
-                    return _mapLocation.Location.Accessible.ToString() + "/" +
-                        _mapLocation.Location.Available.ToString();
+                    return _mapLocation.Location.Accessible.ToString(CultureInfo.InvariantCulture) + "/" +
+                        _mapLocation.Location.Available.ToString(CultureInfo.InvariantCulture);
             }
         }
 
@@ -273,10 +277,10 @@ namespace OpenTracker.ViewModels
             Game game, MainWindowVM mainWindow, MapLocation mapLocation)
         {
             _undoRedoManager = undoRedoManager;
-            _appSettings = appSettings;
-            _game = game;
+            _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
+            _game = game ?? throw new ArgumentNullException(nameof(game));
             _mainWindow = mainWindow;
-            _mapLocation = mapLocation;
+            _mapLocation = mapLocation ?? throw new ArgumentNullException(nameof(mapLocation));
 
             appSettings.PropertyChanged += OnAppSettingsChanged;
             appSettings.AccessibilityColors.PropertyChanged += OnColorChanged;

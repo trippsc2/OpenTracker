@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CA1822: Member LogLevelOptions does not access instance data and can be marked as static (Shared in VisualBasic)
+dotnet_diagnostic.CA1822.severity = warning

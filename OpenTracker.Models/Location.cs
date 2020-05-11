@@ -3,6 +3,7 @@ using OpenTracker.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 
 namespace OpenTracker.Models
 {
@@ -2328,7 +2329,7 @@ namespace OpenTracker.Models
                     AccessibilityLevel.Normal when leastAccessible.Value <= AccessibilityLevel.Partial => AccessibilityLevel.Partial,
                     AccessibilityLevel.Normal when leastAccessible.Value == AccessibilityLevel.SequenceBreak => AccessibilityLevel.SequenceBreak,
                     AccessibilityLevel.Normal => AccessibilityLevel.Normal,
-                    _ => throw new Exception(string.Format("Unknown availability state for location {0}", ID.ToString())),
+                    _ => throw new Exception(string.Format(CultureInfo.InvariantCulture, "Unknown availability state for location {0}", ID.ToString())),
                 };
             }
         }

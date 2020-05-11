@@ -31,7 +31,7 @@ namespace OpenTracker.Models
 
         public Item(Game game, ItemType itemType)
         {
-            _game = game;
+            _game = game ?? throw new ArgumentNullException(nameof(game));
             Type = itemType;
 
             switch (Type)

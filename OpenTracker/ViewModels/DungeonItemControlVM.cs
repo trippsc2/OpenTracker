@@ -4,7 +4,9 @@ using OpenTracker.Models;
 using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
 using ReactiveUI;
+using System;
 using System.ComponentModel;
+using System.Globalization;
 
 namespace OpenTracker.ViewModels
 {
@@ -32,7 +34,7 @@ namespace OpenTracker.ViewModels
             get
             {
                 if (_smallKey)
-                    return _item.Current.ToString() + (_item.Current == _item.Maximum ? "*" : "");
+                    return _item.Current.ToString(CultureInfo.InvariantCulture) + (_item.Current == _item.Maximum ? "*" : "");
 
                 return null;
             }
@@ -58,7 +60,7 @@ namespace OpenTracker.ViewModels
             Item item)
         {
             _undoRedoManager = undoRedoManager;
-            _appSettings = appSettings;
+            _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
             _item = item;
 
             _appSettings.PropertyChanged += OnAppSettingsChanged;

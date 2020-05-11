@@ -3,7 +3,9 @@ using OpenTracker.Models;
 using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
 using ReactiveUI;
+using System;
 using System.ComponentModel;
+using System.Globalization;
 
 namespace OpenTracker.ViewModels
 {
@@ -22,7 +24,7 @@ namespace OpenTracker.ViewModels
                 if (_bossSection.Boss == null)
                     imageBaseString += "Items/unknown1";
                 else
-                    imageBaseString += "Bosses/" + _bossSection.Boss.Type.ToString().ToLower();
+                    imageBaseString += "Bosses/" + _bossSection.Boss.Type.ToString().ToLowerInvariant();
 
                 return imageBaseString + ".png";
             }
@@ -33,7 +35,7 @@ namespace OpenTracker.ViewModels
         {
             _undoRedoManager = undoRedoManager;
             _game = game;
-            _bossSection = bossSection;
+            _bossSection = bossSection ?? throw new ArgumentNullException(nameof(bossSection));
 
             _bossSection.PropertyChanged += OnSectionChanged;
         }

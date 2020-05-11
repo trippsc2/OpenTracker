@@ -4,6 +4,7 @@ using OpenTracker.Models.Enums;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
+using System.Globalization;
 
 namespace OpenTracker.ViewModels
 {
@@ -29,7 +30,7 @@ namespace OpenTracker.ViewModels
                         case MarkingType.SmallKey:
                         case MarkingType.BigKey:
                             return "avares://OpenTracker/Assets/Images/Items/visible-" +
-                                _marking.ToString().ToLower() + ".png";
+                                _marking.ToString().ToLowerInvariant() + ".png";
                         case MarkingType.Hookshot:
                         case MarkingType.Bomb:
                         case MarkingType.Mushroom:
@@ -55,7 +56,7 @@ namespace OpenTracker.ViewModels
                         case MarkingType.HalfMagic:
                         case MarkingType.Aga:
                             return "avares://OpenTracker/Assets/Images/Items/" +
-                                _marking.ToString().ToLower() + "1.png";
+                                _marking.ToString().ToLowerInvariant() + "1.png";
                         case MarkingType.Bottle:
                         case MarkingType.Gloves:
                         case MarkingType.Shield:
@@ -63,7 +64,8 @@ namespace OpenTracker.ViewModels
                             Item item = _game.Items[Enum.Parse<ItemType>(_marking.ToString())];
                             itemNumber = Math.Min(item.Current + 1, item.Maximum);
                             return "avares://OpenTracker/Assets/Images/Items/" +
-                                _marking.ToString().ToLower() + itemNumber.ToString() + ".png";
+                                _marking.ToString().ToLowerInvariant() + 
+                                itemNumber.ToString(CultureInfo.InvariantCulture) + ".png";
                         case MarkingType.Sword:
 
                             Item sword = _game.Items[ItemType.Sword];
@@ -74,7 +76,7 @@ namespace OpenTracker.ViewModels
                                 itemNumber = Math.Min(sword.Current + 1, sword.Maximum);
 
                             return "avares://OpenTracker/Assets/Images/Items/" +
-                                _marking.ToString().ToLower() + itemNumber.ToString() + ".png";
+                                _marking.ToString().ToLowerInvariant() + itemNumber.ToString(CultureInfo.InvariantCulture) + ".png";
 
                         case MarkingType.HCFront:
                         case MarkingType.HCLeft:
@@ -95,7 +97,7 @@ namespace OpenTracker.ViewModels
                         case MarkingType.TRBack:
                         case MarkingType.GT:
                             return "avares://OpenTracker/Assets/Images/" +
-                                _marking.ToString().ToLower() + ".png";
+                                _marking.ToString().ToLowerInvariant() + ".png";
                         case MarkingType.ToH:
                             return "avares://OpenTracker/Assets/Images/th.png";
                         case MarkingType.PoD:
@@ -111,7 +113,7 @@ namespace OpenTracker.ViewModels
 
         public MarkingSelectControlVM(Game game, SectionControlVM section, MarkingType? marking)
         {
-            _game = game;
+            _game = game ?? throw new ArgumentNullException(nameof(game));
             _section = section;
             _marking = marking;
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
@@ -15,6 +16,9 @@ namespace OpenTracker.Models.Utils
 
         public ObservableStack(IEnumerable<T> collection)
         {
+            if (collection == null)
+                throw new ArgumentNullException(nameof(collection));
+
             foreach (var item in collection)
                 base.Push(item);
         }
