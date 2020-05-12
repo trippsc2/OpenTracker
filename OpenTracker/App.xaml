@@ -29,11 +29,11 @@
 		</Style>
 
 		<Style Selector="Border.ItemsPanelBody">
-			<Setter Property="Background" Value="{DynamicResource ThemeAccentBrush3}" />
+			<Setter Property="Background" Value="{DynamicResource ItemsPanelBrush}" />
 		</Style>
 
 		<Style Selector="Border.LocationsPanelBody">
-			<Setter Property="Background" Value="{DynamicResource ThemeAccentBrush4}" />
+			<Setter Property="Background" Value="{DynamicResource LocationsPanelBrush}" />
 		</Style>
 
 		<Style Selector="Border.Separator">

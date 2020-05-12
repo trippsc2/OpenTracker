@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
         xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
+        xmlns:manager="clr-namespace:Avalonia.ThemeManager;assembly=Avalonia.ThemeManager"
         mc:Ignorable="d" MinWidth="220" MinHeight="61" d:DesignWidth="1280" d:DesignHeight="960"
         x:Class="OpenTracker.Views.MainWindow"
         x:Name="HostWindow"
@@ -27,6 +28,10 @@
 		<KeyBinding Gesture="F5" Command="{Binding Path=OpenResetDialog}" />
 		<KeyBinding Gesture="F11" Command="{Binding Path=ToggleDisplayAllLocationsCommand}" />
 	</Window.KeyBindings>
+
+  <Window.Resources>
+    <manager:ObjectEqualityMultiConverter x:Key="ObjectEqualityMultiConverter"/>
+  </Window.Resources>
 
 	<DockPanel>
 
@@ -113,7 +118,18 @@
                 <Setter Property="Header" Value="{Binding Name}"/>
                 <Setter Property="Command" Value="{Binding ApplyTheme}"/>
                 <Setter Property="CommandParameter" Value="{Binding}"/>
-              </Style>
+                <Setter Property="Icon">
+                  <Template>
+                    <CheckBox Classes="Menu">
+                      <CheckBox.IsChecked>
+                        <MultiBinding Mode="OneWay" Converter="{StaticResource ObjectEqualityMultiConverter}">
+                          <Binding Path="DataContext" RelativeSource="{RelativeSource Self}"/>
+                          <Binding Path="Selector.SelectedTheme"/>
+                        </MultiBinding>
+                      </CheckBox.IsChecked>
+                    </CheckBox>
+                  </Template>
+                </Setter>              </Style>
             </MenuItem.Styles>
           </MenuItem>
 
