@@ -21,19 +21,31 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_4BD216AE013B4F8D95BEFC018491F648"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_9E6FFC26C1B94A308AE37383659B05F8"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_D4C025E52F6D4B0CBD39712608FCF0CC"
+        "MsmKey" = "8:_BB8564D1E1364967B945056E0DE2B87D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_F982271944A740028BEF1707BB09E7DB"
+        "MsmKey" = "8:_D374705CB47A4395B5419A21D7DC4304"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D4C025E52F6D4B0CBD39712608FCF0CC"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -144,12 +156,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D4C025E52F6D4B0CBD39712608FCF0CC"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4BD216AE013B4F8D95BEFC018491F648"
             {
-            "SourcePath" = "8:..\\OpenTracker\\bin\\Release\\netcoreapp3.1\\runtimes\\win7-x64\\native\\lzma.dll"
-            "TargetName" = "8:lzma.dll"
+            "SourcePath" = "8:..\\OpenTracker\\bin\\Release\\netcoreapp3.1\\publish\\Themes\\Default.xaml"
+            "TargetName" = "8:Default.xaml"
             "Tag" = "8:"
-            "Folder" = "8:_C85AC8B5F1374419BA0D2192D2D360D5"
+            "Folder" = "8:_11221B6B0EEF426CA5A7900FE825EF8D"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -164,12 +176,52 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F982271944A740028BEF1707BB09E7DB"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_BB8564D1E1364967B945056E0DE2B87D"
             {
             "SourcePath" = "8:..\\OpenTracker\\bin\\Release\\netcoreapp3.1\\OpenTracker.deps.json"
             "TargetName" = "8:OpenTracker.deps.json"
             "Tag" = "8:"
             "Folder" = "8:_B21EA2C01C014AC99A33B72F50C26B5D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D374705CB47A4395B5419A21D7DC4304"
+            {
+            "SourcePath" = "8:..\\OpenTracker\\bin\\Release\\netcoreapp3.1\\publish\\Themes\\Dark.xaml"
+            "TargetName" = "8:Dark.xaml"
+            "Tag" = "8:"
+            "Folder" = "8:_11221B6B0EEF426CA5A7900FE825EF8D"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D4C025E52F6D4B0CBD39712608FCF0CC"
+            {
+            "SourcePath" = "8:..\\OpenTracker\\bin\\Release\\netcoreapp3.1\\runtimes\\win7-x64\\native\\lzma.dll"
+            "TargetName" = "8:lzma.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_C85AC8B5F1374419BA0D2192D2D360D5"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -233,7 +285,18 @@
             "Property" = "8:TARGETDIR"
                 "Folders"
                 {
-                    "{9EF0B969-E518-4E46-987F-47570745A589}:_E06B3B2863E24E9AB0B913149B142886"
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_11221B6B0EEF426CA5A7900FE825EF8D"
+                    {
+                    "Name" = "8:Themes"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_ADB1A37F65714BB3944D043B495A53A4"
+                        "Folders"
+                        {
+                        }
+                    }
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_98B75E9946244B28A2C1EEAE67C13C57"
                     {
                     "Name" = "8:runtimes"
                     "AlwaysCreate" = "11:FALSE"

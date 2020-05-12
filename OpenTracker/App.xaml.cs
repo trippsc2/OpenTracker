@@ -6,6 +6,7 @@ using OpenTracker.Interfaces;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels;
 using OpenTracker.Views;
+using System.IO;
 
 namespace OpenTracker
 {
@@ -23,8 +24,7 @@ namespace OpenTracker
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 Selector = ThemeSelector.Create("Themes");
-                Selector.LoadSelectedTheme("OpenTracker.theme");
-
+                
                 // Make sure that first value in Themes collection is the "Default" theme
                 foreach (ITheme theme in Selector.Themes)
                 {
@@ -43,6 +43,12 @@ namespace OpenTracker
                     DataContext = new MainWindowVM(dialogService),
                     Selector = Selector
                 };
+
+                if (File.Exists("OpenTracker.theme"))
+                    Selector.LoadSelectedTheme("OpenTracker.theme");
+                else
+                    Selector.ApplyTheme(Selector.Themes[0]);
+
                 desktop.Exit += (sender, e) => Selector.SaveSelectedTheme("OpenTracker.theme");
 
                 dialogService.Owner = desktop.MainWindow;
