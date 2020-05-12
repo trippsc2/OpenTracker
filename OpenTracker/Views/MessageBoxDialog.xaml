@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        MaxWidth="400" SizeToContent="Height"
+        MaxWidth="400" SizeToContent="Height" Padding="5"
         WindowStartupLocation="CenterOwner"
         CanResize="False"
         mc:Ignorable="d"
@@ -17,18 +17,16 @@
 			<Setter Property="MinWidth" Value="75" />
 		</Style>
 	</Window.Styles>
-
-	<Border Classes="Dialog">
-		<StackPanel Orientation="Vertical">
-
-			<TextBlock Classes="MessageBox" Text="{Binding Path=Text, FallbackValue=Test}" />
-
-			<StackPanel Orientation="Horizontal" Margin="15" HorizontalAlignment="Right">
-				<Button Classes="MessageBox" Content="Yes" Command="{Binding Path=YesCommand}" />
-				<Button Classes="MessageBox" Content="No" Command="{Binding Path=NoCommand}" />
-			</StackPanel>
-
-		</StackPanel>
-	</Border>
+  
+  <StackPanel Orientation="Vertical">
+    
+    <TextBlock Classes="MessageBox" Text="{Binding Path=Text, FallbackValue=Test}" />
+    
+    <StackPanel Orientation="Horizontal" Margin="15" HorizontalAlignment="Right">
+      <Button Classes="MessageBox" Content="Yes" Command="{Binding Path=YesCommand}" />
+      <Button Classes="MessageBox" Content="No" Command="{Binding Path=NoCommand}" />
+    </StackPanel>
+  
+  </StackPanel>
 	
 </Window>

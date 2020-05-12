@@ -48,6 +48,9 @@ namespace OpenTracker.Utils
             dialog.DataContext = viewModel;
             dialog.Owner = Owner;
 
+            // Dialog inherits theme from the owner window
+            dialog.Styles[0] = Owner.Styles[0];
+
             bool? result = await dialog.ShowDialog<bool?>(Owner).ConfigureAwait(false);
 
             return result;

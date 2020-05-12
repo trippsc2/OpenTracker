@@ -13,7 +13,6 @@ namespace OpenTracker.Views
 #if DEBUG
             this.AttachDevTools();
 #endif
-            App.Selector.EnableThemes(this);
         }
 
         private void InitializeComponent()

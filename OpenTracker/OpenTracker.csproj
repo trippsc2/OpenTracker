@@ -22,7 +22,6 @@
     <AvaloniaResource Include="Assets\Images\**" />
   </ItemGroup>
   <ItemGroup>
-    <AvaloniaResource Remove="Default.xaml" />
     <AvaloniaResource Remove="Views\AutoTrackerDialog.xaml" />
     <AvaloniaResource Remove="Views\BossControl.xaml" />
     <AvaloniaResource Remove="Views\ColorPickerControl.xaml" />
@@ -35,7 +34,6 @@
     <AvaloniaResource Remove="Views\ModeSettingsControl.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Default.xaml" />
     <None Remove="Views\AutoTrackerDialog.xaml" />
     <None Remove="Views\BossControl.xaml" />
     <None Remove="Views\ColorPickerControl.xaml" />
@@ -139,7 +137,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Themes\Default.xaml">
-      <Generator>MSBuild:Compile</Generator>
+      <Generator></Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Views\ItemControl.xaml">
@@ -173,8 +171,5 @@
     <EmbeddedResource Include="Views\ModeSettingsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 </Project>

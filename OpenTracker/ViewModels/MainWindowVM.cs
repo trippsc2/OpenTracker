@@ -536,7 +536,7 @@ namespace OpenTracker.ViewModels
         {
             bool? result = await _dialogService.ShowDialog(
                 new MessageBoxDialogVM("Warning",
-                "Resetting the tracker will set all items and locations back to their starting values.  This cannot be undone.\nDo you wish to proceed?"))
+                "Resetting the tracker will set all items and locations back to their starting values.  This cannot be undone.\n\nDo you wish to proceed?"))
                 .ConfigureAwait(false);
 
             if (result.HasValue && result.Value)

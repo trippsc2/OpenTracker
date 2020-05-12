@@ -174,7 +174,6 @@
 		<Style Selector="TextBlock.MessageBox">
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
 			<Setter Property="FontSize" Value="12" />
-			<Setter Property="FontWeight" Value="SemiBold" />
 			<Setter Property="Margin" Value="30" />
 			<Setter Property="TextWrapping" Value="Wrap" />
 		</Style>
