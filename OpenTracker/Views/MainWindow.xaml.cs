@@ -106,6 +106,14 @@ namespace OpenTracker.Views
             set => SetValue(ModeSettingsPopupOpenProperty, value);
         }
 
+        public static AvaloniaProperty<Orientation> LocationsPanelOrientationProperty =
+            AvaloniaProperty.Register<MainWindow, Orientation>(nameof(LocationsPanelOrientation));
+        public Orientation LocationsPanelOrientation
+        {
+            get => GetValue(LocationsPanelOrientationProperty);
+            set => SetValue(LocationsPanelOrientationProperty, value);
+        }
+
         public static AvaloniaProperty<string> CurrentFilePathProperty =
             AvaloniaProperty.Register<MainWindow, string>(nameof(CurrentFilePath));
         public string CurrentFilePath
@@ -195,6 +203,8 @@ namespace OpenTracker.Views
 
         private void HorizontalLayout()
         {
+            LocationsPanelOrientation = Orientation.Horizontal;
+
             if (ViewModel.HorizontalUIPanelPlacement == Models.Enums.VerticalAlignment.Top)
                 UIPanelDock = Dock.Top;
             else
@@ -231,6 +241,8 @@ namespace OpenTracker.Views
 
         private void VerticalLayout()
         {
+            LocationsPanelOrientation = Orientation.Vertical;
+
             if (ViewModel.VerticalUIPanelPlacement == Models.Enums.HorizontalAlignment.Left)
                 UIPanelDock = Dock.Left;
             else

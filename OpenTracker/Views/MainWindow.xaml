@@ -519,7 +519,7 @@
 							<ItemsControl.ItemsPanel>
 								<ItemsPanelTemplate>
 									<WrapPanel Orientation="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow},
-										   Path=MapPanelOrientation, Mode=OneWay}" />
+										   Path=LocationsPanelOrientation, Mode=OneWay}" />
 								</ItemsPanelTemplate>
 							</ItemsControl.ItemsPanel>
 

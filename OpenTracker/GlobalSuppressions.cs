@@ -37,3 +37,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Naming", "CA1710:Identifiers should have correct suffix", Justification = "ObservableDictionary is a dictionary-type class.", Scope = "type", Target = "~T:OpenTracker.Utils.ObservableDictionary`2")]
 [assembly: SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "Necessary use of static public field.", Scope = "member", Target = "~F:OpenTracker.App.Selector")]
 [assembly: SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "AvaloniaProperty must be public fields for binding.", Scope = "member", Target = "~F:OpenTracker.Views.MainWindow.SelectorProperty")]
+[assembly: SuppressMessage("Usage", "CA2211:Non-constant fields should not be visible", Justification = "AvaloniaProperty must be public fields for binding.", Scope = "member", Target = "~F:OpenTracker.Views.MainWindow.LocationsPanelOrientationProperty")]
