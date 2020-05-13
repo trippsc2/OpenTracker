@@ -1,4 +1,5 @@
-﻿using Avalonia.ThemeManager;
+﻿using Avalonia;
+using Avalonia.ThemeManager;
 using Avalonia.Threading;
 using Newtonsoft.Json;
 using OpenTracker.Interfaces;
@@ -16,12 +17,42 @@ using System.Threading.Tasks;
 namespace OpenTracker.ViewModels
 {
     public class MainWindowVM : ViewModelBase, IAutoTrackerAccess, IColorSelectAccess,
-        IOpen, ISave, ISaveAppSettings, IAppSettings
+        IOpen, ISave, ISaveAppSettings, IAppSettings, IBounds
     {
         private readonly IDialogService _dialogService;
         private readonly UndoRedoManager _undoRedoManager;
         private readonly AppSettings _appSettings;
         private readonly Game _game;
+
+        public bool? Maximized
+        {
+            get => _appSettings.Maximized;
+            set => _appSettings.Maximized = value;
+        }
+
+        public double? X
+        {
+            get => _appSettings.X;
+            set => _appSettings.X = value;
+        }
+
+        public double? Y
+        {
+            get => _appSettings.Y;
+            set => _appSettings.Y = value;
+        }
+
+        public double? Width
+        {
+            get => _appSettings.Width;
+            set => _appSettings.Width = value;
+        }
+
+        public double? Height
+        {
+            get => _appSettings.Height;
+            set => _appSettings.Height = value;
+        }
 
         public ModeSettingsControlVM ModeSettings { get; }
         public ThemeSelector Selector { get; }
@@ -543,8 +574,15 @@ namespace OpenTracker.ViewModels
                 Reset();
         }
 
-        public void SaveAppSettings()
+        public void SaveAppSettings(bool maximized, Rect bounds)
         {
+            _appSettings.Maximized = maximized;
+
+            _appSettings.X = bounds.X;
+            _appSettings.Y = bounds.Y;
+            _appSettings.Width = bounds.Width;
+            _appSettings.Height = bounds.Height;
+
             string appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
             if (!Directory.Exists(appData))

@@ -19,6 +19,7 @@ namespace OpenTracker.Views
         private ColorSelectDialog _colorSelectDialog;
 
         public IAutoTrackerAccess ViewModelAutoTrackerAccess => DataContext as IAutoTrackerAccess;
+        public IBounds ViewModelBounds => DataContext as IBounds;
         public IColorSelectAccess ViewModelColorSelectAccess => DataContext as IColorSelectAccess;
         public IOpen ViewModelOpen => DataContext as IOpen;
         public ISave ViewModelSave => DataContext as ISave;
@@ -131,6 +132,19 @@ namespace OpenTracker.Views
 
         private void OnDataContextChanged(object sender, EventArgs e)
         {
+            if (ViewModelBounds.Maximized.HasValue)
+            {
+                if (ViewModelBounds.Maximized.Value)
+                    WindowState = WindowState.Maximized;
+            }
+
+            if (ViewModelBounds.X.HasValue && ViewModelBounds.Y.HasValue &&
+                ViewModelBounds.Width.HasValue && ViewModelBounds.Height.HasValue)
+            {
+                Bounds = new Rect(ViewModelBounds.X.Value, ViewModelBounds.Y.Value,
+                    ViewModelBounds.Width.Value, ViewModelBounds.Height.Value);
+            }
+
             if (ViewModel != null)
                 ViewModel.PropertyChanged += OnViewModelChanged;
 
@@ -305,7 +319,7 @@ namespace OpenTracker.Views
 
         private void OnClose(object sender, CancelEventArgs e)
         {
-            ViewModelSaveAppSettings.SaveAppSettings();
+            ViewModelSaveAppSettings.SaveAppSettings(WindowState == WindowState.Maximized, Bounds);
 
             if (_autoTrackerDialog != null && _autoTrackerDialog.IsVisible)
                 _autoTrackerDialog?.Close();

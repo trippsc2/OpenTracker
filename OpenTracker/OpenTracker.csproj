@@ -160,9 +160,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Views\AutoTrackerDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
@@ -170,6 +167,11 @@
   <ItemGroup>
     <EmbeddedResource Include="Views\ModeSettingsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>
 </Project>
