@@ -11,7 +11,7 @@ namespace OpenTracker.ViewModels
     public class MarkingSelectControlVM : ViewModelBase, ISelectItem
     {
         private readonly Game _game;
-        private readonly SectionControlVM _section;
+        private readonly IChangeMarking _section;
         private readonly MarkingType? _marking;
 
         public string ImageSource
@@ -111,7 +111,7 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        public MarkingSelectControlVM(Game game, SectionControlVM section, MarkingType? marking)
+        public MarkingSelectControlVM(Game game, IChangeMarking section, MarkingType? marking)
         {
             _game = game ?? throw new ArgumentNullException(nameof(game));
             _section = section;

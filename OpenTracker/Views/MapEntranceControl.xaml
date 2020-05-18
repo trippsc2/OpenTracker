@@ -5,19 +5,18 @@
              xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
              xmlns:views="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OpenTracker.Views.MapLocationControl">
-	
-	<UserControl.Resources>
-		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />
-	</UserControl.Resources>
+             x:Class="OpenTracker.Views.MapEntranceControl">
 
-  <DockPanel IsVisible="{Binding Path=Visible}" IsHitTestVisible="{Binding Path=Visible}" PointerEnter="OnPointerEnter"
-             PointerLeave="OnPointerLeave">
+  <UserControl.Resources>
+    <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
+  </UserControl.Resources>
+
+  <DockPanel IsVisible="{Binding Path=Visible}" IsHitTestVisible="{Binding Path=Visible}" DragDrop.AllowDrop="True"
+             PointerEnter="OnPointerEnter" PointerLeave="OnPointerLeave">
 
     <Panel DockPanel.Dock="{Binding Path=ImageDock}" Width="56" Height="56" PointerReleased="OnImageClick">
       
-      <Border Width="56" Height="56" Background="#99000000" IsVisible="{Binding Path=ImageVisible}"
-              IsHitTestVisible="{Binding Path=ImageVisible}">
+      <Border Width="56" Height="56" Background="#99000000">
         <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Uniform"
                Width="56" Height="56" Source="{Binding Path=ImageSource,
                Converter={StaticResource BitmapValueConverter}}" />
@@ -52,20 +51,12 @@
           </StackPanel>
         </Border>
       </Popup>
-    
+
     </Panel>
 
-    <Panel Width="{Binding Path=Size}" Height="{Binding Path=Size}" DoubleTapped="OnDoubleClick"
-         PointerReleased="OnShapeClick">
-      <Border Classes="MapLocation" Width="{Binding Path=Size}" Height="{Binding Path=Size}"
-              Background="{Binding Path=Color, Mode=OneWay}" BorderThickness="{Binding Path=BorderSize}"
-              BorderBrush="{Binding Path=BorderColor, Mode=OneWay}" CornerRadius="{Binding Path=CornerRadius}">
-        <Border Classes="MapLocationNumber" IsHitTestVisible="{Binding Path=TextVisible}"
-            IsVisible="{Binding Path=TextVisible}">
-          <TextBlock Classes="MapLocationNumber" Foreground="{Binding Path=Color}" Text="{Binding Path=Text}" />
-        </Border>
-      </Border>
-
+    <Panel DoubleTapped="OnDoubleClick" PointerPressed="OnPointerPressed" PointerReleased="OnShapeClick">
+      <Polygon Points="{Binding Path=Points}" Fill="{Binding Path=Color}" Stroke="{Binding Path=BorderColor}"
+               StrokeThickness="5" />
     </Panel>
 
   </DockPanel>

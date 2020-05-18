@@ -4,15 +4,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
         mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="462"
-        MinWidth="420" MinHeight="512" Padding="5"
-        SizeToContent="WidthAndHeight" CanResize="True" 
+        Width="420" Height="554" Padding="5"
+        CanResize="True" 
         WindowStartupLocation="CenterOwner"
         x:Class="OpenTracker.Views.ColorSelectDialog"
         Icon="avares://OpenTracker/Assets/triforce.png"
         Title="OpenTracker - Color Select">
   <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <Grid ColumnDefinitions="Auto,*,Auto"
-          RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+          RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
       
       <TextBlock Classes="ColorSelectTitle" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0"
                  Text="Font Colors" />
@@ -96,6 +96,22 @@
               RelativeSource={RelativeSource AncestorType=view:ColorSelectDialog}, Mode=OneWay}">
         <view:ColorPickerControl DataContext="{Binding Path=AccessibilityNormalColor}" />
       </Border>
+
+      <TextBlock Classes="ColorSelectTitle" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="14"
+                 Text="Connector Colors" />
+      <ToggleButton Classes="ColorSelect" IsChecked="{Binding Path=ConnectorColorPickerOpen,
+                    RelativeSource={RelativeSource AncestorType=view:ColorSelectDialog}, Mode=TwoWay}"
+                    Background="{Binding Path=ConnectorColor}" Grid.Column="0" Grid.Row="15" />
+      <TextBlock Classes="ColorSelectLabel" Grid.Column="2" Grid.Row="15" Text="Emphasis" />
+
+      <Border Classes="ColorPicker" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="16"
+              IsHitTestVisible="{Binding Path=ConnectorColorPickerOpen,
+              RelativeSource={RelativeSource AncestorType=view:ColorSelectDialog}, Mode=OneWay}"
+              IsVisible="{Binding Path=ConnectorColorPickerOpen,
+              RelativeSource={RelativeSource AncestorType=view:ColorSelectDialog}, Mode=OneWay}">
+        <view:ColorPickerControl DataContext="{Binding Path=ConnectorColor}" />
+      </Border>
+
     </Grid>
   </ScrollViewer>
 </Window>

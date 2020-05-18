@@ -454,7 +454,7 @@ namespace OpenTracker.Models
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
-                case LocationID.ForestHideout:
+                case LocationID.ForestHideoutEntrance:
 
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];

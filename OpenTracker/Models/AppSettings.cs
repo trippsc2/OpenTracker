@@ -143,6 +143,20 @@ namespace OpenTracker.Models
             }
         }
 
+        private string _connectorColor;
+        public string ConnectorColor
+        {
+            get => _connectorColor;
+            set
+            {
+                if (_connectorColor != value)
+                {
+                    _connectorColor = value;
+                    OnPropertyChanged(nameof(ConnectorColor));
+                }
+            }
+        }
+
         public ObservableDictionary<AccessibilityLevel, string> AccessibilityColors { get; }
 
         public AppSettings()
@@ -152,6 +166,7 @@ namespace OpenTracker.Models
             HorizontalUIPanelPlacement = VerticalAlignment.Bottom;
             VerticalUIPanelPlacement = HorizontalAlignment.Left;
             EmphasisFontColor = "#ff00ff00";
+            ConnectorColor = "#ff40e0d0";
 
             AccessibilityColors = new ObservableDictionary<AccessibilityLevel, string>()
             {

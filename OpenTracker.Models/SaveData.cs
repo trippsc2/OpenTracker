@@ -12,6 +12,7 @@ namespace OpenTracker.Models
         public Dictionary<LocationID, Dictionary<int, MarkingType?>> LocationSectionMarkings { get; set; }
         public Dictionary<LocationID, ItemType?> PrizePlacements { get; set; }
         public Dictionary<LocationID, BossType?> BossPlacements { get; set; }
+        public List<(LocationID, int, LocationID, int)> Connections { get; set; }
 
         public SaveData()
         {
@@ -29,6 +30,7 @@ namespace OpenTracker.Models
             LocationSectionMarkings = new Dictionary<LocationID, Dictionary<int, MarkingType?>>();
             PrizePlacements = new Dictionary<LocationID, ItemType?>();
             BossPlacements = new Dictionary<LocationID, BossType?>();
+            Connections = new List<(LocationID, int, LocationID, int)>();
 
             foreach (Item item in game.Items.Values)
                 ItemCounts.Add(item.Type, item.Current);
@@ -61,6 +63,14 @@ namespace OpenTracker.Models
 
                     countDictionary.Add(i, location.Sections[i].Available);
                 }
+            }
+
+            foreach ((MapLocation, MapLocation) connection in game.Connections)
+            {
+                int index1 = connection.Item1.Location.MapLocations.IndexOf(connection.Item1);
+                int index2 = connection.Item2.Location.MapLocations.IndexOf(connection.Item2);
+
+                Connections.Add((connection.Item1.Location.ID, index1, connection.Item2.Location.ID, index2));
             }
         }
     }

@@ -55,6 +55,14 @@ namespace OpenTracker.Views
             set => SetValue(AccessibilityNormalColorPickerOpenProperty, value);
         }
 
+        public static AvaloniaProperty<bool> ConnectorColorPickerOpenProperty =
+            AvaloniaProperty.Register<ColorSelectDialog, bool>("ConnectorColorPickerOpen");
+        public bool ConnectorColorPickerOpen
+        {
+            get => GetValue(ConnectorColorPickerOpenProperty);
+            set => SetValue(ConnectorColorPickerOpenProperty, value);
+        }
+
         public ColorSelectDialog()
         {
             this.InitializeComponent();

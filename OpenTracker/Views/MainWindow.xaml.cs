@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
@@ -18,13 +19,22 @@ namespace OpenTracker.Views
         private AutoTrackerDialog _autoTrackerDialog;
         private ColorSelectDialog _colorSelectDialog;
 
-        public IAutoTrackerAccess ViewModelAutoTrackerAccess => DataContext as IAutoTrackerAccess;
-        public IBounds ViewModelBounds => DataContext as IBounds;
-        public IColorSelectAccess ViewModelColorSelectAccess => DataContext as IColorSelectAccess;
-        public IOpen ViewModelOpen => DataContext as IOpen;
-        public ISave ViewModelSave => DataContext as ISave;
-        public ISaveAppSettings ViewModelSaveAppSettings => DataContext as ISaveAppSettings;
-        private IAppSettings ViewModel => DataContext as IAppSettings;
+        public static Orientation MapOrientationStatic { get; set; }
+
+        public IAutoTrackerAccess ViewModelAutoTrackerAccess =>
+            DataContext as IAutoTrackerAccess;
+        public IBounds ViewModelBounds =>
+            DataContext as IBounds;
+        public IColorSelectAccess ViewModelColorSelectAccess =>
+            DataContext as IColorSelectAccess;
+        public IOpen ViewModelOpen =>
+            DataContext as IOpen;
+        public ISave ViewModelSave =>
+            DataContext as ISave;
+        public ISaveAppSettings ViewModelSaveAppSettings =>
+            DataContext as ISaveAppSettings;
+        private IAppSettings ViewModel =>
+            DataContext as IAppSettings;
 
         public static AvaloniaProperty<IThemeSelector> SelectorProperty =
             AvaloniaProperty.Register<MainWindow, IThemeSelector>(nameof(Selector));
@@ -215,11 +225,13 @@ namespace OpenTracker.Views
 
             if (ViewModel.MapOrientation == MapOrientation.Vertical)
             {
+                MapOrientationStatic = Orientation.Vertical;
                 MapPanelOrientation = Orientation.Vertical;
                 MapMargin = new Thickness(20, 10);
             }
             else
             {
+                MapOrientationStatic = Orientation.Horizontal;
                 MapPanelOrientation = Orientation.Horizontal;
                 MapMargin = new Thickness(10, 20);
             }
@@ -253,11 +265,13 @@ namespace OpenTracker.Views
 
             if (ViewModel.MapOrientation == MapOrientation.Horizontal)
             {
+                MapOrientationStatic = Orientation.Horizontal;
                 MapPanelOrientation = Orientation.Horizontal;
                 MapMargin = new Thickness(10, 20);
             }
             else
             {
+                MapOrientationStatic = Orientation.Vertical;
                 MapPanelOrientation = Orientation.Vertical;
                 MapMargin = new Thickness(20, 10);
             }

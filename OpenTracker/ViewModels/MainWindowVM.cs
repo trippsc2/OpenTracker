@@ -58,6 +58,9 @@ namespace OpenTracker.ViewModels
         public ThemeSelector Selector { get; }
 
         public ObservableCollection<MapControlVM> Maps { get; }
+        public ObservableCollection<ConnectorControlVM> Connectors { get; }
+        public ObservableCollection<MapEntranceControlVM> MapEntrances { get; }
+        public ObservableCollection<MapLocationControlVM> MapLocations { get; }
         public ObservableCollection<ItemControlVM> Items { get; }
         public ObservableCollection<LocationControlVM> Locations { get; }
         public ObservableCollection<DungeonItemControlVM> HCItems { get; }
@@ -193,10 +196,14 @@ namespace OpenTracker.ViewModels
             _game = new Game();
 
             _game.Mode.PropertyChanged += OnModeChanged;
+            _game.Connections.CollectionChanged += OnConnectionsChanged;
 
             ModeSettings = new ModeSettingsControlVM(_game.Mode, _undoRedoManager);
 
             Maps = new ObservableCollection<MapControlVM>();
+            Connectors = new ObservableCollection<ConnectorControlVM>();
+            MapEntrances = new ObservableCollection<MapEntranceControlVM>();
+            MapLocations = new ObservableCollection<MapLocationControlVM>();
             Locations = new ObservableCollection<LocationControlVM>();
             HCItems = new ObservableCollection<DungeonItemControlVM>()
             {
@@ -261,8 +268,25 @@ namespace OpenTracker.ViewModels
                 new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.TurtleRock].BossSection)
             };
 
+            foreach (Location location in _game.Locations.Values)
+            {
+                foreach (MapLocation mapLocation in location.MapLocations)
+                {
+                    if (location.Sections[0] is EntranceSection)
+                    {
+                        MapEntrances.Add(new MapEntranceControlVM(_undoRedoManager, _appSettings,
+                            _game, this, mapLocation));
+                    }
+                    else
+                    {
+                        MapLocations.Add(new MapLocationControlVM(_undoRedoManager, _appSettings,
+                            _game, this, mapLocation));
+                    }
+                }
+            }
+
             for (int i = 0; i < Enum.GetValues(typeof(MapID)).Length; i++)
-                Maps.Add(new MapControlVM(_undoRedoManager, _appSettings, _game, this, (MapID)i));
+                Maps.Add(new MapControlVM(_game, (MapID)i));
 
             Items = new ObservableCollection<ItemControlVM>();
 
@@ -372,6 +396,43 @@ namespace OpenTracker.ViewModels
 
             if (e.PropertyName == nameof(Mode.BossShuffle))
                 this.RaisePropertyChanged(nameof(BossShuffle));
+        }
+
+        private void OnConnectionsChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (object item in e.NewItems)
+                {
+                    (MapLocation, MapLocation) connection = ((MapLocation, MapLocation))item;
+                    Connectors.Add(new ConnectorControlVM(_undoRedoManager, _game, _appSettings, connection));
+                }
+            }
+
+            if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (object item in e.OldItems)
+                {
+                    (MapLocation, MapLocation) connection = ((MapLocation, MapLocation))item;
+
+                    foreach (ConnectorControlVM connector in Connectors)
+                    {
+                        if (connector.Connection == connection)
+                        {
+                            Connectors.Remove(connector);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                Connectors.Clear();
+
+                foreach ((MapLocation, MapLocation) connection in (ObservableCollection<(MapLocation, MapLocation)>)sender)
+                    Connectors.Add(new ConnectorControlVM(_undoRedoManager, _game, _appSettings, connection));
+            }
         }
 
         private void UpdateCanUndo()
@@ -504,6 +565,14 @@ namespace OpenTracker.ViewModels
                     _game.Locations[location].BossSection.Boss =
                         _game.Bosses[saveData.BossPlacements[location].Value];
                 }
+            }
+
+            foreach ((LocationID, int, LocationID, int) connection in saveData.Connections)
+            {
+                MapLocation location1 = _game.Locations[connection.Item1].MapLocations[connection.Item2];
+                MapLocation location2 = _game.Locations[connection.Item3].MapLocations[connection.Item4];
+
+                _game.Connections.Add((location1, location2));
             }
         }
 

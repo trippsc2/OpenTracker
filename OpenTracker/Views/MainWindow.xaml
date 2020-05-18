@@ -31,6 +31,7 @@
 
   <Window.Resources>
     <manager:ObjectEqualityMultiConverter x:Key="ObjectEqualityMultiConverter"/>
+    <vc:MapCoordinateValueConverter x:Key="MapCoordinateValueConverter" />
   </Window.Resources>
 
 	<DockPanel>
@@ -540,23 +541,91 @@
 		<!-- Map Area -->
 		<Panel>
 			<Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-				<ItemsControl x:Name="MapItemsControl" Items="{Binding Path=Maps}">
-					
-					<ItemsControl.ItemsPanel>
-						<ItemsPanelTemplate>
-							<StackPanel Orientation="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow},
+        <Panel>
+
+          <ItemsControl x:Name="MapItemsControl" Items="{Binding Path=Maps}">
+
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <StackPanel Orientation="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow},
 										Path=MapPanelOrientation, Mode=OneWay}" />
-						</ItemsPanelTemplate>
-					</ItemsControl.ItemsPanel>
-					
-					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-							<view:MapControl />
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-				
-				</ItemsControl>
-			</Viewbox>
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <view:MapControl />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+
+          </ItemsControl>
+
+          <ItemsControl x:Name="ConnectorControl" Items="{Binding Path=Connectors}">
+
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <Panel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <view:ConnectorControl />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+
+          </ItemsControl>
+
+          <ItemsControl Classes="Canvas" Items="{Binding Path=MapLocations}">
+            <ItemsControl.Styles>
+              <Style Selector="ItemsControl.Canvas > ContentPresenter">
+                <Setter Property="Canvas.Left" Value="{Binding Path=MapPoint, Converter={StaticResource
+              MapCoordinateValueConverter}, ConverterParameter=X}" />
+                <Setter Property="Canvas.Top" Value="{Binding Path=MapPoint, Converter={StaticResource
+              MapCoordinateValueConverter}, ConverterParameter=Y}" />
+              </Style>
+            </ItemsControl.Styles>
+
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <Canvas />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <view:MapLocationControl />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+
+          </ItemsControl>
+
+          <ItemsControl Classes="Canvas" Items="{Binding Path=MapEntrances}">
+            <ItemsControl.Styles>
+              <Style Selector="ItemsControl.Canvas > ContentPresenter">
+                <Setter Property="Canvas.Left" Value="{Binding Path=MapPoint, Converter={StaticResource
+                        MapCoordinateValueConverter}, ConverterParameter=X}" />
+                <Setter Property="Canvas.Top" Value="{Binding Path=MapPoint, Converter={StaticResource
+                        MapCoordinateValueConverter}, ConverterParameter=Y}" />
+              </Style>
+            </ItemsControl.Styles>
+
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <Canvas />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <view:MapEntranceControl />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+
+          </ItemsControl>
+
+        </Panel>
+      </Viewbox>
 		</Panel>
 	
 	</DockPanel>

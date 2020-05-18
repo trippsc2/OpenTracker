@@ -26,9 +26,11 @@
     <AvaloniaResource Remove="Views\BossControl.xaml" />
     <AvaloniaResource Remove="Views\ColorPickerControl.xaml" />
     <AvaloniaResource Remove="Views\ColorSelectDialog.xaml" />
+    <AvaloniaResource Remove="Views\ConnectorControl.xaml" />
     <AvaloniaResource Remove="Views\DungeonItemControl.xaml" />
     <AvaloniaResource Remove="Views\DungeonPrizeControl.xaml" />
     <AvaloniaResource Remove="Views\LocationControl.xaml" />
+    <AvaloniaResource Remove="Views\MapEntranceControl.xaml" />
     <AvaloniaResource Remove="Views\MarkingSelectControl.xaml" />
     <AvaloniaResource Remove="Views\MessageBoxDialog.xaml" />
     <AvaloniaResource Remove="Views\ModeSettingsControl.xaml" />
@@ -38,9 +40,11 @@
     <None Remove="Views\BossControl.xaml" />
     <None Remove="Views\ColorPickerControl.xaml" />
     <None Remove="Views\ColorSelectDialog.xaml" />
+    <None Remove="Views\ConnectorControl.xaml" />
     <None Remove="Views\DungeonItemControl.xaml" />
     <None Remove="Views\DungeonPrizeControl.xaml" />
     <None Remove="Views\LocationControl.xaml" />
+    <None Remove="Views\MapEntranceControl.xaml" />
     <None Remove="Views\MapLocationControl.xaml" />
     <None Remove="Views\MarkingSelectControl.xaml" />
     <None Remove="Views\MessageBoxDialog.xaml" />
@@ -166,6 +170,16 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\ModeSettingsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\MapEntranceControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\ConnectorControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>

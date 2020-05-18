@@ -10,38 +10,13 @@
 	<UserControl.Resources>
 		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />
 	</UserControl.Resources>
-	
-	<UserControl.Styles>
-		<Style Selector="ItemsControl.Canvas > ContentPresenter">
-			<Setter Property="Canvas.Left" Value="{Binding Path=CanvasX}" />
-			<Setter Property="Canvas.Top" Value="{Binding Path=CanvasY}" />
-		</Style>
-	</UserControl.Styles>
 
-	<Border BorderBrush="{DynamicResource ThemeBorderLowBrush}" Background="Transparent" BorderThickness="3" Margin="{Binding Path=MapMargin,
+  <Border BorderBrush="{DynamicResource ThemeBorderLowBrush}" BorderThickness="3" Margin="{Binding Path=MapMargin,
 			RelativeSource={RelativeSource AncestorType=views:MainWindow}}">
 		<Panel>
-
 			<Image Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}"
 				   Height="2007" Width="2007" />
-
-			<ItemsControl Classes="Canvas" Items="{Binding Path=MapLocations}">
-
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<Canvas Height="2007" Width="2007" />
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
-
-				<ItemsControl.ItemTemplate>
-					<DataTemplate>
-						<views:MapLocationControl />
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-
-			</ItemsControl>
-
-		</Panel>
+    </Panel>
 	</Border>
 
 </UserControl>

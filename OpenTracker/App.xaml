@@ -92,14 +92,6 @@
 			<Setter Property="Margin" Value="5" />
 		</Style>
 		
-		<Style Selector="Border.MapLocation">
-			<Setter Property="BorderBrush" Value="#000000" />
-		</Style>
-
-		<Style Selector="Border.MapLocation:pointerover">
-			<Setter Property="BorderBrush" Value="#FFFFFFFF" />
-		</Style>
-
 		<Style Selector="Border.MapLocationNumber">
 			<Setter Property="Background" Value="#FF000000" />
 			<Setter Property="Padding" Value="8,0" />
@@ -330,6 +322,14 @@
 			<Setter Property="Width" Value="100" />
 		</Style>
 
-	</Application.Styles>
+    <Style Selector="Line.Connector">
+      <Setter Property="StrokeThickness" Value="6" />
+    </Style>
+
+    <Style Selector="Line.Connector:pointerover">
+      <Setter Property="Stroke" Value="#FFFFFFFF" />
+    </Style>
+
+  </Application.Styles>
 
 </Application>

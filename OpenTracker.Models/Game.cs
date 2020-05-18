@@ -1,6 +1,7 @@
 ﻿using OpenTracker.Models.Enums;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace OpenTracker.Models
 {
@@ -12,6 +13,7 @@ namespace OpenTracker.Models
         public ItemDictionary Items { get; }
         public Dictionary<RegionID, Region> Regions { get; }
         public LocationDictionary Locations { get; }
+        public ObservableCollection<(MapLocation, MapLocation)> Connections { get; }
 
         public Game()
         {
@@ -30,6 +32,7 @@ namespace OpenTracker.Models
             Items = new ItemDictionary(Mode, Enum.GetValues(typeof(ItemType)).Length);
             Regions = new Dictionary<RegionID, Region>(Enum.GetValues(typeof(RegionID)).Length);
             Locations = new LocationDictionary(Enum.GetValues(typeof(LocationID)).Length);
+            Connections = new ObservableCollection<(MapLocation, MapLocation)>();
 
             foreach (ItemType type in Enum.GetValues(typeof(ItemType)))
                 Items.Add(type, new Item(this, type));
@@ -57,6 +60,7 @@ namespace OpenTracker.Models
             AutoTracker.Stop();
             Locations.Reset();
             Items.Reset();
+            Connections.Clear();
         }
     }
 }

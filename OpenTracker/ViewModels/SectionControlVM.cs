@@ -13,7 +13,7 @@ using System.Reactive;
 
 namespace OpenTracker.ViewModels
 {
-    public class SectionControlVM : ViewModelBase, IClickHandler, IOpenMarkingSelect
+    public class SectionControlVM : ViewModelBase, IChangeMarking, IClickHandler, IOpenMarkingSelect
     {
         private readonly UndoRedoManager _undoRedoManager;
         private readonly AppSettings _appSettings;

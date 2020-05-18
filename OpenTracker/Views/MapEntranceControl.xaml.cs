@@ -8,25 +8,44 @@ using System.Linq;
 
 namespace OpenTracker.Views
 {
-    public class MapLocationControl : UserControl
+    public class MapEntranceControl : UserControl
     {
         private IClearAvailableSections ViewModelClearAvailableSections =>
             DataContext as IClearAvailableSections;
         private IOpenMarkingSelect ViewModelOpenMarkingSelect =>
             DataContext as IOpenMarkingSelect;
-        private IPinLocation ViewModelPinLocation => DataContext
-            as IPinLocation;
+        private IPinLocation ViewModelPinLocation =>
+            DataContext as IPinLocation;
         private IPointerOver ViewModelPointerOver =>
             DataContext as IPointerOver;
+        public IConnectLocation ViewModelConnectLocation =>
+            DataContext as IConnectLocation;
 
-        public MapLocationControl()
+        public MapEntranceControl()
         {
             this.InitializeComponent();
+
+            AddHandler(DragDrop.DropEvent, OnDrop);
         }
 
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
+        }
+
+        private async void OnPointerPressed(object sender, PointerPressedEventArgs e)
+        {
+            DataObject dragData = new DataObject();
+            dragData.Set(DataFormats.Text, this);
+
+            await DragDrop.DoDragDrop(e, dragData, DragDropEffects.Copy).ConfigureAwait(false);
+        }
+
+        private void OnDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.Get(DataFormats.Text) is MapEntranceControl mapEntrance &&
+                mapEntrance != this)
+                ViewModelConnectLocation.ConnectLocation(mapEntrance.ViewModelConnectLocation);
         }
 
         private void OnImageClick(object sender, PointerReleasedEventArgs e)
