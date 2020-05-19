@@ -1,11 +1,11 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
 using OpenTracker.Models.Interfaces;
-using OpenTracker.Views;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -26,7 +26,8 @@ namespace OpenTracker.ViewModels
 
         public MapLocation MapLocation { get; }
 
-        public ObservableCollection<MarkingSelectControlVM> ItemSelect { get; }
+        public ObservableCollection<MarkingSelectControlVM> ItemSelect =>
+            MainWindowVM.EntranceMarkingSelect;
 
         private bool _highlighted;
         public bool Highlighted
@@ -35,34 +36,49 @@ namespace OpenTracker.ViewModels
             private set => this.RaiseAndSetIfChanged(ref _highlighted, value);
         }
 
-        public (MapID, Point) MapPoint
+        public double CanvasX
         {
             get
             {
-                double x = 0;
-                double y = 0;
-
-                switch (ImageDock)
+                double x = ImageDock switch
                 {
-                    case Dock.Left:
-                        x = MapLocation.X - 84;
-                        y = MapLocation.Y - 28;
-                        break;
-                    case Dock.Bottom:
-                        x = MapLocation.X - 28;
-                        y = MapLocation.Y;
-                        break;
-                    case Dock.Right:
-                        x = MapLocation.X;
-                        y = MapLocation.Y - 28;
-                        break;
-                    case Dock.Top:
-                        x = MapLocation.X - 28;
-                        y = MapLocation.Y - 84;
-                        break;
-                }
+                    Dock.Left => MapLocation.X - 84,
+                    Dock.Right => MapLocation.X,
+                    _ => MapLocation.X - 28,
+                };
 
-                return (MapLocation.Map, new Point(x, y));
+                if (_mainWindow.MapPanelOrientation == Orientation.Vertical)
+                    return x + 23;
+                else
+                {
+                    if (MapLocation.Map == MapID.DarkWorld)
+                        return x + 2046;
+                    else
+                        return x + 13;
+                }
+            }
+        }
+
+        public double CanvasY
+        {
+            get
+            {
+                double y = ImageDock switch
+                {
+                    Dock.Bottom => MapLocation.Y,
+                    Dock.Top => MapLocation.Y - 84,
+                    _ => MapLocation.Y - 28,
+                };
+
+                if (_mainWindow.MapPanelOrientation == Orientation.Vertical)
+                {
+                    if (MapLocation.Map == MapID.DarkWorld)
+                        return y + 2046;
+                    else
+                        return y + 13;
+                }
+                else
+                    return y + 23;
             }
         }
 
@@ -261,6 +277,7 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        public ReactiveCommand<MarkingType?, Unit> ChangeMarkingCommand { get; }
         public ReactiveCommand<Unit, Unit> ClearVisibleItemCommand { get; }
 
         public MapEntranceControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
@@ -269,14 +286,10 @@ namespace OpenTracker.ViewModels
             _undoRedoManager = undoRedoManager;
             _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
             _game = game ?? throw new ArgumentNullException(nameof(game));
-            _mainWindow = mainWindow;
+            _mainWindow = mainWindow ?? throw new ArgumentNullException(nameof(mainWindow));
             MapLocation = mapLocation ?? throw new ArgumentNullException(nameof(mapLocation));
 
-            ItemSelect = new ObservableCollection<MarkingSelectControlVM>();
-            
-            for (int i = 0; i < Enum.GetValues(typeof(MarkingType)).Length; i++)
-                ItemSelect.Add(new MarkingSelectControlVM(_game, this, (MarkingType)i));
-
+            ChangeMarkingCommand = ReactiveCommand.Create<MarkingType?>(ChangeMarking);
             ClearVisibleItemCommand = ReactiveCommand.Create(ClearMarking);
 
             switch (MapLocation.Location.ID)
@@ -326,13 +339,11 @@ namespace OpenTracker.ViewModels
 
             PropertyChanged += OnPropertyChanged;
 
-            // MVVM violation, but I can't come up with a better solution.  Needs further development.
-            MainWindow.MapPanelOrientationProperty.Changed.Subscribe(OnMapOrientationChanged);
-
-            appSettings.PropertyChanged += OnAppSettingsChanged;
-            appSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
-            game.Mode.PropertyChanged += OnModeChanged;
-            mapLocation.Location.PropertyChanged += OnLocationChanged;
+            _appSettings.PropertyChanged += OnAppSettingsChanged;
+            _appSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
+            _game.Mode.PropertyChanged += OnModeChanged;
+            _mainWindow.PropertyChanged += OnMainWindowChanged;
+            MapLocation.Location.PropertyChanged += OnLocationChanged;
 
             foreach (ISection section in mapLocation.Location.Sections)
             {
@@ -350,6 +361,9 @@ namespace OpenTracker.ViewModels
         {
             if (e.PropertyName == nameof(Highlighted))
                 UpdateBorderColor();
+
+            if (e.PropertyName == nameof(ImageDock))
+                UpdatePosition();
         }
 
         private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
@@ -367,6 +381,12 @@ namespace OpenTracker.ViewModels
         {
             UpdatePosition();
             UpdateVisibility();
+        }
+
+        private void OnMainWindowChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(MainWindowVM.MapPanelOrientation))
+                UpdatePosition();
         }
 
         private void OnLocationChanged(object sender, PropertyChangedEventArgs e)
@@ -403,14 +423,10 @@ namespace OpenTracker.ViewModels
             UpdateImage();
         }
 
-        private void OnMapOrientationChanged(AvaloniaPropertyChangedEventArgs e)
-        {
-            UpdatePosition();
-        }
-
         private void UpdatePosition()
         {
-            this.RaisePropertyChanged(nameof(MapPoint));
+            this.RaisePropertyChanged(nameof(CanvasX));
+            this.RaisePropertyChanged(nameof(CanvasY));
         }
 
         private void UpdateColor()

@@ -1,13 +1,12 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
 using OpenTracker.Models.Interfaces;
-using OpenTracker.Views;
 using ReactiveUI;
-using SharpGen.Runtime;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -27,7 +26,8 @@ namespace OpenTracker.ViewModels
         private readonly Dock _nonEntranceDock;
         private readonly Dock _entranceDock;
 
-        public ObservableCollection<MarkingSelectControlVM> ItemSelect { get; }
+        public ObservableCollection<MarkingSelectControlVM> ItemSelect =>
+            MainWindowVM.NonEntranceMarkingSelect;
 
         private bool _highlighted;
         public bool Highlighted
@@ -47,34 +47,49 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        public (MapID, Point) MapPoint
+        public double CanvasX
         {
             get
             {
-                double x = 0;
-                double y = 0;
-
-                switch (ImageDock)
+                double x = ImageDock switch
                 {
-                    case Dock.Left:
-                        x = _mapLocation.X - (Size / 2) - 55;
-                        y = Math.Min(_mapLocation.Y - (Size / 2), _mapLocation.Y - 27.5);
-                        break;
-                    case Dock.Bottom:
-                        x = Math.Min(_mapLocation.X - (Size / 2), _mapLocation.X - 27.5);
-                        y = _mapLocation.Y - (Size / 2);
-                        break;
-                    case Dock.Right:
-                        x = _mapLocation.X - (Size / 2);
-                        y = Math.Min(_mapLocation.Y - (Size / 2), _mapLocation.Y - 27.5);
-                        break;
-                    case Dock.Top:
-                        x = Math.Min(_mapLocation.X - (Size / 2), _mapLocation.X - 27.5);
-                        y = _mapLocation.Y - (Size / 2) - 55;
-                        break;
-                }
+                    Dock.Left => _mapLocation.X - (Size / 2) - 55,
+                    Dock.Right => _mapLocation.X - (Size / 2),
+                    _ => Math.Min(_mapLocation.X - (Size / 2), _mapLocation.X - 27.5),
+                };
 
-                return (_mapLocation.Map, new Point(x, y));
+                if (_mainWindow.MapPanelOrientation == Orientation.Vertical)
+                    return x + 23;
+                else
+                {
+                    if (_mapLocation.Map == MapID.DarkWorld)
+                        return x + 2046;
+                    else
+                        return x + 13;
+                }
+            }
+        }
+
+        public double CanvasY
+        {
+            get
+            {
+                double y = ImageDock switch
+                {
+                    Dock.Bottom => _mapLocation.Y - (Size / 2),
+                    Dock.Top => _mapLocation.Y - (Size / 2) - 55,
+                    _ => Math.Min(_mapLocation.Y - (Size / 2), _mapLocation.Y - 27.5),
+                };
+
+                if (_mainWindow.MapPanelOrientation == Orientation.Vertical)
+                {
+                    if (_mapLocation.Map == MapID.DarkWorld)
+                        return y + 2046;
+                    else
+                        return y + 13;
+                }
+                else
+                    return y + 23;
             }
         }
 
@@ -342,6 +357,7 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        public ReactiveCommand<MarkingType?, Unit> ChangeMarkingCommand { get; }
         public ReactiveCommand<Unit, Unit> ClearVisibleItemCommand { get; }
 
         public MapLocationControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
@@ -350,59 +366,10 @@ namespace OpenTracker.ViewModels
             _undoRedoManager = undoRedoManager;
             _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
             _game = game ?? throw new ArgumentNullException(nameof(game));
-            _mainWindow = mainWindow;
+            _mainWindow = mainWindow ?? throw new ArgumentNullException(nameof(mainWindow));
             _mapLocation = mapLocation ?? throw new ArgumentNullException(nameof(mapLocation));
 
-            ItemSelect = new ObservableCollection<MarkingSelectControlVM>();
-            
-            for (int i = 0; i < Enum.GetValues(typeof(MarkingType)).Length; i++)
-                    {
-                        switch ((MarkingType)i)
-                        {
-                            case MarkingType.Sword:
-                            case MarkingType.Shield:
-                            case MarkingType.Mail:
-                            case MarkingType.Boots:
-                            case MarkingType.Gloves:
-                            case MarkingType.Flippers:
-                            case MarkingType.MoonPearl:
-                            case MarkingType.Bow:
-                            case MarkingType.SilverArrows:
-                            case MarkingType.Boomerang:
-                            case MarkingType.RedBoomerang:
-                            case MarkingType.Hookshot:
-                            case MarkingType.Bomb:
-                            case MarkingType.Mushroom:
-                            case MarkingType.FireRod:
-                            case MarkingType.IceRod:
-                            case MarkingType.Bombos:
-                            case MarkingType.Ether:
-                            case MarkingType.Powder:
-                            case MarkingType.Lamp:
-                            case MarkingType.Hammer:
-                            case MarkingType.Flute:
-                            case MarkingType.Net:
-                            case MarkingType.Book:
-                            case MarkingType.Shovel:
-                            case MarkingType.SmallKey:
-                            case MarkingType.Bottle:
-                            case MarkingType.CaneOfSomaria:
-                            case MarkingType.CaneOfByrna:
-                            case MarkingType.Cape:
-                            case MarkingType.Mirror:
-                            case MarkingType.HalfMagic:
-                            case MarkingType.BigKey:
-                                ItemSelect.Add(new MarkingSelectControlVM(_game, this, (MarkingType)i));
-                                break;
-                            case MarkingType.Quake:
-                                ItemSelect.Add(new MarkingSelectControlVM(_game, this, (MarkingType)i));
-                                ItemSelect.Add(new MarkingSelectControlVM(_game, this, null));
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-
+            ChangeMarkingCommand = ReactiveCommand.Create<MarkingType?>(ChangeMarking);
             ClearVisibleItemCommand = ReactiveCommand.Create(ClearMarking);
 
             switch (_mapLocation.Location.ID)
@@ -429,15 +396,13 @@ namespace OpenTracker.ViewModels
 
             UpdateImageDock();
 
-            // MVVM violation, but I can't come up with a better solution.  Needs further development.
-            MainWindow.MapPanelOrientationProperty.Changed.Subscribe(OnMapOrientationChanged);
-
             PropertyChanged += OnPropertyChanged;
 
-            appSettings.PropertyChanged += OnAppSettingsChanged;
-            appSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
-            game.Mode.PropertyChanged += OnModeChanged;
-            mapLocation.Location.PropertyChanged += OnLocationChanged;
+            _appSettings.PropertyChanged += OnAppSettingsChanged;
+            _appSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
+            _game.Mode.PropertyChanged += OnModeChanged;
+            _mainWindow.PropertyChanged += OnMainWindowChanged;
+            _mapLocation.Location.PropertyChanged += OnLocationChanged;
 
             foreach (ISection section in mapLocation.Location.Sections)
             {
@@ -485,6 +450,12 @@ namespace OpenTracker.ViewModels
                 UpdateImageDock();
         }
 
+        private void OnMainWindowChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(MainWindowVM.MapPanelOrientation))
+                UpdateSizeAndPosition();
+        }
+
         private void OnLocationChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Models.Location.Accessibility))
@@ -528,16 +499,12 @@ namespace OpenTracker.ViewModels
             UpdateImage();
         }
 
-        private void OnMapOrientationChanged(AvaloniaPropertyChangedEventArgs e)
-        {
-            UpdateSizeAndPosition();
-        }
-
         private void UpdateSizeAndPosition()
         {
             this.RaisePropertyChanged(nameof(BorderSize));
             this.RaisePropertyChanged(nameof(Size));
-            this.RaisePropertyChanged(nameof(MapPoint));
+            this.RaisePropertyChanged(nameof(CanvasX));
+            this.RaisePropertyChanged(nameof(CanvasY));
         }
 
         private void UpdateColor()

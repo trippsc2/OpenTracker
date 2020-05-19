@@ -326,10 +326,6 @@
       <Setter Property="StrokeThickness" Value="6" />
     </Style>
 
-    <Style Selector="Line.Connector:pointerover">
-      <Setter Property="Stroke" Value="#FFFFFFFF" />
-    </Style>
-
   </Application.Styles>
 
 </Application>

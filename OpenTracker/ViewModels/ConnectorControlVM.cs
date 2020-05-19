@@ -1,9 +1,11 @@
 ﻿using Avalonia;
+using Avalonia.Layout;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
 using ReactiveUI;
+using System;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels
@@ -12,6 +14,7 @@ namespace OpenTracker.ViewModels
     {
         private readonly UndoRedoManager _undoRedoManager;
         private readonly Game _game;
+        private readonly MainWindowVM _mainWindow;
         private readonly AppSettings _appSettings;
 
         private bool _highlighted;
@@ -21,13 +24,44 @@ namespace OpenTracker.ViewModels
             private set => this.RaiseAndSetIfChanged(ref _highlighted, value);
         }
 
+        public bool Visible =>
+            _game.Mode.EntranceShuffle.Value;
+
         public (MapLocation, MapLocation) Connection { get; }
 
-        public (MapID, Point) Start => (Connection.Item1.Map,
-            new Point(Connection.Item1.X, Connection.Item1.Y));
+        public Point Start
+        {
+            get
+            {
+                return _mainWindow.MapPanelOrientation switch
+                {
+                    Orientation.Vertical =>
+                        Connection.Item1.Map == MapID.DarkWorld ?
+                        new Point(Connection.Item1.X + 23, Connection.Item1.Y + 2046) :
+                        new Point(Connection.Item1.X + 23, Connection.Item1.Y + 13),
+                    _ => Connection.Item1.Map == MapID.DarkWorld ?
+                        new Point(Connection.Item1.X + 2046, Connection.Item1.Y + 23) :
+                        new Point(Connection.Item1.X + 13, Connection.Item1.Y + 23),
+                };
+            }
+        }
 
-        public (MapID, Point) End => (Connection.Item2.Map,
-            new Point(Connection.Item2.X, Connection.Item2.Y));
+        public Point End
+        {
+            get
+            {
+                return _mainWindow.MapPanelOrientation switch
+                {
+                    Orientation.Vertical =>
+                        Connection.Item2.Map == MapID.DarkWorld ?
+                        new Point(Connection.Item2.X + 23, Connection.Item2.Y + 2046) :
+                        new Point(Connection.Item2.X + 23, Connection.Item2.Y + 13),
+                    _ => Connection.Item2.Map == MapID.DarkWorld ?
+                        new Point(Connection.Item2.X + 2046, Connection.Item2.Y + 23) :
+                        new Point(Connection.Item2.X + 13, Connection.Item2.Y + 23),
+                };
+            }
+        }
 
         public string Color
         {
@@ -40,22 +74,40 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        public ConnectorControlVM(UndoRedoManager undoRedoManager, Game game, AppSettings appSettings,
-            (MapLocation, MapLocation) connection)
+        public ConnectorControlVM(UndoRedoManager undoRedoManager, Game game, MainWindowVM mainWindow,
+            AppSettings appSettings, (MapLocation, MapLocation) connection)
         {
             _undoRedoManager = undoRedoManager;
-            _game = game;
+            _game = game ?? throw new ArgumentNullException(nameof(game));
+            _mainWindow = mainWindow ?? throw new ArgumentNullException(nameof(mainWindow));
             _appSettings = appSettings;
 
             Connection = connection;
 
             PropertyChanged += OnPropertyChanged;
+            _mainWindow.PropertyChanged += OnMainWindowChanged;
+            _game.Mode.PropertyChanged += OnModeChanged;
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Highlighted))
                 this.RaisePropertyChanged(nameof(Color));
+        }
+
+        private void OnMainWindowChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(MainWindowVM.MapPanelOrientation))
+            {
+                this.RaisePropertyChanged(nameof(Start));
+                this.RaisePropertyChanged(nameof(End));
+            }
+        }
+
+        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Mode.EntranceShuffle))
+                this.RaisePropertyChanged(nameof(Visible));
         }
 
         private void RemoveConnector()

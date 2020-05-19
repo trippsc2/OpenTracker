@@ -1,5 +1,6 @@
 ﻿using Avalonia;
-using Avalonia.ThemeManager;
+using Avalonia.Controls;
+using Avalonia.Layout;
 using Avalonia.Threading;
 using Newtonsoft.Json;
 using OpenTracker.Interfaces;
@@ -17,12 +18,17 @@ using System.Threading.Tasks;
 namespace OpenTracker.ViewModels
 {
     public class MainWindowVM : ViewModelBase, IAutoTrackerAccess, IColorSelectAccess,
-        IOpen, ISave, ISaveAppSettings, IAppSettings, IBounds
+        IDynamicLayout, IOpen, ISave, ISaveAppSettings, IBounds
     {
         private readonly IDialogService _dialogService;
         private readonly UndoRedoManager _undoRedoManager;
         private readonly AppSettings _appSettings;
         private readonly Game _game;
+
+        public static ObservableCollection<MarkingSelectControlVM> NonEntranceMarkingSelect { get; } = 
+            new ObservableCollection<MarkingSelectControlVM>();
+        public static ObservableCollection<MarkingSelectControlVM> EntranceMarkingSelect { get; } = 
+            new ObservableCollection<MarkingSelectControlVM>();
 
         public bool? Maximized
         {
@@ -54,21 +60,222 @@ namespace OpenTracker.ViewModels
             set => _appSettings.Height = value;
         }
 
-        public ModeSettingsControlVM ModeSettings { get; }
-        public ThemeSelector Selector { get; }
+        public bool DisplayAllLocations =>
+            _appSettings.DisplayAllLocations;
+        public bool ShowItemCountsOnMap =>
+            _appSettings.ShowItemCountsOnMap;
 
-        public ObservableCollection<MapControlVM> Maps { get; }
-        public ObservableCollection<ConnectorControlVM> Connectors { get; }
-        public ObservableCollection<MapEntranceControlVM> MapEntrances { get; }
-        public ObservableCollection<MapLocationControlVM> MapLocations { get; }
+        public bool DynamicLayoutOrientation =>
+            _appSettings.LayoutOrientation == null;
+        public bool HorizontalLayoutOrientation =>
+            _appSettings.LayoutOrientation == Orientation.Horizontal;
+        public bool VerticalLayoutOrientation =>
+            _appSettings.LayoutOrientation == Orientation.Vertical;
+
+        public bool DynamicMapOrientation =>
+            _appSettings.MapOrientation == null;
+        public bool HorizontalMapOrientation =>
+            _appSettings.MapOrientation == Orientation.Horizontal;
+        public bool VerticalMapOrientation =>
+            _appSettings.MapOrientation == Orientation.Vertical;
+
+        public bool TopHorizontalUIPanelPlacement =>
+            _appSettings.HorizontalUIPanelPlacement == VerticalAlignment.Top;
+        public bool BottomHorizontalUIPanelPlacement =>
+            _appSettings.HorizontalUIPanelPlacement == VerticalAlignment.Bottom;
+
+        public bool LeftVerticalUIPanelPlacement =>
+            _appSettings.VerticalUIPanelPlacement == HorizontalAlignment.Left;
+        public bool RightVerticalUIPanelPlacement =>
+            _appSettings.VerticalUIPanelPlacement == HorizontalAlignment.Right;
+
+        public bool LeftHorizontalItemsPlacement =>
+            _appSettings.HorizontalItemsPlacement == HorizontalAlignment.Left;
+        public bool RightHorizontalItemsPlacement =>
+            _appSettings.HorizontalItemsPlacement == HorizontalAlignment.Right;
+
+        public bool TopVerticalItemsPlacement =>
+            _appSettings.VerticalItemsPlacement == VerticalAlignment.Top;
+        public bool BottomVerticalItemsPlacement =>
+            _appSettings.VerticalItemsPlacement == VerticalAlignment.Bottom;
+
+        public bool SmallKeyShuffle =>
+            _game.Mode.SmallKeyShuffle;
+        public bool BigKeyShuffle =>
+            _game.Mode.BigKeyShuffle;
+        public bool BossShuffle =>
+            _game.Mode.BossShuffle.Value;
+
+        private Orientation _orientation;
+        public Orientation Orientation
+        {
+            get => _orientation;
+            private set => this.RaiseAndSetIfChanged(ref _orientation, value);
+        }
+
+        public Dock UIPanelDock
+        {
+            get
+            {
+                if (_appSettings.LayoutOrientation.HasValue)
+                {
+                    switch (_appSettings.LayoutOrientation.Value)
+                    {
+                        case Orientation.Horizontal:
+                            return _appSettings.HorizontalUIPanelPlacement switch
+                            {
+                                VerticalAlignment.Top => Dock.Top,
+                                _ => Dock.Bottom,
+                            };
+                        case Orientation.Vertical:
+                            return _appSettings.VerticalUIPanelPlacement switch
+                            {
+                                HorizontalAlignment.Left => Dock.Left,
+                                _ => Dock.Right,
+                            };
+                    }
+                }
+                else
+                {
+                    switch (Orientation)
+                    {
+                        case Orientation.Horizontal:
+                            return _appSettings.HorizontalUIPanelPlacement switch
+                            {
+                                VerticalAlignment.Top => Dock.Top,
+                                _ => Dock.Bottom,
+                            };
+                        case Orientation.Vertical:
+                            return _appSettings.VerticalUIPanelPlacement switch
+                            {
+                                HorizontalAlignment.Left => Dock.Left,
+                                _ => Dock.Right,
+                            };
+                    }
+                }
+
+                return Dock.Right;
+            }
+        }
+
+        public HorizontalAlignment UIPanelHorizontalAlignment
+        {
+            get
+            {
+                return UIPanelDock switch
+                {
+                    Dock.Left => HorizontalAlignment.Left,
+                    Dock.Right => HorizontalAlignment.Right,
+                    _ => HorizontalAlignment.Stretch,
+                };
+            }
+        }
+
+        public VerticalAlignment UIPanelVerticalAlignment
+        {
+            get
+            {
+                return UIPanelDock switch
+                {
+                    Dock.Bottom => VerticalAlignment.Bottom,
+                    Dock.Top => VerticalAlignment.Top,
+                    _ => VerticalAlignment.Stretch,
+                };
+            }
+        }
+
+        public Dock UIPanelOrientationDock
+        {
+            get
+            {
+                switch (UIPanelDock)
+                {
+                    case Dock.Left:
+                    case Dock.Right:
+                        return _appSettings.VerticalItemsPlacement switch
+                        {
+                            VerticalAlignment.Top => Dock.Top,
+                            _ => Dock.Bottom,
+                        };
+                    case Dock.Bottom:
+                    case Dock.Top:
+                        return _appSettings.HorizontalItemsPlacement switch
+                        {
+                            HorizontalAlignment.Left => Dock.Left,
+                            _ => Dock.Right,
+                        };
+                }
+
+                return Dock.Right;
+            }
+        }
+
+        public Thickness ItemsPanelMargin
+        {
+            get
+            {
+                return UIPanelOrientationDock switch
+                {
+                    Dock.Left => new Thickness(2, 0, 1, 2),
+                    Dock.Bottom => new Thickness(2, 1, 0, 2),
+                    Dock.Right => new Thickness(1, 0, 2, 2),
+                    _ => new Thickness(2, 2, 0, 1),
+                };
+            }
+        }
+
+        public Thickness LocationsPanelMargin
+        {
+            get
+            {
+                return UIPanelOrientationDock switch
+                {
+                    Dock.Left => new Thickness(1, 0, 2, 2),
+                    Dock.Bottom => new Thickness(2, 2, 0, 1),
+                    Dock.Right => new Thickness(2, 0, 1, 2),
+                    _ => new Thickness(2, 1, 0, 2),
+                };
+            }
+        }
+
+        public Orientation LocationsPanelOrientation
+        {
+            get
+            {
+                return UIPanelDock switch
+                {
+                    Dock.Left => Orientation.Vertical,
+                    Dock.Right => Orientation.Vertical,
+                    _ => Orientation.Horizontal,
+                };
+            }
+        }
+
+        public Orientation MapPanelOrientation
+        {
+            get
+            {
+                if (_appSettings.MapOrientation.HasValue)
+                    return _appSettings.MapOrientation.Value;
+                else
+                    return Orientation;
+            }
+        }
+
+        public ModeSettingsControlVM ModeSettings { get; }
+
         public ObservableCollection<ItemControlVM> Items { get; }
-        public ObservableCollection<LocationControlVM> Locations { get; }
         public ObservableCollection<DungeonItemControlVM> HCItems { get; }
         public ObservableCollection<DungeonItemControlVM> ATItems { get; }
         public ObservableCollection<DungeonItemControlVM> SmallKeyItems { get; }
         public ObservableCollection<DungeonItemControlVM> BigKeyItems { get; }
         public ObservableCollection<DungeonPrizeControlVM> Prizes { get; }
         public ObservableCollection<BossControlVM> Bosses { get; }
+        public ObservableCollection<LocationControlVM> Locations { get; }
+        public ObservableCollection<MapControlVM> Maps { get; }
+        public ObservableCollection<ConnectorControlVM> Connectors { get; }
+        public ObservableCollection<MapEntranceControlVM> MapEntrances { get; }
+        public ObservableCollection<MapLocationControlVM> MapLocations { get; }
 
         public ReactiveCommand<Unit, Unit> UndoCommand { get; }
         public ReactiveCommand<Unit, Unit> RedoCommand { get; }
@@ -95,63 +302,6 @@ namespace OpenTracker.ViewModels
             private set => this.RaiseAndSetIfChanged(ref _canRedo, value);
         }
 
-        public bool DisplayAllLocations =>
-            _appSettings.DisplayAllLocations;
-        public bool ShowItemCountsOnMap =>
-            _appSettings.ShowItemCountsOnMap;
-
-        public LayoutOrientation LayoutOrientation =>
-            _appSettings.LayoutOrientation;
-        public MapOrientation MapOrientation =>
-            _appSettings.MapOrientation;
-        public VerticalAlignment HorizontalUIPanelPlacement =>
-            _appSettings.HorizontalUIPanelPlacement;
-        public HorizontalAlignment VerticalUIPanelPlacement =>
-            _appSettings.VerticalUIPanelPlacement;
-        public HorizontalAlignment HorizontalItemsPlacement =>
-            _appSettings.HorizontalItemsPlacement;
-        public VerticalAlignment VerticalItemsPlacement =>
-            _appSettings.VerticalItemsPlacement;
-
-        public bool DynamicLayoutOrientation => 
-            _appSettings.LayoutOrientation == LayoutOrientation.Dynamic;
-        public bool HorizontalLayoutOrientation =>
-            _appSettings.LayoutOrientation == LayoutOrientation.Horizontal;
-        public bool VerticalLayoutOrientation =>
-            _appSettings.LayoutOrientation == LayoutOrientation.Vertical;
-
-        public bool DynamicMapOrientation =>
-            _appSettings.MapOrientation == MapOrientation.Dynamic;
-        public bool HorizontalMapOrientation =>
-            _appSettings.MapOrientation == MapOrientation.Horizontal;
-        public bool VerticalMapOrientation => 
-            _appSettings.MapOrientation == MapOrientation.Vertical;
-
-        public bool TopHorizontalUIPanelPlacement =>
-            _appSettings.HorizontalUIPanelPlacement == VerticalAlignment.Top;
-        public bool BottomHorizontalUIPanelPlacement =>
-            _appSettings.HorizontalUIPanelPlacement == VerticalAlignment.Bottom;
-
-        public bool LeftVerticalUIPanelPlacement => 
-            _appSettings.VerticalUIPanelPlacement == HorizontalAlignment.Left;
-        public bool RightVerticalUIPanelPlacement =>
-            _appSettings.VerticalUIPanelPlacement == HorizontalAlignment.Right;
-
-        public bool LeftHorizontalItemsPlacement =>
-            _appSettings.HorizontalItemsPlacement == HorizontalAlignment.Left;
-        public bool RightHorizontalItemsPlacement =>
-            _appSettings.HorizontalItemsPlacement == HorizontalAlignment.Right;
-
-        public bool TopVerticalItemsPlacement =>
-            _appSettings.VerticalItemsPlacement == VerticalAlignment.Top;
-        public bool BottomVerticalItemsPlacement =>
-            _appSettings.VerticalItemsPlacement == VerticalAlignment.Bottom;
-
-        public bool SmallKeyShuffle => _game.Mode.SmallKeyShuffle;
-        public bool BigKeyShuffle => _game.Mode.BigKeyShuffle;
-
-        public bool BossShuffle => _game.Mode.BossShuffle.Value;
-
         public MainWindowVM(IDialogService dialogService) : this()
         {
             _dialogService = dialogService;
@@ -175,6 +325,8 @@ namespace OpenTracker.ViewModels
             SetHorizontalItemsPlacementCommand = ReactiveCommand.Create<string>(SetHorizontalItemsPlacement);
             SetVerticalItemsPlacementCommand = ReactiveCommand.Create<string>(SetVerticalItemsPlacement);
 
+            PropertyChanged += OnPropertyChanged;
+
             string appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 
             if (!Directory.Exists(appData))
@@ -197,6 +349,63 @@ namespace OpenTracker.ViewModels
 
             _game.Mode.PropertyChanged += OnModeChanged;
             _game.Connections.CollectionChanged += OnConnectionsChanged;
+
+            if (NonEntranceMarkingSelect.Count == 0)
+            {
+                for (int i = 0; i < Enum.GetValues(typeof(MarkingType)).Length; i++)
+                {
+                    switch ((MarkingType)i)
+                    {
+                        case MarkingType.Sword:
+                        case MarkingType.Shield:
+                        case MarkingType.Mail:
+                        case MarkingType.Boots:
+                        case MarkingType.Gloves:
+                        case MarkingType.Flippers:
+                        case MarkingType.MoonPearl:
+                        case MarkingType.Bow:
+                        case MarkingType.SilverArrows:
+                        case MarkingType.Boomerang:
+                        case MarkingType.RedBoomerang:
+                        case MarkingType.Hookshot:
+                        case MarkingType.Bomb:
+                        case MarkingType.Mushroom:
+                        case MarkingType.FireRod:
+                        case MarkingType.IceRod:
+                        case MarkingType.Bombos:
+                        case MarkingType.Ether:
+                        case MarkingType.Powder:
+                        case MarkingType.Lamp:
+                        case MarkingType.Hammer:
+                        case MarkingType.Flute:
+                        case MarkingType.Net:
+                        case MarkingType.Book:
+                        case MarkingType.Shovel:
+                        case MarkingType.SmallKey:
+                        case MarkingType.Bottle:
+                        case MarkingType.CaneOfSomaria:
+                        case MarkingType.CaneOfByrna:
+                        case MarkingType.Cape:
+                        case MarkingType.Mirror:
+                        case MarkingType.HalfMagic:
+                        case MarkingType.BigKey:
+                            NonEntranceMarkingSelect.Add(new MarkingSelectControlVM(_game, (MarkingType)i));
+                            break;
+                        case MarkingType.Quake:
+                            NonEntranceMarkingSelect.Add(new MarkingSelectControlVM(_game, (MarkingType)i));
+                            NonEntranceMarkingSelect.Add(new MarkingSelectControlVM(_game, null));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            if (EntranceMarkingSelect.Count == 0)
+            {
+                for (int i = 0; i < Enum.GetValues(typeof(MarkingType)).Length; i++)
+                    EntranceMarkingSelect.Add(new MarkingSelectControlVM(_game, (MarkingType)i));
+            }
 
             ModeSettings = new ModeSettingsControlVM(_game.Mode, _undoRedoManager);
 
@@ -268,7 +477,7 @@ namespace OpenTracker.ViewModels
                 new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.TurtleRock].BossSection)
             };
 
-            foreach (Location location in _game.Locations.Values)
+            foreach (Models.Location location in _game.Locations.Values)
             {
                 foreach (MapLocation mapLocation in location.MapLocations)
                 {
@@ -286,7 +495,7 @@ namespace OpenTracker.ViewModels
             }
 
             for (int i = 0; i < Enum.GetValues(typeof(MapID)).Length; i++)
-                Maps.Add(new MapControlVM(_game, (MapID)i));
+                Maps.Add(new MapControlVM(_game, this, (MapID)i));
 
             Items = new ObservableCollection<ItemControlVM>();
 
@@ -343,6 +552,24 @@ namespace OpenTracker.ViewModels
                     default:
                         break;
                 }
+            }
+        }
+
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Orientation))
+            {
+                UpdateLayoutOrientation();
+                UpdateMapOrientation();
+            }
+
+            if (e.PropertyName == nameof(UIPanelDock))
+            {
+                this.RaisePropertyChanged(nameof(UIPanelHorizontalAlignment));
+                this.RaisePropertyChanged(nameof(UIPanelVerticalAlignment));
+                this.RaisePropertyChanged(nameof(UIPanelOrientationDock));
+                this.RaisePropertyChanged(nameof(ItemsPanelMargin));
+                this.RaisePropertyChanged(nameof(LocationsPanelMargin));
             }
         }
 
@@ -405,7 +632,8 @@ namespace OpenTracker.ViewModels
                 foreach (object item in e.NewItems)
                 {
                     (MapLocation, MapLocation) connection = ((MapLocation, MapLocation))item;
-                    Connectors.Add(new ConnectorControlVM(_undoRedoManager, _game, _appSettings, connection));
+                    Connectors.Add(new ConnectorControlVM(_undoRedoManager, _game, this,
+                        _appSettings, connection));
                 }
             }
 
@@ -431,7 +659,8 @@ namespace OpenTracker.ViewModels
                 Connectors.Clear();
 
                 foreach ((MapLocation, MapLocation) connection in (ObservableCollection<(MapLocation, MapLocation)>)sender)
-                    Connectors.Add(new ConnectorControlVM(_undoRedoManager, _game, _appSettings, connection));
+                    Connectors.Add(new ConnectorControlVM(_undoRedoManager, _game, this,
+                        _appSettings, connection));
             }
         }
 
@@ -457,7 +686,7 @@ namespace OpenTracker.ViewModels
 
         private void UpdateLayoutOrientation()
         {
-            this.RaisePropertyChanged(nameof(LayoutOrientation));
+            this.RaisePropertyChanged(nameof(UIPanelDock));
             this.RaisePropertyChanged(nameof(DynamicLayoutOrientation));
             this.RaisePropertyChanged(nameof(HorizontalLayoutOrientation));
             this.RaisePropertyChanged(nameof(VerticalLayoutOrientation));
@@ -465,7 +694,7 @@ namespace OpenTracker.ViewModels
 
         private void UpdateMapOrientation()
         {
-            this.RaisePropertyChanged(nameof(MapOrientation));
+            this.RaisePropertyChanged(nameof(MapPanelOrientation));
             this.RaisePropertyChanged(nameof(DynamicMapOrientation));
             this.RaisePropertyChanged(nameof(HorizontalMapOrientation));
             this.RaisePropertyChanged(nameof(VerticalMapOrientation));
@@ -473,30 +702,37 @@ namespace OpenTracker.ViewModels
 
         private void UpdateHorizontalUIPanelPlacement()
         {
-            this.RaisePropertyChanged(nameof(HorizontalUIPanelPlacement));
+            this.RaisePropertyChanged(nameof(UIPanelDock));
             this.RaisePropertyChanged(nameof(TopHorizontalUIPanelPlacement));
             this.RaisePropertyChanged(nameof(BottomHorizontalUIPanelPlacement));
         }
 
         private void UpdateVerticalUIPanelPlacement()
         {
-            this.RaisePropertyChanged(nameof(VerticalUIPanelPlacement));
+            this.RaisePropertyChanged(nameof(UIPanelDock));
             this.RaisePropertyChanged(nameof(LeftVerticalUIPanelPlacement));
             this.RaisePropertyChanged(nameof(RightVerticalUIPanelPlacement));
         }
 
         private void UpdateHorizontalItemsPlacement()
         {
-            this.RaisePropertyChanged(nameof(HorizontalItemsPlacement));
+            this.RaisePropertyChanged(nameof(UIPanelOrientationDock));
+            this.RaisePropertyChanged(nameof(ItemsPanelMargin));
             this.RaisePropertyChanged(nameof(LeftHorizontalItemsPlacement));
             this.RaisePropertyChanged(nameof(RightHorizontalItemsPlacement));
         }
 
         private void UpdateVerticalItemsPlacement()
         {
-            this.RaisePropertyChanged(nameof(VerticalItemsPlacement));
+            this.RaisePropertyChanged(nameof(UIPanelOrientationDock));
+            this.RaisePropertyChanged(nameof(ItemsPanelMargin));
             this.RaisePropertyChanged(nameof(TopVerticalItemsPlacement));
             this.RaisePropertyChanged(nameof(BottomVerticalItemsPlacement));
+        }
+
+        public void ChangeLayout(Orientation orientation)
+        {
+            Orientation = orientation;
         }
 
         public void Save(string path)
@@ -588,13 +824,17 @@ namespace OpenTracker.ViewModels
 
         private void SetLayoutOrientation(string orientationString)
         {
-            if (Enum.TryParse(orientationString, out LayoutOrientation orientation))
+            if (orientationString == "Dynamic")
+                _appSettings.LayoutOrientation = null;
+            else if (Enum.TryParse(orientationString, out Orientation orientation))
                 _appSettings.LayoutOrientation = orientation;
         }
 
         private void SetMapOrientation(string orientationString)
         {
-            if (Enum.TryParse(orientationString, out MapOrientation orientation))
+            if (orientationString == "Dynamic")
+                _appSettings.MapOrientation = null;
+            else if (Enum.TryParse(orientationString, out Orientation orientation))
                 _appSettings.MapOrientation = orientation;
         }
 

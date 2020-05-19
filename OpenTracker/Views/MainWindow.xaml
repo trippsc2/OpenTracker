@@ -3,17 +3,13 @@
         xmlns:vm="clr-namespace:OpenTracker.ViewModels;assembly=OpenTracker"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
         xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
+        xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
         xmlns:manager="clr-namespace:Avalonia.ThemeManager;assembly=Avalonia.ThemeManager"
         mc:Ignorable="d" MinWidth="220" MinHeight="61" d:DesignWidth="1280" d:DesignHeight="960"
-        x:Class="OpenTracker.Views.MainWindow"
-        x:Name="HostWindow"
-        Closing="OnClose"
-        Background="{DynamicResource ThemeBackgroundBrush}"
-        UseLayoutRounding="True"
-        Icon="avares://OpenTracker/Assets/triforce.png"
-        Title="OpenTracker">
+        x:Class="OpenTracker.Views.MainWindow" x:Name="HostWindow" Closing="OnClose"
+        Background="{DynamicResource ThemeBackgroundBrush}" UseLayoutRounding="True"
+        Icon="avares://OpenTracker/Assets/triforce.png" Title="OpenTracker">
 	
 	<Design.DataContext>
 		<vm:MainWindowVM />
@@ -31,7 +27,6 @@
 
   <Window.Resources>
     <manager:ObjectEqualityMultiConverter x:Key="ObjectEqualityMultiConverter"/>
-    <vc:MapCoordinateValueConverter x:Key="MapCoordinateValueConverter" />
   </Window.Resources>
 
 	<DockPanel>
@@ -315,15 +310,13 @@
 		</Border>
 
 		<!-- UI Panels -->
-		<DockPanel DockPanel.Dock="{Binding ElementName=HostWindow, Path=UIPanelDock, Mode=OneWay}"
-               HorizontalAlignment="{Binding ElementName=HostWindow, Path=UIPanelHorizontalAlignment,
-               Mode=OneWay}" VerticalAlignment="{Binding ElementName=HostWindow,
-               Path=UIPanelHorizontalAlignment, Mode=OneWay}">
+		<DockPanel DockPanel.Dock="{Binding Path=UIPanelDock, Mode=OneWay}" HorizontalAlignment="{Binding 
+               Path=UIPanelHorizontalAlignment, Mode=OneWay}" VerticalAlignment="{Binding 
+               Path=UIPanelVerticalAlignment, Mode=OneWay}">
 
 			<!-- Items Panel -->
-			<Border Classes="ControlBorder" Margin="{Binding ElementName=HostWindow, Path=ItemsPanelMargin,
-					Mode=OneWay}" DockPanel.Dock="{Binding ElementName=HostWindow, Path=UIPanelOrientationDock,
-					Mode=OneWay}">
+			<Border Classes="ControlBorder" Margin="{Binding Path=ItemsPanelMargin, Mode=OneWay}"
+              DockPanel.Dock="{Binding Path=UIPanelOrientationDock, Mode=OneWay}">
 				<StackPanel Orientation="Vertical">
 
 					<Border Classes="UIPanelTitle ItemsPanelTitle">
@@ -506,8 +499,7 @@
 			</Border>
 
 			<!-- Locations Panel -->
-			<Border Classes="ControlBorder" Margin="{Binding ElementName=HostWindow, Path=LocationsPanelMargin,
-					Mode=OneWay}">
+			<Border Classes="ControlBorder" Margin="{Binding Path=LocationsPanelMargin, Mode=OneWay}">
 				<Grid RowDefinitions="Auto, *" VerticalAlignment="Stretch">
 
 					<Border Classes="UIPanelTitle LocationsPanelTitle" Grid.Row="0">
@@ -520,7 +512,7 @@
 							<ItemsControl.ItemsPanel>
 								<ItemsPanelTemplate>
 									<WrapPanel Orientation="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow},
-										   Path=LocationsPanelOrientation, Mode=OneWay}" />
+										   Path=DataContext.LocationsPanelOrientation, Mode=OneWay}" />
 								</ItemsPanelTemplate>
 							</ItemsControl.ItemsPanel>
 
@@ -548,7 +540,7 @@
             <ItemsControl.ItemsPanel>
               <ItemsPanelTemplate>
                 <StackPanel Orientation="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow},
-										Path=MapPanelOrientation, Mode=OneWay}" />
+										Path=DataContext.MapPanelOrientation, Mode=OneWay}" />
               </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
 
@@ -560,7 +552,7 @@
 
           </ItemsControl>
 
-          <ItemsControl x:Name="ConnectorControl" Items="{Binding Path=Connectors}">
+          <ItemsControl Items="{Binding Path=Connectors}">
 
             <ItemsControl.ItemsPanel>
               <ItemsPanelTemplate>
@@ -579,10 +571,8 @@
           <ItemsControl Classes="Canvas" Items="{Binding Path=MapLocations}">
             <ItemsControl.Styles>
               <Style Selector="ItemsControl.Canvas > ContentPresenter">
-                <Setter Property="Canvas.Left" Value="{Binding Path=MapPoint, Converter={StaticResource
-              MapCoordinateValueConverter}, ConverterParameter=X}" />
-                <Setter Property="Canvas.Top" Value="{Binding Path=MapPoint, Converter={StaticResource
-              MapCoordinateValueConverter}, ConverterParameter=Y}" />
+                <Setter Property="Canvas.Left" Value="{Binding Path=CanvasX}" />
+                <Setter Property="Canvas.Top" Value="{Binding Path=CanvasY}" />
               </Style>
             </ItemsControl.Styles>
 
@@ -603,10 +593,8 @@
           <ItemsControl Classes="Canvas" Items="{Binding Path=MapEntrances}">
             <ItemsControl.Styles>
               <Style Selector="ItemsControl.Canvas > ContentPresenter">
-                <Setter Property="Canvas.Left" Value="{Binding Path=MapPoint, Converter={StaticResource
-                        MapCoordinateValueConverter}, ConverterParameter=X}" />
-                <Setter Property="Canvas.Top" Value="{Binding Path=MapPoint, Converter={StaticResource
-                        MapCoordinateValueConverter}, ConverterParameter=Y}" />
+                <Setter Property="Canvas.Left" Value="{Binding Path=CanvasX}" />
+                <Setter Property="Canvas.Top" Value="{Binding Path=CanvasY}" />
               </Style>
             </ItemsControl.Styles>
 

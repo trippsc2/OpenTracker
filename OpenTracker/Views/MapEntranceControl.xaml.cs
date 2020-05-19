@@ -35,10 +35,15 @@ namespace OpenTracker.Views
 
         private async void OnPointerPressed(object sender, PointerPressedEventArgs e)
         {
-            DataObject dragData = new DataObject();
-            dragData.Set(DataFormats.Text, this);
+#pragma warning disable CS0618 // Type or member is obsolete
+            if (e.MouseButton == MouseButton.Left)
+#pragma warning restore CS0618 // Type or member is obsolete
+            {
+                DataObject dragData = new DataObject();
+                dragData.Set(DataFormats.Text, this);
 
-            await DragDrop.DoDragDrop(e, dragData, DragDropEffects.Copy).ConfigureAwait(false);
+                await DragDrop.DoDragDrop(e, dragData, DragDropEffects.Copy).ConfigureAwait(false);
+            }
         }
 
         private void OnDrop(object sender, DragEventArgs e)
