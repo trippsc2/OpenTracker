@@ -7,8 +7,10 @@ namespace OpenTracker.Views
 {
     public class SectionControl : UserControl
     {
-        public IClickHandler ViewModelClickHandler => DataContext as IClickHandler;
-        public IOpenMarkingSelect ViewModelOpenMarkingSelect => DataContext as IOpenMarkingSelect;
+        private IClickHandler ViewModelClickHandler =>
+            DataContext as IClickHandler;
+        private IOpenMarkingSelect ViewModelOpenMarkingSelect =>
+            DataContext as IOpenMarkingSelect;
 
         public SectionControl()
         {
@@ -29,10 +31,10 @@ namespace OpenTracker.Views
         private void OnClickSection(object sender, PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Left)
-                ViewModelClickHandler.OnLeftClick();
+                ViewModelClickHandler.OnLeftClick(e.KeyModifiers == KeyModifiers.Control);
 
             if (e.InitialPressMouseButton == MouseButton.Right)
-                ViewModelClickHandler.OnRightClick();
+                ViewModelClickHandler.OnRightClick(e.KeyModifiers == KeyModifiers.Control);
         }
     }
 }

@@ -174,10 +174,18 @@ namespace OpenTracker.Models
                         }));
                     itemSections = 1;
                     break;
-                case LocationID.LostWoods:
-                    Name = "Lost Woods";
-                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 320, 260, new Mode()));
-                    itemSections = 2;
+                case LocationID.MushroomSpot:
+                    Name = "Mushroom Spot";
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 244, 170, new Mode()));
+                    itemSections = 1;
+                    break;
+                case LocationID.ForestHideout:
+                    Name = "Forest Hideout";
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 380, 264, new Mode()
+                    {
+                        EntranceShuffle = false
+                    }));
+                    itemSections = 1;
                     break;
                 case LocationID.CastleSecret:
                     Name = "Uncle";
@@ -398,7 +406,11 @@ namespace OpenTracker.Models
                     break;
                 case LocationID.HammerPegs:
                     Name = "Hammer Pegs";
-                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 636, 1214, new Mode()));
+                    MapLocations.Add(new MapLocation(this, MapID.DarkWorld, 636, 1214,
+                        new Mode()
+                    {
+                        EntranceShuffle = false
+                    }));
                     itemSections = 1;
                     break;
                 case LocationID.BumperCave:
@@ -514,7 +526,7 @@ namespace OpenTracker.Models
                         {
                             EntranceShuffle = false
                         }));
-                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1020, 170,
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1036, 170,
                         new Mode()
                         {
                             EntranceShuffle = true
@@ -603,16 +615,7 @@ namespace OpenTracker.Models
                         {
                             EntranceShuffle = false
                         }));
-                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 925, 536,
-                        new Mode()
-                        {
-                            EntranceShuffle = false
-                        }));
-                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1000, 940,
-                        new Mode()
-                        {
-                            EntranceShuffle = true
-                        }));
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 925, 536, new Mode()));
                     itemSections = 1;
                     break;
                 case LocationID.AgahnimTower:
@@ -1016,9 +1019,9 @@ namespace OpenTracker.Models
                         }));
                     entranceSection = true;
                     break;
-                case LocationID.ForestHideout:
+                case LocationID.ForestHideoutEntrance:
                     Name = "Forest Hideout";
-                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 370, 260,
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 380, 264,
                         new Mode()
                         {
                             EntranceShuffle = true
@@ -1045,7 +1048,7 @@ namespace OpenTracker.Models
                     break;
                 case LocationID.CastleMainEntrance:
                     Name = "Castle Main Entrance";
-                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1000, 880,
+                    MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1000, 895,
                         new Mode()
                         {
                             EntranceShuffle = true
@@ -1744,7 +1747,7 @@ namespace OpenTracker.Models
                     entranceSection = true;
                     break;
                 case LocationID.TowerOfHeraEntrance:
-                    Name = "DM Entry Back";
+                    Name = "Tower Of Hera";
                     MapLocations.Add(new MapLocation(this, MapID.LightWorld, 1125, 65,
                         new Mode()
                         {

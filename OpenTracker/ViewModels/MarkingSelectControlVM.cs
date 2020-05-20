@@ -8,20 +8,20 @@ using System.Globalization;
 
 namespace OpenTracker.ViewModels
 {
-    public class MarkingSelectControlVM : ViewModelBase, ISelectItem
+    public class MarkingSelectControlVM : ViewModelBase
     {
         private readonly Game _game;
-        private readonly SectionControlVM _section;
-        private readonly MarkingType? _marking;
+
+        public MarkingType? Marking { get; }
 
         public string ImageSource
         {
             get
             {
-                if (_marking != null)
+                if (Marking != null)
                 {
                     int itemNumber;
-                    switch (_marking)
+                    switch (Marking)
                     {
                         case MarkingType.Bow:
                         case MarkingType.SilverArrows:
@@ -30,7 +30,7 @@ namespace OpenTracker.ViewModels
                         case MarkingType.SmallKey:
                         case MarkingType.BigKey:
                             return "avares://OpenTracker/Assets/Images/Items/visible-" +
-                                _marking.ToString().ToLowerInvariant() + ".png";
+                                Marking.ToString().ToLowerInvariant() + ".png";
                         case MarkingType.Hookshot:
                         case MarkingType.Bomb:
                         case MarkingType.Mushroom:
@@ -56,15 +56,15 @@ namespace OpenTracker.ViewModels
                         case MarkingType.HalfMagic:
                         case MarkingType.Aga:
                             return "avares://OpenTracker/Assets/Images/Items/" +
-                                _marking.ToString().ToLowerInvariant() + "1.png";
+                                Marking.ToString().ToLowerInvariant() + "1.png";
                         case MarkingType.Bottle:
                         case MarkingType.Gloves:
                         case MarkingType.Shield:
                         case MarkingType.Mail:
-                            Item item = _game.Items[Enum.Parse<ItemType>(_marking.ToString())];
+                            Item item = _game.Items[Enum.Parse<ItemType>(Marking.ToString())];
                             itemNumber = Math.Min(item.Current + 1, item.Maximum);
                             return "avares://OpenTracker/Assets/Images/Items/" +
-                                _marking.ToString().ToLowerInvariant() + 
+                                Marking.ToString().ToLowerInvariant() + 
                                 itemNumber.ToString(CultureInfo.InvariantCulture) + ".png";
                         case MarkingType.Sword:
 
@@ -76,7 +76,7 @@ namespace OpenTracker.ViewModels
                                 itemNumber = Math.Min(sword.Current + 1, sword.Maximum);
 
                             return "avares://OpenTracker/Assets/Images/Items/" +
-                                _marking.ToString().ToLowerInvariant() + itemNumber.ToString(CultureInfo.InvariantCulture) + ".png";
+                                Marking.ToString().ToLowerInvariant() + itemNumber.ToString(CultureInfo.InvariantCulture) + ".png";
 
                         case MarkingType.HCFront:
                         case MarkingType.HCLeft:
@@ -97,7 +97,7 @@ namespace OpenTracker.ViewModels
                         case MarkingType.TRBack:
                         case MarkingType.GT:
                             return "avares://OpenTracker/Assets/Images/" +
-                                _marking.ToString().ToLowerInvariant() + ".png";
+                                Marking.ToString().ToLowerInvariant() + ".png";
                         case MarkingType.ToH:
                             return "avares://OpenTracker/Assets/Images/th.png";
                         case MarkingType.PoD:
@@ -111,15 +111,14 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        public MarkingSelectControlVM(Game game, SectionControlVM section, MarkingType? marking)
+        public MarkingSelectControlVM(Game game, MarkingType? marking)
         {
             _game = game ?? throw new ArgumentNullException(nameof(game));
-            _section = section;
-            _marking = marking;
+            Marking = marking;
 
-            if (_marking != null)
+            if (Marking != null)
             {
-                if (Enum.TryParse(_marking.ToString(), out ItemType itemType))
+                if (Enum.TryParse(Marking.ToString(), out ItemType itemType))
                 {
                     _game.Items[itemType].PropertyChanged += OnItemChanged;
 
@@ -138,12 +137,6 @@ namespace OpenTracker.ViewModels
         private void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
             this.RaisePropertyChanged(nameof(ImageSource));
-        }
-
-        public void SelectItem()
-        {
-            if (_marking != null)
-                _section.ChangeMarking(_marking);
         }
     }
 }

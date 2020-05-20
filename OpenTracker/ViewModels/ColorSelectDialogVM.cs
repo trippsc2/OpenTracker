@@ -54,6 +54,13 @@ namespace OpenTracker.ViewModels
             set => this.RaiseAndSetIfChanged(ref _accessibilityNormalColor, value);
         }
 
+        private SolidColorBrush _connectorColor;
+        public SolidColorBrush ConnectorColor
+        {
+            get => _connectorColor;
+            set => this.RaiseAndSetIfChanged(ref _connectorColor, value);
+        }
+
         public ColorSelectDialogVM(AppSettings appSettings)
         {
             _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
@@ -63,6 +70,7 @@ namespace OpenTracker.ViewModels
 
             UpdateEmphasisFontColor();
             UpdateAccessibilityColors();
+            UpdateConnectorColor();
         }
 
         private void OnColorChanged(object sender, AvaloniaPropertyChangedEventArgs e)
@@ -84,12 +92,18 @@ namespace OpenTracker.ViewModels
 
             if (sender == AccessibilityNormalColor)
                 SetAccessibilityColor(AccessibilityLevel.Normal);
+
+            if (sender == ConnectorColor)
+                SetConnectorColor();
         }
 
         private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(AppSettings.EmphasisFontColor))
                 UpdateEmphasisFontColor();
+
+            if (e.PropertyName == nameof(AppSettings.ConnectorColor))
+                UpdateConnectorColor();
         }
 
         private void OnAccessibilityColorsChanged(object sender, PropertyChangedEventArgs e)
@@ -110,6 +124,21 @@ namespace OpenTracker.ViewModels
         private void SetEmphasisFontColor()
         {
             _appSettings.EmphasisFontColor = EmphasisFontColor.Color.ToString();
+        }
+
+        private void UpdateConnectorColor()
+        {
+            if (ConnectorColor != null)
+                ConnectorColor.PropertyChanged -= OnColorChanged;
+
+            ConnectorColor = SolidColorBrush.Parse(_appSettings.ConnectorColor);
+
+            ConnectorColor.PropertyChanged += OnColorChanged;
+        }
+
+        private void SetConnectorColor()
+        {
+            _appSettings.ConnectorColor = ConnectorColor.Color.ToString();
         }
 
         private void UpdateAccessibilityColors()

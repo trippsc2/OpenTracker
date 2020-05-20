@@ -2,6 +2,6 @@
 {
     public interface IClearAvailableSections
     {
-        void ClearAvailableSections();
+        void ClearAvailableSections(bool force);
     }
 }

@@ -13,18 +13,32 @@ using System.Reactive;
 
 namespace OpenTracker.ViewModels
 {
-    public class SectionControlVM : ViewModelBase, IClickHandler, IOpenMarkingSelect
+    public class SectionControlVM : ViewModelBase, IChangeMarking, IClickHandler, IOpenMarkingSelect
     {
         private readonly UndoRedoManager _undoRedoManager;
         private readonly AppSettings _appSettings;
         private readonly Game _game;
         private readonly ISection _section;
 
-        public ObservableCollection<MarkingSelectControlVM> ItemSelect { get; }
+        public ObservableCollection<MarkingSelectControlVM> ItemSelect
+        {
+            get
+            {
+                if (_section is EntranceSection)
+                    return MainWindowVM.EntranceMarkingSelect;
+                else
+                    return MainWindowVM.NonEntranceMarkingSelect;
+            }
+        }
 
-        public string Name => _section.Name;
-        public bool MarkingVisible => _section.HasMarking;
-        public bool NumberBoxVisible => _section is ItemSection;
+        public string Name =>
+            _section.Name;
+
+        public bool MarkingVisible =>
+            _section.HasMarking;
+
+        public bool NumberBoxVisible =>
+            _section is ItemSection;
 
         public double MarkingPopupHeight
         {
@@ -272,6 +286,7 @@ namespace OpenTracker.ViewModels
             set => this.RaiseAndSetIfChanged(ref _markingPopupOpen, value);
         }
 
+        public ReactiveCommand<MarkingType?, Unit> ChangeMarkingCommand { get; }
         public ReactiveCommand<Unit, Unit> ClearVisibleItemCommand { get; }
 
         public SectionControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
@@ -282,76 +297,8 @@ namespace OpenTracker.ViewModels
             _game = game ?? throw new ArgumentNullException(nameof(game));
             _section = section ?? throw new ArgumentNullException(nameof(section));
 
+            ChangeMarkingCommand = ReactiveCommand.Create<MarkingType?>(ChangeMarking);
             ClearVisibleItemCommand = ReactiveCommand.Create(ClearMarking);
-
-            ItemSelect = new ObservableCollection<MarkingSelectControlVM>();
-
-            switch (_section)
-            {
-                case ItemSection _:
-
-                    if (_section.HasMarking)
-                    {
-                        for (int i = 0; i < Enum.GetValues(typeof(MarkingType)).Length; i++)
-                        {
-                            switch ((MarkingType)i)
-                            {
-                                case MarkingType.Sword:
-                                case MarkingType.Shield:
-                                case MarkingType.Mail:
-                                case MarkingType.Boots:
-                                case MarkingType.Gloves:
-                                case MarkingType.Flippers:
-                                case MarkingType.MoonPearl:
-                                case MarkingType.Bow:
-                                case MarkingType.SilverArrows:
-                                case MarkingType.Boomerang:
-                                case MarkingType.RedBoomerang:
-                                case MarkingType.Hookshot:
-                                case MarkingType.Bomb:
-                                case MarkingType.Mushroom:
-                                case MarkingType.FireRod:
-                                case MarkingType.IceRod:
-                                case MarkingType.Bombos:
-                                case MarkingType.Ether:
-                                case MarkingType.Powder:
-                                case MarkingType.Lamp:
-                                case MarkingType.Hammer:
-                                case MarkingType.Flute:
-                                case MarkingType.Net:
-                                case MarkingType.Book:
-                                case MarkingType.Shovel:
-                                case MarkingType.SmallKey:
-                                case MarkingType.Bottle:
-                                case MarkingType.CaneOfSomaria:
-                                case MarkingType.CaneOfByrna:
-                                case MarkingType.Cape:
-                                case MarkingType.Mirror:
-                                case MarkingType.HalfMagic:
-                                case MarkingType.BigKey:
-                                    ItemSelect.Add(new MarkingSelectControlVM(_game, this, (MarkingType)i));
-                                    break;
-                                case MarkingType.Quake:
-                                    ItemSelect.Add(new MarkingSelectControlVM(_game, this, (MarkingType)i));
-                                    ItemSelect.Add(new MarkingSelectControlVM(_game, this, null));
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-
-                    break;
-                case EntranceSection _:
-
-                    if (_section.HasMarking)
-                    {
-                        for (int i = 0; i < Enum.GetValues(typeof(MarkingType)).Length; i++)
-                            ItemSelect.Add(new MarkingSelectControlVM(_game, this, (MarkingType)i));
-                    }
-
-                    break;
-            }
 
             _appSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
             _game.Mode.PropertyChanged += OnModeChanged;
@@ -536,15 +483,15 @@ namespace OpenTracker.ViewModels
             MarkingPopupOpen = true;
         }
 
-        public void OnLeftClick()
+        public void OnLeftClick(bool force)
         {
-            if ((_section is EntranceSection || (_section is BossSection bossSection &&
+            if ((_section is EntranceSection || force || (_section is BossSection bossSection &&
                 bossSection.Prize != null && bossSection.Prize.Type == ItemType.Aga2) ||
                 _section.Accessibility >= AccessibilityLevel.Partial) && _section.IsAvailable())
                 CollectSection();
         }
 
-        public void OnRightClick()
+        public void OnRightClick(bool force)
         {
             switch (_section)
             {

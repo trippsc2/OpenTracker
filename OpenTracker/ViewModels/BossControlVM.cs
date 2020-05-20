@@ -5,7 +5,6 @@ using OpenTracker.Models.Enums;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
-using System.Globalization;
 
 namespace OpenTracker.ViewModels
 {
@@ -24,7 +23,10 @@ namespace OpenTracker.ViewModels
                 if (_bossSection.Boss == null)
                     imageBaseString += "Items/unknown1";
                 else
-                    imageBaseString += "Bosses/" + _bossSection.Boss.Type.ToString().ToLowerInvariant();
+                {
+                    imageBaseString += "Bosses/" + _bossSection.Boss.Type.ToString()
+                        .ToLowerInvariant();
+                }
 
                 return imageBaseString + ".png";
             }
@@ -80,12 +82,12 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        public void OnLeftClick()
+        public void OnLeftClick(bool force = false)
         {
             ChangeBoss();
         }
 
-        public void OnRightClick()
+        public void OnRightClick(bool force = false)
         {
             ChangeBoss(true);
         }

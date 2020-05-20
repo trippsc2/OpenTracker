@@ -1,8 +1,9 @@
-﻿using OpenTracker.Models;
+﻿using Avalonia;
+using Avalonia.Layout;
+using OpenTracker.Models;
 using OpenTracker.Models.Enums;
 using ReactiveUI;
 using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels
@@ -10,9 +11,20 @@ namespace OpenTracker.ViewModels
     public class MapControlVM : ViewModelBase
     {
         private readonly Game _game;
+        private readonly MainWindowVM _mainWindow;
         private readonly MapID _iD;
 
-        public ObservableCollection<MapLocationControlVM> MapLocations { get; }
+        public Thickness MapMargin
+        {
+            get
+            {
+                return _mainWindow.MapPanelOrientation switch
+                {
+                    Orientation.Horizontal => new Thickness(10, 20),
+                    _ => new Thickness(20, 10),
+                };
+            }
+        }
 
         public string ImageSource 
         {
@@ -31,27 +43,20 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        public MapControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
-            Game game, MainWindowVM mainWindow, MapID iD)
+        public MapControlVM(Game game, MainWindowVM mainWindow, MapID iD)
         {
             _game = game ?? throw new ArgumentNullException(nameof(game));
+            _mainWindow = mainWindow ?? throw new ArgumentNullException(nameof(mainWindow));
             _iD = iD;
 
-            game.Mode.PropertyChanged += OnModeChanged;
+            _game.Mode.PropertyChanged += OnModeChanged;
+            _mainWindow.PropertyChanged += OnMainWindowChanged;
+        }
 
-            MapLocations = new ObservableCollection<MapLocationControlVM>();
-
-            foreach (Location location in game.Locations.Values)
-            {
-                foreach (MapLocation mapLocation in location.MapLocations)
-                {
-                    if (mapLocation.Map == iD)
-                    {
-                        MapLocations.Add(new MapLocationControlVM(undoRedoManager, appSettings,
-                            game, mainWindow, mapLocation));
-                    }
-                }
-            }
+        private void OnMainWindowChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(MainWindowVM.MapPanelOrientation))
+                this.RaisePropertyChanged(nameof(MapMargin));
         }
 
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)

@@ -1,5 +1,4 @@
-﻿using Avalonia.Media;
-using OpenTracker.Interfaces;
+﻿using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
@@ -136,13 +135,13 @@ namespace OpenTracker.ViewModels
             _undoRedoManager.Execute(new RemoveItem(_item));
         }
 
-        public void OnLeftClick()
+        public void OnLeftClick(bool force = false)
         {
             if (_item != null && _item.Current < _item.Maximum)
                 AddItem();
         }
 
-        public void OnRightClick()
+        public void OnRightClick(bool force = false)
         {
             if (_item != null && _item.Current > 0)
                 RemoveItem();

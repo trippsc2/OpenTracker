@@ -9,15 +9,17 @@ namespace OpenTracker.Models.Actions
     {
         private readonly Game _game;
         private readonly Location _location;
+        private readonly bool _force;
         private readonly List<int?> _previousLocationCounts;
         private readonly List<MarkingType?> _previousMarkings;
         private readonly List<bool?> _previousUserManipulated;
         private readonly List<Item> _markedItems;
 
-        public ClearLocation(Game game, Location location)
+        public ClearLocation(Game game, Location location, bool force = false)
         {
             _game = game;
             _location = location;
+            _force = force;
             _previousLocationCounts = new List<int?>();
             _previousMarkings = new List<MarkingType?>();
             _previousUserManipulated = new List<bool?>();
@@ -32,9 +34,9 @@ namespace OpenTracker.Models.Actions
 
             foreach (ISection section in _location.Sections)
             {
-                if (section.IsAvailable() &&
-                    (section.Accessibility >= AccessibilityLevel.Inspect ||
-                    section is EntranceSection))
+                if (section.IsAvailable() && (section is EntranceSection || _force ||
+                    section.Accessibility > AccessibilityLevel.Inspect ||
+                    (section.Accessibility == AccessibilityLevel.Inspect && section.Marking == null)))
                 {
                     _previousLocationCounts.Add(section.Available);
                     _previousMarkings.Add(section.Marking);
@@ -59,7 +61,7 @@ namespace OpenTracker.Models.Actions
                     else
                         _markedItems.Add(null);
 
-                    section.Clear();
+                    section.Clear(_force);
 
                     if (section.IsAvailable())
                         _markedItems[^1] = null;

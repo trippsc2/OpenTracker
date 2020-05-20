@@ -6,7 +6,6 @@ using Avalonia.Markup.Xaml;
 using Avalonia.ThemeManager;
 using Avalonia.Threading;
 using OpenTracker.Interfaces;
-using OpenTracker.Models.Enums;
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -15,16 +14,24 @@ namespace OpenTracker.Views
 {
     public class MainWindow : Window
     {
+        private Orientation? _orientation;
         private AutoTrackerDialog _autoTrackerDialog;
         private ColorSelectDialog _colorSelectDialog;
 
-        public IAutoTrackerAccess ViewModelAutoTrackerAccess => DataContext as IAutoTrackerAccess;
-        public IBounds ViewModelBounds => DataContext as IBounds;
-        public IColorSelectAccess ViewModelColorSelectAccess => DataContext as IColorSelectAccess;
-        public IOpen ViewModelOpen => DataContext as IOpen;
-        public ISave ViewModelSave => DataContext as ISave;
-        public ISaveAppSettings ViewModelSaveAppSettings => DataContext as ISaveAppSettings;
-        private IAppSettings ViewModel => DataContext as IAppSettings;
+        public IAutoTrackerAccess ViewModelAutoTrackerAccess =>
+            DataContext as IAutoTrackerAccess;
+        public IBounds ViewModelBounds =>
+            DataContext as IBounds;
+        public IColorSelectAccess ViewModelColorSelectAccess =>
+            DataContext as IColorSelectAccess;
+        public IDynamicLayout ViewModelDynamicLayout =>
+            DataContext as IDynamicLayout;
+        public IOpen ViewModelOpen =>
+            DataContext as IOpen;
+        public ISave ViewModelSave =>
+            DataContext as ISave;
+        public ISaveAppSettings ViewModelSaveAppSettings =>
+            DataContext as ISaveAppSettings;
 
         public static AvaloniaProperty<IThemeSelector> SelectorProperty =
             AvaloniaProperty.Register<MainWindow, IThemeSelector>(nameof(Selector));
@@ -34,84 +41,12 @@ namespace OpenTracker.Views
             set => SetValue(SelectorProperty, value);
         }
 
-        public static AvaloniaProperty<Dock> UIPanelDockProperty =
-            AvaloniaProperty.Register<MainWindow, Dock>(nameof(UIPanelDock));
-        public Dock UIPanelDock
-        {
-            get => GetValue(UIPanelDockProperty);
-            set => SetValue(UIPanelDockProperty, value);
-        }
-
-        public static AvaloniaProperty<Avalonia.Layout.HorizontalAlignment> UIPanelHorizontalAlignmentProperty =
-            AvaloniaProperty.Register<MainWindow, Avalonia.Layout.HorizontalAlignment>(nameof(UIPanelHorizontalAlignment));
-        public Avalonia.Layout.HorizontalAlignment UIPanelHorizontalAlignment
-        {
-            get => GetValue(UIPanelHorizontalAlignmentProperty);
-            set => SetValue(UIPanelHorizontalAlignmentProperty, value);
-        }
-
-        public static AvaloniaProperty<Avalonia.Layout.VerticalAlignment> UIPanelVerticalAlignmentProperty =
-            AvaloniaProperty.Register<MainWindow, Avalonia.Layout.VerticalAlignment>(nameof(UIPanelVerticalAlignment));
-        public Avalonia.Layout.VerticalAlignment UIPanelVerticalAlignment
-        {
-            get => GetValue(UIPanelVerticalAlignmentProperty);
-            set => SetValue(UIPanelVerticalAlignmentProperty, value);
-        }
-
-        public static AvaloniaProperty<Dock> UIPanelOrientationDockProperty =
-            AvaloniaProperty.Register<MainWindow, Dock>(nameof(UIPanelOrientationDock));
-        public Dock UIPanelOrientationDock
-        {
-            get => GetValue(UIPanelOrientationDockProperty);
-            set => SetValue(UIPanelOrientationDockProperty, value);
-        }
-
-        public static AvaloniaProperty<Thickness> ItemsPanelMarginProperty =
-            AvaloniaProperty.Register<MainWindow, Thickness>(nameof(ItemsPanelMargin));
-        public Thickness ItemsPanelMargin
-        {
-            get => GetValue(ItemsPanelMarginProperty);
-            set => SetValue(ItemsPanelMarginProperty, value);
-        }
-
-        public static AvaloniaProperty<Thickness> LocationsPanelMarginProperty =
-            AvaloniaProperty.Register<MainWindow, Thickness>(nameof(LocationsPanelMargin));
-        public Thickness LocationsPanelMargin
-        {
-            get => GetValue(LocationsPanelMarginProperty);
-            set => SetValue(LocationsPanelMarginProperty, value);
-        }
-
-        public static AvaloniaProperty<Orientation> MapPanelOrientationProperty =
-            AvaloniaProperty.Register<MainWindow, Orientation>(nameof(MapPanelOrientation));
-        public Orientation MapPanelOrientation
-        {
-            get => GetValue(MapPanelOrientationProperty);
-            set => SetValue(MapPanelOrientationProperty, value);
-        }
-
-        public static AvaloniaProperty<Thickness> MapMarginProperty =
-            AvaloniaProperty.Register<MainWindow, Thickness>(nameof(MapMargin));
-        public Thickness MapMargin
-        {
-            get => GetValue(MapMarginProperty);
-            set => SetValue(MapMarginProperty, value);
-        }
-
         public static AvaloniaProperty<bool> ModeSettingsPopupOpenProperty =
             AvaloniaProperty.Register<MainWindow, bool>(nameof(ModeSettingsPopupOpen));
         public bool ModeSettingsPopupOpen
         {
             get => GetValue(ModeSettingsPopupOpenProperty);
             set => SetValue(ModeSettingsPopupOpenProperty, value);
-        }
-
-        public static AvaloniaProperty<Orientation> LocationsPanelOrientationProperty =
-            AvaloniaProperty.Register<MainWindow, Orientation>(nameof(LocationsPanelOrientation));
-        public Orientation LocationsPanelOrientation
-        {
-            get => GetValue(LocationsPanelOrientationProperty);
-            set => SetValue(LocationsPanelOrientationProperty, value);
         }
 
         public static AvaloniaProperty<string> CurrentFilePathProperty =
@@ -153,127 +88,23 @@ namespace OpenTracker.Views
                     ViewModelBounds.Width.Value, ViewModelBounds.Height.Value);
             }
 
-            if (ViewModel != null)
-                ViewModel.PropertyChanged += OnViewModelChanged;
-
-            UpdateLayoutOrientation();
-        }
-
-        private void OnViewModelChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(IAppSettings.LayoutOrientation) ||
-                e.PropertyName == nameof(IAppSettings.MapOrientation) ||
-                e.PropertyName == nameof(IAppSettings.HorizontalUIPanelPlacement) ||
-                e.PropertyName == nameof(IAppSettings.VerticalUIPanelPlacement) ||
-                e.PropertyName == nameof(IAppSettings.HorizontalItemsPlacement) ||
-                e.PropertyName == nameof(IAppSettings.VerticalItemsPlacement))
-                UpdateLayoutOrientation();
+            ChangeLayout(Bounds);
         }
 
         private void OnBoundsChanged(MainWindow window, AvaloniaPropertyChangedEventArgs e)
         {
-            if (ViewModel.LayoutOrientation == LayoutOrientation.Dynamic)
-                ChangeLayout((Rect)e.NewValue);
-        }
-
-        private void UpdateLayoutOrientation()
-        {
-            switch (ViewModel.LayoutOrientation)
-            {
-                case LayoutOrientation.Dynamic:
-                    ChangeLayout(Bounds);
-                    break;
-                case LayoutOrientation.Horizontal:
-                    HorizontalLayout();
-                    break;
-                case LayoutOrientation.Vertical:
-                    VerticalLayout();
-                    break;
-            }
+            ChangeLayout(Bounds);
         }
 
         private void ChangeLayout(Rect bounds)
         {
-            if (bounds.Height >= bounds.Width)
-                VerticalLayout();
+            Orientation orientation = bounds.Height >= bounds.Width ?
+                Orientation.Vertical : Orientation.Horizontal;
 
-            if (bounds.Width > bounds.Height)
-                HorizontalLayout();
-        }
-
-        private void HorizontalLayout()
-        {
-            LocationsPanelOrientation = Orientation.Horizontal;
-
-            if (ViewModel.HorizontalUIPanelPlacement == Models.Enums.VerticalAlignment.Top)
-                UIPanelDock = Dock.Top;
-            else
-                UIPanelDock = Dock.Bottom;
-
-            UIPanelHorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch;
-            UIPanelVerticalAlignment = Avalonia.Layout.VerticalAlignment.Bottom;
-
-            if (ViewModel.MapOrientation == MapOrientation.Vertical)
+            if (_orientation != orientation)
             {
-                MapPanelOrientation = Orientation.Vertical;
-                MapMargin = new Thickness(20, 10);
-            }
-            else
-            {
-                MapPanelOrientation = Orientation.Horizontal;
-                MapMargin = new Thickness(10, 20);
-            }
-
-            if (ViewModel.HorizontalItemsPlacement == Models.Enums.HorizontalAlignment.Left)
-            {
-                UIPanelOrientationDock = Dock.Left;
-                ItemsPanelMargin = new Thickness(2, 0, 1, 2);
-                LocationsPanelMargin = new Thickness(1, 0, 2, 2);
-            }
-
-            if (ViewModel.HorizontalItemsPlacement == Models.Enums.HorizontalAlignment.Right)
-            {
-                UIPanelOrientationDock = Dock.Right;
-                ItemsPanelMargin = new Thickness(1, 0, 2, 2);
-                LocationsPanelMargin = new Thickness(2, 0, 1, 2);
-            }
-        }
-
-        private void VerticalLayout()
-        {
-            LocationsPanelOrientation = Orientation.Vertical;
-
-            if (ViewModel.VerticalUIPanelPlacement == Models.Enums.HorizontalAlignment.Left)
-                UIPanelDock = Dock.Left;
-            else
-                UIPanelDock = Dock.Right;
-
-            UIPanelHorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right;
-            UIPanelVerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch;
-
-            if (ViewModel.MapOrientation == MapOrientation.Horizontal)
-            {
-                MapPanelOrientation = Orientation.Horizontal;
-                MapMargin = new Thickness(10, 20);
-            }
-            else
-            {
-                MapPanelOrientation = Orientation.Vertical;
-                MapMargin = new Thickness(20, 10);
-            }
-
-            if (ViewModel.VerticalItemsPlacement == Models.Enums.VerticalAlignment.Top)
-            {
-                UIPanelOrientationDock = Dock.Top;
-                ItemsPanelMargin = new Thickness(2, 2, 0, 1);
-                LocationsPanelMargin = new Thickness(2, 1, 0, 2);
-            }
-
-            if (ViewModel.VerticalItemsPlacement == Models.Enums.VerticalAlignment.Bottom)
-            {
-                UIPanelOrientationDock = Dock.Bottom;
-                ItemsPanelMargin = new Thickness(2, 1, 0, 2);
-                LocationsPanelMargin = new Thickness(2, 2, 0, 1);
+                _orientation = orientation;
+                ViewModelDynamicLayout.ChangeLayout(orientation);
             }
         }
 

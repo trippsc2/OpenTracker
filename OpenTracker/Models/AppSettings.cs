@@ -1,4 +1,5 @@
-﻿using OpenTracker.Models.Enums;
+﻿using Avalonia.Layout;
+using OpenTracker.Models.Enums;
 using OpenTracker.Utils;
 using System;
 using System.ComponentModel;
@@ -45,8 +46,8 @@ namespace OpenTracker.Models
             }
         }
 
-        private LayoutOrientation _layoutOrientation;
-        public LayoutOrientation LayoutOrientation
+        private Orientation? _layoutOrientation;
+        public Orientation? LayoutOrientation
         {
             get => _layoutOrientation;
             set
@@ -59,8 +60,8 @@ namespace OpenTracker.Models
             }
         }
 
-        private MapOrientation _mapOrientation;
-        public MapOrientation MapOrientation
+        private Orientation? _mapOrientation;
+        public Orientation? MapOrientation
         {
             get => _mapOrientation;
             set
@@ -143,15 +144,34 @@ namespace OpenTracker.Models
             }
         }
 
+        private string _connectorColor;
+        public string ConnectorColor
+        {
+            get => _connectorColor;
+            set
+            {
+                if (_connectorColor != value)
+                {
+                    _connectorColor = value;
+                    OnPropertyChanged(nameof(ConnectorColor));
+                }
+            }
+        }
+
         public ObservableDictionary<AccessibilityLevel, string> AccessibilityColors { get; }
 
         public AppSettings()
         {
             DisplayAllLocations = false;
             ShowItemCountsOnMap = true;
+            LayoutOrientation = null;
+            MapOrientation = null;
             HorizontalUIPanelPlacement = VerticalAlignment.Bottom;
             VerticalUIPanelPlacement = HorizontalAlignment.Left;
+            HorizontalItemsPlacement = HorizontalAlignment.Left;
+            VerticalItemsPlacement = VerticalAlignment.Top;
             EmphasisFontColor = "#ff00ff00";
+            ConnectorColor = "#ff40e0d0";
 
             AccessibilityColors = new ObservableDictionary<AccessibilityLevel, string>()
             {

@@ -9,8 +9,12 @@
 	<UserControl.Resources>
 		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />
 	</UserControl.Resources>
-	
-	<Image Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}"
-		   Height="32" Width="32" PointerReleased="OnClick" />
+
+  <Button Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},
+          Path=DataContext.ChangeMarkingCommand}" Background="{DynamicResource ThemeBackgroundBrush}"
+          BorderThickness="0" CommandParameter="{Binding Path=Marking}">
+    <Image Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}"
+           Height="32" Width="32" />
+  </Button>
 
 </UserControl>

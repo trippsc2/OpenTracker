@@ -3,6 +3,7 @@ using OpenTracker.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.ExceptionServices;
 
 namespace OpenTracker.Models
 {
@@ -668,7 +669,7 @@ namespace OpenTracker.Models
                     _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
-                case LocationID.LostWoods when index == 0:
+                case LocationID.MushroomSpot:
 
                     _baseTotal = 1;
                     Name = "Shroom";
@@ -704,13 +705,11 @@ namespace OpenTracker.Models
                     _itemSubscriptions.Add(ItemType.MoonPearl, new Mode() { WorldState = WorldState.Inverted });
 
                     break;
-                case LocationID.LostWoods:
+                case LocationID.ForestHideout:
 
                     _baseTotal = 1;
                     Name = "Hideout";
                     HasMarking = true;
-
-                    RequiredMode = new Mode() { EntranceShuffle = false };
 
                     GetAccessibility = () =>
                     {
@@ -2422,36 +2421,6 @@ namespace OpenTracker.Models
                 case LocationID.SpectacleRock when index == 0:
 
                     _baseTotal = 1;
-                    Name = "Cave";
-
-                    RequiredMode = new Mode() { EntranceShuffle = false };
-
-                    GetAccessibility = () =>
-                    {
-                        AccessibilityLevel dMWestBottom = _game.Regions[RegionID.DeathMountainWestBottom].Accessibility;
-
-                        if (dMWestBottom >= AccessibilityLevel.SequenceBreak)
-                            return (Available, dMWestBottom);
-
-                        return (0, AccessibilityLevel.None);
-                    };
-
-                    AutoTrack = () =>
-                    {
-                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 469, 4);
-
-                        if (result.HasValue)
-                            Available = result.Value ? 0 : 1;
-                    };
-
-                    _game.AutoTracker.RoomMemory[469].PropertyChanged += OnMemoryChanged;
-
-                    _regionSubscriptions.Add(RegionID.DeathMountainWestBottom, new Mode());
-
-                    break;
-                case LocationID.SpectacleRock:
-
-                    _baseTotal = 1;
                     Name = "Top";
                     HasMarking = true;
 
@@ -2497,6 +2466,36 @@ namespace OpenTracker.Models
                     _regionSubscriptions.Add(RegionID.DeathMountainWestTop, new Mode() { WorldState = WorldState.Inverted });
 
                     _itemSubscriptions.Add(ItemType.Mirror, new Mode() { WorldState = WorldState.StandardOpen });
+
+                    break;
+                case LocationID.SpectacleRock:
+
+                    _baseTotal = 1;
+                    Name = "Cave";
+
+                    RequiredMode = new Mode() { EntranceShuffle = false };
+
+                    GetAccessibility = () =>
+                    {
+                        AccessibilityLevel dMWestBottom = _game.Regions[RegionID.DeathMountainWestBottom].Accessibility;
+
+                        if (dMWestBottom >= AccessibilityLevel.SequenceBreak)
+                            return (Available, dMWestBottom);
+
+                        return (0, AccessibilityLevel.None);
+                    };
+
+                    AutoTrack = () =>
+                    {
+                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 469, 4);
+
+                        if (result.HasValue)
+                            Available = result.Value ? 0 : 1;
+                    };
+
+                    _game.AutoTracker.RoomMemory[469].PropertyChanged += OnMemoryChanged;
+
+                    _regionSubscriptions.Add(RegionID.DeathMountainWestBottom, new Mode());
 
                     break;
                 case LocationID.EtherTablet:
@@ -4742,6 +4741,7 @@ namespace OpenTracker.Models
                     _bigKey = 1;
                     _baseTotal = 20;
                     Name = "Dungeon";
+                    HasMarking = true;
 
                     GetAccessibility = () =>
                     {
@@ -5282,12 +5282,13 @@ namespace OpenTracker.Models
             }
         }
         
-        public void Clear()
+        public void Clear(bool force)
         {
             do
             {
                 Available--;
-            } while (Accessibility >= AccessibilityLevel.Inspect && Available > 0);
+            } while ((Accessibility > AccessibilityLevel.Inspect || force ||
+                (Accessibility == AccessibilityLevel.Inspect && Marking == null)) && Available > 0);
         }
 
         public bool IsAvailable()

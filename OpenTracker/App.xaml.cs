@@ -6,6 +6,7 @@ using OpenTracker.Interfaces;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels;
 using OpenTracker.Views;
+using System;
 using System.IO;
 
 namespace OpenTracker
@@ -23,7 +24,27 @@ namespace OpenTracker
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                Selector = ThemeSelector.Create("Themes");
+                string themePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
+                    Path.DirectorySeparatorChar + "OpenTracker" +
+                    Path.DirectorySeparatorChar + "Themes";
+
+                if (!Directory.Exists(themePath))
+                    Directory.CreateDirectory(themePath);
+
+                string opentrackerHomePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
+                   Path.DirectorySeparatorChar + "OpenTracker";
+
+                foreach (string file in Directory.GetFiles("Themes"))
+                {
+                    string newFilePath = opentrackerHomePath + Path.DirectorySeparatorChar + file;
+
+                    if (File.Exists(newFilePath))
+                        File.Delete(newFilePath);
+
+                    File.Copy(file, newFilePath);
+                }
+
+                Selector = ThemeSelector.Create(themePath);
                 
                 // Make sure that first value in Themes collection is the "Default" theme
                 foreach (ITheme theme in Selector.Themes)
@@ -44,12 +65,14 @@ namespace OpenTracker
                     Selector = Selector
                 };
 
-                if (File.Exists("OpenTracker.theme"))
-                    Selector.LoadSelectedTheme("OpenTracker.theme");
+                string themeConfigPath = opentrackerHomePath + Path.DirectorySeparatorChar + "OpenTracker.theme";
+
+                if (File.Exists(themeConfigPath))
+                    Selector.LoadSelectedTheme(themeConfigPath);
                 else
                     Selector.ApplyTheme(Selector.Themes[0]);
 
-                desktop.Exit += (sender, e) => Selector.SaveSelectedTheme("OpenTracker.theme");
+                desktop.Exit += (sender, e) => Selector.SaveSelectedTheme(themeConfigPath);
 
                 dialogService.Owner = desktop.MainWindow;
 

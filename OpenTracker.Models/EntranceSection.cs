@@ -3,7 +3,6 @@ using OpenTracker.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 
 namespace OpenTracker.Models
 {
@@ -454,7 +453,7 @@ namespace OpenTracker.Models
                     _regionSubscriptions.Add(RegionID.LightWorld, new Mode());
 
                     break;
-                case LocationID.ForestHideout:
+                case LocationID.ForestHideoutEntrance:
 
                     Name = "House";
                     _standardItemProvided = _game.Items[ItemType.LightWorldAccess];
@@ -2699,7 +2698,7 @@ namespace OpenTracker.Models
                 Accessibility = GetAccessibility();
         }
 
-        public void Clear()
+        public void Clear(bool force)
         {
             Available = 0;
         }

@@ -8,6 +8,7 @@ using OpenTracker.Models.Enums;
 using OpenTracker.Models.Interfaces;
 using ReactiveUI;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -15,19 +16,18 @@ using System.Reactive;
 
 namespace OpenTracker.ViewModels
 {
-    public class MapLocationControlVM : ViewModelBase, IChangeMarking, IClearAvailableSections, IOpenMarkingSelect,
-        IPinLocation, IPointerOver
+    public class MapEntranceControlVM : ViewModelBase, IChangeMarking, IClearAvailableSections, IConnectLocation,
+        IOpenMarkingSelect, IPinLocation, IPointerOver
     {
         private readonly UndoRedoManager _undoRedoManager;
         private readonly AppSettings _appSettings;
         private readonly Game _game;
         private readonly MainWindowVM _mainWindow;
-        private readonly MapLocation _mapLocation;
-        private readonly Dock _nonEntranceDock;
-        private readonly Dock _entranceDock;
+
+        public MapLocation MapLocation { get; }
 
         public ObservableCollection<MarkingSelectControlVM> ItemSelect =>
-            MainWindowVM.NonEntranceMarkingSelect;
+            MainWindowVM.EntranceMarkingSelect;
 
         private bool _highlighted;
         public bool Highlighted
@@ -36,33 +36,22 @@ namespace OpenTracker.ViewModels
             private set => this.RaiseAndSetIfChanged(ref _highlighted, value);
         }
 
-        public string BorderColor
-        {
-            get
-            {
-                if (Highlighted)
-                    return "#FFFFFFFF";
-                else
-                    return "#FF000000";
-            }
-        }
-
         public double CanvasX
         {
             get
             {
                 double x = ImageDock switch
                 {
-                    Dock.Left => _mapLocation.X - (Size / 2) - 55,
-                    Dock.Right => _mapLocation.X - (Size / 2),
-                    _ => Math.Min(_mapLocation.X - (Size / 2), _mapLocation.X - 27.5),
+                    Dock.Left => MapLocation.X - 84,
+                    Dock.Right => MapLocation.X,
+                    _ => MapLocation.X - 28,
                 };
 
                 if (_mainWindow.MapPanelOrientation == Orientation.Vertical)
                     return x + 23;
                 else
                 {
-                    if (_mapLocation.Map == MapID.DarkWorld)
+                    if (MapLocation.Map == MapID.DarkWorld)
                         return x + 2046;
                     else
                         return x + 13;
@@ -76,14 +65,14 @@ namespace OpenTracker.ViewModels
             {
                 double y = ImageDock switch
                 {
-                    Dock.Bottom => _mapLocation.Y - (Size / 2),
-                    Dock.Top => _mapLocation.Y - (Size / 2) - 55,
-                    _ => Math.Min(_mapLocation.Y - (Size / 2), _mapLocation.Y - 27.5),
+                    Dock.Bottom => MapLocation.Y,
+                    Dock.Top => MapLocation.Y - 84,
+                    _ => MapLocation.Y - 28,
                 };
 
                 if (_mainWindow.MapPanelOrientation == Orientation.Vertical)
                 {
-                    if (_mapLocation.Map == MapID.DarkWorld)
+                    if (MapLocation.Map == MapID.DarkWorld)
                         return y + 2046;
                     else
                         return y + 13;
@@ -97,30 +86,22 @@ namespace OpenTracker.ViewModels
         {
             get
             {
-                return _game.Mode.Validate(_mapLocation.VisibilityMode) &&
+                return _game.Mode.Validate(MapLocation.VisibilityMode) &&
                     (_appSettings.DisplayAllLocations ||
-                    ((_mapLocation.Location.Sections[0].Marking != null ||
-                    _mapLocation.Location.Accessibility != AccessibilityLevel.Cleared) &&
-                    (_mapLocation.Location.Sections[0] is EntranceSection ||
-                    _mapLocation.Location.Accessibility != AccessibilityLevel.None)));
+                    ((MapLocation.Location.Sections[0].Marking != null ||
+                    MapLocation.Location.Accessibility != AccessibilityLevel.Cleared) &&
+                    (MapLocation.Location.Sections[0] is EntranceSection ||
+                    MapLocation.Location.Accessibility != AccessibilityLevel.None)));
             }
         }
 
-        private Dock _imageDock;
-        public Dock ImageDock
-        {
-            get => _imageDock;
-            private set => this.RaiseAndSetIfChanged(ref _imageDock, value);
-        }
-
-        public bool ImageVisible =>
-            _mapLocation.Location.Sections[0].HasMarking;
+        public Dock ImageDock { get; }
 
         public string ImageSource
         {
             get
             {
-                ISection section = _mapLocation.Location.Sections[0];
+                ISection section = MapLocation.Location.Sections[0];
 
                 if (section.Marking == null)
                     return "avares://OpenTracker/Assets/Images/Items/unknown1.png";
@@ -219,112 +200,51 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        public double Size
+        public List<Point> Points
         {
             get
             {
-                if ((_game.Mode.EntranceShuffle.HasValue &&
-                    _game.Mode.EntranceShuffle.Value) ||
-                    _mapLocation.Location.Sections[0] is TakeAnySection)
-                    return 40.0;
-                else
+                return ImageDock switch
                 {
-                    if (_mapLocation.Location.Total > 1)
-                    {
-                        switch (_mapLocation.Location.ID)
+                    Dock.Left => new List<Point>()
                         {
-                            case LocationID.EasternPalace:
-                            case LocationID.DesertPalace:
-                            case LocationID.TowerOfHera:
-                            case LocationID.PalaceOfDarkness:
-                            case LocationID.SwampPalace:
-                            case LocationID.SkullWoods:
-                            case LocationID.ThievesTown:
-                            case LocationID.IcePalace:
-                            case LocationID.MiseryMire:
-                            case LocationID.TurtleRock:
-                            case LocationID.GanonsTower:
-                                return 130.0;
-                            default:
-                                return 90.0;
-                        }
-                    }
-                    else
-                        return 70.0;
-                }
+                            new Point(0, 0),
+                            new Point(0, 56),
+                            new Point(28, 28)
+                        },
+                    Dock.Bottom => new List<Point>()
+                        {
+                            new Point(0, 28),
+                            new Point(56, 28),
+                            new Point(28, 0)
+                        },
+                    Dock.Right => new List<Point>()
+                        {
+                            new Point(28, 0),
+                            new Point(28, 56),
+                            new Point(0, 28)
+                        },
+                    _ => new List<Point>()
+                        {
+                            new Point(0, 0),
+                            new Point(56, 0),
+                            new Point(28, 28)
+                        },
+                };
             }
         }
 
         public string Color =>
-            _appSettings.AccessibilityColors[_mapLocation.Location.Accessibility];
+            _appSettings.AccessibilityColors[MapLocation.Location.Accessibility];
 
-        public Thickness BorderSize
+        public string BorderColor
         {
             get
             {
-                if ((_game.Mode.EntranceShuffle.HasValue &&
-                    _game.Mode.EntranceShuffle.Value) ||
-                    _mapLocation.Location.Sections[0] is TakeAnySection)
-                    return new Thickness(5);
+                if (Highlighted)
+                    return "#FFFFFFFF";
                 else
-                    return new Thickness(9);
-            }
-        }
-
-        public bool TextVisible
-        {
-            get
-            {
-                if (_game.Mode.EntranceShuffle.Value)
-                    return false;
-
-                if (!_appSettings.ShowItemCountsOnMap)
-                    return false;
-
-                if (_mapLocation.Location.Available == 0)
-                    return false;
-
-                if (_mapLocation.Location.Total <= 1)
-                    return false;
-
-                return true;
-            }
-        }
-
-        public string Text
-        {
-            get
-            {
-                if (_game.Mode.EntranceShuffle.Value)
-                    return null;
-
-                if (!_appSettings.ShowItemCountsOnMap)
-                    return null;
-
-                if (_mapLocation.Location.Available == 0)
-                    return null;
-
-                if (_mapLocation.Location.Total <= 1)
-                    return null;
-
-                if (_mapLocation.Location.Available == _mapLocation.Location.Accessible)
-                    return _mapLocation.Location.Available.ToString(CultureInfo.InvariantCulture);
-                else if (_mapLocation.Location.Accessible == 0)
-                    return _mapLocation.Location.Available.ToString(CultureInfo.InvariantCulture);
-                else
-                    return _mapLocation.Location.Accessible.ToString(CultureInfo.InvariantCulture) + "/" +
-                        _mapLocation.Location.Available.ToString(CultureInfo.InvariantCulture);
-            }
-        }
-
-        public CornerRadius CornerRadius
-        {
-            get
-            {
-                if (_mapLocation.Location.Sections[0] is TakeAnySection)
-                    return new CornerRadius(40);
-                else
-                    return new CornerRadius(0);
+                    return "#FF000000";
             }
         }
 
@@ -339,7 +259,7 @@ namespace OpenTracker.ViewModels
         {
             get
             {
-                if (_mapLocation.Location.Sections[0] is EntranceSection)
+                if (MapLocation.Location.Sections[0] is EntranceSection)
                     return 280.0;
                 else
                     return 200.0;
@@ -350,7 +270,7 @@ namespace OpenTracker.ViewModels
         {
             get
             {
-                if (_mapLocation.Location.Sections[0] is EntranceSection)
+                if (MapLocation.Location.Sections[0] is EntranceSection)
                     return 272.0;
                 else
                     return 238.0;
@@ -360,41 +280,62 @@ namespace OpenTracker.ViewModels
         public ReactiveCommand<MarkingType?, Unit> ChangeMarkingCommand { get; }
         public ReactiveCommand<Unit, Unit> ClearVisibleItemCommand { get; }
 
-        public MapLocationControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
+        public MapEntranceControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
             Game game, MainWindowVM mainWindow, MapLocation mapLocation)
         {
             _undoRedoManager = undoRedoManager;
             _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
             _game = game ?? throw new ArgumentNullException(nameof(game));
             _mainWindow = mainWindow ?? throw new ArgumentNullException(nameof(mainWindow));
-            _mapLocation = mapLocation ?? throw new ArgumentNullException(nameof(mapLocation));
+            MapLocation = mapLocation ?? throw new ArgumentNullException(nameof(mapLocation));
 
             ChangeMarkingCommand = ReactiveCommand.Create<MarkingType?>(ChangeMarking);
             ClearVisibleItemCommand = ReactiveCommand.Create(ClearMarking);
 
-            switch (_mapLocation.Location.ID)
+            switch (MapLocation.Location.ID)
             {
-                case LocationID.EtherTablet:
-                case LocationID.FloatingIsland:
-                case LocationID.GanonsTower:
-                    _nonEntranceDock = Dock.Left;
-                    _entranceDock = Dock.Left;
+                case LocationID.WomanLeftDoor:
+                case LocationID.TavernFront:
+                case LocationID.ForestChestGameEntrance:
+                case LocationID.CastleMainEntrance:
+                case LocationID.CastleTowerEntrance:
+                case LocationID.EasternPalaceEntrance:
+                case LocationID.DesertFrontEntrance:
+                case LocationID.SkullWoodsBack:
+                case LocationID.ThievesTownEntrance:
+                case LocationID.BumperCaveEntrance:
+                case LocationID.SwampPalaceEntrance:
+                case LocationID.PalaceOfDarknessEntrance:
+                case LocationID.DarkIceRodRockEntrance:
+                case LocationID.IceFairyCaveEntrance:
+                case LocationID.IcePalaceEntrance:
+                case LocationID.MiseryMireEntrance:
+                case LocationID.TowerOfHeraEntrance:
+                case LocationID.ParadoxCaveMiddle:
+                case LocationID.ParadoxCaveBottom:
+                case LocationID.EDMConnectorBottom:
+                case LocationID.TurtleRockEntrance:
+                case LocationID.GanonsTowerEntrance:
+                    ImageDock = Dock.Bottom;
                     break;
-                case LocationID.BumperCave:
-                    _nonEntranceDock = Dock.Top;
-                    _entranceDock = Dock.Left;
+                case LocationID.LibraryEntrance:
+                case LocationID.DeathMountainEntryCave:
+                case LocationID.DarkIceRodCaveEntrance:
+                case LocationID.IceRodCaveEntrance:
+                case LocationID.SpiralCaveBottom:
+                case LocationID.SpiralCaveTop:
+                case LocationID.HookshotCaveTop:
+                    ImageDock = Dock.Left;
                     break;
-                case LocationID.DesertPalace:
-                    _nonEntranceDock = Dock.Top;
-                    _entranceDock = Dock.Bottom;
+                case LocationID.MimicCaveEntrance:
+                case LocationID.DeathMountainShop:
+                case LocationID.TRLedgeRight:
+                    ImageDock = Dock.Right;
                     break;
                 default:
-                    _nonEntranceDock = Dock.Top;
-                    _entranceDock = Dock.Top;
+                    ImageDock = Dock.Top;
                     break;
             }
-
-            UpdateImageDock();
 
             PropertyChanged += OnPropertyChanged;
 
@@ -402,14 +343,13 @@ namespace OpenTracker.ViewModels
             _appSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
             _game.Mode.PropertyChanged += OnModeChanged;
             _mainWindow.PropertyChanged += OnMainWindowChanged;
-            _mapLocation.Location.PropertyChanged += OnLocationChanged;
+            MapLocation.Location.PropertyChanged += OnLocationChanged;
 
             foreach (ISection section in mapLocation.Location.Sections)
             {
                 section.PropertyChanging += OnSectionChanging;
                 section.PropertyChanged += OnSectionChanged;
             }
-
         }
 
         private void UpdateBorderColor()
@@ -423,16 +363,13 @@ namespace OpenTracker.ViewModels
                 UpdateBorderColor();
 
             if (e.PropertyName == nameof(ImageDock))
-                UpdateSizeAndPosition();
+                UpdatePosition();
         }
 
         private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(AppSettings.DisplayAllLocations))
                 UpdateVisibility();
-
-            if (e.PropertyName == nameof(AppSettings.ShowItemCountsOnMap))
-                UpdateText();
         }
 
         private void OnColorChanged(object sender, PropertyChangedEventArgs e)
@@ -442,18 +379,14 @@ namespace OpenTracker.ViewModels
 
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateSizeAndPosition();
+            UpdatePosition();
             UpdateVisibility();
-            UpdateText();
-
-            if (e.PropertyName == nameof(Mode.EntranceShuffle))
-                UpdateImageDock();
         }
 
         private void OnMainWindowChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(MainWindowVM.MapPanelOrientation))
-                UpdateSizeAndPosition();
+                UpdatePosition();
         }
 
         private void OnLocationChanged(object sender, PropertyChangedEventArgs e)
@@ -464,17 +397,8 @@ namespace OpenTracker.ViewModels
                 UpdateVisibility();
             }
 
-            if (e.PropertyName == nameof(Models.Location.Accessible))
-                UpdateText();
-
-            if (e.PropertyName == nameof(Models.Location.Available))
-                UpdateText();
-
             if (e.PropertyName == nameof(Models.Location.Total))
-            {
-                UpdateSizeAndPosition();
-                UpdateText();
-            }
+                UpdatePosition();
         }
 
         private void OnSectionChanging(object sender, PropertyChangingEventArgs e)
@@ -487,7 +411,7 @@ namespace OpenTracker.ViewModels
         {
             if (e.PropertyName == nameof(ISection.Marking))
             {
-                UpdateSizeAndPosition();
+                UpdatePosition();
                 UpdateImage();
                 UpdateVisibility();
                 SubscribeToMarkingItem((ISection)sender);
@@ -499,10 +423,8 @@ namespace OpenTracker.ViewModels
             UpdateImage();
         }
 
-        private void UpdateSizeAndPosition()
+        private void UpdatePosition()
         {
-            this.RaisePropertyChanged(nameof(BorderSize));
-            this.RaisePropertyChanged(nameof(Size));
             this.RaisePropertyChanged(nameof(CanvasX));
             this.RaisePropertyChanged(nameof(CanvasY));
         }
@@ -514,27 +436,12 @@ namespace OpenTracker.ViewModels
 
         private void UpdateVisibility()
         {
-            this.RaisePropertyChanged(nameof(ImageVisible));
             this.RaisePropertyChanged(nameof(Visible));
         }
 
         private void UpdateImage()
         {
             this.RaisePropertyChanged(nameof(ImageSource));
-        }
-
-        private void UpdateText()
-        {
-            this.RaisePropertyChanged(nameof(TextVisible));
-            this.RaisePropertyChanged(nameof(Text));
-        }
-
-        private void UpdateImageDock()
-        {
-            if (_game.Mode.EntranceShuffle.Value)
-                ImageDock = _entranceDock;
-            else
-                ImageDock = _nonEntranceDock;
         }
 
         private void UnsubscribeFromMarkingItem(ISection section)
@@ -575,7 +482,7 @@ namespace OpenTracker.ViewModels
 
         private void ClearMarking()
         {
-            _undoRedoManager.Execute(new MarkSection(_mapLocation.Location.Sections[0], null));
+            _undoRedoManager.Execute(new MarkSection(MapLocation.Location.Sections[0], null));
             MarkingPopupOpen = false;
         }
 
@@ -583,7 +490,7 @@ namespace OpenTracker.ViewModels
         {
             if (marking != null)
             {
-                _undoRedoManager.Execute(new MarkSection(_mapLocation.Location.Sections[0], marking));
+                _undoRedoManager.Execute(new MarkSection(MapLocation.Location.Sections[0], marking));
                 MarkingPopupOpen = false;
             }
         }
@@ -597,9 +504,9 @@ namespace OpenTracker.ViewModels
         {
             bool canBeCleared = false;
 
-            foreach (ISection section in _mapLocation.Location.Sections)
+            foreach (ISection section in MapLocation.Location.Sections)
             {
-                if (section.IsAvailable() && (force || section is EntranceSection ||
+                if (section.IsAvailable() && (force || section is EntranceSection || 
                     section.Accessibility >= AccessibilityLevel.Partial ||
                     (section.Accessibility == AccessibilityLevel.Inspect &&
                     section.Marking == null)))
@@ -607,7 +514,7 @@ namespace OpenTracker.ViewModels
             }
 
             if (canBeCleared)
-                _undoRedoManager.Execute(new ClearLocation(_game, _mapLocation.Location, force));
+                _undoRedoManager.Execute(new ClearLocation(_game, MapLocation.Location, force));
         }
 
         public void PinLocation()
@@ -617,7 +524,7 @@ namespace OpenTracker.ViewModels
 
             foreach (LocationControlVM pinnedLocation in pinnedLocations)
             {
-                if (pinnedLocation.Location == _mapLocation.Location)
+                if (pinnedLocation.Location == MapLocation.Location)
                     existingPinnedLocation = pinnedLocation;
             }
 
@@ -625,7 +532,7 @@ namespace OpenTracker.ViewModels
             {
                 _undoRedoManager.Execute(new PinLocation(pinnedLocations,
                     new LocationControlVM(_undoRedoManager, _appSettings, _game, _mainWindow,
-                    _mapLocation.Location)));
+                    MapLocation.Location)));
             }
             else if (pinnedLocations[0] != existingPinnedLocation)
                 _undoRedoManager.Execute(new PinLocation(pinnedLocations, existingPinnedLocation));
@@ -639,6 +546,18 @@ namespace OpenTracker.ViewModels
         public void OnPointerLeave()
         {
             Highlighted = false;
+        }
+
+        public void ConnectLocation(IConnectLocation location)
+        {
+            if (location == null)
+                return;
+
+            if (location is MapEntranceControlVM entrance)
+            {
+                _undoRedoManager.Execute(new AddConnection(_game,
+                    (entrance.MapLocation, MapLocation)));
+            }
         }
     }
 }
