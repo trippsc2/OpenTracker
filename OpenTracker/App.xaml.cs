@@ -9,7 +9,6 @@ using OpenTracker.Views;
 using System;
 using System.IO;
 using System.Reflection;
-using System.Text.RegularExpressions;
 
 namespace OpenTracker
 {
@@ -19,12 +18,7 @@ namespace OpenTracker
 
         public static string GetApplicationRoot()
         {
-            string exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
-
-            Regex appPathMatcher = new Regex(@"(?<!fil)[A-Za-z]:\\+[\S\s]*?(?=\\+bin)");
-            var appRoot = appPathMatcher.Match(exePath).Value;
-
-            return appRoot;
+            return Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
         }
 
         public override void Initialize()
