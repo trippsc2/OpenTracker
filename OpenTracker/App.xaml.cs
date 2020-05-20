@@ -8,12 +8,24 @@ using OpenTracker.ViewModels;
 using OpenTracker.Views;
 using System;
 using System.IO;
+using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace OpenTracker
 {
     public class App : Application
     {
         public static IThemeSelector Selector { get; set; }
+
+        public static string GetApplicationRoot()
+        {
+            string exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().CodeBase);
+
+            Regex appPathMatcher = new Regex(@"(?<!fil)[A-Za-z]:\\+[\S\s]*?(?=\\+bin)");
+            var appRoot = appPathMatcher.Match(exePath).Value;
+
+            return appRoot;
+        }
 
         public override void Initialize()
         {
@@ -34,14 +46,20 @@ namespace OpenTracker
                 string opentrackerHomePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
                    Path.DirectorySeparatorChar + "OpenTracker";
 
-                foreach (string file in Directory.GetFiles("Themes"))
+                string defaultThemesPath = GetApplicationRoot() +
+                    Path.DirectorySeparatorChar + "Themes";
+
+                foreach (string themeFile in Directory.GetFiles(defaultThemesPath))
                 {
-                    string newFilePath = opentrackerHomePath + Path.DirectorySeparatorChar + file;
+                    string themeFilename = Path.GetFileName(themeFile);
+
+                    string newFilePath = opentrackerHomePath + Path.DirectorySeparatorChar +
+                        "Themes" + Path.DirectorySeparatorChar + themeFilename;
 
                     if (File.Exists(newFilePath))
                         File.Delete(newFilePath);
 
-                    File.Copy(file, newFilePath);
+                    File.Copy(themeFile, newFilePath);
                 }
 
                 Selector = ThemeSelector.Create(themePath);
