@@ -2,7 +2,7 @@
 {
     public interface IClickHandler
     {
-        void OnLeftClick();
-        void OnRightClick();
+        void OnLeftClick(bool force = false);
+        void OnRightClick(bool force = false);
     }
 }

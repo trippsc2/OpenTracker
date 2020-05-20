@@ -163,7 +163,7 @@ namespace OpenTracker.ViewModels
             _undoRedoManager.Execute(new CycleItem(_items[index]));
         }
 
-        public void OnLeftClick()
+        public void OnLeftClick(bool force)
         {
             if (_items != null)
             {
@@ -175,7 +175,7 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        public void OnRightClick()
+        public void OnRightClick(bool force)
         {
             if (_items != null)
             {

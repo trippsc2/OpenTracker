@@ -3,7 +3,6 @@ using OpenTracker.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 
 namespace OpenTracker.Models
 {
@@ -2699,7 +2698,7 @@ namespace OpenTracker.Models
                 Accessibility = GetAccessibility();
         }
 
-        public void Clear()
+        public void Clear(bool force)
         {
             Available = 0;
         }

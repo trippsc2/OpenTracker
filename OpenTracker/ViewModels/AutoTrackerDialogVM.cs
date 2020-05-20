@@ -26,10 +26,12 @@ namespace OpenTracker.ViewModels
         public ReactiveCommand<Unit, Unit> ResetLogCommand { get; }
 
         private readonly ObservableAsPropertyHelper<bool> _isStarting;
-        public bool IsStarting => _isStarting.Value;
+        public bool IsStarting =>
+            _isStarting.Value;
 
         private readonly ObservableAsPropertyHelper<bool> _isStopping;
-        public bool IsStopping => _isStopping.Value;
+        public bool IsStopping =>
+            _isStopping.Value;
 
         public ObservableCollection<(string, LogLevel)> LogMessages { get; }
         public ObservableCollection<string> LogLevelOptions { get; }
@@ -116,7 +118,6 @@ namespace OpenTracker.ViewModels
             ResetLogCommand = ReactiveCommand.Create(ResetLog);
 
             LogMessages = new ObservableCollection<(string, LogLevel)>();
-
             LogLevelOptions = new ObservableCollection<string>();
 
             foreach (LogLevel level in Enum.GetValues(typeof(LogLevel)))
@@ -295,7 +296,8 @@ namespace OpenTracker.ViewModels
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                LogText += message.Item2.ToString().ToUpper(CultureInfo.CurrentCulture) + ": " + message.Item1 + "\n";
+                LogText += message.Item2.ToString().ToUpper(CultureInfo.CurrentCulture) +
+                    ": " + message.Item1 + "\n";
             });
         }
 

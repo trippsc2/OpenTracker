@@ -35,9 +35,7 @@ namespace OpenTracker.Views
 
         private async void OnPointerPressed(object sender, PointerPressedEventArgs e)
         {
-#pragma warning disable CS0618 // Type or member is obsolete
-            if (e.MouseButton == MouseButton.Left)
-#pragma warning restore CS0618 // Type or member is obsolete
+            if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
             {
                 DataObject dragData = new DataObject();
                 dragData.Set(DataFormats.Text, this);
@@ -64,7 +62,7 @@ namespace OpenTracker.Views
         {
             if (e.InitialPressMouseButton == MouseButton.Right &&
                 this.GetVisualsAt(e.GetPosition(this)).Any(x => this == x || this.IsVisualAncestorOf(x)))
-                ViewModelClearAvailableSections.ClearAvailableSections();
+                ViewModelClearAvailableSections.ClearAvailableSections(e.KeyModifiers == KeyModifiers.Control);
         }
 
         private void OnDoubleClick(object sender, RoutedEventArgs e)

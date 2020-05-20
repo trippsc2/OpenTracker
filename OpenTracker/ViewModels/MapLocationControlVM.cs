@@ -593,22 +593,21 @@ namespace OpenTracker.ViewModels
             MarkingPopupOpen = true;
         }
 
-        public void ClearAvailableSections()
+        public void ClearAvailableSections(bool force = false)
         {
             bool canBeCleared = false;
 
             foreach (ISection section in _mapLocation.Location.Sections)
             {
-                if (section.IsAvailable() &&
-                    (section.Accessibility >= AccessibilityLevel.Partial ||
+                if (section.IsAvailable() && (force || section is EntranceSection ||
+                    section.Accessibility >= AccessibilityLevel.Partial ||
                     (section.Accessibility == AccessibilityLevel.Inspect &&
-                    section.Marking == null) ||
-                    section is EntranceSection))
+                    section.Marking == null)))
                     canBeCleared = true;
             }
 
             if (canBeCleared)
-                _undoRedoManager.Execute(new ClearLocation(_game, _mapLocation.Location));
+                _undoRedoManager.Execute(new ClearLocation(_game, _mapLocation.Location, force));
         }
 
         public void PinLocation()

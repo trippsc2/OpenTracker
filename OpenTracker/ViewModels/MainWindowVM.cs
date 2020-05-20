@@ -5,6 +5,7 @@ using Avalonia.Threading;
 using Newtonsoft.Json;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
+using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
 using ReactiveUI;
 using System;
@@ -327,12 +328,8 @@ namespace OpenTracker.ViewModels
 
             PropertyChanged += OnPropertyChanged;
 
-            string appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-
-            if (!Directory.Exists(appData))
-                Directory.CreateDirectory(appData);
-
-            string appSettingsPath = appData + Path.DirectorySeparatorChar + "opentracker.json";
+            string appSettingsPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
+                Path.DirectorySeparatorChar + "OpenTracker" + Path.DirectorySeparatorChar + "OpenTracker.json";
 
             if (File.Exists(appSettingsPath))
             {
@@ -892,12 +889,8 @@ namespace OpenTracker.ViewModels
             _appSettings.Width = bounds.Width;
             _appSettings.Height = bounds.Height;
 
-            string appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-
-            if (!Directory.Exists(appData))
-                Directory.CreateDirectory(appData);
-
-            string appSettingsPath = appData + Path.DirectorySeparatorChar + "opentracker.json";
+            string appSettingsPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
+                Path.DirectorySeparatorChar + "OpenTracker" + Path.DirectorySeparatorChar + "OpenTracker.json";
 
             if (File.Exists(appSettingsPath))
                 File.Delete(appSettingsPath);

@@ -465,7 +465,7 @@ namespace OpenTracker.Models
                 Accessibility = GetAccessibility();
         }
 
-        public void Clear()
+        public void Clear(bool force)
         {
             Available = 0;
         }

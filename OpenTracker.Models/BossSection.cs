@@ -907,7 +907,7 @@ namespace OpenTracker.Models
             Accessibility = (AccessibilityLevel)Math.Min((byte)sectionAccessibility, (byte)bossAccessibility);
         }
 
-        public void Clear()
+        public void Clear(bool force)
         {
             Available = 0;
         }

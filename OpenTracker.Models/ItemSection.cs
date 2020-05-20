@@ -3,6 +3,7 @@ using OpenTracker.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.ExceptionServices;
 
 namespace OpenTracker.Models
 {
@@ -5281,12 +5282,13 @@ namespace OpenTracker.Models
             }
         }
         
-        public void Clear()
+        public void Clear(bool force)
         {
             do
             {
                 Available--;
-            } while (Accessibility >= AccessibilityLevel.Inspect && Available > 0);
+            } while ((Accessibility > AccessibilityLevel.Inspect || force ||
+                (Accessibility == AccessibilityLevel.Inspect && Marking == null)) && Available > 0);
         }
 
         public bool IsAvailable()

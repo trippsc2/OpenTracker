@@ -483,15 +483,15 @@ namespace OpenTracker.ViewModels
             MarkingPopupOpen = true;
         }
 
-        public void OnLeftClick()
+        public void OnLeftClick(bool force)
         {
-            if ((_section is EntranceSection || (_section is BossSection bossSection &&
+            if ((_section is EntranceSection || force || (_section is BossSection bossSection &&
                 bossSection.Prize != null && bossSection.Prize.Type == ItemType.Aga2) ||
                 _section.Accessibility >= AccessibilityLevel.Partial) && _section.IsAvailable())
                 CollectSection();
         }
 
-        public void OnRightClick()
+        public void OnRightClick(bool force)
         {
             switch (_section)
             {

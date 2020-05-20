@@ -31,10 +31,10 @@ namespace OpenTracker.Views
         private void OnClickSection(object sender, PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Left)
-                ViewModelClickHandler.OnLeftClick();
+                ViewModelClickHandler.OnLeftClick(e.KeyModifiers == KeyModifiers.Control);
 
             if (e.InitialPressMouseButton == MouseButton.Right)
-                ViewModelClickHandler.OnRightClick();
+                ViewModelClickHandler.OnRightClick(e.KeyModifiers == KeyModifiers.Control);
         }
     }
 }

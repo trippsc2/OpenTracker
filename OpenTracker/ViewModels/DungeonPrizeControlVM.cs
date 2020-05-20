@@ -67,12 +67,12 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        public void OnLeftClick()
+        public void OnLeftClick(bool force = false)
         {
             TogglePrize();
         }
 
-        public void OnRightClick()
+        public void OnRightClick(bool force = false)
         {
             ChangePrize();
         }

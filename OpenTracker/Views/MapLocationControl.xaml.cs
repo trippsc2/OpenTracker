@@ -40,7 +40,7 @@ namespace OpenTracker.Views
         {
             if (e.InitialPressMouseButton == MouseButton.Right &&
                 this.GetVisualsAt(e.GetPosition(this)).Any(x => this == x || this.IsVisualAncestorOf(x)))
-                ViewModelClearAvailableSections.ClearAvailableSections();
+                ViewModelClearAvailableSections.ClearAvailableSections(e.KeyModifiers == KeyModifiers.Control);
         }
 
         private void OnDoubleClick(object sender, RoutedEventArgs e)

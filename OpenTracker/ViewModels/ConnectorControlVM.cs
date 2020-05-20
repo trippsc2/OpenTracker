@@ -5,6 +5,7 @@ using OpenTracker.Models;
 using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
 using ReactiveUI;
+using SharpDX.DirectWrite;
 using System;
 using System.ComponentModel;
 
@@ -80,19 +81,20 @@ namespace OpenTracker.ViewModels
             _undoRedoManager = undoRedoManager;
             _game = game ?? throw new ArgumentNullException(nameof(game));
             _mainWindow = mainWindow ?? throw new ArgumentNullException(nameof(mainWindow));
-            _appSettings = appSettings;
+            _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
 
             Connection = connection;
 
             PropertyChanged += OnPropertyChanged;
             _mainWindow.PropertyChanged += OnMainWindowChanged;
             _game.Mode.PropertyChanged += OnModeChanged;
+            _appSettings.PropertyChanged += OnAppSettingsChanged;
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Highlighted))
-                this.RaisePropertyChanged(nameof(Color));
+                UpdateColor();
         }
 
         private void OnMainWindowChanged(object sender, PropertyChangedEventArgs e)
@@ -110,16 +112,26 @@ namespace OpenTracker.ViewModels
                 this.RaisePropertyChanged(nameof(Visible));
         }
 
+        private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
+        {
+            UpdateColor();
+        }
+
+        private void UpdateColor()
+        {
+            this.RaisePropertyChanged(nameof(Color));
+        }
+
         private void RemoveConnector()
         {
             _undoRedoManager.Execute(new RemoveConnection(_game, Connection));
         }
 
-        public void OnLeftClick()
+        public void OnLeftClick(bool force = false)
         {
         }
 
-        public void OnRightClick()
+        public void OnRightClick(bool force = false)
         {
             RemoveConnector();
         }
