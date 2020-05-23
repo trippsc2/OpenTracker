@@ -14,7 +14,7 @@ namespace OpenTracker.Models
         public LocationID ID { get; }
         public string Name { get; }
 
-        public BossSection BossSection { get; private set; }
+        public List<BossSection> BossSections { get; private set; }
         public List<MapLocation> MapLocations { get; }
         public List<ISection> Sections { get; }
 
@@ -82,6 +82,7 @@ namespace OpenTracker.Models
 
             ID = iD;
 
+            BossSections = new List<BossSection>();
             MapLocations = new List<MapLocation>();
             Sections = new List<ISection>();
 
@@ -638,7 +639,7 @@ namespace OpenTracker.Models
                             EntranceShuffle = true
                         }));
                     itemSections = 1;
-                    BossSection = new BossSection(game, iD);
+                    BossSections.Add(new BossSection(game, iD));
                     break;
                 case LocationID.EasternPalace:
                     Name = "Eastern Palace";
@@ -653,7 +654,7 @@ namespace OpenTracker.Models
                             EntranceShuffle = true
                         }));
                     itemSections = 1;
-                    BossSection = new BossSection(game, iD);
+                    BossSections.Add(new BossSection(game, iD));
                     break;
                 case LocationID.DesertPalace:
                     Name = "Desert Palace";
@@ -668,7 +669,7 @@ namespace OpenTracker.Models
                             EntranceShuffle = true
                         }));
                     itemSections = 1;
-                    BossSection = new BossSection(game, iD);
+                    BossSections.Add(new BossSection(game, iD));
                     break;
                 case LocationID.TowerOfHera:
                     Name = "Tower of Hera";
@@ -683,7 +684,7 @@ namespace OpenTracker.Models
                             EntranceShuffle = true
                         }));
                     itemSections = 1;
-                    BossSection = new BossSection(game, iD);
+                    BossSections.Add(new BossSection(game, iD));
                     break;
                 case LocationID.PalaceOfDarkness:
                     Name = "Palace of Darkness";
@@ -698,7 +699,7 @@ namespace OpenTracker.Models
                             EntranceShuffle = true
                         }));
                     itemSections = 1;
-                    BossSection = new BossSection(game, iD);
+                    BossSections.Add(new BossSection(game, iD));
                     break;
                 case LocationID.SwampPalace:
                     Name = "Swamp Palace";
@@ -713,7 +714,7 @@ namespace OpenTracker.Models
                             EntranceShuffle = true
                         }));
                     itemSections = 1;
-                    BossSection = new BossSection(game, iD);
+                    BossSections.Add(new BossSection(game, iD));
                     break;
                 case LocationID.SkullWoods:
                     Name = "Skull Woods";
@@ -728,7 +729,7 @@ namespace OpenTracker.Models
                             EntranceShuffle = true
                         }));
                     itemSections = 1;
-                    BossSection = new BossSection(game, iD);
+                    BossSections.Add(new BossSection(game, iD));
                     break;
                 case LocationID.ThievesTown:
                     Name = "Thieves' Town";
@@ -743,7 +744,7 @@ namespace OpenTracker.Models
                             EntranceShuffle = true
                         }));
                     itemSections = 1;
-                    BossSection = new BossSection(game, iD);
+                    BossSections.Add(new BossSection(game, iD));
                     break;
                 case LocationID.IcePalace:
                     Name = "Ice Palace";
@@ -758,7 +759,7 @@ namespace OpenTracker.Models
                             EntranceShuffle = true
                         }));
                     itemSections = 1;
-                    BossSection = new BossSection(game, iD);
+                    BossSections.Add(new BossSection(game, iD));
                     break;
                 case LocationID.MiseryMire:
                     Name = "Misery Mire";
@@ -773,7 +774,7 @@ namespace OpenTracker.Models
                             EntranceShuffle = true
                         }));
                     itemSections = 1;
-                    BossSection = new BossSection(game, iD);
+                    BossSections.Add(new BossSection(game, iD));
                     break;
                 case LocationID.TurtleRock:
                     Name = "Turtle Rock";
@@ -788,7 +789,7 @@ namespace OpenTracker.Models
                             EntranceShuffle = true
                         }));
                     itemSections = 1;
-                    BossSection = new BossSection(game, iD);
+                    BossSections.Add(new BossSection(game, iD));
                     break;
                 case LocationID.GanonsTower:
                     Name = "Ganon's Tower";
@@ -810,7 +811,10 @@ namespace OpenTracker.Models
                             EntranceShuffle = true
                         }));
                     itemSections = 1;
-                    BossSection = new BossSection(game, iD);
+                    BossSections.Add(new BossSection(game, iD, 0));
+                    BossSections.Add(new BossSection(game, iD, 1));
+                    BossSections.Add(new BossSection(game, iD, 2));
+                    BossSections.Add(new BossSection(game, iD, 3));
                     break;
                 case LocationID.LumberjackHouseEntrance:
                     Name = "Lumber House";
@@ -2257,8 +2261,8 @@ namespace OpenTracker.Models
             if (takeAnySection)
                 Sections.Add(new TakeAnySection(game, ID));
 
-            if (BossSection != null)
-                Sections.Add(BossSection);
+            foreach (BossSection bossSection in BossSections)
+                Sections.Add(bossSection);
 
             foreach (ISection section in Sections)
             {

@@ -1,11 +1,11 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Threading;
 using Newtonsoft.Json;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
-using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
 using ReactiveUI;
 using System;
@@ -211,6 +211,22 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        public Orientation ItemsPanelOrientation
+        {
+            get
+            {
+                return UIPanelDock switch
+                {
+                    Dock.Left => Orientation.Vertical,
+                    Dock.Right => Orientation.Vertical,
+                    _ => Orientation.Horizontal,
+                };
+            }
+        }
+
+        public bool ItemsPanelHorizontalOrientation =>
+            ItemsPanelOrientation == Orientation.Horizontal;
+
         public Thickness ItemsPanelMargin
         {
             get
@@ -265,13 +281,71 @@ namespace OpenTracker.ViewModels
 
         public ModeSettingsControlVM ModeSettings { get; }
 
+        public KeyControlVM HCSmallKeys { get; }
+        public KeyControlVM ATSmallKeys { get; }
+        public KeyControlVM DPSmallKeys { get; }
+        public KeyControlVM THSmallKeys { get; }
+        public KeyControlVM PDSmallKeys { get; }
+        public KeyControlVM SPSmallKeys { get; }
+        public KeyControlVM SWSmallKeys { get; }
+        public KeyControlVM TTSmallKeys { get; }
+        public KeyControlVM IPSmallKeys { get; }
+        public KeyControlVM MMSmallKeys { get; }
+        public KeyControlVM TRSmallKeys { get; }
+        public KeyControlVM GTSmallKeys { get; }
+
+        public KeyControlVM EPBigKey { get; }
+        public KeyControlVM DPBigKey { get; }
+        public KeyControlVM THBigKey { get; }
+        public KeyControlVM PDBigKey { get; }
+        public KeyControlVM SPBigKey { get; }
+        public KeyControlVM SWBigKey { get; }
+        public KeyControlVM TTBigKey { get; }
+        public KeyControlVM IPBigKey { get; }
+        public KeyControlVM MMBigKey { get; }
+        public KeyControlVM TRBigKey { get; }
+        public KeyControlVM GTBigKey { get; }
+
+        public DungeonChestControlVM HCItems { get; }
+        public DungeonChestControlVM ATItems { get; }
+        public DungeonChestControlVM EPItems { get; }
+        public DungeonChestControlVM DPItems { get; }
+        public DungeonChestControlVM THItems { get; }
+        public DungeonChestControlVM PDItems { get; }
+        public DungeonChestControlVM SPItems { get; }
+        public DungeonChestControlVM SWItems { get; }
+        public DungeonChestControlVM TTItems { get; }
+        public DungeonChestControlVM IPItems { get; }
+        public DungeonChestControlVM MMItems { get; }
+        public DungeonChestControlVM TRItems { get; }
+        public DungeonChestControlVM GTItems { get; }
+
+        public PrizeControlVM EPPrize { get; }
+        public PrizeControlVM DPPrize { get; }
+        public PrizeControlVM THPrize { get; }
+        public PrizeControlVM PDPrize { get; }
+        public PrizeControlVM SPPrize { get; }
+        public PrizeControlVM SWPrize { get; }
+        public PrizeControlVM TTPrize { get; }
+        public PrizeControlVM IPPrize { get; }
+        public PrizeControlVM MMPrize { get; }
+        public PrizeControlVM TRPrize { get; }
+
+        public BossControlVM EPBoss { get; }
+        public BossControlVM DPBoss { get; }
+        public BossControlVM THBoss { get; }
+        public BossControlVM PDBoss { get; }
+        public BossControlVM SPBoss { get; }
+        public BossControlVM SWBoss { get; }
+        public BossControlVM TTBoss { get; }
+        public BossControlVM IPBoss { get; }
+        public BossControlVM MMBoss { get; }
+        public BossControlVM TRBoss { get; }
+        public BossControlVM GTBoss1 { get; }
+        public BossControlVM GTBoss2 { get; }
+        public BossControlVM GTBoss3 { get; }
+
         public ObservableCollection<ItemControlVM> Items { get; }
-        public ObservableCollection<DungeonItemControlVM> HCItems { get; }
-        public ObservableCollection<DungeonItemControlVM> ATItems { get; }
-        public ObservableCollection<DungeonItemControlVM> SmallKeyItems { get; }
-        public ObservableCollection<DungeonItemControlVM> BigKeyItems { get; }
-        public ObservableCollection<DungeonPrizeControlVM> Prizes { get; }
-        public ObservableCollection<BossControlVM> Bosses { get; }
         public ObservableCollection<LocationControlVM> Locations { get; }
         public ObservableCollection<MapControlVM> Maps { get; }
         public ObservableCollection<ConnectorControlVM> Connectors { get; }
@@ -406,73 +480,75 @@ namespace OpenTracker.ViewModels
 
             ModeSettings = new ModeSettingsControlVM(_game.Mode, _undoRedoManager);
 
+            HCSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.HCSmallKey]);
+            ATSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.ATSmallKey]);
+            DPSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.DPSmallKey]);
+            THSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.ToHSmallKey]);
+            PDSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.PoDSmallKey]);
+            SPSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.SPSmallKey]);
+            SWSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.SWSmallKey]);
+            TTSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.TTSmallKey]);
+            IPSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.IPSmallKey]);
+            MMSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.MMSmallKey]);
+            TRSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.TRSmallKey]);
+            GTSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.GTSmallKey]);
+
+            EPBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.EPBigKey]);
+            DPBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.DPBigKey]);
+            THBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.ToHBigKey]);
+            PDBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.PoDBigKey]);
+            SPBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.SPBigKey]);
+            SWBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.SWBigKey]);
+            TTBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.TTBigKey]);
+            IPBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.IPBigKey]);
+            MMBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.MMBigKey]);
+            TRBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.TRBigKey]);
+            GTBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.GTBigKey]);
+
+            HCItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.HyruleCastle].Sections[0]);
+            ATItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.AgahnimTower].Sections[0]);
+            EPItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.EasternPalace].Sections[0]);
+            DPItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.DesertPalace].Sections[0]);
+            THItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.TowerOfHera].Sections[0]);
+            PDItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.PalaceOfDarkness].Sections[0]);
+            SPItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.SwampPalace].Sections[0]);
+            SWItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.SkullWoods].Sections[0]);
+            TTItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.ThievesTown].Sections[0]);
+            IPItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.IcePalace].Sections[0]);
+            MMItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.MiseryMire].Sections[0]);
+            TRItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.TurtleRock].Sections[0]);
+            GTItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.GanonsTower].Sections[0]);
+
+            EPPrize = new PrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.EasternPalace].BossSections[0]);
+            DPPrize = new PrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.DesertPalace].BossSections[0]);
+            THPrize = new PrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.TowerOfHera].BossSections[0]);
+            PDPrize = new PrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.PalaceOfDarkness].BossSections[0]);
+            SPPrize = new PrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.SwampPalace].BossSections[0]);
+            SWPrize = new PrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.SkullWoods].BossSections[0]);
+            TTPrize = new PrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.ThievesTown].BossSections[0]);
+            IPPrize = new PrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.IcePalace].BossSections[0]);
+            MMPrize = new PrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.MiseryMire].BossSections[0]);
+            TRPrize = new PrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.TurtleRock].BossSections[0]);
+
+            EPBoss = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.EasternPalace].BossSections[0]);
+            DPBoss = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.DesertPalace].BossSections[0]);
+            THBoss = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.TowerOfHera].BossSections[0]);
+            PDBoss = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.PalaceOfDarkness].BossSections[0]);
+            SPBoss = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.SwampPalace].BossSections[0]);
+            SWBoss = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.SkullWoods].BossSections[0]);
+            TTBoss = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.ThievesTown].BossSections[0]);
+            IPBoss = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.IcePalace].BossSections[0]);
+            MMBoss = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.MiseryMire].BossSections[0]);
+            TRBoss = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.TurtleRock].BossSections[0]);
+            GTBoss1 = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.GanonsTower].BossSections[0]);
+            GTBoss2 = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.GanonsTower].BossSections[1]);
+            GTBoss3 = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.GanonsTower].BossSections[2]);
+
             Maps = new ObservableCollection<MapControlVM>();
             Connectors = new ObservableCollection<ConnectorControlVM>();
             MapEntrances = new ObservableCollection<MapEntranceControlVM>();
             MapLocations = new ObservableCollection<MapLocationControlVM>();
             Locations = new ObservableCollection<LocationControlVM>();
-            HCItems = new ObservableCollection<DungeonItemControlVM>()
-            {
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.HCSmallKey])
-            };
-            ATItems = new ObservableCollection<DungeonItemControlVM>()
-            {
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.ATSmallKey])
-            };
-            SmallKeyItems = new ObservableCollection<DungeonItemControlVM>()
-            {
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, null),
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.DPSmallKey]),
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.ToHSmallKey]),
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.PoDSmallKey]),
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.SPSmallKey]),
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.SWSmallKey]),
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.TTSmallKey]),
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.IPSmallKey]),
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.MMSmallKey]),
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.TRSmallKey]),
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.GTSmallKey])
-            };
-            BigKeyItems = new ObservableCollection<DungeonItemControlVM>()
-            {
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.EPBigKey]),
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.DPBigKey]),
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.ToHBigKey]),
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.PoDBigKey]),
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.SPBigKey]),
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.SWBigKey]),
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.TTBigKey]),
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.IPBigKey]),
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.MMBigKey]),
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.TRBigKey]),
-                new DungeonItemControlVM(_undoRedoManager, _appSettings, _game.Items[ItemType.GTBigKey])
-            };
-            Prizes = new ObservableCollection<DungeonPrizeControlVM>()
-            {
-                new DungeonPrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.EasternPalace].BossSection),
-                new DungeonPrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.DesertPalace].BossSection),
-                new DungeonPrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.TowerOfHera].BossSection),
-                new DungeonPrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.PalaceOfDarkness].BossSection),
-                new DungeonPrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.SwampPalace].BossSection),
-                new DungeonPrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.SkullWoods].BossSection),
-                new DungeonPrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.ThievesTown].BossSection),
-                new DungeonPrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.IcePalace].BossSection),
-                new DungeonPrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.MiseryMire].BossSection),
-                new DungeonPrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.TurtleRock].BossSection)
-            };
-            Bosses = new ObservableCollection<BossControlVM>()
-            {
-                new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.EasternPalace].BossSection),
-                new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.DesertPalace].BossSection),
-                new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.TowerOfHera].BossSection),
-                new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.PalaceOfDarkness].BossSection),
-                new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.SwampPalace].BossSection),
-                new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.SkullWoods].BossSection),
-                new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.ThievesTown].BossSection),
-                new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.IcePalace].BossSection),
-                new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.MiseryMire].BossSection),
-                new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.TurtleRock].BossSection)
-            };
 
             foreach (Models.Location location in _game.Locations.Values)
             {
@@ -565,9 +641,13 @@ namespace OpenTracker.ViewModels
                 this.RaisePropertyChanged(nameof(UIPanelHorizontalAlignment));
                 this.RaisePropertyChanged(nameof(UIPanelVerticalAlignment));
                 this.RaisePropertyChanged(nameof(UIPanelOrientationDock));
+                this.RaisePropertyChanged(nameof(ItemsPanelOrientation));
                 this.RaisePropertyChanged(nameof(ItemsPanelMargin));
                 this.RaisePropertyChanged(nameof(LocationsPanelMargin));
             }
+
+            if (e.PropertyName == nameof(ItemsPanelOrientation))
+                this.RaisePropertyChanged(nameof(ItemsPanelHorizontalOrientation));
         }
 
         private void OnUndoChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -778,25 +858,25 @@ namespace OpenTracker.ViewModels
                 }
             }
 
-            foreach (LocationID location in saveData.PrizePlacements.Keys)
+            foreach ((LocationID, int) locationIndex in saveData.PrizePlacements.Keys)
             {
-                if (saveData.PrizePlacements[location] == null)
-                    _game.Locations[location].BossSection.Prize = null;
+                if (saveData.PrizePlacements[locationIndex] == null)
+                    _game.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].Prize = null;
                 else
                 {
-                    _game.Locations[location].BossSection.Prize =
-                        _game.Items[saveData.PrizePlacements[location].Value];
+                    _game.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].Prize =
+                        _game.Items[saveData.PrizePlacements[locationIndex].Value];
                 }
             }
 
-            foreach (LocationID location in saveData.BossPlacements.Keys)
+            foreach ((LocationID, int) locationIndex in saveData.BossPlacements.Keys)
             {
-                if (saveData.BossPlacements[location] == null)
-                    _game.Locations[location].BossSection.Boss = null;
+                if (saveData.BossPlacements[locationIndex] == null)
+                    _game.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].Boss = null;
                 else
                 {
-                    _game.Locations[location].BossSection.Boss =
-                        _game.Bosses[saveData.BossPlacements[location].Value];
+                    _game.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].Boss =
+                        _game.Bosses[saveData.BossPlacements[locationIndex].Value];
                 }
             }
 

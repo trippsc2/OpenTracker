@@ -9,13 +9,20 @@ using System.Globalization;
 
 namespace OpenTracker.ViewModels
 {
-    public class DungeonItemControlVM : ViewModelBase, IClickHandler
+    public class KeyControlVM : ViewModelBase, IClickHandler
     {
         private readonly UndoRedoManager _undoRedoManager;
         private readonly AppSettings _appSettings;
+        private readonly Game _game;
         private readonly string _imageSourceBase;
         private readonly Item _item;
         private readonly bool _smallKey;
+
+        public bool SmallKeyShuffle =>
+            _game.Mode.SmallKeyShuffle;
+
+        public bool BigKeyShuffle =>
+            _game.Mode.BigKeyShuffle;
 
         public string ImageSource
         {
@@ -55,14 +62,16 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        public DungeonItemControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
-            Item item)
+        public KeyControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
+            Game game, Item item)
         {
             _undoRedoManager = undoRedoManager;
             _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
+            _game = game ?? throw new ArgumentNullException(nameof(game));
             _item = item;
 
             _appSettings.PropertyChanged += OnAppSettingsChanged;
+            _game.Mode.PropertyChanged += OnModeChanged;
 
             if (_item != null)
             {
@@ -106,6 +115,18 @@ namespace OpenTracker.ViewModels
         {
             if (e.PropertyName == nameof(AppSettings.EmphasisFontColor))
                 this.RaisePropertyChanged(nameof(TextColor));
+        }
+
+        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Mode.WorldState))
+                this.RaisePropertyChanged(nameof(SmallKeyShuffle));
+
+            if (e.PropertyName == nameof(Mode.DungeonItemShuffle))
+            {
+                this.RaisePropertyChanged(nameof(SmallKeyShuffle));
+                this.RaisePropertyChanged(nameof(BigKeyShuffle));
+            }
         }
 
         private void OnItemChanged(object sender, PropertyChangedEventArgs e)

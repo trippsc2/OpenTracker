@@ -19,8 +19,9 @@ namespace OpenTracker.Models
         private readonly Dictionary<ItemType, bool> _itemIsSubscribed;
         private Boss _currentBossSubscription;
 
-        public string Name { get => "Boss"; }
+        public string Name { get; } = "Boss";
         public bool HasMarking { get => false; }
+        public bool PrizeVisible { get; }
         public Mode RequiredMode { get; }
         public bool UserManipulated { get; set; }
         public MarkingType? Marking { get => null; set { } }
@@ -89,7 +90,7 @@ namespace OpenTracker.Models
             }
         }
 
-        public BossSection(Game game, LocationID iD)
+        public BossSection(Game game, LocationID iD, int index = 0)
         {
             _game = game ?? throw new ArgumentNullException(nameof(game));
 
@@ -149,6 +150,7 @@ namespace OpenTracker.Models
                 case LocationID.EasternPalace:
 
                     _defaultBoss = _game.Bosses[BossType.Armos];
+                    PrizeVisible = true;
 
                     GetAccessibility = () =>
                     {
@@ -195,6 +197,7 @@ namespace OpenTracker.Models
                 case LocationID.DesertPalace:
 
                     _defaultBoss = _game.Bosses[BossType.Lanmolas];
+                    PrizeVisible = true;
 
                     GetAccessibility = () =>
                     {
@@ -240,6 +243,7 @@ namespace OpenTracker.Models
                 case LocationID.TowerOfHera:
 
                     _defaultBoss = _game.Bosses[BossType.Moldorm];
+                    PrizeVisible = true;
 
                     GetAccessibility = () =>
                     {
@@ -290,6 +294,7 @@ namespace OpenTracker.Models
                 case LocationID.PalaceOfDarkness:
 
                     _defaultBoss = _game.Bosses[BossType.HelmasaurKing];
+                    PrizeVisible = true;
 
                     GetAccessibility = () =>
                     {
@@ -334,6 +339,7 @@ namespace OpenTracker.Models
                 case LocationID.SwampPalace:
 
                     _defaultBoss = _game.Bosses[BossType.Arrghus];
+                    PrizeVisible = true;
 
                     GetAccessibility = () =>
                     {
@@ -370,6 +376,7 @@ namespace OpenTracker.Models
                 case LocationID.SkullWoods:
 
                     _defaultBoss = _game.Bosses[BossType.Mothula];
+                    PrizeVisible = true;
 
                     GetAccessibility = () =>
                     {
@@ -404,6 +411,7 @@ namespace OpenTracker.Models
                 case LocationID.ThievesTown:
 
                     _defaultBoss = _game.Bosses[BossType.Blind];
+                    PrizeVisible = true;
 
                     GetAccessibility = () =>
                     {
@@ -436,6 +444,7 @@ namespace OpenTracker.Models
                 case LocationID.IcePalace:
 
                     _defaultBoss = _game.Bosses[BossType.Kholdstare];
+                    PrizeVisible = true;
 
                     GetAccessibility = () =>
                     {
@@ -492,6 +501,7 @@ namespace OpenTracker.Models
                 case LocationID.MiseryMire:
 
                     _defaultBoss = _game.Bosses[BossType.Vitreous];
+                    PrizeVisible = true;
 
                     GetAccessibility = () =>
                     {
@@ -539,6 +549,7 @@ namespace OpenTracker.Models
                 case LocationID.TurtleRock:
 
                     _defaultBoss = _game.Bosses[BossType.Trinexx];
+                    PrizeVisible = true;
 
                     GetAccessibility = () =>
                     {
@@ -643,11 +654,170 @@ namespace OpenTracker.Models
 
                     break;
 
+                case LocationID.GanonsTower when index == 0:
+
+                    _defaultBoss = _game.Bosses[BossType.Armos];
+                    PrizeVisible = false;
+
+                    Name = "Boss 1";
+
+                    GetAccessibility = () =>
+                    {
+                        AccessibilityLevel gT = _game.Regions[RegionID.GanonsTower].Accessibility;
+
+                        if (_game.Mode.DungeonItemShuffle >= DungeonItemShuffle.MapsCompassesSmallKeys)
+                        {
+                            if (_game.Items.CanClearRedEyegoreGoriyaRooms() && _game.Items.Has(ItemType.GTBigKey))
+                            {
+                                if (_game.Items.Has(ItemType.GTSmallKey, 2))
+                                    return gT;
+
+                                if (_game.Items.Has(ItemType.GTSmallKey, 1))
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak, (byte)gT);
+                            }
+                        }
+                        else
+                        {
+                            if (_game.Items.CanClearRedEyegoreGoriyaRooms())
+                            {
+                                if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.Hookshot) &&
+                                    _game.Items.Has(ItemType.Boots) && _game.Items.Has(ItemType.CaneOfSomaria) &&
+                                    _game.Items.Has(ItemType.FireRod))
+                                    return gT;
+
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak, (byte)gT);
+                            }
+                        }
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    _updateOnEnemyShuffleChange = true;
+
+                    _regionSubscriptions.Add(RegionID.GanonsTower, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Bow, new Mode() { EnemyShuffle = false });
+                    _itemSubscriptions.Add(ItemType.GTSmallKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys });
+                    _itemSubscriptions.Add(ItemType.GTBigKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.Keysanity });
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hookshot, new Mode());
+                    _itemSubscriptions.Add(ItemType.Boots, new Mode());
+                    _itemSubscriptions.Add(ItemType.CaneOfSomaria, new Mode());
+                    _itemSubscriptions.Add(ItemType.FireRod, new Mode());
+
+                    break;
+                case LocationID.GanonsTower when index == 1:
+
+                    _defaultBoss = _game.Bosses[BossType.Lanmolas];
+                    PrizeVisible = false;
+
+                    Name = "Boss 2";
+
+                    GetAccessibility = () =>
+                    {
+                        AccessibilityLevel gT = _game.Regions[RegionID.GanonsTower].Accessibility;
+
+                        if (_game.Mode.DungeonItemShuffle >= DungeonItemShuffle.MapsCompassesSmallKeys)
+                        {
+                            if (_game.Items.CanClearRedEyegoreGoriyaRooms() && _game.Items.Has(ItemType.GTBigKey))
+                            {
+                                if (_game.Items.Has(ItemType.GTSmallKey, 2))
+                                    return gT;
+
+                                if (_game.Items.Has(ItemType.GTSmallKey, 1))
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak, (byte)gT);
+                            }
+                        }
+                        else
+                        {
+                            if (_game.Items.CanClearRedEyegoreGoriyaRooms())
+                            {
+                                if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.Hookshot) &&
+                                    _game.Items.Has(ItemType.Boots) && _game.Items.Has(ItemType.CaneOfSomaria) &&
+                                    _game.Items.Has(ItemType.FireRod))
+                                    return gT;
+
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak, (byte)gT);
+                            }
+                        }
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    _updateOnEnemyShuffleChange = true;
+
+                    _regionSubscriptions.Add(RegionID.GanonsTower, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Bow, new Mode() { EnemyShuffle = false });
+                    _itemSubscriptions.Add(ItemType.GTSmallKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys });
+                    _itemSubscriptions.Add(ItemType.GTBigKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.Keysanity });
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hookshot, new Mode());
+                    _itemSubscriptions.Add(ItemType.Boots, new Mode());
+                    _itemSubscriptions.Add(ItemType.CaneOfSomaria, new Mode());
+                    _itemSubscriptions.Add(ItemType.FireRod, new Mode());
+
+                    break;
+                case LocationID.GanonsTower when index == 2:
+
+                    _defaultBoss = _game.Bosses[BossType.Moldorm];
+                    PrizeVisible = false;
+
+                    Name = "Boss 3";
+
+                    GetAccessibility = () =>
+                    {
+                        AccessibilityLevel gT = _game.Regions[RegionID.GanonsTower].Accessibility;
+
+                        if (_game.Mode.DungeonItemShuffle >= DungeonItemShuffle.MapsCompassesSmallKeys)
+                        {
+                            if (_game.Items.CanClearRedEyegoreGoriyaRooms() && _game.Items.Has(ItemType.GTBigKey))
+                            {
+                                if (_game.Items.Has(ItemType.GTSmallKey, 2))
+                                    return gT;
+
+                                if (_game.Items.Has(ItemType.GTSmallKey, 1))
+                                    return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak, (byte)gT);
+                            }
+                        }
+                        else
+                        {
+                            if (_game.Items.CanClearRedEyegoreGoriyaRooms())
+                            {
+                                if (_game.Items.Has(ItemType.Hammer) && _game.Items.Has(ItemType.Hookshot) &&
+                                    _game.Items.Has(ItemType.Boots) && _game.Items.Has(ItemType.CaneOfSomaria) &&
+                                    _game.Items.Has(ItemType.FireRod))
+                                    return gT;
+
+                                return (AccessibilityLevel)Math.Min((byte)AccessibilityLevel.SequenceBreak, (byte)gT);
+                            }
+                        }
+
+                        return AccessibilityLevel.None;
+                    };
+
+                    _updateOnEnemyShuffleChange = true;
+
+                    _regionSubscriptions.Add(RegionID.GanonsTower, new Mode());
+
+                    _itemSubscriptions.Add(ItemType.Bow, new Mode() { EnemyShuffle = false });
+                    _itemSubscriptions.Add(ItemType.GTSmallKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys });
+                    _itemSubscriptions.Add(ItemType.GTBigKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.Keysanity });
+                    _itemSubscriptions.Add(ItemType.Hammer, new Mode());
+                    _itemSubscriptions.Add(ItemType.Hookshot, new Mode());
+                    _itemSubscriptions.Add(ItemType.Boots, new Mode());
+                    _itemSubscriptions.Add(ItemType.CaneOfSomaria, new Mode());
+                    _itemSubscriptions.Add(ItemType.FireRod, new Mode());
+
+                    break;
                 case LocationID.GanonsTower:
 
                     _defaultBoss = _game.Bosses[BossType.Aga];
                     _boss = _game.Bosses[BossType.Aga];
+                    PrizeVisible = true;
                     Prize = _game.Items[ItemType.Aga2];
+
+                    Name = "Aga";
 
                     GetAccessibility = () =>
                     {

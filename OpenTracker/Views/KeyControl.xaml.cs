@@ -5,11 +5,11 @@ using OpenTracker.Interfaces;
 
 namespace OpenTracker.Views
 {
-    public class DungeonPrizeControl : UserControl
+    public class KeyControl : UserControl
     {
-        private IClickHandler ViewModelClickHandler => DataContext as IClickHandler;
+        public IClickHandler ViewModelClickHandler => DataContext as IClickHandler;
 
-        public DungeonPrizeControl()
+        public KeyControl()
         {
             this.InitializeComponent();
         }

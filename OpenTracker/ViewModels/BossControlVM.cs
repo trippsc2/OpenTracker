@@ -14,6 +14,9 @@ namespace OpenTracker.ViewModels
         private readonly Game _game;
         private readonly BossSection _bossSection;
 
+        public bool BossShuffle =>
+            _game.Mode.BossShuffle.Value;
+
         public string ImageSource
         {
             get
@@ -36,10 +39,17 @@ namespace OpenTracker.ViewModels
             BossSection bossSection)
         {
             _undoRedoManager = undoRedoManager;
-            _game = game;
+            _game = game ?? throw new ArgumentNullException(nameof(game));
             _bossSection = bossSection ?? throw new ArgumentNullException(nameof(bossSection));
 
+            _game.Mode.PropertyChanged += OnModeChanged;
             _bossSection.PropertyChanged += OnSectionChanged;
+        }
+
+        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Mode.BossShuffle))
+                this.RaisePropertyChanged(nameof(BossShuffle));
         }
 
         private void OnSectionChanged(object sender, PropertyChangedEventArgs e)

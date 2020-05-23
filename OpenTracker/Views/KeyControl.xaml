@@ -4,15 +4,22 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OpenTracker.Views.DungeonPrizeControl">
-	
+             x:Class="OpenTracker.Views.KeyControl">
+
 	<UserControl.Resources>
 		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />
 	</UserControl.Resources>
 	
 	<Panel Classes="DungeonItem" PointerReleased="OnClick">
+		
 		<Image Classes="DungeonItem" Source="{Binding Path=ImageSource, Converter={StaticResource
 			   BitmapValueConverter}}" />
+		
+		<Border Classes="ItemCount" IsVisible="{Binding Path=TextVisible}"
+				IsHitTestVisible="{Binding Path=TextVisible}">
+			<TextBlock Classes="ItemCount" Text="{Binding Path=ImageNumber}" Foreground="{Binding Path=TextColor}" />
+		</Border>
+	
 	</Panel>
-
+  
 </UserControl>

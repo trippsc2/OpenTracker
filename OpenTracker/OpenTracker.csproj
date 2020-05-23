@@ -19,7 +19,7 @@
       <SubType>Designer</SubType>
     </AvaloniaResource>
     <AvaloniaResource Include="Assets\**" />
-    <AvaloniaResource Include="Assets\Images\**" />
+    <AvaloniaResource Include="Assets\Images\*.png" />
   </ItemGroup>
   <ItemGroup>
     <AvaloniaResource Remove="Views\AutoTrackerDialog.xaml" />
@@ -27,13 +27,14 @@
     <AvaloniaResource Remove="Views\ColorPickerControl.xaml" />
     <AvaloniaResource Remove="Views\ColorSelectDialog.xaml" />
     <AvaloniaResource Remove="Views\ConnectorControl.xaml" />
-    <AvaloniaResource Remove="Views\DungeonItemControl.xaml" />
-    <AvaloniaResource Remove="Views\DungeonPrizeControl.xaml" />
+    <AvaloniaResource Remove="Views\DungeonChestControl.xaml" />
+    <AvaloniaResource Remove="Views\KeyControl.xaml" />
     <AvaloniaResource Remove="Views\LocationControl.xaml" />
     <AvaloniaResource Remove="Views\MapEntranceControl.xaml" />
     <AvaloniaResource Remove="Views\MarkingSelectControl.xaml" />
     <AvaloniaResource Remove="Views\MessageBoxDialog.xaml" />
     <AvaloniaResource Remove="Views\ModeSettingsControl.xaml" />
+    <AvaloniaResource Remove="Views\PrizeControl.xaml" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Views\AutoTrackerDialog.xaml" />
@@ -41,14 +42,15 @@
     <None Remove="Views\ColorPickerControl.xaml" />
     <None Remove="Views\ColorSelectDialog.xaml" />
     <None Remove="Views\ConnectorControl.xaml" />
-    <None Remove="Views\DungeonItemControl.xaml" />
-    <None Remove="Views\DungeonPrizeControl.xaml" />
+    <None Remove="Views\DungeonChestControl.xaml" />
+    <None Remove="Views\KeyControl.xaml" />
     <None Remove="Views\LocationControl.xaml" />
     <None Remove="Views\MapEntranceControl.xaml" />
     <None Remove="Views\MapLocationControl.xaml" />
     <None Remove="Views\MarkingSelectControl.xaml" />
     <None Remove="Views\MessageBoxDialog.xaml" />
     <None Remove="Views\ModeSettingsControl.xaml" />
+    <None Remove="Views\PrizeControl.xaml" />
     <None Remove="Views\SectionControl.xaml" />
   </ItemGroup>
   <ItemGroup>
@@ -96,12 +98,12 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\DungeonItemControl.xaml">
+    <EmbeddedResource Include="Views\KeyControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\DungeonPrizeControl.xaml">
+    <EmbeddedResource Include="Views\PrizeControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
@@ -117,6 +119,9 @@
     <Compile Update="Views\AutoTrackerDialog.xaml.cs">
       <DependentUpon>AutoTrackerDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\PrizeControl.xaml.cs">
+      <DependentUpon>PrizeControl.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\ItemControl.xaml.cs">
       <DependentUpon>ItemControl.xaml</DependentUpon>
     </Compile>
@@ -129,8 +134,8 @@
     <Compile Update="Views\SectionControl.xaml.cs">
       <DependentUpon>SectionControl.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\DungeonItemControl.xaml.cs">
-      <DependentUpon>DungeonItemControl.xaml</DependentUpon>
+    <Compile Update="Views\KeyControl.xaml.cs">
+      <DependentUpon>KeyControl.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\MarkingSelectControl.xaml.cs">
       <DependentUpon>MarkingSelectControl.xaml</DependentUpon>
@@ -180,6 +185,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\ConnectorControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Views\DungeonChestControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
