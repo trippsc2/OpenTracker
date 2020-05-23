@@ -8,7 +8,7 @@ using System.ComponentModel;
 
 namespace OpenTracker.ViewModels
 {
-    public class DungeonPrizeControlVM : ViewModelBase, IClickHandler
+    public class PrizeControlVM : ViewModelBase, IClickHandler
     {
         private readonly UndoRedoManager _undoRedoManager;
         private readonly Game _game;
@@ -29,7 +29,7 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        public DungeonPrizeControlVM(UndoRedoManager undoRedoManager,
+        public PrizeControlVM(UndoRedoManager undoRedoManager,
             Game game, BossSection prizeSection)
         {
             _undoRedoManager = undoRedoManager;

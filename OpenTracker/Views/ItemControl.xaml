@@ -12,7 +12,8 @@
 	
 	<Panel Classes="ItemControl" PointerReleased="OnItemClick">
 		
-		<Image Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}" />
+		<Image Source="{Binding Path=ImageSource, Converter={StaticResource
+           BitmapValueConverter}}" />
 		
 		<Border Classes="CrystalCount">
 			<TextBlock Classes="CrystalCount" Text="{Binding Path=ImageNumber}"

@@ -6,7 +6,7 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "Filenames are lower case.", Scope = "member", Target = "~P:OpenTracker.ViewModels.BossControlVM.ImageSource")]
-[assembly: SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "Filenames are lower case.", Scope = "member", Target = "~P:OpenTracker.ViewModels.DungeonPrizeControlVM.ImageSource")]
+[assembly: SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "Filenames are lower case.", Scope = "member", Target = "~P:OpenTracker.ViewModels.PrizeControlVM.ImageSource")]
 [assembly: SuppressMessage("Design", "CA1056:Uri properties should not be strings", Justification = "Databinding to TextBlock requires a string.", Scope = "member", Target = "~P:OpenTracker.ViewModels.AutoTrackerDialogVM.URIString")]
 [assembly: SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "Future development required for localization.", Scope = "member", Target = "~M:OpenTracker.ViewModels.MainWindowVM.OpenResetDialog~System.Threading.Tasks.Task")]
 [assembly: SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "Filenames are lower case.", Scope = "member", Target = "~P:OpenTracker.ViewModels.MapControlVM.ImageSource")]

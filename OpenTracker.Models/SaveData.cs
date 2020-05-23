@@ -10,8 +10,8 @@ namespace OpenTracker.Models
         public Dictionary<ItemType, int> ItemCounts { get; set; }
         public Dictionary<LocationID, Dictionary<int, int>> LocationSectionCounts { get; set; }
         public Dictionary<LocationID, Dictionary<int, MarkingType?>> LocationSectionMarkings { get; set; }
-        public Dictionary<LocationID, ItemType?> PrizePlacements { get; set; }
-        public Dictionary<LocationID, BossType?> BossPlacements { get; set; }
+        public Dictionary<(LocationID, int), ItemType?> PrizePlacements { get; set; }
+        public Dictionary<(LocationID, int), BossType?> BossPlacements { get; set; }
         public List<(LocationID, int, LocationID, int)> Connections { get; set; }
 
         public SaveData()
@@ -28,8 +28,8 @@ namespace OpenTracker.Models
             ItemCounts = new Dictionary<ItemType, int>();
             LocationSectionCounts = new Dictionary<LocationID, Dictionary<int, int>>();
             LocationSectionMarkings = new Dictionary<LocationID, Dictionary<int, MarkingType?>>();
-            PrizePlacements = new Dictionary<LocationID, ItemType?>();
-            BossPlacements = new Dictionary<LocationID, BossType?>();
+            PrizePlacements = new Dictionary<(LocationID, int), ItemType?>();
+            BossPlacements = new Dictionary<(LocationID, int), BossType?>();
             Connections = new List<(LocationID, int, LocationID, int)>();
 
             foreach (Item item in game.Items.Values)
@@ -37,17 +37,17 @@ namespace OpenTracker.Models
 
             foreach (Location location in game.Locations.Values)
             {
-                if (location.BossSection != null)
+                for (int i = 0; i > location.BossSections.Count; i++)
                 {
-                    if (location.BossSection.Prize == null)
-                        PrizePlacements.Add(location.ID, null);
+                    if (location.BossSections[i].Prize == null)
+                        PrizePlacements.Add((location.ID, i), null);
                     else
-                        PrizePlacements.Add(location.ID, location.BossSection.Prize.Type);
-
-                    if (location.BossSection.Boss == null)
-                        BossPlacements.Add(location.ID, null);
+                        PrizePlacements.Add((location.ID, i), location.BossSections[i].Prize.Type);
+                    
+                    if (location.BossSections[i].Boss == null)
+                        BossPlacements.Add((location.ID, i), null);
                     else
-                        BossPlacements.Add(location.ID, location.BossSection.Boss.Type);
+                        BossPlacements.Add((location.ID, i), location.BossSections[i].Boss.Type);
                 }
 
                 LocationSectionCounts.Add(location.ID, new Dictionary<int, int>());
