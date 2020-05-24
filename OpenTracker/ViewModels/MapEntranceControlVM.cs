@@ -352,11 +352,6 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        private void UpdateBorderColor()
-        {
-            this.RaisePropertyChanged(nameof(BorderColor));
-        }
-
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Highlighted))
@@ -380,7 +375,13 @@ namespace OpenTracker.ViewModels
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdatePosition();
-            UpdateVisibility();
+
+            if (e.PropertyName == nameof(Mode.WorldState) &&
+                MapLocation.VisibilityMode.WorldState.HasValue)
+                UpdateVisibility();
+
+            if (e.PropertyName == nameof(Mode.EntranceShuffle))
+                UpdateVisibility();
         }
 
         private void OnMainWindowChanged(object sender, PropertyChangedEventArgs e)
@@ -421,6 +422,11 @@ namespace OpenTracker.ViewModels
         private void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateImage();
+        }
+
+        private void UpdateBorderColor()
+        {
+            this.RaisePropertyChanged(nameof(BorderColor));
         }
 
         private void UpdatePosition()

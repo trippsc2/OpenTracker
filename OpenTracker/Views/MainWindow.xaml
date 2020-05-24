@@ -36,6 +36,8 @@
       <view:KeyControl Margin="2,0,0,0" DataContext="{Binding Path=HCSmallKeys}"
                        IsVisible="{Binding Path=SmallKeyShuffle}"
                        IsHitTestVisible="{Binding Path=SmallKeyShuffle}" />
+      <Panel Height="16" Width="16" IsVisible="{Binding Path=BigKeyShuffle}"
+             IsHitTestVisible="{Binding Path=BigKeyShuffle}" />
       <view:DungeonChestControl Margin="0,0,6,0" DataContext="{Binding Path=HCItems}" />
     </StackPanel>
 
@@ -43,6 +45,8 @@
                 Path=SmallKeyShuffle}" IsHitTestVisible="{Binding Path=SmallKeyShuffle}">
       <Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/at.png" />
       <view:KeyControl Margin="2,0,0,0" DataContext="{Binding Path=ATSmallKeys}" />
+      <Panel Height="16" Width="16" IsVisible="{Binding Path=BigKeyShuffle}"
+             IsHitTestVisible="{Binding Path=BigKeyShuffle}" />
       <view:DungeonChestControl DataContext="{Binding Path=ATItems}" />
     </StackPanel>
     

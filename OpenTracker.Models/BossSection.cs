@@ -496,6 +496,7 @@ namespace OpenTracker.Models
                     _itemSubscriptions.Add(ItemType.Gloves, new Mode());
                     _itemSubscriptions.Add(ItemType.CaneOfSomaria, new Mode());
                     _itemSubscriptions.Add(ItemType.IPSmallKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys });
+                    _itemSubscriptions.Add(ItemType.IPBigKey, new Mode() { DungeonItemShuffle = DungeonItemShuffle.Keysanity });
 
                     break;
                 case LocationID.MiseryMire:
