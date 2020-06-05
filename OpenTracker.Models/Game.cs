@@ -1,4 +1,6 @@
 ﻿using OpenTracker.Models.Enums;
+using OpenTracker.Models.Interfaces;
+using OpenTracker.Models.Sections;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,9 +11,12 @@ namespace OpenTracker.Models
     {
         public AutoTracker AutoTracker { get; }
         public Mode Mode { get; }
-        public BossDictionary Bosses { get; }
         public ItemDictionary Items { get; }
-        public Dictionary<RegionID, Region> Regions { get; }
+        public BossDictionary Bosses { get; }
+        public Dictionary<BossPlacementID, BossPlacement> BossPlacements { get; }
+        public Dictionary<KeyDoorID, KeyDoor> KeyDoors { get; }
+        public Dictionary<RequirementType, Requirement> Requirements { get; }
+        public Dictionary<RequirementNodeID, RequirementNode> RequirementNodes { get; }
         public LocationDictionary Locations { get; }
         public ObservableCollection<(MapLocation, MapLocation)> Connections { get; }
 
@@ -28,9 +33,15 @@ namespace OpenTracker.Models
                 EnemyShuffle = false
             };
 
-            Bosses = new BossDictionary(Enum.GetValues(typeof(BossType)).Length);
             Items = new ItemDictionary(Mode, Enum.GetValues(typeof(ItemType)).Length);
-            Regions = new Dictionary<RegionID, Region>(Enum.GetValues(typeof(RegionID)).Length);
+            Bosses = new BossDictionary(Enum.GetValues(typeof(BossType)).Length);
+            BossPlacements =
+                new Dictionary<BossPlacementID, BossPlacement>(Enum.GetValues(typeof(BossPlacementID)).Length);
+            KeyDoors = new Dictionary<KeyDoorID, KeyDoor>(Enum.GetValues(typeof(KeyDoorID)).Length);
+            Requirements =
+                new Dictionary<RequirementType, Requirement>(Enum.GetValues(typeof(RequirementType)).Length);
+            RequirementNodes =
+                new Dictionary<RequirementNodeID, RequirementNode>(Enum.GetValues(typeof(RequirementNodeID)).Length);
             Locations = new LocationDictionary(Enum.GetValues(typeof(LocationID)).Length);
             Connections = new ObservableCollection<(MapLocation, MapLocation)>();
 
@@ -40,19 +51,42 @@ namespace OpenTracker.Models
             foreach (BossType type in Enum.GetValues(typeof(BossType)))
                 Bosses.Add(type, new Boss(this, type));
 
-            Bosses.SubscribeToMemberEvents();
+            foreach (BossPlacementID iD in Enum.GetValues(typeof(BossPlacementID)))
+                BossPlacements.Add(iD, new BossPlacement(this, iD));
 
-            foreach (RegionID iD in Enum.GetValues(typeof(RegionID)))
-                Regions.Add(iD, new Region(this, iD));
+            foreach (KeyDoorID iD in Enum.GetValues(typeof(KeyDoorID)))
+                KeyDoors.Add(iD, new KeyDoor(this, iD));
 
-            foreach (Region region in Regions.Values)
+            foreach (RequirementType type in Enum.GetValues(typeof(RequirementType)))
+                Requirements.Add(type, new Requirement(this, type));
+
+            foreach (RequirementNodeID iD in Enum.GetValues(typeof(RequirementNodeID)))
             {
-                region.UpdateRegionSubscriptions();
-                region.UpdateAccessibility();
+                if (iD >= RequirementNodeID.HCSanctuary)
+                    RequirementNodes.Add(iD, new DungeonNode(this, iD));
+                else
+                    RequirementNodes.Add(iD, new RequirementNode(this, iD));
             }
 
             foreach (LocationID iD in Enum.GetValues(typeof(LocationID)))
                 Locations.Add(iD, new Location(this, iD));
+
+            Bosses.Initialize();
+
+            foreach (KeyDoor keyDoor in KeyDoors.Values)
+                keyDoor.Initialize();
+
+            foreach (RequirementNode node in RequirementNodes.Values)
+                node.Initialize();
+
+            foreach (Location location in Locations.Values)
+            {
+                foreach (ISection section in location.Sections)
+                {
+                    if (section is DungeonItemSection dungeonItemSection)
+                        dungeonItemSection.Initialize();
+                }
+            }
         }
 
         public void Reset()

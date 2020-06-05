@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.Enums;
+using OpenTracker.Models.Sections;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -872,10 +873,10 @@ namespace OpenTracker.ViewModels
             foreach ((LocationID, int) locationIndex in saveData.BossPlacements.Keys)
             {
                 if (saveData.BossPlacements[locationIndex] == null)
-                    _game.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].Boss = null;
+                    _game.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].BossPlacement.Boss = null;
                 else
                 {
-                    _game.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].Boss =
+                    _game.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].BossPlacement.Boss =
                         _game.Bosses[saveData.BossPlacements[locationIndex].Value];
                 }
             }
