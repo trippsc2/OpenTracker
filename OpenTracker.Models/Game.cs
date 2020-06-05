@@ -14,7 +14,6 @@ namespace OpenTracker.Models
         public ItemDictionary Items { get; }
         public BossDictionary Bosses { get; }
         public Dictionary<BossPlacementID, BossPlacement> BossPlacements { get; }
-        public Dictionary<KeyDoorID, KeyDoor> KeyDoors { get; }
         public Dictionary<RequirementType, Requirement> Requirements { get; }
         public Dictionary<RequirementNodeID, RequirementNode> RequirementNodes { get; }
         public LocationDictionary Locations { get; }
@@ -37,7 +36,6 @@ namespace OpenTracker.Models
             Bosses = new BossDictionary(Enum.GetValues(typeof(BossType)).Length);
             BossPlacements =
                 new Dictionary<BossPlacementID, BossPlacement>(Enum.GetValues(typeof(BossPlacementID)).Length);
-            KeyDoors = new Dictionary<KeyDoorID, KeyDoor>(Enum.GetValues(typeof(KeyDoorID)).Length);
             Requirements =
                 new Dictionary<RequirementType, Requirement>(Enum.GetValues(typeof(RequirementType)).Length);
             RequirementNodes =
@@ -54,17 +52,12 @@ namespace OpenTracker.Models
             foreach (BossPlacementID iD in Enum.GetValues(typeof(BossPlacementID)))
                 BossPlacements.Add(iD, new BossPlacement(this, iD));
 
-            foreach (KeyDoorID iD in Enum.GetValues(typeof(KeyDoorID)))
-                KeyDoors.Add(iD, new KeyDoor(this, iD));
-
             foreach (RequirementType type in Enum.GetValues(typeof(RequirementType)))
                 Requirements.Add(type, new Requirement(this, type));
 
             foreach (RequirementNodeID iD in Enum.GetValues(typeof(RequirementNodeID)))
             {
-                if (iD >= RequirementNodeID.HCSanctuary)
-                    RequirementNodes.Add(iD, new DungeonNode(this, iD));
-                else
+                if (iD < RequirementNodeID.HCSanctuary)
                     RequirementNodes.Add(iD, new RequirementNode(this, iD));
             }
 
@@ -72,9 +65,6 @@ namespace OpenTracker.Models
                 Locations.Add(iD, new Location(this, iD));
 
             Bosses.Initialize();
-
-            foreach (KeyDoor keyDoor in KeyDoors.Values)
-                keyDoor.Initialize();
 
             foreach (RequirementNode node in RequirementNodes.Values)
                 node.Initialize();

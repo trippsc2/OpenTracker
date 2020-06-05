@@ -8,9 +8,10 @@ namespace OpenTracker.Models
     public class KeyDoor : INotifyPropertyChanged
     {
         private readonly Game _game;
-        private readonly List<DungeonNode> _connectedNodes;
+        private readonly DungeonData _dungeonData;
 
         public KeyDoorID ID { get; }
+        public List<DungeonNode> ConnectedNodes { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -42,11 +43,12 @@ namespace OpenTracker.Models
             }
         }
 
-        public KeyDoor(Game game, KeyDoorID iD)
+        public KeyDoor(Game game, DungeonData dungeonData, KeyDoorID iD)
         {
             _game = game ?? throw new ArgumentNullException(nameof(game));
+            _dungeonData = dungeonData ?? throw new ArgumentNullException(nameof(dungeonData));
             ID = iD;
-            _connectedNodes = new List<DungeonNode>();
+            ConnectedNodes = new List<DungeonNode>();
         }
 
         private void OnPropertyChanged(string propertyName)
@@ -71,7 +73,7 @@ namespace OpenTracker.Models
 
             AccessibilityLevel accessibility = AccessibilityLevel.None;
 
-            foreach (DungeonNode node in _connectedNodes)
+            foreach (DungeonNode node in ConnectedNodes)
             {
                 if (excludedNodes.Contains(node.ID))
                     continue;
@@ -92,517 +94,517 @@ namespace OpenTracker.Models
             {
                 case KeyDoorID.HCEscapeFirstKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.HCFront]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.HCPastEscapeFirstKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.HCFront]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.HCPastEscapeFirstKeyDoor]);
                     }
                     break;
                 case KeyDoorID.HCEscapeSecondKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.HCPastEscapeFirstKeyDoor]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.HCPastEscapeSecondKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.HCPastEscapeFirstKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.HCPastEscapeSecondKeyDoor]);
                     }
                     break;
                 case KeyDoorID.HCDarkCrossRoomKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.HCDarkRoomFront]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.HCPastDarkCrossKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.HCDarkRoomFront]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.HCPastDarkCrossKeyDoor]);
                     }
                     break;
                 case KeyDoorID.HCSewerRatRoomKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.HCPastDarkCrossKeyDoor]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.HCBack]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.HCPastDarkCrossKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.HCBack]);
                     }
                     break;
                 case KeyDoorID.ATFirstKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.AT]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.ATPastFirstKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.AT]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.ATPastFirstKeyDoor]);
                     }
                     break;
                 case KeyDoorID.ATSecondKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.ATDarkMaze]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.ATPastSecondKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.ATDarkMaze]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.ATPastSecondKeyDoor]);
                     }
                     break;
                 case KeyDoorID.ATThirdKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.ATPastSecondKeyDoor]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.ATPastThirdKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.ATPastSecondKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.ATPastThirdKeyDoor]);
                     }
                     break;
                 case KeyDoorID.ATFourthKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.ATPastThirdKeyDoor]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.ATPastFourthKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.ATPastThirdKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.ATPastFourthKeyDoor]);
                     }
                     break;
                 case KeyDoorID.EPRightWingKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.EPRightWingDarkRoom]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.EPPastRightWingKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.EPRightWingDarkRoom]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.EPPastRightWingKeyDoor]);
                     }
                     break;
                 case KeyDoorID.EPBossKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.EPBackDarkRoom]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.EPPastBackKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.EPBackDarkRoom]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.EPPastBackKeyDoor]);
                     }
                     break;
                 case KeyDoorID.EPBigChest:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.EP]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.EPBigChest]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.EP]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.EPBigChest]);
                     }
                     break;
                 case KeyDoorID.EPBigKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.EP]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.EPPastBigKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.EP]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.EPPastBigKeyDoor]);
                     }
                     break;
                 case KeyDoorID.DPRightWingKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.DPFront]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.DPPastRightWingKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.DPFront]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.DPPastRightWingKeyDoor]);
                     }
                     break;
                 case KeyDoorID.DP1FKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.DPBack]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.DP2F]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.DPBack]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.DP2F]);
                     }
                     break;
                 case KeyDoorID.DP2FFirstKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.DP2F]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.DP2FPastFirstKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.DP2F]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.DP2FPastFirstKeyDoor]);
                     }
                     break;
                 case KeyDoorID.DP2FSecondKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.DP2FPastFirstKeyDoor]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.DP2FPastSecondKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.DP2FPastFirstKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.DP2FPastSecondKeyDoor]);
                     }
                     break;
                 case KeyDoorID.DPBigChest:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.DPFront]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.DPBigChest]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.DPFront]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.DPBigChest]);
                     }
                     break;
                 case KeyDoorID.DPBigKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.DPPastFourTorchWall]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.DPBossRoom]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.DPPastFourTorchWall]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.DPBossRoom]);
                     }
                     break;
                 case KeyDoorID.ToHKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.ToH]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.ToHPastKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.ToH]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.ToHPastKeyDoor]);
                     }
                     break;
                 case KeyDoorID.ToHBigKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.ToH]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.ToHPastBigKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.ToH]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.ToHPastBigKeyDoor]);
                     }
                     break;
                 case KeyDoorID.ToHBigChest:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.ToHPastBigKeyDoor]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.ToHBigChest]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.ToHPastBigKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.ToHBigChest]);
                     }
                     break;
                 case KeyDoorID.PoDFrontKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.PoD]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.PoDLobbyArena]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.PoD]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.PoDLobbyArena]);
                     }
                     break;
                 case KeyDoorID.PoDBigKeyChestKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.PoDLobbyArena]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.PoDBigKeyChestArea]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.PoDLobbyArena]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.PoDBigKeyChestArea]);
                     }
                     break;
                 case KeyDoorID.PoDCollapsingStairwayKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.PoDLobbyArena]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.PoDPastCollapsingWalkwayKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.PoDLobbyArena]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.PoDPastCollapsingWalkwayKeyDoor]);
                     }
                     break;
                 case KeyDoorID.PoDDarkMazeKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.PoDPastCollapsingWalkwayKeyDoor]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.PoDPastDarkMazeKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.PoDPastCollapsingWalkwayKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.PoDPastDarkMazeKeyDoor]);
                     }
                     break;
                 case KeyDoorID.PoDHarmlessHellwayKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.PoDPastCollapsingWalkwayKeyDoor]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.PoDHarmlessHellwayRoom]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.PoDPastCollapsingWalkwayKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.PoDHarmlessHellwayRoom]);
                     }
                     break;
                 case KeyDoorID.PoDBossAreaKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.PoDPastHammerBlocks]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.PoDPastBossAreaKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.PoDPastHammerBlocks]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.PoDPastBossAreaKeyDoor]);
                     }
                     break;
                 case KeyDoorID.PoDBigChest:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.PoDBigChestLedge]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.PoDBigChest]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.PoDBigChestLedge]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.PoDBigChest]);
                     }
                     break;
                 case KeyDoorID.PoDBigKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.PoDPastBossAreaKeyDoor]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.PoDBossRoom]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.PoDPastBossAreaKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.PoDBossRoom]);
                     }
                     break;
                 case KeyDoorID.SP1FKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SPAfterRiver]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SPB1]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SPAfterRiver]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SPB1]);
                     }
                     break;
                 case KeyDoorID.SPFirstRightSideKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SPB1]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SPPastFirstRightSideKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SPB1]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SPPastFirstRightSideKeyDoor]);
                     }
                     break;
                 case KeyDoorID.SPSecondRightSideKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SPPastFirstRightSideKeyDoor]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SPPastSecondRightSideKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SPPastFirstRightSideKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SPPastSecondRightSideKeyDoor]);
                     }
                     break;
                 case KeyDoorID.SPLeftSideKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SPPastRightSideHammerBlocks]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SPPastLeftSideKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SPPastRightSideHammerBlocks]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SPPastLeftSideKeyDoor]);
                     }
                     break;
                 case KeyDoorID.SPBackFirstKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SPBack]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SPPastBackFirstKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SPBack]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SPPastBackFirstKeyDoor]);
                     }
                     break;
                 case KeyDoorID.SPBossRoomKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SPPastBackFirstKeyDoor]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SPBossRoom]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SPPastBackFirstKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SPBossRoom]);
                     }
                     break;
                 case KeyDoorID.SPBigChest:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SPPastRightSideHammerBlocks]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SPBigChest]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SPPastRightSideHammerBlocks]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SPBigChest]);
                     }
                     break;
                 case KeyDoorID.SWFrontLeftKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SWBigChestAreaBottom]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SWFrontLeftSide]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SWBigChestAreaBottom]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SWFrontLeftSide]);
                     }
                     break;
                 case KeyDoorID.SWFrontRightKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SWBigChestAreaBottom]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SWFrontRightSide]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SWBigChestAreaBottom]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SWFrontRightSide]);
                     }
                     break;
                 case KeyDoorID.SWWorthlessKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SWFrontBackConnector]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SWPastTheWorthlessKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SWFrontBackConnector]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SWPastTheWorthlessKeyDoor]);
                     }
                     break;
                 case KeyDoorID.SWBackFirstKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SWBack]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SWBackPastFirstKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SWBack]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SWBackPastFirstKeyDoor]);
                     }
                     break;
                 case KeyDoorID.SWBackSeceondKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SWBackPastCurtains]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SWBossRoom]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SWBackPastCurtains]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SWBossRoom]);
                     }
                     break;
                 case KeyDoorID.SWBigChest:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SWBigChestAreaTop]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.SWBigChest]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SWBigChestAreaTop]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.SWBigChest]);
                     }
                     break;
                 case KeyDoorID.TTFirstKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TTPastBigKeyDoor]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TTPastFirstKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TTPastBigKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TTPastFirstKeyDoor]);
                     }
                     break;
                 case KeyDoorID.TTSecondKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TTPastFirstKeyDoor]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TTPastSecondKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TTPastFirstKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TTPastSecondKeyDoor]);
                     }
                     break;
                 case KeyDoorID.TTBigChestKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TTPastFirstKeyDoor]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TTPastBigChestRoomKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TTPastFirstKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TTPastBigChestRoomKeyDoor]);
                     }
                     break;
                 case KeyDoorID.TTBigKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TT]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TTPastBigKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TT]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TTPastBigKeyDoor]);
                     }
                     break;
                 case KeyDoorID.TTBigChest:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TTPastHammerBlocks]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TTBigChest]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TTPastHammerBlocks]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TTBigChest]);
                     }
                     break;
                 case KeyDoorID.IP1FKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.IPPastEntranceFreezorRoom]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.IPB1LeftSide]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.IPPastEntranceFreezorRoom]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.IPB1LeftSide]);
                     }
                     break;
                 case KeyDoorID.IPB2KeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.IPB2LeftSide]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.IPB2PastKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.IPB2LeftSide]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.IPB2PastKeyDoor]);
                     }
                     break;
                 case KeyDoorID.IPB3KeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.IPB2PastKeyDoor]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.IPSpikeRoom]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.IPB2PastKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.IPSpikeRoom]);
                     }
                     break;
                 case KeyDoorID.IPB4KeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.IPB4IceRoom]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.IPB4PastKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.IPB4IceRoom]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.IPB4PastKeyDoor]);
                     }
                     break;
                 case KeyDoorID.IPB5KeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.IPB5PastBigKeyDoor]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.IPB6]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.IPB5PastBigKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.IPB6]);
                     }
                     break;
                 case KeyDoorID.IPB6KeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.IPB6]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.IPB6PastKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.IPB6]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.IPB6PastKeyDoor]);
                     }
                     break;
                 case KeyDoorID.IPBigKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.IPB5]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.IPB5PastBigKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.IPB5]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.IPB5PastBigKeyDoor]);
                     }
                     break;
                 case KeyDoorID.IPBigChest:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.IPBigChestArea]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.IPBigChest]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.IPBigChestArea]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.IPBigChest]);
                     }
                     break;
                 case KeyDoorID.MMB1TopRightKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.MMPastEntranceGap]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.MMB1TopSide]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.MMPastEntranceGap]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.MMB1TopSide]);
                     }
                     break;
                 case KeyDoorID.MMB1TopLeftKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.MMPastEntranceGap]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.MMB1TopSide]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.MMPastEntranceGap]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.MMB1TopSide]);
                     }
                     break;
                 case KeyDoorID.MMB1LeftSideFirstKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.MMPastEntranceGap]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.MMB1LeftSidePastFirstKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.MMPastEntranceGap]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.MMB1LeftSidePastFirstKeyDoor]);
                     }
                     break;
                 case KeyDoorID.MMB1LeftSideSecondKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.MMB1LeftSidePastFirstKeyDoor]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.MMB1LeftSidePastSecondKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.MMB1LeftSidePastFirstKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.MMB1LeftSidePastSecondKeyDoor]);
                     }
                     break;
                 case KeyDoorID.MMB1RightSideKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.MMB1LobbyBeyondBlueBlocks]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.MMB1RightSideBeyondBlueBlocks]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.MMB1LobbyBeyondBlueBlocks]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.MMB1RightSideBeyondBlueBlocks]);
                     }
                     break;
                 case KeyDoorID.MMB2WorthlessKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.MMDarkRoom]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.MMB2PastWorthlessKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.MMDarkRoom]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.MMB2PastWorthlessKeyDoor]);
                     }
                     break;
                 case KeyDoorID.MMBigChest:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.MMPastEntranceGap]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.MMBigChest]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.MMPastEntranceGap]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.MMBigChest]);
                     }
                     break;
                 case KeyDoorID.MMPortalBigKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.MMPastEntranceGap]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.MMB1PastPortalBigKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.MMPastEntranceGap]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.MMB1PastPortalBigKeyDoor]);
                     }
                     break;
                 case KeyDoorID.MMBridgeBigKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.MMB1TopSide]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.MMB1PastBridgeBigKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.MMB1TopSide]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.MMB1PastBridgeBigKeyDoor]);
                     }
                     break;
                 case KeyDoorID.MMBossRoomBigKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.MMB2PastCaneOfSomariaSwitch]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.MMBossRoom]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.MMB2PastCaneOfSomariaSwitch]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.MMBossRoom]);
                     }
                     break;
                 case KeyDoorID.TR1FFirstKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TRF1FirstKeyDoorArea]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TRF1PastFirstKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TRF1FirstKeyDoorArea]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TRF1PastFirstKeyDoor]);
                     }
                     break;
                 case KeyDoorID.TR1FSecondKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TRF1PastFirstKeyDoor]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TRF1PastSecondKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TRF1PastFirstKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TRF1PastSecondKeyDoor]);
                     }
                     break;
                 case KeyDoorID.TR1FThirdKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TRF1PastSecondKeyDoor]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TRB1]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TRF1PastSecondKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TRB1]);
                     }
                     break;
                 case KeyDoorID.TRB1BigKeyChestKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TRB1]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TRB1PastBigKeyChestKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TRB1]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TRB1PastBigKeyChestKeyDoor]);
                     }
                     break;
                 case KeyDoorID.TRB1toB2KeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TRB1RightSide]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TRPastB1toB2KeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TRB1RightSide]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TRPastB1toB2KeyDoor]);
                     }
                     break;
                 case KeyDoorID.TRB2KeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TRB2PastDarkMaze]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TRB2PastKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TRB2PastDarkMaze]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TRB2PastKeyDoor]);
                     }
                     break;
                 case KeyDoorID.TRBigChest:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TRB1BigChestArea]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TRBigChest]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TRB1BigChestArea]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TRBigChest]);
                     }
                     break;
                 case KeyDoorID.TRB1BigKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TRB1]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TRB1RightSide]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TRB1]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TRB1RightSide]);
                     }
                     break;
                 case KeyDoorID.TRBossRoomBigKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TRB3BossRoomEntry]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.TRBossRoom]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TRB3BossRoomEntry]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.TRBossRoom]);
                     }
                     break;
                 case KeyDoorID.GT1FLeftToRightKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.GT1FLeft]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.GT1FRight]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.GT1FLeft]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.GT1FRight]);
                     }
                     break;
                 case KeyDoorID.GT1FMapChestRoomKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.GT1FLeftPastBonkableGaps]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.GT1FLeftMapChestRoom]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.GT1FLeftPastBonkableGaps]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.GT1FLeftMapChestRoom]);
                     }
                     break;
                 case KeyDoorID.GT1FSpikeTrapPortalRoomKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.GT1FLeftPastBonkableGaps]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.GT1FLeftSpikeTrapPortalRoom]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.GT1FLeftPastBonkableGaps]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.GT1FLeftSpikeTrapPortalRoom]);
                     }
                     break;
                 case KeyDoorID.GT1FFiresnakeRoomKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.GT1FLeftPastFiresnakeRoomGap]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.GT1FLeftPastFiresnakeRoomKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.GT1FLeftPastFiresnakeRoomGap]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.GT1FLeftPastFiresnakeRoomKeyDoor]);
                     }
                     break;
                 case KeyDoorID.GT1FTileRoomKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.GT1FRightTileRoom]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.GT1FRightFourTorchRoom]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.GT1FRightTileRoom]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.GT1FRightFourTorchRoom]);
                     }
                     break;
                 case KeyDoorID.GT1FCollapsingWalkwayKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.GT1FRightPastCompassRoomPortal]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.GT1FRightCollapsingWalkway]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.GT1FRightPastCompassRoomPortal]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.GT1FRightCollapsingWalkway]);
                     }
                     break;
                 case KeyDoorID.GT6FFirstKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.GT5FPastFourTorchRooms]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.GT6FPastFirstKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.GT5FPastFourTorchRooms]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.GT6FPastFirstKeyDoor]);
                     }
                     break;
                 case KeyDoorID.GT6FSecondKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.GT6FPastFirstKeyDoor]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.GT6FBossRoom]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.GT6FPastFirstKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.GT6FBossRoom]);
                     }
                     break;
                 case KeyDoorID.GTBigChest:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.GT1FBottomRoom]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.GTBigChest]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.GT1FBottomRoom]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.GTBigChest]);
                     }
                     break;
                 case KeyDoorID.GT3FBigKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.GT3FPastRedGoriyaRooms]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.GT3FPastBigKeyDoor]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.GT3FPastRedGoriyaRooms]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.GT3FPastBigKeyDoor]);
                     }
                     break;
                 case KeyDoorID.GT7FBigKeyDoor:
                     {
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.GT6FPastBossRoomGap]);
-                        _connectedNodes.Add((DungeonNode)_game.RequirementNodes[RequirementNodeID.GTFinalBossRoom]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.GT6FPastBossRoomGap]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.GTFinalBossRoom]);
                     }
                     break;
             }
 
-            foreach (DungeonNode node in _connectedNodes)
+            foreach (DungeonNode node in ConnectedNodes)
                 node.PropertyChanged += OnRequirementChanged;
 
             UpdateAccessibility();

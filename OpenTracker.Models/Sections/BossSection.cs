@@ -314,8 +314,8 @@ namespace OpenTracker.Models.Sections
                     break;
                 case LocationID.GanonsTower when index == 2:
                     {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.GTBoss3];
                         PrizeVisible = false;
+                        BossPlacement = _game.BossPlacements[BossPlacementID.GTBoss3];
 
                         Name = "Boss 3";
                     }

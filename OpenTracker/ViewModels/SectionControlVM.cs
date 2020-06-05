@@ -74,6 +74,14 @@ namespace OpenTracker.ViewModels
                     dungeonItemSection.Total <= 0)
                     return false;
 
+                if (_section is BossSection bossSection)
+                {
+                    if ((bossSection.BossPlacement.Boss == null ||
+                        bossSection.BossPlacement.Boss.Type != BossType.Aga) &&
+                        !_game.Mode.BossShuffle.Value)
+                        return false;
+                }
+
                 return _game.Mode.Validate(_section.RequiredMode);
             }
         }
@@ -182,6 +190,22 @@ namespace OpenTracker.ViewModels
                     return null;
                 }
 
+            }
+        }
+
+        public bool SectionImageVisible
+        {
+            get
+            {
+                if (_section is BossSection bossSection)
+                {
+                    if (bossSection.PrizeVisible)
+                        return true;
+
+                    return false;
+                }
+
+                return true;
             }
         }
 
@@ -389,6 +413,7 @@ namespace OpenTracker.ViewModels
 
         private void UpdateBossVisibility()
         {
+            this.RaisePropertyChanged(nameof(SectionVisible));
             this.RaisePropertyChanged(nameof(BossImageVisible));
         }
 

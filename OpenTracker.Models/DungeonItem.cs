@@ -8,6 +8,7 @@ namespace OpenTracker.Models
     public class DungeonItem : INotifyPropertyChanged
     {
         private readonly Game _game;
+        private readonly DungeonData _dungeonData;
         private readonly DungeonItemID _iD;
         private readonly List<RequirementNodeConnection> _connections;
 
@@ -27,9 +28,10 @@ namespace OpenTracker.Models
             }
         }
 
-        public DungeonItem(Game game, DungeonItemID iD)
+        public DungeonItem(Game game, DungeonData dungeonData, DungeonItemID iD)
         {
             _game = game ?? throw new ArgumentNullException(nameof(game));
+            _dungeonData = dungeonData ?? throw new ArgumentNullException(nameof(dungeonData));
             _iD = iD;
             _connections = new List<RequirementNodeConnection>();
 
@@ -43,7 +45,7 @@ namespace OpenTracker.Models
                     break;
                 case DungeonItemID.HCMapChest:
                     {
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.HCFrontEntry,
+                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.HCFront,
                             RequirementType.None, new Mode()));
                     }
                     break;
@@ -66,17 +68,7 @@ namespace OpenTracker.Models
                     }
                     break;
                 case DungeonItemID.HCSecretRoomLeft:
-                    {
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.HCBack,
-                            RequirementType.None, new Mode()));
-                    }
-                    break;
                 case DungeonItemID.HCSecretRoomMiddle:
-                    {
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.HCBack,
-                            RequirementType.None, new Mode()));
-                    }
-                    break;
                 case DungeonItemID.HCSecretRoomRight:
                     {
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.HCBack,
@@ -619,6 +611,30 @@ namespace OpenTracker.Models
                             RequirementType.None, new Mode()));
                     }
                     break;
+                case DungeonItemID.GTBoss1:
+                    {
+                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.GTBoss1,
+                            RequirementType.None, new Mode()));
+                    }
+                    break;
+                case DungeonItemID.GTBoss2:
+                    {
+                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.GTBoss2,
+                            RequirementType.None, new Mode()));
+                    }
+                    break;
+                case DungeonItemID.GTBoss3:
+                    {
+                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.GTBoss3,
+                            RequirementType.None, new Mode()));
+                    }
+                    break;
+                case DungeonItemID.GTFinalBoss:
+                    {
+                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.GTFinalBoss,
+                            RequirementType.None, new Mode()));
+                    }
+                    break;
             }
 
             List<RequirementNodeID> nodeSubscriptions = new List<RequirementNodeID>();
@@ -628,7 +644,7 @@ namespace OpenTracker.Models
             {
                 if (!nodeSubscriptions.Contains(connection.FromNode))
                 {
-                    _game.RequirementNodes[connection.FromNode].PropertyChanged += OnRequirementChanged;
+                    _dungeonData.RequirementNodes[connection.FromNode].PropertyChanged += OnRequirementChanged;
                     nodeSubscriptions.Add(connection.FromNode);
                 }
 
@@ -666,7 +682,8 @@ namespace OpenTracker.Models
                 AccessibilityLevel nodeAccessibility = AccessibilityLevel.Normal;
                 
                 nodeAccessibility = (AccessibilityLevel)Math.Min((byte)nodeAccessibility,
-                    (byte)_game.RequirementNodes[connection.FromNode].GetNodeAccessibility(new List<RequirementNodeID>()));
+                    (byte)_dungeonData.RequirementNodes[connection.FromNode]
+                    .GetNodeAccessibility(new List<RequirementNodeID>()));
 
                 if (nodeAccessibility < AccessibilityLevel.SequenceBreak)
                     continue;

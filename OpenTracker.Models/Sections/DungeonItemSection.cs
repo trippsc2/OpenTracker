@@ -1,6 +1,7 @@
 ﻿using OpenTracker.Models.Enums;
 using OpenTracker.Models.Interfaces;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -13,14 +14,9 @@ namespace OpenTracker.Models.Sections
         private readonly Location _location;
         private readonly int _mapCompass;
         private readonly int _baseTotal;
-        private readonly Dictionary<DungeonItemID, DungeonItem> _dungeonItems;
-        private readonly List<RequirementNode> _entryNodes;
-        private readonly List<DungeonNode> _dungeonNodes;
-        private readonly List<KeyDoor> _smallKeyDoors;
-        private readonly List<KeyDoor> _bigKeyDoors;
+        private readonly DungeonData _dungeonData;
         private readonly List<KeyLayout> _keyLayouts;
         private readonly List<BigKeyPlacement> _bigKeyPlacements;
-        private readonly List<DungeonItem> _bossItems;
 
         public int SmallKey { get; }
         public int BigKey { get; }
@@ -110,27 +106,9 @@ namespace OpenTracker.Models.Sections
         {
             _game = game ?? throw new ArgumentNullException(nameof(game));
             _location = location ?? throw new ArgumentNullException(nameof(location));
-            _dungeonItems = new Dictionary<DungeonItemID, DungeonItem>();
-            _entryNodes = new List<RequirementNode>();
-            _dungeonNodes = new List<DungeonNode>();
-            _smallKeyDoors = new List<KeyDoor>();
-            _bigKeyDoors = new List<KeyDoor>();
+            _dungeonData = new DungeonData(_game, _location);
             _keyLayouts = new List<KeyLayout>();
             _bigKeyPlacements = new List<BigKeyPlacement>();
-            _bossItems = new List<DungeonItem>();
-
-            DungeonItemID firstItem = DungeonItemID.HCSanctuary;
-            DungeonItemID lastItem = DungeonItemID.HCSanctuary;
-            RequirementNodeID firstNode = RequirementNodeID.Start;
-            RequirementNodeID lastNode = RequirementNodeID.Start;
-            RequirementNodeID firstEntryNode = RequirementNodeID.HCSanctuaryEntry;
-            RequirementNodeID lastEntryNode = RequirementNodeID.HCSanctuaryEntry;
-            KeyDoorID? firstSmallKeyDoor = null;
-            KeyDoorID? lastSmallKeyDoor = null;
-            KeyDoorID? firstBigKeyDoor = null;
-            KeyDoorID? lastBigKeyDoor = null;
-            DungeonItemID? firstBossItem = null;
-            DungeonItemID? lastBossItem = null;
 
             switch (_location.ID)
             {
@@ -148,14 +126,6 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.HCSecretRoomMiddle,
                             DungeonItemID.HCSecretRoomRight
                         }, 1, new List<DungeonItemID>(), new Mode()));
-                        firstItem = DungeonItemID.HCSanctuary;
-                        lastItem = DungeonItemID.HCSecretRoomRight;
-                        firstSmallKeyDoor = KeyDoorID.HCEscapeFirstKeyDoor;
-                        lastSmallKeyDoor = KeyDoorID.HCSewerRatRoomKeyDoor;
-                        firstNode = RequirementNodeID.HCSanctuary;
-                        lastNode = RequirementNodeID.HCBack;
-                        firstEntryNode = RequirementNodeID.HCSanctuaryEntry;
-                        lastEntryNode = RequirementNodeID.HCBackEntry;
                     }
                     break;
                 case LocationID.AgahnimTower:
@@ -167,16 +137,6 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.ATRoom03,
                             DungeonItemID.ATDarkMaze
                         }, 2, new List<DungeonItemID>(), new Mode()));
-                        firstItem = DungeonItemID.ATRoom03;
-                        lastItem = DungeonItemID.ATDarkMaze;
-                        firstSmallKeyDoor = KeyDoorID.ATFirstKeyDoor;
-                        lastSmallKeyDoor = KeyDoorID.ATFourthKeyDoor;
-                        firstNode = RequirementNodeID.AT;
-                        lastNode = RequirementNodeID.ATBoss;
-                        firstEntryNode = RequirementNodeID.ATEntry;
-                        lastEntryNode = RequirementNodeID.ATEntry;
-                        firstBossItem = DungeonItemID.ATBoss;
-                        lastBossItem = DungeonItemID.ATBoss;
                     }
                     break;
                 case LocationID.EasternPalace:
@@ -194,18 +154,6 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.EPBigKeyChest,
                         }, new Mode())
                         };
-                        firstItem = DungeonItemID.EPCannonballChest;
-                        lastItem = DungeonItemID.EPBoss;
-                        firstSmallKeyDoor = KeyDoorID.EPRightWingKeyDoor;
-                        lastSmallKeyDoor = KeyDoorID.EPBossKeyDoor;
-                        firstBigKeyDoor = KeyDoorID.EPBigChest;
-                        lastBigKeyDoor = KeyDoorID.EPBigKeyDoor;
-                        firstNode = RequirementNodeID.EP;
-                        lastNode = RequirementNodeID.EPBoss;
-                        firstEntryNode = RequirementNodeID.EPEntry;
-                        lastEntryNode = RequirementNodeID.EPEntry;
-                        firstBossItem = DungeonItemID.EPBoss;
-                        lastBossItem = DungeonItemID.EPBoss;
                     }
                     break;
                 case LocationID.DesertPalace:
@@ -228,19 +176,7 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.DPCompassChest,
                             DungeonItemID.DPBigKeyChest
                         }, new Mode()));
-                        firstItem = DungeonItemID.DPMapChest;
-                        lastItem = DungeonItemID.DPBoss;
-                        firstNode = RequirementNodeID.DPFront;
-                        lastNode = RequirementNodeID.DPBoss;
-                        firstEntryNode = RequirementNodeID.DPFrontEntry;
-                        lastEntryNode = RequirementNodeID.DPBackEntry;
-                        firstSmallKeyDoor = KeyDoorID.DPRightWingKeyDoor;
-                        lastSmallKeyDoor = KeyDoorID.DP2FSecondKeyDoor;
-                        firstBigKeyDoor = KeyDoorID.DPBigChest;
-                        lastBigKeyDoor = KeyDoorID.DPBigKeyDoor;
-                        firstBossItem = DungeonItemID.DPBoss;
-                        lastBossItem = DungeonItemID.DPBoss;
-                    }
+                   }
                     break;
                 case LocationID.TowerOfHera:
                     {
@@ -264,18 +200,6 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.ToHMapChest,
                             DungeonItemID.ToHBigKeyChest
                         }, new Mode()));
-                        firstItem = DungeonItemID.ToHBasementCage;
-                        lastItem = DungeonItemID.ToHBoss;
-                        firstNode = RequirementNodeID.ToH;
-                        lastNode = RequirementNodeID.ToHBoss;
-                        firstEntryNode = RequirementNodeID.ToHEntry;
-                        lastEntryNode = RequirementNodeID.ToHEntry;
-                        firstSmallKeyDoor = KeyDoorID.ToHKeyDoor;
-                        lastSmallKeyDoor = KeyDoorID.ToHKeyDoor;
-                        firstBigKeyDoor = KeyDoorID.ToHBigKeyDoor;
-                        lastBigKeyDoor = KeyDoorID.ToHBigChest;
-                        firstBossItem = DungeonItemID.ToHBoss;
-                        lastBossItem = DungeonItemID.ToHBoss;
                     }
                     break;
                 case LocationID.PalaceOfDarkness:
@@ -322,18 +246,6 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.PoDDarkMazeTop,
                             DungeonItemID.PoDDarkMazeBottom
                         }, new Mode()));
-                        firstItem = DungeonItemID.PoDShooterRoom;
-                        lastItem = DungeonItemID.PoDBoss;
-                        firstNode = RequirementNodeID.PoD;
-                        lastNode = RequirementNodeID.PoDBoss;
-                        firstEntryNode = RequirementNodeID.PoDEntry;
-                        lastEntryNode = RequirementNodeID.PoDEntry;
-                        firstSmallKeyDoor = KeyDoorID.PoDFrontKeyDoor;
-                        lastSmallKeyDoor = KeyDoorID.PoDBossAreaKeyDoor;
-                        firstBigKeyDoor = KeyDoorID.PoDBigChest;
-                        lastBigKeyDoor = KeyDoorID.PoDBigKeyDoor;
-                        firstBossItem = DungeonItemID.PoDBoss;
-                        lastBossItem = DungeonItemID.PoDBoss;
                     }
                     break;
                 case LocationID.SwampPalace:
@@ -360,18 +272,6 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.SPWaterfallRoom,
                             DungeonItemID.SPBoss
                         }, new Mode()));
-                        firstItem = DungeonItemID.SPEntrance;
-                        lastItem = DungeonItemID.SPBoss;
-                        firstNode = RequirementNodeID.SP;
-                        lastNode = RequirementNodeID.SPBoss;
-                        firstEntryNode = RequirementNodeID.SPEntry;
-                        lastEntryNode = RequirementNodeID.SPEntry;
-                        firstSmallKeyDoor = KeyDoorID.SP1FKeyDoor;
-                        lastSmallKeyDoor = KeyDoorID.SPBossRoomKeyDoor;
-                        firstBigKeyDoor = KeyDoorID.SPBigChest;
-                        lastBigKeyDoor = KeyDoorID.SPBigChest;
-                        firstBossItem = DungeonItemID.SPBoss;
-                        lastBossItem = DungeonItemID.SPBoss;
                     }
                     break;
                 case LocationID.SkullWoods:
@@ -407,18 +307,6 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.SWPinballRoom,
                             DungeonItemID.SWBridgeRoom,
                         }, new Mode()));
-                        firstItem = DungeonItemID.SWBigKeyChest;
-                        lastItem = DungeonItemID.SWBoss;
-                        firstNode = RequirementNodeID.SWBigChestAreaBottom;
-                        lastNode = RequirementNodeID.SWBoss;
-                        firstEntryNode = RequirementNodeID.SWFrontEntry;
-                        lastEntryNode = RequirementNodeID.SWBackEntry;
-                        firstSmallKeyDoor = KeyDoorID.SWFrontLeftKeyDoor;
-                        lastSmallKeyDoor = KeyDoorID.SWBackSeceondKeyDoor;
-                        firstBigKeyDoor = KeyDoorID.SWBigChest;
-                        lastBigKeyDoor = KeyDoorID.SWBigChest;
-                        firstBossItem = DungeonItemID.SWBoss;
-                        lastBossItem = DungeonItemID.SWBoss;
                     }
                     break;
                 case LocationID.ThievesTown:
@@ -446,18 +334,6 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.TTCompassChest,
                             DungeonItemID.TTBigKeyChest
                         }, new Mode()));
-                        firstItem = DungeonItemID.TTMapChest;
-                        lastItem = DungeonItemID.TTBoss;
-                        firstNode = RequirementNodeID.TT;
-                        lastNode = RequirementNodeID.TTBoss;
-                        firstEntryNode = RequirementNodeID.TTEntry;
-                        lastEntryNode = RequirementNodeID.TTEntry;
-                        firstSmallKeyDoor = KeyDoorID.TTFirstKeyDoor;
-                        lastSmallKeyDoor = KeyDoorID.TTBigChestKeyDoor;
-                        firstBigKeyDoor = KeyDoorID.TTBigKeyDoor;
-                        lastBigKeyDoor = KeyDoorID.TTBigChest;
-                        firstBossItem = DungeonItemID.TTBoss;
-                        lastBossItem = DungeonItemID.TTBoss;
                     }
                     break;
                 case LocationID.IcePalace:
@@ -516,18 +392,6 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.IPFreezorChest,
                             DungeonItemID.IPIcedTRoom,
                         }, new Mode()));
-                        firstItem = DungeonItemID.IPCompassChest;
-                        lastItem = DungeonItemID.IPBoss;
-                        firstNode = RequirementNodeID.IP;
-                        lastNode = RequirementNodeID.IPBoss;
-                        firstEntryNode = RequirementNodeID.IPEntry;
-                        lastEntryNode = RequirementNodeID.IPEntry;
-                        firstSmallKeyDoor = KeyDoorID.IP1FKeyDoor;
-                        lastSmallKeyDoor = KeyDoorID.IPB6KeyDoor;
-                        firstBigKeyDoor = KeyDoorID.IPBigKeyDoor;
-                        lastBigKeyDoor = KeyDoorID.IPBigChest;
-                        firstBossItem = DungeonItemID.IPBoss;
-                        lastBossItem = DungeonItemID.IPBoss;
                     }
                     break;
                 case LocationID.MiseryMire:
@@ -585,18 +449,6 @@ namespace OpenTracker.Models.Sections
                                 DungeonItemID.MMBigKeyChest,
                                 DungeonItemID.MMMapChest,
                             }, new Mode()));
-                        firstItem = DungeonItemID.MMBridgeChest;
-                        lastItem = DungeonItemID.MMBoss;
-                        firstNode = RequirementNodeID.MM;
-                        lastNode = RequirementNodeID.MMBoss;
-                        firstEntryNode = RequirementNodeID.MMEntry;
-                        lastEntryNode = RequirementNodeID.MMEntry;
-                        firstSmallKeyDoor = KeyDoorID.MMB1TopRightKeyDoor;
-                        lastSmallKeyDoor = KeyDoorID.MMB2WorthlessKeyDoor;
-                        firstBigKeyDoor = KeyDoorID.MMBigChest;
-                        lastBigKeyDoor = KeyDoorID.MMBossRoomBigKeyDoor;
-                        firstBossItem = DungeonItemID.MMBoss;
-                        lastBossItem = DungeonItemID.MMBoss;
                     }
                     break;
                 case LocationID.TurtleRock:
@@ -705,18 +557,6 @@ namespace OpenTracker.Models.Sections
                             {
                                 WorldState = WorldState.Inverted
                             }));
-                        firstItem = DungeonItemID.TRCompassChest;
-                        lastItem = DungeonItemID.TRBoss;
-                        firstNode = RequirementNodeID.TRFront;
-                        lastNode = RequirementNodeID.TRBoss;
-                        firstEntryNode = RequirementNodeID.TRFrontEntry;
-                        lastEntryNode = RequirementNodeID.TRBackEntry;
-                        firstSmallKeyDoor = KeyDoorID.TR1FFirstKeyDoor;
-                        lastSmallKeyDoor = KeyDoorID.TRB2KeyDoor;
-                        firstBigKeyDoor = KeyDoorID.TRBigChest;
-                        lastBigKeyDoor = KeyDoorID.TRBossRoomBigKeyDoor;
-                        firstBossItem = DungeonItemID.TRBoss;
-                        lastBossItem = DungeonItemID.TRBoss;
                     }
                     break;
                 case LocationID.GanonsTower:
@@ -857,55 +697,11 @@ namespace OpenTracker.Models.Sections
                                 DungeonItemID.GTBigKeyRoomTopRight,
                                 DungeonItemID.GTBigKeyChest
                             }, new Mode()));
-                        firstItem = DungeonItemID.GTHopeRoomLeft;
-                        lastItem = DungeonItemID.GTMoldormChest;
-                        firstNode = RequirementNodeID.GT;
-                        lastNode = RequirementNodeID.GTFinalBoss;
-                        firstEntryNode = RequirementNodeID.GTEntry;
-                        lastEntryNode = RequirementNodeID.GTEntry;
-                        firstSmallKeyDoor = KeyDoorID.GT1FLeftToRightKeyDoor;
-                        lastSmallKeyDoor = KeyDoorID.GT6FSecondKeyDoor;
-                        firstBigKeyDoor = KeyDoorID.GTBigChest;
-                        lastBigKeyDoor = KeyDoorID.GT7FBigKeyDoor;
-                        firstBossItem = DungeonItemID.GTBoss1;
-                        lastBossItem = DungeonItemID.GTFinalBoss;
                     }
                     break;
             }
 
-            for (int i = (int)firstItem; i <= (int)lastItem; i++)
-                _dungeonItems.Add((DungeonItemID)i, new DungeonItem(_game, (DungeonItemID)i));
-
-            for (int i = (int)firstNode; i <= (int)lastNode; i++)
-                _dungeonNodes.Add((DungeonNode)_game.RequirementNodes[(RequirementNodeID)i]);
-
-            for (int i = (int)firstEntryNode; i <= (int)lastEntryNode; i++)
-                _entryNodes.Add(_game.RequirementNodes[(RequirementNodeID)i]);
-
-            if (firstSmallKeyDoor.HasValue && lastSmallKeyDoor.HasValue)
-            {
-                for (int i = (int)firstSmallKeyDoor.Value; i <= (int)lastSmallKeyDoor.Value; i++)
-                    _smallKeyDoors.Add(_game.KeyDoors[(KeyDoorID)i]);
-            }
-
-            if (firstBigKeyDoor.HasValue && lastBigKeyDoor.HasValue)
-            {
-                for (int i = (int)firstBigKeyDoor.Value; i <= (int)lastBigKeyDoor.Value; i++)
-                    _bigKeyDoors.Add(_game.KeyDoors[(KeyDoorID)i]);
-            }
-
-            if (firstBossItem.HasValue && lastBossItem.HasValue)
-            {
-                for (int i = (int)firstBossItem.Value; i <= (int)lastBossItem.Value; i++)
-                {
-                    if (_dungeonItems.ContainsKey((DungeonItemID)i))
-                        _bossItems.Add(_dungeonItems[(DungeonItemID)i]);
-                    else
-                        _bossItems.Add(new DungeonItem(_game, (DungeonItemID)i));
-                }
-            }
-
-            _baseTotal = _dungeonItems.Count - _mapCompass - SmallKey - BigKey;
+            _baseTotal = _dungeonData.DungeonItems.Count - _mapCompass - SmallKey - BigKey;
 
             SetTotal(false);
         }
@@ -960,7 +756,7 @@ namespace OpenTracker.Models.Sections
         {
             int freeKeys = 0;
 
-            foreach (DungeonNode node in _dungeonNodes)
+            foreach (DungeonNode node in _dungeonData.RequirementNodes.Values)
             {
                 if (node.Accessibility >= AccessibilityLevel.SequenceBreak)
                     freeKeys += node.FreeKeysProvided;
@@ -971,7 +767,7 @@ namespace OpenTracker.Models.Sections
 
         private void SetKeyDoorState(List<KeyDoorID> unlockedDoors)
         {
-            foreach (KeyDoor smallKeyDoor in _smallKeyDoors)
+            foreach (KeyDoor smallKeyDoor in _dungeonData.SmallKeyDoors.Values)
             {
                 if (unlockedDoors.Contains(smallKeyDoor.ID))
                     smallKeyDoor.Unlocked = true;
@@ -982,7 +778,7 @@ namespace OpenTracker.Models.Sections
 
         private void SetBigKeyDoorState(bool unlocked)
         {
-            foreach (KeyDoor bigKeyDoor in _bigKeyDoors)
+            foreach (KeyDoor bigKeyDoor in _dungeonData.BigKeyDoors.Values)
                 bigKeyDoor.Unlocked = unlocked;
         }
 
@@ -990,7 +786,7 @@ namespace OpenTracker.Models.Sections
         {
             List<KeyDoor> accessibleKeyDoors = new List<KeyDoor>();
 
-            foreach (KeyDoor keyDoor in _smallKeyDoors)
+            foreach (KeyDoor keyDoor in _dungeonData.SmallKeyDoors.Values)
             {
                 if (keyDoor.Accessibility >= AccessibilityLevel.SequenceBreak && !keyDoor.Unlocked)
                     accessibleKeyDoors.Add(keyDoor);
@@ -1092,7 +888,7 @@ namespace OpenTracker.Models.Sections
 
                         foreach (DungeonItemID iD in keyLayout.BigKeyLocations)
                         {
-                            if (_dungeonItems[iD].Accessibility >= AccessibilityLevel.SequenceBreak)
+                            if (_dungeonData.DungeonItems[iD].Accessibility >= AccessibilityLevel.SequenceBreak)
                             {
                                 anyBigKeyLocationsAccessible = true;
                                 break;
@@ -1108,7 +904,7 @@ namespace OpenTracker.Models.Sections
 
                         foreach (DungeonItemID iD in keyLayout.BigKeyLocations)
                         {
-                            if (_dungeonItems[iD].Accessibility < AccessibilityLevel.SequenceBreak)
+                            if (_dungeonData.DungeonItems[iD].Accessibility < AccessibilityLevel.SequenceBreak)
                             {
                                 allBigKeysAccessible = false;
                                 break;
@@ -1124,7 +920,7 @@ namespace OpenTracker.Models.Sections
 
                 foreach (DungeonItemID item in keyLayout.SmallKeyLocations)
                 {
-                    if (_dungeonItems[item].Accessibility < AccessibilityLevel.SequenceBreak)
+                    if (_dungeonData.DungeonItems[item].Accessibility < AccessibilityLevel.SequenceBreak)
                         inaccessibleItems++;
                 }
 
@@ -1155,7 +951,7 @@ namespace OpenTracker.Models.Sections
                 {
                     foreach (DungeonItemID item in placement.Placements)
                     {
-                        if (_dungeonItems[item].Accessibility >= AccessibilityLevel.SequenceBreak)
+                        if (_dungeonData.DungeonItems[item].Accessibility >= AccessibilityLevel.SequenceBreak)
                             return true;
                     }
                 }
@@ -1163,7 +959,7 @@ namespace OpenTracker.Models.Sections
                 {
                     foreach (DungeonItemID item in placement.Placements)
                     {
-                        if (_dungeonItems[item].Accessibility < AccessibilityLevel.SequenceBreak)
+                        if (_dungeonData.DungeonItems[item].Accessibility < AccessibilityLevel.SequenceBreak)
                             return true;
                     }
                 }
@@ -1178,13 +974,13 @@ namespace OpenTracker.Models.Sections
             int inaccessibleItems = 0;
             bool sequenceBreak = false;
 
-            for (int i = 0; i < _bossItems.Count; i++)
+            for (int i = 0; i < _dungeonData.BossItems.Count; i++)
             {
-                if (_bossItems[i].Accessibility > bossAccessibility[i])
-                    bossAccessibility[i] = _bossItems[i].Accessibility;
+                if (_dungeonData.BossItems[i].Accessibility > bossAccessibility[i])
+                    bossAccessibility[i] = _dungeonData.BossItems[i].Accessibility;
             }
 
-            foreach (DungeonItem item in _dungeonItems.Values)
+            foreach (DungeonItem item in _dungeonData.DungeonItems.Values)
             {
                 switch (item.Accessibility)
                 {
@@ -1279,7 +1075,7 @@ namespace OpenTracker.Models.Sections
 
             List<AccessibilityLevel> bossAccessibility = new List<AccessibilityLevel>();
 
-            for (int i = 0; i < _bossItems.Count; i++)
+            for (int i = 0; i < _dungeonData.BossItems.Count; i++)
                 bossAccessibility.Add(AccessibilityLevel.None);
 
             foreach (int smallKeysCollected in smallKeysCollectedCounts)
@@ -1337,7 +1133,7 @@ namespace OpenTracker.Models.Sections
             Accessibility = finalResult.Item1;
             Accessible = finalResult.Item2;
 
-            for (int i = 0; i < _bossItems.Count; i++)
+            for (int i = 0; i < _dungeonData.BossItems.Count; i++)
             {
                 _location.BossSections[i].Accessibility = bossAccessibility[i];
             }
@@ -1374,11 +1170,29 @@ namespace OpenTracker.Models.Sections
             if (BigKeyType.HasValue)
                 _game.Items[BigKeyType.Value].PropertyChanged += OnRequirementChanged;
 
-            foreach (DungeonNode node in _dungeonNodes)
-                node.RequirementChanged += OnNodeRequirementChanged;
+            List<RequirementNodeID> nodeSubscriptions = new List<RequirementNodeID>();
+            List<RequirementType> requirementSubscriptions = new List<RequirementType>();
 
-            foreach (RequirementNode node in _entryNodes)
-                node.PropertyChanged += OnRequirementChanged;
+            foreach (DungeonNode node in _dungeonData.RequirementNodes.Values)
+            {
+                foreach (RequirementNodeConnection connection in node.Connections)
+                {
+                    if (!nodeSubscriptions.Contains(connection.FromNode))
+                    {
+                        _game.RequirementNodes[connection.FromNode].PropertyChanged +=
+                            OnRequirementChanged;
+                    }
+                }
+
+                foreach (RequirementNodeConnection dungeonConnection in node.DungeonConnections)
+                {
+                    if (!requirementSubscriptions.Contains(dungeonConnection.Requirement))
+                    {
+                        _game.Requirements[dungeonConnection.Requirement].PropertyChanged +=
+                            OnRequirementChanged;
+                    }
+                }
+            }
 
             UpdateAccessibility();
         }
