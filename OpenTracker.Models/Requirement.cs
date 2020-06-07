@@ -9,6 +9,7 @@ namespace OpenTracker.Models
         private readonly Game _game;
         private readonly RequirementType _type;
         private readonly bool _updateOnItemPlacementChanged;
+        private readonly bool _updateOnDungeonItemShuffleChanged;
         private readonly bool _updateOnWorldStateChanged;
         private readonly bool _updateOnEnemyShuffleChanged;
 
@@ -83,9 +84,42 @@ namespace OpenTracker.Models
                         };
                     }
                     break;
-                case RequirementType.BigBombToWall:
+                case RequirementType.BombDuplicationAncillaOverload:
                     {
-                        GetAccessibility = () => AccessibilityLevel.None;
+                        _updateOnWorldStateChanged = true;
+                        _game.Items[ItemType.MoonPearl].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.Bow].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.Arrows].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.Boomerang].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.RedBoomerang].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.CaneOfSomaria].PropertyChanged += OnRequirementChanged;
+
+                        GetAccessibility = () =>
+                        {
+                            if (_game.Items.NotBunnyInDarkWorld() && _game.Items.CanShootArrows() &&
+                                (_game.Items.Has(ItemType.Boomerang) || _game.Items.Has(ItemType.RedBoomerang)) &&
+                                _game.Items.Has(ItemType.CaneOfSomaria))
+                                return AccessibilityLevel.SequenceBreak;
+
+                            return AccessibilityLevel.None;
+                        };
+                    }
+                    break;
+                case RequirementType.BombDuplicationMirror:
+                    {
+                        _updateOnWorldStateChanged = true;
+                        _game.Items[ItemType.MoonPearl].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.Flippers].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.Mirror].PropertyChanged += OnRequirementChanged;
+
+                        GetAccessibility = () =>
+                        {
+                            if (_game.Items.NotBunnyInDarkWorld() && _game.Items.Has(ItemType.Flippers) &&
+                                _game.Items.Has(ItemType.Mirror))
+                                return AccessibilityLevel.SequenceBreak;
+
+                            return AccessibilityLevel.None;
+                        };
                     }
                     break;
                 case RequirementType.Book:
@@ -199,6 +233,34 @@ namespace OpenTracker.Models
                                 return AccessibilityLevel.Normal;
 
                             if (_game.Mode.ItemPlacement == ItemPlacement.Advanced && _game.Items.Has(ItemType.FireRod))
+                                return AccessibilityLevel.Normal;
+
+                            return AccessibilityLevel.SequenceBreak;
+                        };
+                    }
+                    break;
+                case RequirementType.DarkRoomDeathMountainEntry:
+                    {
+                        _game.Items[ItemType.Lamp].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.FireRod].PropertyChanged += OnRequirementChanged;
+
+                        GetAccessibility = () =>
+                        {
+                            if (_game.Items.Has(ItemType.Lamp))
+                                return AccessibilityLevel.Normal;
+
+                            return AccessibilityLevel.SequenceBreak;
+                        };
+                    }
+                    break;
+                case RequirementType.DarkRoomDeathMountainExit:
+                    {
+                        _game.Items[ItemType.Lamp].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.FireRod].PropertyChanged += OnRequirementChanged;
+
+                        GetAccessibility = () =>
+                        {
+                            if (_game.Items.Has(ItemType.Lamp))
                                 return AccessibilityLevel.Normal;
 
                             return AccessibilityLevel.SequenceBreak;
@@ -334,6 +396,34 @@ namespace OpenTracker.Models
                         };
                     }
                     break;
+                case RequirementType.LaserBridge:
+                    {
+                        _updateOnItemPlacementChanged = true;
+                        _game.Items[ItemType.Cape].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.CaneOfByrna].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.Shield].PropertyChanged += OnRequirementChanged;
+
+                        GetAccessibility = () =>
+                        {
+                            if (_game.Mode.ItemPlacement == ItemPlacement.Advanced || _game.Items.Has(ItemType.Cape) ||
+                                _game.Items.Has(ItemType.CaneOfByrna) || _game.Items.Has(ItemType.Shield, 3))
+                                return AccessibilityLevel.Normal;
+
+                            return AccessibilityLevel.SequenceBreak;
+                        };
+                    }
+                    break;
+                case RequirementType.LightWorld:
+                    {
+                        GetAccessibility = () =>
+                        {
+                            if (_game.RequirementNodes.ContainsKey(RequirementNodeID.LightWorld))
+                                return _game.RequirementNodes[RequirementNodeID.LightWorld].Accessibility;
+
+                            return AccessibilityLevel.None;
+                        };
+                    }
+                    break;
                 case RequirementType.Lift1:
                     {
                         _game.Items[ItemType.Gloves].PropertyChanged += OnRequirementChanged;
@@ -410,7 +500,7 @@ namespace OpenTracker.Models
                         };
                     }
                     break;
-                case RequirementType.Pendants:
+                case RequirementType.Pedestal:
                     {
                         _updateOnItemPlacementChanged = true;
                         _game.Items[ItemType.GreenPendant].PropertyChanged += OnRequirementChanged;
@@ -426,6 +516,9 @@ namespace OpenTracker.Models
 
                                 return AccessibilityLevel.SequenceBreak;
                             }
+
+                            if (_game.Items.Has(ItemType.Book))
+                                return AccessibilityLevel.Inspect;
 
                             return AccessibilityLevel.None;
                         };
@@ -476,6 +569,24 @@ namespace OpenTracker.Models
                         };
                     }
                     break;
+                case RequirementType.SuperBunnyFallInHole:
+                    {
+                        GetAccessibility = () => AccessibilityLevel.SequenceBreak;
+                    }
+                    break;
+                case RequirementType.SuperBunnyMirror:
+                    {
+                        _game.Items[ItemType.Mirror].PropertyChanged += OnRequirementChanged;
+
+                        GetAccessibility = () =>
+                        {
+                            if (_game.Items.Has(ItemType.Mirror))
+                                return AccessibilityLevel.SequenceBreak;
+
+                            return AccessibilityLevel.None;
+                        };
+                    }
+                    break;
                 case RequirementType.SwimNoFakeFlippers:
                     {
                         _game.Items[ItemType.Flippers].PropertyChanged += OnRequirementChanged;
@@ -496,8 +607,13 @@ namespace OpenTracker.Models
 
                         GetAccessibility = () =>
                         {
-                            if (_game.Items.CanActivateTablets() && _game.Items.Has(ItemType.Book))
-                                return AccessibilityLevel.Normal;
+                            if (_game.Items.Has(ItemType.Book))
+                            {
+                                if (_game.Items.CanActivateTablets())
+                                    return AccessibilityLevel.Normal;
+
+                                return AccessibilityLevel.SequenceBreak;
+                            }
 
                             return AccessibilityLevel.None;
                         };
@@ -513,6 +629,32 @@ namespace OpenTracker.Models
                                 return AccessibilityLevel.Normal;
 
                             return AccessibilityLevel.SequenceBreak;
+                        };
+                    }
+                    break;
+                case RequirementType.TRKeyDoorsToMiddleExit:
+                    {
+                        _updateOnDungeonItemShuffleChanged = true;
+                        _updateOnWorldStateChanged = true;
+                        _game.Items[ItemType.FireRod].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.TRSmallKey].PropertyChanged += OnRequirementChanged;
+
+                        GetAccessibility = () =>
+                        {
+                            if (_game.Mode.SmallKeyShuffle)
+                            {
+                                if (_game.Items.Has(ItemType.TRSmallKey, 2))
+                                    return AccessibilityLevel.Normal;
+                            }
+                            else
+                            {
+                                if (_game.Items.Has(ItemType.FireRod))
+                                    return AccessibilityLevel.Normal;
+
+                                return AccessibilityLevel.SequenceBreak;
+                            }                           
+
+                            return AccessibilityLevel.None;
                         };
                     }
                     break;
@@ -533,6 +675,22 @@ namespace OpenTracker.Models
                             if ((_game.Mode.WorldState == WorldState.Inverted || _game.Items.Has(ItemType.MoonPearl)) &&
                                 _game.Items.CanUseMedallions() && _game.Items.HasTRMedallion())
                                 return AccessibilityLevel.Normal;
+
+                            return AccessibilityLevel.None;
+                        };
+                    }
+                    break;
+                case RequirementType.WaterWalkFromWaterfallCave:
+                    {
+                        _game.Items[ItemType.Flippers].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.MoonPearl].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.WaterfallFairyAccess].PropertyChanged += OnRequirementChanged;
+
+                        GetAccessibility = () =>
+                        {
+                            if (!_game.Items.Has(ItemType.Flippers) &&
+                                (_game.Items.Has(ItemType.MoonPearl) || _game.Items.Has(ItemType.WaterfallFairyAccess)))
+                                return AccessibilityLevel.SequenceBreak;
 
                             return AccessibilityLevel.None;
                         };
@@ -567,18 +725,51 @@ namespace OpenTracker.Models
                         };
                     }
                     break;
-                case RequirementType.LWDashAga:
+                case RequirementType.LWFakeFlippersFairyRevival:
                     {
                         _updateOnWorldStateChanged = true;
                         _game.Items[ItemType.MoonPearl].PropertyChanged += OnRequirementChanged;
-                        _game.Items[ItemType.Boots].PropertyChanged += OnRequirementChanged;
-                        _game.Items[ItemType.Aga].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.Bottle].PropertyChanged += OnRequirementChanged;
 
                         GetAccessibility = () =>
                         {
-                            if (_game.Items.NotBunnyInLightWorld() && _game.Items.Has(ItemType.Boots) &&
-                                _game.Items.Has(ItemType.Aga))
-                                return AccessibilityLevel.Normal;
+                            if (_game.Items.NotBunnyInLightWorld() && _game.Items.Has(ItemType.Bottle))
+                                return AccessibilityLevel.SequenceBreak;
+
+                            return AccessibilityLevel.None;
+                        };
+                    }
+                    break;
+                case RequirementType.LWFakeFlippersScreenTransition:
+                    {
+                        _updateOnWorldStateChanged = true;
+                        _game.Items[ItemType.MoonPearl].PropertyChanged += OnRequirementChanged;
+
+                        GetAccessibility = () =>
+                        {
+                            if (_game.Items.NotBunnyInLightWorld())
+                                return AccessibilityLevel.SequenceBreak;
+
+                            return AccessibilityLevel.None;
+                        };
+                    }
+                    break;
+                case RequirementType.LWFakeFlippersSplashDeletion:
+                    {
+                        _updateOnWorldStateChanged = true;
+                        _game.Items[ItemType.MoonPearl].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.Bow].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.Arrows].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.RedBoomerang].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.CaneOfSomaria].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.IceRod].PropertyChanged += OnRequirementChanged;
+
+                        GetAccessibility = () =>
+                        {
+                            if (_game.Items.NotBunnyInLightWorld() && (_game.Items.CanShootArrows()
+                                || _game.Items.Has(ItemType.RedBoomerang) || _game.Items.Has(ItemType.CaneOfSomaria) ||
+                                _game.Items.Has(ItemType.IceRod)))
+                                return AccessibilityLevel.SequenceBreak;
 
                             return AccessibilityLevel.None;
                         };
@@ -707,31 +898,22 @@ namespace OpenTracker.Models
                             {
                                 if (_game.Items.Has(ItemType.Flippers))
                                     return AccessibilityLevel.Normal;
-
-                                return AccessibilityLevel.SequenceBreak;
                             }
 
                             return AccessibilityLevel.None;
                         };
                     }
                     break;
-                case RequirementType.LWSwimOrWaterWalk:
+                case RequirementType.LWWaterWalk:
                     {
                         _updateOnWorldStateChanged = true;
                         _game.Items[ItemType.MoonPearl].PropertyChanged += OnRequirementChanged;
-                        _game.Items[ItemType.Flippers].PropertyChanged += OnRequirementChanged;
                         _game.Items[ItemType.Boots].PropertyChanged += OnRequirementChanged;
 
                         GetAccessibility = () =>
                         {
-                            if (_game.Items.NotBunnyInLightWorld())
-                            {
-                                if (_game.Items.Has(ItemType.Flippers))
-                                    return AccessibilityLevel.Normal;
-
-                                if (_game.Items.Has(ItemType.MoonPearl) || _game.Items.Has(ItemType.Boots))
-                                    return AccessibilityLevel.SequenceBreak;
-                            }
+                            if (_game.Items.NotBunnyInLightWorld() && _game.Items.Has(ItemType.Boots))
+                                return AccessibilityLevel.SequenceBreak;
 
                             return AccessibilityLevel.None;
                         };
@@ -793,6 +975,56 @@ namespace OpenTracker.Models
                         };
                     }
                     break;
+                case RequirementType.DWFakeFlippersFairyRevival:
+                    {
+                        _updateOnWorldStateChanged = true;
+                        _game.Items[ItemType.MoonPearl].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.Bottle].PropertyChanged += OnRequirementChanged;
+
+                        GetAccessibility = () =>
+                        {
+                            if (_game.Items.NotBunnyInDarkWorld() && _game.Items.Has(ItemType.Bottle))
+                                return AccessibilityLevel.SequenceBreak;
+
+                            return AccessibilityLevel.None;
+                        };
+                    }
+                    break;
+                case RequirementType.DWFakeFlippersQirnJump:
+                    {
+                        _updateOnWorldStateChanged = true;
+                        _game.Items[ItemType.MoonPearl].PropertyChanged += OnRequirementChanged;
+
+                        GetAccessibility = () =>
+                        {
+                            if (_game.Items.NotBunnyInDarkWorld())
+                                return AccessibilityLevel.SequenceBreak;
+
+                            return AccessibilityLevel.None;
+                        };
+                    }
+                    break;
+                case RequirementType.DWFakeFlippersSplashDeletion:
+                    {
+                        _updateOnWorldStateChanged = true;
+                        _game.Items[ItemType.MoonPearl].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.Bow].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.Arrows].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.RedBoomerang].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.CaneOfSomaria].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.IceRod].PropertyChanged += OnRequirementChanged;
+
+                        GetAccessibility = () =>
+                        {
+                            if (_game.Items.NotBunnyInDarkWorld() && (_game.Items.CanShootArrows()
+                                || _game.Items.Has(ItemType.RedBoomerang) || _game.Items.Has(ItemType.CaneOfSomaria) ||
+                                _game.Items.Has(ItemType.IceRod)))
+                                return AccessibilityLevel.SequenceBreak;
+
+                            return AccessibilityLevel.None;
+                        };
+                    }
+                    break;
                 case RequirementType.DWFireRod:
                     {
                         _updateOnWorldStateChanged = true;
@@ -810,7 +1042,6 @@ namespace OpenTracker.Models
                     break;
                 case RequirementType.DWFlute:
                     {
-                        _updateOnWorldStateChanged = true;
                         _game.Items[ItemType.MoonPearl].PropertyChanged += OnRequirementChanged;
                         _game.Items[ItemType.Flute].PropertyChanged += OnRequirementChanged;
 
@@ -848,6 +1079,21 @@ namespace OpenTracker.Models
                         {
                             if (_game.Items.NotBunnyInDarkWorld() && _game.Items.Has(ItemType.Hookshot))
                                 return AccessibilityLevel.Normal;
+
+                            return AccessibilityLevel.None;
+                        };
+                    }
+                    break;
+                case RequirementType.DWHover:
+                    {
+                        _updateOnWorldStateChanged = true;
+                        _game.Items[ItemType.MoonPearl].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.Boots].PropertyChanged += OnRequirementChanged;
+
+                        GetAccessibility = () =>
+                        {
+                            if (_game.Items.NotBunnyInDarkWorld() && _game.Items.Has(ItemType.Boots))
+                                return AccessibilityLevel.SequenceBreak;
 
                             return AccessibilityLevel.None;
                         };
@@ -922,9 +1168,22 @@ namespace OpenTracker.Models
                             {
                                 if (_game.Items.Has(ItemType.Flippers))
                                     return AccessibilityLevel.Normal;
-
-                                return AccessibilityLevel.SequenceBreak;
                             }
+
+                            return AccessibilityLevel.None;
+                        };
+                    }
+                    break;
+                case RequirementType.DWWaterWalk:
+                    {
+                        _updateOnWorldStateChanged = true;
+                        _game.Items[ItemType.MoonPearl].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.Boots].PropertyChanged += OnRequirementChanged;
+
+                        GetAccessibility = () =>
+                        {
+                            if (_game.Items.NotBunnyInDarkWorld() && _game.Items.Has(ItemType.Boots))
+                                return AccessibilityLevel.SequenceBreak;
 
                             return AccessibilityLevel.None;
                         };
@@ -1100,8 +1359,6 @@ namespace OpenTracker.Models
                 GetAccessibility = () => AccessibilityLevel.None;
 
             _game.Mode.PropertyChanged += OnModeChanged;
-
-            UpdateAccessibility();
         }
 
         private void OnPropertyChanged(string propertyName)
@@ -1116,7 +1373,9 @@ namespace OpenTracker.Models
                 (e.PropertyName == nameof(Mode.WorldState) &&
                 _updateOnWorldStateChanged) ||
                 (e.PropertyName == nameof(Mode.EnemyShuffle) &&
-                _updateOnEnemyShuffleChanged))
+                _updateOnEnemyShuffleChanged) ||
+                (e.PropertyName == nameof(Mode.DungeonItemShuffle) &&
+                _updateOnDungeonItemShuffleChanged))
                 UpdateAccessibility();
         }
 
@@ -1134,6 +1393,7 @@ namespace OpenTracker.Models
         {
             switch (_type)
             {
+                case RequirementType.LightWorld:
                 case RequirementType.SPEntry:
                     {
                         _game.RequirementNodes[RequirementNodeID.LightWorld].PropertyChanged +=
@@ -1141,6 +1401,8 @@ namespace OpenTracker.Models
                     }
                     break;
             }
+
+            UpdateAccessibility();
         }
     }
 }

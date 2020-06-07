@@ -66,11 +66,37 @@ namespace OpenTracker.Models
             if (excludedNodes == null)
                 throw new ArgumentNullException(nameof(excludedNodes));
 
-            AccessibilityLevel finalAccessibility = base.GetNodeAccessibility(excludedNodes);
+			AccessibilityLevel finalAccessibility = AccessibilityLevel.None;
             List<RequirementNodeID> newExcludedNodes = excludedNodes.GetRange(0, excludedNodes.Count);
             newExcludedNodes.Add(ID);
 
-            foreach (RequirementNodeConnection dungeonConnection in DungeonConnections)
+			foreach (RequirementNodeConnection connection in Connections)
+			{
+				if (!Game.Mode.Validate(connection.RequiredMode))
+					continue;
+
+				if (newExcludedNodes.Contains(connection.FromNode))
+					continue;
+
+				AccessibilityLevel nodeAccessibility = Game.RequirementNodes[connection.FromNode].Accessibility;
+
+				if (nodeAccessibility < AccessibilityLevel.SequenceBreak)
+					continue;
+
+				AccessibilityLevel requirementAccessibility = Game.Requirements[connection.Requirement].Accessibility;
+
+				AccessibilityLevel finalConnectionAccessibility =
+					(AccessibilityLevel)Math.Min(Math.Min((byte)nodeAccessibility, (byte)requirementAccessibility),
+					(byte)connection.MaximumAccessibility);
+
+				if (finalConnectionAccessibility == AccessibilityLevel.Normal)
+					return AccessibilityLevel.Normal;
+
+				if (finalConnectionAccessibility > finalAccessibility)
+					finalAccessibility = finalConnectionAccessibility;
+			}
+
+			foreach (RequirementNodeConnection dungeonConnection in DungeonConnections)
             {
                 if (!Game.Mode.Validate(dungeonConnection.RequiredMode))
                     continue;

@@ -505,7 +505,7 @@ namespace OpenTracker.Models
                 case DungeonItemID.TRLaserBrdigeBottomRight:
                     {
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.TRB2PastDarkMaze,
-                            RequirementType.None, new Mode()));
+                            RequirementType.LaserBridge, new Mode()));
                     }
                     break;
                 case DungeonItemID.TRBoss:

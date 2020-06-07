@@ -76,9 +76,7 @@ namespace OpenTracker.ViewModels
 
                 if (_section is BossSection bossSection)
                 {
-                    if ((bossSection.BossPlacement.Boss == null ||
-                        bossSection.BossPlacement.Boss.Type != BossType.Aga) &&
-                        !_game.Mode.BossShuffle.Value)
+                    if (!bossSection.PrizeVisible && !_game.Mode.BossShuffle.Value)
                         return false;
                 }
 

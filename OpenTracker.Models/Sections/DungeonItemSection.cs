@@ -1139,6 +1139,10 @@ namespace OpenTracker.Models.Sections
             }
         }
 
+        private void UpdateAccessibilityParallel()
+        {
+        }
+
         public void Clear(bool force)
         {
             do

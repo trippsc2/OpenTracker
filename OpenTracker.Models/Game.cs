@@ -77,6 +77,9 @@ namespace OpenTracker.Models
                         dungeonItemSection.Initialize();
                 }
             }
+
+            foreach (Requirement requirement in Requirements.Values)
+                requirement.Initialize();
         }
 
         public void Reset()

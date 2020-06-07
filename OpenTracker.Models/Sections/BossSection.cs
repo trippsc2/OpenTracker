@@ -77,7 +77,6 @@ namespace OpenTracker.Models.Sections
                 case LocationID.AgahnimTower:
                     {
                         Prize = _game.Items[ItemType.Aga];
-                        PrizeVisible = false;
                         BossPlacement = _game.BossPlacements[BossPlacementID.ATBoss];
 
                         AutoTrack = () =>
@@ -323,7 +322,6 @@ namespace OpenTracker.Models.Sections
                 case LocationID.GanonsTower:
                     {
                         BossPlacement = _game.BossPlacements[BossPlacementID.GTFinalBoss];
-                        PrizeVisible = true;
                         Prize = _game.Items[ItemType.Aga2];
 
                         Name = "Aga";
