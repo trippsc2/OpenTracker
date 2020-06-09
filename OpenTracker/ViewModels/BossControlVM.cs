@@ -2,6 +2,7 @@
 using OpenTracker.Models;
 using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
+using OpenTracker.Models.Sections;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
@@ -23,12 +24,12 @@ namespace OpenTracker.ViewModels
             {
                 string imageBaseString = "avares://OpenTracker/Assets/Images/";
 
-                if (_bossSection.Boss == null)
+                if (_bossSection.BossPlacement.Boss == null)
                     imageBaseString += "Items/unknown1";
                 else
                 {
-                    imageBaseString += "Bosses/" + _bossSection.Boss.Type.ToString()
-                        .ToLowerInvariant();
+                    imageBaseString += "Bosses/" + _bossSection.BossPlacement.Boss.Type
+                        .ToString().ToLowerInvariant();
                 }
 
                 return imageBaseString + ".png";
@@ -43,7 +44,7 @@ namespace OpenTracker.ViewModels
             _bossSection = bossSection ?? throw new ArgumentNullException(nameof(bossSection));
 
             _game.Mode.PropertyChanged += OnModeChanged;
-            _bossSection.PropertyChanged += OnSectionChanged;
+            _bossSection.BossPlacement.PropertyChanged += OnBossChanged;
         }
 
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
@@ -52,9 +53,9 @@ namespace OpenTracker.ViewModels
                 this.RaisePropertyChanged(nameof(BossShuffle));
         }
 
-        private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
+        private void OnBossChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(BossSection.Boss))
+            if (e.PropertyName == nameof(BossPlacement.Boss))
                 this.RaisePropertyChanged(nameof(ImageSource));
         }
 
@@ -62,31 +63,31 @@ namespace OpenTracker.ViewModels
         {
             if (backward)
             {
-                if (_bossSection.Boss == null)
+                if (_bossSection.BossPlacement.Boss == null)
                 {
                     _undoRedoManager.Execute(new ChangeBoss(_bossSection,
                         _game.Bosses[BossType.Trinexx]));
                 }
-                else if (_bossSection.Boss.Type == BossType.Armos)
+                else if (_bossSection.BossPlacement.Boss.Type == BossType.Armos)
                     _undoRedoManager.Execute(new ChangeBoss(_bossSection, null));
                 else
                 {
-                    Boss newBoss = _game.Bosses[_bossSection.Boss.Type - 1];
+                    Boss newBoss = _game.Bosses[_bossSection.BossPlacement.Boss.Type - 1];
                     _undoRedoManager.Execute(new ChangeBoss(_bossSection, newBoss));
                 }
             }
             else
             {
-                if (_bossSection.Boss == null)
+                if (_bossSection.BossPlacement.Boss == null)
                 {
                     _undoRedoManager.Execute(new ChangeBoss(_bossSection,
                         _game.Bosses[BossType.Armos]));
                 }
-                else if (_bossSection.Boss.Type == BossType.Trinexx)
+                else if (_bossSection.BossPlacement.Boss.Type == BossType.Trinexx)
                     _undoRedoManager.Execute(new ChangeBoss(_bossSection, null));
                 else
                 {
-                    Boss newBoss = _game.Bosses[_bossSection.Boss.Type + 1];
+                    Boss newBoss = _game.Bosses[_bossSection.BossPlacement.Boss.Type + 1];
                     _undoRedoManager.Execute(new ChangeBoss(_bossSection, newBoss));
                 }
             }

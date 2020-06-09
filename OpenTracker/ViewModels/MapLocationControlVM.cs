@@ -6,6 +6,7 @@ using OpenTracker.Models;
 using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
 using OpenTracker.Models.Interfaces;
+using OpenTracker.Models.Sections;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;

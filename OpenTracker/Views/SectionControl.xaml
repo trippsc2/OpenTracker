@@ -73,7 +73,8 @@
 			
 			</Panel>
 			
-			<Panel PointerReleased="OnClickSection">
+			<Panel PointerReleased="OnClickSection" IsVisible="{Binding Path=SectionImageVisible}"
+             IsHitTestVisible="{Binding Path=SectionImageVisible}">
 				
 				<Image Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}"
 					   Height="32" Width="32" />

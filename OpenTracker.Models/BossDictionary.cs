@@ -28,8 +28,7 @@ namespace OpenTracker.Models
 
         private void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
@@ -59,7 +58,7 @@ namespace OpenTracker.Models
                 UnknownBossAccessibility = AccessibilityLevel.Normal;
         }
 
-        public void SubscribeToMemberEvents()
+        public void Initialize()
         {
             foreach (Boss boss in Values)
             {

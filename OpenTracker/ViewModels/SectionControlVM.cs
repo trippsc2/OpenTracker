@@ -4,6 +4,7 @@ using OpenTracker.Models;
 using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
 using OpenTracker.Models.Interfaces;
+using OpenTracker.Models.Sections;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -38,7 +39,7 @@ namespace OpenTracker.ViewModels
             _section.HasMarking;
 
         public bool NumberBoxVisible =>
-            _section is ItemSection;
+            _section is ItemSection || _section is DungeonItemSection;
 
         public double MarkingPopupHeight
         {
@@ -68,6 +69,16 @@ namespace OpenTracker.ViewModels
             {
                 if (_section is ItemSection itemSection && itemSection.Total <= 0)
                     return false;
+
+                if (_section is DungeonItemSection dungeonItemSection &&
+                    dungeonItemSection.Total <= 0)
+                    return false;
+
+                if (_section is BossSection bossSection)
+                {
+                    if (!bossSection.PrizeVisible && !_game.Mode.BossShuffle.Value)
+                        return false;
+                }
 
                 return _game.Mode.Validate(_section.RequiredMode);
             }
@@ -180,6 +191,22 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        public bool SectionImageVisible
+        {
+            get
+            {
+                if (_section is BossSection bossSection)
+                {
+                    if (bossSection.PrizeVisible)
+                        return true;
+
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
         public string ImageSource
         {
             get
@@ -188,6 +215,7 @@ namespace OpenTracker.ViewModels
                 {
                     case TakeAnySection _:
                     case ItemSection _:
+                    case DungeonItemSection _:
 
                         if (_section.IsAvailable())
                         {
@@ -235,7 +263,7 @@ namespace OpenTracker.ViewModels
         {
             get
             {
-                if (_section is ItemSection)
+                if (_section is ItemSection || _section is DungeonItemSection)
                     return _section.Available.ToString(CultureInfo.InvariantCulture);
                 else
                     return null;
@@ -247,7 +275,7 @@ namespace OpenTracker.ViewModels
             get
             {
                 if (_game.Mode.BossShuffle.Value && _section is BossSection bossSection &&
-                    (bossSection.Boss == null || bossSection.Boss.Type != BossType.Aga))
+                    (bossSection.BossPlacement.Boss == null || bossSection.BossPlacement.Boss.Type != BossType.Aga))
                     return true;
                 else
                     return false;
@@ -262,14 +290,14 @@ namespace OpenTracker.ViewModels
                 {
                     string imageBaseString = "avares://OpenTracker/Assets/Images/";
 
-                    if (bossSection.Boss == null)
+                    if (bossSection.BossPlacement.Boss == null)
                         imageBaseString += "Items/unknown1";
-                    else if (bossSection.Boss.Type == BossType.Aga)
+                    else if (bossSection.BossPlacement.Boss.Type == BossType.Aga)
                         imageBaseString += "Items/aga1";
                     else
                     {
                         imageBaseString += "Bosses/";
-                        imageBaseString += bossSection.Boss.Type.ToString().ToLowerInvariant();
+                        imageBaseString += bossSection.BossPlacement.Boss.Type.ToString().ToLowerInvariant();
                     }
 
                     return imageBaseString + ".png";
@@ -305,6 +333,9 @@ namespace OpenTracker.ViewModels
             _section.PropertyChanging += OnSectionChanging;
             _section.PropertyChanged += OnSectionChanged;
 
+            if (_section is BossSection bossSection)
+                bossSection.BossPlacement.PropertyChanged += OnBossChanged;
+
             SubscribeToMarkingItem();
         }
 
@@ -337,7 +368,7 @@ namespace OpenTracker.ViewModels
 
             if (e.PropertyName == nameof(ISection.Available))
             {
-                if (_section is ItemSection)
+                if (_section is ItemSection || _section is DungeonItemSection)
                     this.RaisePropertyChanged(nameof(NumberString));
 
                 UpdateImage();
@@ -349,12 +380,6 @@ namespace OpenTracker.ViewModels
                 SubscribeToMarkingItem();
             }
 
-            if (e.PropertyName == nameof(BossSection.Boss))
-            {
-                UpdateBossVisibility();
-                this.RaisePropertyChanged(nameof(BossImageSource));
-            }
-
             if (e.PropertyName == nameof(BossSection.Prize))
                 UpdateImage();
         }
@@ -362,6 +387,15 @@ namespace OpenTracker.ViewModels
         private void OnMarkedItemChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateMarkingImage();
+        }
+
+        private void OnBossChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(BossPlacement.Boss))
+            {
+                UpdateBossVisibility();
+                this.RaisePropertyChanged(nameof(BossImageSource));
+            }
         }
 
         private void UpdateTextColor()
@@ -377,6 +411,7 @@ namespace OpenTracker.ViewModels
 
         private void UpdateBossVisibility()
         {
+            this.RaisePropertyChanged(nameof(SectionVisible));
             this.RaisePropertyChanged(nameof(BossImageVisible));
         }
 
@@ -503,6 +538,10 @@ namespace OpenTracker.ViewModels
                     break;
                 case ItemSection itemSection:
                     if (_section.Available < itemSection.Total)
+                        UncollectSection();
+                    break;
+                case DungeonItemSection dungeonItemSection:
+                    if (_section.Available < dungeonItemSection.Total)
                         UncollectSection();
                     break;
             }

@@ -4,6 +4,7 @@ using OpenTracker.Models;
 using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
 using OpenTracker.Models.Interfaces;
+using OpenTracker.Models.Sections;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
@@ -110,9 +111,9 @@ namespace OpenTracker.ViewModels
 
         public void OnRightClick(bool force)
         {
-            if (_section is ItemSection itemSection)
+            if (_section is DungeonItemSection dungeonItemSection)
             {
-                if (_section.Available < itemSection.Total)
+                if (_section.Available < dungeonItemSection.Total)
                     UncollectSection();
             }
         }

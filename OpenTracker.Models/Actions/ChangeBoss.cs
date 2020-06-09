@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.Interfaces;
+using OpenTracker.Models.Sections;
 
 namespace OpenTracker.Models.Actions
 {
@@ -16,13 +17,13 @@ namespace OpenTracker.Models.Actions
 
         public void Execute()
         {
-            _previousBoss = _bossSection.Boss;
-            _bossSection.Boss = _boss;
+            _previousBoss = _bossSection.BossPlacement.Boss;
+            _bossSection.BossPlacement.Boss = _boss;
         }
 
         public void Undo()
         {
-            _bossSection.Boss = _previousBoss;
+            _bossSection.BossPlacement.Boss = _previousBoss;
         }
     }
 }

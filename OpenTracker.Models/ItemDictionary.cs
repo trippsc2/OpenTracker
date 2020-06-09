@@ -57,20 +57,20 @@ namespace OpenTracker.Models
                 case ItemType.DeathMountainExitAccess:
                 case ItemType.WaterfallFairyAccess:
                 case ItemType.LakeHyliaFairyIslandAccess:
-                case ItemType.CheckerboardCaveAccess:
-                case ItemType.DesertLeftAccess:
-                case ItemType.DesertBackAccess:
-                case ItemType.RaceGameAccess:
-                case ItemType.HyruleCastleSecondFloorAccess:
+                case ItemType.CheckerboardLedgeAccess:
+                case ItemType.DesertLedgeAccess:
+                case ItemType.DesertPalaceBackEntranceAccess:
+                case ItemType.RaceGameLedgeAccess:
+                case ItemType.HyruleCastleTopAccess:
                 case ItemType.DeathMountainWestBottomAccess:
                 case ItemType.DeathMountainWestTopAccess:
                 case ItemType.DeathMountainEastTopAccess:
                 case ItemType.DeathMountainEastBottomAccess:
                 case ItemType.DeathMountainEastTopConnectorAccess:
                 case ItemType.DarkWorldWestAccess:
-                case ItemType.BumperCaveAccess:
+                case ItemType.BumperCaveTopAccess:
                 case ItemType.HammerHouseAccess:
-                case ItemType.DarkWorldWitchAreaAccess:
+                case ItemType.DWWitchAreaAccess:
                 case ItemType.DarkWorldEastAccess:
                 case ItemType.DarkWorldSouthEastAccess:
                 case ItemType.IcePalaceAccess:
@@ -78,7 +78,7 @@ namespace OpenTracker.Models
                 case ItemType.MireAreaAccess:
                 case ItemType.DarkDeathMountainWestBottomAccess:
                 case ItemType.DarkDeathMountainTopAccess:
-                case ItemType.DarkDeathMountainFloatingIslandAccess:
+                case ItemType.DWFloatingIslandAccess:
                 case ItemType.DarkDeathMountainEastBottomAccess:
                 case ItemType.TurtleRockTunnelAccess:
                 case ItemType.TurtleRockSafetyDoorAccess:
@@ -107,6 +107,37 @@ namespace OpenTracker.Models
                 return true;
             else
                 return Has(ItemType.Sword);
+        }
+
+        public bool HasMMMedallion()
+        {
+            if ((Has(ItemType.Bombos) && Has(ItemType.Ether) &&
+                Has(ItemType.Quake)) || (Has(ItemType.Bombos) &&
+                (this[ItemType.BombosDungeons].Current == 1 ||
+                this[ItemType.BombosDungeons].Current == 3)) ||
+                (Has(ItemType.Ether) &&
+                (this[ItemType.EtherDungeons].Current == 1 ||
+                this[ItemType.EtherDungeons].Current == 3)) ||
+                (Has(ItemType.Quake) &&
+                (this[ItemType.QuakeDungeons].Current == 1 ||
+                this[ItemType.QuakeDungeons].Current == 3)))
+                return true;
+
+            return false;
+        }
+
+        public bool HasTRMedallion()
+        {
+            if ((Has(ItemType.Bombos) && Has(ItemType.Ether) &&
+                Has(ItemType.Quake)) || (Has(ItemType.Bombos) &&
+                this[ItemType.BombosDungeons].Current > 1) ||
+                (Has(ItemType.Ether) &&
+                this[ItemType.EtherDungeons].Current > 1) ||
+                (Has(ItemType.Quake) &&
+                this[ItemType.QuakeDungeons].Current > 1))
+                return true;
+
+            return false;
         }
 
         public bool CanRemoveCurtains()
@@ -152,6 +183,16 @@ namespace OpenTracker.Models
         public bool CanClearRedEyegoreGoriyaRooms()
         {
             return CanShootArrows() || _mode.EnemyShuffle.Value;
+        }
+
+        public bool NotBunnyInLightWorld()
+        {
+            return _mode.WorldState != WorldState.Inverted || Has(ItemType.MoonPearl);
+        }
+
+        public bool NotBunnyInDarkWorld()
+        {
+            return _mode.WorldState == WorldState.Inverted || Has(ItemType.MoonPearl);
         }
 
         public void Reset()

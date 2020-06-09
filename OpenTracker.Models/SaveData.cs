@@ -44,10 +44,10 @@ namespace OpenTracker.Models
                     else
                         PrizePlacements.Add((location.ID, i), location.BossSections[i].Prize.Type);
                     
-                    if (location.BossSections[i].Boss == null)
+                    if (location.BossSections[i].BossPlacement.Boss == null)
                         BossPlacements.Add((location.ID, i), null);
                     else
-                        BossPlacements.Add((location.ID, i), location.BossSections[i].Boss.Type);
+                        BossPlacements.Add((location.ID, i), location.BossSections[i].BossPlacement.Boss.Type);
                 }
 
                 LocationSectionCounts.Add(location.ID, new Dictionary<int, int>());
