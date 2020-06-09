@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.Enums;
+using OpenTracker.Models.Sections;
 using System;
 using System.Collections.Generic;
 
@@ -8,6 +9,7 @@ namespace OpenTracker.Models
     {
         private readonly Game _game;
         private readonly Location _location;
+        private readonly DungeonItemSection _dungeonItemSection;
 
         public Dictionary<DungeonItemID, DungeonItem> DungeonItems { get; }
         public Dictionary<RequirementNodeID, DungeonNode> RequirementNodes { get; }
@@ -15,10 +17,12 @@ namespace OpenTracker.Models
         public Dictionary<KeyDoorID, KeyDoor> BigKeyDoors { get; }
         public List<DungeonItem> BossItems { get; }
 
-        public DungeonData(Game game, Location location)
+        public DungeonData(Game game, Location location, DungeonItemSection dungeonItemSection)
         {
             _game = game ?? throw new ArgumentNullException(nameof(game));
             _location = location ?? throw new ArgumentNullException(nameof(location));
+            _dungeonItemSection = dungeonItemSection ??
+                throw new ArgumentNullException(nameof(dungeonItemSection));
 
             DungeonItems = new Dictionary<DungeonItemID, DungeonItem>();
             RequirementNodes = new Dictionary<RequirementNodeID, DungeonNode>();
@@ -226,13 +230,13 @@ namespace OpenTracker.Models
             if (firstSmallKeyDoor.HasValue && lastSmallKeyDoor.HasValue)
             {
                 for (int i = (int)firstSmallKeyDoor.Value; i <= (int)lastSmallKeyDoor.Value; i++)
-                    SmallKeyDoors.Add((KeyDoorID)i, new KeyDoor(_game, this, (KeyDoorID)i));
+                    SmallKeyDoors.Add((KeyDoorID)i, new KeyDoor(this, (KeyDoorID)i));
             }
 
             if (firstBigKeyDoor.HasValue && lastBigKeyDoor.HasValue)
             {
                 for (int i = (int)firstBigKeyDoor.Value; i <= (int)lastBigKeyDoor.Value; i++)
-                    BigKeyDoors.Add((KeyDoorID)i, new KeyDoor(_game, this, (KeyDoorID)i));
+                    BigKeyDoors.Add((KeyDoorID)i, new KeyDoor(this, (KeyDoorID)i));
             }
 
             if (firstBossItem.HasValue && lastBossItem.HasValue)
@@ -254,6 +258,222 @@ namespace OpenTracker.Models
 
             foreach (DungeonNode node in RequirementNodes.Values)
                 node.Initialize();
+        }
+
+        public void SetSmallKeyDoorState(List<KeyDoorID> unlockedDoors)
+        {
+            if (unlockedDoors == null)
+                throw new ArgumentNullException(nameof(unlockedDoors));
+
+            foreach (KeyDoor smallKeyDoor in SmallKeyDoors.Values)
+            {
+                if (unlockedDoors.Contains(smallKeyDoor.ID))
+                    smallKeyDoor.Unlocked = true;
+                else
+                    smallKeyDoor.Unlocked = false;
+            }
+        }
+
+        public void SetBigKeyDoorState(bool unlocked)
+        {
+            foreach (KeyDoor bigKeyDoor in BigKeyDoors.Values)
+                bigKeyDoor.Unlocked = unlocked;
+        }
+
+        public int GetFreeKeys()
+        {
+            int freeKeys = 0;
+
+            foreach (DungeonNode node in RequirementNodes.Values)
+            {
+                if (node.Accessibility >= AccessibilityLevel.SequenceBreak)
+                    freeKeys += node.FreeKeysProvided;
+            }
+
+            return freeKeys;
+        }
+
+        public List<KeyDoorID> GetAccessibleKeyDoors()
+        {
+            List<KeyDoorID> accessibleKeyDoors = new List<KeyDoorID>();
+
+            foreach (KeyDoor keyDoor in SmallKeyDoors.Values)
+            {
+                if (keyDoor.Accessibility >= AccessibilityLevel.SequenceBreak && !keyDoor.Unlocked)
+                    accessibleKeyDoors.Add(keyDoor.ID);
+            }
+
+            return accessibleKeyDoors;
+        }
+
+        public bool ValidateSmallKeyLayout(int keysCollected, bool bigKeyCollected)
+        {
+            if (_dungeonItemSection.SmallKey == 0)
+                return true;
+
+            if (_game.Mode.SmallKeyShuffle)
+                return true;
+
+            foreach (KeyLayout keyLayout in _dungeonItemSection.KeyLayouts)
+            {
+                if (!_game.Mode.Validate(keyLayout.RequiredMode))
+                    continue;
+
+                if (_dungeonItemSection.BigKey > 0)
+                {
+                    if (_game.Mode.BigKeyShuffle)
+                    {
+                        if (keyLayout.BigKeyLocations.Count > 0)
+                            continue;
+                    }
+                    else if (bigKeyCollected)
+                    {
+                        bool anyBigKeyLocationsAccessible = false;
+
+                        foreach (DungeonItemID iD in keyLayout.BigKeyLocations)
+                        {
+                            if (DungeonItems[iD].Accessibility >= AccessibilityLevel.SequenceBreak)
+                            {
+                                anyBigKeyLocationsAccessible = true;
+                                break;
+                            }
+                        }
+
+                        if (!anyBigKeyLocationsAccessible)
+                            continue;
+                    }
+                    else
+                    {
+                        bool allBigKeysAccessible = true;
+
+                        foreach (DungeonItemID iD in keyLayout.BigKeyLocations)
+                        {
+                            if (DungeonItems[iD].Accessibility < AccessibilityLevel.SequenceBreak)
+                            {
+                                allBigKeysAccessible = false;
+                                break;
+                            }
+                        }
+
+                        if (allBigKeysAccessible)
+                            continue;
+                    }
+                }
+
+                int inaccessibleItems = 0;
+
+                foreach (DungeonItemID item in keyLayout.SmallKeyLocations)
+                {
+                    if (DungeonItems[item].Accessibility < AccessibilityLevel.SequenceBreak)
+                        inaccessibleItems++;
+                }
+
+                int inaccessibleKeys = Math.Max(0, inaccessibleItems -
+                    (keyLayout.SmallKeyLocations.Count - keyLayout.SmallKeyCount));
+
+                if (_dungeonItemSection.SmallKey - keysCollected < inaccessibleKeys)
+                    return false;
+            }
+
+            return true;
+        }
+
+        public bool ValidateBigKeyPlacement(bool bigKeyCollected)
+        {
+            if (_dungeonItemSection.BigKey == 0)
+                return true;
+
+            if (_game.Mode.BigKeyShuffle)
+                return true;
+
+            foreach (BigKeyPlacement placement in _dungeonItemSection.BigKeyPlacements)
+            {
+                if (!_game.Mode.Validate(placement.RequiredMode))
+                    continue;
+
+                if (bigKeyCollected)
+                {
+                    foreach (DungeonItemID item in placement.Placements)
+                    {
+                        if (DungeonItems[item].Accessibility >= AccessibilityLevel.SequenceBreak)
+                            return true;
+                    }
+                }
+                else
+                {
+                    foreach (DungeonItemID item in placement.Placements)
+                    {
+                        if (DungeonItems[item].Accessibility < AccessibilityLevel.SequenceBreak)
+                            return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public List<AccessibilityLevel> GetBossAccessibility()
+        {
+            List<AccessibilityLevel> bossAccessibility = new List<AccessibilityLevel>();
+
+            foreach (DungeonItem bossItem in BossItems)
+                bossAccessibility.Add(bossItem.Accessibility);
+
+            return bossAccessibility;
+        }
+
+        public (AccessibilityLevel, int) GetItemAccessibility(int smallKeyValue, bool bigKeyValue)
+        {
+            int inaccessibleItems = 0;
+            bool sequenceBreak = false;
+
+            foreach (DungeonItem item in DungeonItems.Values)
+            {
+                switch (item.Accessibility)
+                {
+                    case AccessibilityLevel.None:
+                        inaccessibleItems++;
+                        break;
+                    case AccessibilityLevel.Inspect:
+                    case AccessibilityLevel.SequenceBreak:
+                        sequenceBreak = true;
+                        break;
+                }
+            }
+
+            if (inaccessibleItems <= 0)
+            {
+                if (sequenceBreak)
+                    return (AccessibilityLevel.SequenceBreak, _dungeonItemSection.Available);
+                else
+                    return (AccessibilityLevel.Normal, _dungeonItemSection.Available);
+            }
+
+            if (!_game.Mode.MapCompassShuffle)
+                inaccessibleItems -= _dungeonItemSection.MapCompass;
+
+            if (inaccessibleItems <= 0)
+                return (AccessibilityLevel.SequenceBreak, _dungeonItemSection.Available);
+
+            if (!_game.Mode.BigKeyShuffle && !bigKeyValue)
+                inaccessibleItems -= _dungeonItemSection.BigKey;
+
+            if (inaccessibleItems <= 0)
+                return (AccessibilityLevel.SequenceBreak, _dungeonItemSection.Available);
+
+            if (!_game.Mode.SmallKeyShuffle)
+                inaccessibleItems -= _dungeonItemSection.SmallKey - smallKeyValue;
+
+            if (inaccessibleItems <= 0)
+                return (AccessibilityLevel.SequenceBreak, _dungeonItemSection.Available);
+
+            if (inaccessibleItems >= _dungeonItemSection.Available)
+                return (AccessibilityLevel.None, 0);
+            else
+            {
+                return (AccessibilityLevel.Partial, Math.Max(0,
+                    _dungeonItemSection.Available - inaccessibleItems));
+            }
         }
     }
 }

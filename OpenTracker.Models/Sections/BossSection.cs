@@ -343,10 +343,20 @@ namespace OpenTracker.Models.Sections
         {
             if (propertyName == nameof(Available) && Prize != null)
             {
-                if (IsAvailable())
-                    Prize.Change(-1, true);
+                if (Prize.Type == ItemType.Aga)
+                {
+                    if (IsAvailable())
+                        Prize.Change(-1, false);
+                    else
+                        Prize.Change(1, false);
+                }
                 else
-                    Prize.Change(1, true);
+                {
+                    if (IsAvailable())
+                        Prize.Change(-1, true);
+                    else
+                        Prize.Change(1, true);
+                }
             }
 
             if (propertyName == nameof(Prize) && Prize != null && !IsAvailable())

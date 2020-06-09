@@ -147,10 +147,16 @@ namespace OpenTracker.Models
         {
             switch (ID)
             {
+				case RequirementNodeID.HCFront:
+					{
+						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.HCDarkRoomFront,
+							RequirementType.None, new Mode()));
+					}
+					break;
 				case RequirementNodeID.HCDarkRoomFront:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.HCFront,
-							RequirementType.DarkRoomWithFireRod, new Mode()));
+							RequirementType.DarkRoomHyruleCastle, new Mode()));
 					}
 					break;
 				case RequirementNodeID.HCPastSewerRatRoomKeyDoor:
@@ -164,7 +170,7 @@ namespace OpenTracker.Models
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.HCPastSewerRatRoomKeyDoor,
 							RequirementType.None, new Mode()));
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.HCBack,
-							RequirementType.DarkRoomWithFireRod, new Mode()));
+							RequirementType.DarkRoomHyruleCastle, new Mode()));
 					}
 					break;
 				case RequirementNodeID.HCBack:
@@ -182,7 +188,7 @@ namespace OpenTracker.Models
 				case RequirementNodeID.ATDarkMaze:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.ATPastFirstKeyDoor,
-							RequirementType.DarkRoom, new Mode()));
+							RequirementType.DarkRoomAgahnimTower, new Mode()));
 					}
 					break;
 				case RequirementNodeID.ATBossRoom:
@@ -206,13 +212,13 @@ namespace OpenTracker.Models
 				case RequirementNodeID.EPRightWingDarkRoom:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.EP,
-							RequirementType.DarkRoom, new Mode()));
+							RequirementType.DarkRoomEasternPalaceRightWing, new Mode()));
 					}
 					break;
 				case RequirementNodeID.EPBackDarkRoom:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.EPPastBigKeyDoor,
-							RequirementType.DarkRoomWithFireRod, new Mode()));
+							RequirementType.DarkRoomEasternPalaceBack, new Mode()));
 					}
 					break;
 				case RequirementNodeID.EPBossRoom:
@@ -286,15 +292,15 @@ namespace OpenTracker.Models
 				case RequirementNodeID.PoDDarkBasement:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.PoDPastCollapsingWalkwayKeyDoor,
-							RequirementType.DarkRoomWithFireRod, new Mode()));
+							RequirementType.DarkRoomPalaceOfDarknessDarkBasement, new Mode()));
 					}
 					break;
 				case RequirementNodeID.PoDDarkMaze:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.PoDPastDarkMazeKeyDoor,
-							RequirementType.DarkRoom, new Mode()));
+							RequirementType.DarkRoomPalaceOfDarknessDarkMaze, new Mode()));
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.PoDBigChestLedge,
-							RequirementType.DarkRoom, new Mode()));
+							RequirementType.DarkRoomPalaceOfDarknessDarkMaze, new Mode()));
 					}
 					break;
 				case RequirementNodeID.PoDBigChestLedge:
@@ -324,7 +330,7 @@ namespace OpenTracker.Models
 				case RequirementNodeID.PoDBossAreaDarkRooms:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.PoDPastBowStatue,
-							RequirementType.DarkRoom, new Mode()));
+							RequirementType.DarkRoomPalaceOfDarknessBossArea, new Mode()));
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.PoDPastHammerBlocks,
 							RequirementType.Hammer, new Mode(), AccessibilityLevel.SequenceBreak));
 					}
@@ -344,13 +350,13 @@ namespace OpenTracker.Models
 				case RequirementNodeID.SP:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.SPAfterRiver,
-							RequirementType.SwimNoFakeFlippers, new Mode()));
+							RequirementType.Swim, new Mode()));
 					}
 					break;
 				case RequirementNodeID.SPAfterRiver:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.SP,
-							RequirementType.SwimNoFakeFlippers, new Mode()));
+							RequirementType.Swim, new Mode()));
 					}
 					break;
 				case RequirementNodeID.SPPastSecondRightSideKeyDoor:
@@ -570,13 +576,17 @@ namespace OpenTracker.Models
 				case RequirementNodeID.MM:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.MMPastEntranceGap,
-							RequirementType.DashOrHookshot, new Mode()));
+							RequirementType.Bonk, new Mode()));
+						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.MMPastEntranceGap,
+							RequirementType.Hookshot, new Mode()));
 					}
 					break;
 				case RequirementNodeID.MMPastEntranceGap:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.MM,
-							RequirementType.DashOrHookshot, new Mode()));
+							RequirementType.Bonk, new Mode()));
+						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.MM,
+							RequirementType.Hookshot, new Mode()));
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.MMB1PastFourTorchRoom,
 							RequirementType.None, new Mode()));
 					}
@@ -624,7 +634,7 @@ namespace OpenTracker.Models
 				case RequirementNodeID.MMDarkRoom:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.MMB1PastBridgeBigKeyDoor,
-							RequirementType.DarkRoom, new Mode()));
+							RequirementType.DarkRoomMiseryMire, new Mode()));
 					}
 					break;
 				case RequirementNodeID.MMB2PastCaneOfSomariaSwitch:
@@ -724,7 +734,7 @@ namespace OpenTracker.Models
 				case RequirementNodeID.TRB2DarkRoomTop:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.TRPastB1toB2KeyDoor,
-							RequirementType.DarkRoom, new Mode()));
+							RequirementType.DarkRoomTurtleRock, new Mode()));
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.TRB2DarkRoomBottom,
 							RequirementType.CaneOfSomaria, new Mode()));
 					}
@@ -734,7 +744,7 @@ namespace OpenTracker.Models
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.TRB2DarkRoomTop,
 							RequirementType.CaneOfSomaria, new Mode()));
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.TRB2PastDarkMaze,
-							RequirementType.DarkRoom, new Mode()));
+							RequirementType.DarkRoomTurtleRock, new Mode()));
 					}
 					break;
 				case RequirementNodeID.TRB2PastDarkMaze:
@@ -796,11 +806,11 @@ namespace OpenTracker.Models
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.GT1FLeftDMsRoom,
 							RequirementType.Hookshot, new Mode()));
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.GT1FLeftDMsRoom,
-							RequirementType.Dash, new Mode(), AccessibilityLevel.SequenceBreak));
+							RequirementType.Hover, new Mode()));
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.GT1FLeftPastBonkableGaps,
 							RequirementType.Hookshot, new Mode()));
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.GT1FLeftPastBonkableGaps,
-							RequirementType.Dash, new Mode(), AccessibilityLevel.SequenceBreak));
+							RequirementType.Hover, new Mode()));
 					}
 					break;
 				case RequirementNodeID.GT1FLeftDMsRoom:
@@ -808,13 +818,15 @@ namespace OpenTracker.Models
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.GT1FLeftPastHammerBlocks,
 							RequirementType.Hookshot, new Mode()));
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.GT1FLeftPastHammerBlocks,
-							RequirementType.Dash, new Mode(), AccessibilityLevel.SequenceBreak));
+							RequirementType.Hover, new Mode()));
 					}
 					break;
 				case RequirementNodeID.GT1FLeftPastBonkableGaps:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.GT1FLeftPastHammerBlocks,
-							RequirementType.DashOrHookshot, new Mode()));
+							RequirementType.Bonk, new Mode()));
+						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.GT1FLeftPastHammerBlocks,
+							RequirementType.Hookshot, new Mode()));
 					}
 					break;
 				case RequirementNodeID.GT1FLeftFiresnakeRoom:
@@ -828,7 +840,7 @@ namespace OpenTracker.Models
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.GT1FLeftFiresnakeRoom,
 							RequirementType.Hookshot, new Mode()));
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.GT1FLeftFiresnakeRoom,
-							RequirementType.Dash, new Mode(), AccessibilityLevel.SequenceBreak));
+							RequirementType.Hover, new Mode()));
 					}
 					break;
 				case RequirementNodeID.GT1FLeftPastFiresnakeRoomKeyDoor:
@@ -930,7 +942,7 @@ namespace OpenTracker.Models
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.GTBoss3,
 							RequirementType.Hookshot, new Mode()));
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.GT6FBossRoom,
-							RequirementType.Dash, new Mode(), AccessibilityLevel.SequenceBreak));
+							RequirementType.Hover, new Mode()));
 					}
 					break;
 				case RequirementNodeID.GTFinalBoss:

@@ -3,7 +3,9 @@ using Avalonia.Data.Converters;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using System;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 
 namespace OpenTracker.ValueConverters
 {
@@ -25,8 +27,16 @@ namespace OpenTracker.ValueConverters
                         return new Bitmap((string)value);
 
                     default:
-                        var assets = AvaloniaLocator.Current.GetService<IAssetLoader>();
-                        return new Bitmap(assets.Open(uri));
+                        try
+                        {
+                            var assets = AvaloniaLocator.Current.GetService<IAssetLoader>();
+                            return new Bitmap(assets.Open(uri));
+                        }
+                        catch (FileNotFoundException ex)
+                        {
+                            Debug.WriteLine(ex.Message);
+                            return null;
+                        }
                 }
             }
 

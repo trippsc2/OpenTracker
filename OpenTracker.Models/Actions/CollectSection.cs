@@ -12,6 +12,8 @@ namespace OpenTracker.Models.Actions
         private MarkingType? _previousMarking;
         private bool _previousUserManipulated;
         private Item _markedItem;
+        private Item _prize;
+        private int _previousPrizeCurrent;
 
         public CollectSection(Game game, ISection section)
         {
@@ -38,6 +40,14 @@ namespace OpenTracker.Models.Actions
                 }
             }
 
+            if (_section is BossSection bossSection)
+            {
+                _prize = bossSection.Prize;
+
+                if (_prize != null)
+                    _previousPrizeCurrent = _prize.Current;
+            }
+
             _section.Available--;
         }
 
@@ -49,6 +59,9 @@ namespace OpenTracker.Models.Actions
 
             if (_markedItem != null)
                 _markedItem.Change(-1);
+
+            if (_prize != null && _prize.Current != _previousPrizeCurrent)
+                _prize.SetCurrent(_previousPrizeCurrent);
         }
     }
 }

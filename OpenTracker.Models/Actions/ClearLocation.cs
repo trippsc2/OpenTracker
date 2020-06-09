@@ -3,6 +3,7 @@ using OpenTracker.Models.Interfaces;
 using OpenTracker.Models.Sections;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 
 namespace OpenTracker.Models.Actions
 {
@@ -15,6 +16,8 @@ namespace OpenTracker.Models.Actions
         private readonly List<MarkingType?> _previousMarkings;
         private readonly List<bool?> _previousUserManipulated;
         private readonly List<Item> _markedItems;
+        private readonly List<Item> _prizes;
+        private readonly List<int?> _prizePreviousCurrents;
 
         public ClearLocation(Game game, Location location, bool force = false)
         {
@@ -25,6 +28,8 @@ namespace OpenTracker.Models.Actions
             _previousMarkings = new List<MarkingType?>();
             _previousUserManipulated = new List<bool?>();
             _markedItems = new List<Item>();
+            _prizes = new List<Item>();
+            _prizePreviousCurrents = new List<int?>();
         }
 
         public void Execute()
@@ -32,6 +37,9 @@ namespace OpenTracker.Models.Actions
             _previousLocationCounts.Clear();
             _previousMarkings.Clear();
             _previousUserManipulated.Clear();
+            _markedItems.Clear();
+            _prizes.Clear();
+            _prizePreviousCurrents.Clear();
 
             foreach (ISection section in _location.Sections)
             {
@@ -62,6 +70,21 @@ namespace OpenTracker.Models.Actions
                     else
                         _markedItems.Add(null);
 
+                    if (section is BossSection bossSection)
+                    {
+                        _prizes.Add(bossSection.Prize);
+
+                        if (bossSection.Prize != null)
+                            _prizePreviousCurrents.Add(bossSection.Prize.Current);
+                        else
+                            _prizePreviousCurrents.Add(null);
+                    }
+                    else
+                    {
+                        _prizes.Add(null);
+                        _prizePreviousCurrents.Add(null);
+                    }
+
                     section.Clear(_force);
 
                     if (section.IsAvailable())
@@ -73,6 +96,8 @@ namespace OpenTracker.Models.Actions
                     _previousMarkings.Add(null);
                     _previousUserManipulated.Add(null);
                     _markedItems.Add(null);
+                    _prizes.Add(null);
+                    _prizePreviousCurrents.Add(null);
                 }
             }
         }
@@ -92,6 +117,9 @@ namespace OpenTracker.Models.Actions
 
                 if (_markedItems[i] != null)
                     _markedItems[i].Change(-1);
+
+                if (_prizes[i] != null && _prizes[i].Current != _prizePreviousCurrents[i])
+                    _prizes[i].SetCurrent(_prizePreviousCurrents[i].Value);
             }
         }
     }

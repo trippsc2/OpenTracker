@@ -86,6 +86,7 @@ namespace OpenTracker.Models
                             RequirementType.Aga, new Mode() { WorldState = WorldState.Inverted }));
                     }
                     break;
+                //  Access to the the lumberjack brothers leaving the tree
                 case RequirementNodeID.LumberjackTreeActive:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,

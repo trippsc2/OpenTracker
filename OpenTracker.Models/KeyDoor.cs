@@ -7,7 +7,6 @@ namespace OpenTracker.Models
 {
     public class KeyDoor : INotifyPropertyChanged
     {
-        private readonly Game _game;
         private readonly DungeonData _dungeonData;
 
         public KeyDoorID ID { get; }
@@ -43,9 +42,8 @@ namespace OpenTracker.Models
             }
         }
 
-        public KeyDoor(Game game, DungeonData dungeonData, KeyDoorID iD)
+        public KeyDoor(DungeonData dungeonData, KeyDoorID iD)
         {
-            _game = game ?? throw new ArgumentNullException(nameof(game));
             _dungeonData = dungeonData ?? throw new ArgumentNullException(nameof(dungeonData));
             ID = iD;
             ConnectedNodes = new List<DungeonNode>();
@@ -113,7 +111,7 @@ namespace OpenTracker.Models
                 case KeyDoorID.HCSewerRatRoomKeyDoor:
                     {
                         ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.HCPastDarkCrossKeyDoor]);
-                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.HCBack]);
+                        ConnectedNodes.Add(_dungeonData.RequirementNodes[RequirementNodeID.HCPastSewerRatRoomKeyDoor]);
                     }
                     break;
                 case KeyDoorID.ATFirstKeyDoor:
