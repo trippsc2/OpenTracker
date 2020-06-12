@@ -695,6 +695,34 @@ namespace OpenTracker.Models.Sections
                 case LocationID.ZoraArea when index == 0:
                     {
                         Total = 1;
+                        Name = "Ledge";
+                        HasMarking = true;
+
+                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
+                            RequirementType.LWSwim, new Mode()));
+                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
+                            RequirementType.LWFakeFlippersFairyRevival, new Mode()));
+                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
+                            RequirementType.LWFakeFlippersSplashDeletion, new Mode()));
+                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
+                            RequirementType.LWWaterWalk, new Mode()));
+                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
+                            RequirementType.None, new Mode(), AccessibilityLevel.Inspect));
+
+                        AutoTrack = () =>
+                        {
+                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 129, 64);
+
+                            if (result.HasValue)
+                                Available = result.Value ? 0 : 1;
+                        };
+
+                        _game.AutoTracker.OverworldEventMemory[129].PropertyChanged += OnMemoryChanged;
+                    }
+                    break;
+                case LocationID.ZoraArea:
+                    {
+                        Total = 1;
                         Name = "King Zora";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
@@ -709,32 +737,6 @@ namespace OpenTracker.Models.Sections
                         };
 
                         _game.AutoTracker.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.ZoraArea:
-                    {
-                        Total = 1;
-                        Name = "Ledge";
-                        HasMarking = true;
-
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
-                            RequirementType.LWSwim, new Mode()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
-                            RequirementType.LWFakeFlippersFairyRevival, new Mode()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
-                            RequirementType.LWFakeFlippersSplashDeletion, new Mode()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
-                            RequirementType.LWWaterWalk, new Mode()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 129, 64);
-
-                            if (result.HasValue)
-                                Available = result.Value ? 0 : 1;
-                        };
-
-                        _game.AutoTracker.OverworldEventMemory[129].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.Catfish:

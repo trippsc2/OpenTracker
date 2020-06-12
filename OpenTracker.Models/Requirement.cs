@@ -955,7 +955,7 @@ namespace OpenTracker.Models
                                 if (_game.Items.Has(ItemType.Powder))
                                     return AccessibilityLevel.Normal;
 
-                                if (_game.Items.Has(ItemType.Mushroom))
+                                if (_game.Items.Has(ItemType.Mushroom) && _game.Items.Has(ItemType.CaneOfSomaria))
                                     return AccessibilityLevel.SequenceBreak;
                             }
 

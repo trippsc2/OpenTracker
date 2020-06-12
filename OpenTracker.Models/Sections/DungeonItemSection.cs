@@ -220,6 +220,7 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.DPCompassChest,
                             DungeonItemID.DPBigKeyChest
                         }, new Mode()));
+                        HasMarking = true;
 
                         CanComplete = () =>
                         {
@@ -886,10 +887,12 @@ namespace OpenTracker.Models.Sections
                                 DungeonItemID.GTBigKeyRoomTopRight,
                                 DungeonItemID.GTBigKeyChest
                             }, new Mode()));
+                        HasMarking = true;
 
                         CanComplete = () =>
                         {
                             return _game.RequirementNodes[RequirementNodeID.GTEntry].Accessibility == AccessibilityLevel.Normal &&
+                                _game.Requirements[RequirementType.Torch].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.Hammer].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.Hookshot].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.FireRod].Accessibility == AccessibilityLevel.Normal &&
@@ -1186,7 +1189,13 @@ namespace OpenTracker.Models.Sections
             Accessible = highestAccessible;
 
             for (int i = 0; i < _dungeonData.BossItems.Count; i++)
+            {
+                if (highestBossAccessibilities[i] == AccessibilityLevel.Normal &&
+                    lowestBossAccessibilities[i] != AccessibilityLevel.Normal)
+                    highestBossAccessibilities[i] = AccessibilityLevel.SequenceBreak;
+
                 _location.BossSections[i].Accessibility = highestBossAccessibilities[i];
+            }
         }
 
         public void Clear(bool force)
