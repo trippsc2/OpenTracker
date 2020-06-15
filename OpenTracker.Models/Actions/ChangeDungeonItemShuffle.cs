@@ -17,7 +17,7 @@ namespace OpenTracker.Models.Actions
 
         public void Execute()
         {
-            _previousDungeonItemShuffle = _mode.DungeonItemShuffle.Value;
+            _previousDungeonItemShuffle = _mode.DungeonItemShuffle;
             _mode.DungeonItemShuffle = _dungeonItemShuffle;
         }
 

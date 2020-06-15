@@ -7,16 +7,16 @@ namespace OpenTracker.Models
     {
         public RequirementNodeID FromNode { get; }
         public RequirementType Requirement { get; }
-        public Mode RequiredMode { get; }
+        public ModeRequirement ModeRequirement { get; }
         public AccessibilityLevel MaximumAccessibility { get; }
 
         public RequirementNodeConnection(RequirementNodeID fromNode, RequirementType requirement,
-            Mode requiredMode, AccessibilityLevel maximumAccessibility = AccessibilityLevel.Normal)
+            ModeRequirement modeRequirement, AccessibilityLevel maximumAccessibility = AccessibilityLevel.Normal)
         {
             FromNode = fromNode;
             Requirement = requirement;
-            RequiredMode = requiredMode ??
-                throw new ArgumentNullException(nameof(requiredMode));
+            ModeRequirement = modeRequirement ??
+                throw new ArgumentNullException(nameof(modeRequirement));
             MaximumAccessibility = maximumAccessibility;
         }
     }

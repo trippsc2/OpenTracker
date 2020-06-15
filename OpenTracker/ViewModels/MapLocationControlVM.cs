@@ -98,7 +98,7 @@ namespace OpenTracker.ViewModels
         {
             get
             {
-                return _game.Mode.Validate(_mapLocation.VisibilityMode) &&
+                return _game.Mode.Validate(_mapLocation.ModeRequirement) &&
                     (_appSettings.DisplayAllLocations ||
                     ((_mapLocation.Location.Sections[0].Marking != null ||
                     _mapLocation.Location.Accessibility != AccessibilityLevel.Cleared) &&
@@ -224,8 +224,7 @@ namespace OpenTracker.ViewModels
         {
             get
             {
-                if ((_game.Mode.EntranceShuffle.HasValue &&
-                    _game.Mode.EntranceShuffle.Value) ||
+                if (_game.Mode.EntranceShuffle ||
                     _mapLocation.Location.Sections[0] is TakeAnySection)
                     return 40.0;
                 else
@@ -263,8 +262,7 @@ namespace OpenTracker.ViewModels
         {
             get
             {
-                if ((_game.Mode.EntranceShuffle.HasValue &&
-                    _game.Mode.EntranceShuffle.Value) ||
+                if (_game.Mode.EntranceShuffle ||
                     _mapLocation.Location.Sections[0] is TakeAnySection)
                     return new Thickness(5);
                 else
@@ -276,7 +274,7 @@ namespace OpenTracker.ViewModels
         {
             get
             {
-                if (_game.Mode.EntranceShuffle.Value)
+                if (_game.Mode.EntranceShuffle)
                     return false;
 
                 if (!_appSettings.ShowItemCountsOnMap)
@@ -296,7 +294,7 @@ namespace OpenTracker.ViewModels
         {
             get
             {
-                if (_game.Mode.EntranceShuffle.Value)
+                if (_game.Mode.EntranceShuffle)
                     return null;
 
                 if (!_appSettings.ShowItemCountsOnMap)
@@ -442,13 +440,13 @@ namespace OpenTracker.ViewModels
             {
                 UpdateSizeAndPosition();
 
-                if (_mapLocation.VisibilityMode.WorldState.HasValue)
+                if (_mapLocation.ModeRequirement.WorldState.HasValue)
                     UpdateVisibility();
             }
 
             if (e.PropertyName == nameof(Mode.EntranceShuffle))
             {
-                if (_mapLocation.VisibilityMode.EntranceShuffle.HasValue)
+                if (_mapLocation.ModeRequirement.EntranceShuffle.HasValue)
                     UpdateVisibility();
 
                 UpdateSizeAndPosition();
@@ -543,7 +541,7 @@ namespace OpenTracker.ViewModels
 
         private void UpdateImageDock()
         {
-            if (_game.Mode.EntranceShuffle.Value)
+            if (_game.Mode.EntranceShuffle)
                 ImageDock = _entranceDock;
             else
                 ImageDock = _nonEntranceDock;

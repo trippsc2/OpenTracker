@@ -87,7 +87,7 @@ namespace OpenTracker.ViewModels
         {
             get
             {
-                return _game.Mode.Validate(MapLocation.VisibilityMode) &&
+                return _game.Mode.Validate(MapLocation.ModeRequirement) &&
                     (_appSettings.DisplayAllLocations ||
                     ((MapLocation.Location.Sections[0].Marking != null ||
                     MapLocation.Location.Accessibility != AccessibilityLevel.Cleared) &&
@@ -378,7 +378,7 @@ namespace OpenTracker.ViewModels
             UpdatePosition();
 
             if (e.PropertyName == nameof(Mode.WorldState) &&
-                MapLocation.VisibilityMode.WorldState.HasValue)
+                MapLocation.ModeRequirement.WorldState.HasValue)
                 UpdateVisibility();
 
             if (e.PropertyName == nameof(Mode.EntranceShuffle))

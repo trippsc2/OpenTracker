@@ -39,9 +39,9 @@ namespace OpenTracker.ViewModels
         public bool RetroWorldState =>
             _mode.WorldState == WorldState.Retro;
 
-        public bool EntranceShuffle => _mode.EntranceShuffle.Value;
-        public bool BossShuffle => _mode.BossShuffle.Value;
-        public bool EnemyShuffle => _mode.EnemyShuffle.Value;
+        public bool EntranceShuffle => _mode.EntranceShuffle;
+        public bool BossShuffle => _mode.BossShuffle;
+        public bool EnemyShuffle => _mode.EnemyShuffle;
 
         private bool _modeSettingsPopupOpen;
         public bool ModeSettingsPopupOpen
@@ -127,17 +127,17 @@ namespace OpenTracker.ViewModels
 
         private void ToggleEntranceShuffle()
         {
-            _undoRedoManager.Execute(new ChangeEntranceShuffle(_mode, !_mode.EntranceShuffle.Value));
+            _undoRedoManager.Execute(new ChangeEntranceShuffle(_mode, !_mode.EntranceShuffle));
         }
 
         private void ToggleBossShuffle()
         {
-            _undoRedoManager.Execute(new ChangeBossShuffle(_mode, !_mode.BossShuffle.Value));
+            _undoRedoManager.Execute(new ChangeBossShuffle(_mode, !_mode.BossShuffle));
         }
 
         private void ToggleEnemyShuffle()
         {
-            _undoRedoManager.Execute(new ChangeEnemyShuffle(_mode, !_mode.EnemyShuffle.Value));
+            _undoRedoManager.Execute(new ChangeEnemyShuffle(_mode, !_mode.EnemyShuffle));
         }
     }
 }

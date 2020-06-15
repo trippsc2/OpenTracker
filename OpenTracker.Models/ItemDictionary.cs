@@ -82,7 +82,7 @@ namespace OpenTracker.Models
                 case ItemType.DarkDeathMountainEastBottomAccess:
                 case ItemType.TurtleRockTunnelAccess:
                 case ItemType.TurtleRockSafetyDoorAccess:
-                    return _mode.EntranceShuffle.Value ? this[type].Current >= atLeast : false;
+                    return _mode.EntranceShuffle ? this[type].Current >= atLeast : false;
                 default:
                     return this[type].Current >= atLeast;
             }
@@ -182,7 +182,7 @@ namespace OpenTracker.Models
 
         public bool CanClearRedEyegoreGoriyaRooms()
         {
-            return CanShootArrows() || _mode.EnemyShuffle.Value;
+            return CanShootArrows() || _mode.EnemyShuffle;
         }
 
         public bool NotBunnyInLightWorld()

@@ -22,15 +22,7 @@ namespace OpenTracker.Models
         public Game()
         {
             AutoTracker = new AutoTracker();
-            Mode = new Mode()
-            {
-                ItemPlacement = ItemPlacement.Advanced,
-                DungeonItemShuffle = DungeonItemShuffle.Standard,
-                WorldState = WorldState.StandardOpen,
-                EntranceShuffle = false,
-                BossShuffle = false,
-                EnemyShuffle = false
-            };
+            Mode = new Mode();
 
             Items = new ItemDictionary(Mode, Enum.GetValues(typeof(ItemType)).Length);
             Bosses = new BossDictionary(Enum.GetValues(typeof(BossType)).Length);

@@ -43,6 +43,11 @@ namespace OpenTracker.Models
                         GetAccessibility = () => AccessibilityLevel.Normal;
                     }
                     break;
+                case RequirementType.Inspect:
+                    {
+                        GetAccessibility = () => AccessibilityLevel.Inspect;
+                    }
+                    break;
                 case RequirementType.Aga:
                     {
                         _game.Items[ItemType.Aga].PropertyChanged += OnRequirementChanged;
@@ -122,6 +127,31 @@ namespace OpenTracker.Models
                         };
                     }
                     break;
+                case RequirementType.BombJumpPoDHammerJump:
+                    {
+                        GetAccessibility = () => AccessibilityLevel.SequenceBreak;
+                    }
+                    break;
+                case RequirementType.BombJumpSWBigChest:
+                    {
+                        GetAccessibility = () => AccessibilityLevel.SequenceBreak;
+                    }
+                    break;
+                case RequirementType.BombJumpIPBJ:
+                    {
+                        GetAccessibility = () => AccessibilityLevel.SequenceBreak;
+                    }
+                    break;
+                case RequirementType.BombJumpIPHookshotGap:
+                    {
+                        GetAccessibility = () => AccessibilityLevel.SequenceBreak;
+                    }
+                    break;
+                case RequirementType.BombJumpIPFreezorRoomGap:
+                    {
+                        GetAccessibility = () => AccessibilityLevel.SequenceBreak;
+                    }
+                    break;
                 case RequirementType.Book:
                     {
                         _game.Items[ItemType.Book].PropertyChanged += OnRequirementChanged;
@@ -183,6 +213,19 @@ namespace OpenTracker.Models
                         };
                     }
                     break;
+                case RequirementType.CameraUnlock:
+                    {
+                        _game.Items[ItemType.Bottle].PropertyChanged += OnRequirementChanged;
+
+                        GetAccessibility = () =>
+                        {
+                            if (_game.Items.Has(ItemType.Bottle))
+                                return AccessibilityLevel.SequenceBreak;
+
+                            return AccessibilityLevel.None;
+                        };
+                    }
+                    break;
                 case RequirementType.CaneOfSomaria:
                     {
                         _game.Items[ItemType.CaneOfSomaria].PropertyChanged += OnRequirementChanged;
@@ -206,19 +249,6 @@ namespace OpenTracker.Models
                                 return AccessibilityLevel.Normal;
 
                             return AccessibilityLevel.None;
-                        };
-                    }
-                    break;
-                case RequirementType.DarkRoomAgahnimTower:
-                    {
-                        _game.Items[ItemType.Lamp].PropertyChanged += OnRequirementChanged;
-
-                        GetAccessibility = () =>
-                        {
-                            if (_game.Items.Has(ItemType.Lamp))
-                                return AccessibilityLevel.Normal;
-
-                            return AccessibilityLevel.SequenceBreak;
                         };
                     }
                     break;
@@ -250,37 +280,7 @@ namespace OpenTracker.Models
                         };
                     }
                     break;
-                case RequirementType.DarkRoomEasternPalaceRightWing:
-                    {
-                        _game.Items[ItemType.Lamp].PropertyChanged += OnRequirementChanged;
-
-                        GetAccessibility = () =>
-                        {
-                            if (_game.Items.Has(ItemType.Lamp))
-                                return AccessibilityLevel.Normal;
-
-                            return AccessibilityLevel.SequenceBreak;
-                        };
-                    }
-                    break;
-                case RequirementType.DarkRoomEasternPalaceBack:
-                    {
-                        _game.Items[ItemType.Lamp].PropertyChanged += OnRequirementChanged;
-                        _game.Items[ItemType.FireRod].PropertyChanged += OnRequirementChanged;
-
-                        GetAccessibility = () =>
-                        {
-                            if (_game.Items.Has(ItemType.Lamp))
-                                return AccessibilityLevel.Normal;
-
-                            if (_game.Mode.ItemPlacement == ItemPlacement.Advanced && _game.Items.Has(ItemType.FireRod))
-                                return AccessibilityLevel.Normal;
-
-                            return AccessibilityLevel.SequenceBreak;
-                        };
-                    }
-                    break;
-                case RequirementType.DarkRoomHyruleCastle:
+                case RequirementType.DarkRoomHC:
                     {
                         _updateOnItemPlacementChanged = true;
                         _game.Items[ItemType.Lamp].PropertyChanged += OnRequirementChanged;
@@ -298,7 +298,7 @@ namespace OpenTracker.Models
                         };
                     }
                     break;
-                case RequirementType.DarkRoomMiseryMire:
+                case RequirementType.DarkRoomAT:
                     {
                         _game.Items[ItemType.Lamp].PropertyChanged += OnRequirementChanged;
 
@@ -311,7 +311,37 @@ namespace OpenTracker.Models
                         };
                     }
                     break;
-                case RequirementType.DarkRoomPalaceOfDarknessDarkBasement:
+                case RequirementType.DarkRoomEPRightWing:
+                    {
+                        _game.Items[ItemType.Lamp].PropertyChanged += OnRequirementChanged;
+
+                        GetAccessibility = () =>
+                        {
+                            if (_game.Items.Has(ItemType.Lamp))
+                                return AccessibilityLevel.Normal;
+
+                            return AccessibilityLevel.SequenceBreak;
+                        };
+                    }
+                    break;
+                case RequirementType.DarkRoomEPBack:
+                    {
+                        _game.Items[ItemType.Lamp].PropertyChanged += OnRequirementChanged;
+                        _game.Items[ItemType.FireRod].PropertyChanged += OnRequirementChanged;
+
+                        GetAccessibility = () =>
+                        {
+                            if (_game.Items.Has(ItemType.Lamp))
+                                return AccessibilityLevel.Normal;
+
+                            if (_game.Mode.ItemPlacement == ItemPlacement.Advanced && _game.Items.Has(ItemType.FireRod))
+                                return AccessibilityLevel.Normal;
+
+                            return AccessibilityLevel.SequenceBreak;
+                        };
+                    }
+                    break;
+                case RequirementType.DarkRoomPoDDarkBasement:
                     {
                         _updateOnItemPlacementChanged = true;
                         _game.Items[ItemType.Lamp].PropertyChanged += OnRequirementChanged;
@@ -329,7 +359,7 @@ namespace OpenTracker.Models
                         };
                     }
                     break;
-                case RequirementType.DarkRoomPalaceOfDarknessDarkMaze:
+                case RequirementType.DarkRoomPoDDarkMaze:
                     {
                         _game.Items[ItemType.Lamp].PropertyChanged += OnRequirementChanged;
 
@@ -342,7 +372,7 @@ namespace OpenTracker.Models
                         };
                     }
                     break;
-                case RequirementType.DarkRoomPalaceOfDarknessBossArea:
+                case RequirementType.DarkRoomPoDBossArea:
                     {
                         _game.Items[ItemType.Lamp].PropertyChanged += OnRequirementChanged;
 
@@ -355,7 +385,20 @@ namespace OpenTracker.Models
                         };
                     }
                     break;
-                case RequirementType.DarkRoomTurtleRock:
+                case RequirementType.DarkRoomMM:
+                    {
+                        _game.Items[ItemType.Lamp].PropertyChanged += OnRequirementChanged;
+
+                        GetAccessibility = () =>
+                        {
+                            if (_game.Items.Has(ItemType.Lamp))
+                                return AccessibilityLevel.Normal;
+
+                            return AccessibilityLevel.SequenceBreak;
+                        };
+                    }
+                    break;
+                case RequirementType.DarkRoomTR:
                     {
                         _game.Items[ItemType.Lamp].PropertyChanged += OnRequirementChanged;
 
@@ -379,6 +422,11 @@ namespace OpenTracker.Models
 
                             return AccessibilityLevel.None;
                         };
+                    }
+                    break;
+                case RequirementType.DungeonRevive:
+                    {
+                        GetAccessibility = () => AccessibilityLevel.SequenceBreak;
                     }
                     break;
                 case RequirementType.FireRod:
@@ -444,6 +492,19 @@ namespace OpenTracker.Models
                         {
                             if (_game.Items.Has(ItemType.Hammer))
                                 return AccessibilityLevel.Normal;
+
+                            return AccessibilityLevel.None;
+                        };
+                    }
+                    break;
+                case RequirementType.Herapot:
+                    {
+                        _game.Items[ItemType.Hookshot].PropertyChanged += OnRequirementChanged;
+
+                        GetAccessibility = () =>
+                        {
+                            if (_game.Items.Has(ItemType.Hookshot))
+                                return AccessibilityLevel.SequenceBreak;
 
                             return AccessibilityLevel.None;
                         };
@@ -704,7 +765,7 @@ namespace OpenTracker.Models
                                 if (_game.Items.CanActivateTablets())
                                     return AccessibilityLevel.Normal;
 
-                                return AccessibilityLevel.SequenceBreak;
+                                return AccessibilityLevel.Inspect;
                             }
 
                             return AccessibilityLevel.None;

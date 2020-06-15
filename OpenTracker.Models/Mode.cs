@@ -10,15 +10,15 @@ namespace OpenTracker.Models
         public event PropertyChangedEventHandler PropertyChanged;
 
         public bool MapCompassShuffle =>
-            DungeonItemShuffle.Value >= Enums.DungeonItemShuffle.MapsCompasses;
+            DungeonItemShuffle >= DungeonItemShuffle.MapsCompasses;
         public bool SmallKeyShuffle =>
-            DungeonItemShuffle.Value >= Enums.DungeonItemShuffle.MapsCompassesSmallKeys ||
-            WorldState.Value == Enums.WorldState.Retro;
+            DungeonItemShuffle >= DungeonItemShuffle.MapsCompassesSmallKeys ||
+            WorldState == WorldState.Retro;
         public bool BigKeyShuffle =>
-            DungeonItemShuffle.Value >= Enums.DungeonItemShuffle.Keysanity;
+            DungeonItemShuffle >= DungeonItemShuffle.Keysanity;
 
-        private ItemPlacement? _itemPlacement;
-        public ItemPlacement? ItemPlacement
+        private ItemPlacement _itemPlacement;
+        public ItemPlacement ItemPlacement
         {
             get => _itemPlacement;
             set
@@ -32,8 +32,8 @@ namespace OpenTracker.Models
             }
         }
 
-        private DungeonItemShuffle? _dungeonItemShuffle;
-        public DungeonItemShuffle? DungeonItemShuffle
+        private DungeonItemShuffle _dungeonItemShuffle;
+        public DungeonItemShuffle DungeonItemShuffle
         {
             get => _dungeonItemShuffle;
             set
@@ -47,8 +47,8 @@ namespace OpenTracker.Models
             }
         }
 
-        private WorldState? _worldState;
-        public WorldState? WorldState
+        private WorldState _worldState;
+        public WorldState WorldState
         {
             get => _worldState;
             set
@@ -62,8 +62,8 @@ namespace OpenTracker.Models
             }
         }
 
-        private bool? _entranceShuffle;
-        public bool? EntranceShuffle
+        private bool _entranceShuffle;
+        public bool EntranceShuffle
         {
             get => _entranceShuffle;
             set
@@ -77,8 +77,8 @@ namespace OpenTracker.Models
             }
         }
 
-        private bool? _bossShuffle;
-        public bool? BossShuffle
+        private bool _bossShuffle;
+        public bool BossShuffle
         {
             get => _bossShuffle;
             set
@@ -92,8 +92,8 @@ namespace OpenTracker.Models
             }
         }
 
-        private bool? _enemyShuffle;
-        public bool? EnemyShuffle
+        private bool _enemyShuffle;
+        public bool EnemyShuffle
         {
             get => _enemyShuffle;
             set
@@ -107,8 +107,17 @@ namespace OpenTracker.Models
             }
         }
 
-        public Mode()
+        public Mode(ItemPlacement itemPlacement = ItemPlacement.Advanced,
+            DungeonItemShuffle dungeonItemShuffle = DungeonItemShuffle.Standard,
+            WorldState worldState = WorldState.StandardOpen, bool entranceShuffle = false,
+            bool bossShuffle = false, bool enemyShuffle = false)
         {
+            ItemPlacement = itemPlacement;
+            DungeonItemShuffle = dungeonItemShuffle;
+            WorldState = worldState;
+            EntranceShuffle = entranceShuffle;
+            BossShuffle = bossShuffle;
+            EnemyShuffle = enemyShuffle;
         }
 
         public Mode(Mode source)
@@ -139,64 +148,68 @@ namespace OpenTracker.Models
                 ItemPlacement = Enums.ItemPlacement.Advanced;
         }
 
-        public bool Validate(Mode gameMode)
+        public bool Validate(ModeRequirement modeRequirement)
         {
-            if (gameMode == null)
-                throw new ArgumentNullException(nameof(gameMode));
+            if (modeRequirement == null)
+                throw new ArgumentNullException(nameof(modeRequirement));
 
-            if (gameMode.ItemPlacement != null &&
-                ItemPlacement != null &&
-                ItemPlacement != gameMode.ItemPlacement)
+            if (modeRequirement.ItemPlacement.HasValue &&
+                ItemPlacement != modeRequirement.ItemPlacement)
                 return false;
 
-            if (gameMode.DungeonItemShuffle != null && DungeonItemShuffle != null)
+            if (modeRequirement.DungeonItemShuffle.HasValue)
             {
-                switch (gameMode.DungeonItemShuffle.Value)
+                switch (modeRequirement.DungeonItemShuffle.Value)
                 {
                     case Enums.DungeonItemShuffle.Standard:
                     case Enums.DungeonItemShuffle.MapsCompasses:
-                        if (DungeonItemShuffle.Value != Enums.DungeonItemShuffle.Standard &&
-                            DungeonItemShuffle.Value != Enums.DungeonItemShuffle.MapsCompasses)
-                            return false;
+                        {
+                            if (DungeonItemShuffle != Enums.DungeonItemShuffle.Standard &&
+                                DungeonItemShuffle != Enums.DungeonItemShuffle.MapsCompasses)
+                                return false;
+                        }
                         break;
                     case Enums.DungeonItemShuffle.MapsCompassesSmallKeys:
                     case Enums.DungeonItemShuffle.Keysanity:
-                        if (DungeonItemShuffle.Value < gameMode.DungeonItemShuffle.Value)
-                            return false;
+                        {
+                            if (DungeonItemShuffle < modeRequirement.DungeonItemShuffle.Value)
+                                return false;
+                        }
                         break;
                 }
             }
 
-            if (gameMode.WorldState != null && WorldState != null)
+            if (modeRequirement.WorldState.HasValue)
             {
-                switch (gameMode.WorldState.Value)
+                switch (modeRequirement.WorldState.Value)
                 {
                     case Enums.WorldState.StandardOpen:
-                        if (WorldState.Value != Enums.WorldState.StandardOpen &&
-                            WorldState.Value != Enums.WorldState.Retro)
-                            return false;
+                        {
+                            if (WorldState != Enums.WorldState.StandardOpen &&
+                                WorldState != Enums.WorldState.Retro)
+                                return false;
+                        }
                         break;
                     case Enums.WorldState.Inverted:
                     case Enums.WorldState.Retro:
-                        if (WorldState.Value != gameMode.WorldState.Value)
-                            return false;
+                        {
+                            if (WorldState != modeRequirement.WorldState.Value)
+                                return false;
+                        }
                         break;
                 }
             }
 
-            if (gameMode.EntranceShuffle != null &&
-                EntranceShuffle != null &&
-                EntranceShuffle != gameMode.EntranceShuffle)
+            if (modeRequirement.EntranceShuffle.HasValue &&
+                EntranceShuffle != modeRequirement.EntranceShuffle)
                 return false;
 
-            if (gameMode.BossShuffle != null &&
-                BossShuffle != null &&
-                BossShuffle != gameMode.BossShuffle)
+            if (modeRequirement.BossShuffle.HasValue &&
+                BossShuffle != modeRequirement.BossShuffle)
                 return false;
 
-            if (gameMode.EnemyShuffle != null &&
-                EnemyShuffle != null &&
-                EnemyShuffle != gameMode.EnemyShuffle)
+            if (modeRequirement.EnemyShuffle.HasValue &&
+                EnemyShuffle != modeRequirement.EnemyShuffle)
                 return false;
 
             return true;

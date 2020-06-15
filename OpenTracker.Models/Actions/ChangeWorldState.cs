@@ -17,7 +17,7 @@ namespace OpenTracker.Models.Actions
 
         public void Execute()
         {
-            _previousWorldState = _mode.WorldState.Value;
+            _previousWorldState = _mode.WorldState;
             _mode.WorldState = _worldState;
         }
 

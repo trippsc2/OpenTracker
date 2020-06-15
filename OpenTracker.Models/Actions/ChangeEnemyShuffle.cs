@@ -16,7 +16,7 @@ namespace OpenTracker.Models.Actions
 
         public void Execute()
         {
-            _previousEnemyShuffle = _mode.EnemyShuffle.Value;
+            _previousEnemyShuffle = _mode.EnemyShuffle;
             _mode.EnemyShuffle = _enemyShuffle;
         }
 

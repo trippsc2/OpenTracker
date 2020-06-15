@@ -28,7 +28,8 @@ namespace OpenTracker.Models.Sections
 
         public string Name => "Dungeon";
         public bool HasMarking { get; }
-        public Mode RequiredMode => new Mode();
+        public ModeRequirement ModeRequirement =>
+            new ModeRequirement();
         public bool UserManipulated { get; set; }
 
         public event PropertyChangingEventHandler PropertyChanging;
@@ -132,13 +133,13 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.HCSecretRoomLeft,
                             DungeonItemID.HCSecretRoomMiddle,
                             DungeonItemID.HCSecretRoomRight
-                        }, 1, new List<DungeonItemID>(), new Mode()));
+                        }, 1, new List<DungeonItemID>(), new ModeRequirement()));
 
                         CanComplete = () =>
                         {
                             if (_game.RequirementNodes[RequirementNodeID.HCFrontEntry].Accessibility == AccessibilityLevel.Normal &&
                                 _game.RequirementNodes[RequirementNodeID.HCSanctuaryEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.DarkRoomHyruleCastle].Accessibility == AccessibilityLevel.Normal)
+                                _game.Requirements[RequirementType.DarkRoomHC].Accessibility == AccessibilityLevel.Normal)
                             {
                                 if (_game.Mode.SmallKeyShuffle)
                                 {
@@ -161,12 +162,12 @@ namespace OpenTracker.Models.Sections
                         {
                             DungeonItemID.ATRoom03,
                             DungeonItemID.ATDarkMaze
-                        }, 2, new List<DungeonItemID>(), new Mode()));
+                        }, 2, new List<DungeonItemID>(), new ModeRequirement()));
 
                         CanComplete = () =>
                         {
                             return _game.RequirementNodes[RequirementNodeID.ATEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.DarkRoomAgahnimTower].Accessibility == AccessibilityLevel.Normal &&
+                                _game.Requirements[RequirementType.DarkRoomAT].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.Curtains].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.ATBoss].Accessibility == AccessibilityLevel.Normal &&
                                 (!_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.ATSmallKey, 2));
@@ -181,19 +182,19 @@ namespace OpenTracker.Models.Sections
                         BigKeyPlacements = new List<BigKeyPlacement>
                         {
                             new BigKeyPlacement(new List<DungeonItemID>
-                        {
-                            DungeonItemID.EPCannonballChest,
-                            DungeonItemID.EPMapChest,
-                            DungeonItemID.EPCompassChest,
-                            DungeonItemID.EPBigKeyChest,
-                        }, new Mode())
+                            {
+                                DungeonItemID.EPCannonballChest,
+                                DungeonItemID.EPMapChest,
+                                DungeonItemID.EPCompassChest,
+                                DungeonItemID.EPBigKeyChest,
+                            }, new ModeRequirement())
                         };
 
                         CanComplete = () =>
                         {
                             return _game.RequirementNodes[RequirementNodeID.EPEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.DarkRoomEasternPalaceRightWing].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.DarkRoomEasternPalaceBack].Accessibility == AccessibilityLevel.Normal &&
+                                _game.Requirements[RequirementType.DarkRoomEPRightWing].Accessibility == AccessibilityLevel.Normal &&
+                                _game.Requirements[RequirementType.DarkRoomEPBack].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.RedEyegoreGoriya].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.EPBoss].Accessibility == AccessibilityLevel.Normal &&
                                 (!_game.Mode.BigKeyShuffle || _game.Items.Has(ItemType.EPBigKey));
@@ -212,14 +213,14 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.DPMapChest,
                             DungeonItemID.DPTorch,
                             DungeonItemID.DPBigChest
-                        }, 1, new List<DungeonItemID>(), new Mode()));
+                        }, 1, new List<DungeonItemID>(), new ModeRequirement()));
                         BigKeyPlacements.Add(new BigKeyPlacement(new List<DungeonItemID>
                         {
                             DungeonItemID.DPMapChest,
                             DungeonItemID.DPTorch,
                             DungeonItemID.DPCompassChest,
                             DungeonItemID.DPBigKeyChest
-                        }, new Mode()));
+                        }, new ModeRequirement()));
                         HasMarking = true;
 
                         CanComplete = () =>
@@ -250,13 +251,13 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.ToHCompassChest,
                             DungeonItemID.ToHBigChest,
                             DungeonItemID.ToHBoss
-                        }, 1, new List<DungeonItemID>(), new Mode()));
+                        }, 1, new List<DungeonItemID>(), new ModeRequirement()));
                         BigKeyPlacements.Add(new BigKeyPlacement(new List<DungeonItemID>
                         {
                             DungeonItemID.ToHBasementCage,
                             DungeonItemID.ToHMapChest,
                             DungeonItemID.ToHBigKeyChest
-                        }, new Mode()));
+                        }, new ModeRequirement()));
 
                         CanComplete = () =>
                         {
@@ -283,7 +284,7 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.PoDBigKeyChest,
                             DungeonItemID.PoDStalfosBasement,
                             DungeonItemID.PoDArenaBridge
-                        }, 4, new List<DungeonItemID>(), new Mode()));
+                        }, 4, new List<DungeonItemID>(), new ModeRequirement()));
                         KeyLayouts.Add(new KeyLayout(new List<DungeonItemID>
                         {
                             DungeonItemID.PoDShooterRoom,
@@ -296,7 +297,7 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.PoDDarkBasementLeft,
                             DungeonItemID.PoDDarkBasementRight,
                             DungeonItemID.PoDHarmlessHellway
-                        }, 6, new List<DungeonItemID>(), new Mode()));
+                        }, 6, new List<DungeonItemID>(), new ModeRequirement()));
                         BigKeyPlacements.Add(new BigKeyPlacement(new List<DungeonItemID>
                         {
                             DungeonItemID.PoDShooterRoom,
@@ -311,7 +312,7 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.PoDHarmlessHellway,
                             DungeonItemID.PoDDarkMazeTop,
                             DungeonItemID.PoDDarkMazeBottom
-                        }, new Mode()));
+                        }, new ModeRequirement()));
 
                         CanComplete = () =>
                         {
@@ -319,9 +320,9 @@ namespace OpenTracker.Models.Sections
                                 _game.Requirements[RequirementType.RedEyegoreGoriya].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.Bow].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.Hammer].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.DarkRoomPalaceOfDarknessDarkBasement].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.DarkRoomPalaceOfDarknessDarkMaze].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.DarkRoomPalaceOfDarknessBossArea].Accessibility == AccessibilityLevel.Normal &&
+                                _game.Requirements[RequirementType.DarkRoomPoDDarkBasement].Accessibility == AccessibilityLevel.Normal &&
+                                _game.Requirements[RequirementType.DarkRoomPoDDarkMaze].Accessibility == AccessibilityLevel.Normal &&
+                                _game.Requirements[RequirementType.DarkRoomPoDBossArea].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.PoDBoss].Accessibility == AccessibilityLevel.Normal &&
                                 (!_game.Mode.BigKeyShuffle || _game.Items.Has(ItemType.PoDBigKey)) &&
                                 (!_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.PoDSmallKey, 5));
@@ -338,7 +339,7 @@ namespace OpenTracker.Models.Sections
                         KeyLayouts.Add(new KeyLayout(new List<DungeonItemID>
                         {
                             DungeonItemID.SPEntrance
-                        }, 1, new List<DungeonItemID>(), new Mode()));
+                        }, 1, new List<DungeonItemID>(), new ModeRequirement()));
                         BigKeyPlacements.Add(new BigKeyPlacement(new List<DungeonItemID>
                         {
                             DungeonItemID.SPEntrance,
@@ -351,7 +352,7 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.SPFloodedRoomRight,
                             DungeonItemID.SPWaterfallRoom,
                             DungeonItemID.SPBoss
-                        }, new Mode()));
+                        }, new ModeRequirement()));
 
                         CanComplete = () =>
                         {
@@ -375,10 +376,8 @@ namespace OpenTracker.Models.Sections
                         KeyLayouts.Add(new KeyLayout(new List<DungeonItemID>
                         {
                             DungeonItemID.SWPinballRoom
-                        }, 1, new List<DungeonItemID>(), new Mode()
-                        {
-                            ItemPlacement = ItemPlacement.Basic
-                        }));
+                        }, 1, new List<DungeonItemID>(),
+                            new ModeRequirement(itemPlacement: ItemPlacement.Basic)));
                         KeyLayouts.Add(new KeyLayout(new List<DungeonItemID>
                         {
                             DungeonItemID.SWBigKeyChest,
@@ -388,7 +387,7 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.SWCompassChest,
                             DungeonItemID.SWPinballRoom,
                             DungeonItemID.SWBridgeRoom
-                        }, 3, new List<DungeonItemID>(), new Mode()));
+                        }, 3, new List<DungeonItemID>(), new ModeRequirement()));
                         BigKeyPlacements.Add(new BigKeyPlacement(new List<DungeonItemID>
                         {
                             DungeonItemID.SWBigKeyChest,
@@ -397,7 +396,7 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.SWCompassChest,
                             DungeonItemID.SWPinballRoom,
                             DungeonItemID.SWBridgeRoom,
-                        }, new Mode()));
+                        }, new ModeRequirement()));
 
                         CanComplete = () =>
                         {
@@ -431,14 +430,14 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.TTBlindsCell,
                             DungeonItemID.TTBigChest,
                             DungeonItemID.TTBoss
-                        }, 1, new List<DungeonItemID>(), new Mode()));
+                        }, 1, new List<DungeonItemID>(), new ModeRequirement()));
                         BigKeyPlacements.Add(new BigKeyPlacement(new List<DungeonItemID>
                         {
                             DungeonItemID.TTMapChest,
                             DungeonItemID.TTAmbushChest,
                             DungeonItemID.TTCompassChest,
                             DungeonItemID.TTBigKeyChest
-                        }, new Mode()));
+                        }, new ModeRequirement()));
 
                         CanComplete = () =>
                         {
@@ -466,10 +465,8 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.IPFreezorChest,
                             DungeonItemID.IPBigChest,
                             DungeonItemID.IPIcedTRoom
-                        }, 1, new List<DungeonItemID>(), new Mode()
-                        {
-                            ItemPlacement = ItemPlacement.Advanced
-                        }));
+                        }, 1, new List<DungeonItemID>(),
+                            new ModeRequirement(itemPlacement: ItemPlacement.Advanced)));
                         KeyLayouts.Add(new KeyLayout(new List<DungeonItemID>
                         {
                             DungeonItemID.IPCompassChest,
@@ -480,10 +477,8 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.IPBigChest,
                             DungeonItemID.IPIcedTRoom,
                             DungeonItemID.IPBoss
-                        }, 2, new List<DungeonItemID>(), new Mode()
-                        {
-                            ItemPlacement = ItemPlacement.Advanced
-                        }));
+                        }, 2, new List<DungeonItemID>(),
+                            new ModeRequirement(itemPlacement: ItemPlacement.Advanced)));
                         KeyLayouts.Add(new KeyLayout(new List<DungeonItemID>
                         {
                             DungeonItemID.IPCompassChest,
@@ -493,10 +488,8 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.IPFreezorChest,
                             DungeonItemID.IPBigChest,
                             DungeonItemID.IPIcedTRoom
-                        }, 2, new List<DungeonItemID>(), new Mode()
-                        {
-                            ItemPlacement = ItemPlacement.Basic
-                        }));
+                        }, 2, new List<DungeonItemID>(),
+                            new ModeRequirement(itemPlacement: ItemPlacement.Basic)));
                         BigKeyPlacements.Add(new BigKeyPlacement(new List<DungeonItemID>
                         {
                             DungeonItemID.IPCompassChest,
@@ -505,7 +498,7 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.IPBigKeyChest,
                             DungeonItemID.IPFreezorChest,
                             DungeonItemID.IPIcedTRoom,
-                        }, new Mode()));
+                        }, new ModeRequirement()));
 
                         CanComplete = () =>
                         {
@@ -550,7 +543,8 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.MMBigChest,
                             DungeonItemID.MMMapChest,
                             DungeonItemID.MMBoss
-                        }, 3, new List<DungeonItemID>(), new Mode() { DungeonItemShuffle = DungeonItemShuffle.Keysanity }));
+                        }, 3, new List<DungeonItemID>(),
+                            new ModeRequirement(dungeonItemShuffle: DungeonItemShuffle.Keysanity)));
                         KeyLayouts.Add(new KeyLayout(new List<DungeonItemID>
                         {
                             DungeonItemID.MMBridgeChest,
@@ -565,7 +559,8 @@ namespace OpenTracker.Models.Sections
                                 DungeonItemID.MMSpikeChest,
                                 DungeonItemID.MMMainLobby,
                                 DungeonItemID.MMMapChest,
-                        }, new Mode()));
+                        },
+                            new ModeRequirement()));
                         KeyLayouts.Add(new KeyLayout(new List<DungeonItemID>
                         {
                             DungeonItemID.MMBridgeChest,
@@ -580,7 +575,8 @@ namespace OpenTracker.Models.Sections
                         {
                             DungeonItemID.MMCompassChest,
                             DungeonItemID.MMBigKeyChest
-                        }, new Mode()));
+                        },
+                            new ModeRequirement()));
                         BigKeyPlacements.Add(new BigKeyPlacement(new List<DungeonItemID>
                             {
                                 DungeonItemID.MMBridgeChest,
@@ -589,7 +585,8 @@ namespace OpenTracker.Models.Sections
                                 DungeonItemID.MMCompassChest,
                                 DungeonItemID.MMBigKeyChest,
                                 DungeonItemID.MMMapChest,
-                            }, new Mode()));
+                            },
+                            new ModeRequirement()));
 
                         CanComplete = () =>
                         {
@@ -598,7 +595,7 @@ namespace OpenTracker.Models.Sections
                                 _game.Requirements[RequirementType.Hookshot].Accessibility == AccessibilityLevel.Normal) &&
                                 _game.Requirements[RequirementType.FireSource].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.CaneOfSomaria].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.DarkRoomMiseryMire].Accessibility == AccessibilityLevel.Normal &&
+                                _game.Requirements[RequirementType.DarkRoomMM].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.MMBoss].Accessibility == AccessibilityLevel.Normal &&
                                 (!_game.Mode.BigKeyShuffle || _game.Items.Has(ItemType.MMBigKey));
                         };
@@ -616,22 +613,16 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.TRCompassChest,
                             DungeonItemID.TRRollerRoomLeft,
                             DungeonItemID.TRRollerRoomRight
-                        }, 1, new List<DungeonItemID>(), new Mode()
-                        {
-                            WorldState = WorldState.StandardOpen,
-                            EntranceShuffle = false
-                        }));
+                        }, 1, new List<DungeonItemID>(),
+                            new ModeRequirement(worldState: WorldState.StandardOpen, entranceShuffle: false)));
                         KeyLayouts.Add(new KeyLayout(new List<DungeonItemID>
                         {
                             DungeonItemID.TRCompassChest,
                             DungeonItemID.TRRollerRoomLeft,
                             DungeonItemID.TRRollerRoomRight,
                             DungeonItemID.TRChainChomps
-                        }, 2, new List<DungeonItemID>(), new Mode()
-                        {
-                            WorldState = WorldState.StandardOpen,
-                            EntranceShuffle = false
-                        }));
+                        }, 2, new List<DungeonItemID>(),
+                            new ModeRequirement(worldState: WorldState.StandardOpen, entranceShuffle: false)));
                         KeyLayouts.Add(new KeyLayout(new List<DungeonItemID>
                         {
                             DungeonItemID.TRCompassChest,
@@ -641,11 +632,8 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.TRBigKeyChest,
                             DungeonItemID.TRBigChest,
                             DungeonItemID.TRCrystarollerRoom
-                        }, 3, new List<DungeonItemID>(), new Mode()
-                        {
-                            WorldState = WorldState.StandardOpen,
-                            EntranceShuffle = false
-                        }));
+                        }, 3, new List<DungeonItemID>(),
+                            new ModeRequirement(worldState: WorldState.StandardOpen, entranceShuffle: false)));
                         KeyLayouts.Add(new KeyLayout(new List<DungeonItemID>
                         {
                             DungeonItemID.TRCompassChest,
@@ -659,7 +647,8 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.TRLaserBridgeTopRight,
                             DungeonItemID.TRLaserBridgeBottomLeft,
                             DungeonItemID.TRLaserBrdigeBottomRight
-                        }, 4, new List<DungeonItemID>(), new Mode()));
+                        }, 4, new List<DungeonItemID>(),
+                            new ModeRequirement()));
                         BigKeyPlacements.Add(new BigKeyPlacement(new List<DungeonItemID>
                             {
                                 DungeonItemID.TRCompassChest,
@@ -672,11 +661,8 @@ namespace OpenTracker.Models.Sections
                                 DungeonItemID.TRLaserBridgeTopRight,
                                 DungeonItemID.TRLaserBridgeBottomLeft,
                                 DungeonItemID.TRLaserBrdigeBottomRight
-                            }, new Mode()
-                            {
-                                WorldState = WorldState.StandardOpen,
-                                EntranceShuffle = false
-                            }));
+                            },
+                            new ModeRequirement(worldState: WorldState.StandardOpen, entranceShuffle: false)));
                         BigKeyPlacements.Add(new BigKeyPlacement(new List<DungeonItemID>
                             {
                                 DungeonItemID.TRCompassChest,
@@ -689,11 +675,8 @@ namespace OpenTracker.Models.Sections
                                 DungeonItemID.TRLaserBridgeTopRight,
                                 DungeonItemID.TRLaserBridgeBottomLeft,
                                 DungeonItemID.TRLaserBrdigeBottomRight
-                            }, new Mode()
-                            {
-                                WorldState = WorldState.StandardOpen,
-                                EntranceShuffle = true
-                            }));
+                            },
+                            new ModeRequirement(worldState: WorldState.StandardOpen, entranceShuffle: true)));
                         BigKeyPlacements.Add(new BigKeyPlacement(new List<DungeonItemID>
                             {
                                 DungeonItemID.TRCompassChest,
@@ -706,10 +689,8 @@ namespace OpenTracker.Models.Sections
                                 DungeonItemID.TRLaserBridgeTopRight,
                                 DungeonItemID.TRLaserBridgeBottomLeft,
                                 DungeonItemID.TRLaserBrdigeBottomRight
-                            }, new Mode()
-                            {
-                                WorldState = WorldState.Inverted
-                            }));
+                            },
+                            new ModeRequirement(worldState: WorldState.Inverted)));
 
                         CanComplete = () =>
                         {
@@ -728,7 +709,7 @@ namespace OpenTracker.Models.Sections
                                         return !_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.TRSmallKey, 2);
                                     }
 
-                                    return _game.Requirements[RequirementType.DarkRoomTurtleRock].Accessibility == AccessibilityLevel.Normal &&
+                                    return _game.Requirements[RequirementType.DarkRoomTR].Accessibility == AccessibilityLevel.Normal &&
                                         (!_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.TRSmallKey, 2));
                                 }
 
@@ -741,7 +722,7 @@ namespace OpenTracker.Models.Sections
                                 }
 
                                 if (_game.RequirementNodes[RequirementNodeID.TRFrontEntry].Accessibility == AccessibilityLevel.Normal)
-                                    return _game.Requirements[RequirementType.DarkRoomTurtleRock].Accessibility == AccessibilityLevel.Normal &&
+                                    return _game.Requirements[RequirementType.DarkRoomTR].Accessibility == AccessibilityLevel.Normal &&
                                         (!_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.TRSmallKey, 4));
                             }
 
@@ -766,7 +747,7 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.GTDMsRoomBottomLeft,
                             DungeonItemID.GTDMsRoomBottomRight,
                             DungeonItemID.GTTileRoom
-                        }, 2, new List<DungeonItemID>(), new Mode()));
+                        }, 2, new List<DungeonItemID>(), new ModeRequirement()));
                         KeyLayouts.Add(new KeyLayout(new List<DungeonItemID>
                         {
                             DungeonItemID.GTHopeRoomLeft,
@@ -778,7 +759,7 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.GTDMsRoomBottomRight,
                             DungeonItemID.GTFiresnakeRoom,
                             DungeonItemID.GTTileRoom
-                        }, 3, new List<DungeonItemID>(), new Mode()));
+                        }, 3, new List<DungeonItemID>(), new ModeRequirement()));
                         KeyLayouts.Add(new KeyLayout(new List<DungeonItemID>
                         {
                             DungeonItemID.GTHopeRoomLeft,
@@ -809,7 +790,7 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.GTRandomizerRoomTopRight,
                             DungeonItemID.GTRandomizerRoomBottomLeft,
                             DungeonItemID.GTRandomizerRoomBottomRight
-                        }, new Mode()));
+                        }, new ModeRequirement()));
                         KeyLayouts.Add(new KeyLayout(new List<DungeonItemID>
                         {
                             DungeonItemID.GTHopeRoomLeft,
@@ -840,7 +821,7 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.GTCompassRoomTopRight,
                             DungeonItemID.GTCompassRoomBottomLeft,
                             DungeonItemID.GTCompassRoomBottomRight
-                        }, new Mode()));
+                        }, new ModeRequirement()));
                         KeyLayouts.Add(new KeyLayout(new List<DungeonItemID>
                         {
                             DungeonItemID.GTHopeRoomLeft,
@@ -861,7 +842,7 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.GTMiniHelmasaurRoomLeft,
                             DungeonItemID.GTMiniHelmasaurRoomRight,
                             DungeonItemID.GTPreMoldormChest
-                        }, 4, new List<DungeonItemID>(), new Mode()));
+                        }, 4, new List<DungeonItemID>(), new ModeRequirement()));
                         BigKeyPlacements.Add(new BigKeyPlacement(new List<DungeonItemID>
                             {
                                 DungeonItemID.GTHopeRoomLeft,
@@ -886,7 +867,7 @@ namespace OpenTracker.Models.Sections
                                 DungeonItemID.GTBigKeyRoomTopLeft,
                                 DungeonItemID.GTBigKeyRoomTopRight,
                                 DungeonItemID.GTBigKeyChest
-                            }, new Mode()));
+                            }, new ModeRequirement()));
                         HasMarking = true;
 
                         CanComplete = () =>

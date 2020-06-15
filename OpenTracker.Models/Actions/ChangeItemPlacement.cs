@@ -17,7 +17,7 @@ namespace OpenTracker.Models.Actions
 
         public void Execute()
         {
-            _previousItemPlacement = _mode.ItemPlacement.Value;
+            _previousItemPlacement = _mode.ItemPlacement;
             _mode.ItemPlacement = _itemPlacement;
         }
 

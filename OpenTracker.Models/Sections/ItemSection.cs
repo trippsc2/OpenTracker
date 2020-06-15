@@ -14,7 +14,7 @@ namespace OpenTracker.Models.Sections
 
         public string Name { get; }
         public bool HasMarking { get; }
-        public Mode RequiredMode { get; }
+        public ModeRequirement ModeRequirement { get; }
         public Action AutoTrack { get; }
         public bool UserManipulated { get; set; }
 
@@ -95,7 +95,7 @@ namespace OpenTracker.Models.Sections
                         HasMarking = true;
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.Pedestal, new Mode()));
+                            RequirementType.Pedestal, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -115,9 +115,9 @@ namespace OpenTracker.Models.Sections
                         HasMarking = true;
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LumberjackCaveEntrance,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.None, new Mode(), AccessibilityLevel.Inspect));
+                            RequirementType.Inspect, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -136,9 +136,9 @@ namespace OpenTracker.Models.Sections
                         Name = "Main";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.LWNotBunny, new Mode()));
+                            RequirementType.LWNotBunny, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.SuperBunnyMirror, new Mode()));
+                            RequirementType.SuperBunnyMirror, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -166,7 +166,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Bomb";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.LWNotBunny, new Mode()));
+                            RequirementType.LWNotBunny, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -185,9 +185,9 @@ namespace OpenTracker.Models.Sections
                         Name = "Cave";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.LWNotBunny, new Mode()));
+                            RequirementType.LWNotBunny, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.SuperBunnyFallInHole, new Mode()));
+                            RequirementType.SuperBunnyFallInHole, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -215,7 +215,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Bomb";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.LWNotBunny, new Mode()));
+                            RequirementType.LWNotBunny, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -234,7 +234,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Man";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -253,7 +253,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Bombable Wall";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.LWNotBunny, new Mode()));
+                            RequirementType.LWNotBunny, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -272,9 +272,9 @@ namespace OpenTracker.Models.Sections
                         Name = "Back Room";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.LWNotBunny, new Mode()));
+                            RequirementType.LWNotBunny, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.SuperBunnyMirror, new Mode()));
+                            RequirementType.SuperBunnyMirror, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -293,7 +293,7 @@ namespace OpenTracker.Models.Sections
                         Name = "By The Bed";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.Bottle, new Mode()));
+                            RequirementType.Bottle, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -312,7 +312,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Magic Bowl";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.MagicBatLedge,
-                            RequirementType.LWPowder, new Mode()));
+                            RequirementType.LWPowder, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -332,9 +332,9 @@ namespace OpenTracker.Models.Sections
                         HasMarking = true;
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.RaceGameLedge,
-                            RequirementType.LWNotBunny, new Mode()));
+                            RequirementType.LWNotBunny, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.None, new Mode(), AccessibilityLevel.Inspect));
+                            RequirementType.Inspect, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -354,9 +354,9 @@ namespace OpenTracker.Models.Sections
                         HasMarking = true;
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.LWDash, new Mode()));
+                            RequirementType.LWDash, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.None, new Mode(), AccessibilityLevel.Inspect));
+                            RequirementType.Inspect, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -376,7 +376,7 @@ namespace OpenTracker.Models.Sections
                         HasMarking = true;
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.LWNotBunny, new Mode()));
+                            RequirementType.LWNotBunny, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -396,9 +396,9 @@ namespace OpenTracker.Models.Sections
                         HasMarking = true;
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.ForestHideout,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.None, new Mode(), AccessibilityLevel.Inspect));
+                            RequirementType.Inspect, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -417,9 +417,9 @@ namespace OpenTracker.Models.Sections
                         Name = "Uncle";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.CastleSecretFront,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.CastleSecretBack,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -438,9 +438,9 @@ namespace OpenTracker.Models.Sections
                         Name = "Hallway";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.CastleSecretFront,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.CastleSecretBack,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -459,7 +459,7 @@ namespace OpenTracker.Models.Sections
                         Name = "By The Door";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -485,7 +485,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Hidden Treasure";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.LWShovel, new Mode()));
+                            RequirementType.LWShovel, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -504,7 +504,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Ledge";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldEast,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -523,7 +523,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Big Bomb Spot";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.FatFairy,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -548,7 +548,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Stumpy";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldSouth,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -567,7 +567,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Cave";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldSouth,
-                            RequirementType.DWNotBunny, new Mode()));
+                            RequirementType.DWNotBunny, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -597,7 +597,7 @@ namespace OpenTracker.Models.Sections
                         HasMarking = true;
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.BombosTabletLedge,
-                            RequirementType.Tablet, new Mode()));
+                            RequirementType.Tablet, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -616,7 +616,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Circle of Bushes";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.SouthOfGroveLedge,
-                            RequirementType.LWNotBunny, new Mode()));
+                            RequirementType.LWNotBunny, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -635,7 +635,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Dig For Treasure";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldSouth,
-                            RequirementType.DWNotBunny, new Mode()));
+                            RequirementType.DWNotBunny, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -654,7 +654,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Assistant";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LWWitchArea,
-                            RequirementType.Mushroom, new Mode()));
+                            RequirementType.Mushroom, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -673,7 +673,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Waterfall Cave";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.WaterfallFairy,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -699,15 +699,15 @@ namespace OpenTracker.Models.Sections
                         HasMarking = true;
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
-                            RequirementType.LWSwim, new Mode()));
+                            RequirementType.LWSwim, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
-                            RequirementType.LWFakeFlippersFairyRevival, new Mode()));
+                            RequirementType.LWFakeFlippersFairyRevival, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
-                            RequirementType.LWFakeFlippersSplashDeletion, new Mode()));
+                            RequirementType.LWFakeFlippersSplashDeletion, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
-                            RequirementType.LWWaterWalk, new Mode()));
+                            RequirementType.LWWaterWalk, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
-                            RequirementType.None, new Mode(), AccessibilityLevel.Inspect));
+                            RequirementType.Inspect, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -726,7 +726,7 @@ namespace OpenTracker.Models.Sections
                         Name = "King Zora";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -745,7 +745,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Ring of Stones";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.Catfish,
-                            RequirementType.DWNotBunny, new Mode()));
+                            RequirementType.DWNotBunny, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -764,7 +764,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Back Room";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.LWNotBunny, new Mode()));
+                            RequirementType.LWNotBunny, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -790,7 +790,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Saha";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.GreenPendant, new Mode()));
+                            RequirementType.GreenPendant, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -809,7 +809,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Cave";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.NorthBonkRocks,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -828,7 +828,7 @@ namespace OpenTracker.Models.Sections
                         Name = "The Crypt";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.KingsTombGrave,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -847,7 +847,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Cave";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LWGraveyardLedge,
-                            RequirementType.LWNotBunny, new Mode()));
+                            RequirementType.LWNotBunny, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -867,9 +867,9 @@ namespace OpenTracker.Models.Sections
                         HasMarking = true;
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DesertLedge,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.None, new Mode(), AccessibilityLevel.Inspect));
+                            RequirementType.Inspect, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -888,7 +888,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Cave";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.LWNotBunny, new Mode()));
+                            RequirementType.LWNotBunny, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -907,9 +907,9 @@ namespace OpenTracker.Models.Sections
                         Name = "House";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
-                            RequirementType.DWNotBunny, new Mode()));
+                            RequirementType.DWNotBunny, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
-                            RequirementType.SuperBunnyMirror, new Mode()));
+                            RequirementType.SuperBunnyMirror, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -928,9 +928,9 @@ namespace OpenTracker.Models.Sections
                         Name = "Prize";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
-                            RequirementType.DWNotBunny, new Mode()));
+                            RequirementType.DWNotBunny, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
-                            RequirementType.SuperBunnyMirror, new Mode()));
+                            RequirementType.SuperBunnyMirror, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -949,7 +949,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Downstairs";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.BombableShack,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -968,7 +968,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Bring Frog Home";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.BlacksmithPrison,
-                            RequirementType.LightWorld, new Mode()));
+                            RequirementType.LightWorld, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -987,7 +987,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Gary";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.HammerPegsArea,
-                            RequirementType.LightWorld, new Mode()));
+                            RequirementType.LightWorld, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1006,7 +1006,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Cave";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.HammerPegs,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1026,9 +1026,9 @@ namespace OpenTracker.Models.Sections
                         HasMarking = true;
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.BumperCaveTop,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
-                            RequirementType.None, new Mode(), AccessibilityLevel.Inspect));
+                            RequirementType.Inspect, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1045,12 +1045,12 @@ namespace OpenTracker.Models.Sections
                     {
                         Total = 1;
                         Name = "Inside";
-                        RequiredMode = new Mode() { EntranceShuffle = false };
+                        ModeRequirement = new ModeRequirement(entranceShuffle: false);
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.LWNotBunny, new Mode()));
+                            RequirementType.LWNotBunny, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.SuperBunnyMirror, new Mode()));
+                            RequirementType.SuperBunnyMirror, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1069,7 +1069,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Outside";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1088,7 +1088,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Cave";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.MiniMoldormCave,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1117,7 +1117,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Cave";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.IceRodCave,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1137,9 +1137,9 @@ namespace OpenTracker.Models.Sections
                         HasMarking = true;
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LakeHyliaIsland,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.None, new Mode(), AccessibilityLevel.Inspect));
+                            RequirementType.Inspect, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1158,7 +1158,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Under The Bridge";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LWLakeHylia,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1177,9 +1177,9 @@ namespace OpenTracker.Models.Sections
                         Name = "Shack";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.MireArea,
-                            RequirementType.DWNotBunny, new Mode()));
+                            RequirementType.DWNotBunny, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.MireArea,
-                            RequirementType.SuperBunnyMirror, new Mode()));
+                            RequirementType.SuperBunnyMirror, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1204,7 +1204,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Cave";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.CheckerboardCave,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1223,7 +1223,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Old Man";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestBottom,
-                            RequirementType.DarkRoomDeathMountainEntry, new Mode()));
+                            RequirementType.DarkRoomDeathMountainEntry, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1243,9 +1243,9 @@ namespace OpenTracker.Models.Sections
                         HasMarking = true;
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.SpectacleRockTop,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestBottom,
-                            RequirementType.None, new Mode(), AccessibilityLevel.Inspect));
+                            RequirementType.Inspect, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1263,10 +1263,10 @@ namespace OpenTracker.Models.Sections
                         Total = 1;
                         Name = "Cave";
 
-                        RequiredMode = new Mode() { EntranceShuffle = false };
+                        ModeRequirement = new ModeRequirement(entranceShuffle: false);
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestBottom,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1286,7 +1286,7 @@ namespace OpenTracker.Models.Sections
                         HasMarking = true;
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestTop,
-                            RequirementType.Tablet, new Mode()));
+                            RequirementType.Tablet, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1305,7 +1305,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Cave";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainWestBottom,
-                            RequirementType.DWSpikeCave, new Mode()));
+                            RequirementType.DWSpikeCave, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1324,9 +1324,9 @@ namespace OpenTracker.Models.Sections
                         Name = "Cave";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop,
-                            RequirementType.LWNotBunny, new Mode()));
+                            RequirementType.LWNotBunny, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop,
-                            RequirementType.SuperBunnyFallInHole, new Mode()));
+                            RequirementType.SuperBunnyFallInHole, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1345,9 +1345,9 @@ namespace OpenTracker.Models.Sections
                         Name = "Bottom";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop,
-                            RequirementType.LWNotBunny, new Mode()));
+                            RequirementType.LWNotBunny, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastBottom,
-                            RequirementType.LWNotBunny, new Mode()));
+                            RequirementType.LWNotBunny, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1372,13 +1372,13 @@ namespace OpenTracker.Models.Sections
                         Name = "Top";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop,
-                            RequirementType.LWNotBunny, new Mode()));
+                            RequirementType.LWNotBunny, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastBottom,
-                            RequirementType.LWNotBunny, new Mode()));
+                            RequirementType.LWNotBunny, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop,
-                            RequirementType.SuperBunnyFallInHole, new Mode()));
+                            RequirementType.SuperBunnyFallInHole, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastBottom,
-                            RequirementType.SuperBunnyFallInHole, new Mode()));
+                            RequirementType.SuperBunnyFallInHole, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1407,13 +1407,13 @@ namespace OpenTracker.Models.Sections
                         Name = "Cave";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainTop,
-                            RequirementType.DWNotBunny, new Mode()));
+                            RequirementType.DWNotBunny, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainEastBottom,
-                            RequirementType.DWNotBunny, new Mode()));
+                            RequirementType.DWNotBunny, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainTop,
-                            RequirementType.SuperBunnyMirror, new Mode()));
+                            RequirementType.SuperBunnyMirror, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainEastBottom,
-                            RequirementType.SuperBunnyFallInHole, new Mode()));
+                            RequirementType.SuperBunnyFallInHole, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1438,9 +1438,9 @@ namespace OpenTracker.Models.Sections
                         Name = "Bonkable Chest";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.HookshotCave,
-                            RequirementType.DWHookshot, new Mode()));
+                            RequirementType.DWHookshot, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.HookshotCave,
-                            RequirementType.DWDash, new Mode()));
+                            RequirementType.DWDash, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1459,9 +1459,9 @@ namespace OpenTracker.Models.Sections
                         Name = "Back";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.HookshotCave,
-                            RequirementType.DWHookshot, new Mode()));
+                            RequirementType.DWHookshot, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.HookshotCave,
-                            RequirementType.DWHover, new Mode()));
+                            RequirementType.DWHover, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1488,7 +1488,9 @@ namespace OpenTracker.Models.Sections
                         HasMarking = true;
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LWFloatingIsland,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
+                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop,
+                            RequirementType.Inspect, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1507,7 +1509,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Cave";
 
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.MimicCave,
-                            RequirementType.LWHammer, new Mode()));
+                            RequirementType.LWHammer, new ModeRequirement()));
 
                         AutoTrack = () =>
                         {
@@ -1542,8 +1544,8 @@ namespace OpenTracker.Models.Sections
                 }
             }
 
-            if (RequiredMode == null)
-                RequiredMode = new Mode();
+            if (ModeRequirement == null)
+                ModeRequirement = new ModeRequirement();
 
             UpdateAccessibility();
         }

@@ -316,7 +316,7 @@ namespace OpenTracker.Models
 
             foreach (KeyLayout keyLayout in _dungeonItemSection.KeyLayouts)
             {
-                if (!_game.Mode.Validate(keyLayout.RequiredMode))
+                if (!_game.Mode.Validate(keyLayout.ModeRequirement))
                     continue;
 
                 if (_dungeonItemSection.BigKey > 0)
@@ -388,7 +388,7 @@ namespace OpenTracker.Models
 
             foreach (BigKeyPlacement placement in _dungeonItemSection.BigKeyPlacements)
             {
-                if (!_game.Mode.Validate(placement.RequiredMode))
+                if (!_game.Mode.Validate(placement.ModeRequirement))
                     continue;
 
                 if (bigKeyCollected)

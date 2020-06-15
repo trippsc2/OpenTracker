@@ -16,7 +16,7 @@ namespace OpenTracker.ViewModels
         private readonly BossSection _bossSection;
 
         public bool BossShuffle =>
-            _game.Mode.BossShuffle.Value;
+            _game.Mode.BossShuffle;
 
         public string ImageSource
         {

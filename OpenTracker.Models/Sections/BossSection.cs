@@ -12,7 +12,7 @@ namespace OpenTracker.Models.Sections
         public string Name { get; } = "Boss";
         public bool HasMarking { get => false; }
         public bool PrizeVisible { get; } = true;
-        public Mode RequiredMode { get; }
+        public ModeRequirement ModeRequirement { get; }
         public bool UserManipulated { get; set; }
         public MarkingType? Marking { get => null; set { } }
         public BossPlacement BossPlacement { get; }
@@ -69,7 +69,7 @@ namespace OpenTracker.Models.Sections
         {
             _game = game ?? throw new ArgumentNullException(nameof(game));
 
-            RequiredMode = new Mode();
+            ModeRequirement = new ModeRequirement();
             Available = 1;
 
             switch (iD)

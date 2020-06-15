@@ -26,7 +26,7 @@ namespace OpenTracker.ViewModels
         }
 
         public bool Visible =>
-            _game.Mode.EntranceShuffle.Value;
+            _game.Mode.EntranceShuffle;
 
         public (MapLocation, MapLocation) Connection { get; }
 

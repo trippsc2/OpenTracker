@@ -154,7 +154,7 @@ namespace OpenTracker.Models
 
         private void UpdateBossSubscription()
         {
-            if (_game.Mode.BossShuffle.Value)
+            if (_game.Mode.BossShuffle)
             {
                 if (Boss != _currentBossSubscription)
                 {
@@ -192,7 +192,7 @@ namespace OpenTracker.Models
 
         private void UpdateAccessibility()
         {
-            if (_game.Mode.BossShuffle.Value)
+            if (_game.Mode.BossShuffle)
             {
                 if (Boss == null)
                     Accessibility = _game.Bosses.UnknownBossAccessibility;

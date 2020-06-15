@@ -16,7 +16,7 @@ namespace OpenTracker.Models.Actions
 
         public void Execute()
         {
-            _previousBossShuffle = _mode.BossShuffle.Value;
+            _previousBossShuffle = _mode.BossShuffle;
             _mode.BossShuffle = _bossShuffle;
         }
 

@@ -6,12 +6,12 @@ namespace OpenTracker.Models
     public class BigKeyPlacement
     {
         public List<DungeonItemID> Placements { get; }
-        public Mode RequiredMode { get; }
+        public ModeRequirement ModeRequirement { get; }
 
-        public BigKeyPlacement(List<DungeonItemID> placements, Mode requiredMode)
+        public BigKeyPlacement(List<DungeonItemID> placements, ModeRequirement modeRequirement)
         {
             Placements = placements;
-            RequiredMode = requiredMode;
+            ModeRequirement = modeRequirement;
         }
     }
 }

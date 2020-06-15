@@ -76,11 +76,11 @@ namespace OpenTracker.ViewModels
 
                 if (_section is BossSection bossSection)
                 {
-                    if (!bossSection.PrizeVisible && !_game.Mode.BossShuffle.Value)
+                    if (!bossSection.PrizeVisible && !_game.Mode.BossShuffle)
                         return false;
                 }
 
-                return _game.Mode.Validate(_section.RequiredMode);
+                return _game.Mode.Validate(_section.ModeRequirement);
             }
         }
 
@@ -274,8 +274,9 @@ namespace OpenTracker.ViewModels
         {
             get
             {
-                if (_game.Mode.BossShuffle.Value && _section is BossSection bossSection &&
-                    (bossSection.BossPlacement.Boss == null || bossSection.BossPlacement.Boss.Type != BossType.Aga))
+                if (_game.Mode.BossShuffle && _section is BossSection bossSection &&
+                    (bossSection.BossPlacement.Boss == null ||
+                    bossSection.BossPlacement.Boss.Type != BossType.Aga))
                     return true;
                 else
                     return false;

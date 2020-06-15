@@ -8,15 +8,16 @@ namespace OpenTracker.Models
         public List<DungeonItemID> BigKeyLocations { get; }
         public List<DungeonItemID> SmallKeyLocations { get; }
         public int SmallKeyCount { get; }
-        public Mode RequiredMode { get; }
+        public ModeRequirement ModeRequirement { get; }
 
         public KeyLayout(List<DungeonItemID> smallKeyLocations,
-            int smallKeyCount, List<DungeonItemID> bigKeyLocations, Mode requiredMode)
+            int smallKeyCount, List<DungeonItemID> bigKeyLocations,
+            ModeRequirement modeRequirement)
         {
             BigKeyLocations = bigKeyLocations;
             SmallKeyLocations = smallKeyLocations;
             SmallKeyCount = smallKeyCount;
-            RequiredMode = requiredMode;
+            ModeRequirement = modeRequirement;
         }
     }
 }

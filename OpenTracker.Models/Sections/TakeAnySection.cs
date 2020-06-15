@@ -13,7 +13,7 @@ namespace OpenTracker.Models.Sections
 
         public bool HasMarking => false;
         public string Name => "Take Any";
-        public Mode RequiredMode { get; }
+        public ModeRequirement ModeRequirement { get; }
         public bool UserManipulated { get; set; }
 
         public event PropertyChangingEventHandler PropertyChanging;
@@ -66,7 +66,7 @@ namespace OpenTracker.Models.Sections
         {
             _game = game ?? throw new ArgumentNullException(nameof(game));
             _connections = new List<RequirementNodeConnection>();
-            RequiredMode = new Mode();
+            ModeRequirement = new ModeRequirement();
             Available = 1;
 
             switch (iD)
@@ -84,56 +84,56 @@ namespace OpenTracker.Models.Sections
                 case LocationID.ChestGameTakeAny:
                     {
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                     }
                     break;
                 case LocationID.GrassHouseTakeAny:
                     {
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.GrassHouse,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                     }
                     break;
                 case LocationID.BombHutTakeAny:
                     {
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.BombHut,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                     }
                     break;
                 case LocationID.IceFairyCaveTakeAny:
                     {
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.IceFairyCave,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                     }
                     break;
                 case LocationID.RupeeCaveTakeAny:
                     {
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.RupeeCave,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                     }
                     break;
                 case LocationID.CentralBonkRocksTakeAny:
                     {
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.CentralBonkRocks,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                     }
                     break;
                 case LocationID.HypeFairyCaveTakeAny:
                     {
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.HypeFairyCave,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                     }
                     break;
                 case LocationID.EDMFairyCaveTakeAny:
                     {
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastBottom,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                     }
                     break;
                 case LocationID.DarkChapelTakeAny:
                 case LocationID.DarkVillageFortuneTellerTakeAny:
                     {
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                     }
                     break;
                 case LocationID.DarkTreesFairyCaveTakeAny:
@@ -141,50 +141,50 @@ namespace OpenTracker.Models.Sections
                 case LocationID.DarkFluteSpotFiveTakeAny:
                     {
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldEast,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                     }
                     break;
                 case LocationID.ArrowGameTakeAny:
                     {
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldSouth,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                     }
                     break;
                 case LocationID.DarkCentralBonkRocksTakeAny:
                     {
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DWCentralBonkRocks,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                     }
                     break;
                 case LocationID.DarkIceRodCaveTakeAny:
                     {
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DWIceRodCave,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                     }
                     break;
                 case LocationID.DarkFakeIceRodCaveTakeAny:
                     {
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldSouthEast,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                     }
                     break;
                 case LocationID.DarkIceRodRockTakeAny:
                     {
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DWIceRodRock,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                     }
                     break;
                 case LocationID.DarkMountainFairyTakeAny:
                     {
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestBottom,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                     }
                     break;
                 case LocationID.MireRightShackTakeAny:
                 case LocationID.MireCaveTakeAny:
                     {
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.MireArea,
-                            RequirementType.None, new Mode()));
+                            RequirementType.None, new ModeRequirement()));
                     }
                     break;
             }

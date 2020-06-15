@@ -16,7 +16,7 @@ namespace OpenTracker.Models.Actions
 
         public void Execute()
         {
-            _previousEntranceShuffle = _mode.EntranceShuffle.Value;
+            _previousEntranceShuffle = _mode.EntranceShuffle;
             _mode.EntranceShuffle = _entranceShuffle;
         }
 

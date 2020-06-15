@@ -106,7 +106,7 @@ namespace OpenTracker.ViewModels
         public bool BigKeyShuffle =>
             _game.Mode.BigKeyShuffle;
         public bool BossShuffle =>
-            _game.Mode.BossShuffle.Value;
+            _game.Mode.BossShuffle;
 
         private Orientation _orientation;
         public Orientation Orientation
