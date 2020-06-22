@@ -9,33 +9,47 @@ using System.IO;
 
 namespace OpenTracker.ValueConverters
 {
+    /// <summary>
+    /// This is a ValueConverter to convert from a string to a bitmap URI.
+    /// </summary>
     public class BitmapValueConverter : IValueConverter
     {
+        /// <summary>
+        /// Returns a bitmap URI from the specified string.
+        /// </summary>
+        /// <returns>
+        /// A bitmap URI from the string.
+        /// </returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null)
-                return null;
-
-            if (value is string && targetType == typeof(IBitmap))
             {
-                var uri = new Uri((string)value, UriKind.RelativeOrAbsolute);
+                return null;
+            }
+
+            if (value is string @string && targetType == typeof(IBitmap))
+            {
+                var uri = new Uri(@string, UriKind.RelativeOrAbsolute);
                 var scheme = uri.IsAbsoluteUri ? uri.Scheme : "file";
 
                 switch (scheme)
                 {
                     case "file":
-                        return new Bitmap((string)value);
-
-                    default:
-                        try
                         {
-                            var assets = AvaloniaLocator.Current.GetService<IAssetLoader>();
-                            return new Bitmap(assets.Open(uri));
+                            return new Bitmap(@string);
                         }
-                        catch (FileNotFoundException ex)
+                    default:
                         {
-                            Debug.WriteLine(ex.Message);
-                            return null;
+                            try
+                            {
+                                var assets = AvaloniaLocator.Current.GetService<IAssetLoader>();
+                                return new Bitmap(assets.Open(uri));
+                            }
+                            catch (FileNotFoundException ex)
+                            {
+                                Debug.WriteLine(ex.Message);
+                                return null;
+                            }
                         }
                 }
             }

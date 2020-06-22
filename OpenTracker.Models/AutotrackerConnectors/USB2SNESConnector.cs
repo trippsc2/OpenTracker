@@ -9,6 +9,9 @@ using WebSocketSharp;
 
 namespace OpenTracker.Models.AutotrackerConnectors
 {
+    /// <summary>
+    /// This is the class containing USB2SNES connector data and logic.
+    /// </summary>
     public sealed class USB2SNESConnector : INotifyPropertyChanging, INotifyPropertyChanged, IDisposable
     {
         private readonly string _webSocketURI;
@@ -57,6 +60,15 @@ namespace OpenTracker.Models.AutotrackerConnectors
         public Action<MessageEventArgs> PendingMessageHandler { get; private set; }
         public string Usb2SnesApplicationName { get; set; } = "OpenTracker";
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="webSocketURI">
+        /// A string representing the websocket URI.
+        /// </param>
+        /// <param name="messageHandler">
+        /// The action to be performed on all log messages from the websocket.
+        /// </param>
         public USB2SNESConnector(string webSocketURI, Action<string, LogLevel> messageHandler = null)
         {
             _webSocketURI = webSocketURI;

@@ -5,12 +5,14 @@ using OpenTracker.Models;
 using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
 using ReactiveUI;
-using SharpDX.DirectWrite;
 using System;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels
 {
+    /// <summary>
+    /// This is the view-model of the connection control between entrance locations.
+    /// </summary>
     public class ConnectorControlVM : ViewModelBase, IClickHandler, IPointerOver
     {
         private readonly UndoRedoManager _undoRedoManager;
@@ -75,6 +77,24 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="game">
+        /// The game data.
+        /// </param>
+        /// <param name="mainWindow">
+        /// The main window view-model parent class.
+        /// </param>
+        /// <param name="appSettings">
+        /// The app settings data.
+        /// </param>
+        /// <param name="connection">
+        /// The connection data.
+        /// </param>
         public ConnectorControlVM(UndoRedoManager undoRedoManager, Game game, MainWindowVM mainWindow,
             AppSettings appSettings, (MapLocation, MapLocation) connection)
         {
@@ -91,12 +111,32 @@ namespace OpenTracker.ViewModels
             _appSettings.PropertyChanged += OnAppSettingsChanged;
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on itself.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Highlighted))
+            {
                 UpdateColor();
+            }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the MainWindowVM class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnMainWindowChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(MainWindowVM.MapPanelOrientation))
@@ -106,41 +146,85 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Mode.EntranceShuffle))
+            {
                 this.RaisePropertyChanged(nameof(Visible));
+            }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the AppSettings class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateColor();
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the Color property.
+        /// </summary>
         private void UpdateColor()
         {
             this.RaisePropertyChanged(nameof(Color));
         }
 
+        /// <summary>
+        /// Removes the connector from the collection.
+        /// </summary>
         private void RemoveConnector()
         {
             _undoRedoManager.Execute(new RemoveConnection(_game, Connection));
         }
 
+        /// <summary>
+        /// Click handler for left click.
+        /// </summary>
+        /// <param name="force">
+        /// A boolean representing whether the logic should be ignored.
+        /// </param>
         public void OnLeftClick(bool force = false)
         {
         }
 
+        /// <summary>
+        /// Click handler for right click.
+        /// </summary>
+        /// <param name="force">
+        /// A boolean representing whether the logic should be ignored.
+        /// </param>
         public void OnRightClick(bool force = false)
         {
             RemoveConnector();
         }
 
+        /// <summary>
+        /// Handler for when the pointer enters the control.
+        /// </summary>
         public void OnPointerEnter()
         {
             Highlighted = true;
         }
 
+        /// <summary>
+        /// Handler for when the pointer exits the control.
+        /// </summary>
         public void OnPointerLeave()
         {
             Highlighted = false;

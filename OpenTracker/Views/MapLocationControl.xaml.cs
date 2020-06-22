@@ -33,14 +33,18 @@ namespace OpenTracker.Views
         {
             if (e.InitialPressMouseButton == MouseButton.Left &&
                 this.GetVisualsAt(e.GetPosition(this)).Any(x => this == x || this.IsVisualAncestorOf(x)))
+            {
                 ViewModelOpenMarkingSelect.OpenMarkingSelect();
+            }
         }
 
         private void OnShapeClick(object sender, PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Right &&
                 this.GetVisualsAt(e.GetPosition(this)).Any(x => this == x || this.IsVisualAncestorOf(x)))
+            {
                 ViewModelClearAvailableSections.ClearAvailableSections(e.KeyModifiers == KeyModifiers.Control);
+            }
         }
 
         private void OnDoubleClick(object sender, RoutedEventArgs e)

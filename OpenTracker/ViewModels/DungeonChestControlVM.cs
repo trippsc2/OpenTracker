@@ -1,5 +1,4 @@
-﻿using Avalonia.Media;
-using OpenTracker.Interfaces;
+﻿using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
@@ -12,6 +11,9 @@ using System.Globalization;
 
 namespace OpenTracker.ViewModels
 {
+    /// <summary>
+    /// This is the view-model for the dungeon chest control on the items panel.
+    /// </summary>
     public class DungeonChestControlVM : ViewModelBase, IClickHandler
     {
         private readonly UndoRedoManager _undoRedoManager;
@@ -20,7 +22,8 @@ namespace OpenTracker.ViewModels
         private readonly ISection _section;
 
         public string FontColor =>
-            _section.Available == 0 ? "#ffffffff" : _appSettings.AccessibilityColors[_section.Accessibility];
+            _section.Available == 0 ? "#ffffffff" :
+            _appSettings.AccessibilityColors[_section.Accessibility];
 
         public string ImageSource
         {
@@ -32,15 +35,21 @@ namespace OpenTracker.ViewModels
                     {
                         case AccessibilityLevel.None:
                         case AccessibilityLevel.Inspect:
-                            return "avares://OpenTracker/Assets/Images/chest0.png";
+                            {
+                                return "avares://OpenTracker/Assets/Images/chest0.png";
+                            }
                         case AccessibilityLevel.Partial:
                         case AccessibilityLevel.SequenceBreak:
                         case AccessibilityLevel.Normal:
-                            return "avares://OpenTracker/Assets/Images/chest1.png";
+                            {
+                                return "avares://OpenTracker/Assets/Images/chest1.png";
+                            }
                     }
                 }
                 else
+                {
                     return "avares://OpenTracker/Assets/Images/chest2.png";
+                }
 
                 return null;
             }
@@ -49,6 +58,21 @@ namespace OpenTracker.ViewModels
         public string NumberString =>
             _section.Available.ToString(CultureInfo.InvariantCulture);
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="appSettings">
+        /// The app settings data.
+        /// </param>
+        /// <param name="game">
+        /// The game data.
+        /// </param>
+        /// <param name="section">
+        /// The dungeon section represented by the control.
+        /// </param>
         public DungeonChestControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
             Game game, ISection section)
         {
@@ -61,11 +85,30 @@ namespace OpenTracker.ViewModels
             _section.PropertyChanged += OnSectionChanged;
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the ObservableCollection class for the
+        /// accessibility colors.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnColorChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateTextColor();
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the ISection-implementing class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ISection.Accessibility))
@@ -82,39 +125,65 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the FontColor property.
+        /// </summary>
         private void UpdateTextColor()
         {
             this.RaisePropertyChanged(nameof(FontColor));
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the ImageSource property.
+        /// </summary>
         private void UpdateImage()
         {
             this.RaisePropertyChanged(nameof(ImageSource));
         }
 
+        /// <summary>
+        /// Collects a single item from the section represented.
+        /// </summary>
         private void CollectSection()
         {
             _undoRedoManager.Execute(new CollectSection(_game, _section));
         }
 
+        /// <summary>
+        /// Uncollects a single item from the section represented.
+        /// </summary>
         private void UncollectSection()
         {
             _undoRedoManager.Execute(new UncollectSection(_section));
         }
 
+        /// <summary>
+        /// Click handler for left click.
+        /// </summary>
+        /// <param name="force">
+        /// A boolean representing whether the logic should be ignored.
+        /// </param>
         public void OnLeftClick(bool force)
         {
             if ((force || _section.Accessibility >= AccessibilityLevel.Partial) &&
                 _section.IsAvailable())
+            {
                 CollectSection();
+            }
         }
 
+        /// <summary>
+        /// Click handler for right click.
+        /// </summary>
+        /// <param name="force">
+        /// A boolean representing whether the logic should be ignored.
+        /// </param>
         public void OnRightClick(bool force)
         {
-            if (_section is DungeonItemSection dungeonItemSection)
+            if (_section is DungeonItemSection dungeonItemSection && 
+                _section.Available < dungeonItemSection.Total)
             {
-                if (_section.Available < dungeonItemSection.Total)
-                    UncollectSection();
+                UncollectSection();
             }
         }
     }

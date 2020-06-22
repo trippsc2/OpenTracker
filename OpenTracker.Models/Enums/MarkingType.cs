@@ -1,5 +1,8 @@
 ﻿namespace OpenTracker.Models.Enums
 {
+    /// <summary>
+    /// This is the enum type for marking types.
+    /// </summary>
     public enum MarkingType
     {
         HCFront,

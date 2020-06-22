@@ -6,6 +6,9 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models
 {
+    /// <summary>
+    /// This is the class for application data to be saved to file.
+    /// </summary>
     [Serializable()]
     public class AppSettings : INotifyPropertyChanged
     {
@@ -160,6 +163,9 @@ namespace OpenTracker.Models
 
         public ObservableDictionary<AccessibilityLevel, string> AccessibilityColors { get; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public AppSettings()
         {
             DisplayAllLocations = false;
@@ -184,6 +190,12 @@ namespace OpenTracker.Models
             };
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
+        /// </param>
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

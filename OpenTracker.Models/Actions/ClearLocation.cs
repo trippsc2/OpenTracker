@@ -3,10 +3,12 @@ using OpenTracker.Models.Interfaces;
 using OpenTracker.Models.Sections;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
 
 namespace OpenTracker.Models.Actions
 {
+    /// <summary>
+    /// This is the class for an undoable action to clear a location.
+    /// </summary>
     public class ClearLocation : IUndoable
     {
         private readonly Game _game;
@@ -19,6 +21,18 @@ namespace OpenTracker.Models.Actions
         private readonly List<Item> _prizes;
         private readonly List<int?> _prizePreviousCurrents;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="game">
+        /// The game data.
+        /// </param>
+        /// <param name="location">
+        /// The location to be cleared.
+        /// </param>
+        /// <param name="force">
+        /// A boolean representing whether to override logic and clear the location.
+        /// </param>
         public ClearLocation(Game game, Location location, bool force = false)
         {
             _game = game;
@@ -32,6 +46,9 @@ namespace OpenTracker.Models.Actions
             _prizePreviousCurrents = new List<int?>();
         }
 
+        /// <summary>
+        /// Executes the action.
+        /// </summary>
         public void Execute()
         {
             _previousLocationCounts.Clear();
@@ -60,24 +77,36 @@ namespace OpenTracker.Models.Actions
                             Item item = _game.Items[itemType];
 
                             if (item.Current < item.Maximum)
+                            {
                                 _markedItems.Add(item);
+                            }
                             else
+                            {
                                 _markedItems.Add(null);
+                            }
                         }
                         else
+                        {
                             _markedItems.Add(null);
+                        }
                     }
                     else
+                    {
                         _markedItems.Add(null);
+                    }
 
                     if (section is BossSection bossSection)
                     {
                         _prizes.Add(bossSection.Prize);
 
                         if (bossSection.Prize != null)
+                        {
                             _prizePreviousCurrents.Add(bossSection.Prize.Current);
+                        }
                         else
+                        {
                             _prizePreviousCurrents.Add(null);
+                        }
                     }
                     else
                     {
@@ -88,7 +117,9 @@ namespace OpenTracker.Models.Actions
                     section.Clear(_force);
 
                     if (section.IsAvailable())
+                    {
                         _markedItems[^1] = null;
+                    }
                 }
                 else
                 {
@@ -102,24 +133,37 @@ namespace OpenTracker.Models.Actions
             }
         }
 
+        /// <summary>
+        /// Undoes the action.
+        /// </summary>
         public void Undo()
         {
             for (int i = 0; i < _previousLocationCounts.Count; i++)
             {
                 if (_previousLocationCounts[i] != null)
+                {
                     _location.Sections[i].Available = _previousLocationCounts[i].Value;
+                }
 
                 if (_previousMarkings[i] != null)
+                {
                     _location.Sections[i].Marking = _previousMarkings[i];
+                }
 
                 if (_previousUserManipulated[i] != null)
+                {
                     _location.Sections[i].UserManipulated = _previousUserManipulated[i].Value;
+                }
 
                 if (_markedItems[i] != null)
+                {
                     _markedItems[i].Change(-1);
+                }
 
                 if (_prizes[i] != null && _prizes[i].Current != _prizePreviousCurrents[i])
+                {
                     _prizes[i].SetCurrent(_prizePreviousCurrents[i].Value);
+                }
             }
         }
     }

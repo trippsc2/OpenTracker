@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 namespace OpenTracker.Models
 {
+	/// <summary>
+	/// This is the class for dungeon requirement node.
+	/// </summary>
     public class DungeonNode : RequirementNode
     {
         private readonly DungeonData _dungeonData;
@@ -13,6 +16,18 @@ namespace OpenTracker.Models
         public int FreeKeysProvided { get; }
         public List<RequirementNodeConnection> DungeonConnections { get; }
 
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="game">
+		/// The game data.
+		/// </param>
+		/// <param name="dungeonData">
+		/// The mutable dungeon data parent class.
+		/// </param>
+		/// <param name="iD">
+		/// The node identity.
+		/// </param>
         public DungeonNode(Game game, DungeonData dungeonData, RequirementNodeID iD)  : base(game, iD)
         {
             _dungeonData = dungeonData ?? throw new ArgumentNullException(nameof(dungeonData));
@@ -61,10 +76,21 @@ namespace OpenTracker.Models
             }
         }
 
-        public override AccessibilityLevel GetNodeAccessibility(List<RequirementNodeID> excludedNodes)
+		/// <summary>
+		/// Returns the node accessibility.
+		/// </summary>
+		/// <param name="excludedNodes">
+		/// The list of node IDs from which to not check accessibility.
+		/// </param>
+		/// <returns>
+		/// The accessibility of the node.
+		/// </returns>
+		public override AccessibilityLevel GetNodeAccessibility(List<RequirementNodeID> excludedNodes)
         {
-            if (excludedNodes == null)
-                throw new ArgumentNullException(nameof(excludedNodes));
+			if (excludedNodes == null)
+			{
+				throw new ArgumentNullException(nameof(excludedNodes));
+			}
 
 			AccessibilityLevel finalAccessibility = AccessibilityLevel.None;
             List<RequirementNodeID> newExcludedNodes = excludedNodes.GetRange(0, excludedNodes.Count);
@@ -73,15 +99,21 @@ namespace OpenTracker.Models
 			foreach (RequirementNodeConnection connection in Connections)
 			{
 				if (!Game.Mode.Validate(connection.ModeRequirement))
+				{
 					continue;
+				}
 
 				if (newExcludedNodes.Contains(connection.FromNode))
+				{
 					continue;
+				}
 
 				AccessibilityLevel nodeAccessibility = Game.RequirementNodes[connection.FromNode].Accessibility;
 
 				if (nodeAccessibility < AccessibilityLevel.SequenceBreak)
+				{
 					continue;
+				}
 
 				AccessibilityLevel requirementAccessibility = Game.Requirements[connection.Requirement].Accessibility;
 
@@ -90,25 +122,35 @@ namespace OpenTracker.Models
 					(byte)connection.MaximumAccessibility);
 
 				if (finalConnectionAccessibility == AccessibilityLevel.Normal)
+				{
 					return AccessibilityLevel.Normal;
+				}
 
 				if (finalConnectionAccessibility > finalAccessibility)
+				{
 					finalAccessibility = finalConnectionAccessibility;
+				}
 			}
 
 			foreach (RequirementNodeConnection dungeonConnection in DungeonConnections)
             {
-                if (!Game.Mode.Validate(dungeonConnection.ModeRequirement))
-                    continue;
+				if (!Game.Mode.Validate(dungeonConnection.ModeRequirement))
+				{
+					continue;
+				}
 
-                if (newExcludedNodes.Contains(dungeonConnection.FromNode))
-                    continue;
+				if (newExcludedNodes.Contains(dungeonConnection.FromNode))
+				{
+					continue;
+				}
 
                 AccessibilityLevel nodeAccessibility =
                     _dungeonData.RequirementNodes[dungeonConnection.FromNode].GetNodeAccessibility(newExcludedNodes);
 
-                if (nodeAccessibility < AccessibilityLevel.SequenceBreak)
-                    continue;
+				if (nodeAccessibility < AccessibilityLevel.SequenceBreak)
+				{
+					continue;
+				}
 
                 AccessibilityLevel requirementAccessibility =
                     Game.Requirements[dungeonConnection.Requirement].Accessibility;
@@ -117,32 +159,43 @@ namespace OpenTracker.Models
                     (AccessibilityLevel)Math.Min(Math.Min((byte)nodeAccessibility, (byte)requirementAccessibility),
                     (byte)dungeonConnection.MaximumAccessibility);
 
-                if (finalConnectionAccessibility == AccessibilityLevel.Normal)
-                    return AccessibilityLevel.Normal;
+				if (finalConnectionAccessibility == AccessibilityLevel.Normal)
+				{
+					return AccessibilityLevel.Normal;
+				}
 
-                if (finalConnectionAccessibility > finalAccessibility)
-                    finalAccessibility = finalConnectionAccessibility;
+				if (finalConnectionAccessibility > finalAccessibility)
+				{
+					finalAccessibility = finalConnectionAccessibility;
+				}
             }
 
             foreach (KeyDoor bigKeyDoor in _bigKeyDoors)
             {
                 AccessibilityLevel doorAccessibility = bigKeyDoor.GetDoorAccessibility(newExcludedNodes);
 
-                if (bigKeyDoor.Unlocked && doorAccessibility > finalAccessibility)
-                    finalAccessibility = doorAccessibility;
+				if (bigKeyDoor.Unlocked && doorAccessibility > finalAccessibility)
+				{
+					finalAccessibility = doorAccessibility;
+				}
             }
 
             foreach (KeyDoor smallKeyDoor in _smallKeyDoors)
             {
                 AccessibilityLevel doorAccessibility = smallKeyDoor.GetDoorAccessibility(newExcludedNodes);
 
-                if (smallKeyDoor.Unlocked && doorAccessibility > finalAccessibility)
-                    finalAccessibility = doorAccessibility;
+				if (smallKeyDoor.Unlocked && doorAccessibility > finalAccessibility)
+				{
+					finalAccessibility = doorAccessibility;
+				}
             }
 
             return finalAccessibility;
         }
 
+		/// <summary>
+		/// Initializes the dungeon node.
+		/// </summary>
         public override void Initialize()
         {
             switch (ID)
@@ -841,10 +894,6 @@ namespace OpenTracker.Models
 							RequirementType.Hover, new ModeRequirement()));
 					}
 					break;
-				case RequirementNodeID.GT1FLeftPastFiresnakeRoomKeyDoor:
-					{
-					}
-					break;
 				case RequirementNodeID.GT1FLeftRandomizerRoom:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.GT1FLeftPastFiresnakeRoomKeyDoor,
@@ -968,21 +1017,29 @@ namespace OpenTracker.Models
 
             foreach (KeyDoor smallKeyDoor in _dungeonData.SmallKeyDoors.Values)
             {
-                if (smallKeyDoor.ConnectedNodes.Contains(this))
-                    _smallKeyDoors.Add(smallKeyDoor);
+				if (smallKeyDoor.ConnectedNodes.Contains(this))
+				{
+					_smallKeyDoors.Add(smallKeyDoor);
+				}
             }
 
             foreach (KeyDoor bigKeyDoor in _dungeonData.BigKeyDoors.Values)
             {
-                if (bigKeyDoor.ConnectedNodes.Contains(this))
-                    _bigKeyDoors.Add(bigKeyDoor);
+				if (bigKeyDoor.ConnectedNodes.Contains(this))
+				{
+					_bigKeyDoors.Add(bigKeyDoor);
+				}
             }
 
-            foreach (KeyDoor smallKeyDoor in _smallKeyDoors)
-                smallKeyDoor.PropertyChanged += OnRequirementChanged;
+			foreach (KeyDoor smallKeyDoor in _smallKeyDoors)
+			{
+				smallKeyDoor.PropertyChanged += OnRequirementChanged;
+			}
 
-            foreach (KeyDoor bigKeyDoor in _bigKeyDoors)
-                bigKeyDoor.PropertyChanged += OnRequirementChanged;
+			foreach (KeyDoor bigKeyDoor in _bigKeyDoors)
+			{
+				bigKeyDoor.PropertyChanged += OnRequirementChanged;
+			}
 
             base.Initialize();
         }

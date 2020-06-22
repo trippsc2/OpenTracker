@@ -6,9 +6,13 @@ using ReactiveUI;
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Text;
 
 namespace OpenTracker.ViewModels
 {
+    /// <summary>
+    /// This is the view-model of the small or big key controls in the item panel.
+    /// </summary>
     public class KeyControlVM : ViewModelBase, IClickHandler
     {
         private readonly UndoRedoManager _undoRedoManager;
@@ -29,9 +33,16 @@ namespace OpenTracker.ViewModels
             get
             {
                 if (_item == null)
+                {
                     return null;
+                }
 
-                return _imageSourceBase + (_item.Current > 0 ? "1" : "0") + ".png";
+                StringBuilder sb = new StringBuilder();
+                sb.Append(_imageSourceBase);
+                sb.Append(_item.Current > 0 ? "1" : "0");
+                sb.Append(".png");
+
+                return sb.ToString();
             }
         }
 
@@ -40,28 +51,54 @@ namespace OpenTracker.ViewModels
             get
             {
                 if (_smallKey)
-                    return _item.Current.ToString(CultureInfo.InvariantCulture) + (_item.Current == _item.Maximum ? "*" : "");
+                {
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append(_item.Current.ToString(CultureInfo.InvariantCulture));
+                    sb.Append(_item.Current == _item.Maximum ? "*" : "");
+
+                    return sb.ToString();
+                }
 
                 return null;
             }
         }
 
-        public bool TextVisible => _smallKey && _item.Current > 0;
+        public bool TextVisible =>
+            _smallKey && _item.Current > 0;
 
         public string TextColor
         {
             get
             {
                 if (_item == null)
+                {
                     return "#ffffffff";
+                }
 
                 if (_item.Current == _item.Maximum)
+                {
                     return _appSettings.EmphasisFontColor;
-                else
-                    return "#ffffffff";
+                }
+                
+                return "#ffffffff";
             }
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="appSettings">
+        /// The app settings.
+        /// </param>
+        /// <param name="game">
+        /// The game data.
+        /// </param>
+        /// <param name="item">
+        /// The item of the key to be represented.
+        /// </param>
         public KeyControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
             Game game, Item item)
         {
@@ -89,8 +126,10 @@ namespace OpenTracker.ViewModels
                     case ItemType.MMSmallKey:
                     case ItemType.TRSmallKey:
                     case ItemType.GTSmallKey:
-                        _imageSourceBase = "avares://OpenTracker/Assets/Images/Items/smallkey";
-                        _smallKey = true;
+                        {
+                            _imageSourceBase = "avares://OpenTracker/Assets/Images/Items/smallkey";
+                            _smallKey = true;
+                        }
                         break;
                     case ItemType.EPBigKey:
                     case ItemType.DPBigKey:
@@ -103,7 +142,9 @@ namespace OpenTracker.ViewModels
                     case ItemType.MMBigKey:
                     case ItemType.TRBigKey:
                     case ItemType.GTBigKey:
-                        _imageSourceBase = "avares://OpenTracker/Assets/Images/Items/bigkey";
+                        {
+                            _imageSourceBase = "avares://OpenTracker/Assets/Images/Items/bigkey";
+                        }
                         break;
                 }
 
@@ -111,16 +152,38 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the AppSettings class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(AppSettings.EmphasisFontColor))
+            {
                 this.RaisePropertyChanged(nameof(TextColor));
+            }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Mode.WorldState))
+            {
                 this.RaisePropertyChanged(nameof(SmallKeyShuffle));
+            }
 
             if (e.PropertyName == nameof(Mode.DungeonItemShuffle))
             {
@@ -129,6 +192,15 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the Item class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
             this.RaisePropertyChanged(nameof(ImageSource));
@@ -140,32 +212,57 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the TextVisible and ImageNumber properties.
+        /// </summary>
         private void UpdateText()
         {
             this.RaisePropertyChanged(nameof(TextVisible));
             this.RaisePropertyChanged(nameof(ImageNumber));
         }
 
+        /// <summary>
+        /// Adds 1 to the represented item.
+        /// </summary>
         private void AddItem()
         {
             _undoRedoManager.Execute(new AddItem(_item));
         }
 
+        /// <summary>
+        /// Removes 1 from the represented item.
+        /// </summary>
         private void RemoveItem()
         {
             _undoRedoManager.Execute(new RemoveItem(_item));
         }
 
+        /// <summary>
+        /// Click handler for left click.
+        /// </summary>
+        /// <param name="force">
+        /// A boolean representing whether the logic should be ignored.
+        /// </param>
         public void OnLeftClick(bool force = false)
         {
             if (_item != null && _item.Current < _item.Maximum)
+            {
                 AddItem();
+            }
         }
 
+        /// <summary>
+        /// Click handler for right click.
+        /// </summary>
+        /// <param name="force">
+        /// A boolean representing whether the logic should be ignored.
+        /// </param>
         public void OnRightClick(bool force = false)
         {
             if (_item != null && _item.Current > 0)
+            {
                 RemoveItem();
+            }
         }
     }
 }

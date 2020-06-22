@@ -48,7 +48,7 @@
             IsHitTestVisible="{Binding Path=VisibleLog}">
       <ScrollViewer>
         <TextBlock Classes="AutoTrackerLog" Foreground="#FFFFFF" Margin="5,0"
-                   Text="{Binding LogText}" />
+                   Text="{Binding LogText.Text}" />
       </ScrollViewer>
     </Border>
     

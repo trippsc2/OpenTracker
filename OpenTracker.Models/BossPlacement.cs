@@ -4,6 +4,9 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models
 {
+    /// <summary>
+    /// This is the class for the boss placement.
+    /// </summary>
     public class BossPlacement : INotifyPropertyChanged
     {
         private readonly Game _game;
@@ -41,6 +44,15 @@ namespace OpenTracker.Models
             }
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="game">
+        /// The game data parent class.
+        /// </param>
+        /// <param name="iD">
+        /// The boss placement ID.
+        /// </param>
         public BossPlacement(Game game, BossPlacementID iD)
         {
             _game = game ?? throw new ArgumentNullException(nameof(game));
@@ -133,6 +145,12 @@ namespace OpenTracker.Models
             UpdateAccessibility();
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
+        /// </param>
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -141,17 +159,38 @@ namespace OpenTracker.Models
                 UpdateBossSubscription();
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Mode.BossShuffle))
                 UpdateBossSubscription();
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the Boss classes contained.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateAccessibility();
         }
 
+        /// <summary>
+        /// Updates the currently subscribed boss.
+        /// </summary>
         private void UpdateBossSubscription()
         {
             if (_game.Mode.BossShuffle)
@@ -159,16 +198,24 @@ namespace OpenTracker.Models
                 if (Boss != _currentBossSubscription)
                 {
                     if (_currentBossSubscription == null)
+                    {
                         _game.Bosses.PropertyChanged -= OnRequirementChanged;
+                    }
                     else
+                    {
                         _currentBossSubscription.PropertyChanged -= OnRequirementChanged;
+                    }
 
                     _currentBossSubscription = Boss;
 
                     if (_currentBossSubscription == null)
+                    {
                         _game.Bosses.PropertyChanged += OnRequirementChanged;
+                    }
                     else
+                    {
                         _currentBossSubscription.PropertyChanged += OnRequirementChanged;
+                    }
                 }
             }
             else
@@ -176,40 +223,62 @@ namespace OpenTracker.Models
                 if (_defaultBoss != _currentBossSubscription)
                 {
                     if (_currentBossSubscription == null)
+                    {
                         _game.Bosses.PropertyChanged -= OnRequirementChanged;
+                    }
                     else
+                    {
                         _currentBossSubscription.PropertyChanged -= OnRequirementChanged;
+                    }
 
                     _currentBossSubscription = _defaultBoss;
 
                     if (_currentBossSubscription == null)
+                    {
                         _game.Bosses.PropertyChanged += OnRequirementChanged;
+                    }
                     else
+                    {
                         _currentBossSubscription.PropertyChanged += OnRequirementChanged;
+                    }
                 }
             }
         }
 
+        /// <summary>
+        /// Updates the accessibility of this boss placement.
+        /// </summary>
         private void UpdateAccessibility()
         {
             if (_game.Mode.BossShuffle)
             {
                 if (Boss == null)
+                {
                     Accessibility = _game.Bosses.UnknownBossAccessibility;
+                }
                 else
+                {
                     Accessibility = Boss.Accessibility;
+                }
             }
             else
             {
                 if (_defaultBoss != null)
+                {
                     Accessibility = _defaultBoss.Accessibility;
+                }
             }
         }
 
+        /// <summary>
+        /// Resets the boss placement to their starting values.
+        /// </summary>
         public void Reset()
         {
             if (_defaultBoss != _game.Bosses[BossType.Aga])
+            {
                 Boss = null;
+            }
         }
     }
 }

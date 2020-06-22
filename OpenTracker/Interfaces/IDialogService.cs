@@ -3,6 +3,9 @@ using System.Threading.Tasks;
 
 namespace OpenTracker.Interfaces
 {
+    /// <summary>
+    /// This is the interface for the dialog service.
+    /// </summary>
     public interface IDialogService
     {
         Window Owner { get; set; }

@@ -25,10 +25,14 @@ namespace OpenTracker.Views
         private void OnPointerReleased(object sender, PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Left)
+            {
                 ViewModelClickHandler.OnLeftClick();
+            }
 
             if (e.InitialPressMouseButton == MouseButton.Right)
+            {
                 ViewModelClickHandler.OnRightClick();
+            }
         }
 
         private void OnPointerEnter(object sender, PointerEventArgs e)

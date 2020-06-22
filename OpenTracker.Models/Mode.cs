@@ -4,6 +4,9 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models
 {
+    /// <summary>
+    /// This is the class for the game mode settings.
+    /// </summary>
     public class Mode : INotifyPropertyChanging, INotifyPropertyChanged
     {
         public event PropertyChangingEventHandler PropertyChanging;
@@ -107,6 +110,27 @@ namespace OpenTracker.Models
             }
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="itemPlacement">
+        /// The Item Placement mode setting.
+        /// </param>
+        /// <param name="dungeonItemShuffle">
+        /// The Dungeon Item Shuffle setting.
+        /// </param>
+        /// <param name="worldState">
+        /// The World State setting.
+        /// </param>
+        /// <param name="entranceShuffle">
+        /// A boolean representing whether Entrance Shuffle is enabled.
+        /// </param>
+        /// <param name="bossShuffle">
+        /// A boolean representing whether Boss Shuffle is enabled.
+        /// </param>
+        /// <param name="enemyShuffle">
+        /// A boolean representing whether Enemy Shuffle is enabled.
+        /// </param>
         public Mode(ItemPlacement itemPlacement = ItemPlacement.Advanced,
             DungeonItemShuffle dungeonItemShuffle = DungeonItemShuffle.Standard,
             WorldState worldState = WorldState.StandardOpen, bool entranceShuffle = false,
@@ -120,6 +144,12 @@ namespace OpenTracker.Models
             EnemyShuffle = enemyShuffle;
         }
 
+        /// <summary>
+        /// Constructor that copies the settings of another Mode class.
+        /// </summary>
+        /// <param name="source">
+        /// The source Mode class to be copied.
+        /// </param>
         public Mode(Mode source)
         {
             if (source == null)
@@ -133,12 +163,24 @@ namespace OpenTracker.Models
             EnemyShuffle = source.EnemyShuffle;
         }
 
+        /// <summary>
+        /// Raises the PropertyChanging event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changing property.
+        /// </param>
         private void OnPropertyChanging(string propertyName)
         {
             if (PropertyChanging != null)
                 PropertyChanging.Invoke(this, new PropertyChangingEventArgs(propertyName));
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
+        /// </param>
         private void OnPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
@@ -148,32 +190,51 @@ namespace OpenTracker.Models
                 ItemPlacement = Enums.ItemPlacement.Advanced;
         }
 
+        /// <summary>
+        /// Returns whether the ModeRequirement class is valid compared to the current
+        /// Mode class settings.
+        /// </summary>
+        /// <param name="modeRequirement">
+        /// The mode requirement to be checked.
+        /// </param>
+        /// <returns>
+        /// A boolean representing whether the mode requirement is validated against
+        /// the current mode settings.
+        /// </returns>
         public bool Validate(ModeRequirement modeRequirement)
         {
             if (modeRequirement == null)
+            {
                 throw new ArgumentNullException(nameof(modeRequirement));
+            }
 
             if (modeRequirement.ItemPlacement.HasValue &&
                 ItemPlacement != modeRequirement.ItemPlacement)
+            {
                 return false;
+            }
 
             if (modeRequirement.DungeonItemShuffle.HasValue)
             {
                 switch (modeRequirement.DungeonItemShuffle.Value)
                 {
-                    case Enums.DungeonItemShuffle.Standard:
-                    case Enums.DungeonItemShuffle.MapsCompasses:
+                    case DungeonItemShuffle.Standard:
+                    case DungeonItemShuffle.MapsCompasses:
                         {
-                            if (DungeonItemShuffle != Enums.DungeonItemShuffle.Standard &&
-                                DungeonItemShuffle != Enums.DungeonItemShuffle.MapsCompasses)
+                            if (DungeonItemShuffle != DungeonItemShuffle.Standard &&
+                                DungeonItemShuffle != DungeonItemShuffle.MapsCompasses)
+                            {
                                 return false;
+                            }
                         }
                         break;
-                    case Enums.DungeonItemShuffle.MapsCompassesSmallKeys:
-                    case Enums.DungeonItemShuffle.Keysanity:
+                    case DungeonItemShuffle.MapsCompassesSmallKeys:
+                    case DungeonItemShuffle.Keysanity:
                         {
                             if (DungeonItemShuffle < modeRequirement.DungeonItemShuffle.Value)
+                            {
                                 return false;
+                            }
                         }
                         break;
                 }
@@ -183,18 +244,22 @@ namespace OpenTracker.Models
             {
                 switch (modeRequirement.WorldState.Value)
                 {
-                    case Enums.WorldState.StandardOpen:
+                    case WorldState.StandardOpen:
                         {
-                            if (WorldState != Enums.WorldState.StandardOpen &&
-                                WorldState != Enums.WorldState.Retro)
+                            if (WorldState != WorldState.StandardOpen &&
+                                WorldState != WorldState.Retro)
+                            {
                                 return false;
+                            }
                         }
                         break;
-                    case Enums.WorldState.Inverted:
-                    case Enums.WorldState.Retro:
+                    case WorldState.Inverted:
+                    case WorldState.Retro:
                         {
                             if (WorldState != modeRequirement.WorldState.Value)
+                            {
                                 return false;
+                            }
                         }
                         break;
                 }
@@ -202,15 +267,21 @@ namespace OpenTracker.Models
 
             if (modeRequirement.EntranceShuffle.HasValue &&
                 EntranceShuffle != modeRequirement.EntranceShuffle)
+            {
                 return false;
+            }
 
             if (modeRequirement.BossShuffle.HasValue &&
                 BossShuffle != modeRequirement.BossShuffle)
+            {
                 return false;
+            }
 
             if (modeRequirement.EnemyShuffle.HasValue &&
                 EnemyShuffle != modeRequirement.EnemyShuffle)
+            {
                 return false;
+            }
 
             return true;
         }

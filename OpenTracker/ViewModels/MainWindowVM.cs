@@ -1,6 +1,5 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Threading;
 using Newtonsoft.Json;
@@ -19,6 +18,9 @@ using System.Threading.Tasks;
 
 namespace OpenTracker.ViewModels
 {
+    /// <summary>
+    /// This is the view-model for the main window.
+    /// </summary>
     public class MainWindowVM : ViewModelBase, IAutoTrackerAccess, IColorSelectAccess,
         IDynamicLayout, IOpen, ISave, ISaveAppSettings, IBounds
     {
@@ -124,17 +126,21 @@ namespace OpenTracker.ViewModels
                     switch (_appSettings.LayoutOrientation.Value)
                     {
                         case Orientation.Horizontal:
-                            return _appSettings.HorizontalUIPanelPlacement switch
                             {
-                                VerticalAlignment.Top => Dock.Top,
-                                _ => Dock.Bottom,
-                            };
+                                return _appSettings.HorizontalUIPanelPlacement switch
+                                {
+                                    VerticalAlignment.Top => Dock.Top,
+                                    _ => Dock.Bottom,
+                                };
+                            }
                         case Orientation.Vertical:
-                            return _appSettings.VerticalUIPanelPlacement switch
                             {
-                                HorizontalAlignment.Left => Dock.Left,
-                                _ => Dock.Right,
-                            };
+                                return _appSettings.VerticalUIPanelPlacement switch
+                                {
+                                    HorizontalAlignment.Left => Dock.Left,
+                                    _ => Dock.Right,
+                                };
+                            }
                     }
                 }
                 else
@@ -142,17 +148,21 @@ namespace OpenTracker.ViewModels
                     switch (Orientation)
                     {
                         case Orientation.Horizontal:
-                            return _appSettings.HorizontalUIPanelPlacement switch
                             {
-                                VerticalAlignment.Top => Dock.Top,
-                                _ => Dock.Bottom,
-                            };
+                                return _appSettings.HorizontalUIPanelPlacement switch
+                                {
+                                    VerticalAlignment.Top => Dock.Top,
+                                    _ => Dock.Bottom,
+                                };
+                            }
                         case Orientation.Vertical:
-                            return _appSettings.VerticalUIPanelPlacement switch
                             {
-                                HorizontalAlignment.Left => Dock.Left,
-                                _ => Dock.Right,
-                            };
+                                return _appSettings.VerticalUIPanelPlacement switch
+                                {
+                                    HorizontalAlignment.Left => Dock.Left,
+                                    _ => Dock.Right,
+                                };
+                            }
                     }
                 }
 
@@ -194,18 +204,22 @@ namespace OpenTracker.ViewModels
                 {
                     case Dock.Left:
                     case Dock.Right:
-                        return _appSettings.VerticalItemsPlacement switch
                         {
-                            VerticalAlignment.Top => Dock.Top,
-                            _ => Dock.Bottom,
-                        };
+                            return _appSettings.VerticalItemsPlacement switch
+                            {
+                                VerticalAlignment.Top => Dock.Top,
+                                _ => Dock.Bottom,
+                            };
+                        }
                     case Dock.Bottom:
                     case Dock.Top:
-                        return _appSettings.HorizontalItemsPlacement switch
                         {
-                            HorizontalAlignment.Left => Dock.Left,
-                            _ => Dock.Right,
-                        };
+                            return _appSettings.HorizontalItemsPlacement switch
+                            {
+                                HorizontalAlignment.Left => Dock.Left,
+                                _ => Dock.Right,
+                            };
+                        }
                 }
 
                 return Dock.Right;
@@ -274,9 +288,13 @@ namespace OpenTracker.ViewModels
             get
             {
                 if (_appSettings.MapOrientation.HasValue)
+                {
                     return _appSettings.MapOrientation.Value;
+                }
                 else
+                {
                     return Orientation;
+                }
             }
         }
 
@@ -378,11 +396,20 @@ namespace OpenTracker.ViewModels
             private set => this.RaiseAndSetIfChanged(ref _canRedo, value);
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="dialogService">
+        /// The dialog service.
+        /// </param>
         public MainWindowVM(IDialogService dialogService) : this()
         {
             _dialogService = dialogService;
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public MainWindowVM()
         {
             _undoRedoManager = new UndoRedoManager();
@@ -409,11 +436,12 @@ namespace OpenTracker.ViewModels
             if (File.Exists(appSettingsPath))
             {
                 string jsonContent = File.ReadAllText(appSettingsPath);
-
                 _appSettings = JsonConvert.DeserializeObject<AppSettings>(jsonContent);
             }
             else
+            {
                 _appSettings = new AppSettings();
+            }
 
             _appSettings.PropertyChanged += OnAppSettingsChanged;
 
@@ -461,11 +489,15 @@ namespace OpenTracker.ViewModels
                         case MarkingType.Mirror:
                         case MarkingType.HalfMagic:
                         case MarkingType.BigKey:
-                            NonEntranceMarkingSelect.Add(new MarkingSelectControlVM(_game, (MarkingType)i));
+                            {
+                                NonEntranceMarkingSelect.Add(new MarkingSelectControlVM(_game, (MarkingType)i));
+                            }
                             break;
                         case MarkingType.Quake:
-                            NonEntranceMarkingSelect.Add(new MarkingSelectControlVM(_game, (MarkingType)i));
-                            NonEntranceMarkingSelect.Add(new MarkingSelectControlVM(_game, null));
+                            {
+                                NonEntranceMarkingSelect.Add(new MarkingSelectControlVM(_game, (MarkingType)i));
+                                NonEntranceMarkingSelect.Add(new MarkingSelectControlVM(_game, null));
+                            }
                             break;
                         default:
                             break;
@@ -476,74 +508,135 @@ namespace OpenTracker.ViewModels
             if (EntranceMarkingSelect.Count == 0)
             {
                 for (int i = 0; i < Enum.GetValues(typeof(MarkingType)).Length; i++)
+                {
                     EntranceMarkingSelect.Add(new MarkingSelectControlVM(_game, (MarkingType)i));
+                }
             }
 
             ModeSettings = new ModeSettingsControlVM(_game.Mode, _undoRedoManager);
 
-            HCSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.HCSmallKey]);
-            ATSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.ATSmallKey]);
-            DPSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.DPSmallKey]);
-            THSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.ToHSmallKey]);
-            PDSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.PoDSmallKey]);
-            SPSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.SPSmallKey]);
-            SWSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.SWSmallKey]);
-            TTSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.TTSmallKey]);
-            IPSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.IPSmallKey]);
-            MMSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.MMSmallKey]);
-            TRSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.TRSmallKey]);
-            GTSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.GTSmallKey]);
+            HCSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.HCSmallKey]);
+            ATSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.ATSmallKey]);
+            DPSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.DPSmallKey]);
+            THSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.ToHSmallKey]);
+            PDSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.PoDSmallKey]);
+            SPSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.SPSmallKey]);
+            SWSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.SWSmallKey]);
+            TTSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.TTSmallKey]);
+            IPSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.IPSmallKey]);
+            MMSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.MMSmallKey]);
+            TRSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.TRSmallKey]);
+            GTSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.GTSmallKey]);
 
-            EPBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.EPBigKey]);
-            DPBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.DPBigKey]);
-            THBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.ToHBigKey]);
-            PDBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.PoDBigKey]);
-            SPBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.SPBigKey]);
-            SWBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.SWBigKey]);
-            TTBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.TTBigKey]);
-            IPBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.IPBigKey]);
-            MMBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.MMBigKey]);
-            TRBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.TRBigKey]);
-            GTBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game, _game.Items[ItemType.GTBigKey]);
+            EPBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.EPBigKey]);
+            DPBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.DPBigKey]);
+            THBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.ToHBigKey]);
+            PDBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.PoDBigKey]);
+            SPBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.SPBigKey]);
+            SWBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.SWBigKey]);
+            TTBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.TTBigKey]);
+            IPBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.IPBigKey]);
+            MMBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.MMBigKey]);
+            TRBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.TRBigKey]);
+            GTBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Items[ItemType.GTBigKey]);
 
-            HCItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.HyruleCastle].Sections[0]);
-            ATItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.AgahnimTower].Sections[0]);
-            EPItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.EasternPalace].Sections[0]);
-            DPItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.DesertPalace].Sections[0]);
-            THItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.TowerOfHera].Sections[0]);
-            PDItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.PalaceOfDarkness].Sections[0]);
-            SPItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.SwampPalace].Sections[0]);
-            SWItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.SkullWoods].Sections[0]);
-            TTItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.ThievesTown].Sections[0]);
-            IPItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.IcePalace].Sections[0]);
-            MMItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.MiseryMire].Sections[0]);
-            TRItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.TurtleRock].Sections[0]);
-            GTItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game, _game.Locations[LocationID.GanonsTower].Sections[0]);
+            HCItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Locations[LocationID.HyruleCastle].Sections[0]);
+            ATItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Locations[LocationID.AgahnimTower].Sections[0]);
+            EPItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Locations[LocationID.EasternPalace].Sections[0]);
+            DPItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Locations[LocationID.DesertPalace].Sections[0]);
+            THItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Locations[LocationID.TowerOfHera].Sections[0]);
+            PDItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Locations[LocationID.PalaceOfDarkness].Sections[0]);
+            SPItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Locations[LocationID.SwampPalace].Sections[0]);
+            SWItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Locations[LocationID.SkullWoods].Sections[0]);
+            TTItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Locations[LocationID.ThievesTown].Sections[0]);
+            IPItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Locations[LocationID.IcePalace].Sections[0]);
+            MMItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Locations[LocationID.MiseryMire].Sections[0]);
+            TRItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Locations[LocationID.TurtleRock].Sections[0]);
+            GTItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
+                _game.Locations[LocationID.GanonsTower].Sections[0]);
 
-            EPPrize = new PrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.EasternPalace].BossSections[0]);
-            DPPrize = new PrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.DesertPalace].BossSections[0]);
-            THPrize = new PrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.TowerOfHera].BossSections[0]);
-            PDPrize = new PrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.PalaceOfDarkness].BossSections[0]);
-            SPPrize = new PrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.SwampPalace].BossSections[0]);
-            SWPrize = new PrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.SkullWoods].BossSections[0]);
-            TTPrize = new PrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.ThievesTown].BossSections[0]);
-            IPPrize = new PrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.IcePalace].BossSections[0]);
-            MMPrize = new PrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.MiseryMire].BossSections[0]);
-            TRPrize = new PrizeControlVM(_undoRedoManager, _game, _game.Locations[LocationID.TurtleRock].BossSections[0]);
+            EPPrize = new PrizeControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.EasternPalace].BossSections[0]);
+            DPPrize = new PrizeControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.DesertPalace].BossSections[0]);
+            THPrize = new PrizeControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.TowerOfHera].BossSections[0]);
+            PDPrize = new PrizeControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.PalaceOfDarkness].BossSections[0]);
+            SPPrize = new PrizeControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.SwampPalace].BossSections[0]);
+            SWPrize = new PrizeControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.SkullWoods].BossSections[0]);
+            TTPrize = new PrizeControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.ThievesTown].BossSections[0]);
+            IPPrize = new PrizeControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.IcePalace].BossSections[0]);
+            MMPrize = new PrizeControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.MiseryMire].BossSections[0]);
+            TRPrize = new PrizeControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.TurtleRock].BossSections[0]);
 
-            EPBoss = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.EasternPalace].BossSections[0]);
-            DPBoss = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.DesertPalace].BossSections[0]);
-            THBoss = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.TowerOfHera].BossSections[0]);
-            PDBoss = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.PalaceOfDarkness].BossSections[0]);
-            SPBoss = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.SwampPalace].BossSections[0]);
-            SWBoss = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.SkullWoods].BossSections[0]);
-            TTBoss = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.ThievesTown].BossSections[0]);
-            IPBoss = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.IcePalace].BossSections[0]);
-            MMBoss = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.MiseryMire].BossSections[0]);
-            TRBoss = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.TurtleRock].BossSections[0]);
-            GTBoss1 = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.GanonsTower].BossSections[0]);
-            GTBoss2 = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.GanonsTower].BossSections[1]);
-            GTBoss3 = new BossControlVM(_undoRedoManager, _game, _game.Locations[LocationID.GanonsTower].BossSections[2]);
+            EPBoss = new BossControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.EasternPalace].BossSections[0]);
+            DPBoss = new BossControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.DesertPalace].BossSections[0]);
+            THBoss = new BossControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.TowerOfHera].BossSections[0]);
+            PDBoss = new BossControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.PalaceOfDarkness].BossSections[0]);
+            SPBoss = new BossControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.SwampPalace].BossSections[0]);
+            SWBoss = new BossControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.SkullWoods].BossSections[0]);
+            TTBoss = new BossControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.ThievesTown].BossSections[0]);
+            IPBoss = new BossControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.IcePalace].BossSections[0]);
+            MMBoss = new BossControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.MiseryMire].BossSections[0]);
+            TRBoss = new BossControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.TurtleRock].BossSections[0]);
+            GTBoss1 = new BossControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.GanonsTower].BossSections[0]);
+            GTBoss2 = new BossControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.GanonsTower].BossSections[1]);
+            GTBoss3 = new BossControlVM(_undoRedoManager, _game,
+                _game.Locations[LocationID.GanonsTower].BossSections[2]);
 
             Maps = new ObservableCollection<MapControlVM>();
             Connectors = new ObservableCollection<ConnectorControlVM>();
@@ -569,7 +662,9 @@ namespace OpenTracker.ViewModels
             }
 
             for (int i = 0; i < Enum.GetValues(typeof(MapID)).Length; i++)
+            {
                 Maps.Add(new MapControlVM(_game, this, (MapID)i));
+            }
 
             Items = new ObservableCollection<ItemControlVM>();
 
@@ -602,8 +697,10 @@ namespace OpenTracker.ViewModels
                     case ItemType.Mirror:
                     case ItemType.HalfMagic:
                     case ItemType.MoonPearl:
-                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, _game,
-                            new Item[1] { _game.Items[(ItemType)i] }));
+                        {
+                            Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, _game,
+                                new Item[1] { _game.Items[(ItemType)i] }));
+                        }
                         break;
                     case ItemType.Bow:
                     case ItemType.Boomerang:
@@ -613,15 +710,19 @@ namespace OpenTracker.ViewModels
                     case ItemType.Ether:
                     case ItemType.Quake:
                     case ItemType.Flute:
-                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, _game,
-                            new Item[2] {
-                            _game.Items[(ItemType)i], _game.Items[(ItemType)(i + 1)]
-                        }));
+                        {
+                            Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, _game,
+                                new Item[2] {
+                                    _game.Items[(ItemType)i], _game.Items[(ItemType)(i + 1)]
+                                }));
+                        }
                         break;
                     case ItemType.Mail:
-                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, _game,
-                            new Item[1] { _game.Items[(ItemType)i] }));
-                        Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, _game, null));
+                        {
+                            Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, _game,
+                                new Item[1] { _game.Items[(ItemType)i] }));
+                            Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, _game, null));
+                        }
                         break;
                     default:
                         break;
@@ -629,6 +730,15 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on itself.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Orientation))
@@ -648,46 +758,100 @@ namespace OpenTracker.ViewModels
             }
 
             if (e.PropertyName == nameof(ItemsPanelOrientation))
+            {
                 this.RaisePropertyChanged(nameof(ItemsPanelHorizontalOrientation));
+            }
         }
 
+        /// <summary>
+        /// Subscribes to the CollectionChanged event on the ObservableStack of undoable actions.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnUndoChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             UpdateCanUndo();
         }
 
+        /// <summary>
+        /// Subscribes to the CollectionChanged event on the ObservableStack of redoable actions.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnRedoChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             UpdateCanRedo();
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the AppSettings class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(AppSettings.DisplayAllLocations))
+            {
                 this.RaisePropertyChanged(nameof(DisplayAllLocations));
+            }
 
             if (e.PropertyName == nameof(AppSettings.ShowItemCountsOnMap))
+            {
                 this.RaisePropertyChanged(nameof(ShowItemCountsOnMap));
+            }
 
             if (e.PropertyName == nameof(AppSettings.LayoutOrientation))
+            {
                 UpdateLayoutOrientation();
+            }
 
             if (e.PropertyName == nameof(AppSettings.MapOrientation))
+            {
                 UpdateMapOrientation();
+            }
 
             if (e.PropertyName == nameof(AppSettings.HorizontalUIPanelPlacement))
+            {
                 UpdateHorizontalUIPanelPlacement();
+            }
 
             if (e.PropertyName == nameof(AppSettings.VerticalUIPanelPlacement))
+            {
                 UpdateVerticalUIPanelPlacement();
+            }
 
             if (e.PropertyName == nameof(AppSettings.HorizontalItemsPlacement))
+            {
                 UpdateHorizontalItemsPlacement();
+            }
 
             if (e.PropertyName == nameof(AppSettings.VerticalItemsPlacement))
+            {
                 UpdateVerticalItemsPlacement();
+            }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Mode.DungeonItemShuffle))
@@ -697,12 +861,26 @@ namespace OpenTracker.ViewModels
             }
 
             if (e.PropertyName == nameof(Mode.WorldState))
+            {
                 this.RaisePropertyChanged(nameof(SmallKeyShuffle));
+            }
 
             if (e.PropertyName == nameof(Mode.BossShuffle))
+            {
                 this.RaisePropertyChanged(nameof(BossShuffle));
+            }
         }
 
+        /// <summary>
+        /// Subscribes to the CollectionChanged event on the ObservableCollection of map entrance
+        /// connections.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnConnectionsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
@@ -736,32 +914,51 @@ namespace OpenTracker.ViewModels
             {
                 Connectors.Clear();
 
-                foreach ((MapLocation, MapLocation) connection in (ObservableCollection<(MapLocation, MapLocation)>)sender)
+                foreach ((MapLocation, MapLocation) connection in
+                    (ObservableCollection<(MapLocation, MapLocation)>)sender)
+                {
                     Connectors.Add(new ConnectorControlVM(_undoRedoManager, _game, this,
                         _appSettings, connection));
+                }
             }
         }
 
+        /// <summary>
+        /// Updates the CanUndo property.
+        /// </summary>
         private void UpdateCanUndo()
         {
             CanUndo = _undoRedoManager.CanUndo();
         }
 
+        /// <summary>
+        /// Undoes the last action.
+        /// </summary>
         private void Undo()
         {
             _undoRedoManager.Undo();
         }
 
+        /// <summary>
+        /// Updates the CanRedo property.
+        /// </summary>
         private void UpdateCanRedo()
         {
             CanRedo = _undoRedoManager.CanRedo();
         }
 
+        /// <summary>
+        /// Redoes the last action.
+        /// </summary>
         private void Redo()
         {
             _undoRedoManager.Redo();
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the UIPanelDock, DynamicLayoutOrientation,
+        /// HorizontalLayoutOrientation, and VerticalLayoutOrientation properties.
+        /// </summary>
         private void UpdateLayoutOrientation()
         {
             this.RaisePropertyChanged(nameof(UIPanelDock));
@@ -770,6 +967,10 @@ namespace OpenTracker.ViewModels
             this.RaisePropertyChanged(nameof(VerticalLayoutOrientation));
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the MapPanelOrientation, DynamicMapOrientation,
+        /// HorizontalMapOrientation, and VerticalMapOrientation properties.
+        /// </summary>
         private void UpdateMapOrientation()
         {
             this.RaisePropertyChanged(nameof(MapPanelOrientation));
@@ -778,6 +979,10 @@ namespace OpenTracker.ViewModels
             this.RaisePropertyChanged(nameof(VerticalMapOrientation));
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the UIPanelDock, TopHorizontalUIPanelPlacement,
+        /// and BottomHorizontalUIPanelPlacement properties.
+        /// </summary>
         private void UpdateHorizontalUIPanelPlacement()
         {
             this.RaisePropertyChanged(nameof(UIPanelDock));
@@ -785,6 +990,10 @@ namespace OpenTracker.ViewModels
             this.RaisePropertyChanged(nameof(BottomHorizontalUIPanelPlacement));
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the UIPanelDock, LeftVerticalUIPanelPlacement,
+        /// and RightVerticalUIPanelPlacement properties.
+        /// </summary>
         private void UpdateVerticalUIPanelPlacement()
         {
             this.RaisePropertyChanged(nameof(UIPanelDock));
@@ -792,6 +1001,10 @@ namespace OpenTracker.ViewModels
             this.RaisePropertyChanged(nameof(RightVerticalUIPanelPlacement));
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the UIPanelOrientationDock, ItemsPanelMargin,
+        /// LeftHorizontalItemsPlacement, and RightHorizontalItemsPlacement properties.
+        /// </summary>
         private void UpdateHorizontalItemsPlacement()
         {
             this.RaisePropertyChanged(nameof(UIPanelOrientationDock));
@@ -800,6 +1013,10 @@ namespace OpenTracker.ViewModels
             this.RaisePropertyChanged(nameof(RightHorizontalItemsPlacement));
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the UIPanelOrientationDock, ItemsPanelMargin,
+        /// TopVerticalItemsPlacement, and BottomVerticalItemsPlacement properties.
+        /// </summary>
         private void UpdateVerticalItemsPlacement()
         {
             this.RaisePropertyChanged(nameof(UIPanelOrientationDock));
@@ -808,15 +1025,30 @@ namespace OpenTracker.ViewModels
             this.RaisePropertyChanged(nameof(BottomVerticalItemsPlacement));
         }
 
+        /// <summary>
+        /// Changes the expected orientation layout, if dynamic orientation is enabled,
+        /// to the specified orientation.
+        /// </summary>
+        /// <param name="orientation">
+        /// The new expected orientation layout.
+        /// </param>
         public void ChangeLayout(Orientation orientation)
         {
             Orientation = orientation;
         }
 
+        /// <summary>
+        /// Saves the tracker data to a file at the specified path.
+        /// </summary>
+        /// <param name="path">
+        /// The file path to which the tracker data is to be saved.
+        /// </param>
         public void Save(string path)
         {
             if (File.Exists(path))
+            {
                 File.Delete(path);
+            }
 
             SaveData saveData = new SaveData(_game);
 
@@ -825,6 +1057,12 @@ namespace OpenTracker.ViewModels
             File.WriteAllText(path, json);
         }
 
+        /// <summary>
+        /// Opens and reads the tracker data from a file at the specified path.
+        /// </summary>
+        /// <param name="path">
+        /// The file path to which the tracker data is to be opened.
+        /// </param>
         public void Open(string path)
         {
             string jsonContent = File.ReadAllText(path);
@@ -839,7 +1077,9 @@ namespace OpenTracker.ViewModels
             _game.Mode.EnemyShuffle = saveData.Mode.EnemyShuffle;
 
             foreach (ItemType item in saveData.ItemCounts.Keys)
+            {
                 _game.Items[item].SetCurrent(saveData.ItemCounts[item]);
+            }
 
             foreach (LocationID location in saveData.LocationSectionCounts.Keys)
             {
@@ -862,7 +1102,9 @@ namespace OpenTracker.ViewModels
             foreach ((LocationID, int) locationIndex in saveData.PrizePlacements.Keys)
             {
                 if (saveData.PrizePlacements[locationIndex] == null)
+                {
                     _game.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].Prize = null;
+                }
                 else
                 {
                     _game.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].Prize =
@@ -873,7 +1115,9 @@ namespace OpenTracker.ViewModels
             foreach ((LocationID, int) locationIndex in saveData.BossPlacements.Keys)
             {
                 if (saveData.BossPlacements[locationIndex] == null)
+                {
                     _game.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].BossPlacement.Boss = null;
+                }
                 else
                 {
                     _game.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].BossPlacement.Boss =
@@ -890,56 +1134,117 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        /// <summary>
+        /// Toggles whether to display all locations on the map.
+        /// </summary>
         private void ToggleDisplayAllLocations()
         {
             _appSettings.DisplayAllLocations = !_appSettings.DisplayAllLocations;
         }
 
+        /// <summary>
+        /// Toggles whether to show the item counts on the map.
+        /// </summary>
         private void ToggleShowItemCountsOnMap()
         {
             _appSettings.ShowItemCountsOnMap = !_appSettings.ShowItemCountsOnMap;
         }
 
+        /// <summary>
+        /// Sets the layout orientation to the specified value.
+        /// </summary>
+        /// <param name="orientationString">
+        /// A string representing the new layout orientation value.
+        /// </param>
         private void SetLayoutOrientation(string orientationString)
         {
             if (orientationString == "Dynamic")
+            {
                 _appSettings.LayoutOrientation = null;
+            }
             else if (Enum.TryParse(orientationString, out Orientation orientation))
+            {
                 _appSettings.LayoutOrientation = orientation;
+            }
         }
 
+        /// <summary>
+        /// Sets the map orientation to the specified value.
+        /// </summary>
+        /// <param name="orientationString">
+        /// A string representing the new map orientation value.
+        /// </param>
         private void SetMapOrientation(string orientationString)
         {
             if (orientationString == "Dynamic")
+            {
                 _appSettings.MapOrientation = null;
+            }
             else if (Enum.TryParse(orientationString, out Orientation orientation))
+            {
                 _appSettings.MapOrientation = orientation;
+            }
         }
 
+        /// <summary>
+        /// Sets the horizontal UI panel orientation to the specified value.
+        /// </summary>
+        /// <param name="orientationString">
+        /// A string representing the new horizontal UI panel orientation value.
+        /// </param>
         private void SetHorizontalUIPanelPlacement(string orientationString)
         {
             if (Enum.TryParse(orientationString, out VerticalAlignment orientation))
+            {
                 _appSettings.HorizontalUIPanelPlacement = orientation;
+            }
         }
 
+        /// <summary>
+        /// Sets the vertical UI panel orientation to the specified value.
+        /// </summary>
+        /// <param name="orientationString">
+        /// A string representing the new vertical UI panel orientation value.
+        /// </param>
         private void SetVerticalUIPanelPlacement(string orientationString)
         {
             if (Enum.TryParse(orientationString, out HorizontalAlignment orientation))
+            {
                 _appSettings.VerticalUIPanelPlacement = orientation;
+            }
         }
 
+        /// <summary>
+        /// Sets the horizontal items placement orientation to the specified value.
+        /// </summary>
+        /// <param name="orientationString">
+        /// A string representing the new horizontal items placement orientation value.
+        /// </param>
         private void SetHorizontalItemsPlacement(string orientationString)
         {
             if (Enum.TryParse(orientationString, out HorizontalAlignment orientation))
+            {
                 _appSettings.HorizontalItemsPlacement = orientation;
+            }
         }
 
+        /// <summary>
+        /// Sets the vertical items placement orientation to the specified value.
+        /// </summary>
+        /// <param name="orientationString">
+        /// A string representing the new vertical items placement orientation value.
+        /// </param>
         private void SetVerticalItemsPlacement(string orientationString)
         {
             if (Enum.TryParse(orientationString, out VerticalAlignment orientation))
+            {
                 _appSettings.VerticalItemsPlacement = orientation;
+            }
         }
 
+        /// <summary>
+        /// Resets the undo/redo manager, pinned locations, and game data to their starting values.
+        /// </summary>
         private void Reset()
         {
             Dispatcher.UIThread.InvokeAsync(() =>
@@ -950,17 +1255,32 @@ namespace OpenTracker.ViewModels
             });
         }
 
+        /// <summary>
+        /// Opens a reset dialog window.
+        /// </summary>
         public async Task OpenResetDialog()
         {
             bool? result = await _dialogService.ShowDialog(
                 new MessageBoxDialogVM("Warning",
-                "Resetting the tracker will set all items and locations back to their starting values.  This cannot be undone.\n\nDo you wish to proceed?"))
+                "Resetting the tracker will set all items and locations back to their starting values." +
+                "  This cannot be undone.\n\nDo you wish to proceed?"))
                 .ConfigureAwait(false);
 
             if (result.HasValue && result.Value)
+            {
                 Reset();
+            }
         }
 
+        /// <summary>
+        /// Saves the app settings to a file.
+        /// </summary>
+        /// <param name="maximized">
+        /// A boolean representing whether the window is maximized.
+        /// </param>
+        /// <param name="bounds">
+        /// The boundaries of the window.
+        /// </param>
         public void SaveAppSettings(bool maximized, Rect bounds)
         {
             _appSettings.Maximized = maximized;
@@ -974,18 +1294,32 @@ namespace OpenTracker.ViewModels
                 Path.DirectorySeparatorChar + "OpenTracker" + Path.DirectorySeparatorChar + "OpenTracker.json";
 
             if (File.Exists(appSettingsPath))
+            {
                 File.Delete(appSettingsPath);
+            }
 
             string json = JsonConvert.SerializeObject(_appSettings, Formatting.Indented);
 
             File.WriteAllText(appSettingsPath, json);
         }
 
+        /// <summary>
+        /// Returns a new autotracker view-model.
+        /// </summary>
+        /// <returns>
+        /// A new autotracker view-model.
+        /// </returns>
         public object GetAutoTrackerViewModel()
         {
             return new AutoTrackerDialogVM(_game.AutoTracker);
         }
 
+        /// <summary>
+        /// Returns a new color select view-model.
+        /// </summary>
+        /// <returns>
+        /// A new color select view-model.
+        /// </returns>
         public object GetColorSelectViewModel()
         {
             return new ColorSelectDialogVM(_appSettings);

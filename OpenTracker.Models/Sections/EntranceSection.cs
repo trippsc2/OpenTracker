@@ -6,6 +6,9 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models.Sections
 {
+    /// <summary>
+    /// This is the class containing the entrance sections of locations.
+    /// </summary>
     public class EntranceSection : ISection
     {
         private readonly Game _game;
@@ -63,6 +66,15 @@ namespace OpenTracker.Models.Sections
             }
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="game">
+        /// The game data.
+        /// </param>
+        /// <param name="iD">
+        /// The location identity.
+        /// </param>
         public EntranceSection(Game game, LocationID iD)
         {
             _game = game ?? throw new ArgumentNullException(nameof(game));
@@ -77,7 +89,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -86,7 +97,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Dropdown";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LumberjackCaveEntrance,
                             RequirementType.None, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
@@ -97,7 +107,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DeathMountainEntryAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEntry,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -106,7 +115,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DeathMountainExitAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainExit,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -115,7 +123,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -124,7 +131,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -133,7 +139,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -142,7 +147,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -151,7 +155,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -160,7 +163,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -169,7 +171,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -178,7 +179,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -187,7 +187,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Move your lawn";
                         _itemProvided = _game.Items[ItemType.GrassHouseAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.GrassHouse,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -196,7 +195,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -205,7 +203,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -214,7 +211,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.BombHutAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.BombHut,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -223,7 +219,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -232,7 +227,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -241,7 +235,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Dropdown";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.MagicBatLedge,
                             RequirementType.None, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
@@ -252,7 +245,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -261,7 +253,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.RaceGameLedgeAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.RaceGameLedge,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -270,7 +261,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -279,7 +269,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -288,7 +277,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.ForestHideout,
                             RequirementType.None, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
@@ -299,7 +287,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -308,7 +295,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Dropdown";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.CastleSecretBack,
                             RequirementType.None, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.CastleSecretFront,
@@ -319,7 +305,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Dungeon";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -328,7 +313,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Dungeon";
                         _itemProvided = _game.Items[ItemType.HyruleCastleTopAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.HyruleCastleTop,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -337,7 +321,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Dungeon";
                         _itemProvided = _game.Items[ItemType.HyruleCastleTopAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.HyruleCastleTop,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -346,7 +329,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Dungeon";
                         _itemProvided = _game.Items[ItemType.HyruleCastleTopAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.AgahnimTowerEntrance,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -355,7 +337,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -364,7 +345,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.CentralBonkRocks,
                             RequirementType.LWDash, new ModeRequirement()));
                     }
@@ -373,7 +353,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.LWWitchAreaAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LWWitchArea,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -382,7 +361,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Waterfall Cave";
                         _itemProvided = _game.Items[ItemType.WaterfallFairyAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.WaterfallFairy,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -391,7 +369,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -400,7 +377,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -409,7 +385,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -418,7 +393,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Dungeon";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -427,7 +401,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Dropdown";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.LWNotBunny, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
@@ -438,7 +411,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Dropdown";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.EscapeGrave,
                             RequirementType.None, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
@@ -449,7 +421,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.NorthBonkRocks,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -458,7 +429,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "The Crypt";
                         _itemProvided = _game.Items[ItemType.LWKingsTombAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.KingsTombGrave,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -467,7 +437,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.LWGraveyardLedgeAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LWGraveyardLedge,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -476,7 +445,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DesertLedgeAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DesertLedge,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -485,7 +453,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DesertPalaceBackEntranceAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DesertPalaceBackEntrance,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -499,7 +466,6 @@ namespace OpenTracker.Models.Sections
                 case LocationID.DesertFrontEntrance:
                     {
                         Name = "Cave";
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DesertPalaceFrontEntrance,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -508,7 +474,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -517,7 +482,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -526,7 +490,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.RupeeCave,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -535,7 +498,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Dungeon";
                         _itemProvided = _game.Items[ItemType.DarkWorldWestAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.SkullWoodsBackEntrance,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -544,7 +506,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Dungeon";
                         _itemProvided = _game.Items[ItemType.DarkWorldWestAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.ThievesTownEntrance,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -553,7 +514,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.DarkWorldWestAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -562,7 +522,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.HammerHouseAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.HammerHouse,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -571,7 +530,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.DarkWorldWestAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -580,7 +538,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DarkWorldWestAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -589,7 +546,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.DarkWorldWestAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -598,7 +554,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.DarkWorldWestAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -607,7 +562,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.DarkWorldWestAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -616,7 +570,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.DarkWorldWestAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.BombableShack,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -625,7 +578,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.HammerPegsAreaAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.HammerPegs,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -634,7 +586,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.BumperCaveTopAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.BumperCaveTop,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -643,7 +594,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.BumperCaveAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.BumperCave,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -652,7 +602,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DarkWorldSouthAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.HypeCave,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -661,7 +610,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DarkWorldSouthAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldSouth,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -670,7 +618,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DarkWorldSouthAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DWCentralBonkRocks,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -679,7 +626,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.SouthOfGroveLedge,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -688,7 +634,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.DarkWorldSouthAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldSouth,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -697,7 +642,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.DarkWorldSouthAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldSouth,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -706,7 +650,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.DarkWorldSouthAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldSouth,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -715,7 +658,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DarkWorldEastAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldEast,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -724,7 +666,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.DarkWorldEastAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldEast,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -733,7 +674,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Dungeon";
                         _itemProvided = _game.Items[ItemType.DarkWorldEastAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.PalaceOfDarknessEntrance,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -742,7 +682,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "House";
                         _itemProvided = _game.Items[ItemType.DWWitchAreaAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DWWitchArea,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -751,7 +690,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DarkWorldEastAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldEast,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -760,14 +698,13 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DarkWorldEastAccess];
-
-                        // Rework
+                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.BigBombToWall,
+                            RequirementType.None, new ModeRequirement()));
                     }
                     break;
                 case LocationID.GanonHole:
                     {
                         Name = "Dropdown";
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.GanonHole,
                             RequirementType.None, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.GanonHoleBack,
@@ -778,7 +715,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DarkWorldSouthEastAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DWIceRodCave,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -787,7 +723,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DarkWorldSouthEastAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldSouthEast,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -796,7 +731,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DarkWorldSouthEastAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DWIceRodRock,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -805,7 +739,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.HypeFairyCave,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -814,7 +747,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -823,7 +755,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -832,7 +763,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.LakeHyliaFairyIslandAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LakeHyliaFairyIsland,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -841,7 +771,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.MiniMoldormCave,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -850,7 +779,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.IceRodCave,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -859,7 +787,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -868,7 +795,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.IceFairyCave,
                             RequirementType.LWLift1, new ModeRequirement()));
                     }
@@ -877,7 +803,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Dungeon";
                         _itemProvided = _game.Items[ItemType.IcePalaceAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.IcePalaceEntrance,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -886,7 +811,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.MireAreaAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.MiseryMireEntrance,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -895,7 +819,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.MireAreaAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.MireArea,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -904,7 +827,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.MireAreaAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.MireArea,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -913,7 +835,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.MireAreaAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.MireArea,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -922,7 +843,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.CheckerboardLedgeAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.CheckerboardCave,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -931,7 +851,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DeathMountainWestBottomAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestBottom,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -940,7 +859,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DeathMountainWestBottomAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestBottom,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -949,7 +867,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DeathMountainWestBottomAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestBottom,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -958,7 +875,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DeathMountainWestBottomAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestBottom,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -967,7 +883,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DeathMountainWestBottomAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestBottom,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -976,7 +891,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DeathMountainWestBottomAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestBottom,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -985,7 +899,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DeathMountainWestBottomAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestBottom,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -994,7 +907,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DarkDeathMountainWestBottomAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainWestBottom,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1003,7 +915,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DarkDeathMountainWestBottomAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainWestBottom,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1012,7 +923,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Dungeon";
                         _itemProvided = _game.Items[ItemType.DeathMountainWestTopAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestTop,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1021,7 +931,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DeathMountainEastBottomAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastBottom,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1030,7 +939,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DeathMountainEastBottomAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastBottom,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1039,7 +947,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DeathMountainEastBottomAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastBottom,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1048,7 +955,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DeathMountainEastBottomAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastBottom,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1057,7 +963,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DeathMountainEastBottomAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastBottomConnector,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1066,7 +971,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.SpiralCaveAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.SpiralCave,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1075,7 +979,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.MimicCaveAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.MimicCave,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1084,7 +987,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DeathMountainEastTopConnectorAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTopConnector,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1093,7 +995,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DeathMountainEastTopAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1102,7 +1003,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DarkDeathMountainEastBottomAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainEastBottom,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1111,7 +1011,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DarkDeathMountainEastBottomAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainEastBottom,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1120,7 +1019,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DarkDeathMountainTopAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainTop,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1129,7 +1027,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DarkDeathMountainTopAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.HookshotCave,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1138,7 +1035,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Dungeon";
                         _itemProvided = _game.Items[ItemType.DarkDeathMountainTopAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.TurtleRockFrontEntrance,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1147,7 +1043,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Dungeon";
                         _itemProvided = _game.Items[ItemType.DarkDeathMountainTopAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.GanonsTowerEntrance,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1156,7 +1051,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.TurtleRockTunnelAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.TurtleRockTunnel,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1165,7 +1059,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.TurtleRockTunnelAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.TurtleRockTunnel,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1174,7 +1067,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.TurtleRockSafetyDoorAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.TurtleRockSafetyDoor,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1183,7 +1075,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Cave";
                         _itemProvided = _game.Items[ItemType.DWFloatingIslandAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.DWFloatingIsland,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1192,7 +1083,6 @@ namespace OpenTracker.Models.Sections
                     {
                         Name = "Link's House";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
-
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1220,11 +1110,23 @@ namespace OpenTracker.Models.Sections
             UpdateAccessibility();
         }
 
+        /// <summary>
+        /// Raises the PropertyChanging event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changing property.
+        /// </param>
         private void OnPropertyChanging(string propertyName)
         {
             PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
+        /// </param>
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -1234,18 +1136,35 @@ namespace OpenTracker.Models.Sections
                 if (_itemProvided != null)
                 {
                     if (IsAvailable())
+                    {
                         _itemProvided.Change(-1, true);
+                    }
                     else
+                    {
                         _itemProvided.Change(1, true);
+                    }
                 }
             }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the Requirement and RequirementNode
+        /// classes that are requirements for dungeon items.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateAccessibility();
         }
 
+        /// <summary>
+        /// Updates the accessibility of the entrance.
+        /// </summary>
         private void UpdateAccessibility()
         {
             AccessibilityLevel finalAccessibility = AccessibilityLevel.None;
@@ -1258,7 +1177,9 @@ namespace OpenTracker.Models.Sections
                     (byte)_game.RequirementNodes[connection.FromNode].Accessibility);
 
                 if (nodeAccessibility < AccessibilityLevel.SequenceBreak)
+                {
                     continue;
+                }
 
                 AccessibilityLevel requirementAccessibility =
                     _game.Requirements[connection.Requirement].Accessibility;
@@ -1274,22 +1195,39 @@ namespace OpenTracker.Models.Sections
                 }
 
                 if (finalConnectionAccessibility > finalAccessibility)
+                {
                     finalAccessibility = finalConnectionAccessibility;
+                }
             }
 
             Accessibility = finalAccessibility;
         }
 
+        /// <summary>
+        /// Clears the section.
+        /// </summary>
+        /// <param name="force">
+        /// A boolean representing whether to override the location logic.
+        /// </param>
         public void Clear(bool force)
         {
             Available = 0;
         }
 
+        /// <summary>
+        /// Returns whether the location has not been fully collected.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether the section has been fully collected.
+        /// </returns>
         public bool IsAvailable()
         {
             return Available > 0;
         }
 
+        /// <summary>
+        /// Resets the section to its starting values.
+        /// </summary>
         public void Reset()
         {
             Marking = null;

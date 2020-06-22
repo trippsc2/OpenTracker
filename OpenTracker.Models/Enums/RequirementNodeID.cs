@@ -1,5 +1,8 @@
 ﻿namespace OpenTracker.Models.Enums
 {
+    /// <summary>
+    /// This is the enum type for requirement node identity.
+    /// </summary>
     public enum RequirementNodeID
     {
         Start,

@@ -1,10 +1,12 @@
 ﻿using OpenTracker.Models.Enums;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace OpenTracker.Models
 {
+    /// <summary>
+    /// This is the data class for boss data
+    /// </summary>
     public class Boss : INotifyPropertyChanged
     {
         private readonly Game _game;
@@ -29,6 +31,11 @@ namespace OpenTracker.Models
             }
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="game">The parent class.</param>
+        /// <param name="type">The type of boss.</param>
         public Boss(Game game, BossType type)
         {
             _game = game ?? throw new ArgumentNullException(nameof(game));
@@ -46,7 +53,9 @@ namespace OpenTracker.Models
                                 (_game.Items.Has(ItemType.FireRod) || _game.Items.Has(ItemType.IceRod))) ||
                                 (_game.Items.CanExtendMagic() &&
                                 (_game.Items.Has(ItemType.CaneOfByrna) || _game.Items.Has(ItemType.CaneOfSomaria))))
+                            {
                                 return AccessibilityLevel.Normal;
+                            }
 
                             return AccessibilityLevel.None;
                         };
@@ -72,7 +81,9 @@ namespace OpenTracker.Models
                                 _game.Items.Has(ItemType.Bow) || _game.Items.Has(ItemType.FireRod) ||
                                 _game.Items.Has(ItemType.IceRod) || _game.Items.Has(ItemType.CaneOfByrna) ||
                                 _game.Items.Has(ItemType.CaneOfSomaria))
+                            {
                                 return AccessibilityLevel.Normal;
+                            }
 
                             return AccessibilityLevel.SequenceBreak;
                         };
@@ -91,7 +102,9 @@ namespace OpenTracker.Models
                         GetAccessibility = () =>
                         {
                             if (_game.Items.Has(ItemType.Sword) || _game.Items.Has(ItemType.Hammer))
+                            {
                                 return AccessibilityLevel.Normal;
+                            }
 
                             return AccessibilityLevel.None;
                         };
@@ -102,7 +115,7 @@ namespace OpenTracker.Models
                     break;
                 case BossType.HelmasaurKing:
                     {
-                        GetAccessibility = () => { return AccessibilityLevel.Normal; };
+                        GetAccessibility = () => AccessibilityLevel.Normal;
                     }
                     break;
                 case BossType.Arrghus:
@@ -116,7 +129,9 @@ namespace OpenTracker.Models
                             {
                                 if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
                                     _game.Items.Swordless() || _game.Items.Has(ItemType.Sword, 2))
+                                {
                                     return AccessibilityLevel.Normal;
+                                }
 
                                 return AccessibilityLevel.SequenceBreak;
                             }
@@ -147,7 +162,9 @@ namespace OpenTracker.Models
                                 if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
                                     _game.Items.Has(ItemType.Sword, 2) || (_game.Items.CanExtendMagic(2) &&
                                     _game.Items.Has(ItemType.FireRod)))
+                                {
                                     return AccessibilityLevel.Normal;
+                                }
 
                                 return AccessibilityLevel.SequenceBreak;
                             }
@@ -176,7 +193,9 @@ namespace OpenTracker.Models
                                 if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
                                     _game.Items.Swordless() || (_game.Items.Has(ItemType.Sword) &&
                                     (_game.Items.Has(ItemType.Cape) || _game.Items.Has(ItemType.CaneOfByrna))))
+                                {
                                     return AccessibilityLevel.Normal;
+                                }
 
                                 return AccessibilityLevel.SequenceBreak;
                             }
@@ -209,7 +228,9 @@ namespace OpenTracker.Models
                                     (_game.Items.Has(ItemType.Bombos) &&
                                     (_game.Items.Swordless() || _game.Items.Has(ItemType.Sword)) &&
                                     _game.Items.CanExtendMagic(2) && _game.Items.Has(ItemType.FireRod)))
+                                {
                                     return AccessibilityLevel.Normal;
+                                }
 
                                 return AccessibilityLevel.SequenceBreak;
                             }
@@ -236,7 +257,9 @@ namespace OpenTracker.Models
                             {
                                 if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
                                     _game.Items.Has(ItemType.Sword, 2) || _game.Items.Has(ItemType.Bow))
+                                {
                                     return AccessibilityLevel.Normal;
+                                }
 
                                 return AccessibilityLevel.SequenceBreak;
                             }
@@ -263,7 +286,9 @@ namespace OpenTracker.Models
                                 if (_game.Mode.ItemPlacement == ItemPlacement.Advanced ||
                                     _game.Items.Swordless() || _game.Items.Has(ItemType.Sword, 3) ||
                                     (_game.Items.CanExtendMagic(2) && _game.Items.Has(ItemType.Sword, 2)))
+                                {
                                     return AccessibilityLevel.Normal;
+                                }
 
                                 return AccessibilityLevel.SequenceBreak;
                             }
@@ -287,7 +312,9 @@ namespace OpenTracker.Models
                         {
                             if (_game.Items.Has(ItemType.Sword) || _game.Items.Has(ItemType.Hammer) ||
                                 _game.Items.Has(ItemType.Net))
+                            {
                                 return AccessibilityLevel.Normal;
+                            }
 
                             return AccessibilityLevel.None;
                         };
@@ -304,23 +331,52 @@ namespace OpenTracker.Models
             UpdateAccessibility();
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
+        /// </param>
         private void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the Mode class
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "ItemPlacement" && _updateOnItemPlacementChange)
+            {
                 UpdateAccessibility();
+            }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the Item class for
+        /// the boss requirements.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateAccessibility();
         }
 
+        /// <summary>
+        /// Updates the accessibility of this boss.
+        /// </summary>
         private void UpdateAccessibility()
         {
             Accessibility = GetAccessibility();

@@ -5,6 +5,9 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models
 {
+    /// <summary>
+    /// This is the mutable dungeon item data.
+    /// </summary>
     public class DungeonItem : INotifyPropertyChanged
     {
         private readonly Game _game;
@@ -29,6 +32,18 @@ namespace OpenTracker.Models
             }
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="game">
+        /// The game data.
+        /// </param>
+        /// <param name="dungeonData">
+        /// The mutable dungeon data parent class.
+        /// </param>
+        /// <param name="iD">
+        /// The item identity.
+        /// </param>
         public DungeonItem(Game game, DungeonData dungeonData, DungeonItemID iD)
         {
             _game = game ?? throw new ArgumentNullException(nameof(game));
@@ -659,21 +674,44 @@ namespace OpenTracker.Models
             UpdateAccessibility();
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
+        /// </param>
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the Requirement and RequirementNode
+        /// classes that are requirements for dungeon items.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateAccessibility();
         }
 
+        /// <summary>
+        /// Updates the accessibility and number of accessible items.
+        /// </summary>
         private void UpdateAccessibility()
         {
             Accessibility = GetItemAccessibility();
         }
 
+        /// <summary>
+        /// Returns the accessibility of the item.
+        /// </summary>
+        /// <returns>The accessibility level of the item.</returns>
         public AccessibilityLevel GetItemAccessibility()
         {
             AccessibilityLevel finalAccessibility = AccessibilityLevel.None;
@@ -687,7 +725,9 @@ namespace OpenTracker.Models
                     .GetNodeAccessibility(new List<RequirementNodeID>()));
 
                 if (nodeAccessibility < AccessibilityLevel.SequenceBreak)
+                {
                     continue;
+                }
 
                 AccessibilityLevel requirementAccessibility =
                     _game.Requirements[connection.Requirement].Accessibility;
@@ -703,7 +743,9 @@ namespace OpenTracker.Models
                 }
 
                 if (finalConnectionAccessibility > finalAccessibility)
+                {
                     finalAccessibility = finalConnectionAccessibility;
+                }
             }
 
             return finalAccessibility;

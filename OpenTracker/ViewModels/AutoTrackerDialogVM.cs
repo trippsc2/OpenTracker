@@ -1,7 +1,7 @@
 ﻿using Avalonia.Threading;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
-using OpenTracker.Models.AutotrackerConnectors;
+using OpenTracker.Utils;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -15,6 +15,9 @@ using WebSocketSharp;
 
 namespace OpenTracker.ViewModels
 {
+    /// <summary>
+    /// This is the view-model class for the autotracker dialog window.
+    /// </summary>
     public class AutoTrackerDialogVM : ViewModelBase, ISave
     {
         private readonly AutoTracker _autoTracker;
@@ -35,6 +38,7 @@ namespace OpenTracker.ViewModels
 
         public ObservableCollection<(string, LogLevel)> LogMessages { get; }
         public ObservableCollection<string> LogLevelOptions { get; }
+        public ObservableStringBuilder LogText { get; }
 
         private string _uriString = "ws://localhost:8080";
         public string URIString
@@ -85,13 +89,12 @@ namespace OpenTracker.ViewModels
             set => this.RaiseAndSetIfChanged(ref _visibleLog, value);
         }
 
-        private string _logText;
-        public string LogText
-        {
-            get => _logText;
-            private set => this.RaiseAndSetIfChanged(ref _logText, value);
-        }
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="autoTracker">
+        /// The autotracker model class.
+        /// </param>
         public AutoTrackerDialogVM(AutoTracker autoTracker)
         {
             _autoTracker = autoTracker ?? throw new ArgumentNullException(nameof(autoTracker));
@@ -119,9 +122,12 @@ namespace OpenTracker.ViewModels
 
             LogMessages = new ObservableCollection<(string, LogLevel)>();
             LogLevelOptions = new ObservableCollection<string>();
+            LogText = new ObservableStringBuilder();
 
             foreach (LogLevel level in Enum.GetValues(typeof(LogLevel)))
+            {
                 LogLevelOptions.Add(level.ToString());
+            }
 
             PropertyChanged += OnPropertyChanged;
 
@@ -134,6 +140,12 @@ namespace OpenTracker.ViewModels
             UpdateCanStop();
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
+        /// </param>
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(LogLevel))
@@ -143,6 +155,15 @@ namespace OpenTracker.ViewModels
                 UpdateCanStart();
         }    
 
+        /// <summary>
+        /// Subscribes to the dispatcher timer for the in-game status check.
+        /// </summary>
+        /// <param name="sender">
+        /// The event sender.
+        /// </param>
+        /// <param name="e">
+        /// The event arguments.
+        /// </param>
         private void OnInGameTimerTick(object sender, EventArgs e)
         {
             Dispatcher.UIThread.InvokeAsync(() =>
@@ -151,6 +172,15 @@ namespace OpenTracker.ViewModels
             });
         }
 
+        /// <summary>
+        /// Subscribes to the dispatcher timer for the memory checks.
+        /// </summary>
+        /// <param name="sender">
+        /// The event sender.
+        /// </param>
+        /// <param name="e">
+        /// The event arguments.
+        /// </param>
         private void OnMemoryCheckTimerTick(object sender, EventArgs e)
         {
             Dispatcher.UIThread.InvokeAsync(() =>
@@ -159,6 +189,15 @@ namespace OpenTracker.ViewModels
             });
         }
 
+        /// <summary>
+        /// Subscribes to the ObservableCollection of log message's CollectionChanged event.
+        /// </summary>
+        /// <param name="sender">
+        /// The event sender.
+        /// </param>
+        /// <param name="e">
+        /// The event arguments.
+        /// </param>
         private void OnLogMessageChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
@@ -170,13 +209,24 @@ namespace OpenTracker.ViewModels
                         (string, LogLevel) message = ((string, LogLevel))item;
 
                         if (message.Item2 >= _logLevel)
+                        {
                             AddLog(message);
+                        }
                     }
                     finally { }
                 }
             }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanging event of the Autotracker class.
+        /// </summary>
+        /// <param name="sender">
+        /// The event sender.
+        /// </param>
+        /// <param name="e">
+        /// The event arguments.
+        /// </param>
         private void OnAutoTrackerChanging(object sender, PropertyChangingEventArgs e)
         {
             if (e.PropertyName == nameof(AutoTracker.Connector) && _autoTracker.Connector != null)
@@ -186,6 +236,15 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event of the Autotracker class.
+        /// </summary>
+        /// <param name="sender">
+        /// The event sender.
+        /// </param>
+        /// <param name="e">
+        /// The event arguments.
+        /// </param>
         private void OnAutoTrackerChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(AutoTracker.Connector) && _autoTracker.Connector != null)
@@ -198,6 +257,15 @@ namespace OpenTracker.ViewModels
             UpdateCanStop();
         }
 
+        /// <summary>
+        /// Subscribes to the ConnectionStatusChanged event of the USB2SNESConnector class.
+        /// </summary>
+        /// <param name="sender">
+        /// The event sender.
+        /// </param>
+        /// <param name="e">
+        /// The event arguments.
+        /// </param>
         private void OnConnectorStatusChanged(object sender, (ConnectionStatus, string) e)
         {
             UpdateCanStart();
@@ -205,30 +273,43 @@ namespace OpenTracker.ViewModels
             UpdateStatusText(e.Item1);
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event of the USB2SNESConnector class.
+        /// </summary>
+        /// <param name="sender">
+        /// The event sender.
+        /// </param>
+        /// <param name="e">
+        /// The event arguments.
+        /// </param>
         private void OnConnectorPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateCanStart();
             UpdateCanStop();
         }
 
+        /// <summary>
+        /// Updates the CanStart value.
+        /// </summary>
         private void UpdateCanStart()
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                if (_autoTracker.Connector == null && CanCreateWebSocketUri())
-                    CanStart = true;
-                else
-                    CanStart = false;
+                CanStart = _autoTracker.Connector == null && CanCreateWebSocketUri();
             });
         }
 
+        /// <summary>
+        /// Starts autotracking.
+        /// </summary>
         private void Start()
         {
             if (_autoTracker.Connector != null)
+            {
                 Stop();
+            }
 
             ResetLog();
-
             _autoTracker.Start(URIString);
 
             Dispatcher.UIThread.InvokeAsync(() =>
@@ -238,22 +319,31 @@ namespace OpenTracker.ViewModels
             });
         }
 
+        /// <summary>
+        /// Returns the observable result of the Start method.
+        /// </summary>
+        /// <returns>
+        /// The observable result of the Start method.
+        /// </returns>
         private IObservable<Unit> StartAsync()
         {
             return Observable.Start(() => { Start(); });
         }
 
+        /// <summary>
+        /// Updates the CanStop value.
+        /// </summary>
         private void UpdateCanStop()
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                if (_autoTracker.Connector != null)
-                    CanStop = true;
-                else
-                    CanStop = false;
+                CanStop = _autoTracker.Connector != null;
             });
         }
 
+        /// <summary>
+        /// Stops autotracking.
+        /// </summary>
         private void Stop()
         {
             _inGameTimer.Stop();
@@ -261,11 +351,23 @@ namespace OpenTracker.ViewModels
             _autoTracker.Stop();
         }
 
+        /// <summary>
+        /// Returns the observable result of the Stop method.
+        /// </summary>
+        /// <returns>
+        /// The observable result of the Stop method.
+        /// </returns>
         private IObservable<Unit> StopAsync()
         {
             return Observable.Start(() => { Stop(); });
         }
 
+        /// <summary>
+        /// Updates the status text and color based on the latest status update.
+        /// </summary>
+        /// <param name="status">
+        /// The status to be updated.
+        /// </param>
         private void UpdateStatusText(ConnectionStatus status)
         {
             Dispatcher.UIThread.InvokeAsync(() =>
@@ -292,69 +394,115 @@ namespace OpenTracker.ViewModels
             });
         }
 
+        /// <summary>
+        /// Adds a log message to the log view.
+        /// </summary>
+        /// <param name="message">
+        /// The log message.
+        /// </param>
         private void AddLog((string, LogLevel) message)
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                LogText += message.Item2.ToString().ToUpper(CultureInfo.CurrentCulture) +
-                    ": " + message.Item1 + "\n";
+                LogText.AppendLine($"{ message.Item2.ToString().ToUpper(CultureInfo.CurrentCulture) }:" +
+                    $" { message.Item1 }");
             });
         }
 
+        /// <summary>
+        /// Resets the log and log view to empty.
+        /// </summary>
         private void ResetLog()
         {
             LogMessages.Clear();
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                LogText = "";
+                LogText.Clear();
             });
         }
 
+        /// <summary>
+        /// Regenerates the log view from the log messages.
+        /// </summary>
         private void RefreshLog()
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                LogText = "";
+                LogText.Clear();
             });
 
             foreach ((string, LogLevel) message in LogMessages)
             {
                 if (message.Item2 >= _logLevel)
+                {
                     AddLog(message);
+                }
             }
         }
 
+        /// <summary>
+        /// Pushes a raw log entry to the log observable collection.
+        /// </summary>
+        /// <param name="rawMessage">
+        /// The raw message string of the log entry.
+        /// </param>
+        /// <param name="level">
+        /// The logging level of the log entry.
+        /// </param>
         private void PushToLog(string rawMessage, LogLevel level)
         {
             LogMessages.Add((rawMessage, level));
         }
 
+        /// <summary>
+        /// Returns whether the URIString value is a valid URI to be accepted by 
+        /// the web socket library.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether the URIString value is valid.
+        /// </returns>
         private bool CanCreateWebSocketUri()
         {
             var uri = URIString.ToUri();
 
             if (uri == null)
+            {
                 return false;
+            }
 
             if (!uri.IsAbsoluteUri)
+            {
                 return false;
+            }
 
             var schm = uri.Scheme;
 
             if (!(schm == "ws" || schm == "wss"))
+            {
                 return false;
+            }
 
             var port = uri.Port;
 
             if (port == 0)
+            {
                 return false;
+            }
 
             if (uri.Fragment.Length > 0)
+            {
                 return false;
+            }
 
             return true;
         }
 
+        /// <summary>
+        /// Saves the log to a text file at the specified path.
+        /// </summary>
+        /// <param name="path">
+        /// The path of the text file.
+        /// </param>
         public void Save(string path)
         {
             using StreamWriter file = new StreamWriter(path);

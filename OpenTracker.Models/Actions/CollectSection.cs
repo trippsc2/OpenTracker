@@ -5,6 +5,10 @@ using System;
 
 namespace OpenTracker.Models.Actions
 {
+    /// <summary>
+    /// This is the class for an undoable action to collect an item/entrance
+    /// from a location section.
+    /// </summary>
     public class CollectSection : IUndoable
     {
         private readonly Game _game;
@@ -15,12 +19,24 @@ namespace OpenTracker.Models.Actions
         private Item _prize;
         private int _previousPrizeCurrent;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="game">
+        /// The game data.
+        /// </param>
+        /// <param name="section">
+        /// The section to be collected.
+        /// </param>
         public CollectSection(Game game, ISection section)
         {
             _game = game;
             _section = section;
         }
 
+        /// <summary>
+        /// Executes the action.
+        /// </summary>
         public void Execute()
         {
             _previousMarking = _section.Marking;
@@ -51,6 +67,9 @@ namespace OpenTracker.Models.Actions
             _section.Available--;
         }
 
+        /// <summary>
+        /// Undoes the action.
+        /// </summary>
         public void Undo()
         {
             _section.Available++;

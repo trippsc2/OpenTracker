@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace OpenTracker.Models.Sections
 {
+    /// <summary>
+    /// This is the class containing the item section of dungeons.
+    /// </summary>
     public class DungeonItemSection : ISection
     {
         private readonly Game _game;
@@ -106,6 +109,15 @@ namespace OpenTracker.Models.Sections
             }
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="game">
+        /// The game data.
+        /// </param>
+        /// <param name="location">
+        /// The data for the location to which this section belongs.
+        /// </param>
         public DungeonItemSection(Game game, Location location)
         {
             _game = game ?? throw new ArgumentNullException(nameof(game));
@@ -116,7 +128,9 @@ namespace OpenTracker.Models.Sections
             BigKeyPlacements = new List<BigKeyPlacement>();
 
             for (int i = 0; i < Environment.ProcessorCount - 1; i++)
+            {
                 _dungeonDataQueue.Enqueue(new DungeonData(_game, _location, this));
+            }
 
             switch (_location.ID)
             {
@@ -147,7 +161,9 @@ namespace OpenTracker.Models.Sections
                                         _game.Items.Has(ItemType.HCSmallKey);
                                 }
                                 else
+                                {
                                     return _game.RequirementNodes[RequirementNodeID.HCBackEntry].Accessibility == AccessibilityLevel.Normal;
+                                }
                             }
 
                             return false;
@@ -407,6 +423,7 @@ namespace OpenTracker.Models.Sections
                                 _game.RequirementNodes[RequirementNodeID.SWFrontBackConnectorEntry].Accessibility == AccessibilityLevel.Normal &&
                                 _game.RequirementNodes[RequirementNodeID.SWBackEntry].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.FireRod].Accessibility == AccessibilityLevel.Normal &&
+                                _game.Requirements[RequirementType.Curtains].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.SWBoss].Accessibility == AccessibilityLevel.Normal &&
                                 (!_game.Mode.BigKeyShuffle || _game.Items.Has(ItemType.SWBigKey)) &&
                                 (!_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.SWSmallKey));
@@ -512,15 +529,21 @@ namespace OpenTracker.Models.Sections
                                 if (_game.Mode.SmallKeyShuffle)
                                 {
                                     if (_game.Items.Has(ItemType.IPSmallKey) && _game.Items.Has(ItemType.CaneOfSomaria))
+                                    {
                                         return true;
+                                    }
 
                                     if (_game.Items.Has(ItemType.IPSmallKey))
+                                    {
                                         return true;
+                                    }
                                 }
                                 else
                                 {
                                     if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                    {
                                         return true;
+                                    }
                                 }
                             }
 
@@ -704,7 +727,9 @@ namespace OpenTracker.Models.Sections
                                     if (_game.RequirementNodes[RequirementNodeID.TRMiddleEntry].Accessibility == AccessibilityLevel.Normal)
                                     {
                                         if (_game.RequirementNodes[RequirementNodeID.TRFrontEntry].Accessibility == AccessibilityLevel.Normal)
+                                        {
                                             return !_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.TRSmallKey);
+                                        }
 
                                         return !_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.TRSmallKey, 2);
                                     }
@@ -716,14 +741,18 @@ namespace OpenTracker.Models.Sections
                                 if (_game.RequirementNodes[RequirementNodeID.TRMiddleEntry].Accessibility == AccessibilityLevel.Normal)
                                 {
                                     if (_game.RequirementNodes[RequirementNodeID.TRFrontEntry].Accessibility == AccessibilityLevel.Normal)
+                                    {
                                         return !_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.TRSmallKey, 2);
+                                    }
 
                                     return !_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.TRSmallKey, 3);
                                 }
 
                                 if (_game.RequirementNodes[RequirementNodeID.TRFrontEntry].Accessibility == AccessibilityLevel.Normal)
+                                {
                                     return _game.Requirements[RequirementType.DarkRoomTR].Accessibility == AccessibilityLevel.Normal &&
                                         (!_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.TRSmallKey, 4));
+                                }
                             }
 
                             return false;
@@ -895,31 +924,72 @@ namespace OpenTracker.Models.Sections
             SetTotal(false);
         }
 
+        /// <summary>
+        /// Raises the PropertyChanging event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changing property.
+        /// </param>
         private void OnPropertyChanging(string propertyName)
         {
             PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
+        /// </param>
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
             if (propertyName == nameof(Available))
+            {
                 UpdateAccessibility();
+            }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Mode.WorldState) ||
                 e.PropertyName == nameof(Mode.DungeonItemShuffle))
+            {
                 SetTotal();
+            }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the Item, Requirement,
+        /// and RequirementNode classes that are requirements for dungeon items.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateAccessibility();
         }
 
+        /// <summary>
+        /// Sets the total based on whether dungeon items are shuffled.
+        /// </summary>
+        /// <param name="updateAccessibility">
+        /// A boolean representing whether to call the UpdateAccessibiliy method at the end.
+        /// </param>
         private void SetTotal(bool updateAccessibility = true)
         {
             int newTotal = _baseTotal +
@@ -933,9 +1003,18 @@ namespace OpenTracker.Models.Sections
             Available = Math.Max(0, Math.Min(Total, Available + delta));
 
             if (updateAccessibility)
+            {
                 UpdateAccessibility();
+            }
         }
 
+        /// <summary>
+        /// Returns a list of numbers of small keys that could be collected based on
+        /// the current game mode and number of small keys collected in small key shuffle.
+        /// </summary>
+        /// <returns>
+        /// A list of 32-bit integers representing the possible numbers of small keys collected.
+        /// </returns>
         private List<int> GetSmallKeyValues()
         {
             List<int> smallKeysValues = new List<int>();
@@ -950,19 +1029,30 @@ namespace OpenTracker.Models.Sections
                         (_game.Mode.WorldState == WorldState.Retro ? _game.Items[ItemType.SmallKey].Current : 0));
                 }
                 else
+                {
                     smallKeyValue = 0;
+                }
 
                 smallKeysValues.Add(smallKeyValue);
             }
             else
             {
                 for (int i = 0; i <= SmallKey; i++)
+                {
                     smallKeysValues.Add(i);
+                }
             }
 
             return smallKeysValues;
         }
 
+        /// <summary>
+        /// Returns a list of possible states for big key collection based on game mode and
+        /// whether the big key is collected in big key shuffle.
+        /// </summary>
+        /// <returns>
+        /// A list of booleans representing the possible states of big key collection.
+        /// </returns>
         private List<bool> GetBigKeyValues()
         {
             List<bool> bigKeyValues = new List<bool>();
@@ -972,9 +1062,13 @@ namespace OpenTracker.Models.Sections
                 bool bigKeyValue;
 
                 if (BigKeyType.HasValue)
+                {
                     bigKeyValue = _game.Items[BigKeyType.Value].Current > 0;
+                }
                 else
+                {
                     bigKeyValue = false;
+                }
 
                 bigKeyValues.Add(bigKeyValue);
             }
@@ -983,21 +1077,34 @@ namespace OpenTracker.Models.Sections
                 bigKeyValues.Add(false);
 
                 if (BigKey > 0)
+                {
                     bigKeyValues.Add(true);
+                }
             }
 
             return bigKeyValues;
         }
 
+        /// <summary>
+        /// Returns the next available DungeonData class in the queue.
+        /// </summary>
+        /// <returns>
+        /// The next available DungeonData class.
+        /// </returns>
         private DungeonData GetDungeonData()
         {
             while (true)
             {
                 if (_dungeonDataQueue.TryDequeue(out DungeonData result))
+                {
                     return result;
+                }
             }
         }
 
+        /// <summary>
+        /// Updates the accessibility and number of accessible items.
+        /// </summary>
         private void UpdateAccessibility()
         {
             if (CanComplete())
@@ -1006,7 +1113,9 @@ namespace OpenTracker.Models.Sections
                 Accessible = Available;
 
                 for (int i = 0; i < _dungeonData.BossItems.Count; i++)
+                {
                     _location.BossSections[i].Accessibility = AccessibilityLevel.Normal;
+                }
 
                 return;
             }
@@ -1020,7 +1129,9 @@ namespace OpenTracker.Models.Sections
                 new BlockingCollection<(List<AccessibilityLevel>, AccessibilityLevel, int)>();
 
             for (int i = 0; i <= _dungeonData.SmallKeyDoors.Count; i++)
+            {
                 keyDoorPermutationQueue.Add(new BlockingCollection<(List<KeyDoorID>, int, bool)>());
+            }
 
             List<int> smallKeyValues = GetSmallKeyValues();
             List<bool> bigKeyValues = GetBigKeyValues();
@@ -1028,7 +1139,9 @@ namespace OpenTracker.Models.Sections
             foreach (int smallKeyValue in smallKeyValues)
             {
                 foreach (bool bigKeyValue in bigKeyValues)
+                {
                     keyDoorPermutationQueue[0].Add((new List<KeyDoorID>(), smallKeyValue, bigKeyValue));
+                }
             }
 
             keyDoorPermutationQueue[0].CompleteAdding();
@@ -1083,9 +1196,13 @@ namespace OpenTracker.Models.Sections
                 keyDoorPermutationQueue[i].Dispose();
 
                 if (i + 1 < keyDoorPermutationQueue.Count)
+                {
                     keyDoorPermutationQueue[i + 1].CompleteAdding();
+                }
                 else
+                {
                     finalKeyDoorPermutationQueue.CompleteAdding();
+                }
             }
 
             Task[] finalKeyDoorTasks = Enumerable.Range(1, Math.Max(1, Environment.ProcessorCount - 1))
@@ -1143,20 +1260,30 @@ namespace OpenTracker.Models.Sections
                 for (int i = 0; i < item.Item1.Count; i++)
                 {
                     if (item.Item1[i] < lowestBossAccessibilities[i])
+                    {
                         lowestBossAccessibilities[i] = item.Item1[i];
+                    }
 
                     if (item.Item1[i] > highestBossAccessibilities[i])
+                    {
                         highestBossAccessibilities[i] = item.Item1[i];
+                    }
                 }
 
                 if (item.Item2 < lowestAccessibility)
+                {
                     lowestAccessibility = item.Item2;
+                }
 
                 if (item.Item2 > highestAccessibility)
+                {
                     highestAccessibility = item.Item2;
+                }
 
                 if (item.Item3 > highestAccessible)
+                {
                     highestAccessible = item.Item3;
+                }
             }
 
             resultQueue.Dispose();
@@ -1164,7 +1291,9 @@ namespace OpenTracker.Models.Sections
             AccessibilityLevel finalAccessibility = highestAccessibility;
 
             if (finalAccessibility == AccessibilityLevel.Normal && lowestAccessibility != AccessibilityLevel.Normal)
+            {
                 finalAccessibility = AccessibilityLevel.SequenceBreak;
+            }
 
             Accessibility = finalAccessibility;
             Accessible = highestAccessible;
@@ -1173,12 +1302,20 @@ namespace OpenTracker.Models.Sections
             {
                 if (highestBossAccessibilities[i] == AccessibilityLevel.Normal &&
                     lowestBossAccessibilities[i] != AccessibilityLevel.Normal)
+                {
                     highestBossAccessibilities[i] = AccessibilityLevel.SequenceBreak;
+                }
 
                 _location.BossSections[i].Accessibility = highestBossAccessibilities[i];
             }
         }
 
+        /// <summary>
+        /// Clears the section.
+        /// </summary>
+        /// <param name="force">
+        /// A boolean representing whether to override the location logic.
+        /// </param>
         public void Clear(bool force)
         {
             do
@@ -1188,11 +1325,20 @@ namespace OpenTracker.Models.Sections
                 (Accessibility == AccessibilityLevel.Inspect && Marking == null)) && Available > 0);
         }
 
+        /// <summary>
+        /// Returns whether the location has not been fully collected.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether the section has been fully collected.
+        /// </returns>
         public bool IsAvailable()
         {
             return Available > 0;
         }
 
+        /// <summary>
+        /// Resets the section to its starting values.
+        /// </summary>
         public void Reset()
         {
             Marking = null;
@@ -1200,21 +1346,30 @@ namespace OpenTracker.Models.Sections
             UserManipulated = false;
         }
 
+        /// <summary>
+        /// Initializes the section.
+        /// </summary>
         public void Initialize()
         {
             _game.Mode.PropertyChanged += OnModeChanged;
 
             if (SmallKeyType.HasValue)
+            {
                 _game.Items[SmallKeyType.Value].PropertyChanged += OnRequirementChanged;
+            }
 
             if (BigKeyType.HasValue)
+            {
                 _game.Items[BigKeyType.Value].PropertyChanged += OnRequirementChanged;
+            }
 
             List<RequirementNodeID> nodeSubscriptions = new List<RequirementNodeID>();
             List<RequirementType> requirementSubscriptions = new List<RequirementType>();
 
             if (_location.ID == LocationID.IcePalace)
+            {
                 _game.Items[ItemType.CaneOfSomaria].PropertyChanged += OnRequirementChanged;
+            }
 
             foreach (DungeonNode node in _dungeonData.RequirementNodes.Values)
             {
@@ -1222,8 +1377,7 @@ namespace OpenTracker.Models.Sections
                 {
                     if (!nodeSubscriptions.Contains(connection.FromNode))
                     {
-                        _game.RequirementNodes[connection.FromNode].PropertyChanged +=
-                            OnRequirementChanged;
+                        _game.RequirementNodes[connection.FromNode].PropertyChanged += OnRequirementChanged;
                     }
                 }
 
@@ -1231,8 +1385,7 @@ namespace OpenTracker.Models.Sections
                 {
                     if (!requirementSubscriptions.Contains(dungeonConnection.Requirement))
                     {
-                        _game.Requirements[dungeonConnection.Requirement].PropertyChanged +=
-                            OnRequirementChanged;
+                        _game.Requirements[dungeonConnection.Requirement].PropertyChanged += OnRequirementChanged;
                     }
                 }
             }
@@ -1243,8 +1396,7 @@ namespace OpenTracker.Models.Sections
                 {
                     if (!requirementSubscriptions.Contains(connection.Requirement))
                     {
-                        _game.Requirements[connection.Requirement].PropertyChanged +=
-                            OnRequirementChanged;
+                        _game.Requirements[connection.Requirement].PropertyChanged += OnRequirementChanged;
                     }
                 }
             }

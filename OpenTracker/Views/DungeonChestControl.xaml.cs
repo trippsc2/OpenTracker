@@ -23,10 +23,14 @@ namespace OpenTracker.Views
         private void OnItemClick(object sender, PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Left)
+            {
                 ViewModelClickHandler.OnLeftClick(e.KeyModifiers == KeyModifiers.Control);
+            }
 
             if (e.InitialPressMouseButton == MouseButton.Right)
+            {
                 ViewModelClickHandler.OnRightClick(e.KeyModifiers == KeyModifiers.Control);
+            }
         }
     }
 }

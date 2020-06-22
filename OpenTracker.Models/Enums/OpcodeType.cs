@@ -1,5 +1,8 @@
 ﻿namespace OpenTracker.Models.AutotrackerConnectors
 {
+    /// <summary>
+    /// This is the enum type of USB2SNES Opcode types.
+    /// </summary>
     public enum OpcodeType
     {
         DeviceList,

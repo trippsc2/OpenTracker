@@ -1,5 +1,8 @@
 ﻿namespace OpenTracker.Interfaces
 {
+    /// <summary>
+    /// This is the interface providing access to the window bounds.
+    /// </summary>
     public interface IBounds
     {
         bool? Maximized { get; set; }

@@ -25,16 +25,22 @@ namespace OpenTracker.Views
         private void OnClickVisibleItem(object sender, PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Left)
+            {
                 ViewModelOpenMarkingSelect.OpenMarkingSelect();
+            }
         }
 
         private void OnClickSection(object sender, PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Left)
+            {
                 ViewModelClickHandler.OnLeftClick(e.KeyModifiers == KeyModifiers.Control);
+            }
 
             if (e.InitialPressMouseButton == MouseButton.Right)
+            {
                 ViewModelClickHandler.OnRightClick(e.KeyModifiers == KeyModifiers.Control);
+            }
         }
     }
 }

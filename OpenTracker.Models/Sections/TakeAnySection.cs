@@ -6,6 +6,9 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models.Sections
 {
+    /// <summary>
+    /// This is the class containing take any sections of locations.
+    /// </summary>
     public class TakeAnySection : ISection
     {
         private readonly Game _game;
@@ -62,6 +65,15 @@ namespace OpenTracker.Models.Sections
             }
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="game">
+        /// The game data.
+        /// </param>
+        /// <param name="iD">
+        /// The location identity.
+        /// </param>
         public TakeAnySection(Game game, LocationID iD)
         {
             _game = game ?? throw new ArgumentNullException(nameof(game));
@@ -210,21 +222,46 @@ namespace OpenTracker.Models.Sections
             UpdateAccessibility();
         }
 
+        /// <summary>
+        /// Raises the PropertyChanging event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changing property.
+        /// </param>
         private void OnPropertyChanging(string propertyName)
         {
             PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
+        /// </param>
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the Requirement and RequirementNode
+        /// classes that are requirements for dungeon items.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateAccessibility();
         }
 
+        /// <summary>
+        /// Updates the accessibility and number of accessible items.
+        /// </summary>
         private void UpdateAccessibility()
         {
             AccessibilityLevel finalAccessibility = AccessibilityLevel.None;
@@ -237,7 +274,9 @@ namespace OpenTracker.Models.Sections
                     (byte)_game.RequirementNodes[connection.FromNode].Accessibility);
 
                 if (nodeAccessibility < AccessibilityLevel.SequenceBreak)
+                {
                     continue;
+                }
 
                 AccessibilityLevel requirementAccessibility =
                     _game.Requirements[connection.Requirement].Accessibility;
@@ -253,22 +292,39 @@ namespace OpenTracker.Models.Sections
                 }
 
                 if (finalConnectionAccessibility > finalAccessibility)
+                {
                     finalAccessibility = finalConnectionAccessibility;
+                }
             }
 
             Accessibility = finalAccessibility;
         }
 
+        /// <summary>
+        /// Clears the section.
+        /// </summary>
+        /// <param name="force">
+        /// A boolean representing whether to override the location logic.
+        /// </param>
         public void Clear(bool force)
         {
             Available = 0;
         }
 
+        /// <summary>
+        /// Returns whether the location has not been fully collected.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether the section has been fully collected.
+        /// </returns>
         public bool IsAvailable()
         {
             return Available > 0;
         }
 
+        /// <summary>
+        /// Resets the section to its starting values.
+        /// </summary>
         public void Reset()
         {
             Marking = null;

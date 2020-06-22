@@ -5,6 +5,9 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models
 {
+    /// <summary>
+    /// This is the class for requirement node.
+    /// </summary>
     public class RequirementNode : INotifyPropertyChanged
     {
         private readonly ItemType? _directAccessItem;
@@ -31,6 +34,15 @@ namespace OpenTracker.Models
             }
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="game">
+        /// The game data.
+        /// </param>
+        /// <param name="iD">
+        /// The requirement node identity.
+        /// </param>
         public RequirementNode(Game game, RequirementNodeID iD)
         {
             Game = game ?? throw new ArgumentNullException(nameof(game));
@@ -43,7 +55,6 @@ namespace OpenTracker.Models
                 case RequirementNodeID.LightWorld:
                     {
                         _directAccessItem = ItemType.LightWorldAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
                             RequirementType.None, new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEntry,
@@ -111,12 +122,11 @@ namespace OpenTracker.Models
                 case RequirementNodeID.DeathMountainEntry:
                     {
                         _directAccessItem = ItemType.DeathMountainEntryAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.LWLift1, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainExit,
-                            RequirementType.BumperCave, new ModeRequirement(worldState: WorldState.Inverted,
-                            entranceShuffle: false)));
+                            RequirementType.BumperCave,
+                            new ModeRequirement(worldState: WorldState.Inverted, entranceShuffle: false)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.BumperCave,
                             RequirementType.Mirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
                     }
@@ -125,13 +135,15 @@ namespace OpenTracker.Models
                 case RequirementNodeID.DeathMountainExit:
                     {
                         _directAccessItem = ItemType.DeathMountainExitAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestBottom,
-                            RequirementType.DarkRoomDeathMountainExit, new ModeRequirement(worldState: WorldState.StandardOpen, entranceShuffle: false)));
+                            RequirementType.DarkRoomDeathMountainExit,
+                            new ModeRequirement(worldState: WorldState.StandardOpen, entranceShuffle: false)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEntry,
-                            RequirementType.BumperCave, new ModeRequirement(worldState: WorldState.Inverted, entranceShuffle: false)));
+                            RequirementType.BumperCave,
+                            new ModeRequirement(worldState: WorldState.Inverted, entranceShuffle: false)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.BumperCaveTop,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                     }
                     break;
                 //  Access to the area north of Kakariko with the Dark World portal
@@ -149,7 +161,6 @@ namespace OpenTracker.Models
                 case RequirementNodeID.GrassHouse:
                     {
                         _directAccessItem = ItemType.GrassHouseAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.LWNotBunny, new ModeRequirement()));
                     }
@@ -158,7 +169,6 @@ namespace OpenTracker.Models
                 case RequirementNodeID.BombHut:
                     {
                         _directAccessItem = ItemType.BombHutAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.LWNotBunny, new ModeRequirement()));
                     }
@@ -169,14 +179,14 @@ namespace OpenTracker.Models
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.LWHammer, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.HammerPegsArea,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                     }
                     break;
                 //  Access to the race game ledge
                 case RequirementNodeID.RaceGameLedge:
                     {
                         _directAccessItem = ItemType.RaceGameLedgeAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.LWNotBunny, new ModeRequirement(entranceShuffle: false)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldSouth,
@@ -187,7 +197,6 @@ namespace OpenTracker.Models
                 case RequirementNodeID.SouthOfGroveLedge:
                     {
                         _directAccessItem = ItemType.SouthOfGroveLedgeAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldSouth,
@@ -198,7 +207,6 @@ namespace OpenTracker.Models
                 case RequirementNodeID.DesertLedge:
                     {
                         _directAccessItem = ItemType.DesertLedgeAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DPFrontEntry,
                             RequirementType.None, new ModeRequirement(entranceShuffle: false)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DesertPalaceBackEntrance,
@@ -211,18 +219,17 @@ namespace OpenTracker.Models
                 case RequirementNodeID.DesertPalaceBackEntrance:
                     {
                         _directAccessItem = ItemType.DesertPalaceBackEntranceAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DesertLedge,
                             RequirementType.LWLift1, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.MireArea,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                     }
                     break;
                 //  Access to the ledge where Checkboard cave is located
                 case RequirementNodeID.CheckerboardLedge:
                     {
                         _directAccessItem = ItemType.CheckerboardLedgeAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.None, new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.MireArea,
@@ -242,7 +249,8 @@ namespace OpenTracker.Models
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.Book, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.MireArea,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                     }
                     break;
                 //  Access to the Bombos tablet ledge
@@ -265,9 +273,11 @@ namespace OpenTracker.Models
                 case RequirementNodeID.LWMirePortal:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.LWFlute, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.LWFlute,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DWMirePortal,
-                            RequirementType.DWLift2, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.DWLift2,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                     }
                     break;
                 //  Access to the northern bonk rocks entrance west of Sanctuary
@@ -287,9 +297,11 @@ namespace OpenTracker.Models
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWKingsTomb,
                             RequirementType.LWLift2, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DWGraveyard,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                     }
                     break;
                 //  Access to the hole under the grave that leads to Escape
@@ -303,11 +315,11 @@ namespace OpenTracker.Models
                 case RequirementNodeID.LWKingsTomb:
                     {
                         _directAccessItem = ItemType.LWKingsTombAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWGraveyard,
                             RequirementType.LWLift2, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DWGraveyard,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                     }
                     break;
                 //  Access to the King's Tomb entrance (under the grave)
@@ -321,47 +333,54 @@ namespace OpenTracker.Models
                 case RequirementNodeID.LWGraveyardLedge:
                     {
                         _directAccessItem = ItemType.LWGraveyardLedgeAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWGraveyard,
-                            RequirementType.None, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.None,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DWGraveyardLedge,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                     }
                     break;
                 //  Access to the top of Hyrule Castle
                 case RequirementNodeID.HyruleCastleTop:
                     {
                         _directAccessItem = ItemType.HyruleCastleTopAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.None, new ModeRequirement(entranceShuffle: false)));
+                            RequirementType.None,
+                            new ModeRequirement(entranceShuffle: false)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldEast,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                     }
                     break;
                 //  Access to the Agahnim Tower entrance
                 case RequirementNodeID.AgahnimTowerEntrance:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.HyruleCastleTop,
-                            RequirementType.ATBarrier, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.ATBarrier,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.HyruleCastleTop,
-                            RequirementType.GTCrystals, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.GTCrystals,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                     }
                     break;
                 //  Access to the hole entrance to Ganon
                 case RequirementNodeID.GanonHole:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.HyruleCastleTop,
-                            RequirementType.Aga2, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Aga2,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldEast,
-                            RequirementType.Aga2, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Aga2,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                     }
                     break;
                 //  Access to the walk-in entrance to Ganon (only accessible in Inverted)
                 case RequirementNodeID.GanonHoleBack:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.None, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.None,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                     }
                     break;
                 //  Access to the walk-in entrance to the Hyrule Castle secret passage (beyond the bushes)
@@ -393,9 +412,11 @@ namespace OpenTracker.Models
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.LWHammer, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DWSouthPortal,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DWSouthPortal,
-                            RequirementType.DWLift1, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.DWLift1,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                     }
                     break;
                 //  Access to the cave where Hype cave is in light world
@@ -422,14 +443,14 @@ namespace OpenTracker.Models
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWWitchArea,
                             RequirementType.LWLift1, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Catfish,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                     }
                     break;
                 //  Access to the Waterfall Fairy entrance
                 case RequirementNodeID.WaterfallFairy:
                     {
                         _directAccessItem = ItemType.WaterfallFairyAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
                             RequirementType.LWSwim, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWLakeHylia,
@@ -444,7 +465,6 @@ namespace OpenTracker.Models
                 case RequirementNodeID.LWWitchArea:
                     {
                         _directAccessItem = ItemType.LWWitchAreaAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.LWNotBunny, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
@@ -474,7 +494,8 @@ namespace OpenTracker.Models
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.LWFakeFlippersSplashDeletion, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DWLakeHylia,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                     }
                     break;
                 //  Access to the water of Lake Hylia while walking on water (for entry into Waterfall Fairy cave)
@@ -499,11 +520,11 @@ namespace OpenTracker.Models
                 case RequirementNodeID.LakeHyliaFairyIsland:
                     {
                         _directAccessItem = ItemType.LakeHyliaFairyIslandAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWLakeHylia,
                             RequirementType.None, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.IcePalaceEntrance,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.IcePalaceEntrance,
                             RequirementType.DWLift2, new ModeRequirement(worldState: WorldState.Inverted)));
                     }
@@ -526,7 +547,6 @@ namespace OpenTracker.Models
                 case RequirementNodeID.DeathMountainWestBottom:
                     {
                         _directAccessItem = ItemType.DeathMountainWestBottomAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.LWFlute, new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEntry,
@@ -594,7 +614,8 @@ namespace OpenTracker.Models
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastBottom,
                             RequirementType.LWLift2, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainEastBottomConnector,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                     }
                     break;
                 //  Access to the ledge containing the Death Mountain East Top Connector entrance
@@ -603,57 +624,65 @@ namespace OpenTracker.Models
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop,
                             RequirementType.None, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.TurtleRockSafetyDoor,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                     }
                     break;
                 //  Access to the ledge containing the Spiral cave entrance
                 case RequirementNodeID.SpiralCave:
                     {
                         _directAccessItem = ItemType.SpiralCaveAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop,
                             RequirementType.None, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.TurtleRockTunnel,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                     }
                     break;
                 //  Access to the ledge containing the Mimic cave entrance
                 case RequirementNodeID.MimicCave:
                     {
                         _directAccessItem = ItemType.MimicCaveAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop,
-                            RequirementType.None, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.None,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.TurtleRockTunnel,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.TRKeyDoorsToMiddleExit,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                     }
                     break;
                 //  Access to the East side of Death Mountain top
                 case RequirementNodeID.DeathMountainEastTop:
                     {
                         _directAccessItem = ItemType.DeathMountainEastTopAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestTop,
                             RequirementType.LWHammer, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastBottom,
-                            RequirementType.None, new ModeRequirement(entranceShuffle: false)));
+                            RequirementType.None,
+                            new ModeRequirement(entranceShuffle: false)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWFloatingIsland,
-                            RequirementType.None, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.None,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWTurtleRockTop,
-                            RequirementType.None, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.None,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWTurtleRockTop,
-                            RequirementType.LWHammer, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.LWHammer,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                     }
                     break;
                 //  Access to the Floating Island on Death Mountain in the Light World
                 case RequirementNodeID.LWFloatingIsland:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DWFloatingIsland,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop,
-                            RequirementType.None, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.None,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                     }
                     break;
                 //  Access to the top of Turtle Rock in Light World (beyond the dark rocks)
@@ -662,29 +691,36 @@ namespace OpenTracker.Models
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop,
                             RequirementType.LWLift2, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DWTurtleRockTop,
-                            RequirementType.DWLift2, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.DWLift2,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DWTurtleRockTop,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                     }
                     break;
                 //  Access to the area north of Village of Outcast where the Kakariko portal drops you
                 case RequirementNodeID.DWKakarikoPortal:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWKakarikoPortal,
-                            RequirementType.LWLift1, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.LWLift1,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWKakarikoPortal,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
-                            RequirementType.DWNotBunny, new ModeRequirement()));
+                            RequirementType.DWNotBunny,
+                            new ModeRequirement()));
                     }
                     break;
                 //  Access to the area of Dark World north of Digging game and West of the river
                 case RequirementNodeID.DarkWorldWest:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new ModeRequirement(worldState: WorldState.Inverted, entranceShuffle: false)));
+                            RequirementType.None,
+                            new ModeRequirement(worldState: WorldState.Inverted, entranceShuffle: false)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.BumperCaveTop,
                             RequirementType.None, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.BumperCave,
@@ -708,24 +744,26 @@ namespace OpenTracker.Models
                 case RequirementNodeID.BumperCave:
                     {
                         _directAccessItem = ItemType.BumperCaveAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEntry,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
                             RequirementType.DWLift1, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.BumperCaveTop,
-                            RequirementType.BumperCave, new ModeRequirement(worldState: WorldState.StandardOpen, entranceShuffle: false)));
+                            RequirementType.BumperCave,
+                            new ModeRequirement(worldState: WorldState.StandardOpen, entranceShuffle: false)));
                     }
                     break;
                 //  Access to the ledge on top of Bumper Cave
                 case RequirementNodeID.BumperCaveTop:
                     {
                         _directAccessItem = ItemType.BumperCaveTopAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.BumperCave,
-                            RequirementType.BumperCave, new ModeRequirement(worldState: WorldState.StandardOpen, entranceShuffle: false)));
+                            RequirementType.BumperCave,
+                            new ModeRequirement(worldState: WorldState.StandardOpen, entranceShuffle: false)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainExit,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                     }
                     break;
                 //  Access to the Thieves Town entrance
@@ -753,9 +791,9 @@ namespace OpenTracker.Models
                 case RequirementNodeID.HammerPegsArea:
                     {
                         _directAccessItem = ItemType.HammerPegsAreaAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
                             RequirementType.DWLift2, new ModeRequirement()));
                     }
@@ -773,7 +811,8 @@ namespace OpenTracker.Models
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
                             RequirementType.DWLift2, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                     }
                     break;
                 //  Access to the area of Dark World south of Village of Outcasts and the Hammer peg blocked path
@@ -783,7 +822,8 @@ namespace OpenTracker.Models
                         _directAccessItem = ItemType.DarkWorldSouthAccess;
 
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new ModeRequirement(worldState: WorldState.Inverted, entranceShuffle: false)));
+                            RequirementType.None,
+                            new ModeRequirement(worldState: WorldState.Inverted, entranceShuffle: false)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DWSouthPortal,
                             RequirementType.DWHammer, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
@@ -803,18 +843,22 @@ namespace OpenTracker.Models
                 case RequirementNodeID.BuyBigBomb:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldSouth,
-                            RequirementType.RedCrystals, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.RedCrystals,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.RedCrystals, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.RedCrystals,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                     }
                     break;
                 //  Access to take the big bomb to Light World
                 case RequirementNodeID.BigBombToLightWorld:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.BuyBigBomb,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.BuyBigBomb,
-                            RequirementType.None, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.None,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                     }
                     break;
                 //  Access to take the big bomb into DW Lake Hylia (bomb duplication)
@@ -824,29 +868,35 @@ namespace OpenTracker.Models
                             RequirementType.BombDuplicationAncillaOverload,
                             new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.BuyBigBomb,
-                            RequirementType.BombDuplicationMirror, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.BombDuplicationMirror,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                     }
                     break;
                 //  Access to take the big bomb to the fat fairy wall
                 case RequirementNodeID.BigBombToWall:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.BuyBigBomb,
-                            RequirementType.DWHammer, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.DWHammer,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.BigBombToDWLakeHylia,
                             RequirementType.None, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.BigBombToLightWorld,
-                            RequirementType.Aga, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Aga,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.BigBombToLightWorld,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                     }
                     break;
                 //  Access to the area north of Swamp Palace where the Dark World portal places you
                 case RequirementNodeID.DWSouthPortal:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWSouthPortal,
-                            RequirementType.LWLift1, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.LWLift1,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWSouthPortal,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldSouth,
                             RequirementType.DWHammer, new ModeRequirement()));
                     }
@@ -862,9 +912,9 @@ namespace OpenTracker.Models
                 case RequirementNodeID.MireArea:
                     {
                         _directAccessItem = ItemType.MireAreaAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DWMirePortal,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -873,11 +923,14 @@ namespace OpenTracker.Models
                 case RequirementNodeID.DWMirePortal:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.DWFlute, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.DWFlute,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWMirePortal,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWMirePortal,
-                            RequirementType.LWLift2, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.LWLift2,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                     }
                     break;
                 //  Access to the Misery Mire entrance
@@ -891,7 +944,8 @@ namespace OpenTracker.Models
                 case RequirementNodeID.DWGraveyard:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWGraveyard,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
                             RequirementType.DWNotBunny, new ModeRequirement()));
                     }
@@ -900,7 +954,8 @@ namespace OpenTracker.Models
                 case RequirementNodeID.DWGraveyardLedge:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWGraveyardLedge,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DWGraveyard,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -911,7 +966,8 @@ namespace OpenTracker.Models
                         _directAccessItem = ItemType.DWWitchAreaAccess;
 
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWWitchArea,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
                             RequirementType.DWSwim, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
@@ -949,11 +1005,12 @@ namespace OpenTracker.Models
                 case RequirementNodeID.DarkWorldEast:
                     {
                         _directAccessItem = ItemType.DarkWorldEastAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.Aga, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.Aga,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DWWitchArea,
                             RequirementType.DWLift1, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DWWitchArea,
@@ -991,7 +1048,8 @@ namespace OpenTracker.Models
                 case RequirementNodeID.DWEastPortal:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWEastPortal,
-                            RequirementType.LWLift1, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.LWLift1,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldEast,
                             RequirementType.DWHammer, new ModeRequirement()));
                     }
@@ -1000,7 +1058,8 @@ namespace OpenTracker.Models
                 case RequirementNodeID.DWLakeHylia:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWLakeHylia,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldSouth,
                             RequirementType.DWSwim, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldSouth,
@@ -1025,22 +1084,24 @@ namespace OpenTracker.Models
                 case RequirementNodeID.IcePalaceEntrance:
                     {
                         _directAccessItem = ItemType.IcePalaceAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LakeHyliaFairyIsland,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LakeHyliaFairyIsland,
-                            RequirementType.LWLift2, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.LWLift2,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DWLakeHylia,
-                            RequirementType.None, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.None,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                     }
                     break;
                 //  Access to the "Dark World Shopping Mall" southeast of Dark World Lake Hylia
                 case RequirementNodeID.DarkWorldSouthEast:
                     {
                         _directAccessItem = ItemType.DarkWorldSouthEastAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DWLakeHylia,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1063,13 +1124,15 @@ namespace OpenTracker.Models
                 case RequirementNodeID.DarkDeathMountainWestBottom:
                     {
                         _directAccessItem = ItemType.DarkDeathMountainWestBottomAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestBottom,
-                            RequirementType.None, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.None,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestBottom,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.BumperCave,
-                            RequirementType.DarkRoomDeathMountainEntry, new ModeRequirement(worldState: WorldState.Inverted, entranceShuffle: false)));
+                            RequirementType.DarkRoomDeathMountainEntry,
+                            new ModeRequirement(worldState: WorldState.Inverted, entranceShuffle: false)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainTop,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1078,17 +1141,19 @@ namespace OpenTracker.Models
                 case RequirementNodeID.DarkDeathMountainTop:
                     {
                         _directAccessItem = ItemType.DarkDeathMountainTopAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestTop,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DWFloatingIsland,
                             RequirementType.None, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DWTurtleRockTop,
                             RequirementType.None, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainWestBottom,
-                            RequirementType.None, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.None,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainEastBottom,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1097,20 +1162,23 @@ namespace OpenTracker.Models
                 case RequirementNodeID.GanonsTowerEntrance:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainTop,
-                            RequirementType.GTCrystals, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.GTCrystals,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainTop,
-                            RequirementType.None, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.None,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                     }
                     break;
                 //  Access to the Dark World Floating Island on Death Mountain
                 case RequirementNodeID.DWFloatingIsland:
                     {
                         _directAccessItem = ItemType.DWFloatingIslandAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWFloatingIsland,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.HookshotCave,
-                            RequirementType.None, new ModeRequirement(entranceShuffle: false)));
+                            RequirementType.None,
+                            new ModeRequirement(entranceShuffle: false)));
                     }
                     break;
                 //  Access to the Hookshot Cave entrance
@@ -1124,11 +1192,14 @@ namespace OpenTracker.Models
                 case RequirementNodeID.DWTurtleRockTop:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWTurtleRockTop,
-                            RequirementType.LWHammer, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.LWHammer,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LWTurtleRockTop,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainTop,
-                            RequirementType.None, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.None,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                     }
                     break;
                 //  Access to the front entrance of Turtle Rock
@@ -1142,11 +1213,12 @@ namespace OpenTracker.Models
                 case RequirementNodeID.DarkDeathMountainEastBottom:
                     {
                         _directAccessItem = ItemType.DarkDeathMountainEastBottomAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastBottom,
-                            RequirementType.LWLift2, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.LWLift2,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastBottom,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainTop,
                             RequirementType.None, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainEastBottomConnector,
@@ -1157,7 +1229,8 @@ namespace OpenTracker.Models
                 case RequirementNodeID.DarkDeathMountainEastBottomConnector:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastBottomConnector,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainEastBottom,
                             RequirementType.DWNotBunny, new ModeRequirement()));
                     }
@@ -1166,40 +1239,45 @@ namespace OpenTracker.Models
                 case RequirementNodeID.TurtleRockTunnel:
                     {
                         _directAccessItem = ItemType.TurtleRockTunnelAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.SpiralCave,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.MimicCave,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                     }
                     break;
                 //  Access to the ledge from the back exit/entrance of Turtle Rock
                 case RequirementNodeID.TurtleRockSafetyDoor:
                     {
                         _directAccessItem = ItemType.TurtleRockSafetyDoorAccess;
-
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTopConnector,
-                            RequirementType.Mirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.Mirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                     }
                     break;
                 //  Access to the Sanctuary (entry node)
                 case RequirementNodeID.HCSanctuaryEntry:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new ModeRequirement(entranceShuffle: true)));
+                            RequirementType.None,
+                            new ModeRequirement(entranceShuffle: true)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.None,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.LWNotBunny, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.SuperBunnyMirror, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.SuperBunnyMirror,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                     }
                     break;
                 //  Access to the Hyrule Castle front area (entry node)
                 case RequirementNodeID.HCFrontEntry:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new ModeRequirement(entranceShuffle: true)));
+                            RequirementType.None,
+                            new ModeRequirement(entranceShuffle: true)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.LWNotBunny, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
@@ -1210,7 +1288,8 @@ namespace OpenTracker.Models
                 case RequirementNodeID.HCBackEntry:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new ModeRequirement(entranceShuffle: true)));
+                            RequirementType.None,
+                            new ModeRequirement(entranceShuffle: true)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.EscapeGrave,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1219,18 +1298,22 @@ namespace OpenTracker.Models
                 case RequirementNodeID.ATEntry:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new ModeRequirement(entranceShuffle: true)));
+                            RequirementType.None,
+                            new ModeRequirement(entranceShuffle: true)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.AgahnimTowerEntrance,
-                            RequirementType.None, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.None,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.GanonsTowerEntrance,
-                            RequirementType.None, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.None,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                     }
                     break;
                 //  Access to Eastern Palace entrance (entry node)
                 case RequirementNodeID.EPEntry:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new ModeRequirement(entranceShuffle: true)));
+                            RequirementType.None,
+                            new ModeRequirement(entranceShuffle: true)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.LWNotBunny, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
@@ -1241,7 +1324,8 @@ namespace OpenTracker.Models
                 case RequirementNodeID.DPFrontEntry:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new ModeRequirement(entranceShuffle: true)));
+                            RequirementType.None,
+                            new ModeRequirement(entranceShuffle: true)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DesertPalaceFrontEntrance,
                             RequirementType.LWNotBunny, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DesertPalaceFrontEntrance,
@@ -1252,7 +1336,8 @@ namespace OpenTracker.Models
                 case RequirementNodeID.DPLeftEntry:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new ModeRequirement(entranceShuffle: true)));
+                            RequirementType.None,
+                            new ModeRequirement(entranceShuffle: true)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DesertLedge,
                             RequirementType.LWNotBunny, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DesertLedge,
@@ -1263,7 +1348,8 @@ namespace OpenTracker.Models
                 case RequirementNodeID.DPBackEntry:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new ModeRequirement(entranceShuffle: true)));
+                            RequirementType.None,
+                            new ModeRequirement(entranceShuffle: true)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DesertPalaceBackEntrance,
                             RequirementType.LWNotBunny, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DesertPalaceBackEntrance,
@@ -1274,7 +1360,8 @@ namespace OpenTracker.Models
                 case RequirementNodeID.ToHEntry:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new ModeRequirement(entranceShuffle: true)));
+                            RequirementType.None,
+                            new ModeRequirement(entranceShuffle: true)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestTop,
                             RequirementType.LWNotBunny, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestTop,
@@ -1294,7 +1381,8 @@ namespace OpenTracker.Models
                 case RequirementNodeID.SPEntry:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new ModeRequirement(entranceShuffle: true)));
+                            RequirementType.None,
+                            new ModeRequirement(entranceShuffle: true)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldSouth,
                             RequirementType.SPEntry, new ModeRequirement()));
                     }
@@ -1324,7 +1412,8 @@ namespace OpenTracker.Models
                 case RequirementNodeID.SWFrontTopDropEntry:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
-                            RequirementType.None, new ModeRequirement(entranceShuffle: true)));
+                            RequirementType.None,
+                            new ModeRequirement(entranceShuffle: true)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
                             RequirementType.DWNotBunny, new ModeRequirement()));
                     }
@@ -1340,7 +1429,8 @@ namespace OpenTracker.Models
                 case RequirementNodeID.SWBackEntry:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new ModeRequirement(entranceShuffle: true)));
+                            RequirementType.None,
+                            new ModeRequirement(entranceShuffle: true)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.SkullWoodsBackEntrance,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1349,7 +1439,8 @@ namespace OpenTracker.Models
                 case RequirementNodeID.TTEntry:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new ModeRequirement(entranceShuffle: true)));
+                            RequirementType.None,
+                            new ModeRequirement(entranceShuffle: true)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.ThievesTownEntrance,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1358,7 +1449,8 @@ namespace OpenTracker.Models
                 case RequirementNodeID.IPEntry:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new ModeRequirement(entranceShuffle: true)));
+                            RequirementType.None,
+                            new ModeRequirement(entranceShuffle: true)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.IcePalaceEntrance,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1367,7 +1459,8 @@ namespace OpenTracker.Models
                 case RequirementNodeID.MMEntry:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new ModeRequirement(entranceShuffle: true)));
+                            RequirementType.None,
+                            new ModeRequirement(entranceShuffle: true)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.MiseryMireEntrance,
                             RequirementType.DWNotBunny, new ModeRequirement()));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.MiseryMireEntrance,
@@ -1378,7 +1471,8 @@ namespace OpenTracker.Models
                 case RequirementNodeID.TRFrontEntry:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new ModeRequirement(entranceShuffle: true)));
+                            RequirementType.None,
+                            new ModeRequirement(entranceShuffle: true)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.TurtleRockFrontEntrance,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1403,7 +1497,8 @@ namespace OpenTracker.Models
                 case RequirementNodeID.TRMiddleEntry:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new ModeRequirement(entranceShuffle: true)));
+                            RequirementType.None,
+                            new ModeRequirement(entranceShuffle: true)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.TurtleRockTunnel,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1412,7 +1507,8 @@ namespace OpenTracker.Models
                 case RequirementNodeID.TRBackEntry:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new ModeRequirement(entranceShuffle: true)));
+                            RequirementType.None,
+                            new ModeRequirement(entranceShuffle: true)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.TurtleRockSafetyDoor,
                             RequirementType.None, new ModeRequirement()));
                     }
@@ -1421,11 +1517,14 @@ namespace OpenTracker.Models
                 case RequirementNodeID.GTEntry:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new ModeRequirement(entranceShuffle: true)));
+                            RequirementType.None,
+                            new ModeRequirement(entranceShuffle: true)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.GanonsTowerEntrance,
-                            RequirementType.None, new ModeRequirement(worldState: WorldState.StandardOpen)));
+                            RequirementType.None,
+                            new ModeRequirement(worldState: WorldState.StandardOpen)));
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.AgahnimTowerEntrance,
-                            RequirementType.None, new ModeRequirement(worldState: WorldState.Inverted)));
+                            RequirementType.None,
+                            new ModeRequirement(worldState: WorldState.Inverted)));
                     }
                     break;
                 //  Access to the Sanctuary (dungeon node)
@@ -2428,57 +2527,99 @@ namespace OpenTracker.Models
                 Game.Items[_directAccessItem.Value].PropertyChanged += OnRequirementChanged;
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
+        /// </param>
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Mode.WorldState) ||
                 e.PropertyName == nameof(Mode.EntranceShuffle))
+            {
                 UpdateAccessibility();
+            }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the Item, Requirement,
+        /// and RequirementNode classes that are requirements for this node.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         protected void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateAccessibility();
         }
 
-        private void OnNodeConnectionChanged(object sender, PropertyChangedEventArgs e)
-        {
-            UpdateAccessibility();
-        }
-
+        /// <summary>
+        /// Returns the node accessibility.
+        /// </summary>
+        /// <param name="excludedNodes">
+        /// The list of node IDs from which to not check accessibility.
+        /// </param>
+        /// <returns>
+        /// The accessibility of the node.
+        /// </returns>
         public virtual AccessibilityLevel GetNodeAccessibility(List<RequirementNodeID> excludedNodes)
         {
             if (ID == RequirementNodeID.Start)
+            {
                 return AccessibilityLevel.Normal;
+            }
 
             if (_directAccessItem.HasValue && Game.Items.Has(_directAccessItem.Value))
+            {
                 return AccessibilityLevel.Normal;
+            }
 
             if (excludedNodes == null)
+            {
                 throw new ArgumentNullException(nameof(excludedNodes));
+            }
 
-            List<RequirementNodeID> newExcludedNodes =
-                excludedNodes.GetRange(0, excludedNodes.Count);
+            List<RequirementNodeID> newExcludedNodes = excludedNodes.GetRange(0, excludedNodes.Count);
             newExcludedNodes.Add(ID);
             AccessibilityLevel finalAccessibility = AccessibilityLevel.None;
 
             foreach (RequirementNodeConnection connection in Connections)
             {
                 if (!Game.Mode.Validate(connection.ModeRequirement))
+                {
                     continue;
+                }
 
                 if (newExcludedNodes.Contains(connection.FromNode))
+                {
                     continue;
+                }
 
                 AccessibilityLevel nodeAccessibility =
                     Game.RequirementNodes[connection.FromNode].GetNodeAccessibility(newExcludedNodes);
 
                 if (nodeAccessibility < AccessibilityLevel.SequenceBreak)
+                {
                     continue;
+                }
 
                 AccessibilityLevel requirementAccessibility = Game.Requirements[connection.Requirement].Accessibility;
 
@@ -2487,20 +2628,30 @@ namespace OpenTracker.Models
                     (byte)connection.MaximumAccessibility);
 
                 if (finalConnectionAccessibility == AccessibilityLevel.Normal)
+                {
                     return AccessibilityLevel.Normal;
+                }
 
                 if (finalConnectionAccessibility > finalAccessibility)
+                {
                     finalAccessibility = finalConnectionAccessibility;
+                }
             }
 
             return finalAccessibility;
         }
 
+        /// <summary>
+        /// Updates the accessibility of the node.
+        /// </summary>
         protected void UpdateAccessibility()
         {
             Accessibility = GetNodeAccessibility(new List<RequirementNodeID>());
         }
 
+        /// <summary>
+        /// Initializes the node.
+        /// </summary>
         public virtual void Initialize()
         {
             foreach (RequirementNodeConnection connection in Connections)

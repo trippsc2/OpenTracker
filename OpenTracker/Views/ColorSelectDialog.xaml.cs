@@ -8,7 +8,7 @@ namespace OpenTracker.Views
     public class ColorSelectDialog : Window, IDialog
     {
         public static AvaloniaProperty<bool> EmphasisFontColorPickerOpenProperty =
-            AvaloniaProperty.Register<ColorSelectDialog, bool>("EmphasisFontColorPickerOpen");
+            AvaloniaProperty.Register<ColorSelectDialog, bool>(nameof(EmphasisFontColorPickerOpen));
         public bool EmphasisFontColorPickerOpen
         {
             get => GetValue(EmphasisFontColorPickerOpenProperty);
@@ -16,7 +16,7 @@ namespace OpenTracker.Views
         }
 
         public static AvaloniaProperty<bool> AccessibilityNoneColorPickerOpenProperty =
-            AvaloniaProperty.Register<ColorSelectDialog, bool>("AccessibilityNoneColorPickerOpen");
+            AvaloniaProperty.Register<ColorSelectDialog, bool>(nameof(AccessibilityNoneColorPickerOpen));
         public bool AccessibilityNoneColorPickerOpen
         {
             get => GetValue(AccessibilityNoneColorPickerOpenProperty);
@@ -24,7 +24,7 @@ namespace OpenTracker.Views
         }
 
         public static AvaloniaProperty<bool> AccessibilityPartialColorPickerOpenProperty =
-            AvaloniaProperty.Register<ColorSelectDialog, bool>("AccessibilityPartialColorPickerOpen");
+            AvaloniaProperty.Register<ColorSelectDialog, bool>(nameof(AccessibilityPartialColorPickerOpen));
         public bool AccessibilityPartialColorPickerOpen
         {
             get => GetValue(AccessibilityPartialColorPickerOpenProperty);
@@ -32,7 +32,7 @@ namespace OpenTracker.Views
         }
 
         public static AvaloniaProperty<bool> AccessibilityInspectColorPickerOpenProperty =
-            AvaloniaProperty.Register<ColorSelectDialog, bool>("AccessibilityInspectColorPickerOpen");
+            AvaloniaProperty.Register<ColorSelectDialog, bool>(nameof(AccessibilityInspectColorPickerOpen));
         public bool AccessibilityInspectColorPickerOpen
         {
             get => GetValue(AccessibilityInspectColorPickerOpenProperty);
@@ -40,7 +40,7 @@ namespace OpenTracker.Views
         }
 
         public static AvaloniaProperty<bool> AccessibilitySequenceBreakColorPickerOpenProperty =
-            AvaloniaProperty.Register<ColorSelectDialog, bool>("AccessibilitySequenceBreakColorPickerOpen");
+            AvaloniaProperty.Register<ColorSelectDialog, bool>(nameof(AccessibilitySequenceBreakColorPickerOpen));
         public bool AccessibilitySequenceBreakColorPickerOpen
         {
             get => GetValue(AccessibilitySequenceBreakColorPickerOpenProperty);
@@ -48,7 +48,7 @@ namespace OpenTracker.Views
         }
 
         public static AvaloniaProperty<bool> AccessibilityNormalColorPickerOpenProperty =
-            AvaloniaProperty.Register<ColorSelectDialog, bool>("AccessibilityNormalColorPickerOpen");
+            AvaloniaProperty.Register<ColorSelectDialog, bool>(nameof(AccessibilityNormalColorPickerOpen));
         public bool AccessibilityNormalColorPickerOpen
         {
             get => GetValue(AccessibilityNormalColorPickerOpenProperty);
@@ -56,7 +56,7 @@ namespace OpenTracker.Views
         }
 
         public static AvaloniaProperty<bool> ConnectorColorPickerOpenProperty =
-            AvaloniaProperty.Register<ColorSelectDialog, bool>("ConnectorColorPickerOpen");
+            AvaloniaProperty.Register<ColorSelectDialog, bool>(nameof(ConnectorColorPickerOpen));
         public bool ConnectorColorPickerOpen
         {
             get => GetValue(ConnectorColorPickerOpenProperty);

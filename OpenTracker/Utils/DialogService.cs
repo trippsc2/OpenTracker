@@ -6,16 +6,31 @@ using System.Threading.Tasks;
 
 namespace OpenTracker.Utils
 {
+    /// <summary>
+    /// This is the class for managing dialog windows.
+    /// </summary>
     public class DialogService : IDialogService
     {
         public Window Owner { get; set; }
         public IDictionary<Type, Type> Mappings { get; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public DialogService()
         {
             Mappings = new Dictionary<Type, Type>();
         }
 
+        /// <summary>
+        /// Registers the view-model and view class types.
+        /// </summary>
+        /// <typeparam name="TViewModel">
+        /// The type of the view-model to be registered.
+        /// </typeparam>
+        /// <typeparam name="TView">
+        /// The type of the view to be registered.
+        /// </typeparam>
         public void Register<TViewModel, TView>()
             where TViewModel : IDialogRequestClose
             where TView : IDialog
@@ -26,6 +41,18 @@ namespace OpenTracker.Utils
             Mappings.Add(typeof(TViewModel), typeof(TView));
         }
 
+        /// <summary>
+        /// Creates and shows a dialog box and returns the dialog result.
+        /// </summary>
+        /// <typeparam name="TViewModel">
+        /// The type of the view-model.
+        /// </typeparam>
+        /// <param name="viewModel">
+        /// The view-model to be provided to the view.
+        /// </param>
+        /// <returns>
+        /// A nullable boolean representing the dialog results.
+        /// </returns>
         public async Task<bool?> ShowDialog<TViewModel>(TViewModel viewModel)
             where TViewModel : IDialogRequestClose
         {

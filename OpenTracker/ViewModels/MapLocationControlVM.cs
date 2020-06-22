@@ -42,9 +42,11 @@ namespace OpenTracker.ViewModels
             get
             {
                 if (Highlighted)
+                {
                     return "#FFFFFFFF";
-                else
-                    return "#FF000000";
+                }
+                
+                return "#FF000000";
             }
         }
 
@@ -60,14 +62,16 @@ namespace OpenTracker.ViewModels
                 };
 
                 if (_mainWindow.MapPanelOrientation == Orientation.Vertical)
-                    return x + 23;
-                else
                 {
-                    if (_mapLocation.Map == MapID.DarkWorld)
-                        return x + 2046;
-                    else
-                        return x + 13;
+                    return x + 23;
                 }
+
+                if (_mapLocation.Map == MapID.DarkWorld)
+                {
+                    return x + 2046;
+                }
+                
+                return x + 13;
             }
         }
 
@@ -85,12 +89,14 @@ namespace OpenTracker.ViewModels
                 if (_mainWindow.MapPanelOrientation == Orientation.Vertical)
                 {
                     if (_mapLocation.Map == MapID.DarkWorld)
+                    {
                         return y + 2046;
-                    else
-                        return y + 13;
+                    }
+                    
+                    return y + 13;
                 }
-                else
-                    return y + 23;
+                
+                return y + 23;
             }
         }
 
@@ -124,7 +130,9 @@ namespace OpenTracker.ViewModels
                 ISection section = _mapLocation.Location.Sections[0];
 
                 if (section.Marking == null)
+                {
                     return "avares://OpenTracker/Assets/Images/Items/unknown1.png";
+                }
                 else
                 {
                     int itemNumber;
@@ -137,8 +145,10 @@ namespace OpenTracker.ViewModels
                         case MarkingType.RedBoomerang:
                         case MarkingType.SmallKey:
                         case MarkingType.BigKey:
-                            return "avares://OpenTracker/Assets/Images/Items/visible-" +
-                                section.Marking.ToString().ToLowerInvariant() + ".png";
+                            {
+                                return $"avares://OpenTracker/Assets/Images/Items/visible-" +
+                                    $"{ section.Marking.ToString().ToLowerInvariant() }.png";
+                            }
                         case MarkingType.Hookshot:
                         case MarkingType.Bomb:
                         case MarkingType.Mushroom:
@@ -163,30 +173,39 @@ namespace OpenTracker.ViewModels
                         case MarkingType.Flippers:
                         case MarkingType.HalfMagic:
                         case MarkingType.Aga:
-                            return "avares://OpenTracker/Assets/Images/Items/" +
-                                section.Marking.ToString().ToLowerInvariant() + "1.png";
+                            {
+                                return $"avares://OpenTracker/Assets/Images/Items/" +
+                                    $"{ section.Marking.ToString().ToLowerInvariant() }1.png";
+                            }
                         case MarkingType.Bottle:
                         case MarkingType.Gloves:
                         case MarkingType.Shield:
                         case MarkingType.Mail:
-                            Item item = _game.Items[Enum.Parse<ItemType>(section.Marking.ToString())];
-                            itemNumber = Math.Min(item.Current + 1, item.Maximum);
-                            return "avares://OpenTracker/Assets/Images/Items/" +
-                                section.Marking.ToString().ToLowerInvariant() +
-                                itemNumber.ToString(CultureInfo.InvariantCulture) + ".png";
+                            {
+                                Item item = _game.Items[Enum.Parse<ItemType>(section.Marking.ToString())];
+                                itemNumber = Math.Min(item.Current + 1, item.Maximum);
+
+                                return $"avares://OpenTracker/Assets/Images/Items/" +
+                                    $"{ section.Marking.ToString().ToLowerInvariant() }" +
+                                    $"{ itemNumber.ToString(CultureInfo.InvariantCulture) }.png";
+                            }
                         case MarkingType.Sword:
+                            {
+                                Item sword = _game.Items[ItemType.Sword];
 
-                            Item sword = _game.Items[ItemType.Sword];
+                                if (sword.Current == 0)
+                                {
+                                    itemNumber = 0;
+                                }
+                                else
+                                {
+                                    itemNumber = Math.Min(sword.Current + 1, sword.Maximum);
+                                }
 
-                            if (sword.Current == 0)
-                                itemNumber = 0;
-                            else
-                                itemNumber = Math.Min(sword.Current + 1, sword.Maximum);
-
-                            return "avares://OpenTracker/Assets/Images/Items/" +
-                                section.Marking.ToString().ToLowerInvariant() +
-                                itemNumber.ToString(CultureInfo.InvariantCulture) + ".png";
-
+                                return $"avares://OpenTracker/Assets/Images/Items/" +
+                                    $"{ section.Marking.ToString().ToLowerInvariant() }" +
+                                    $"{ itemNumber.ToString(CultureInfo.InvariantCulture) }.png";
+                            }
                         case MarkingType.HCFront:
                         case MarkingType.HCLeft:
                         case MarkingType.HCRight:
@@ -205,14 +224,22 @@ namespace OpenTracker.ViewModels
                         case MarkingType.TRRight:
                         case MarkingType.TRBack:
                         case MarkingType.GT:
-                            return "avares://OpenTracker/Assets/Images/" +
-                                section.Marking.ToString().ToLowerInvariant() + ".png";
+                            {
+                                return $"avares://OpenTracker/Assets/Images/" +
+                                    $"{ section.Marking.ToString().ToLowerInvariant() }.png";
+                            }
                         case MarkingType.ToH:
-                            return "avares://OpenTracker/Assets/Images/th.png";
+                            {
+                                return "avares://OpenTracker/Assets/Images/th.png";
+                            }
                         case MarkingType.PoD:
-                            return "avares://OpenTracker/Assets/Images/pd.png";
+                            {
+                                return "avares://OpenTracker/Assets/Images/pd.png";
+                            }
                         case MarkingType.Ganon:
-                            return "avares://OpenTracker/Assets/Images/ganon.png";
+                            {
+                                return "avares://OpenTracker/Assets/Images/ganon.png";
+                            }
                     }
                 }
 
@@ -226,32 +253,36 @@ namespace OpenTracker.ViewModels
             {
                 if (_game.Mode.EntranceShuffle ||
                     _mapLocation.Location.Sections[0] is TakeAnySection)
-                    return 40.0;
-                else
                 {
-                    if (_mapLocation.Location.Total > 1)
-                    {
-                        switch (_mapLocation.Location.ID)
-                        {
-                            case LocationID.EasternPalace:
-                            case LocationID.DesertPalace:
-                            case LocationID.TowerOfHera:
-                            case LocationID.PalaceOfDarkness:
-                            case LocationID.SwampPalace:
-                            case LocationID.SkullWoods:
-                            case LocationID.ThievesTown:
-                            case LocationID.IcePalace:
-                            case LocationID.MiseryMire:
-                            case LocationID.TurtleRock:
-                            case LocationID.GanonsTower:
-                                return 130.0;
-                            default:
-                                return 90.0;
-                        }
-                    }
-                    else
-                        return 70.0;
+                    return 40.0;
                 }
+                
+                if (_mapLocation.Location.Total > 1)
+                {
+                    switch (_mapLocation.Location.ID)
+                    {
+                        case LocationID.EasternPalace:
+                        case LocationID.DesertPalace:
+                        case LocationID.TowerOfHera:
+                        case LocationID.PalaceOfDarkness:
+                        case LocationID.SwampPalace:
+                        case LocationID.SkullWoods:
+                        case LocationID.ThievesTown:
+                        case LocationID.IcePalace:
+                        case LocationID.MiseryMire:
+                        case LocationID.TurtleRock:
+                        case LocationID.GanonsTower:
+                            {
+                                return 130.0;
+                            }
+                        default:
+                            {
+                                return 90.0;
+                            }
+                    }
+                }
+                
+                return 70.0;
             }
         }
 
@@ -264,9 +295,11 @@ namespace OpenTracker.ViewModels
             {
                 if (_game.Mode.EntranceShuffle ||
                     _mapLocation.Location.Sections[0] is TakeAnySection)
+                {
                     return new Thickness(5);
-                else
-                    return new Thickness(9);
+                }
+                
+                return new Thickness(9);
             }
         }
 
@@ -275,18 +308,21 @@ namespace OpenTracker.ViewModels
             get
             {
                 if (_game.Mode.EntranceShuffle)
+                {
                     return false;
+                }
 
                 if (!_appSettings.ShowItemCountsOnMap)
+                {
                     return false;
+                }
 
                 if (_mapLocation.Location.Available == 0)
+                {
                     return false;
+                }
 
-                if (_mapLocation.Location.Total <= 1)
-                    return false;
-
-                return true;
+                return _mapLocation.Location.Total > 1;
             }
         }
 
@@ -295,24 +331,37 @@ namespace OpenTracker.ViewModels
             get
             {
                 if (_game.Mode.EntranceShuffle)
+                {
                     return null;
+                }
 
                 if (!_appSettings.ShowItemCountsOnMap)
+                {
                     return null;
+                }
 
                 if (_mapLocation.Location.Available == 0)
+                {
                     return null;
+                }
 
                 if (_mapLocation.Location.Total <= 1)
+                {
                     return null;
+                }
 
                 if (_mapLocation.Location.Available == _mapLocation.Location.Accessible)
+                {
                     return _mapLocation.Location.Available.ToString(CultureInfo.InvariantCulture);
-                else if (_mapLocation.Location.Accessible == 0)
+                }
+                
+                if (_mapLocation.Location.Accessible == 0)
+                {
                     return _mapLocation.Location.Available.ToString(CultureInfo.InvariantCulture);
-                else
-                    return _mapLocation.Location.Accessible.ToString(CultureInfo.InvariantCulture) + "/" +
-                        _mapLocation.Location.Available.ToString(CultureInfo.InvariantCulture);
+                }
+                
+                return $"{ _mapLocation.Location.Accessible.ToString(CultureInfo.InvariantCulture) }/" +
+                    _mapLocation.Location.Available.ToString(CultureInfo.InvariantCulture);
             }
         }
 
@@ -321,9 +370,11 @@ namespace OpenTracker.ViewModels
             get
             {
                 if (_mapLocation.Location.Sections[0] is TakeAnySection)
+                {
                     return new CornerRadius(40);
-                else
-                    return new CornerRadius(0);
+                }
+                
+                return new CornerRadius(0);
             }
         }
 
@@ -339,9 +390,11 @@ namespace OpenTracker.ViewModels
             get
             {
                 if (_mapLocation.Location.Sections[0] is EntranceSection)
+                {
                     return 280.0;
-                else
-                    return 200.0;
+                }
+                
+                return 200.0;
             }
         }
 
@@ -350,15 +403,35 @@ namespace OpenTracker.ViewModels
             get
             {
                 if (_mapLocation.Location.Sections[0] is EntranceSection)
+                {
                     return 272.0;
-                else
-                    return 238.0;
+                }
+                
+                return 238.0;
             }
         }
 
         public ReactiveCommand<MarkingType?, Unit> ChangeMarkingCommand { get; }
         public ReactiveCommand<Unit, Unit> ClearVisibleItemCommand { get; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="appSettings">
+        /// The app settings.
+        /// </param>
+        /// <param name="game">
+        /// The game data.
+        /// </param>
+        /// <param name="mainWindow">
+        /// The view-model of the main window.
+        /// </param>
+        /// <param name="mapLocation">
+        /// The map location being represented.
+        /// </param>
         public MapLocationControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
             Game game, MainWindowVM mainWindow, MapLocation mapLocation)
         {
@@ -376,20 +449,28 @@ namespace OpenTracker.ViewModels
                 case LocationID.EtherTablet:
                 case LocationID.FloatingIsland:
                 case LocationID.GanonsTower:
-                    _nonEntranceDock = Dock.Left;
-                    _entranceDock = Dock.Left;
+                    {
+                        _nonEntranceDock = Dock.Left;
+                        _entranceDock = Dock.Left;
+                    }
                     break;
                 case LocationID.BumperCave:
-                    _nonEntranceDock = Dock.Top;
-                    _entranceDock = Dock.Left;
+                    {
+                        _nonEntranceDock = Dock.Top;
+                        _entranceDock = Dock.Left;
+                    }
                     break;
                 case LocationID.DesertPalace:
-                    _nonEntranceDock = Dock.Top;
-                    _entranceDock = Dock.Bottom;
+                    {
+                        _nonEntranceDock = Dock.Top;
+                        _entranceDock = Dock.Bottom;
+                    }
                     break;
                 default:
-                    _nonEntranceDock = Dock.Top;
-                    _entranceDock = Dock.Top;
+                    {
+                        _nonEntranceDock = Dock.Top;
+                        _entranceDock = Dock.Top;
+                    }
                     break;
             }
 
@@ -408,32 +489,76 @@ namespace OpenTracker.ViewModels
                 section.PropertyChanging += OnSectionChanging;
                 section.PropertyChanged += OnSectionChanged;
             }
-
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on itself.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Highlighted))
+            {
                 UpdateBorderColor();
+            }
 
             if (e.PropertyName == nameof(ImageDock))
+            {
                 UpdateSizeAndPosition();
+            }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the AppSettings class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(AppSettings.DisplayAllLocations))
+            {
                 UpdateVisibility();
+            }
 
             if (e.PropertyName == nameof(AppSettings.ShowItemCountsOnMap))
+            {
                 UpdateText();
+            }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the ObservableCollection for the
+        /// accessibility colors.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnColorChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateColor();
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Mode.WorldState))
@@ -441,13 +566,17 @@ namespace OpenTracker.ViewModels
                 UpdateSizeAndPosition();
 
                 if (_mapLocation.ModeRequirement.WorldState.HasValue)
+                {
                     UpdateVisibility();
+                }
             }
 
             if (e.PropertyName == nameof(Mode.EntranceShuffle))
             {
                 if (_mapLocation.ModeRequirement.EntranceShuffle.HasValue)
+                {
                     UpdateVisibility();
+                }
 
                 UpdateSizeAndPosition();
                 UpdateImageDock();
@@ -455,12 +584,32 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the MainWindowVM class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnMainWindowChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(MainWindowVM.MapPanelOrientation))
+            {
                 UpdateSizeAndPosition();
+            }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the Location class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnLocationChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Models.Location.Accessibility))
@@ -470,10 +619,14 @@ namespace OpenTracker.ViewModels
             }
 
             if (e.PropertyName == nameof(Models.Location.Accessible))
+            {
                 UpdateText();
+            }
 
             if (e.PropertyName == nameof(Models.Location.Available))
+            {
                 UpdateText();
+            }
 
             if (e.PropertyName == nameof(Models.Location.Total))
             {
@@ -482,12 +635,32 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanging event on the ISection-implementing classes.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanging event.
+        /// </param>
         private void OnSectionChanging(object sender, PropertyChangingEventArgs e)
         {
             if (e.PropertyName == nameof(ISection.Marking))
+            {
                 UnsubscribeFromMarkingItem((ISection)sender);
+            }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the ISection-implementing classes.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ISection.Marking))
@@ -499,16 +672,32 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the Item class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateImage();
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the BorderColor property.
+        /// </summary>
         private void UpdateBorderColor()
         {
             this.RaisePropertyChanged(nameof(BorderColor));
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the BorderSize, Size, CanvasX, and CanvasY
+        /// properties.
+        /// </summary>
         private void UpdateSizeAndPosition()
         {
             this.RaisePropertyChanged(nameof(BorderSize));
@@ -517,36 +706,61 @@ namespace OpenTracker.ViewModels
             this.RaisePropertyChanged(nameof(CanvasY));
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the Color property.
+        /// </summary>
         private void UpdateColor()
         {
             this.RaisePropertyChanged(nameof(Color));
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the ImageVisible and Visible properties.
+        /// </summary>
         private void UpdateVisibility()
         {
             this.RaisePropertyChanged(nameof(ImageVisible));
             this.RaisePropertyChanged(nameof(Visible));
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the ImageSource property.
+        /// </summary>
         private void UpdateImage()
         {
             this.RaisePropertyChanged(nameof(ImageSource));
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the TextVisible and Text properties.
+        /// </summary>
         private void UpdateText()
         {
             this.RaisePropertyChanged(nameof(TextVisible));
             this.RaisePropertyChanged(nameof(Text));
         }
 
+        /// <summary>
+        /// Updates the ImageDock property based on whether entrance shuffle is on.
+        /// </summary>
         private void UpdateImageDock()
         {
             if (_game.Mode.EntranceShuffle)
+            {
                 ImageDock = _entranceDock;
+            }
             else
+            {
                 ImageDock = _nonEntranceDock;
+            }
         }
 
+        /// <summary>
+        /// Unsubscribes from the marking item of the specified section.
+        /// </summary>
+        /// <param name="section">
+        /// The section marking from which to unsubscribe.
+        /// </param>
         private void UnsubscribeFromMarkingItem(ISection section)
         {
             if (section.Marking.HasValue)
@@ -558,13 +772,21 @@ namespace OpenTracker.ViewModels
                     case MarkingType.Sword:
                     case MarkingType.Shield:
                     case MarkingType.Mail:
-                        ItemType itemType = Enum.Parse<ItemType>(section.Marking.Value.ToString());
-                        _game.Items[itemType].PropertyChanged -= OnItemChanged;
+                        {
+                            ItemType itemType = Enum.Parse<ItemType>(section.Marking.Value.ToString());
+                            _game.Items[itemType].PropertyChanged -= OnItemChanged;
+                        }
                         break;
                 }
             }
         }
 
+        /// <summary>
+        /// Subscribes to the marking item of the specified section.
+        /// </summary>
+        /// <param name="section">
+        /// The section marking to which to subscribe.
+        /// </param>
         private void SubscribeToMarkingItem(ISection section)
         {
             if (section.Marking.HasValue)
@@ -576,19 +798,31 @@ namespace OpenTracker.ViewModels
                     case MarkingType.Sword:
                     case MarkingType.Shield:
                     case MarkingType.Mail:
-                        ItemType itemType = Enum.Parse<ItemType>(section.Marking.Value.ToString());
-                        _game.Items[itemType].PropertyChanged += OnItemChanged;
+                        {
+                            ItemType itemType = Enum.Parse<ItemType>(section.Marking.Value.ToString());
+                            _game.Items[itemType].PropertyChanged += OnItemChanged;
+                        }
                         break;
                 }
             }
         }
 
+        /// <summary>
+        /// Clears the marking of the first section of the location.
+        /// </summary>
         private void ClearMarking()
         {
             _undoRedoManager.Execute(new MarkSection(_mapLocation.Location.Sections[0], null));
             MarkingPopupOpen = false;
         }
 
+        /// <summary>
+        /// Changes the marking of the first section of the location to the specified
+        /// marking.
+        /// </summary>
+        /// <param name="marking">
+        /// The marking to be set.
+        /// </param>
         public void ChangeMarking(MarkingType? marking)
         {
             if (marking != null)
@@ -598,11 +832,20 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        /// <summary>
+        /// Opens the Marking Select popup.
+        /// </summary>
         public void OpenMarkingSelect()
         {
             MarkingPopupOpen = true;
         }
 
+        /// <summary>
+        /// Clears available sections.
+        /// </summary>
+        /// <param name="force">
+        /// A boolean representing whether to ignore logic for clearing the sections.
+        /// </param>
         public void ClearAvailableSections(bool force = false)
         {
             bool canBeCleared = false;
@@ -613,13 +856,20 @@ namespace OpenTracker.ViewModels
                     section.Accessibility >= AccessibilityLevel.Partial ||
                     (section.Accessibility == AccessibilityLevel.Inspect &&
                     section.Marking == null)))
+                {
                     canBeCleared = true;
+                }
             }
 
             if (canBeCleared)
+            {
                 _undoRedoManager.Execute(new ClearLocation(_game, _mapLocation.Location, force));
+            }
         }
 
+        /// <summary>
+        /// Pins the location.
+        /// </summary>
         public void PinLocation()
         {
             ObservableCollection<LocationControlVM> pinnedLocations = _mainWindow.Locations;
@@ -628,7 +878,9 @@ namespace OpenTracker.ViewModels
             foreach (LocationControlVM pinnedLocation in pinnedLocations)
             {
                 if (pinnedLocation.Location == _mapLocation.Location)
+                {
                     existingPinnedLocation = pinnedLocation;
+                }
             }
 
             if (existingPinnedLocation == null)
@@ -638,14 +890,22 @@ namespace OpenTracker.ViewModels
                     _mapLocation.Location)));
             }
             else if (pinnedLocations[0] != existingPinnedLocation)
+            {
                 _undoRedoManager.Execute(new PinLocation(pinnedLocations, existingPinnedLocation));
+            }
         }
 
+        /// <summary>
+        /// Handler for when the pointer enters the control.
+        /// </summary>
         public void OnPointerEnter()
         {
             Highlighted = true;
         }
 
+        /// <summary>
+        /// Handler for when the pointer exits the control.
+        /// </summary>
         public void OnPointerLeave()
         {
             Highlighted = false;

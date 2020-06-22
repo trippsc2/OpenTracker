@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 namespace OpenTracker.Models
 {
+    /// <summary>
+    /// This is the class for collecting data for save/load.
+    /// </summary>
     public class SaveData
     {
         public Mode Mode { get; set; }
@@ -14,17 +17,27 @@ namespace OpenTracker.Models
         public Dictionary<(LocationID, int), BossType?> BossPlacements { get; set; }
         public List<(LocationID, int, LocationID, int)> Connections { get; set; }
 
+        /// <summary>
+        /// Basic constructor
+        /// </summary>
         public SaveData()
         {
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="game">
+        /// The game data.
+        /// </param>
         public SaveData(Game game)
         {
             if (game == null)
+            {
                 throw new ArgumentNullException(nameof(game));
+            }
 
             Mode = new Mode(game.Mode);
-
             ItemCounts = new Dictionary<ItemType, int>();
             LocationSectionCounts = new Dictionary<LocationID, Dictionary<int, int>>();
             LocationSectionMarkings = new Dictionary<LocationID, Dictionary<int, MarkingType?>>();
@@ -33,21 +46,31 @@ namespace OpenTracker.Models
             Connections = new List<(LocationID, int, LocationID, int)>();
 
             foreach (Item item in game.Items.Values)
+            {
                 ItemCounts.Add(item.Type, item.Current);
+            }
 
             foreach (Location location in game.Locations.Values)
             {
                 for (int i = 0; i > location.BossSections.Count; i++)
                 {
                     if (location.BossSections[i].Prize == null)
+                    {
                         PrizePlacements.Add((location.ID, i), null);
+                    }
                     else
+                    {
                         PrizePlacements.Add((location.ID, i), location.BossSections[i].Prize.Type);
-                    
+                    }
+
                     if (location.BossSections[i].BossPlacement.Boss == null)
+                    {
                         BossPlacements.Add((location.ID, i), null);
+                    }
                     else
+                    {
                         BossPlacements.Add((location.ID, i), location.BossSections[i].BossPlacement.Boss.Type);
+                    }
                 }
 
                 LocationSectionCounts.Add(location.ID, new Dictionary<int, int>());
@@ -59,7 +82,9 @@ namespace OpenTracker.Models
                     Dictionary<int, MarkingType?> markingDictionary = LocationSectionMarkings[location.ID];
 
                     if (location.Sections[i].HasMarking)
+                    {
                         markingDictionary.Add(i, location.Sections[i].Marking);
+                    }
 
                     countDictionary.Add(i, location.Sections[i].Available);
                 }

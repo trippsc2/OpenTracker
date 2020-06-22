@@ -15,6 +15,15 @@ namespace OpenTracker.ViewModels
 
         public event EventHandler<DialogCloseRequestedEventArgs> CloseRequested;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="title">
+        /// A string representing the window title.
+        /// </param>
+        /// <param name="text">
+        /// A string representing the dialog text.
+        /// </param>
         public MessageBoxDialogVM(string title, string text)
         {
             YesCommand = ReactiveCommand.Create(Yes);
@@ -24,16 +33,20 @@ namespace OpenTracker.ViewModels
             Text = text;
         }
 
+        /// <summary>
+        /// Selects Yes to the dialog.
+        /// </summary>
         private void Yes()
         {
-            if (CloseRequested != null)
-                CloseRequested.Invoke(this, new DialogCloseRequestedEventArgs(true));
+            CloseRequested?.Invoke(this, new DialogCloseRequestedEventArgs(true));
         }
 
+        /// <summary>
+        /// Selects No to the dialog.
+        /// </summary>
         private void No()
         {
-            if (CloseRequested != null)
-                CloseRequested.Invoke(this, new DialogCloseRequestedEventArgs(false));
+            CloseRequested?.Invoke(this, new DialogCloseRequestedEventArgs(false));
         }
     }
 }

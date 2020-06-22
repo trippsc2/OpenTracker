@@ -5,6 +5,9 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models.Sections
 {
+    /// <summary>
+    /// This is the class containing boss/prize sections of dungeons.
+    /// </summary>
     public class BossSection : ISection
     {
         private readonly Game _game;
@@ -65,6 +68,18 @@ namespace OpenTracker.Models.Sections
             }
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="game">
+        /// The game data.
+        /// </param>
+        /// <param name="iD">
+        /// The location identity.
+        /// </param>
+        /// <param name="index">
+        /// The index of the location.
+        /// </param>
         public BossSection(Game game, LocationID iD, int index = 0)
         {
             _game = game ?? throw new ArgumentNullException(nameof(game));
@@ -86,9 +101,13 @@ namespace OpenTracker.Models.Sections
                             if (result.HasValue)
                             {
                                 if (result.Value)
+                                {
                                     Available = 0;
+                                }
                                 else
+                                {
                                     Available = 1;
+                                }
                             }
                         };
 
@@ -106,9 +125,13 @@ namespace OpenTracker.Models.Sections
                             if (result.HasValue)
                             {
                                 if (result.Value)
+                                {
                                     Available = 0;
+                                }
                                 else
+                                {
                                     Available = 1;
+                                }
                             }
                         };
 
@@ -126,9 +149,13 @@ namespace OpenTracker.Models.Sections
                             if (result.HasValue)
                             {
                                 if (result.Value)
+                                {
                                     Available = 0;
+                                }
                                 else
+                                {
                                     Available = 1;
+                                }
                             }
                         };
 
@@ -146,9 +173,13 @@ namespace OpenTracker.Models.Sections
                             if (result.HasValue)
                             {
                                 if (result.Value)
+                                {
                                     Available = 0;
+                                }
                                 else
+                                {
                                     Available = 1;
+                                }
                             }
                         };
 
@@ -166,9 +197,13 @@ namespace OpenTracker.Models.Sections
                             if (result.HasValue)
                             {
                                 if (result.Value)
+                                {
                                     Available = 0;
+                                }
                                 else
+                                {
                                     Available = 1;
+                                }
                             }
                         };
 
@@ -186,9 +221,13 @@ namespace OpenTracker.Models.Sections
                             if (result.HasValue)
                             {
                                 if (result.Value)
+                                {
                                     Available = 0;
+                                }
                                 else
+                                {
                                     Available = 1;
+                                }
                             }
                         };
 
@@ -206,9 +245,13 @@ namespace OpenTracker.Models.Sections
                             if (result.HasValue)
                             {
                                 if (result.Value)
+                                {
                                     Available = 0;
+                                }
                                 else
+                                {
                                     Available = 1;
+                                }
                             }
                         };
 
@@ -226,9 +269,13 @@ namespace OpenTracker.Models.Sections
                             if (result.HasValue)
                             {
                                 if (result.Value)
+                                {
                                     Available = 0;
+                                }
                                 else
+                                {
                                     Available = 1;
+                                }
                             }
                         };
 
@@ -246,9 +293,13 @@ namespace OpenTracker.Models.Sections
                             if (result.HasValue)
                             {
                                 if (result.Value)
+                                {
                                     Available = 0;
+                                }
                                 else
+                                {
                                     Available = 1;
+                                }
                             }
                         };
 
@@ -266,9 +317,13 @@ namespace OpenTracker.Models.Sections
                             if (result.HasValue)
                             {
                                 if (result.Value)
+                                {
                                     Available = 0;
+                                }
                                 else
+                                {
                                     Available = 1;
+                                }
                             }
                         };
 
@@ -280,17 +335,21 @@ namespace OpenTracker.Models.Sections
                         BossPlacement = _game.BossPlacements[BossPlacementID.TRBoss];
 
                         AutoTrack = () =>
-                    {
-                        bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 329, 8);
-
-                        if (result.HasValue)
                         {
-                            if (result.Value)
-                                Available = 0;
-                            else
-                                Available = 1;
-                        }
-                    };
+                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 329, 8);
+                            
+                            if (result.HasValue)
+                            {
+                                if (result.Value)
+                                {
+                                    Available = 0;
+                                }
+                                else
+                                {
+                                    Available = 1;
+                                }
+                            }
+                        };
 
                         _game.AutoTracker.RoomMemory[329].PropertyChanged += OnMemoryChanged;
                     }
@@ -330,15 +389,28 @@ namespace OpenTracker.Models.Sections
             }
         }
 
+        /// <summary>
+        /// Raises the PropertyChanging event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changing property.
+        /// </param>
         private void OnPropertyChanging(string propertyName)
         {
             if (propertyName == nameof(Prize) && Prize != null && !IsAvailable())
+            {
                 Prize.Change(-1, true);
-
-            if (PropertyChanging != null)
-                PropertyChanging.Invoke(this, new PropertyChangingEventArgs(propertyName));
+            }
+            
+            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
+        /// </param>
         private void OnPropertyChanged(string propertyName)
         {
             if (propertyName == nameof(Available) && Prize != null)
@@ -346,48 +418,86 @@ namespace OpenTracker.Models.Sections
                 if (Prize.Type == ItemType.Aga)
                 {
                     if (IsAvailable())
+                    {
                         Prize.Change(-1, false);
+                    }
                     else
+                    {
                         Prize.Change(1, false);
+                    }
                 }
                 else
                 {
                     if (IsAvailable())
+                    {
                         Prize.Change(-1, true);
+                    }
                     else
+                    {
                         Prize.Change(1, true);
+                    }
                 }
             }
 
             if (propertyName == nameof(Prize) && Prize != null && !IsAvailable())
+            {
                 Prize.Change(1, true);
+            }
             
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the MemoryAddress class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnMemoryChanged(object sender, PropertyChangedEventArgs e)
         {
             if (!UserManipulated)
+            {
                 AutoTrack();
+            }
         }
 
+        /// <summary>
+        /// Clears the section.
+        /// </summary>
+        /// <param name="force">
+        /// A boolean representing whether to override the location logic.
+        /// </param>
         public void Clear(bool force)
         {
             Available = 0;
         }
 
+        /// <summary>
+        /// Returns whether the location has not been fully collected.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether the section has been fully collected.
+        /// </returns>
         public bool IsAvailable()
         {
             return Available > 0;
         }
 
+        /// <summary>
+        /// Resets the section to its starting values.
+        /// </summary>
         public void Reset()
         {
             Available = 1;
             BossPlacement.Reset();
 
             if (Prize != _game.Items[ItemType.Aga] || Prize != _game.Items[ItemType.Aga2])
+            {
                 Prize = null;
+            }
         }
     }
 }

@@ -4,27 +4,54 @@ using System;
 
 namespace OpenTracker.ViewModels
 {
+    /// <summary>
+    /// This is the class for managing undo/redo actions.
+    /// </summary>
     public class UndoRedoManager
     {
         public ObservableStack<IUndoable> UndoableActions { get; }
         public ObservableStack<IUndoable> RedoableActions { get; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public UndoRedoManager()
         {
             UndoableActions = new ObservableStack<IUndoable>();
             RedoableActions = new ObservableStack<IUndoable>();
         }
 
+        /// <summary>
+        /// Returns whether any actions can be undone.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether the actions can be undone.
+        /// </returns>
         public bool CanUndo()
         {
             return UndoableActions.Count > 0;
         }
 
+        /// <summary>
+        /// Returns whether any actions can be redone.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether the actions can be redone.
+        /// </returns>
         public bool CanRedo()
         {
             return RedoableActions.Count > 0;
         }
 
+        /// <summary>
+        /// Executes a specified action and adds it to the stack of undoable actions.
+        /// </summary>
+        /// <param name="action">
+        /// The action to be executed.
+        /// </param>
+        /// <param name="clearRedo">
+        /// A boolean representing whether to clear the redo stack.
+        /// </param>
         public void Execute(IUndoable action, bool clearRedo = true)
         {
             if (action == null)
@@ -37,6 +64,9 @@ namespace OpenTracker.ViewModels
                 RedoableActions.Clear();
         }
 
+        /// <summary>
+        /// Undo the last action.
+        /// </summary>
         public void Undo()
         {
             if (UndoableActions.Count > 0)
@@ -47,6 +77,9 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        /// <summary>
+        /// Redo the last undone action.
+        /// </summary>
         public void Redo()
         {
             if (RedoableActions.Count > 0)
@@ -56,6 +89,9 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        /// <summary>
+        /// Resets the undo/redo stacks to their starting values.
+        /// </summary>
         public void Reset()
         {
             UndoableActions.Clear();

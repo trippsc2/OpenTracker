@@ -22,7 +22,9 @@ namespace OpenTracker.Views
         private void OnClick(object sender, PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Left)
+            {
                 ViewModelClose.Close();
+            }
         }
     }
 }

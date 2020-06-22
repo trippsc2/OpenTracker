@@ -78,7 +78,9 @@ namespace OpenTracker.Views
             if (ViewModelBounds.Maximized.HasValue)
             {
                 if (ViewModelBounds.Maximized.Value)
+                {
                     WindowState = WindowState.Maximized;
+                }
             }
 
             if (ViewModelBounds.X.HasValue && ViewModelBounds.Y.HasValue &&
@@ -111,9 +113,13 @@ namespace OpenTracker.Views
         public async Task Save()
         {
             if (CurrentFilePath != null)
+            {
                 ViewModelSave.Save(CurrentFilePath);
+            }
             else
+            {
                 await SaveAs().ConfigureAwait(false);
+            }
         }
 
         public async Task SaveAs()
@@ -140,7 +146,9 @@ namespace OpenTracker.Views
             dialog.AllowMultiple = false;
 
             if (CurrentFilePath != null)
+            {
                 dialog.InitialFileName = CurrentFilePath;
+            }
 
             string[] path = await dialog.ShowAsync(this).ConfigureAwait(false);
 
@@ -157,7 +165,9 @@ namespace OpenTracker.Views
         private void OpenModeSettingsPopup(object sender, PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Left)
+            {
                 ModeSettingsPopupOpen = true;
+            }
         }
 
         private void OnClose(object sender, CancelEventArgs e)
@@ -165,16 +175,22 @@ namespace OpenTracker.Views
             ViewModelSaveAppSettings.SaveAppSettings(WindowState == WindowState.Maximized, Bounds);
 
             if (_autoTrackerDialog != null && _autoTrackerDialog.IsVisible)
+            {
                 _autoTrackerDialog?.Close();
+            }
 
             if (_colorSelectDialog != null && _colorSelectDialog.IsVisible)
+            {
                 _colorSelectDialog?.Close();
+            }
         }
 
         public void AutoTracker()
         {
             if (_autoTrackerDialog != null && _autoTrackerDialog.IsVisible)
+            {
                 _autoTrackerDialog.Activate();
+            }
             else
             {
                 _autoTrackerDialog = new AutoTrackerDialog()
@@ -188,10 +204,15 @@ namespace OpenTracker.Views
         public void ColorSelect()
         {
             if (_colorSelectDialog != null && _colorSelectDialog.IsVisible)
+            {
                 _colorSelectDialog.Activate();
+            }
             else
             {
-                _colorSelectDialog = new ColorSelectDialog() { DataContext = ViewModelColorSelectAccess.GetColorSelectViewModel() };
+                _colorSelectDialog = new ColorSelectDialog()
+                {
+                    DataContext = ViewModelColorSelectAccess.GetColorSelectViewModel()
+                };
                 _colorSelectDialog.Show();
             }
         }

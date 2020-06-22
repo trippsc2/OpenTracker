@@ -1,5 +1,8 @@
 ﻿namespace OpenTracker.Models.Enums
 {
+    /// <summary>
+    /// This is the enum type for the dungeon item identity.
+    /// </summary>
     public enum DungeonItemID
     {
         HCSanctuary,
