@@ -30,28 +30,29 @@ namespace OpenTracker
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                string themePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
-                    Path.DirectorySeparatorChar + "OpenTracker" +
-                    Path.DirectorySeparatorChar + "Themes";
+                string openTrackerHomePath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "OpenTracker");
+
+                string themePath = Path.Combine(openTrackerHomePath, "Themes");
 
                 if (!Directory.Exists(themePath))
+                {
                     Directory.CreateDirectory(themePath);
+                }
 
-                string opentrackerHomePath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
-                   Path.DirectorySeparatorChar + "OpenTracker";
-
-                string defaultThemesPath = GetApplicationRoot() +
-                    Path.DirectorySeparatorChar + "Themes";
+                string defaultThemesPath = Path.Combine(GetApplicationRoot(), "Themes");
 
                 foreach (string themeFile in Directory.GetFiles(defaultThemesPath))
                 {
                     string themeFilename = Path.GetFileName(themeFile);
 
-                    string newFilePath = opentrackerHomePath + Path.DirectorySeparatorChar +
-                        "Themes" + Path.DirectorySeparatorChar + themeFilename;
+                    string newFilePath = Path.Combine(openTrackerHomePath, "Themes", themeFilename);
 
                     if (File.Exists(newFilePath))
+                    {
                         File.Delete(newFilePath);
+                    }
 
                     File.Copy(themeFile, newFilePath);
                 }
@@ -77,12 +78,16 @@ namespace OpenTracker
                     Selector = Selector
                 };
 
-                string themeConfigPath = opentrackerHomePath + Path.DirectorySeparatorChar + "OpenTracker.theme";
+                string themeConfigPath = Path.Combine(openTrackerHomePath, "OpenTracker.theme");
 
                 if (File.Exists(themeConfigPath))
+                {
                     Selector.LoadSelectedTheme(themeConfigPath);
+                }
                 else
+                {
                     Selector.ApplyTheme(Selector.Themes[0]);
+                }
 
                 desktop.Exit += (sender, e) => Selector.SaveSelectedTheme(themeConfigPath);
 

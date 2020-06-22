@@ -430,8 +430,9 @@ namespace OpenTracker.ViewModels
 
             PropertyChanged += OnPropertyChanged;
 
-            string appSettingsPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
-                Path.DirectorySeparatorChar + "OpenTracker" + Path.DirectorySeparatorChar + "OpenTracker.json";
+            string appSettingsPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "OpenTracker", "OpenTracker.json");
 
             if (File.Exists(appSettingsPath))
             {
@@ -713,7 +714,8 @@ namespace OpenTracker.ViewModels
                         {
                             Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, _game,
                                 new Item[2] {
-                                    _game.Items[(ItemType)i], _game.Items[(ItemType)(i + 1)]
+                                    _game.Items[(ItemType)i],
+                                    _game.Items[(ItemType)(i + 1)]
                                 }));
                         }
                         break;
@@ -1290,8 +1292,9 @@ namespace OpenTracker.ViewModels
             _appSettings.Width = bounds.Width;
             _appSettings.Height = bounds.Height;
 
-            string appSettingsPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) +
-                Path.DirectorySeparatorChar + "OpenTracker" + Path.DirectorySeparatorChar + "OpenTracker.json";
+            string appSettingsPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "OpenTracker", "OpenTracker.json");
 
             if (File.Exists(appSettingsPath))
             {
