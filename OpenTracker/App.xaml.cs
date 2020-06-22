@@ -30,9 +30,10 @@ namespace OpenTracker
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                string openTrackerHomePath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "OpenTracker");
+                string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData,
+                    Environment.SpecialFolderOption.Create);
+
+                string openTrackerHomePath = Path.Combine(localAppData, "OpenTracker");
 
                 string themePath = Path.Combine(openTrackerHomePath, "Themes");
 
