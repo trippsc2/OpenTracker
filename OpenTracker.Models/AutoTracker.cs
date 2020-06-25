@@ -16,8 +16,8 @@ namespace OpenTracker.Models
         public event PropertyChangingEventHandler PropertyChanging;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private USB2SNESConnector _connector;
-        public USB2SNESConnector Connector
+        private USB2SNESConnectorOld _connector;
+        public USB2SNESConnectorOld Connector
         {
             get => _connector;
             set
@@ -50,7 +50,7 @@ namespace OpenTracker.Models
         public List<MemoryAddress> ItemMemory { get; }
         public List<MemoryAddress> NPCItemMemory { get; }
 
-        public Action<string, LogLevel> MessageHandler { get; set; }
+        public Action<string, WebSocketSharp.LogLevel> MessageHandler { get; set; }
         
         /// <summary>
         /// Basic constructor
@@ -125,7 +125,7 @@ namespace OpenTracker.Models
         /// </param>
         public void Start(string uriString, int retryTimeInMS = 1000, int retries = 3)
         {
-            Connector = new USB2SNESConnector(uriString, MessageHandler);
+            Connector = new USB2SNESConnectorOld(uriString, MessageHandler);
 
             Connector.ConnectIfNecessary();
 
@@ -203,7 +203,7 @@ namespace OpenTracker.Models
                 }
                 catch (Exception ex)
                 {
-                    MessageHandler?.Invoke(ex.Message, LogLevel.Warn);
+                    MessageHandler?.Invoke(ex.Message, WebSocketSharp.LogLevel.Warn);
                 }
             }
         }
@@ -254,7 +254,7 @@ namespace OpenTracker.Models
                 }
                 catch (Exception ex)
                 {
-                    MessageHandler?.Invoke(ex.Message, LogLevel.Warn);
+                    MessageHandler?.Invoke(ex.Message, WebSocketSharp.LogLevel.Warn);
                 }
             }
         }

@@ -30,12 +30,29 @@ namespace OpenTracker.Models.AutotrackerConnectors
         /// <param name="operands">
         /// The operands of the request.
         /// </param>
-        public RequestType(string opcode, string space, List<string> flags, List<string> operands)
+        public RequestType(string opcode, string space = "SNES", List<string> flags = null,
+            List<string> operands = null)
         {
             Opcode = opcode;
             Space = space;
-            Flags = flags;
-            Operands = operands;
+
+            if (flags == null)
+            {
+                Flags = new List<string>(0);
+            }
+            else
+            {
+                Flags = flags;
+            }
+
+            if (operands == null)
+            {
+                Operands = new List<string>(0);
+            }
+            else
+            {
+                Operands = operands;
+            }
         }
     }
 }
