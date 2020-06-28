@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using WebSocketSharp;
 
-namespace OpenTracker.Models.AutotrackerConnectors
+namespace OpenTracker.Models.SNESConnectors
 {
     /// <summary>
     /// This is the class containing USB2SNES connector data and logic.
@@ -361,7 +361,7 @@ namespace OpenTracker.Models.AutotrackerConnectors
                 {
                     Output(string.Format(CultureInfo.InvariantCulture, "Connected to SNES via {0}", port), LogLevel.Info);
 
-                    ConnectionStatusChanged?.Invoke(this, (ConnectionStatus.Open,
+                    ConnectionStatusChanged?.Invoke(this, (ConnectionStatus.Connected,
                         "Connection to USB2SNES socket service established."));
 
                     Socket.Send(JsonConvert.SerializeObject(new RequestType(

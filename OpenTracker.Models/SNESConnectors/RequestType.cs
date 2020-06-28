@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OpenTracker.Models.AutotrackerConnectors
+namespace OpenTracker.Models.SNESConnectors
 {
     /// <summary>
     /// This is the class containing data for a request sent to USB2SNES websocket.

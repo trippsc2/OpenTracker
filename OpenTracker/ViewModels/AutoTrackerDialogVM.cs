@@ -1,6 +1,7 @@
 ﻿using Avalonia.Threading;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
+using OpenTracker.Models.Enums;
 using OpenTracker.Utils;
 using ReactiveUI;
 using System;
@@ -11,7 +12,6 @@ using System.Globalization;
 using System.IO;
 using System.Reactive;
 using System.Reactive.Linq;
-using WebSocketSharp;
 
 namespace OpenTracker.ViewModels
 {
@@ -21,8 +21,8 @@ namespace OpenTracker.ViewModels
     public class AutoTrackerDialogVM : ViewModelBase, ISave
     {
         private readonly AutoTracker _autoTracker;
-        private readonly DispatcherTimer _inGameTimer;
         private readonly DispatcherTimer _memoryCheckTimer;
+        private int _tickCount;
 
         public ReactiveCommand<Unit, Unit> StartCommand { get; }
         public ReactiveCommand<Unit, Unit> StopCommand { get; }
@@ -36,7 +36,7 @@ namespace OpenTracker.ViewModels
         public bool IsStopping =>
             _isStopping.Value;
 
-        public ObservableCollection<(string, LogLevel)> LogMessages { get; }
+        public ObservableCollection<(LogLevel, string)> LogMessages { get; }
         public ObservableCollection<string> LogLevelOptions { get; }
         public ObservableStringBuilder LogText { get; }
 
@@ -75,11 +75,11 @@ namespace OpenTracker.ViewModels
             private set => this.RaiseAndSetIfChanged(ref _statusText, value);
         }
 
-        private LogLevel _logLevel = WebSocketSharp.LogLevel.Info;
+        private LogLevel _logLevel = Models.Enums.LogLevel.Info;
         public string LogLevel
         {
             get => _logLevel.ToString();
-            set => this.RaiseAndSetIfChanged(ref _logLevel, Enum.Parse<WebSocketSharp.LogLevel>(value));
+            set => this.RaiseAndSetIfChanged(ref _logLevel, Enum.Parse<LogLevel>(value));
         }
 
         private bool _visibleLog;
@@ -100,15 +100,9 @@ namespace OpenTracker.ViewModels
             _autoTracker = autoTracker ?? throw new ArgumentNullException(nameof(autoTracker));
             _autoTracker.MessageHandler = PushToLog;
 
-            _inGameTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(500)
-            };
-            _inGameTimer.Tick += OnInGameTimerTick;
-
             _memoryCheckTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromSeconds(2)
+                Interval = TimeSpan.FromMilliseconds(500)
             };
             _memoryCheckTimer.Tick += OnMemoryCheckTimerTick;
 
@@ -120,7 +114,7 @@ namespace OpenTracker.ViewModels
 
             ResetLogCommand = ReactiveCommand.Create(ResetLog);
 
-            LogMessages = new ObservableCollection<(string, LogLevel)>();
+            LogMessages = new ObservableCollection<(LogLevel, string)>();
             LogLevelOptions = new ObservableCollection<string>();
             LogText = new ObservableStringBuilder();
 
@@ -133,7 +127,6 @@ namespace OpenTracker.ViewModels
 
             LogMessages.CollectionChanged += OnLogMessageChanged;
 
-            _autoTracker.PropertyChanging += OnAutoTrackerChanging;
             _autoTracker.PropertyChanged += OnAutoTrackerChanged;
 
             UpdateCanStart();
@@ -156,23 +149,6 @@ namespace OpenTracker.ViewModels
         }    
 
         /// <summary>
-        /// Subscribes to the dispatcher timer for the in-game status check.
-        /// </summary>
-        /// <param name="sender">
-        /// The event sender.
-        /// </param>
-        /// <param name="e">
-        /// The event arguments.
-        /// </param>
-        private void OnInGameTimerTick(object sender, EventArgs e)
-        {
-            Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                _autoTracker.InGameCheck();
-            });
-        }
-
-        /// <summary>
         /// Subscribes to the dispatcher timer for the memory checks.
         /// </summary>
         /// <param name="sender">
@@ -183,9 +159,22 @@ namespace OpenTracker.ViewModels
         /// </param>
         private void OnMemoryCheckTimerTick(object sender, EventArgs e)
         {
+            _tickCount++;
+
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                _autoTracker.MemoryCheck();
+                _autoTracker.InGameCheck();
+
+                if (_tickCount == 3)
+                {
+                    _tickCount = 0;
+
+                    foreach (MemorySegmentType segment in Enum.GetValues(typeof(MemorySegmentType)))
+                    {
+                        _autoTracker.MemoryCheck(segment);
+                    }
+                }
+
             });
         }
 
@@ -219,24 +208,6 @@ namespace OpenTracker.ViewModels
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanging event of the Autotracker class.
-        /// </summary>
-        /// <param name="sender">
-        /// The event sender.
-        /// </param>
-        /// <param name="e">
-        /// The event arguments.
-        /// </param>
-        private void OnAutoTrackerChanging(object sender, PropertyChangingEventArgs e)
-        {
-            if (e.PropertyName == nameof(AutoTracker.Connector) && _autoTracker.Connector != null)
-            {
-                _autoTracker.Connector.ConnectionStatusChanged -= OnConnectorStatusChanged;
-                _autoTracker.Connector.PropertyChanged -= OnConnectorPropertyChanged;
-            }
-        }
-
-        /// <summary>
         /// Subscribes to the PropertyChanged event of the Autotracker class.
         /// </summary>
         /// <param name="sender">
@@ -247,10 +218,9 @@ namespace OpenTracker.ViewModels
         /// </param>
         private void OnAutoTrackerChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(AutoTracker.Connector) && _autoTracker.Connector != null)
+            if (e.PropertyName == nameof(AutoTracker.SNESConnector) && _autoTracker.SNESConnector != null)
             {
-                _autoTracker.Connector.ConnectionStatusChanged += OnConnectorStatusChanged;
-                _autoTracker.Connector.PropertyChanged += OnConnectorPropertyChanged;
+                _autoTracker.SNESConnector.PropertyChanged += OnConnectorPropertyChanged;
             }
 
             UpdateCanStart();
@@ -295,7 +265,7 @@ namespace OpenTracker.ViewModels
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                CanStart = _autoTracker.Connector == null && CanCreateWebSocketUri();
+                CanStart = _autoTracker.SNESConnector == null && CanCreateWebSocketUri();
             });
         }
 
@@ -304,7 +274,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void Start()
         {
-            if (_autoTracker.Connector != null)
+            if (_autoTracker.SNESConnector != null)
             {
                 Stop();
             }
@@ -337,7 +307,7 @@ namespace OpenTracker.ViewModels
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                CanStop = _autoTracker.Connector != null;
+                CanStop = _autoTracker.SNESConnector != null;
             });
         }
 
@@ -449,9 +419,9 @@ namespace OpenTracker.ViewModels
         /// <param name="level">
         /// The logging level of the log entry.
         /// </param>
-        private void PushToLog(string rawMessage, LogLevel level)
+        private void PushToLog(LogLevel level, string rawMessage)
         {
-            LogMessages.Add((rawMessage, level));
+            LogMessages.Add((level, rawMessage));
         }
 
         /// <summary>

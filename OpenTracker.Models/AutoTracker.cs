@@ -1,10 +1,9 @@
-﻿using OpenTracker.Models.AutotrackerConnectors;
-using OpenTracker.Models.Enums;
+﻿using OpenTracker.Models.Enums;
+using OpenTracker.Models.SNESConnectors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
-using WebSocketSharp;
 
 namespace OpenTracker.Models
 {

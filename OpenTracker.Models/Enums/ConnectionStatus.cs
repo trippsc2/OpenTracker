@@ -6,8 +6,10 @@
     public enum ConnectionStatus 
     {
         NotConnected,
+        SelectDevice,
         Connecting,
-        Open,
+        Attaching,
+        Connected,
         Error
     }
 }
