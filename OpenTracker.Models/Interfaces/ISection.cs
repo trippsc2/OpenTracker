@@ -6,7 +6,7 @@ namespace OpenTracker.Models.Interfaces
     /// <summary>
     /// This is the interface for item/entrance sections of a location.
     /// </summary>
-    public interface ISection : INotifyPropertyChanging,INotifyPropertyChanged
+    public interface ISection : INotifyPropertyChanging, INotifyPropertyChanged
     {
         string Name { get; }
         bool HasMarking { get; }

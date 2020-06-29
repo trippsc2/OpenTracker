@@ -1,61 +1,38 @@
 ﻿using OpenTracker.Models.Enums;
+using OpenTracker.Models.Interfaces;
 using OpenTracker.Models.SNESConnectors;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Threading;
+using WebSocketSharp;
 
 namespace OpenTracker.Models
 {
     /// <summary>
     /// This is the class containing autotracking data and methods
     /// </summary>
-    public class AutoTracker : INotifyPropertyChanging, INotifyPropertyChanged
+    public class AutoTracker
     {
-        public event PropertyChangingEventHandler PropertyChanging;
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private USB2SNESConnectorOld _connector;
-        public USB2SNESConnectorOld Connector
-        {
-            get => _connector;
-            set
-            {
-                if (_connector != value)
-                {
-                    OnPropertyChanging(nameof(Connector));
-                    _connector = value;
-                    OnPropertyChanged(nameof(Connector));
-                }
-            }
-        }
-
         private byte? _inGameStatus;
-        public byte? InGameStatus
-        {
-            get => _inGameStatus;
-            private set
-            {
-                if (_inGameStatus != value)
-                {
-                    _inGameStatus = value;
-                    OnPropertyChanged(nameof(InGameStatus));
-                }
-            }
-        }
+
+        private bool InGame =>
+            _inGameStatus.HasValue && _inGameStatus.Value > 0x05 && _inGameStatus.Value != 0x14;
+
+        public ISNESConnector SNESConnector { get; }
 
         public List<MemoryAddress> RoomMemory { get; }
         public List<MemoryAddress> OverworldEventMemory { get; }
         public List<MemoryAddress> ItemMemory { get; }
         public List<MemoryAddress> NPCItemMemory { get; }
 
-        public Action<string, WebSocketSharp.LogLevel> MessageHandler { get; set; }
+        public Action<LogLevel, string> LogHandler { get; set; }
         
         /// <summary>
         /// Basic constructor
         /// </summary>
         public AutoTracker()
         {
+            SNESConnector = SNESConnectorFactory.GetSNESConnector(HandleLog);
+
             RoomMemory = new List<MemoryAddress>(592);
             OverworldEventMemory = new List<MemoryAddress>(130);
             ItemMemory = new List<MemoryAddress>(144);
@@ -83,58 +60,99 @@ namespace OpenTracker.Models
         }
 
         /// <summary>
-        /// Raises the PropertyChanging event for the specified property.
+        /// Calls the LogHandler property and is passed to the connector to allow for log handling.
         /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changing property.
+        /// <param name="logLevel">
+        /// The log level of the event to be logged.
         /// </param>
-        private void OnPropertyChanging(string propertyName)
+        /// <param name="message">
+        /// A string representing the log message.
+        /// </param>
+        private void HandleLog(LogLevel logLevel, string message)
         {
-            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
+            LogHandler?.Invoke(logLevel, message);
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
+        /// Updates cached value of the SNES memory address that provides game status.
         /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
+        public void InGameCheck()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-            if (propertyName == nameof(InGameStatus))
+            if (SNESConnector != null && SNESConnector.Socket != null &&
+                SNESConnector.Status != ConnectionStatus.Error &&
+                SNESConnector.Read(0x7e0010, out byte inGameStatus))
             {
-                return;
+                _inGameStatus = inGameStatus;
             }
         }
 
         /// <summary>
-        /// Creates a connection with the USB2SNES websocket at the specified URI
-        ///  with the specified retry time and number of retries.
+        /// Updates cached values of a memory segment.
         /// </summary>
-        /// <param name="uriString">
-        /// The URI string for the USB2SNES websocket.
+        /// <param name="segment">
+        /// The memory segment to updated.
         /// </param>
-        /// <param name="retryTimeInMS">
-        /// The number of ms to wait between trying to confirm connection to the websocket.
-        /// </param>
-        /// <param name="retries">
-        /// The number of retries to perform before ending.
-        /// </param>
-        public void Start(string uriString, int retryTimeInMS = 1000, int retries = 3)
+        public void MemoryCheck(MemorySegmentType segment)
         {
-            Connector = new USB2SNESConnectorOld(uriString, MessageHandler);
-
-            Connector.ConnectIfNecessary();
-
-            int i = 0;
-
-            while (Connector != null && !Connector.Connected && i < retries)
+            if (SNESConnector != null && SNESConnector.Socket != null &&
+                SNESConnector.Status != ConnectionStatus.Error && InGame)
             {
-                Thread.Sleep(retryTimeInMS);
-                i++;
+                List<MemoryAddress> memory;
+                ulong startAddress;
+
+                switch (segment)
+                {
+                    case MemorySegmentType.Room:
+                        {
+                            startAddress = 0x7ef000;
+                            memory = RoomMemory;
+                        }
+                        break;
+                    case MemorySegmentType.OverworldEvent:
+                        {
+                            startAddress = 0x7ef280;
+                            memory = OverworldEventMemory;
+                        }
+                        break;
+                    case MemorySegmentType.Item:
+                        {
+                            startAddress = 0x7ef340;
+                            memory = ItemMemory;
+                        }
+                        break;
+                    case MemorySegmentType.NPCItem:
+                        {
+                            startAddress = 0x7ef410;
+                            memory = NPCItemMemory;
+                        }
+                        break;
+                    default:
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(segment));
+                        }
+                }
+
+                byte[] buffer = new byte[memory.Count];
+
+                if (SNESConnector.Read(startAddress, buffer))
+                {
+                    for (int i = 0; i < buffer.Length; i++)
+                    {
+                        memory[i].Value = buffer[i];
+                    }
+                }
             }
+        }
+
+        /// <summary>
+        /// Returns an enumerator of devices to which can be connected.
+        /// </summary>
+        /// <returns>
+        /// An enumerator of devices to which can be connected.
+        /// </returns>
+        public IEnumerable<string> GetDevices()
+        {
+            return SNESConnector.GetDevices();
         }
 
         /// <summary>
@@ -143,118 +161,27 @@ namespace OpenTracker.Models
         /// </summary>
         public void Stop()
         {
-            if (Connector != null)
-            {
-                Connector.Dispose();
-                Connector = null;
-            }
+            SNESConnector.Disconnect();
+            _inGameStatus = null;
 
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-
-            InGameStatus = null;
-
-            foreach (MemoryAddress address in RoomMemory)
+            foreach (var address in RoomMemory)
             {
                 address.Reset();
             }
 
-            foreach (MemoryAddress address in OverworldEventMemory)
+            foreach (var address in OverworldEventMemory)
             {
                 address.Reset();
             }
 
-            foreach (MemoryAddress address in ItemMemory)
+            foreach (var address in ItemMemory)
             {
                 address.Reset();
             }
 
-            foreach (MemoryAddress address in NPCItemMemory)
+            foreach (var address in NPCItemMemory)
             {
                 address.Reset();
-            }
-        }
-
-        /// <summary>
-        /// Returns whether the cached value of SNES memory address that provides game status
-        /// and determines whether the player is in-game.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the player is in-game.
-        /// </returns>
-        public bool IsInGame()
-        {
-            return InGameStatus.HasValue && InGameStatus.Value > 0x05 &&
-                InGameStatus.Value != 0x14;
-        }
-
-        /// <summary>
-        /// Updates cached value of the SNES memory address that provides game status.
-        /// </summary>
-        public void InGameCheck()
-        {
-            if (Connector != null && Connector.Connected)
-            {
-                try
-                {
-                    _connector.ReadByte(0x7e0010, out byte inGameStatus);
-                    InGameStatus = inGameStatus;
-                }
-                catch (Exception ex)
-                {
-                    MessageHandler?.Invoke(ex.Message, WebSocketSharp.LogLevel.Warn);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Updates cached values of all SNES memory address ranges being tracked.
-        /// </summary>
-        public void MemoryCheck()
-        {
-            if (Connector != null && Connector.Connected)
-            {
-                try
-                {
-                    if (IsInGame())
-                    {
-                        byte[] buffer = new byte[592];
-                        _connector.Read(0x7ef000, buffer);
-
-                        for (int i = 0; i < buffer.Length; i++)
-                        {
-                            RoomMemory[i].Value = buffer[i];
-                        }
-
-                        buffer = new byte[130];
-                        _connector.Read(0x7ef280, buffer);
-
-                        for (int i = 0; i < buffer.Length; i++)
-                        {
-                            OverworldEventMemory[i].Value = buffer[i];
-                        }
-
-                        buffer = new byte[144];
-                        _connector.Read(0x7ef340, buffer);
-
-                        for (int i = 0; i < buffer.Length; i++)
-                        {
-                            ItemMemory[i].Value = buffer[i];
-                        }
-
-                        buffer = new byte[2];
-                        _connector.Read(0x7ef410, buffer);
-
-                        for (int i = 0; i < buffer.Length; i++)
-                        {
-                            NPCItemMemory[i].Value = buffer[i];
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageHandler?.Invoke(ex.Message, WebSocketSharp.LogLevel.Warn);
-                }
             }
         }
 
@@ -282,20 +209,10 @@ namespace OpenTracker.Models
                 MemorySegmentType.OverworldEvent => OverworldEventMemory,
                 MemorySegmentType.Item => ItemMemory,
                 MemorySegmentType.NPCItem => NPCItemMemory,
-                _ => null
+                _ => throw new ArgumentOutOfRangeException(nameof(segment))
             };
-
-            if (memory == null)
-            {
-                throw new ArgumentOutOfRangeException(nameof(segment));
-            }
-
-            if (memory.Count > index)
-            {
-                return (memory[index].Value & flag) != 0;
-            }
-
-            return null;
+            
+            return (memory[index].Value & flag) != 0;
         }
 
         /// <summary>
@@ -369,20 +286,10 @@ namespace OpenTracker.Models
                 MemorySegmentType.OverworldEvent => OverworldEventMemory,
                 MemorySegmentType.Item => ItemMemory,
                 MemorySegmentType.NPCItem => NPCItemMemory,
-                _ => null
+                _ => throw new ArgumentOutOfRangeException(nameof(segment))
             };
-
-            if (memory == null)
-            {
-                throw new ArgumentOutOfRangeException(nameof(segment));
-            }
-
-            if (memory.Count > index)
-            {
-                return memory[index].Value > minValue;
-            }
-
-            return null;
+            
+            return memory[index].Value > minValue;
         }
 
         /// <summary>
@@ -405,20 +312,10 @@ namespace OpenTracker.Models
                 MemorySegmentType.OverworldEvent => OverworldEventMemory,
                 MemorySegmentType.Item => ItemMemory,
                 MemorySegmentType.NPCItem => NPCItemMemory,
-                _ => null
+                _ => throw new ArgumentOutOfRangeException(nameof(segment))
             };
-
-            if (memory == null)
-            {
-                throw new ArgumentOutOfRangeException(nameof(segment));
-            }
-
-            if (memory.Count > index)
-            {
-                return memory[index].Value;
-            }
-
-            return null;
+            
+            return memory[index].Value;
         }
 
         /// <summary>

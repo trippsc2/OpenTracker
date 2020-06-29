@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenTracker.Models.Sections
@@ -1187,7 +1188,8 @@ namespace OpenTracker.Models.Sections
 
                             _dungeonDataQueue.Enqueue(dungeonData);
                         }
-                    })).ToArray());
+                    },
+                    CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default)).ToArray());
             }
 
             for (int i = 0; i < keyDoorTasks.Count; i++)
@@ -1236,7 +1238,8 @@ namespace OpenTracker.Models.Sections
 
                         _dungeonDataQueue.Enqueue(dungeonData);
                     }
-                })).ToArray();
+                },
+                CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default)).ToArray();
 
             Task.WaitAll(finalKeyDoorTasks);
             finalKeyDoorPermutationQueue.Dispose();

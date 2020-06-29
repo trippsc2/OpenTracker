@@ -7,11 +7,17 @@ namespace OpenTracker
 {
     public class ViewLocator : IDataTemplate
     {
-        public bool SupportsRecycling => false;
+        public bool SupportsRecycling =>
+            false;
 
         public IControl Build(object data)
         {
-            var name = data.GetType().FullName.Replace("VM", "View");
+            if (data == null)
+            {
+                return new TextBlock { Text = "Not Found:" };
+            }
+
+            var name = data.GetType().FullName.Replace("VM", "").Replace("ViewModels","Views");
             var type = Type.GetType(name);
 
             if (type != null)

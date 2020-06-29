@@ -1,5 +1,6 @@
-﻿using OpenTracker.Models.Enums;
+﻿using OpenTracker.Models.Interfaces;
 using System;
+using WebSocketSharp;
 
 namespace OpenTracker.Models.SNESConnectors
 {

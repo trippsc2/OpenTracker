@@ -1,45 +1,30 @@
 ﻿using Newtonsoft.Json;
-using OpenTracker.Models.Enums;
+using OpenTracker.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.IO;
-using System.Net.WebSockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using WebSocketSharp;
 
 namespace OpenTracker.Models.SNESConnectors
 {
     public class USB2SNESConnector : INotifyPropertyChanged, ISNESConnector
     {
-        private readonly object _transmitLock = new object();
+        private readonly string _applicationName = "OpenTracker";
         private readonly Action<LogLevel, string> _logHandler;
+        private readonly object _transmitLock = new object();
+        private Action<MessageEventArgs> _messageHandler;
 
-        private bool Connected =>
-            Socket != null && Socket.State == WebSocketState.Open;
+        public bool Connected =>
+            Socket != null && Socket.IsAlive;
 
-        public Uri Uri { get; set; }
+        public string Uri { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private ClientWebSocket _socket = new ClientWebSocket();
-        public ClientWebSocket Socket
-        {
-            get => _socket;
-            private set
-            {
-                if (_socket != value)
-                {
-                    _socket = value;
-                    OnPropertyChanged(nameof(Socket));
-                    Status = ConnectionStatus.NotConnected;
-                }
-            }
-        }
-
-        private string _device = "";
+        private string _device;
         public string Device
         {
             get => _device;
@@ -49,6 +34,30 @@ namespace OpenTracker.Models.SNESConnectors
                 {
                     _device = value;
                     OnPropertyChanged(nameof(Device));
+                }
+            }
+        }
+
+        private WebSocket _socket;
+        public WebSocket Socket
+        {
+            get => _socket;
+            private set
+            {
+                if (_socket != value)
+                {
+                    if (_socket != null)
+                    {
+                        _socket.OnMessage -= HandleMessage;
+                    }
+
+                    _socket = value;
+                    OnPropertyChanged(nameof(Socket));
+
+                    if (_socket != null)
+                    {
+                        _socket.OnMessage += HandleMessage;
+                    }
                 }
             }
         }
@@ -67,10 +76,9 @@ namespace OpenTracker.Models.SNESConnectors
             }
         }
 
-        public USB2SNESConnector(Action<LogLevel, string> logHandler)
+        public USB2SNESConnector(Action<LogLevel, string> logHandler = null)
         {
-            _logHandler = logHandler ??
-                throw new ArgumentNullException(nameof(logHandler));
+            _logHandler = logHandler;
         }
 
         private void OnPropertyChanged(string propertyName)
@@ -79,308 +87,310 @@ namespace OpenTracker.Models.SNESConnectors
                 this, new PropertyChangedEventArgs(propertyName));
         }
 
+        private void HandleMessage(object sender, MessageEventArgs e)
+        {
+            _messageHandler?.Invoke(e);
+        }
+
         private void Log(LogLevel logLevel, string message)
         {
-            _logHandler(logLevel, message);
+            _logHandler?.Invoke(logLevel, message);
         }
 
-        private bool Connect(int timeOutInMS = 1000)
+        private bool Connect(int timeOutInMS = 4096)
         {
-            Log(LogLevel.Info, "Attempting to connect to USB2SNES.");
+            Socket = new WebSocket(Uri);
+            Log(LogLevel.Info, "Attempting to connect to USB2SNES websocket at " +
+                $"{Socket.Url.OriginalString}.");
             Status = ConnectionStatus.Connecting;
-            using CancellationTokenSource cts = new CancellationTokenSource(timeOutInMS);
-            Task task = Socket.ConnectAsync(Uri, cts.Token);
 
-            try
+            using var openEvent = new ManualResetEvent(false);
+
+            void onOpen(object sender, EventArgs e)
             {
-                Task.WaitAll(new Task[] { task });
-            }
-            catch (AggregateException)
-            {
-                Log(LogLevel.Info, "Attempt to connect timed out.");
-                Status = ConnectionStatus.Error;
-                return false;
+                openEvent.Set();
             }
 
-            if (Socket.State == WebSocketState.Open)
+            Socket.OnOpen += onOpen;
+            Socket.Connect();
+            bool result = openEvent.WaitOne(timeOutInMS);
+            Socket.OnOpen -= onOpen;
+
+            if (result)
             {
-                Log(LogLevel.Info, "Successfully connected to USB2SNES.");
+                Log(LogLevel.Info, "Successfully connected to USB2SNES websocket at " +
+                    $"{Socket.Url.OriginalString}.");
                 Status = ConnectionStatus.SelectDevice;
-                return true;
+            }
+            else
+            {
+                Log(LogLevel.Error, "Failed to connect to USB2SNES websocket at " +
+                    $"{Socket.Url.OriginalString}.");
+                Status = ConnectionStatus.Error;
             }
 
-            Log(LogLevel.Info, "Failed to connect to USB2SNES for unknown reason.");
-            Status = ConnectionStatus.Error;
-            return false;
+            return result;
         }
 
-        private void Disconnect(int timeOutInMS = 1000)
+        private bool Send(RequestType request)
         {
-            Log(LogLevel.Debug, "Attempting to disconnect connection.");
-            using CancellationTokenSource cts = new CancellationTokenSource(timeOutInMS);
-            Task task = Socket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, cts.Token);
-
-            try
+            Task<bool> sendTask = Task<bool>.Factory.StartNew(() =>
             {
-                Task.WaitAll(new Task[] { task });
-            }
-            catch (AggregateException)
-            {
-                Log(LogLevel.Debug, "Attempt to disconnect connection timed out.");
-            }
-
-            Status = ConnectionStatus.NotConnected;
-        }
-
-        private void DisconnectAndDispose(int timeOutInMS = 1000)
-        {
-            if (Socket.State != WebSocketState.None && Socket.State != WebSocketState.Closed)
-            {
-                Disconnect(timeOutInMS);
-            }
-
-            Socket.Dispose();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-        }
-
-        private bool ConnectIfNeeded(int timeOutInMS = 1000, int retries = 3)
-        {
-            if (Connected)
-            {
-                return true;
-            }
-
-            bool connected;
-            int i = 0;
-
-            do
-            {
-                if (Socket.State != WebSocketState.None)
-                {
-                    Log(LogLevel.Debug, "Disposing of existing connection attempt.");
-                    DisconnectAndDispose(timeOutInMS);
-                    Socket = new ClientWebSocket();
-                }
-
-                connected = Connect(timeOutInMS);
-                i++;
-            } while (i < retries && !connected);
-
-            return connected;
-        }
-
-        private async Task<bool> Send(RequestType requestType, int timeOutInMS = 1000)
-        {
-            if (requestType == null)
-            {
-                throw new ArgumentNullException(nameof(requestType));
-            }
-
-            using CancellationTokenSource cts = new CancellationTokenSource(timeOutInMS);
-
-            try
-            {
-                await Socket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(
-                    JsonConvert.SerializeObject(requestType))),
-                    WebSocketMessageType.Text, true, cts.Token).ConfigureAwait(false);
-            }
-            catch (TaskCanceledException)
-            {
-                Log(LogLevel.Warn, "Failed to send data.");
-                return false;
-            }
-
-            return true;
-        }
-
-        private async Task<string> Receive(int timeOutInMS = 1000)
-        {
-            var buffer = new ArraySegment<byte>(new byte[2048]);
-            using CancellationTokenSource cts = new CancellationTokenSource(timeOutInMS);
-
-            using var ms = new MemoryStream();
-            WebSocketReceiveResult result;
-
-            try
-            {
-                do
-                {
-                    result = await Socket.ReceiveAsync(buffer, cts.Token).ConfigureAwait(false);
-                    ms.Write(buffer.Array, buffer.Offset, result.Count);
-                } while (result == null || !result.EndOfMessage);
-            }
-            catch (TaskCanceledException)
-            {
-                return null;
-            }
-
-            ms.Seek(0, SeekOrigin.Begin);
-
-            using var reader = new StreamReader(ms, Encoding.UTF8);
-
-            return await reader.ReadToEndAsync().ConfigureAwait(false);
-        }
-
-        private bool SendOnly(RequestType requestType, int timeOutInMS = 1000, int retries = 3)
-        {
-            if (!ConnectIfNeeded(timeOutInMS, retries))
-            {
-                return false;
-            }
-            lock (_transmitLock)
-            {
-                Task sendTask = Send(requestType, timeOutInMS);
-
                 try
                 {
-                    Task.WaitAll(new Task[] { sendTask });
+                    Socket?.Send(JsonConvert.SerializeObject(request));
                 }
-                catch (AggregateException)
+                catch (InvalidOperationException)
                 {
                     return false;
                 }
-            }
 
-            return true;
+                return true;
+            });
+
+            Task.WaitAll(new Task[] { sendTask });
+            return sendTask.Result;
         }
 
-        private string SendAndReceive(RequestType requestType, int timeOutInMS = 1000, int retries = 3)
+        private IEnumerable<string> GetJsonResults(
+            string requestName, RequestType request,
+            bool ignoreErrors = false, int timeOutInMS = 4096)
         {
-            if (!ConnectIfNeeded(timeOutInMS, retries))
+            if (request == null)
             {
-                return null;
+                throw new ArgumentNullException(nameof(request));
             }
 
-            Task<string> receiveTask;
-
+            string[] results = null;
             lock (_transmitLock)
             {
-                Task sendTask = Send(requestType, timeOutInMS);
-                receiveTask = Receive(timeOutInMS);
+                using ManualResetEvent readEvent = new ManualResetEvent(false);
 
-                try
+                _messageHandler = (e) =>
                 {
-                    Task.WaitAll(new Task[] { sendTask, receiveTask });
+                    Log(LogLevel.Info, $"Request {requestName} response received.");
+
+                    if (JsonConvert.DeserializeObject<Dictionary<string, string[]>>(
+                        e.Data) is Dictionary<string, string[]> dictionary &&
+                        dictionary.TryGetValue("Results", out string[] deserialized))
+                    {
+                        Log(LogLevel.Debug, $"Request {requestName} successfully deserialized.");
+                        results = deserialized;
+                        readEvent.Set();
+                    }
+                };
+
+                Log(LogLevel.Info, $"Request {requestName} sending.");
+
+                if (!Send(request))
+                {
+                    Log(LogLevel.Info, $"Request {requestName} failed to send.");
+                    return null;
                 }
-                catch (AggregateException)
+
+                Log(LogLevel.Info, $"Request {requestName} sent.");
+
+                if (!readEvent.WaitOne(timeOutInMS))
                 {
-                    Status = ConnectionStatus.Error;
+                    if (!ignoreErrors)
+                    {
+                        Log(LogLevel.Error, $"Request {requestName} failed.");
+                        Status = ConnectionStatus.Error;
+                    }
+
+                    _messageHandler = null;
                     return null;
                 }
             }
 
-            return receiveTask.Result;
+            _messageHandler = null;
+            Log(LogLevel.Info, $"Request {requestName} successful.");
+            return results;
         }
 
-        private string GetInfo(int timeOutInMS = 1000, int retries = 3)
+        private bool SendOnly(string requestName, RequestType request)
         {
-            return SendAndReceive(new RequestType(OpcodeType.Info.ToString()),
-                timeOutInMS, retries);
-        }
+            Log(LogLevel.Info, $"Request {requestName} is being sent.");
 
-        public IEnumerable<string> GetDeviceList(int timeOutInMS = 1000, int retries = 3)
-        {
-            Log(LogLevel.Info, "Requesting device list from USB2SNES.");
-
-            string deviceList = SendAndReceive(new RequestType(OpcodeType.DeviceList.ToString()),
-                timeOutInMS, retries);
-
-            if (deviceList == null)
+            lock (_transmitLock)
             {
-                Log(LogLevel.Error, "Failed to receive device list from USB2SNES.");
+                if (!Send(request))
+                {
+                    Log(LogLevel.Info, $"Request {requestName} failed to send.");
+                    return false;
+                }
+            }
+
+            Log(LogLevel.Info, $"Request {requestName} has been sent successfully.");
+            return true;
+        }
+
+        private bool ConnectIfNeeded(int timeOutInMS = 4096)
+        {
+            if (Connected)
+            {
+                Log(LogLevel.Debug, "Already connected to USB2SNES websocket, " +
+                    "skipping connection attempt.");
+                return true;
+            }
+
+            if (Socket != null)
+            {
+                Log(LogLevel.Debug, "Attempting to restart WebSocket class.");
+                Disconnect();
+                Log(LogLevel.Debug, "Existing WebSocket class restarted.");
+            }
+
+            return Connect(timeOutInMS);
+        }
+
+        private IEnumerable<string> GetDeviceInfo(int timeOutInMS = 4096)
+        {
+            return GetJsonResults(
+                "get device info", new RequestType(OpcodeType.Info.ToString()), true, timeOutInMS);
+        }
+
+        private bool AttachDevice(int timeOutInMS = 4096)
+        {
+            Log(LogLevel.Info, $"Attempting to attach to device {Device}.");
+            Status = ConnectionStatus.Attaching;
+
+            if (!SendOnly("attach", new RequestType(
+                OpcodeType.Attach.ToString(), operands: new List<string>(1) { Device })))
+            {
+                Log(LogLevel.Error, $"Device {Device} could not be attached.");
+                Status = ConnectionStatus.Error;
+                return false;
+            }
+
+            if (!SendOnly("register name", new RequestType(
+                OpcodeType.Name.ToString(), operands: new List<string>(1) { _applicationName })))
+            {
+                Log(LogLevel.Error, $"Could not register app name with connection.");
+                Status = ConnectionStatus.Error;
+                return false;
+            }
+
+            if (GetDeviceInfo(timeOutInMS) == null)
+            {
+                Log(LogLevel.Error, $"Device {Device} could not be attached.");
+                Status = ConnectionStatus.Error;
+                return false;
+            }
+
+            Log(LogLevel.Info, $"Device {Device} is successfully attached.");
+            Status = ConnectionStatus.Connected;
+
+            return true;
+        }
+
+        public void Disconnect()
+        {
+            Socket?.Close();
+            Socket = null;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            Status = ConnectionStatus.NotConnected;
+            Device = null;
+        }
+
+        public IEnumerable<string> GetDevices(int timeOutInMS = 4096)
+        {
+            if (!ConnectIfNeeded(timeOutInMS))
+            {
                 return null;
             }
 
-            return JsonConvert.DeserializeObject<Dictionary<string, string[]>>(deviceList)
-                ["Results"];
+            return GetJsonResults(
+                "get device list", new RequestType(OpcodeType.DeviceList.ToString()), false, timeOutInMS);
         }
 
-        public void AttachDevice(int timeOutInMS = 1000, int retries = 3)
+        public bool AttachDeviceIfNeeded(int timeOutInMS = 4096)
         {
-            Log(LogLevel.Info, $"Attempting to attach to device: {Device}");
-            Status = ConnectionStatus.Attaching;
-
-            if (!SendOnly(new RequestType(OpcodeType.Attach.ToString(),
-                operands: new List<string>(1) { Device }), timeOutInMS, retries))
+            if (Status == ConnectionStatus.Connected)
             {
-                Log(LogLevel.Error, "Unable to send attach command.");
-                Status = ConnectionStatus.Error;
+                Log(LogLevel.Debug, "Already attached to device, skipping attachment attempt.");
+                return true;
             }
 
-            if (GetInfo(timeOutInMS, retries) == null || Socket.State != WebSocketState.Open)
+            if (!ConnectIfNeeded(timeOutInMS))
             {
-                Log(LogLevel.Error, $"Failed to attach to device: { Device }");
-                Status = ConnectionStatus.Error;
-                return;
+                return false;
             }
 
-            Log(LogLevel.Info, $"Successfully attached to device: {Device}");
-            Status = ConnectionStatus.Connected;
+            return AttachDevice(timeOutInMS);
         }
 
         public bool Read(ulong address, out byte value)
         {
-            Log(LogLevel.Debug, $"Reading byte at address {address:X6}.");
-
             byte[] buffer = new byte[1];
 
-            if (Read(address, buffer))
+            if (!Read(address, buffer))
             {
-                value = buffer[0];
-                Log(LogLevel.Debug, $"Read value {value} at address {address:X6}.");
-                return true;
+                value = 0;
+                return false;
             }
 
-            Log(LogLevel.Error, $"Failed to read value at {address:X6}.");
-            value = 0;
-            return false;
+            value = buffer[0];
+            return true;
         }
 
-        public bool Read(ulong address, byte[] buffer)
+        public bool Read(ulong address, byte[] buffer, int timeOutInMS = 4096)
         {
             if (buffer == null)
             {
                 throw new ArgumentNullException(nameof(buffer));
             }
 
-            string result = SendAndReceive(
-                new RequestType(OpcodeType.GetAddress.ToString(),
-                operands: new List<string>(2)
-                {
-                    AddressTranslator.TranslateAddress((uint)address, TranslationMode.Read)
-                        .ToString("X", CultureInfo.InvariantCulture),
-                    buffer.Length.ToString("X", CultureInfo.InvariantCulture)
-                }));
-
-            try
+            if (!AttachDeviceIfNeeded(timeOutInMS))
             {
-                byte[] bytes = Encoding.UTF8.GetBytes(result);
+                return false;
+            }
 
-                if (bytes.Length != buffer.Length)
+            if (Status != ConnectionStatus.Connected)
+            {
+                return false;
+            }
+
+            using ManualResetEvent readEvent = new ManualResetEvent(false);
+
+            lock (_transmitLock)
+            {
+                _messageHandler = (e) =>
                 {
-                    Log(LogLevel.Error, $"Failed to retrieve memory data.");
+                    if (!e.IsBinary || e.RawData == null)
+                    {
+                        return;
+                    }
+
+                    for (int i = 0; i < buffer.Length; i++)
+                    {
+                        buffer[i] = e.RawData[Math.Min(i, e.RawData.Length - 1)];
+                    }
+
+                    readEvent.Set();
+                };
+
+                Log(LogLevel.Info, $"Reading {buffer.Length} byte(s) from {address:X}.");
+                Send(new RequestType(
+                    OpcodeType.GetAddress.ToString(),
+                    operands: new List<string>(2)
+                    {
+                        AddressTranslator.TranslateAddress((uint)address, TranslationMode.Read)
+                            .ToString("X", CultureInfo.InvariantCulture),
+                        buffer.Length.ToString("X", CultureInfo.InvariantCulture)
+                    }));
+
+                if (!readEvent.WaitOne(timeOutInMS))
+                {
+                    Log(LogLevel.Error, $"Failed to read {buffer.Length} byte(s) from {address:X}.");
+                    Status = ConnectionStatus.Error;
                     return false;
                 }
+            }
 
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    buffer[i] = bytes[i];
-                }
-
-                Log(LogLevel.Debug, $"Read {buffer.Length} bytes at {address:X6}.");
-                return true;
-            }
-            catch (EncoderFallbackException)
-            {
-                Log(LogLevel.Error, $"Failed to convert output to byte array.");
-                return false;
-            }
-            catch (ArgumentNullException)
-            {
-                Log(LogLevel.Error, $"Failed to receive output.");
-                return false;
-            }
+            Log(LogLevel.Info, $"Read {buffer.Length} byte(s) from {address:X} successfully.");
+            return true;
         }
     }
 }

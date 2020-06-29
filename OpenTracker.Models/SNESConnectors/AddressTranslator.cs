@@ -1,6 +1,6 @@
 ﻿namespace OpenTracker.Models.SNESConnectors
 {
-    internal static class AddressTranslator
+    public static class AddressTranslator
     {
 		private static bool MapAddressInRange(uint address, uint sourceRangeBegin, uint sourceRangeEnd,
 			uint destinationRangeBegin, out uint mappedAddress)
@@ -15,7 +15,7 @@
 			return false;
 		}
 
-		internal static uint TranslateAddress(uint address, TranslationMode mode)
+		public static uint TranslateAddress(uint address, TranslationMode mode)
 		{
 			if (mode == TranslationMode.Read &&
 				MapAddressInRange(address, 8257536U, 8388607U, 16056320U, out uint mappedAddress))

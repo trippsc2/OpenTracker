@@ -54,9 +54,9 @@
     <None Remove="Views\SectionControl.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.9.10" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.9.10" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.10" />
+    <PackageReference Include="Avalonia" Version="0.9.11" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.9.11" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.11" />
     <PackageReference Include="Avalonia.ThemeManager" Version="0.9.4" />
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.9.9" />
     <PackageReference Include="Dotnet.Bundle" Version="0.9.13" />

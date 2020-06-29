@@ -33,9 +33,9 @@
 
     <StackPanel x:Key="HCItems" Orientation="Horizontal">
       <Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/hc.png" />
-      <view:KeyControl Margin="2,0,0,0" DataContext="{Binding Path=HCSmallKeys}"
-                       IsVisible="{Binding Path=SmallKeyShuffle}"
-                       IsHitTestVisible="{Binding Path=SmallKeyShuffle}" />
+      <ContentControl Content="{Binding HCSmallKeys}"
+                      IsVisible="{Binding Path=SmallKeyShuffle}"
+                      IsHitTestVisible="{Binding Path=SmallKeyShuffle}" />
       <Panel Height="16" Width="16" IsVisible="{Binding Path=BigKeyShuffle}"
              IsHitTestVisible="{Binding Path=BigKeyShuffle}" />
       <view:DungeonChestControl Margin="0,0,6,0" DataContext="{Binding Path=HCItems}" />
