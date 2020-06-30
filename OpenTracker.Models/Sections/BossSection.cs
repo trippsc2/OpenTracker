@@ -1,5 +1,4 @@
 ﻿using OpenTracker.Models.Enums;
-using OpenTracker.Models.Interfaces;
 using OpenTracker.Models.Items;
 using System;
 using System.ComponentModel;

@@ -1,16 +1,16 @@
 ﻿using OpenTracker.Models.Enums;
-using OpenTracker.Models.Interfaces;
 
-namespace OpenTracker.Models.Actions
+namespace OpenTracker.Models.Undoables
 {
     /// <summary>
-    /// This is the class for an undoable action to change the item placement
+    /// This is the class for an undoable action to change the world state
     /// setting.
     /// </summary>
-    public class ChangeItemPlacement : IUndoable
+    public class ChangeWorldState : IUndoable
     {
         private readonly Mode _mode;
-        private readonly ItemPlacement _itemPlacement;
+        private readonly WorldState _worldState;
+        private WorldState _previousWorldState;
         private ItemPlacement _previousItemPlacement;
 
         /// <summary>
@@ -19,13 +19,13 @@ namespace OpenTracker.Models.Actions
         /// <param name="mode">
         /// The game mode data.
         /// </param>
-        /// <param name="dungeonItemShuffle">
-        /// The new item placement setting.
+        /// <param name="worldState">
+        /// The new world state setting.
         /// </param>
-        public ChangeItemPlacement(Mode mode, ItemPlacement itemPlacement)
+        public ChangeWorldState(Mode mode, WorldState worldState)
         {
             _mode = mode;
-            _itemPlacement = itemPlacement;
+            _worldState = worldState;
         }
 
         /// <summary>
@@ -33,8 +33,9 @@ namespace OpenTracker.Models.Actions
         /// </summary>
         public void Execute()
         {
+            _previousWorldState = _mode.WorldState;
             _previousItemPlacement = _mode.ItemPlacement;
-            _mode.ItemPlacement = _itemPlacement;
+            _mode.WorldState = _worldState;
         }
 
         /// <summary>
@@ -42,6 +43,7 @@ namespace OpenTracker.Models.Actions
         /// </summary>
         public void Undo()
         {
+            _mode.WorldState = _previousWorldState;
             _mode.ItemPlacement = _previousItemPlacement;
         }
     }

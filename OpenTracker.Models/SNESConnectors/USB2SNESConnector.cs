@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using OpenTracker.Models.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -76,27 +75,67 @@ namespace OpenTracker.Models.SNESConnectors
             }
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="logHandler">
+        /// The action to be performed when logs are generated.
+        /// </param>
         public USB2SNESConnector(Action<LogLevel, string> logHandler = null)
         {
             _logHandler = logHandler;
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
+        /// </param>
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(
                 this, new PropertyChangedEventArgs(propertyName));
         }
 
+        /// <summary>
+        /// Subscribes to the OnMessage event on the WebSocket class and 
+        /// invokes the current message handler.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the OnMessage event.
+        /// </param>
         private void HandleMessage(object sender, MessageEventArgs e)
         {
             _messageHandler?.Invoke(e);
         }
 
+        /// <summary>
+        /// Generates a log message.
+        /// </summary>
+        /// <param name="logLevel">
+        /// The logging level of the message.
+        /// </param>
+        /// <param name="message">
+        /// A string presenting the log message.
+        /// </param>
         private void Log(LogLevel logLevel, string message)
         {
             _logHandler?.Invoke(logLevel, message);
         }
 
+        /// <summary>
+        /// Connects to the USB2SNES web socket.
+        /// </summary>
+        /// <param name="timeOutInMS">
+        /// A 32-bit integer representing the timeout in milliseconds.
+        /// </param>
+        /// <returns>
+        /// A boolean representing whether the method is successful.
+        /// </returns>
         private bool Connect(int timeOutInMS = 4096)
         {
             Socket = new WebSocket(Uri);
@@ -132,6 +171,15 @@ namespace OpenTracker.Models.SNESConnectors
             return result;
         }
 
+        /// <summary>
+        /// Sends a message to the web socket.
+        /// </summary>
+        /// <param name="request">
+        /// The payload of the request.
+        /// </param>
+        /// <returns>
+        /// A boolean representing whether the method is successful.
+        /// </returns>
         private bool Send(RequestType request)
         {
             Task<bool> sendTask = Task<bool>.Factory.StartNew(() =>
@@ -152,6 +200,24 @@ namespace OpenTracker.Models.SNESConnectors
             return sendTask.Result;
         }
 
+        /// <summary>
+        /// Sends a request and receives a Json encoded response.
+        /// </summary>
+        /// <param name="requestName">
+        /// A string representing the type of request for logging purposes.
+        /// </param>
+        /// <param name="request">
+        /// The payload of the request.
+        /// </param>
+        /// <param name="ignoreErrors">
+        /// A boolean representing whether to log and change the status on error.
+        /// </param>
+        /// <param name="timeOutInMS">
+        /// A 32-bit integer representing the timeout in milliseconds.
+        /// </param>
+        /// <returns>
+        /// An enumerator of the resulting strings of the response.
+        /// </returns>
         private IEnumerable<string> GetJsonResults(
             string requestName, RequestType request,
             bool ignoreErrors = false, int timeOutInMS = 4096)
@@ -208,6 +274,18 @@ namespace OpenTracker.Models.SNESConnectors
             return results;
         }
 
+        /// <summary>
+        /// Sends a request without a response.
+        /// </summary>
+        /// <param name="requestName">
+        /// A string representing the type of request for logging purposes.
+        /// </param>
+        /// <param name="request">
+        /// The payload of the request.
+        /// </param>
+        /// <returns>
+        /// A boolean representing whether the method is successfully.
+        /// </returns>
         private bool SendOnly(string requestName, RequestType request)
         {
             Log(LogLevel.Info, $"Request {requestName} is being sent.");
@@ -225,6 +303,15 @@ namespace OpenTracker.Models.SNESConnectors
             return true;
         }
 
+        /// <summary>
+        /// Connects to the USB2SNES web socket, if not already connected.
+        /// </summary>
+        /// <param name="timeOutInMS">
+        /// A 32-bit integer representing the timeout in milliseconds.
+        /// </param>
+        /// <returns>
+        /// A boolean representing whether the method is successful.
+        /// </returns>
         private bool ConnectIfNeeded(int timeOutInMS = 4096)
         {
             if (Connected)
@@ -244,12 +331,30 @@ namespace OpenTracker.Models.SNESConnectors
             return Connect(timeOutInMS);
         }
 
+        /// <summary>
+        /// Returns the device info of the attached device.
+        /// </summary>
+        /// <param name="timeOutInMS">
+        /// A 32-bit integer representing the timeout in milliseconds.
+        /// </param>
+        /// <returns>
+        /// An enumerator of the device info strings.
+        /// </returns>
         private IEnumerable<string> GetDeviceInfo(int timeOutInMS = 4096)
         {
             return GetJsonResults(
                 "get device info", new RequestType(OpcodeType.Info.ToString()), true, timeOutInMS);
         }
 
+        /// <summary>
+        /// Attaches to the selected device.
+        /// </summary>
+        /// <param name="timeOutInMS">
+        /// A 32-bit integer representing the timeout in milliseconds.
+        /// </param>
+        /// <returns>
+        /// A boolean representing whether the method is successful.
+        /// </returns>
         private bool AttachDevice(int timeOutInMS = 4096)
         {
             Log(LogLevel.Info, $"Attempting to attach to device {Device}.");
@@ -284,6 +389,9 @@ namespace OpenTracker.Models.SNESConnectors
             return true;
         }
 
+        /// <summary>
+        /// Disconnects from the web socket and unsets the web socket property.
+        /// </summary>
         public void Disconnect()
         {
             Socket?.Close();
@@ -294,6 +402,15 @@ namespace OpenTracker.Models.SNESConnectors
             Device = null;
         }
 
+        /// <summary>
+        /// Returns the list of devices to which can be attached.
+        /// </summary>
+        /// <param name="timeOutInMS">
+        /// A 32-bit integer representing the timeout in milliseconds.
+        /// </param>
+        /// <returns>
+        /// An enumerator of the device list strings.
+        /// </returns>
         public IEnumerable<string> GetDevices(int timeOutInMS = 4096)
         {
             if (!ConnectIfNeeded(timeOutInMS))
@@ -305,6 +422,15 @@ namespace OpenTracker.Models.SNESConnectors
                 "get device list", new RequestType(OpcodeType.DeviceList.ToString()), false, timeOutInMS);
         }
 
+        /// <summary>
+        /// Attaches to the selected device, if not already attached.
+        /// </summary>
+        /// <param name="timeOutInMS">
+        /// A 32-bit integer representing the timeout in milliseconds.
+        /// </param>
+        /// <returns>
+        /// A boolean representing whether the method is successful.
+        /// </returns>
         public bool AttachDeviceIfNeeded(int timeOutInMS = 4096)
         {
             if (Status == ConnectionStatus.Connected)
@@ -321,6 +447,18 @@ namespace OpenTracker.Models.SNESConnectors
             return AttachDevice(timeOutInMS);
         }
 
+        /// <summary>
+        /// Returns the value of a byte of SNES memory.
+        /// </summary>
+        /// <param name="address">
+        /// A 64-bit unsigned integer representing the memory address to be read.
+        /// </param>
+        /// <param name="value">
+        /// An 8-bit unsigned integer representing the value of the byte of SNES memory.
+        /// </param>
+        /// <returns>
+        /// A boolean representing whether the method is successful.
+        /// </returns>
         public bool Read(ulong address, out byte value)
         {
             byte[] buffer = new byte[1];
@@ -335,6 +473,21 @@ namespace OpenTracker.Models.SNESConnectors
             return true;
         }
 
+        /// <summary>
+        /// Returns the values of a contiguous set of bytes of SNES memory.
+        /// </summary>
+        /// <param name="address">
+        /// A 64-bit unsigned integer representing the starting memory address to be read.
+        /// </param>
+        /// <param name="buffer">
+        /// An array of bytes to be filled with SNES memory data.
+        /// </param>
+        /// <param name="timeOutInMS">
+        /// A 32-bit integer representing the timeout in milliseconds.
+        /// </param>
+        /// <returns>
+        /// A boolean representing whether the method is successful.
+        /// </returns>
         public bool Read(ulong address, byte[] buffer, int timeOutInMS = 4096)
         {
             if (buffer == null)

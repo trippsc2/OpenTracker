@@ -1,8 +1,7 @@
-﻿using OpenTracker.Models.Interfaces;
-using OpenTracker.ViewModels;
+﻿using OpenTracker.ViewModels;
 using System.Collections.ObjectModel;
 
-namespace OpenTracker.Models.Actions
+namespace OpenTracker.Models.Undoables
 {
     /// <summary>
     /// This is the class for unpinning a location.

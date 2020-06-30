@@ -1,7 +1,7 @@
 ﻿using OpenTracker.Models.Enums;
-using OpenTracker.Models.Interfaces;
+using OpenTracker.Models.Sections;
 
-namespace OpenTracker.Models.Actions
+namespace OpenTracker.Models.Undoables
 {
     /// <summary>
     /// This is the class for an undoable action to mark a location section.

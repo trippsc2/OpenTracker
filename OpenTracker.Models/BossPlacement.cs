@@ -34,7 +34,7 @@ namespace OpenTracker.Models
         public AccessibilityLevel Accessibility
         {
             get => _accessibility;
-            set
+            private set
             {
                 if (_accessibility != value)
                 {

@@ -1,6 +1,4 @@
-﻿using OpenTracker.Models.Interfaces;
-
-namespace OpenTracker.Models.Actions
+﻿namespace OpenTracker.Models.Undoables
 {
     /// <summary>
     /// This is the class for an undoable action to change the enemy shuffle

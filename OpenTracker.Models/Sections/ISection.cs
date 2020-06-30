@@ -1,7 +1,7 @@
 ﻿using OpenTracker.Models.Enums;
 using System.ComponentModel;
 
-namespace OpenTracker.Models.Interfaces
+namespace OpenTracker.Models.Sections
 {
     /// <summary>
     /// This is the interface for item/entrance sections of a location.

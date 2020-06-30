@@ -1,5 +1,4 @@
 ﻿using OpenTracker.Models.Enums;
-using OpenTracker.Models.Interfaces;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

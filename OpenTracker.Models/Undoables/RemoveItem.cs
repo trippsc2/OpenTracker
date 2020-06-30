@@ -1,12 +1,11 @@
-﻿using OpenTracker.Models.Interfaces;
-using OpenTracker.Models.Items;
+﻿using OpenTracker.Models.Items;
 
-namespace OpenTracker.Models.Actions
+namespace OpenTracker.Models.Undoables
 {
     /// <summary>
-    /// This is the class for an undoable action to add an item.
+    /// This is the class for an undoable action to remove an item.
     /// </summary>
-    public class AddItem : IUndoable
+    public class RemoveItem : IUndoable
     {
         private readonly IItem _item;
 
@@ -14,9 +13,9 @@ namespace OpenTracker.Models.Actions
         /// Constructor
         /// </summary>
         /// <param name="item">
-        /// The item to be added.
+        /// The item data to be manipulated.
         /// </param>
-        public AddItem(IItem item)
+        public RemoveItem(IItem item)
         {
             _item = item;
         }
@@ -26,7 +25,7 @@ namespace OpenTracker.Models.Actions
         /// </summary>
         public void Execute()
         {
-            _item.Change(1);
+            _item.Change(-1);
         }
 
         /// <summary>
@@ -34,7 +33,7 @@ namespace OpenTracker.Models.Actions
         /// </summary>
         public void Undo()
         {
-            _item.Change(-1);
+            _item.Change(1);
         }
     }
 }

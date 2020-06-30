@@ -1,7 +1,7 @@
 ﻿using OpenTracker.Interfaces;
 using OpenTracker.Models;
-using OpenTracker.Models.Actions;
-using OpenTracker.Models.Interfaces;
+using OpenTracker.Models.Undoables;
+using OpenTracker.Models.Sections;
 using System;
 using System.Collections.ObjectModel;
 

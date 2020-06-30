@@ -1,9 +1,8 @@
 ﻿using Avalonia.Media;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
-using OpenTracker.Models.Actions;
+using OpenTracker.Models.Undoables;
 using OpenTracker.Models.Enums;
-using OpenTracker.Models.Interfaces;
 using OpenTracker.Models.Sections;
 using ReactiveUI;
 using System;

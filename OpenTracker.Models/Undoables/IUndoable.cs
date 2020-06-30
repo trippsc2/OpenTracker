@@ -1,4 +1,4 @@
-﻿namespace OpenTracker.Models.Interfaces
+﻿namespace OpenTracker.Models.Undoables
 {
     /// <summary>
     /// This is the interface for undoable actions.

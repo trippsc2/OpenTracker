@@ -1,10 +1,9 @@
 ﻿using OpenTracker.Models.Enums;
-using OpenTracker.Models.Interfaces;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Sections;
 using System;
 
-namespace OpenTracker.Models.Actions
+namespace OpenTracker.Models.Undoables
 {
     /// <summary>
     /// This is the class for an undoable action to collect an item/entrance

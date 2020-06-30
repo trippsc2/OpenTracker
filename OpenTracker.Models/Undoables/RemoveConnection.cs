@@ -1,12 +1,10 @@
-﻿using OpenTracker.Models.Interfaces;
-
-namespace OpenTracker.Models.Actions
+﻿namespace OpenTracker.Models.Undoables
 {
     /// <summary>
-    /// This is the class for an undoable action to create a connection between
+    /// This is the class for an undoable action to remove a connection between
     /// two entrances.
     /// </summary>
-    public class AddConnection : IUndoable
+    public class RemoveConnection : IUndoable
     {
         private readonly Game _game;
         private readonly (MapLocation, MapLocation) _connection;
@@ -15,12 +13,12 @@ namespace OpenTracker.Models.Actions
         /// Constructor
         /// </summary>
         /// <param name="game">
-        /// The game data parent class.
+        /// The game data.
         /// </param>
         /// <param name="connection">
-        /// A tuple of the two map locations that are being collected.
+        /// The connection tuple to be removed.
         /// </param>
-        public AddConnection(Game game, (MapLocation, MapLocation) connection)
+        public RemoveConnection(Game game, (MapLocation, MapLocation) connection)
         {
             _game = game;
             _connection = connection;
@@ -31,7 +29,7 @@ namespace OpenTracker.Models.Actions
         /// </summary>
         public void Execute()
         {
-            _game.Connections.Add(_connection);
+            _game.Connections.Remove(_connection);
         }
 
         /// <summary>
@@ -39,7 +37,7 @@ namespace OpenTracker.Models.Actions
         /// </summary>
         public void Undo()
         {
-            _game.Connections.Remove(_connection);
+            _game.Connections.Add(_connection);
         }
     }
 }
