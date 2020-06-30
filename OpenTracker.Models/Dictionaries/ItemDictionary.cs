@@ -10,17 +10,26 @@ namespace OpenTracker.Models.Dictionaries
     /// </summary>
     public class ItemDictionary : Dictionary<ItemType, IItem>
     {
+        private readonly Mode _mode;
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="mode">
         /// The game data parent class.
         /// </param>
-        public ItemDictionary() : base()
+        public ItemDictionary(Game game) : base()
         {
+            if (game == null)
+            {
+                throw new ArgumentNullException(nameof(game));
+            }
+
+            _mode = game.Mode;
+
             foreach (ItemType type in Enum.GetValues(typeof(ItemType)))
             {
-                Add(type, ItemFactory.GetItem(type));
+                Add(type, ItemFactory.GetItem(game, type));
             }
         }
 
@@ -42,12 +51,19 @@ namespace OpenTracker.Models.Dictionaries
             switch (type)
             {
                 case ItemType.Mushroom:
-                    return this[type].Current == 1;
+                    {
+                        return this[type].Current == 1;
+                    }
                 case ItemType.Sword:
-                    return this[type].Current > minimumValue;
+                    {
+                        return this[type].Current > minimumValue;
+                    }
                 case ItemType.TowerCrystals:
                 case ItemType.GanonCrystals:
-                    return this[type].Current + this[ItemType.Crystal].Current + this[ItemType.RedCrystal].Current >= 7;
+                    {
+                        return this[type].Current + this[ItemType.Crystal].Current +
+                            this[ItemType.RedCrystal].Current >= 7;
+                    }
                 case ItemType.HCSmallKey:
                 case ItemType.DPSmallKey:
                 case ItemType.ToHSmallKey:
@@ -60,12 +76,15 @@ namespace OpenTracker.Models.Dictionaries
                 case ItemType.MMSmallKey:
                 case ItemType.TRSmallKey:
                 case ItemType.GTSmallKey:
+                    {
+                        if (_mode.WorldState == WorldState.Retro)
+                        {
+                            return this[type].Current + this[ItemType.SmallKey].Current >= minimumValue;
+                        }
 
-                    if (Game.Instance.Mode.WorldState == WorldState.Retro)
-                        return this[type].Current + this[ItemType.SmallKey].Current >= minimumValue;
-                    
-                    return Game.Instance.Mode.DungeonItemShuffle < DungeonItemShuffle.MapsCompassesSmallKeys || this[type].Current >= minimumValue;
-
+                        return _mode.DungeonItemShuffle < DungeonItemShuffle.MapsCompassesSmallKeys ||
+                            this[type].Current >= minimumValue;
+                    }
                 case ItemType.EPBigKey:
                 case ItemType.DPBigKey:
                 case ItemType.ToHBigKey:
@@ -77,7 +96,10 @@ namespace OpenTracker.Models.Dictionaries
                 case ItemType.MMBigKey:
                 case ItemType.TRBigKey:
                 case ItemType.GTBigKey:
-                    return Game.Instance.Mode.DungeonItemShuffle < DungeonItemShuffle.Keysanity || this[type].Current >= minimumValue;
+                    {
+                        return _mode.DungeonItemShuffle < DungeonItemShuffle.Keysanity ||
+                            this[type].Current >= minimumValue;
+                    }
                 case ItemType.LightWorldAccess:
                 case ItemType.DeathMountainExitAccess:
                 case ItemType.WaterfallFairyAccess:
@@ -107,9 +129,13 @@ namespace OpenTracker.Models.Dictionaries
                 case ItemType.DarkDeathMountainEastBottomAccess:
                 case ItemType.TurtleRockTunnelAccess:
                 case ItemType.TurtleRockSafetyDoorAccess:
-                    return Game.Instance.Mode.EntranceShuffle && this[type].Current >= minimumValue;
+                    {
+                        return _mode.EntranceShuffle && this[type].Current >= minimumValue;
+                    }
                 default:
-                    return this[type].Current >= minimumValue;
+                    {
+                        return this[type].Current >= minimumValue;
+                    }
             }
         }
 
@@ -132,10 +158,8 @@ namespace OpenTracker.Models.Dictionaries
         /// </returns>
         public bool CanActivateTablets()
         {
-            if (Swordless())
-                return Has(ItemType.Hammer);
-            else
-                return Has(ItemType.Sword, 2);
+            return (Swordless() && Has(ItemType.Hammer)) ||
+                Has(ItemType.Sword, 2);
         }
 
         /// <summary>
@@ -146,10 +170,7 @@ namespace OpenTracker.Models.Dictionaries
         /// </returns>
         public bool CanUseMedallions()
         {
-            if (Swordless())
-                return true;
-            else
-                return Has(ItemType.Sword);
+            return Swordless() || Has(ItemType.Sword);
         }
 
         /// <summary>
@@ -162,7 +183,7 @@ namespace OpenTracker.Models.Dictionaries
         /// </returns>
         public bool HasMMMedallion()
         {
-            if ((Has(ItemType.Bombos) && Has(ItemType.Ether) &&
+            return (Has(ItemType.Bombos) && Has(ItemType.Ether) &&
                 Has(ItemType.Quake)) || (Has(ItemType.Bombos) &&
                 (this[ItemType.BombosDungeons].Current == 1 ||
                 this[ItemType.BombosDungeons].Current == 3)) ||
@@ -171,10 +192,7 @@ namespace OpenTracker.Models.Dictionaries
                 this[ItemType.EtherDungeons].Current == 3)) ||
                 (Has(ItemType.Quake) &&
                 (this[ItemType.QuakeDungeons].Current == 1 ||
-                this[ItemType.QuakeDungeons].Current == 3)))
-                return true;
-
-            return false;
+                this[ItemType.QuakeDungeons].Current == 3));
         }
 
         /// <summary>
@@ -187,16 +205,13 @@ namespace OpenTracker.Models.Dictionaries
         /// </returns>
         public bool HasTRMedallion()
         {
-            if ((Has(ItemType.Bombos) && Has(ItemType.Ether) &&
+            return (Has(ItemType.Bombos) && Has(ItemType.Ether) &&
                 Has(ItemType.Quake)) || (Has(ItemType.Bombos) &&
                 this[ItemType.BombosDungeons].Current > 1) ||
                 (Has(ItemType.Ether) &&
                 this[ItemType.EtherDungeons].Current > 1) ||
                 (Has(ItemType.Quake) &&
-                this[ItemType.QuakeDungeons].Current > 1))
-                return true;
-
-            return false;
+                this[ItemType.QuakeDungeons].Current > 1);
         }
 
         /// <summary>
@@ -207,10 +222,7 @@ namespace OpenTracker.Models.Dictionaries
         /// </returns>
         public bool CanRemoveCurtains()
         {
-            if (Swordless())
-                return true;
-            else
-                return Has(ItemType.Sword);
+            return Swordless() || Has(ItemType.Sword);
         }
 
         /// <summary>
@@ -223,13 +235,9 @@ namespace OpenTracker.Models.Dictionaries
         /// </returns>
         public bool CanClearAgaTowerBarrier()
         {
-            if (Has(ItemType.Cape))
-                return true;
-
-            if (Swordless())
-                return Has(ItemType.Hammer);
-            else
-                return Has(ItemType.Sword, 2);
+            return Has(ItemType.Cape) ||
+                (Swordless() && Has(ItemType.Hammer)) ||
+                Has(ItemType.Sword, 2);
         }
 
         /// <summary>
@@ -245,13 +253,10 @@ namespace OpenTracker.Models.Dictionaries
         /// </returns>
         public bool CanExtendMagic(int bars = 2)
         {
-            if (bars > 4)
-                return false;
+            int magicCapacity = 1 * (Has(ItemType.Bottle) ? 2 : 1) *
+                (Has(ItemType.HalfMagic) ? 2 : 1);
 
-            if (bars > 2)
-                return Has(ItemType.Bottle) && Has(ItemType.HalfMagic);
-
-            return Has(ItemType.Bottle) || Has(ItemType.HalfMagic);
+            return magicCapacity > bars;
         }
 
         /// <summary>
@@ -287,7 +292,7 @@ namespace OpenTracker.Models.Dictionaries
         /// </returns>
         public bool CanPassRedEyegoreGoriyaRooms()
         {
-            return CanShootArrows() || Game.Instance.Mode.EnemyShuffle;
+            return CanShootArrows() || _mode.EnemyShuffle;
         }
 
         /// <summary>
@@ -300,7 +305,7 @@ namespace OpenTracker.Models.Dictionaries
         /// </returns>
         public bool NotBunnyInLightWorld()
         {
-            return Game.Instance.Mode.WorldState != WorldState.Inverted || Has(ItemType.MoonPearl);
+            return _mode.WorldState != WorldState.Inverted || Has(ItemType.MoonPearl);
         }
 
         /// <summary>
@@ -313,7 +318,7 @@ namespace OpenTracker.Models.Dictionaries
         /// </returns>
         public bool NotBunnyInDarkWorld()
         {
-            return Game.Instance.Mode.WorldState == WorldState.Inverted || Has(ItemType.MoonPearl);
+            return _mode.WorldState == WorldState.Inverted || Has(ItemType.MoonPearl);
         }
 
         /// <summary>

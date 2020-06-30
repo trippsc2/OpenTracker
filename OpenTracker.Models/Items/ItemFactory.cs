@@ -359,8 +359,13 @@ namespace OpenTracker.Models.Items
         /// <returns>
         /// A finished item.
         /// </returns>
-        internal static IItem GetItem(ItemType type)
+        internal static IItem GetItem(Game game, ItemType type)
         {
+            if (game == null)
+            {
+                throw new ArgumentNullException(nameof(game));
+            }
+
             switch (type)
             {
                 case ItemType.Sword:
@@ -410,7 +415,7 @@ namespace OpenTracker.Models.Items
                 case ItemType.TRBigKey:
                 case ItemType.GTBigKey:
                     {
-                        return new AutoTrackedItem(GetBaseItem(type), GetMemoryAddresses(type));
+                        return new AutoTrackedItem(game, GetBaseItem(type), GetMemoryAddresses(type));
                     }
                 default:
                     {
