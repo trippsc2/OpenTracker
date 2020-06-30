@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using WebSocketSharp;
 
-namespace OpenTracker.Models.Interfaces
+namespace OpenTracker.Models.SNESConnectors
 {
     public interface ISNESConnector
     {

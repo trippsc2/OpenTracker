@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.Enums;
 using OpenTracker.Models.Interfaces;
+using OpenTracker.Models.Items;
 using System;
 using System.ComponentModel;
 
@@ -53,8 +54,8 @@ namespace OpenTracker.Models.Sections
             }
         }
 
-        private Item _prize;
-        public Item Prize
+        private IItem _prize;
+        public IItem Prize
         {
             get => _prize;
             set

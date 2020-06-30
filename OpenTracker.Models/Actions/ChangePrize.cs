@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.Interfaces;
+using OpenTracker.Models.Items;
 using OpenTracker.Models.Sections;
 
 namespace OpenTracker.Models.Actions
@@ -9,8 +10,8 @@ namespace OpenTracker.Models.Actions
     public class ChangePrize : IUndoable
     {
         private readonly BossSection _prizeSection;
-        private readonly Item _item;
-        private Item _previousItem;
+        private readonly IItem _item;
+        private IItem _previousItem;
 
         /// <summary>
         /// Constructor
@@ -21,7 +22,7 @@ namespace OpenTracker.Models.Actions
         /// <param name="dungeonItemShuffle">
         /// The item of the prize to be placed.
         /// </param>
-        public ChangePrize(BossSection prizeSection, Item item)
+        public ChangePrize(BossSection prizeSection, IItem item)
         {
             _prizeSection = prizeSection;
             _item = item;

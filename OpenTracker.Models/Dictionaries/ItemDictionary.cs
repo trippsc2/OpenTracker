@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.Enums;
+using OpenTracker.Models.Items;
 using System;
 using System.Collections.Generic;
 
@@ -7,28 +8,19 @@ namespace OpenTracker.Models.Dictionaries
     /// <summary>
     /// This is the dictionary container for items, both tracked and untracked
     /// </summary>
-    public class ItemDictionary : Dictionary<ItemType, Item>
+    public class ItemDictionary : Dictionary<ItemType, IItem>
     {
-        private readonly Mode _mode;
-
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="mode">
         /// The game data parent class.
         /// </param>
-        public ItemDictionary(Game game) : base()
+        public ItemDictionary() : base()
         {
-            if (game == null)
-            {
-                throw new ArgumentNullException(nameof(game));
-            }
-
-            _mode = game.Mode;
-
             foreach (ItemType type in Enum.GetValues(typeof(ItemType)))
             {
-                Add(type, new Item(game, type));
+                Add(type, ItemFactory.GetItem(type));
             }
         }
 
@@ -69,10 +61,10 @@ namespace OpenTracker.Models.Dictionaries
                 case ItemType.TRSmallKey:
                 case ItemType.GTSmallKey:
 
-                    if (_mode.WorldState == WorldState.Retro)
+                    if (Game.Instance.Mode.WorldState == WorldState.Retro)
                         return this[type].Current + this[ItemType.SmallKey].Current >= minimumValue;
                     
-                    return _mode.DungeonItemShuffle < DungeonItemShuffle.MapsCompassesSmallKeys || this[type].Current >= minimumValue;
+                    return Game.Instance.Mode.DungeonItemShuffle < DungeonItemShuffle.MapsCompassesSmallKeys || this[type].Current >= minimumValue;
 
                 case ItemType.EPBigKey:
                 case ItemType.DPBigKey:
@@ -85,7 +77,7 @@ namespace OpenTracker.Models.Dictionaries
                 case ItemType.MMBigKey:
                 case ItemType.TRBigKey:
                 case ItemType.GTBigKey:
-                    return _mode.DungeonItemShuffle < DungeonItemShuffle.Keysanity || this[type].Current >= minimumValue;
+                    return Game.Instance.Mode.DungeonItemShuffle < DungeonItemShuffle.Keysanity || this[type].Current >= minimumValue;
                 case ItemType.LightWorldAccess:
                 case ItemType.DeathMountainExitAccess:
                 case ItemType.WaterfallFairyAccess:
@@ -115,7 +107,7 @@ namespace OpenTracker.Models.Dictionaries
                 case ItemType.DarkDeathMountainEastBottomAccess:
                 case ItemType.TurtleRockTunnelAccess:
                 case ItemType.TurtleRockSafetyDoorAccess:
-                    return _mode.EntranceShuffle && this[type].Current >= minimumValue;
+                    return Game.Instance.Mode.EntranceShuffle && this[type].Current >= minimumValue;
                 default:
                     return this[type].Current >= minimumValue;
             }
@@ -295,7 +287,7 @@ namespace OpenTracker.Models.Dictionaries
         /// </returns>
         public bool CanPassRedEyegoreGoriyaRooms()
         {
-            return CanShootArrows() || _mode.EnemyShuffle;
+            return CanShootArrows() || Game.Instance.Mode.EnemyShuffle;
         }
 
         /// <summary>
@@ -308,7 +300,7 @@ namespace OpenTracker.Models.Dictionaries
         /// </returns>
         public bool NotBunnyInLightWorld()
         {
-            return _mode.WorldState != WorldState.Inverted || Has(ItemType.MoonPearl);
+            return Game.Instance.Mode.WorldState != WorldState.Inverted || Has(ItemType.MoonPearl);
         }
 
         /// <summary>
@@ -321,7 +313,7 @@ namespace OpenTracker.Models.Dictionaries
         /// </returns>
         public bool NotBunnyInDarkWorld()
         {
-            return _mode.WorldState == WorldState.Inverted || Has(ItemType.MoonPearl);
+            return Game.Instance.Mode.WorldState == WorldState.Inverted || Has(ItemType.MoonPearl);
         }
 
         /// <summary>

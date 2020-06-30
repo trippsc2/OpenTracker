@@ -8,25 +8,53 @@ namespace OpenTracker.Models
     /// </summary>
     public class Game
     {
-        public AutoTracker AutoTracker { get; }
-        public Mode Mode { get; }
-        public ItemDictionary Items { get; }
-        public BossDictionary Bosses { get; }
-        public BossPlacementDictionary BossPlacements { get; }
-        public RequirementDictionary Requirements { get; }
-        public RequirementNodeDictionary RequirementNodes { get; }
-        public LocationDictionary Locations { get; }
-        public ObservableCollection<(MapLocation, MapLocation)> Connections { get; }
+        private static readonly object _syncLock = new object();
+
+        private static volatile Game _instance;
+        public static Game Instance
+        {
+            get
+            {
+                if (_instance != null)
+                {
+                    return _instance;
+                }
+
+                lock (_syncLock)
+                {
+                    if (_instance == null)
+                    {
+                        _instance = new Game();
+                    }
+                }
+
+                return _instance;
+            }
+        }
+
+        public AutoTracker AutoTracker { get; private set; }
+        public Mode Mode { get; private set; }
+        public ItemDictionary Items { get; private set; }
+        public BossDictionary Bosses { get; private set; }
+        public BossPlacementDictionary BossPlacements { get; private set; }
+        public RequirementDictionary Requirements { get; private set; }
+        public RequirementNodeDictionary RequirementNodes { get; private set; }
+        public LocationDictionary Locations { get; private set; }
+        public ObservableCollection<(MapLocation, MapLocation)> Connections { get; private set; }
 
         /// <summary>
         /// Basic constructor
         /// </summary>
-        public Game()
+        private Game()
+        {
+        }
+
+        public void Initialize()
         {
             AutoTracker = new AutoTracker();
             Mode = new Mode();
 
-            Items = new ItemDictionary(this);
+            Items = new ItemDictionary();
             Bosses = new BossDictionary(this);
             BossPlacements = new BossPlacementDictionary(this);
             Requirements = new RequirementDictionary(this);

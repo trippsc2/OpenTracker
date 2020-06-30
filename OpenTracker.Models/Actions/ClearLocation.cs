@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.Enums;
 using OpenTracker.Models.Interfaces;
+using OpenTracker.Models.Items;
 using OpenTracker.Models.Sections;
 using System;
 using System.Collections.Generic;
@@ -17,8 +18,8 @@ namespace OpenTracker.Models.Actions
         private readonly List<int?> _previousLocationCounts;
         private readonly List<MarkingType?> _previousMarkings;
         private readonly List<bool?> _previousUserManipulated;
-        private readonly List<Item> _markedItems;
-        private readonly List<Item> _prizes;
+        private readonly List<IItem> _markedItems;
+        private readonly List<IItem> _prizes;
         private readonly List<int?> _prizePreviousCurrents;
 
         /// <summary>
@@ -41,8 +42,8 @@ namespace OpenTracker.Models.Actions
             _previousLocationCounts = new List<int?>();
             _previousMarkings = new List<MarkingType?>();
             _previousUserManipulated = new List<bool?>();
-            _markedItems = new List<Item>();
-            _prizes = new List<Item>();
+            _markedItems = new List<IItem>();
+            _prizes = new List<IItem>();
             _prizePreviousCurrents = new List<int?>();
         }
 
@@ -74,7 +75,7 @@ namespace OpenTracker.Models.Actions
                     {
                         if (Enum.TryParse(section.Marking.Value.ToString(), out ItemType itemType))
                         {
-                            Item item = _game.Items[itemType];
+                            var item = _game.Items[itemType];
 
                             if (item.Current < item.Maximum)
                             {

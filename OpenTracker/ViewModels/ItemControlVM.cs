@@ -2,6 +2,7 @@
 using OpenTracker.Models;
 using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
+using OpenTracker.Models.Items;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
@@ -19,7 +20,7 @@ namespace OpenTracker.ViewModels
         private readonly AppSettings _appSettings;
         private readonly string _imageSourceBase;
         private readonly Game _game;
-        private readonly Item[] _items;
+        private readonly IItem[] _items;
 
         public string ImageSource
         {
@@ -128,7 +129,7 @@ namespace OpenTracker.ViewModels
         /// An array of items that are to be represented by this control.
         /// </param>
         public ItemControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
-            Game game, Item[] items)
+            Game game, IItem[] items)
         {
             _undoRedoManager = undoRedoManager;
             _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
@@ -147,10 +148,10 @@ namespace OpenTracker.ViewModels
                 else
                 {
                     _imageSourceBase = $"avares://OpenTracker/Assets/Images/Items/" +
-                        $"{ _items[0].Type.ToString().ToLowerInvariant() }";
+                        $"{_items[0].Type.ToString().ToLowerInvariant()}";
                 }
 
-                foreach (Item item in _items)
+                foreach (var item in _items)
                 {
                     item.PropertyChanged += OnItemChanged;
                 }

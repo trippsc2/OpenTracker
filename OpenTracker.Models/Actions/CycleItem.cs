@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.Interfaces;
+using OpenTracker.Models.Items;
 
 namespace OpenTracker.Models.Actions
 {
@@ -8,7 +9,7 @@ namespace OpenTracker.Models.Actions
     /// </summary>
     public class CycleItem : IUndoable
     {
-        private readonly Item _item;
+        private readonly IItem _item;
 
         /// <summary>
         /// Constructor
@@ -16,7 +17,7 @@ namespace OpenTracker.Models.Actions
         /// <param name="item">
         /// The item data to be manipulated.
         /// </param>
-        public CycleItem(Item item)
+        public CycleItem(IItem item)
         {
             _item = item;
         }

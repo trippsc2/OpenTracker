@@ -45,7 +45,7 @@ namespace OpenTracker.Models
             BossPlacements = new Dictionary<(LocationID, int), BossType?>();
             Connections = new List<(LocationID, int, LocationID, int)>();
 
-            foreach (Item item in game.Items.Values)
+            foreach (var item in game.Items.Values)
             {
                 ItemCounts.Add(item.Type, item.Current);
             }

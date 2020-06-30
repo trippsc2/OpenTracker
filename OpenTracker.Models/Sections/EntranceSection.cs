@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.Enums;
 using OpenTracker.Models.Interfaces;
+using OpenTracker.Models.Items;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,7 +13,7 @@ namespace OpenTracker.Models.Sections
     public class EntranceSection : ISection
     {
         private readonly Game _game;
-        private readonly Item _itemProvided;
+        private readonly IItem _itemProvided;
         private readonly List<RequirementNodeConnection> _connections;
 
         public bool HasMarking => true;

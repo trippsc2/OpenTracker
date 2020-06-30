@@ -105,7 +105,7 @@ namespace OpenTracker.ViewModels
             }
             else
             {
-                Item newPrize = _game.Items[_prizeSection.Prize.Type + 1];
+                var newPrize = _game.Items[_prizeSection.Prize.Type + 1];
                 _undoRedoManager.Execute(new ChangePrize(_prizeSection, newPrize));
             }
         }

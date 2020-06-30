@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.Enums;
 using OpenTracker.Models.Interfaces;
+using OpenTracker.Models.Items;
 using OpenTracker.Models.Sections;
 using System;
 
@@ -15,8 +16,8 @@ namespace OpenTracker.Models.Actions
         private readonly ISection _section;
         private MarkingType? _previousMarking;
         private bool _previousUserManipulated;
-        private Item _markedItem;
-        private Item _prize;
+        private IItem _markedItem;
+        private IItem _prize;
         private int _previousPrizeCurrent;
 
         /// <summary>
@@ -49,7 +50,7 @@ namespace OpenTracker.Models.Actions
             {
                 if (Enum.TryParse(_section.Marking.ToString(), out ItemType itemType))
                 {
-                    Item item = _game.Items[itemType];
+                    var item = _game.Items[itemType];
 
                     if (item.Current < item.Maximum)
                         _markedItem = item;

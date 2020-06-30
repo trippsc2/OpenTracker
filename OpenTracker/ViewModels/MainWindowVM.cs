@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.Enums;
+using OpenTracker.Models.Items;
 using OpenTracker.Models.Sections;
 using ReactiveUI;
 using System;
@@ -27,7 +28,6 @@ namespace OpenTracker.ViewModels
         private readonly IDialogService _dialogService;
         private readonly UndoRedoManager _undoRedoManager;
         private readonly AppSettings _appSettings;
-        private readonly Game _game;
 
         public static ObservableCollection<MarkingSelectControlVM> NonEntranceMarkingSelect { get; } = 
             new ObservableCollection<MarkingSelectControlVM>();
@@ -104,11 +104,11 @@ namespace OpenTracker.ViewModels
             _appSettings.VerticalItemsPlacement == VerticalAlignment.Bottom;
 
         public bool SmallKeyShuffle =>
-            _game.Mode.SmallKeyShuffle;
+            Game.Instance.Mode.SmallKeyShuffle;
         public bool BigKeyShuffle =>
-            _game.Mode.BigKeyShuffle;
+            Game.Instance.Mode.BigKeyShuffle;
         public bool BossShuffle =>
-            _game.Mode.BossShuffle;
+            Game.Instance.Mode.BossShuffle;
 
         private Orientation _orientation;
         public Orientation Orientation
@@ -412,6 +412,8 @@ namespace OpenTracker.ViewModels
         /// </summary>
         public MainWindowVM()
         {
+            Game.Instance.Initialize();
+
             _undoRedoManager = new UndoRedoManager();
 
             _undoRedoManager.UndoableActions.CollectionChanged += OnUndoChanged;
@@ -446,10 +448,8 @@ namespace OpenTracker.ViewModels
 
             _appSettings.PropertyChanged += OnAppSettingsChanged;
 
-            _game = new Game();
-
-            _game.Mode.PropertyChanged += OnModeChanged;
-            _game.Connections.CollectionChanged += OnConnectionsChanged;
+            Game.Instance.Mode.PropertyChanged += OnModeChanged;
+            Game.Instance.Connections.CollectionChanged += OnConnectionsChanged;
 
             if (NonEntranceMarkingSelect.Count == 0)
             {
@@ -491,13 +491,13 @@ namespace OpenTracker.ViewModels
                         case MarkingType.HalfMagic:
                         case MarkingType.BigKey:
                             {
-                                NonEntranceMarkingSelect.Add(new MarkingSelectControlVM(_game, (MarkingType)i));
+                                NonEntranceMarkingSelect.Add(new MarkingSelectControlVM(Game.Instance, (MarkingType)i));
                             }
                             break;
                         case MarkingType.Quake:
                             {
-                                NonEntranceMarkingSelect.Add(new MarkingSelectControlVM(_game, (MarkingType)i));
-                                NonEntranceMarkingSelect.Add(new MarkingSelectControlVM(_game, null));
+                                NonEntranceMarkingSelect.Add(new MarkingSelectControlVM(Game.Instance, (MarkingType)i));
+                                NonEntranceMarkingSelect.Add(new MarkingSelectControlVM(Game.Instance, null));
                             }
                             break;
                         default:
@@ -510,134 +510,134 @@ namespace OpenTracker.ViewModels
             {
                 for (int i = 0; i < Enum.GetValues(typeof(MarkingType)).Length; i++)
                 {
-                    EntranceMarkingSelect.Add(new MarkingSelectControlVM(_game, (MarkingType)i));
+                    EntranceMarkingSelect.Add(new MarkingSelectControlVM(Game.Instance, (MarkingType)i));
                 }
             }
 
-            ModeSettings = new ModeSettingsControlVM(_game.Mode, _undoRedoManager);
+            ModeSettings = new ModeSettingsControlVM(Game.Instance.Mode, _undoRedoManager);
 
-            HCSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.HCSmallKey]);
-            ATSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.ATSmallKey]);
-            DPSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.DPSmallKey]);
-            THSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.ToHSmallKey]);
-            PDSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.PoDSmallKey]);
-            SPSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.SPSmallKey]);
-            SWSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.SWSmallKey]);
-            TTSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.TTSmallKey]);
-            IPSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.IPSmallKey]);
-            MMSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.MMSmallKey]);
-            TRSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.TRSmallKey]);
-            GTSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.GTSmallKey]);
+            HCSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.HCSmallKey]);
+            ATSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.ATSmallKey]);
+            DPSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.DPSmallKey]);
+            THSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.ToHSmallKey]);
+            PDSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.PoDSmallKey]);
+            SPSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.SPSmallKey]);
+            SWSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.SWSmallKey]);
+            TTSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.TTSmallKey]);
+            IPSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.IPSmallKey]);
+            MMSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.MMSmallKey]);
+            TRSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.TRSmallKey]);
+            GTSmallKeys = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.GTSmallKey]);
 
-            EPBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.EPBigKey]);
-            DPBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.DPBigKey]);
-            THBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.ToHBigKey]);
-            PDBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.PoDBigKey]);
-            SPBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.SPBigKey]);
-            SWBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.SWBigKey]);
-            TTBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.TTBigKey]);
-            IPBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.IPBigKey]);
-            MMBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.MMBigKey]);
-            TRBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.TRBigKey]);
-            GTBigKey = new KeyControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Items[ItemType.GTBigKey]);
+            EPBigKey = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.EPBigKey]);
+            DPBigKey = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.DPBigKey]);
+            THBigKey = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.ToHBigKey]);
+            PDBigKey = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.PoDBigKey]);
+            SPBigKey = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.SPBigKey]);
+            SWBigKey = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.SWBigKey]);
+            TTBigKey = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.TTBigKey]);
+            IPBigKey = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.IPBigKey]);
+            MMBigKey = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.MMBigKey]);
+            TRBigKey = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.TRBigKey]);
+            GTBigKey = new KeyControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Items[ItemType.GTBigKey]);
 
-            HCItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Locations[LocationID.HyruleCastle].Sections[0]);
-            ATItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Locations[LocationID.AgahnimTower].Sections[0]);
-            EPItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Locations[LocationID.EasternPalace].Sections[0]);
-            DPItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Locations[LocationID.DesertPalace].Sections[0]);
-            THItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Locations[LocationID.TowerOfHera].Sections[0]);
-            PDItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Locations[LocationID.PalaceOfDarkness].Sections[0]);
-            SPItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Locations[LocationID.SwampPalace].Sections[0]);
-            SWItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Locations[LocationID.SkullWoods].Sections[0]);
-            TTItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Locations[LocationID.ThievesTown].Sections[0]);
-            IPItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Locations[LocationID.IcePalace].Sections[0]);
-            MMItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Locations[LocationID.MiseryMire].Sections[0]);
-            TRItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Locations[LocationID.TurtleRock].Sections[0]);
-            GTItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, _game,
-                _game.Locations[LocationID.GanonsTower].Sections[0]);
+            HCItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Locations[LocationID.HyruleCastle].Sections[0]);
+            ATItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Locations[LocationID.AgahnimTower].Sections[0]);
+            EPItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Locations[LocationID.EasternPalace].Sections[0]);
+            DPItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Locations[LocationID.DesertPalace].Sections[0]);
+            THItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Locations[LocationID.TowerOfHera].Sections[0]);
+            PDItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Locations[LocationID.PalaceOfDarkness].Sections[0]);
+            SPItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Locations[LocationID.SwampPalace].Sections[0]);
+            SWItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Locations[LocationID.SkullWoods].Sections[0]);
+            TTItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Locations[LocationID.ThievesTown].Sections[0]);
+            IPItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Locations[LocationID.IcePalace].Sections[0]);
+            MMItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Locations[LocationID.MiseryMire].Sections[0]);
+            TRItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Locations[LocationID.TurtleRock].Sections[0]);
+            GTItems = new DungeonChestControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                Game.Instance.Locations[LocationID.GanonsTower].Sections[0]);
 
-            EPPrize = new PrizeControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.EasternPalace].BossSections[0]);
-            DPPrize = new PrizeControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.DesertPalace].BossSections[0]);
-            THPrize = new PrizeControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.TowerOfHera].BossSections[0]);
-            PDPrize = new PrizeControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.PalaceOfDarkness].BossSections[0]);
-            SPPrize = new PrizeControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.SwampPalace].BossSections[0]);
-            SWPrize = new PrizeControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.SkullWoods].BossSections[0]);
-            TTPrize = new PrizeControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.ThievesTown].BossSections[0]);
-            IPPrize = new PrizeControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.IcePalace].BossSections[0]);
-            MMPrize = new PrizeControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.MiseryMire].BossSections[0]);
-            TRPrize = new PrizeControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.TurtleRock].BossSections[0]);
+            EPPrize = new PrizeControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.EasternPalace].BossSections[0]);
+            DPPrize = new PrizeControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.DesertPalace].BossSections[0]);
+            THPrize = new PrizeControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.TowerOfHera].BossSections[0]);
+            PDPrize = new PrizeControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.PalaceOfDarkness].BossSections[0]);
+            SPPrize = new PrizeControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.SwampPalace].BossSections[0]);
+            SWPrize = new PrizeControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.SkullWoods].BossSections[0]);
+            TTPrize = new PrizeControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.ThievesTown].BossSections[0]);
+            IPPrize = new PrizeControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.IcePalace].BossSections[0]);
+            MMPrize = new PrizeControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.MiseryMire].BossSections[0]);
+            TRPrize = new PrizeControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.TurtleRock].BossSections[0]);
 
-            EPBoss = new BossControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.EasternPalace].BossSections[0]);
-            DPBoss = new BossControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.DesertPalace].BossSections[0]);
-            THBoss = new BossControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.TowerOfHera].BossSections[0]);
-            PDBoss = new BossControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.PalaceOfDarkness].BossSections[0]);
-            SPBoss = new BossControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.SwampPalace].BossSections[0]);
-            SWBoss = new BossControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.SkullWoods].BossSections[0]);
-            TTBoss = new BossControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.ThievesTown].BossSections[0]);
-            IPBoss = new BossControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.IcePalace].BossSections[0]);
-            MMBoss = new BossControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.MiseryMire].BossSections[0]);
-            TRBoss = new BossControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.TurtleRock].BossSections[0]);
-            GTBoss1 = new BossControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.GanonsTower].BossSections[0]);
-            GTBoss2 = new BossControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.GanonsTower].BossSections[1]);
-            GTBoss3 = new BossControlVM(_undoRedoManager, _game,
-                _game.Locations[LocationID.GanonsTower].BossSections[2]);
+            EPBoss = new BossControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.EasternPalace].BossSections[0]);
+            DPBoss = new BossControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.DesertPalace].BossSections[0]);
+            THBoss = new BossControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.TowerOfHera].BossSections[0]);
+            PDBoss = new BossControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.PalaceOfDarkness].BossSections[0]);
+            SPBoss = new BossControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.SwampPalace].BossSections[0]);
+            SWBoss = new BossControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.SkullWoods].BossSections[0]);
+            TTBoss = new BossControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.ThievesTown].BossSections[0]);
+            IPBoss = new BossControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.IcePalace].BossSections[0]);
+            MMBoss = new BossControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.MiseryMire].BossSections[0]);
+            TRBoss = new BossControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.TurtleRock].BossSections[0]);
+            GTBoss1 = new BossControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.GanonsTower].BossSections[0]);
+            GTBoss2 = new BossControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.GanonsTower].BossSections[1]);
+            GTBoss3 = new BossControlVM(_undoRedoManager, Game.Instance,
+                Game.Instance.Locations[LocationID.GanonsTower].BossSections[2]);
 
             Maps = new ObservableCollection<MapControlVM>();
             Connectors = new ObservableCollection<ConnectorControlVM>();
@@ -645,26 +645,26 @@ namespace OpenTracker.ViewModels
             MapLocations = new ObservableCollection<MapLocationControlVM>();
             Locations = new ObservableCollection<LocationControlVM>();
 
-            foreach (Models.Location location in _game.Locations.Values)
+            foreach (Models.Location location in Game.Instance.Locations.Values)
             {
                 foreach (MapLocation mapLocation in location.MapLocations)
                 {
                     if (location.Sections[0] is EntranceSection)
                     {
                         MapEntrances.Add(new MapEntranceControlVM(_undoRedoManager, _appSettings,
-                            _game, this, mapLocation));
+                            Game.Instance, this, mapLocation));
                     }
                     else
                     {
                         MapLocations.Add(new MapLocationControlVM(_undoRedoManager, _appSettings,
-                            _game, this, mapLocation));
+                            Game.Instance, this, mapLocation));
                     }
                 }
             }
 
             for (int i = 0; i < Enum.GetValues(typeof(MapID)).Length; i++)
             {
-                Maps.Add(new MapControlVM(_game, this, (MapID)i));
+                Maps.Add(new MapControlVM(Game.Instance, this, (MapID)i));
             }
 
             Items = new ObservableCollection<ItemControlVM>();
@@ -699,8 +699,8 @@ namespace OpenTracker.ViewModels
                     case ItemType.HalfMagic:
                     case ItemType.MoonPearl:
                         {
-                            Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, _game,
-                                new Item[1] { _game.Items[(ItemType)i] }));
+                            Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                                new IItem[1] { Game.Instance.Items[(ItemType)i] }));
                         }
                         break;
                     case ItemType.Bow:
@@ -712,18 +712,18 @@ namespace OpenTracker.ViewModels
                     case ItemType.Quake:
                     case ItemType.Flute:
                         {
-                            Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, _game,
-                                new Item[2] {
-                                    _game.Items[(ItemType)i],
-                                    _game.Items[(ItemType)(i + 1)]
+                            Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                                new IItem[2] {
+                                    Game.Instance.Items[(ItemType)i],
+                                    Game.Instance.Items[(ItemType)(i + 1)]
                                 }));
                         }
                         break;
                     case ItemType.Mail:
                         {
-                            Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, _game,
-                                new Item[1] { _game.Items[(ItemType)i] }));
-                            Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, _game, null));
+                            Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, Game.Instance,
+                                new IItem[1] { Game.Instance.Items[(ItemType)i] }));
+                            Items.Add(new ItemControlVM(_undoRedoManager, _appSettings, Game.Instance, null));
                         }
                         break;
                     default:
@@ -890,7 +890,7 @@ namespace OpenTracker.ViewModels
                 foreach (object item in e.NewItems)
                 {
                     (MapLocation, MapLocation) connection = ((MapLocation, MapLocation))item;
-                    Connectors.Add(new ConnectorControlVM(_undoRedoManager, _game, this,
+                    Connectors.Add(new ConnectorControlVM(_undoRedoManager, Game.Instance, this,
                         _appSettings, connection));
                 }
             }
@@ -919,7 +919,7 @@ namespace OpenTracker.ViewModels
                 foreach ((MapLocation, MapLocation) connection in
                     (ObservableCollection<(MapLocation, MapLocation)>)sender)
                 {
-                    Connectors.Add(new ConnectorControlVM(_undoRedoManager, _game, this,
+                    Connectors.Add(new ConnectorControlVM(_undoRedoManager, Game.Instance, this,
                         _appSettings, connection));
                 }
             }
@@ -1052,7 +1052,7 @@ namespace OpenTracker.ViewModels
                 File.Delete(path);
             }
 
-            SaveData saveData = new SaveData(_game);
+            SaveData saveData = new SaveData(Game.Instance);
 
             string json = JsonConvert.SerializeObject(saveData);
 
@@ -1071,23 +1071,23 @@ namespace OpenTracker.ViewModels
 
             SaveData saveData = JsonConvert.DeserializeObject<SaveData>(jsonContent);
 
-            _game.Mode.ItemPlacement = saveData.Mode.ItemPlacement;
-            _game.Mode.DungeonItemShuffle = saveData.Mode.DungeonItemShuffle;
-            _game.Mode.WorldState = saveData.Mode.WorldState;
-            _game.Mode.EntranceShuffle = saveData.Mode.EntranceShuffle;
-            _game.Mode.BossShuffle = saveData.Mode.BossShuffle;
-            _game.Mode.EnemyShuffle = saveData.Mode.EnemyShuffle;
+            Game.Instance.Mode.ItemPlacement = saveData.Mode.ItemPlacement;
+            Game.Instance.Mode.DungeonItemShuffle = saveData.Mode.DungeonItemShuffle;
+            Game.Instance.Mode.WorldState = saveData.Mode.WorldState;
+            Game.Instance.Mode.EntranceShuffle = saveData.Mode.EntranceShuffle;
+            Game.Instance.Mode.BossShuffle = saveData.Mode.BossShuffle;
+            Game.Instance.Mode.EnemyShuffle = saveData.Mode.EnemyShuffle;
 
             foreach (ItemType item in saveData.ItemCounts.Keys)
             {
-                _game.Items[item].SetCurrent(saveData.ItemCounts[item]);
+                Game.Instance.Items[item].SetCurrent(saveData.ItemCounts[item]);
             }
 
             foreach (LocationID location in saveData.LocationSectionCounts.Keys)
             {
                 foreach (int i in saveData.LocationSectionCounts[location].Keys)
                 {
-                    _game.Locations[location].Sections[i].Available =
+                    Game.Instance.Locations[location].Sections[i].Available =
                         saveData.LocationSectionCounts[location][i];
                 }
             }
@@ -1096,7 +1096,7 @@ namespace OpenTracker.ViewModels
             {
                 foreach (int i in saveData.LocationSectionMarkings[location].Keys)
                 {
-                    _game.Locations[location].Sections[i].Marking =
+                    Game.Instance.Locations[location].Sections[i].Marking =
                         saveData.LocationSectionMarkings[location][i];
                 }
             }
@@ -1105,12 +1105,12 @@ namespace OpenTracker.ViewModels
             {
                 if (saveData.PrizePlacements[locationIndex] == null)
                 {
-                    _game.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].Prize = null;
+                    Game.Instance.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].Prize = null;
                 }
                 else
                 {
-                    _game.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].Prize =
-                        _game.Items[saveData.PrizePlacements[locationIndex].Value];
+                    Game.Instance.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].Prize =
+                        Game.Instance.Items[saveData.PrizePlacements[locationIndex].Value];
                 }
             }
 
@@ -1118,21 +1118,21 @@ namespace OpenTracker.ViewModels
             {
                 if (saveData.BossPlacements[locationIndex] == null)
                 {
-                    _game.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].BossPlacement.Boss = null;
+                    Game.Instance.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].BossPlacement.Boss = null;
                 }
                 else
                 {
-                    _game.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].BossPlacement.Boss =
-                        _game.Bosses[saveData.BossPlacements[locationIndex].Value];
+                    Game.Instance.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].BossPlacement.Boss =
+                        Game.Instance.Bosses[saveData.BossPlacements[locationIndex].Value];
                 }
             }
 
             foreach ((LocationID, int, LocationID, int) connection in saveData.Connections)
             {
-                MapLocation location1 = _game.Locations[connection.Item1].MapLocations[connection.Item2];
-                MapLocation location2 = _game.Locations[connection.Item3].MapLocations[connection.Item4];
+                MapLocation location1 = Game.Instance.Locations[connection.Item1].MapLocations[connection.Item2];
+                MapLocation location2 = Game.Instance.Locations[connection.Item3].MapLocations[connection.Item4];
 
-                _game.Connections.Add((location1, location2));
+                Game.Instance.Connections.Add((location1, location2));
             }
         }
 
@@ -1253,7 +1253,7 @@ namespace OpenTracker.ViewModels
             {
                 _undoRedoManager.Reset();
                 Locations.Clear();
-                _game.Reset();
+                Game.Instance.Reset();
             });
         }
 
@@ -1314,7 +1314,7 @@ namespace OpenTracker.ViewModels
         /// </returns>
         public object GetAutoTrackerViewModel()
         {
-            return new AutoTrackerDialogVM(_game.AutoTracker);
+            return new AutoTrackerDialogVM(Game.Instance.AutoTracker);
         }
 
         /// <summary>

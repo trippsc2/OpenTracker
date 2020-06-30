@@ -2,6 +2,7 @@
 using OpenTracker.Models;
 using OpenTracker.Models.Actions;
 using OpenTracker.Models.Enums;
+using OpenTracker.Models.Items;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
@@ -19,7 +20,7 @@ namespace OpenTracker.ViewModels
         private readonly AppSettings _appSettings;
         private readonly Game _game;
         private readonly string _imageSourceBase;
-        private readonly Item _item;
+        private readonly IItem _item;
         private readonly bool _smallKey;
 
         public bool SmallKeyShuffle =>
@@ -100,7 +101,7 @@ namespace OpenTracker.ViewModels
         /// The item of the key to be represented.
         /// </param>
         public KeyControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
-            Game game, Item item)
+            Game game, IItem item)
         {
             _undoRedoManager = undoRedoManager;
             _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));

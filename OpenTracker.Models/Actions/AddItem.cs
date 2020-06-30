@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.Interfaces;
+using OpenTracker.Models.Items;
 
 namespace OpenTracker.Models.Actions
 {
@@ -7,7 +8,7 @@ namespace OpenTracker.Models.Actions
     /// </summary>
     public class AddItem : IUndoable
     {
-        private readonly Item _item;
+        private readonly IItem _item;
 
         /// <summary>
         /// Constructor
@@ -15,7 +16,7 @@ namespace OpenTracker.Models.Actions
         /// <param name="item">
         /// The item to be added.
         /// </param>
-        public AddItem(Item item)
+        public AddItem(IItem item)
         {
             _item = item;
         }

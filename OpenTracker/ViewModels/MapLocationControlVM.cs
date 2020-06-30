@@ -182,7 +182,7 @@ namespace OpenTracker.ViewModels
                         case MarkingType.Shield:
                         case MarkingType.Mail:
                             {
-                                Item item = _game.Items[Enum.Parse<ItemType>(section.Marking.ToString())];
+                                var item = _game.Items[Enum.Parse<ItemType>(section.Marking.ToString())];
                                 itemNumber = Math.Min(item.Current + 1, item.Maximum);
 
                                 return $"avares://OpenTracker/Assets/Images/Items/" +
@@ -191,7 +191,7 @@ namespace OpenTracker.ViewModels
                             }
                         case MarkingType.Sword:
                             {
-                                Item sword = _game.Items[ItemType.Sword];
+                                var sword = _game.Items[ItemType.Sword];
 
                                 if (sword.Current == 0)
                                 {
