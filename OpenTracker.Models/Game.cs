@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.Dictionaries;
 using OpenTracker.Models.Enums;
+using OpenTracker.Models.Requirements;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,7 +20,7 @@ namespace OpenTracker.Models
         public LocationDictionary Locations { get; }
         public ObservableCollection<(MapLocation, MapLocation)> Connections { get; }
         public Dictionary<SequenceBreakType, SequenceBreak> SequenceBreaks { get; }
-        public RequirementDictionary Requirements { get; }
+        public Dictionary<RequirementType, IRequirement> Requirements { get; }
 
         /// <summary>
         /// Basic constructor
@@ -32,7 +33,6 @@ namespace OpenTracker.Models
             Items = new ItemDictionary(this);
             BossPlacements = new BossPlacementDictionary(this);
             RequirementNodes = new RequirementNodeDictionary(this);
-            Locations = new LocationDictionary(this);
             Connections = new ObservableCollection<(MapLocation, MapLocation)>();
             SequenceBreaks = new Dictionary<SequenceBreakType, SequenceBreak>();
 
@@ -41,7 +41,9 @@ namespace OpenTracker.Models
                 SequenceBreaks.Add(type, new SequenceBreak());
             }
 
-            Requirements = new RequirementDictionary(this);
+            Requirements = new Dictionary<RequirementType, IRequirement>();
+            RequirementFactory.GetAllRequirements(this, Requirements);
+            Locations = new LocationDictionary(this);
 
             RequirementNodes.Initialize();
             Locations.Initialize();

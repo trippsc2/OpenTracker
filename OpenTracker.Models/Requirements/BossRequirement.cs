@@ -14,6 +14,29 @@ namespace OpenTracker.Models.Requirements
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private IRequirement _currentBossRequirement;
+        private IRequirement CurrentBossRequirement
+        {
+            get => _currentBossRequirement;
+            set
+            {
+                if (_currentBossRequirement != value)
+                {
+                    if (_currentBossRequirement != null)
+                    {
+                        _currentBossRequirement.PropertyChanged -= OnRequirementChanged;
+                    }
+
+                    _currentBossRequirement = value;
+
+                    if (_currentBossRequirement != null)
+                    {
+                        _currentBossRequirement.PropertyChanged += OnRequirementChanged;
+                    }
+                }
+            }
+        }
+
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
         {
@@ -41,6 +64,9 @@ namespace OpenTracker.Models.Requirements
 
             game.Mode.PropertyChanged += OnModeChanged;
             _bossPlacement.PropertyChanged += OnBossPlacementChanged;
+            
+            UpdateRequirement();
+            UpdateAccessibility();
         }
 
         /// <summary>
@@ -67,6 +93,7 @@ namespace OpenTracker.Models.Requirements
         {
             if (e.PropertyName == nameof(Mode.BossShuffle))
             {
+                UpdateRequirement();
                 UpdateAccessibility();
             }
         }
@@ -84,7 +111,56 @@ namespace OpenTracker.Models.Requirements
         {
             if (e.PropertyName == nameof(BossPlacement.Boss))
             {
+                UpdateRequirement();
                 UpdateAccessibility();
+            }
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IRequirement interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IRequirement.Accessibility))
+            {
+                UpdateAccessibility();
+            }
+        }
+
+        /// <summary>
+        /// Updates boss requirement of this requirement.
+        /// </summary>
+        private void UpdateRequirement()
+        {
+            BossType? boss = _bossPlacement.GetCurrentBoss();
+
+            if (boss.HasValue)
+            {
+                CurrentBossRequirement = boss.Value switch
+                {
+                    BossType.Armos => _game.Requirements[RequirementType.Armos],
+                    BossType.Lanmolas => _game.Requirements[RequirementType.Lanmolas],
+                    BossType.Moldorm => _game.Requirements[RequirementType.Moldorm],
+                    BossType.HelmasaurKing => _game.Requirements[RequirementType.None],
+                    BossType.Arrghus => _game.Requirements[RequirementType.Arrghus],
+                    BossType.Mothula => _game.Requirements[RequirementType.Mothula],
+                    BossType.Blind => _game.Requirements[RequirementType.Blind],
+                    BossType.Kholdstare => _game.Requirements[RequirementType.Kholdstare],
+                    BossType.Vitreous => _game.Requirements[RequirementType.Vitreous],
+                    BossType.Trinexx => _game.Requirements[RequirementType.Trinexx],
+                    BossType.Aga => _game.Requirements[RequirementType.AgaBoss],
+                    _ => throw new Exception()
+                };
+            }
+            else
+            {
+                Accessibility = _game.Requirements[RequirementType.UnknownBoss].Accessibility;
             }
         }
 
@@ -93,31 +169,7 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         private void UpdateAccessibility()
         {
-            BossType? boss = _bossPlacement.GetCurrentBoss();
-
-            if (boss.HasValue)
-            {
-                Accessibility = boss.Value switch
-                {
-                    BossType.Armos => _game.Requirements[RequirementType.Armos].Accessibility,
-                    BossType.Lanmolas => _game.Requirements[RequirementType.Lanmolas].Accessibility,
-                    BossType.Moldorm => _game.Requirements[RequirementType.Moldorm].Accessibility,
-                    BossType.HelmasaurKing => _game.Requirements[RequirementType.None].Accessibility,
-                    BossType.Arrghus => _game.Requirements[RequirementType.Arrghus].Accessibility,
-                    BossType.Mothula => _game.Requirements[RequirementType.Mothula].Accessibility,
-                    BossType.Blind => _game.Requirements[RequirementType.Blind].Accessibility,
-                    BossType.Kholdstare => _game.Requirements[RequirementType.Kholdstare].Accessibility,
-                    BossType.Vitreous => _game.Requirements[RequirementType.Vitreous].Accessibility,
-                    BossType.Trinexx => _game.Requirements[RequirementType.Trinexx].Accessibility,
-                    BossType.Aga => _game.Requirements[RequirementType.AgaBoss].Accessibility,
-                    _ => throw new Exception()
-                };
-            }
-            else
-            {
-                Accessibility = _game.Requirements[RequirementType.UnknownBoss].Accessibility;
-            }
-
+            Accessibility = CurrentBossRequirement.Accessibility;
         }
     }
 }

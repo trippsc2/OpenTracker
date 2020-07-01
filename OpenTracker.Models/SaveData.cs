@@ -69,7 +69,7 @@ namespace OpenTracker.Models
                     }
                     else
                     {
-                        BossPlacements.Add((location.ID, i), location.BossSections[i].BossPlacement.Boss.Type);
+                        BossPlacements.Add((location.ID, i), location.BossSections[i].BossPlacement.Boss);
                     }
                 }
 

@@ -1,10 +1,6 @@
 ﻿using OpenTracker.Models.Enums;
 using System;
 using System.Collections.Generic;
-using System.Net.Cache;
-using System.Net.Http.Headers;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace OpenTracker.Models.Requirements
 {
@@ -85,7 +81,43 @@ namespace OpenTracker.Models.Requirements
 
             return type switch
             {
-                RequirementType.ItemPlacementAdvanced => new ItemPlacementRequirement(game.Mode, ItemPlacement.Advanced),
+                RequirementType.ItemPlacementBasic => new ItemPlacementRequirement(
+                    game.Mode, ItemPlacement.Basic),
+                RequirementType.ItemPlacementAdvanced => new ItemPlacementRequirement(
+                    game.Mode, ItemPlacement.Advanced),
+                _ => throw new ArgumentOutOfRangeException(nameof(type))
+            };
+        }
+
+        /// <summary>
+        /// Returns a dungeon item shuffle requirement.
+        /// </summary>
+        /// <param name="game">
+        /// The game data.
+        /// </param>
+        /// <param name="type">
+        /// The requirement type.
+        /// </param>
+        /// <returns>
+        /// A dungeon item shuffle requirement.
+        /// </returns>
+        private static IRequirement GetDungeonItemShuffleRequirement(Game game, RequirementType type)
+        {
+            if (game == null)
+            {
+                throw new ArgumentNullException(nameof(game));
+            }
+
+            return type switch
+            {
+                RequirementType.DungeonItemShuffleStandard => new DungeonItemShuffleRequirement(
+                    game.Mode, DungeonItemShuffle.Standard),
+                RequirementType.DungeonItemShuffleMapsCompasses => new DungeonItemShuffleRequirement(
+                    game.Mode, DungeonItemShuffle.MapsCompasses),
+                RequirementType.DungeonItemShuffleMapsCompassesSmallKeys => new DungeonItemShuffleRequirement(
+                    game.Mode, DungeonItemShuffle.MapsCompassesSmallKeys),
+                RequirementType.DungeonItemShuffleKeysanity => new DungeonItemShuffleRequirement(
+                    game.Mode, DungeonItemShuffle.Keysanity),
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
@@ -111,6 +143,7 @@ namespace OpenTracker.Models.Requirements
 
             return type switch
             {
+                RequirementType.EnemyShuffleOff => new EnemyShuffleRequirement(game.Mode, false),
                 RequirementType.EnemyShuffleOn => new EnemyShuffleRequirement(game.Mode, true),
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
@@ -148,6 +181,7 @@ namespace OpenTracker.Models.Requirements
                 RequirementType.QuakeMM => new ItemExactRequirement(game.Items[ItemType.QuakeDungeons], 1),
                 RequirementType.QuakeTR => new ItemExactRequirement(game.Items[ItemType.QuakeDungeons], 2),
                 RequirementType.QuakeBoth => new ItemExactRequirement(game.Items[ItemType.QuakeDungeons], 3),
+                RequirementType.NoFlippers => new ItemExactRequirement(game.Items[ItemType.Flippers], 0),
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
@@ -207,7 +241,9 @@ namespace OpenTracker.Models.Requirements
                 RequirementType.MoonPearl => new ItemRequirement(game.Items[ItemType.MoonPearl]),
                 RequirementType.Aga2 => new ItemRequirement(game.Items[ItemType.Aga2]),
                 RequirementType.RedCrystal => new ItemRequirement(game.Items[ItemType.RedCrystal], 2),
+                RequirementType.Pendant => new ItemRequirement(game.Items[ItemType.Pendant], 2),
                 RequirementType.GreenPendant => new ItemRequirement(game.Items[ItemType.GreenPendant]),
+                RequirementType.TRSmallKey2 => new ItemRequirement(game.Items[ItemType.TRSmallKey], 2),
                 RequirementType.LightWorldAccess => new ItemRequirement(game.Items[ItemType.LightWorldAccess]),
                 RequirementType.DeathMountainEntryAccess => new ItemRequirement(
                     game.Items[ItemType.DeathMountainEntryAccess]),
@@ -299,6 +335,8 @@ namespace OpenTracker.Models.Requirements
 
             return type switch
             {
+                RequirementType.SBBlindPedestal => new SequenceBreakRequirement(
+                    game.SequenceBreaks[SequenceBreakType.BlindPedestal]),
                 RequirementType.SBBonkOverLedge => new SequenceBreakRequirement(
                     game.SequenceBreaks[SequenceBreakType.BonkOverLedge]),
                 RequirementType.SBBumperCaveHookshot => new SequenceBreakRequirement(
@@ -375,6 +413,8 @@ namespace OpenTracker.Models.Requirements
                     game.SequenceBreaks[SequenceBreakType.CameraUnlock]),
                 RequirementType.SBDungeonRevive => new SequenceBreakRequirement(
                     game.SequenceBreaks[SequenceBreakType.DungeonRevive]),
+                RequirementType.SBFakePowder => new SequenceBreakRequirement(
+                    game.SequenceBreaks[SequenceBreakType.FakePowder]),
                 RequirementType.SBHover => new SequenceBreakRequirement(
                     game.SequenceBreaks[SequenceBreakType.Hover]),
                 RequirementType.SBMimicClip => new SequenceBreakRequirement(
@@ -389,6 +429,18 @@ namespace OpenTracker.Models.Requirements
             };
         }
 
+        /// <summary>
+        /// Returns a boss requirement.
+        /// </summary>
+        /// <param name="game">
+        /// The game data.
+        /// </param>
+        /// <param name="type">
+        /// The requirement type.
+        /// </param>
+        /// <returns>
+        /// A boss requirement.
+        /// </returns>
         private static IRequirement GetBossRequirement(Game game, RequirementType type)
         {
             if (game == null)
@@ -430,7 +482,7 @@ namespace OpenTracker.Models.Requirements
         /// <returns>
         /// A requirement of the proper type.
         /// </returns>
-        internal static IRequirement GetRequirement(Game game, RequirementType type)
+        private static IRequirement GetRequirement(Game game, RequirementType type)
         {
             switch (type)
             {
@@ -446,13 +498,47 @@ namespace OpenTracker.Models.Requirements
                     {
                         return GetWorldStateRequirement(game, type);
                     }
+                case RequirementType.DungeonItemShuffleStandard:
+                case RequirementType.DungeonItemShuffleMapsCompasses:
+                case RequirementType.DungeonItemShuffleMapsCompassesSmallKeys:
+                case RequirementType.DungeonItemShuffleKeysanity:
+                    {
+                        return GetDungeonItemShuffleRequirement(game, type);
+                    }
+                case RequirementType.ItemPlacementBasic:
                 case RequirementType.ItemPlacementAdvanced:
                     {
                         return GetItemPlacementRequirement(game, type);
                     }
+                case RequirementType.EnemyShuffleOff:
                 case RequirementType.EnemyShuffleOn:
                     {
                         return GetEnemyShuffleRequirement(game, type);
+                    }
+                case RequirementType.SmallKeyShuffleOff:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                game.Requirements[RequirementType.WorldStateStandardOpen],
+                                game.Requirements[RequirementType.WorldStateInverted]
+                            }),
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                game.Requirements[RequirementType.DungeonItemShuffleStandard],
+                                game.Requirements[RequirementType.DungeonItemShuffleMapsCompasses]
+                            })
+                        });
+                    }
+                case RequirementType.SmallKeyShuffleOn:
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.WorldStateRetro],
+                            game.Requirements[RequirementType.DungeonItemShuffleMapsCompassesSmallKeys],
+                            game.Requirements[RequirementType.DungeonItemShuffleKeysanity]
+                        });
                     }
                 case RequirementType.Swordless:
                 case RequirementType.Mushroom:
@@ -465,6 +551,7 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.QuakeMM:
                 case RequirementType.QuakeTR:
                 case RequirementType.QuakeBoth:
+                case RequirementType.NoFlippers:
                     {
                         return GetItemExactRequirement(game, type);
                     }
@@ -502,7 +589,9 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.MoonPearl:
                 case RequirementType.Aga2:
                 case RequirementType.RedCrystal:
+                case RequirementType.Pendant:
                 case RequirementType.GreenPendant:
+                case RequirementType.TRSmallKey2:
                 case RequirementType.LightWorldAccess:
                 case RequirementType.DeathMountainEntryAccess:
                 case RequirementType.DeathMountainExitAccess:
@@ -546,6 +635,7 @@ namespace OpenTracker.Models.Requirements
                     {
                         return GetItemRequirement(game, type);
                     }
+                case RequirementType.SBBlindPedestal:
                 case RequirementType.SBBonkOverLedge:
                 case RequirementType.SBBumperCaveHookshot:
                 case RequirementType.SBTRLaserSkip:
@@ -584,6 +674,7 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.SBSuperBunnyMirror:
                 case RequirementType.SBCameraUnlock:
                 case RequirementType.SBDungeonRevive:
+                case RequirementType.SBFakePowder:
                 case RequirementType.SBHover:
                 case RequirementType.SBMimicClip:
                 case RequirementType.SBSpikeCave:
@@ -600,6 +691,15 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new RequirementNodeRequirement(game.RequirementNodes[RequirementNodeID.LightWorld]);
                     }
+                case RequirementType.AllMedallions:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.Bombos],
+                            game.Requirements[RequirementType.Ether],
+                            game.Requirements[RequirementType.Quake]
+                        });
+                    }
                 case RequirementType.ExtendMagic1:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
@@ -615,6 +715,14 @@ namespace OpenTracker.Models.Requirements
                                 game.Requirements[RequirementType.Bottle],
                                 game.Requirements[RequirementType.HalfMagic]
                             });
+                    }
+                case RequirementType.FireRodDarkRoom:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.FireRod],
+                            game.Requirements[RequirementType.ItemPlacementAdvanced]
+                        });
                     }
                 case RequirementType.UseMedallion:
                     {
@@ -634,6 +742,23 @@ namespace OpenTracker.Models.Requirements
                                 game.Requirements[RequirementType.Bombos],
                                 game.Requirements[RequirementType.UseMedallion]
                             })
+                        });
+                    }
+                case RequirementType.NotBunnyLW:
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.WorldStateStandardOpen],
+                            game.Requirements[RequirementType.WorldStateRetro],
+                            game.Requirements[RequirementType.MoonPearl]
+                        });
+                    }
+                case RequirementType.NotBunnyDW:
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.WorldStateInverted],
+                            game.Requirements[RequirementType.MoonPearl]
                         });
                     }
                 case RequirementType.Armos:
@@ -950,150 +1075,705 @@ namespace OpenTracker.Models.Requirements
                     {
                         return GetBossRequirement(game, type);
                     }
-                case RequirementType.ActivateTablet:
-                    break;
+                case RequirementType.Tablet:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.Book],
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                game.Requirements[RequirementType.Inspect],
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    game.Requirements[RequirementType.Swordless],
+                                    game.Requirements[RequirementType.Hammer]
+                                }),
+                                game.Requirements[RequirementType.Sword2]
+                            })
+                        });
+                    }
                 case RequirementType.ATBarrier:
-                    break;
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.Cape],
+                            new AggregateRequirement(new List<IRequirement>
+                            {
+                                game.Requirements[RequirementType.Swordless],
+                                game.Requirements[RequirementType.Hammer]
+                            }),
+                            game.Requirements[RequirementType.Sword2]
+                        });
+                    }
                 case RequirementType.BombDuplicationAncillaOverload:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.SBBombDuplicationAncillaOverload],
+                            game.Requirements[RequirementType.NotBunnyDW],
+                            game.Requirements[RequirementType.Bow],
+                            game.Requirements[RequirementType.CaneOfSomaria],
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                game.Requirements[RequirementType.Boomerang],
+                                game.Requirements[RequirementType.RedBoomerang]
+                            })
+                        });
+                    }
                 case RequirementType.BombDuplicationMirror:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyDW],
+                            game.Requirements[RequirementType.Flippers],
+                            game.Requirements[RequirementType.Mirror]
+                        });
+                    }
                 case RequirementType.BombJumpPoDHammerJump:
-                    break;
+                    {
+                        return game.Requirements[RequirementType.SBBombJumpPoDHammerJump];
+                    }
                 case RequirementType.BombJumpSWBigChest:
-                    break;
+                    {
+                        return game.Requirements[RequirementType.SBBombJumpSWBigChest];
+                    }
                 case RequirementType.BombJumpIPBJ:
-                    break;
+                    {
+                        return game.Requirements[RequirementType.SBBombJumpIPBJ];
+                    }
                 case RequirementType.BombJumpIPHookshotGap:
-                    break;
+                    {
+                        return game.Requirements[RequirementType.SBBombJumpIPHookshotGap];
+                    }
                 case RequirementType.BombJumpIPFreezorRoomGap:
-                    break;
+                    {
+                        return game.Requirements[RequirementType.SBBombJumpIPFreezorRoomGap];
+                    }
                 case RequirementType.BonkOverLedge:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.Boots],
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                game.Requirements[RequirementType.SBBonkOverLedge],
+                                game.Requirements[RequirementType.ItemPlacementAdvanced]
+                            })
+                        });
+                    }
                 case RequirementType.BumperCave:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.Cape],
+                            game.Requirements[RequirementType.MoonPearl],
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                game.Requirements[RequirementType.Hookshot],
+                                game.Requirements[RequirementType.ItemPlacementAdvanced],
+                                game.Requirements[RequirementType.SBBumperCaveHookshot]
+                            })
+                        });
+                    }
                 case RequirementType.CameraUnlock:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.SBCameraUnlock],
+                            game.Requirements[RequirementType.Bottle]
+                        });
+                    }
                 case RequirementType.Curtains:
-                    break;
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.Swordless],
+                            game.Requirements[RequirementType.Sword1]
+                        });
+                    }
                 case RequirementType.DarkRoomDeathMountainEntry:
-                    break;
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.SBDarkRoomDeathMountainEntry],
+                            game.Requirements[RequirementType.Lamp]
+                        });
+                    }
                 case RequirementType.DarkRoomDeathMountainExit:
-                    break;
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.SBDarkRoomDeathMountainExit],
+                            game.Requirements[RequirementType.Lamp]
+                        });
+                    }
                 case RequirementType.DarkRoomHC:
-                    break;
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.SBDarkRoomHC],
+                            game.Requirements[RequirementType.Lamp],
+                            game.Requirements[RequirementType.FireRodDarkRoom]
+                        });
+                    }
                 case RequirementType.DarkRoomAT:
-                    break;
-                case RequirementType.DarkRoomEPRightWing:
-                    break;
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.SBDarkRoomAT],
+                            game.Requirements[RequirementType.Lamp]
+                        });
+                    }
+                case RequirementType.DarkRoomEPRight:
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.SBDarkRoomEPRight],
+                            game.Requirements[RequirementType.Lamp]
+                        });
+                    }
                 case RequirementType.DarkRoomEPBack:
-                    break;
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.SBDarkRoomEPBack],
+                            game.Requirements[RequirementType.Lamp],
+                            game.Requirements[RequirementType.FireRodDarkRoom]
+                        });
+                    }
                 case RequirementType.DarkRoomPoDDarkBasement:
-                    break;
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.SBDarkRoomPoDDarkBasement],
+                            game.Requirements[RequirementType.Lamp],
+                            game.Requirements[RequirementType.FireRodDarkRoom]
+                        });
+                    }
                 case RequirementType.DarkRoomPoDDarkMaze:
-                    break;
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.SBDarkRoomPoDDarkMaze],
+                            game.Requirements[RequirementType.Lamp]
+                        });
+                    }
                 case RequirementType.DarkRoomPoDBossArea:
-                    break;
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.SBDarkRoomPoDBossArea],
+                            game.Requirements[RequirementType.Lamp]
+                        });
+                    }
                 case RequirementType.DarkRoomMM:
-                    break;
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.SBDarkRoomMM],
+                            game.Requirements[RequirementType.Lamp]
+                        });
+                    }
                 case RequirementType.DarkRoomTR:
-                    break;
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.SBDarkRoomTR],
+                            game.Requirements[RequirementType.Lamp]
+                        });
+                    }
                 case RequirementType.DungeonRevive:
-                    break;
+                    {
+                        return game.Requirements[RequirementType.SBDungeonRevive];
+                    }
                 case RequirementType.FakeFlippersFairyRevival:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.SBFakeFlippersFairyRevival],
+                            game.Requirements[RequirementType.Bottle]
+                        });
+                    }
                 case RequirementType.FakeFlippersSplashDeletion:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                game.Requirements[RequirementType.Bow],
+                                game.Requirements[RequirementType.RedBoomerang],
+                                game.Requirements[RequirementType.CaneOfSomaria],
+                                game.Requirements[RequirementType.IceRod]
+                            }),
+                            game.Requirements[RequirementType.SBFakeFlippersSplashDeletion]
+                        });
+                    }
                 case RequirementType.FireSource:
-                    break;
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.Lamp],
+                            game.Requirements[RequirementType.FireRod]
+                        });
+                    }
                 case RequirementType.Hover:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.SBHover],
+                            game.Requirements[RequirementType.Boots]
+                        });
+                    }
                 case RequirementType.LaserBridge:
-                    break;
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.SBTRLaserSkip],
+                            game.Requirements[RequirementType.ItemPlacementAdvanced],
+                            game.Requirements[RequirementType.Cape],
+                            game.Requirements[RequirementType.CaneOfByrna],
+                            game.Requirements[RequirementType.Shield3]
+                        });
+                    }
                 case RequirementType.Pedestal:
-                    break;
-                case RequirementType.ReadTablet:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.Pendant],
+                            game.Requirements[RequirementType.GreenPendant],
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                game.Requirements[RequirementType.SBBlindPedestal],
+                                game.Requirements[RequirementType.ItemPlacementAdvanced],
+                                game.Requirements[RequirementType.Book]
+                            })
+                        });
+                    }
                 case RequirementType.RedEyegoreGoriya:
-                    break;
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.EnemyShuffleOn],
+                            game.Requirements[RequirementType.Bow]
+                        });
+                    }
                 case RequirementType.SPEntry:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.MoonPearl],
+                            game.Requirements[RequirementType.Mirror],
+                            game.Requirements[RequirementType.LightWorld]
+                        });
+                    }
                 case RequirementType.SuperBunnyFallInHole:
-                    break;
+                    {
+                        return game.Requirements[RequirementType.SBSuperBunnyFallInHole];
+                    }
                 case RequirementType.SuperBunnyMirror:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.SBSuperBunnyMirror],
+                            game.Requirements[RequirementType.Mirror]
+                        });
+                    }
                 case RequirementType.ToHHerapot:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.SBToHHerapot],
+                            game.Requirements[RequirementType.Hookshot]
+                        });
+                    }
                 case RequirementType.IPIceBreaker:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.SBIPIceBreaker],
+                            game.Requirements[RequirementType.CaneOfSomaria]
+                        });
+                    }
                 case RequirementType.MMMedallion:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyDW],
+                            game.Requirements[RequirementType.UseMedallion],
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                game.Requirements[RequirementType.AllMedallions],
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    game.Requirements[RequirementType.Bombos],
+                                    new AlternativeRequirement(new List<IRequirement>
+                                    {
+                                        game.Requirements[RequirementType.BombosMM],
+                                        game.Requirements[RequirementType.BombosBoth]
+                                    })
+                                }),
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    game.Requirements[RequirementType.Ether],
+                                    new AlternativeRequirement(new List<IRequirement>
+                                    {
+                                        game.Requirements[RequirementType.EtherMM],
+                                        game.Requirements[RequirementType.EtherBoth]
+                                    })
+                                }),
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    game.Requirements[RequirementType.Quake],
+                                    new AlternativeRequirement(new List<IRequirement>
+                                    {
+                                        game.Requirements[RequirementType.QuakeMM],
+                                        game.Requirements[RequirementType.QuakeBoth]
+                                    })
+                                }),
+                            })
+                        });
+                    }
                 case RequirementType.TRMedallion:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyDW],
+                            game.Requirements[RequirementType.UseMedallion],
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                game.Requirements[RequirementType.AllMedallions],
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    game.Requirements[RequirementType.Bombos],
+                                    new AlternativeRequirement(new List<IRequirement>
+                                    {
+                                        game.Requirements[RequirementType.BombosTR],
+                                        game.Requirements[RequirementType.BombosBoth]
+                                    })
+                                }),
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    game.Requirements[RequirementType.Ether],
+                                    new AlternativeRequirement(new List<IRequirement>
+                                    {
+                                        game.Requirements[RequirementType.EtherTR],
+                                        game.Requirements[RequirementType.EtherBoth]
+                                    })
+                                }),
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    game.Requirements[RequirementType.Quake],
+                                    new AlternativeRequirement(new List<IRequirement>
+                                    {
+                                        game.Requirements[RequirementType.QuakeTR],
+                                        game.Requirements[RequirementType.QuakeBoth]
+                                    })
+                                }),
+                            })
+                        });
+                    }
                 case RequirementType.TRKeyDoorsToMiddleExit:
-                    break;
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            new AggregateRequirement(new List<IRequirement>
+                            {
+                                game.Requirements[RequirementType.SmallKeyShuffleOn],
+                                game.Requirements[RequirementType.TRSmallKey2]
+                            }),
+                            new AggregateRequirement(new List<IRequirement>
+                            {
+                                game.Requirements[RequirementType.SmallKeyShuffleOff],
+                                new AlternativeRequirement(new List<IRequirement>
+                                {
+                                    game.Requirements[RequirementType.FireRod],
+                                    game.Requirements[RequirementType.SequenceBreak]
+                                })
+                            })
+                        });
+                    }
+                case RequirementType.WaterWalk:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.SBWaterWalk],
+                            game.Requirements[RequirementType.Boots]
+                        });
+                    }
                 case RequirementType.WaterWalkFromWaterfallCave:
-                    break;
-                case RequirementType.LWNotBunny:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.SBWaterWalkFromWaterfallCave],
+                            game.Requirements[RequirementType.NoFlippers],
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                game.Requirements[RequirementType.MoonPearl],
+                                game.Requirements[RequirementType.WaterfallFairyAccess]
+                            })
+                        });
+                    }
                 case RequirementType.LWDash:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyLW],
+                            game.Requirements[RequirementType.Boots]
+                        });
+                    }
                 case RequirementType.LWFakeFlippersFairyRevival:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyLW],
+                            game.Requirements[RequirementType.FakeFlippersFairyRevival]
+                        });
+                    }
                 case RequirementType.LWFakeFlippersScreenTransition:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.SBFakeFlippersScreenTransition],
+                            game.Requirements[RequirementType.NotBunnyLW]
+                        });
+                    }
                 case RequirementType.LWFakeFlippersSplashDeletion:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyLW],
+                            game.Requirements[RequirementType.FakeFlippersSplashDeletion]
+                        });
+                    }
                 case RequirementType.LWFlute:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                game.Requirements[RequirementType.WorldStateStandardOpen],
+                                game.Requirements[RequirementType.WorldStateRetro]
+                            }),
+                            game.Requirements[RequirementType.Flute]
+                        });
+                    }
                 case RequirementType.LWHammer:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyLW],
+                            game.Requirements[RequirementType.Hammer]
+                        });
+                    }
                 case RequirementType.LWHookshot:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyLW],
+                            game.Requirements[RequirementType.Hookshot]
+                        });
+                    }
                 case RequirementType.LWLift1:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyLW],
+                            game.Requirements[RequirementType.Gloves1]
+                        });
+                    }
                 case RequirementType.LWLift2:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyLW],
+                            game.Requirements[RequirementType.Gloves2]
+                        });
+                    }
                 case RequirementType.LWPowder:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyLW],
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                game.Requirements[RequirementType.Powder],
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    game.Requirements[RequirementType.SBFakePowder],
+                                    game.Requirements[RequirementType.Mushroom],
+                                    game.Requirements[RequirementType.CaneOfSomaria]
+                                })
+                            })
+                        });
+                    }
                 case RequirementType.LWShovel:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyLW],
+                            game.Requirements[RequirementType.Shovel]
+                        });
+                    }
                 case RequirementType.LWSwim:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyLW],
+                            game.Requirements[RequirementType.Flippers]
+                        });
+                    }
                 case RequirementType.LWWaterWalk:
-                    break;
-                case RequirementType.DWNotBunny:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyLW],
+                            game.Requirements[RequirementType.WaterWalk]
+                        });
+                    }
                 case RequirementType.DWDash:
-                    break;
-                case RequirementType.DWDashOrHookshot:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyDW],
+                            game.Requirements[RequirementType.Boots]
+                        });
+                    }
                 case RequirementType.DWFakeFlippersFairyRevival:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyDW],
+                            game.Requirements[RequirementType.FakeFlippersFairyRevival]
+                        });
+                    }
                 case RequirementType.DWFakeFlippersQirnJump:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyDW],
+                            game.Requirements[RequirementType.SBFakeFlippersQirnJump]
+                        });
+                    }
                 case RequirementType.DWFakeFlippersSplashDeletion:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyDW],
+                            game.Requirements[RequirementType.FakeFlippersSplashDeletion]
+                        });
+                    }
                 case RequirementType.DWFireRod:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyDW],
+                            game.Requirements[RequirementType.FireRod]
+                        });
+                    }
                 case RequirementType.DWFlute:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.WorldStateInverted],
+                            game.Requirements[RequirementType.MoonPearl],
+                            game.Requirements[RequirementType.Flute]
+                        });
+                    }
                 case RequirementType.DWHammer:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyDW],
+                            game.Requirements[RequirementType.Hammer]
+                        });
+                    }
                 case RequirementType.DWHookshot:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyDW],
+                            game.Requirements[RequirementType.Hookshot]
+                        });
+                    }
                 case RequirementType.DWHover:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyDW],
+                            game.Requirements[RequirementType.Hover]
+                        });
+                    }
                 case RequirementType.DWLift1:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyDW],
+                            game.Requirements[RequirementType.Gloves1]
+                        });
+                    }
                 case RequirementType.DWLift2:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyDW],
+                            game.Requirements[RequirementType.Gloves2]
+                        });
+                    }
                 case RequirementType.DWSpikeCave:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyDW],
+                            game.Requirements[RequirementType.Hammer],
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                game.Requirements[RequirementType.SequenceBreak],
+                                game.Requirements[RequirementType.CaneOfByrna],
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    game.Requirements[RequirementType.Cape],
+                                    game.Requirements[RequirementType.ExtendMagic1]
+                                })
+                            })
+                        });
+                    }
                 case RequirementType.DWSwim:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyDW],
+                            game.Requirements[RequirementType.Flippers]
+                        });
+                    }
                 case RequirementType.DWWaterWalk:
-                    break;
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.NotBunnyDW],
+                            game.Requirements[RequirementType.WaterWalk]
+                        });
+                    }
+            }
+
+            throw new ArgumentOutOfRangeException(nameof(type));
+        }
+
+        internal static void GetAllRequirements(
+            Game game, Dictionary<RequirementType, IRequirement> requirements)
+        {
+            if (game == null)
+            {
+                throw new ArgumentNullException(nameof(game));
+            }
+
+            if (requirements == null)
+            {
+                throw new ArgumentNullException(nameof(requirements));
+            }
+
+            foreach (RequirementType type in Enum.GetValues(typeof(RequirementType)))
+            {
+                requirements.Add(type, GetRequirement(game, type));
             }
         }
     }

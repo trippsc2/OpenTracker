@@ -323,7 +323,7 @@ namespace OpenTracker.ViewModels
             {
                 return _game.Mode.BossShuffle && _section is BossSection bossSection &&
                     (bossSection.BossPlacement.Boss == null ||
-                    bossSection.BossPlacement.Boss.Type != BossType.Aga);
+                    bossSection.BossPlacement.Boss != BossType.Aga);
             }
         }
 
@@ -336,18 +336,17 @@ namespace OpenTracker.ViewModels
                     StringBuilder sb = new StringBuilder();
                     sb.Append("avares://OpenTracker/Assets/Images/");
 
-                    if (bossSection.BossPlacement.Boss == null)
+                    if (!bossSection.BossPlacement.Boss.HasValue)
                     {
                         sb.Append("Items/unknown1");
                     }
-                    else if (bossSection.BossPlacement.Boss.Type == BossType.Aga)
+                    else if (bossSection.BossPlacement.Boss == BossType.Aga)
                     {
                         sb.Append("Items/aga1");
                     }
                     else
                     {
-                        sb.Append("Bosses/");
-                        sb.Append(bossSection.BossPlacement.Boss.Type.ToString().ToLowerInvariant());
+                        sb.Append($"Bosses/{bossSection.BossPlacement.Boss.ToString().ToLowerInvariant()}");
                     }
 
                     sb.Append(".png");

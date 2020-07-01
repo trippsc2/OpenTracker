@@ -402,7 +402,7 @@ namespace OpenTracker.Models.Sections
                         Name = "Dropdown";
                         _itemProvided = _game.Items[ItemType.LightWorldAccess];
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.LWNotBunny, new ModeRequirement()));
+                            RequirementType.NotBunnyLW, new ModeRequirement()));
                         _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
                             RequirementType.Inspect, new ModeRequirement()));
                     }

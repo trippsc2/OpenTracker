@@ -38,6 +38,8 @@ namespace OpenTracker.Models.Requirements
             _sequenceBreak = sequenceBreak ?? throw new ArgumentNullException(nameof(sequenceBreak));
 
             _sequenceBreak.PropertyChanged += OnSequenceBreakChanged;
+
+            UpdateAccessibility();
         }
 
         /// <summary>

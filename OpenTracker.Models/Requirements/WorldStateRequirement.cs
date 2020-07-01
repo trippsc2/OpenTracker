@@ -43,6 +43,8 @@ namespace OpenTracker.Models.Requirements
             _worldState = worldState;
 
             _mode.PropertyChanged += OnModeChanged;
+
+            UpdateAccessibility();
         }
 
         /// <summary>

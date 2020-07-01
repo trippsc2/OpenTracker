@@ -2,6 +2,7 @@
 {
     public enum SequenceBreakType
     {
+        BlindPedestal,
         BonkOverLedge,
         BumperCaveHookshot,
         TRLaserSkip,
@@ -40,6 +41,7 @@
         SuperBunnyFallInHole,
         CameraUnlock,
         DungeonRevive,
+        FakePowder,
         Hover,
         MimicClip,
         SpikeCave,

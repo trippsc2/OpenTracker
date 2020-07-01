@@ -44,6 +44,8 @@ namespace OpenTracker.Models.Requirements
             _count = count;
 
             _item.PropertyChanged += OnItemChanged;
+
+            UpdateAccessibility();
         }
 
         /// <summary>

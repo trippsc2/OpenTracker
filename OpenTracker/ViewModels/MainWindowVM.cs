@@ -1121,7 +1121,7 @@ namespace OpenTracker.ViewModels
                 else
                 {
                     _game.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].BossPlacement.Boss =
-                        _game.Bosses[saveData.BossPlacements[locationIndex].Value];
+                        saveData.BossPlacements[locationIndex].Value;
                 }
             }
 

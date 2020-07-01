@@ -47,6 +47,8 @@ namespace OpenTracker.Models.Requirements
             _gtCrystal.PropertyChanged += OnItemChanged;
             _crystal.PropertyChanged += OnItemChanged;
             _redCrystal.PropertyChanged += OnItemChanged;
+
+            UpdateAccessibility();
         }
 
         /// <summary>

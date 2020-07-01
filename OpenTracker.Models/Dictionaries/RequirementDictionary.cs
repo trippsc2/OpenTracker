@@ -16,17 +16,8 @@ namespace OpenTracker.Models.Dictionaries
         /// <param name="game">
         /// The game data parent class.
         /// </param>
-        public RequirementDictionary(Game game) : base()
+        public RequirementDictionary() : base()
         {
-            if (game == null)
-            {
-                throw new ArgumentNullException(nameof(game));
-            }
-
-            foreach (RequirementType type in Enum.GetValues(typeof(RequirementType)))
-            {
-                Add(type, RequirementFactory.GetRequirement(game, type));
-            }
         }
     }
 }

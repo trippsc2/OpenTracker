@@ -209,7 +209,7 @@ namespace OpenTracker.Models.Sections
                         CanComplete = () =>
                         {
                             return _game.RequirementNodes[RequirementNodeID.EPEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.DarkRoomEPRightWing].Accessibility == AccessibilityLevel.Normal &&
+                                _game.Requirements[RequirementType.DarkRoomEPRight].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.DarkRoomEPBack].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.RedEyegoreGoriya].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.EPBoss].Accessibility == AccessibilityLevel.Normal &&

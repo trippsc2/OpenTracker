@@ -1,4 +1,5 @@
-﻿using OpenTracker.Models.Sections;
+﻿using OpenTracker.Models.Enums;
+using OpenTracker.Models.Sections;
 
 namespace OpenTracker.Models.Undoables
 {
@@ -9,8 +10,8 @@ namespace OpenTracker.Models.Undoables
     public class ChangeBoss : IUndoable
     {
         private readonly BossSection _bossSection;
-        private readonly Boss _boss;
-        private Boss _previousBoss;
+        private readonly BossType? _boss;
+        private BossType? _previousBoss;
 
         /// <summary>
         /// Constructor
@@ -21,7 +22,7 @@ namespace OpenTracker.Models.Undoables
         /// <param name="boss">
         /// The boss to be assigned to the dungeon.
         /// </param>
-        public ChangeBoss(BossSection bossSection, Boss boss)
+        public ChangeBoss(BossSection bossSection, BossType? boss)
         {
             _bossSection = bossSection;
             _boss = boss;

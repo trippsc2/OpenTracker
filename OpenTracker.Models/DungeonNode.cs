@@ -265,7 +265,7 @@ namespace OpenTracker.Models
 				case RequirementNodeID.EPRightWingDarkRoom:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.EP,
-							RequirementType.DarkRoomEPRightWing, new ModeRequirement()));
+							RequirementType.DarkRoomEPRight, new ModeRequirement()));
 					}
 					break;
 				case RequirementNodeID.EPBackDarkRoom:
@@ -307,7 +307,7 @@ namespace OpenTracker.Models
 				case RequirementNodeID.ToHPastBigKeyDoor:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.ToH,
-							RequirementType.Herapot, new ModeRequirement()));
+							RequirementType.ToHHerapot, new ModeRequirement()));
 					}
 					break;
 				case RequirementNodeID.ToHBoss:
@@ -523,7 +523,7 @@ namespace OpenTracker.Models
 				case RequirementNodeID.IPB1RightSide:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.IPB1LeftSide,
-							RequirementType.IceBreaker, new ModeRequirement()));
+							RequirementType.IPIceBreaker, new ModeRequirement()));
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.IPB2PastLiftBlock,
 							RequirementType.None, new ModeRequirement()));
 					}

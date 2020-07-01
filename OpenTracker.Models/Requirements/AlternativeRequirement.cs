@@ -42,6 +42,8 @@ namespace OpenTracker.Models.Requirements
             {
                 requirement.PropertyChanged += OnRequirementChanged;
             }
+
+            UpdateAccessibility();
         }
 
         /// <summary>
@@ -83,6 +85,11 @@ namespace OpenTracker.Models.Requirements
             {
                 accessibility = (AccessibilityLevel)Math.Max(
                     (byte)accessibility, (byte)requirement.Accessibility);
+
+                if (accessibility == AccessibilityLevel.Normal)
+                {
+                    break;
+                }
             }
 
             Accessibility = accessibility;

@@ -29,14 +29,14 @@ namespace OpenTracker.ViewModels
                 StringBuilder sb = new StringBuilder();
                 sb.Append("avares://OpenTracker/Assets/Images/");
 
-                if (_bossSection.BossPlacement.Boss == null)
+                if (!_bossSection.BossPlacement.Boss.HasValue)
                 {
                     sb.Append("Items/unknown1");
                 }
                 else
                 {
                     sb.Append($"Bosses/" +
-                        $"{ _bossSection.BossPlacement.Boss.Type.ToString().ToLowerInvariant() }");
+                        $"{_bossSection.BossPlacement.Boss.ToString().ToLowerInvariant()}");
                 }
 
                 sb.Append(".png");
@@ -112,36 +112,32 @@ namespace OpenTracker.ViewModels
         {
             if (backward)
             {
-                if (_bossSection.BossPlacement.Boss == null)
+                if (!_bossSection.BossPlacement.Boss.HasValue)
                 {
-                    _undoRedoManager.Execute(new ChangeBoss(_bossSection,
-                        _game.Bosses[BossType.Trinexx]));
+                    _undoRedoManager.Execute(new ChangeBoss(_bossSection, BossType.Trinexx));
                 }
-                else if (_bossSection.BossPlacement.Boss.Type == BossType.Armos)
+                else if (_bossSection.BossPlacement.Boss == BossType.Armos)
                 {
                     _undoRedoManager.Execute(new ChangeBoss(_bossSection, null));
                 }
                 else
                 {
-                    Boss newBoss = _game.Bosses[_bossSection.BossPlacement.Boss.Type - 1];
-                    _undoRedoManager.Execute(new ChangeBoss(_bossSection, newBoss));
+                    _undoRedoManager.Execute(new ChangeBoss(_bossSection, _bossSection.BossPlacement.Boss - 1));
                 }
             }
             else
             {
-                if (_bossSection.BossPlacement.Boss == null)
+                if (!_bossSection.BossPlacement.Boss.HasValue)
                 {
-                    _undoRedoManager.Execute(new ChangeBoss(_bossSection,
-                        _game.Bosses[BossType.Armos]));
+                    _undoRedoManager.Execute(new ChangeBoss(_bossSection, BossType.Armos));
                 }
-                else if (_bossSection.BossPlacement.Boss.Type == BossType.Trinexx)
+                else if (_bossSection.BossPlacement.Boss == BossType.Trinexx)
                 {
                     _undoRedoManager.Execute(new ChangeBoss(_bossSection, null));
                 }
                 else
                 {
-                    Boss newBoss = _game.Bosses[_bossSection.BossPlacement.Boss.Type + 1];
-                    _undoRedoManager.Execute(new ChangeBoss(_bossSection, newBoss));
+                    _undoRedoManager.Execute(new ChangeBoss(_bossSection, _bossSection.BossPlacement.Boss + 1));
                 }
             }
         }

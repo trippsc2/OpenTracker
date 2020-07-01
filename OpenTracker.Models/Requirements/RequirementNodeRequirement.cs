@@ -38,6 +38,8 @@ namespace OpenTracker.Models.Requirements
             _node = node ?? throw new ArgumentNullException(nameof(node));
 
             _node.PropertyChanged += OnNodeChanged;
+
+            UpdateAccessibility();
         }
 
         /// <summary>

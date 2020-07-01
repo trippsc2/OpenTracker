@@ -5,12 +5,12 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for Item Placement requirements.
+    /// This is the class for Dungeon Item Shuffle requirements.
     /// </summary>
-    internal class ItemPlacementRequirement : IRequirement
+    internal class DungeonItemShuffleRequirement : IRequirement
     {
         private readonly Mode _mode;
-        private readonly ItemPlacement _itemPlacement;
+        private readonly DungeonItemShuffle _dungeonItemShuffle;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -34,17 +34,18 @@ namespace OpenTracker.Models.Requirements
         /// <param name="mode">
         /// The mode data class.
         /// </param>
-        /// <param name="itemPlacement">
-        /// The required item placement.
+        /// <param name="dungeonItemShuffle">
+        /// The required dungeon item shuffle.
         /// </param>
-        public ItemPlacementRequirement(Mode mode, ItemPlacement itemPlacement)
+        public DungeonItemShuffleRequirement(Mode mode, DungeonItemShuffle dungeonItemShuffle)
         {
             _mode = mode ?? throw new ArgumentNullException(nameof(mode));
-            _itemPlacement = itemPlacement;
+            _dungeonItemShuffle = dungeonItemShuffle;
 
             _mode.PropertyChanged += OnModeChanged;
 
             UpdateAccessibility();
+
         }
 
         /// <summary>
@@ -69,7 +70,7 @@ namespace OpenTracker.Models.Requirements
         /// </param>
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.ItemPlacement))
+            if (e.PropertyName == nameof(Mode.DungeonItemShuffle))
             {
                 UpdateAccessibility();
             }
@@ -80,7 +81,7 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         private void UpdateAccessibility()
         {
-            Accessibility = _mode.ItemPlacement == _itemPlacement ?
+            Accessibility = _mode.DungeonItemShuffle == _dungeonItemShuffle ?
                 AccessibilityLevel.Normal : AccessibilityLevel.None;
         }
     }
