@@ -1,4 +1,7 @@
 ﻿using OpenTracker.Models.Dictionaries;
+using OpenTracker.Models.Enums;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace OpenTracker.Models
@@ -11,12 +14,12 @@ namespace OpenTracker.Models
         public AutoTracker AutoTracker { get; }
         public Mode Mode { get; }
         public ItemDictionary Items { get; }
-        public BossDictionary Bosses { get; }
         public BossPlacementDictionary BossPlacements { get; }
-        public RequirementDictionary Requirements { get; }
         public RequirementNodeDictionary RequirementNodes { get; }
         public LocationDictionary Locations { get; }
         public ObservableCollection<(MapLocation, MapLocation)> Connections { get; }
+        public Dictionary<SequenceBreakType, SequenceBreak> SequenceBreaks { get; }
+        public RequirementDictionary Requirements { get; }
 
         /// <summary>
         /// Basic constructor
@@ -27,16 +30,21 @@ namespace OpenTracker.Models
             Mode = new Mode();
 
             Items = new ItemDictionary(this);
-            Bosses = new BossDictionary(this);
             BossPlacements = new BossPlacementDictionary(this);
-            Requirements = new RequirementDictionary(this);
             RequirementNodes = new RequirementNodeDictionary(this);
             Locations = new LocationDictionary(this);
             Connections = new ObservableCollection<(MapLocation, MapLocation)>();
+            SequenceBreaks = new Dictionary<SequenceBreakType, SequenceBreak>();
+
+            foreach (SequenceBreakType type in Enum.GetValues(typeof(SequenceBreakType)))
+            {
+                SequenceBreaks.Add(type, new SequenceBreak());
+            }
+
+            Requirements = new RequirementDictionary(this);
 
             RequirementNodes.Initialize();
             Locations.Initialize();
-            Requirements.Initialize();
         }
 
         /// <summary>

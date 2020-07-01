@@ -244,7 +244,7 @@ namespace OpenTracker.Models.Sections
                             return (_game.RequirementNodes[RequirementNodeID.DPFrontEntry].Accessibility == AccessibilityLevel.Normal ||
                                 _game.RequirementNodes[RequirementNodeID.DPLeftEntry].Accessibility == AccessibilityLevel.Normal) &&
                                 _game.RequirementNodes[RequirementNodeID.DPBackEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.Torch].Accessibility == AccessibilityLevel.Normal &&
+                                _game.Requirements[RequirementType.Boots].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.FireSource].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.DPBoss].Accessibility == AccessibilityLevel.Normal &&
                                 (!_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.DPSmallKey)) &&
@@ -373,7 +373,7 @@ namespace OpenTracker.Models.Sections
                         CanComplete = () =>
                         {
                             return _game.RequirementNodes[RequirementNodeID.SPEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.Swim].Accessibility == AccessibilityLevel.Normal &&
+                                _game.Requirements[RequirementType.Flippers].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.Hammer].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.Hookshot].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.SPBoss].Accessibility == AccessibilityLevel.Normal &&
@@ -522,7 +522,7 @@ namespace OpenTracker.Models.Sections
                             if (_game.RequirementNodes[RequirementNodeID.IPEntry].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.MeltThings].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.Hammer].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.Lift1].Accessibility == AccessibilityLevel.Normal &&
+                                _game.Requirements[RequirementType.Gloves1].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.IPBoss].Accessibility == AccessibilityLevel.Normal &&
                                 (!_game.Mode.BigKeyShuffle || _game.Items.Has(ItemType.IPBigKey)))
                             {
@@ -614,7 +614,7 @@ namespace OpenTracker.Models.Sections
                         CanComplete = () =>
                         {
                             return _game.RequirementNodes[RequirementNodeID.MMEntry].Accessibility == AccessibilityLevel.Normal &&
-                                (_game.Requirements[RequirementType.Bonk].Accessibility == AccessibilityLevel.Normal ||
+                                (_game.Requirements[RequirementType.BonkOverLedge].Accessibility == AccessibilityLevel.Normal ||
                                 _game.Requirements[RequirementType.Hookshot].Accessibility == AccessibilityLevel.Normal) &&
                                 _game.Requirements[RequirementType.FireSource].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.CaneOfSomaria].Accessibility == AccessibilityLevel.Normal &&
@@ -902,7 +902,7 @@ namespace OpenTracker.Models.Sections
                         CanComplete = () =>
                         {
                             return _game.RequirementNodes[RequirementNodeID.GTEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.Torch].Accessibility == AccessibilityLevel.Normal &&
+                                _game.Requirements[RequirementType.Boots].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.Hammer].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.Hookshot].Accessibility == AccessibilityLevel.Normal &&
                                 _game.Requirements[RequirementType.FireRod].Accessibility == AccessibilityLevel.Normal &&

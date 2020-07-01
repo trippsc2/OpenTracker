@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.Enums;
+using OpenTracker.Models.Requirements;
 using System;
 using System.Collections.Generic;
 
@@ -7,7 +8,7 @@ namespace OpenTracker.Models.Dictionaries
     /// <summary>
     /// This is the dictionary containing requirement data
     /// </summary>
-    public class RequirementDictionary : Dictionary<RequirementType, Requirement>
+    public class RequirementDictionary : Dictionary<RequirementType, IRequirement>
     {
         /// <summary>
         /// Constructor
@@ -24,18 +25,7 @@ namespace OpenTracker.Models.Dictionaries
 
             foreach (RequirementType type in Enum.GetValues(typeof(RequirementType)))
             {
-                Add(type, new Requirement(game, type));
-            }
-        }
-
-        /// <summary>
-        /// Initializes all contained requirements.
-        /// </summary>
-        public void Initialize()
-        {
-            foreach (var requirement in Values)
-            {
-                requirement.Initialize();
+                Add(type, RequirementFactory.GetRequirement(game, type));
             }
         }
     }

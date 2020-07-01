@@ -403,13 +403,13 @@ namespace OpenTracker.Models
 				case RequirementNodeID.SP:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.SPAfterRiver,
-							RequirementType.Swim, new ModeRequirement()));
+							RequirementType.Flippers, new ModeRequirement()));
 					}
 					break;
 				case RequirementNodeID.SPAfterRiver:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.SP,
-							RequirementType.Swim, new ModeRequirement()));
+							RequirementType.Flippers, new ModeRequirement()));
 					}
 					break;
 				case RequirementNodeID.SPPastSecondRightSideKeyDoor:
@@ -539,13 +539,13 @@ namespace OpenTracker.Models
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.IPSpikeRoom,
 							RequirementType.Hammer, new ModeRequirement()));
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.IPB2PastLiftBlock,
-							RequirementType.Lift1, new ModeRequirement()));
+							RequirementType.Gloves1, new ModeRequirement()));
 					}
 					break;
 				case RequirementNodeID.IPB2PastLiftBlock:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.IPB2PastHammerBlocks,
-							RequirementType.Lift1, new ModeRequirement()));
+							RequirementType.Gloves1, new ModeRequirement()));
 					}
 					break;
 				case RequirementNodeID.IPSpikeRoom:
@@ -615,7 +615,7 @@ namespace OpenTracker.Models
 				case RequirementNodeID.IPB6PastLiftBlock:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.IPB6PastHammerBlocks,
-							RequirementType.Lift1, new ModeRequirement()));
+							RequirementType.Gloves1, new ModeRequirement()));
 					}
 					break;
 				case RequirementNodeID.IPBoss:
@@ -627,7 +627,7 @@ namespace OpenTracker.Models
 				case RequirementNodeID.MM:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.MMPastEntranceGap,
-							RequirementType.Bonk, new ModeRequirement()));
+							RequirementType.BonkOverLedge, new ModeRequirement()));
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.MMPastEntranceGap,
 							RequirementType.Hookshot, new ModeRequirement()));
 					}
@@ -635,7 +635,7 @@ namespace OpenTracker.Models
 				case RequirementNodeID.MMPastEntranceGap:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.MM,
-							RequirementType.Bonk, new ModeRequirement()));
+							RequirementType.BonkOverLedge, new ModeRequirement()));
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.MM,
 							RequirementType.Hookshot, new ModeRequirement()));
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.MMB1PastFourTorchRoom,
@@ -875,7 +875,7 @@ namespace OpenTracker.Models
 				case RequirementNodeID.GT1FLeftPastBonkableGaps:
 					{
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.GT1FLeftPastHammerBlocks,
-							RequirementType.Bonk, new ModeRequirement()));
+							RequirementType.BonkOverLedge, new ModeRequirement()));
 						DungeonConnections.Add(new RequirementNodeConnection(RequirementNodeID.GT1FLeftPastHammerBlocks,
 							RequirementType.Hookshot, new ModeRequirement()));
 					}

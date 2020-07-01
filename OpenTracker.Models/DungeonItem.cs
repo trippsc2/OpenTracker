@@ -144,7 +144,7 @@ namespace OpenTracker.Models
                 case DungeonItemID.DPTorch:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.DPFront,
-                            RequirementType.Torch, new ModeRequirement()));
+                            RequirementType.Boots, new ModeRequirement()));
                     }
                     break;
                 case DungeonItemID.DPBigChest:
@@ -540,7 +540,7 @@ namespace OpenTracker.Models
                 case DungeonItemID.GTBobsTorch:
                     {
                         Connections.Add(new RequirementNodeConnection(RequirementNodeID.GT1FLeft,
-                            RequirementType.Torch, new ModeRequirement()));
+                            RequirementType.Boots, new ModeRequirement()));
                     }
                     break;
                 case DungeonItemID.GTDMsRoomTopLeft:

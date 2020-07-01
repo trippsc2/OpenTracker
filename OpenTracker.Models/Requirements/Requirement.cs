@@ -2,7 +2,7 @@
 using System;
 using System.ComponentModel;
 
-namespace OpenTracker.Models
+namespace OpenTracker.Models.Requirements
 {
     /// <summary>
     /// This is the class for requirement data.
@@ -474,7 +474,7 @@ namespace OpenTracker.Models
                         };
                     }
                     break;
-                case RequirementType.Bonk:
+                case RequirementType.BonkOverLedge:
                     {
                         _game.Items[ItemType.Boots].PropertyChanged += OnRequirementChanged;
 
@@ -664,7 +664,7 @@ namespace OpenTracker.Models
                         };
                     }
                     break;
-                case RequirementType.Lift1:
+                case RequirementType.Gloves1:
                     {
                         _game.Items[ItemType.Gloves].PropertyChanged += OnRequirementChanged;
 
@@ -849,7 +849,7 @@ namespace OpenTracker.Models
                         };
                     }
                     break;
-                case RequirementType.Swim:
+                case RequirementType.Flippers:
                     {
                         _game.Items[ItemType.Flippers].PropertyChanged += OnRequirementChanged;
 
@@ -885,7 +885,7 @@ namespace OpenTracker.Models
                         };
                     }
                     break;
-                case RequirementType.Torch:
+                case RequirementType.Boots:
                     {
                         _game.Items[ItemType.Boots].PropertyChanged += OnRequirementChanged;
 
