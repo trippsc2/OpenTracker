@@ -326,7 +326,7 @@ namespace OpenTracker.Models.Dictionaries
         /// </summary>
         public void Reset()
         {
-            foreach (Item item in Values)
+            foreach (IItem item in Values)
             {
                 item.Reset();
             }

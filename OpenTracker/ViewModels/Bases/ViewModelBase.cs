@@ -1,6 +1,6 @@
 ﻿using ReactiveUI;
 
-namespace OpenTracker.ViewModels
+namespace OpenTracker.ViewModels.Bases
 {
     public class ViewModelBase : ReactiveObject
     {

@@ -12,11 +12,12 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Reactive;
+using OpenTracker.ViewModels.Bases;
 
 namespace OpenTracker.ViewModels
 {
-    public class MapLocationControlVM : ViewModelBase, IChangeMarking, IClearAvailableSections, IOpenMarkingSelect,
-        IPinLocation, IPointerOver
+    public class MapLocationControlVM : ViewModelBase, IChangeMarking, IClearAvailableSections,
+        IOpenMarkingSelect, IPinLocation, IPointerOver
     {
         private readonly UndoRedoManager _undoRedoManager;
         private readonly AppSettings _appSettings;

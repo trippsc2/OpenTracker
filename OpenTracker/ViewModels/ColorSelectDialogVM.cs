@@ -2,6 +2,7 @@
 using Avalonia.Media;
 using OpenTracker.Models;
 using OpenTracker.Models.Enums;
+using OpenTracker.ViewModels.Bases;
 using ReactiveUI;
 using System;
 using System.ComponentModel;

@@ -2,10 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
+             xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.ModeSettingsControl">
-	<Popup IsOpen="{Binding Path=ModeSettingsPopupOpen, RelativeSource={RelativeSource AncestorType=view:MainWindow},
+	<Popup IsOpen="{Binding $parent[view:ItemsPanelControl].ModeSettingsPopupOpen,
 		   Mode=TwoWay}" StaysOpen="False" PlacementMode="Top" PlacementTarget="{Binding
 		   RelativeSource={RelativeSource AncestorType=Panel}}" HorizontalOffset="8" VerticalOffset="8">
 		<Border Classes="Popup">

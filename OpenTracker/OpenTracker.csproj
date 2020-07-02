@@ -22,6 +22,13 @@
     <AvaloniaResource Include="Assets\Images\*.png" />
   </ItemGroup>
   <ItemGroup>
+    <AvaloniaResource Remove="bin\**" />
+    <AvaloniaXaml Remove="bin\**" />
+    <Compile Remove="bin\**" />
+    <EmbeddedResource Remove="bin\**" />
+    <None Remove="bin\**" />
+  </ItemGroup>
+  <ItemGroup>
     <AvaloniaResource Remove="Views\AutoTrackerDialog.xaml" />
     <AvaloniaResource Remove="Views\BossControl.xaml" />
     <AvaloniaResource Remove="Views\ColorPickerControl.xaml" />
@@ -43,6 +50,7 @@
     <None Remove="Views\ColorSelectDialog.xaml" />
     <None Remove="Views\ConnectorControl.xaml" />
     <None Remove="Views\DungeonChestControl.xaml" />
+    <None Remove="Views\ItemsPanelControl.xaml" />
     <None Remove="Views\KeyControl.xaml" />
     <None Remove="Views\LocationControl.xaml" />
     <None Remove="Views\MapEntranceControl.xaml" />
@@ -52,6 +60,7 @@
     <None Remove="Views\ModeSettingsControl.xaml" />
     <None Remove="Views\PrizeControl.xaml" />
     <None Remove="Views\SectionControl.xaml" />
+    <None Remove="Views\TopMenuControl.xaml" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.9.11" />
@@ -194,8 +203,19 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <AvaloniaResource Update="Views\ItemsPanelControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </AvaloniaResource>
+    <AvaloniaResource Update="Views\TopMenuControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </AvaloniaResource>
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ViewModels\Factories\" />
   </ItemGroup>
 </Project>

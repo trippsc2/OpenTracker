@@ -1075,23 +1075,6 @@ namespace OpenTracker.Models.Requirements
                     {
                         return GetBossRequirement(game, type);
                     }
-                case RequirementType.Tablet:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            game.Requirements[RequirementType.Book],
-                            new AlternativeRequirement(new List<IRequirement>
-                            {
-                                game.Requirements[RequirementType.Inspect],
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    game.Requirements[RequirementType.Swordless],
-                                    game.Requirements[RequirementType.Hammer]
-                                }),
-                                game.Requirements[RequirementType.Sword2]
-                            })
-                        });
-                    }
                 case RequirementType.ATBarrier:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
@@ -1337,15 +1320,23 @@ namespace OpenTracker.Models.Requirements
                     }
                 case RequirementType.Pedestal:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.Pendant],
-                            game.Requirements[RequirementType.GreenPendant],
-                            new AlternativeRequirement(new List<IRequirement>
+                            new AggregateRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.SBBlindPedestal],
-                                game.Requirements[RequirementType.ItemPlacementAdvanced],
-                                game.Requirements[RequirementType.Book]
+                                game.Requirements[RequirementType.Pendant],
+                                game.Requirements[RequirementType.GreenPendant],
+                                new AlternativeRequirement(new List<IRequirement>
+                                {
+                                    game.Requirements[RequirementType.SBBlindPedestal],
+                                    game.Requirements[RequirementType.ItemPlacementAdvanced],
+                                    game.Requirements[RequirementType.Book]
+                                })
+                            }),
+                            new AggregateRequirement(new List<IRequirement>
+                            {
+                                game.Requirements[RequirementType.Book],
+                                game.Requirements[RequirementType.Inspect]
                             })
                         });
                     }
@@ -1376,6 +1367,23 @@ namespace OpenTracker.Models.Requirements
                         {
                             game.Requirements[RequirementType.SBSuperBunnyMirror],
                             game.Requirements[RequirementType.Mirror]
+                        });
+                    }
+                case RequirementType.Tablet:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            game.Requirements[RequirementType.Book],
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                game.Requirements[RequirementType.Inspect],
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    game.Requirements[RequirementType.Swordless],
+                                    game.Requirements[RequirementType.Hammer]
+                                }),
+                                game.Requirements[RequirementType.Sword2]
+                            })
                         });
                     }
                 case RequirementType.ToHHerapot:

@@ -41,14 +41,6 @@ namespace OpenTracker.Views
             set => SetValue(SelectorProperty, value);
         }
 
-        public static AvaloniaProperty<bool> ModeSettingsPopupOpenProperty =
-            AvaloniaProperty.Register<MainWindow, bool>(nameof(ModeSettingsPopupOpen));
-        public bool ModeSettingsPopupOpen
-        {
-            get => GetValue(ModeSettingsPopupOpenProperty);
-            set => SetValue(ModeSettingsPopupOpenProperty, value);
-        }
-
         public static AvaloniaProperty<string> CurrentFilePathProperty =
             AvaloniaProperty.Register<MainWindow, string>(nameof(CurrentFilePath));
         public string CurrentFilePath
@@ -152,21 +144,14 @@ namespace OpenTracker.Views
 
             string[] path = await dialog.ShowAsync(this).ConfigureAwait(false);
 
-            if (path != null)
+            if (path != null && path.Length > 0)
             {
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     CurrentFilePath = path[0];
                     ViewModelOpen.Open(CurrentFilePath);
-                }).ConfigureAwait(false);
-            }
-        }
-
-        private void OpenModeSettingsPopup(object sender, PointerReleasedEventArgs e)
-        {
-            if (e.InitialPressMouseButton == MouseButton.Left)
-            {
-                ModeSettingsPopupOpen = true;
+                })
+                    .ConfigureAwait(false);
             }
         }
 

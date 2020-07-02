@@ -8,6 +8,7 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Text;
+using OpenTracker.ViewModels.Bases;
 
 namespace OpenTracker.ViewModels
 {

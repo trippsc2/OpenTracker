@@ -3,6 +3,7 @@ using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.Enums;
 using OpenTracker.Utils;
+using OpenTracker.ViewModels.Bases;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;

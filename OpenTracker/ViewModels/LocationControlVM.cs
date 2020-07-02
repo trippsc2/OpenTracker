@@ -4,6 +4,7 @@ using OpenTracker.Models.Undoables;
 using OpenTracker.Models.Sections;
 using System;
 using System.Collections.ObjectModel;
+using OpenTracker.ViewModels.Bases;
 
 namespace OpenTracker.ViewModels
 {

@@ -1,7 +1,7 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using OpenTracker.ViewModels;
+using OpenTracker.ViewModels.Bases;
 
 namespace OpenTracker
 {

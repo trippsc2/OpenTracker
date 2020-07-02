@@ -1,37 +1,18 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="clr-namespace:OpenTracker.ViewModels;assembly=OpenTracker"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-        xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
-        xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
-        xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
-        xmlns:manager="clr-namespace:Avalonia.ThemeManager;assembly=Avalonia.ThemeManager"
-        mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="960"
-        x:Class="OpenTracker.Views.MainWindow" Closing="OnClose"
-        Background="{DynamicResource ThemeBackgroundBrush}" UseLayoutRounding="True"
-        Icon="avares://OpenTracker/Assets/triforce.png" Title="OpenTracker">
-	
-	<Design.DataContext>
-		<vm:MainWindowVM />
-	</Design.DataContext>
-	
-	<Window.KeyBindings>
-		<KeyBinding Gesture="Ctrl+o" Command="{Binding $self.Open}" />
-		<KeyBinding Gesture="Ctrl+s" Command="{Binding $self.Save}" />
-		<KeyBinding Gesture="Ctrl+Shift+s" Command="{Binding $self.SaveAs}" />
-		<KeyBinding Gesture="Ctrl+z" Command="{Binding Path=UndoCommand}" />
-		<KeyBinding Gesture="Ctrl+y" Command="{Binding Path=RedoCommand}" />
-		<KeyBinding Gesture="F5" Command="{Binding Path=OpenResetDialogCommand}" />
-		<KeyBinding Gesture="F11" Command="{Binding Path=ToggleDisplayAllLocationsCommand}" />
-	</Window.KeyBindings>
-
-  <Window.Resources>
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
+             xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OpenTracker.Views.ItemsPanelControl">
+  
+  <UserControl.Resources>
 
     <StackPanel x:Key="HCItems" Orientation="Horizontal">
       <Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/hc.png" />
-      <ContentControl Content="{Binding HCSmallKeys}"
+      <ContentControl Margin="2,0,0,0" Content="{Binding HCSmallKeys}"
                       IsVisible="{Binding Path=SmallKeyShuffle}"
                       IsHitTestVisible="{Binding Path=SmallKeyShuffle}" />
       <Panel Height="16" Width="16" IsVisible="{Binding Path=BigKeyShuffle}"
@@ -47,7 +28,7 @@
              IsHitTestVisible="{Binding Path=BigKeyShuffle}" />
       <view:DungeonChestControl DataContext="{Binding Path=ATItems}" />
     </StackPanel>
-    
+
     <StackPanel x:Key="EPItems" Orientation="Horizontal">
       <Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/ep.png" />
       <Panel Margin="2,0,0,0" Height="16" Width="16" IsVisible="{Binding
@@ -193,7 +174,7 @@
                             Path=BossShuffle}" IsHitTestVisible="{Binding Path=BossShuffle}" />
     </StackPanel>
 
-    <Panel x:Key="HorizontalDungeonLayout" Margin="6,0,4,0" 
+    <Panel x:Key="HorizontalDungeonLayout" Margin="6,0,4,0"
                 HorizontalAlignment="Left" VerticalAlignment="Top">
       <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch">
 
@@ -217,10 +198,10 @@
 
       </StackPanel>
     </Panel>
-    
+
     <Grid x:Key="VerticalDungeonLayout" ColumnDefinitions="*,*" Margin="0,4,0,0"
           HorizontalAlignment="Stretch" VerticalAlignment="Top">
-      
+
       <StackPanel Grid.Column="0" Margin="3,0">
         <ContentControl Content="{DynamicResource HCItems}" />
         <ContentControl Margin="0,0,0,8" Height="16" Content="{DynamicResource ATItems}" />
@@ -229,7 +210,7 @@
         <ContentControl Content="{DynamicResource THItems}" Margin="0,0,0,8" />
         <ContentControl Content="{DynamicResource GTItems}" />
       </StackPanel>
-      
+
       <StackPanel Grid.Column="1" Margin="3,0">
         <ContentControl Content="{DynamicResource PDItems}" />
         <ContentControl Content="{DynamicResource SPItems}" />
@@ -241,145 +222,71 @@
       </StackPanel>
 
       <StackPanel Grid.Column="1">
-        
+
       </StackPanel>
-      
+
     </Grid>
-    
-  </Window.Resources>
 
-	<DockPanel>
+  </UserControl.Resources>
 
-		<!-- Window MenuBar -->
-    <ContentControl Content="{Binding TopMenu}" DockPanel.Dock="Top" />
+  <Border Classes="ControlBorder" Margin="{Binding Path=PanelMargin, Mode=OneWay}">
+    <StackPanel Orientation="Vertical">
 
-		<!-- UI Panels -->
-		<DockPanel DockPanel.Dock="{Binding Path=UIPanelDock, Mode=OneWay}" HorizontalAlignment="{Binding 
-               Path=UIPanelHorizontalAlignment, Mode=OneWay}" VerticalAlignment="{Binding 
-               Path=UIPanelVerticalAlignment, Mode=OneWay}">
+      <Border Classes="UIPanelTitle ItemsPanelTitle">
+        <Grid ColumnDefinitions="Auto,*,Auto">
 
-			<!-- Items Panel -->
-			<ContentControl Content="{Binding ItemsPanel}" DockPanel.Dock="{Binding
-                      Path=UIPanelOrientationDock, Mode=OneWay}" />
+          <TextBlock Classes="UIPanelTitleText" Grid.Column="0" Text="Items" />
 
-			<!-- Locations Panel -->
-			<Border Classes="ControlBorder" Margin="{Binding Path=LocationsPanelMargin, Mode=OneWay}">
-				<Grid RowDefinitions="Auto, *" VerticalAlignment="Stretch">
+          <!-- Mode Settings Button and Popup -->
+          <Panel Grid.Column="2">
+            <Image Source="avares://OpenTracker/Assets/Images/settings.png" PointerReleased="OpenModeSettingsPopup"
+                 ToolTip.Tip="Mode Settings" />
+            <view:ModeSettingsControl DataContext="{Binding Path=ModeSettings}" />
+          </Panel>
 
-					<Border Classes="UIPanelTitle LocationsPanelTitle" Grid.Row="0">
-						<TextBlock Classes="UIPanelTitleText" Text="Locations" />
-					</Border>
+        </Grid>
+      </Border>
 
-					<Border Classes="UIPanelBody LocationsPanelBody" Grid.Row="1">
-						<ItemsControl Items="{Binding Path=Locations}">
+      <Border Classes="UIPanelBody ItemsPanelBody">
+        <StackPanel Orientation="{Binding Path=ItemsPanelOrientation}">
 
-							<ItemsControl.ItemsPanel>
-								<ItemsPanelTemplate>
-									<WrapPanel Orientation="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow},
-										   Path=DataContext.LocationsPanelOrientation, Mode=OneWay}" />
-								</ItemsPanelTemplate>
-							</ItemsControl.ItemsPanel>
-
-							<ItemsControl.ItemTemplate>
-								<DataTemplate>
-									<view:LocationControl Margin="1" />
-								</DataTemplate>
-							</ItemsControl.ItemTemplate>
-
-						</ItemsControl>
-					</Border>
-
-				</Grid>
-			</Border>
-		
-		</DockPanel>
-
-		<!-- Map Area -->
-		<Panel>
-			<Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <Panel>
-
-          <ItemsControl x:Name="MapItemsControl" Items="{Binding Path=Maps}">
+          <ItemsControl Items="{Binding Path=Items}">
 
             <ItemsControl.ItemsPanel>
               <ItemsPanelTemplate>
-                <StackPanel Orientation="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow},
-										Path=DataContext.MapPanelOrientation, Mode=OneWay}" />
+                <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="238" MaxHeight="200"
+                       Orientation="Horizontal" HorizontalAlignment="Left"
+                       VerticalAlignment="Top" />
               </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
 
             <ItemsControl.ItemTemplate>
               <DataTemplate>
-                <view:MapControl />
+                <view:ItemControl />
               </DataTemplate>
             </ItemsControl.ItemTemplate>
 
           </ItemsControl>
 
-          <ItemsControl Items="{Binding Path=Connectors}">
+          <ContentControl Name="DungeonItems">
+            <i:Interaction.Behaviors>
+              <ia:DataTriggerBehavior Binding="{Binding Path=ItemsPanelHorizontalOrientation}"
+                                      ComparisonCondition="Equal" Value="True">
+                <ia:ChangePropertyAction TargetObject="{Binding #DungeonItems}" PropertyName="Content"
+                                         Value="{DynamicResource HorizontalDungeonLayout}"/>
+              </ia:DataTriggerBehavior>
+              <ia:DataTriggerBehavior Binding="{Binding Path=ItemsPanelHorizontalOrientation}"
+                                      ComparisonCondition="NotEqual" Value="True">
+                <ia:ChangePropertyAction TargetObject="{Binding #DungeonItems}" PropertyName="Content"
+                                         Value="{DynamicResource VerticalDungeonLayout}"/>
+              </ia:DataTriggerBehavior>
+            </i:Interaction.Behaviors>
+          </ContentControl>
 
-            <ItemsControl.ItemsPanel>
-              <ItemsPanelTemplate>
-                <Panel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-              </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
+        </StackPanel>
+      </Border>
 
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <view:ConnectorControl />
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
+    </StackPanel>
+  </Border>
 
-          </ItemsControl>
-
-          <ItemsControl Classes="Canvas" Items="{Binding Path=MapLocations}">
-            <ItemsControl.Styles>
-              <Style Selector="ItemsControl.Canvas > ContentPresenter">
-                <Setter Property="Canvas.Left" Value="{Binding Path=CanvasX}" />
-                <Setter Property="Canvas.Top" Value="{Binding Path=CanvasY}" />
-              </Style>
-            </ItemsControl.Styles>
-
-            <ItemsControl.ItemsPanel>
-              <ItemsPanelTemplate>
-                <Canvas />
-              </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <view:MapLocationControl />
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-
-          </ItemsControl>
-
-          <ItemsControl Classes="Canvas" Items="{Binding Path=MapEntrances}">
-            <ItemsControl.Styles>
-              <Style Selector="ItemsControl.Canvas > ContentPresenter">
-                <Setter Property="Canvas.Left" Value="{Binding Path=CanvasX}" />
-                <Setter Property="Canvas.Top" Value="{Binding Path=CanvasY}" />
-              </Style>
-            </ItemsControl.Styles>
-
-            <ItemsControl.ItemsPanel>
-              <ItemsPanelTemplate>
-                <Canvas />
-              </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <view:MapEntranceControl />
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-
-          </ItemsControl>
-
-        </Panel>
-      </Viewbox>
-		</Panel>
-	
-	</DockPanel>
-
-</Window>
+</UserControl>

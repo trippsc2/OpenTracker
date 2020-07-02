@@ -7,6 +7,7 @@ using OpenTracker.Models.Enums;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
+using OpenTracker.ViewModels.Bases;
 
 namespace OpenTracker.ViewModels
 {
