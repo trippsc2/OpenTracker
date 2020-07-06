@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.Enums;
-using System;
+using OpenTracker.Models.Items;
+using OpenTracker.Models.Locations;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models
@@ -18,84 +19,75 @@ namespace OpenTracker.Models
         public List<(LocationID, int, LocationID, int)> Connections { get; set; }
 
         /// <summary>
-        /// Basic constructor
-        /// </summary>
-        public SaveData()
-        {
-        }
-
-        /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="game">
-        /// The game data.
+        /// <param name="save">
+        /// A boolean representing whether to save existing data.
         /// </param>
-        public SaveData(Game game)
+        public SaveData(bool save = false)
         {
-            if (game == null)
+            if (save)
             {
-                throw new ArgumentNullException(nameof(game));
-            }
+                Mode = Mode.Instance.Copy();
+                ItemCounts = new Dictionary<ItemType, int>();
+                LocationSectionCounts = new Dictionary<LocationID, Dictionary<int, int>>();
+                LocationSectionMarkings = new Dictionary<LocationID, Dictionary<int, MarkingType?>>();
+                PrizePlacements = new Dictionary<(LocationID, int), ItemType?>();
+                BossPlacements = new Dictionary<(LocationID, int), BossType?>();
+                Connections = new List<(LocationID, int, LocationID, int)>();
 
-            Mode = new Mode(game.Mode);
-            ItemCounts = new Dictionary<ItemType, int>();
-            LocationSectionCounts = new Dictionary<LocationID, Dictionary<int, int>>();
-            LocationSectionMarkings = new Dictionary<LocationID, Dictionary<int, MarkingType?>>();
-            PrizePlacements = new Dictionary<(LocationID, int), ItemType?>();
-            BossPlacements = new Dictionary<(LocationID, int), BossType?>();
-            Connections = new List<(LocationID, int, LocationID, int)>();
-
-            foreach (var item in game.Items.Values)
-            {
-                ItemCounts.Add(item.Type, item.Current);
-            }
-
-            foreach (Location location in game.Locations.Values)
-            {
-                for (int i = 0; i > location.BossSections.Count; i++)
+                foreach (var item in ItemDictionary.Instance.Values)
                 {
-                    if (location.BossSections[i].Prize == null)
+                    ItemCounts.Add(item.Type, item.Current);
+                }
+
+                foreach (var location in LocationDictionary.Instance.Values)
+                {
+                    for (int i = 0; i > location.BossSections.Count; i++)
                     {
-                        PrizePlacements.Add((location.ID, i), null);
-                    }
-                    else
-                    {
-                        PrizePlacements.Add((location.ID, i), location.BossSections[i].Prize.Type);
+                        if (location.BossSections[i].Prize == null)
+                        {
+                            PrizePlacements.Add((location.ID, i), null);
+                        }
+                        else
+                        {
+                            PrizePlacements.Add((location.ID, i), location.BossSections[i].Prize.Type);
+                        }
+
+                        if (location.BossSections[i].BossPlacement.Boss == null)
+                        {
+                            BossPlacements.Add((location.ID, i), null);
+                        }
+                        else
+                        {
+                            BossPlacements.Add((location.ID, i), location.BossSections[i].BossPlacement.Boss);
+                        }
                     }
 
-                    if (location.BossSections[i].BossPlacement.Boss == null)
+                    LocationSectionCounts.Add(location.ID, new Dictionary<int, int>());
+                    LocationSectionMarkings.Add(location.ID, new Dictionary<int, MarkingType?>());
+
+                    for (int i = 0; i < location.Sections.Count; i++)
                     {
-                        BossPlacements.Add((location.ID, i), null);
-                    }
-                    else
-                    {
-                        BossPlacements.Add((location.ID, i), location.BossSections[i].BossPlacement.Boss);
+                        Dictionary<int, int> countDictionary = LocationSectionCounts[location.ID];
+                        Dictionary<int, MarkingType?> markingDictionary = LocationSectionMarkings[location.ID];
+
+                        if (location.Sections[i].HasMarking)
+                        {
+                            markingDictionary.Add(i, location.Sections[i].Marking);
+                        }
+
+                        countDictionary.Add(i, location.Sections[i].Available);
                     }
                 }
 
-                LocationSectionCounts.Add(location.ID, new Dictionary<int, int>());
-                LocationSectionMarkings.Add(location.ID, new Dictionary<int, MarkingType?>());
-
-                for (int i = 0; i < location.Sections.Count; i++)
+                foreach ((MapLocation, MapLocation) connection in ConnectionCollection.Instance)
                 {
-                    Dictionary<int, int> countDictionary = LocationSectionCounts[location.ID];
-                    Dictionary<int, MarkingType?> markingDictionary = LocationSectionMarkings[location.ID];
+                    int index1 = connection.Item1.Location.MapLocations.IndexOf(connection.Item1);
+                    int index2 = connection.Item2.Location.MapLocations.IndexOf(connection.Item2);
 
-                    if (location.Sections[i].HasMarking)
-                    {
-                        markingDictionary.Add(i, location.Sections[i].Marking);
-                    }
-
-                    countDictionary.Add(i, location.Sections[i].Available);
+                    Connections.Add((connection.Item1.Location.ID, index1, connection.Item2.Location.ID, index2));
                 }
-            }
-
-            foreach ((MapLocation, MapLocation) connection in game.Connections)
-            {
-                int index1 = connection.Item1.Location.MapLocations.IndexOf(connection.Item1);
-                int index2 = connection.Item2.Location.MapLocations.IndexOf(connection.Item2);
-
-                Connections.Add((connection.Item1.Location.ID, index1, connection.Item2.Location.ID, index2));
             }
         }
     }

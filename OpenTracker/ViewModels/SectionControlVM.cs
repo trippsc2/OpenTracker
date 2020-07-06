@@ -12,6 +12,7 @@ using System.Globalization;
 using System.Reactive;
 using System.Text;
 using OpenTracker.ViewModels.Bases;
+using OpenTracker.Models.BossPlacements;
 
 namespace OpenTracker.ViewModels
 {
@@ -20,7 +21,6 @@ namespace OpenTracker.ViewModels
     {
         private readonly UndoRedoManager _undoRedoManager;
         private readonly AppSettings _appSettings;
-        private readonly Game _game;
         private readonly ISection _section;
 
         public ObservableCollection<MarkingSelectControlVM> ItemSelect
@@ -86,12 +86,12 @@ namespace OpenTracker.ViewModels
                 }
 
                 if (_section is BossSection bossSection && !bossSection.PrizeVisible &&
-                    !_game.Mode.BossShuffle)
+                    !Mode.Instance.BossShuffle)
                 {
                     return false;
                 }
 
-                return _game.Mode.Validate(_section.ModeRequirement);
+                return Mode.Instance.Validate(_section.ModeRequirement);
             }
         }
 
@@ -157,7 +157,7 @@ namespace OpenTracker.ViewModels
                     case MarkingType.Shield:
                     case MarkingType.Mail:
                         {
-                            var item = _game.Items[Enum.Parse<ItemType>(_section.Marking.ToString())];
+                            var item = ItemDictionary.Instance[Enum.Parse<ItemType>(_section.Marking.ToString())];
                             itemNumber = Math.Min(item.Current + 1, item.Maximum);
 
                             return "avares://OpenTracker/Assets/Images/Items/" +
@@ -166,7 +166,7 @@ namespace OpenTracker.ViewModels
                         }
                     case MarkingType.Sword:
                         {
-                            var sword = _game.Items[ItemType.Sword];
+                            var sword = ItemDictionary.Instance[ItemType.Sword];
 
                             if (sword.Current == 0)
                             {
@@ -322,7 +322,7 @@ namespace OpenTracker.ViewModels
         {
             get
             {
-                return _game.Mode.BossShuffle && _section is BossSection bossSection &&
+                return Mode.Instance.BossShuffle && _section is BossSection bossSection &&
                     (bossSection.BossPlacement.Boss == null ||
                     bossSection.BossPlacement.Boss != BossType.Aga);
             }
@@ -385,18 +385,17 @@ namespace OpenTracker.ViewModels
         /// The section to be represented.
         /// </param>
         public SectionControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
-            Game game, ISection section)
+            ISection section)
         {
             _undoRedoManager = undoRedoManager;
             _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
-            _game = game ?? throw new ArgumentNullException(nameof(game));
             _section = section ?? throw new ArgumentNullException(nameof(section));
 
             ChangeMarkingCommand = ReactiveCommand.Create<MarkingType?>(ChangeMarking);
             ClearVisibleItemCommand = ReactiveCommand.Create(ClearMarking);
 
             _appSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
-            _game.Mode.PropertyChanged += OnModeChanged;
+            Mode.Instance.PropertyChanged += OnModeChanged;
             _section.PropertyChanging += OnSectionChanging;
             _section.PropertyChanged += OnSectionChanged;
 
@@ -523,7 +522,7 @@ namespace OpenTracker.ViewModels
         /// </param>
         private void OnBossChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(BossPlacement.Boss))
+            if (e.PropertyName == nameof(IBossPlacement.Boss))
             {
                 UpdateBossVisibility();
                 this.RaisePropertyChanged(nameof(BossImageSource));
@@ -580,7 +579,7 @@ namespace OpenTracker.ViewModels
                     case MarkingType.Mail:
                         {
                             ItemType itemType = Enum.Parse<ItemType>(_section.Marking.Value.ToString());
-                            _game.Items[itemType].PropertyChanged -= OnMarkedItemChanged;
+                            ItemDictionary.Instance[itemType].PropertyChanged -= OnMarkedItemChanged;
                         }
                         break;
                 }
@@ -603,7 +602,7 @@ namespace OpenTracker.ViewModels
                     case MarkingType.Mail:
                         {
                             ItemType itemType = Enum.Parse<ItemType>(_section.Marking.Value.ToString());
-                            _game.Items[itemType].PropertyChanged += OnMarkedItemChanged;
+                            ItemDictionary.Instance[itemType].PropertyChanged += OnMarkedItemChanged;
                         }
                         break;
                 }
@@ -624,7 +623,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void CollectSection()
         {
-            _undoRedoManager.Execute(new CollectSection(_game, _section));
+            _undoRedoManager.Execute(new CollectSection(_section));
         }
 
         /// <summary>
@@ -653,7 +652,7 @@ namespace OpenTracker.ViewModels
             {
                 if (Enum.TryParse(_section.Marking.ToString(), out ItemType currentItemType))
                 {
-                    _game.Items[currentItemType].PropertyChanged -= OnMarkedItemChanged;
+                    ItemDictionary.Instance[currentItemType].PropertyChanged -= OnMarkedItemChanged;
 
                     switch (currentItemType)
                     {
@@ -661,7 +660,7 @@ namespace OpenTracker.ViewModels
                         case ItemType.Ether:
                         case ItemType.Quake:
                             {
-                                _game.Items[currentItemType + 1].PropertyChanged -= OnMarkedItemChanged;
+                                ItemDictionary.Instance[currentItemType + 1].PropertyChanged -= OnMarkedItemChanged;
                             }
                             break;
                     }
@@ -672,7 +671,7 @@ namespace OpenTracker.ViewModels
 
             if (Enum.TryParse(_section.Marking.ToString(), out ItemType newItemType))
             {
-                _game.Items[newItemType].PropertyChanged += OnMarkedItemChanged;
+                ItemDictionary.Instance[newItemType].PropertyChanged += OnMarkedItemChanged;
 
                 switch (newItemType)
                 {
@@ -680,7 +679,7 @@ namespace OpenTracker.ViewModels
                     case ItemType.Ether:
                     case ItemType.Quake:
                         {
-                            _game.Items[newItemType + 1].PropertyChanged += OnMarkedItemChanged;
+                            ItemDictionary.Instance[newItemType + 1].PropertyChanged += OnMarkedItemChanged;
                         }
                         break;
                 }

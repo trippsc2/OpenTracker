@@ -5,6 +5,7 @@ using OpenTracker.Models.Sections;
 using System;
 using System.Collections.ObjectModel;
 using OpenTracker.ViewModels.Bases;
+using OpenTracker.Models.Locations;
 
 namespace OpenTracker.ViewModels
 {
@@ -18,7 +19,7 @@ namespace OpenTracker.ViewModels
 
         public string Name =>
             Location.Name;
-        public Location Location { get; }
+        public ILocation Location { get; }
         public ObservableCollection<SectionControlVM> Sections { get; }
 
         /// <summary>
@@ -40,7 +41,7 @@ namespace OpenTracker.ViewModels
         /// The location to be represented.
         /// </param>
         public LocationControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
-            Game game, MainWindowVM mainWindow, Location location)
+            MainWindowVM mainWindow, ILocation location)
         {
             _undoRedoManager = undoRedoManager;
             _mainWindow = mainWindow;
@@ -51,7 +52,7 @@ namespace OpenTracker.ViewModels
 
             foreach (ISection section in location.Sections)
             {
-                Sections.Add(new SectionControlVM(undoRedoManager, appSettings, game, section));
+                Sections.Add(new SectionControlVM(undoRedoManager, appSettings, section));
             }
         }
 

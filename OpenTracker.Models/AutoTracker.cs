@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.Enums;
 using OpenTracker.Models.SNESConnectors;
+using OpenTracker.Models.Utils;
 using System;
 using System.Collections.Generic;
 using WebSocketSharp;
@@ -9,7 +10,7 @@ namespace OpenTracker.Models
     /// <summary>
     /// This is the class containing autotracking data and methods
     /// </summary>
-    public class AutoTracker
+    public class AutoTracker : Singleton<AutoTracker>
     {
         private byte? _inGameStatus;
 
@@ -18,10 +19,14 @@ namespace OpenTracker.Models
 
         public ISNESConnector SNESConnector { get; }
 
-        public List<MemoryAddress> RoomMemory { get; }
-        public List<MemoryAddress> OverworldEventMemory { get; }
-        public List<MemoryAddress> ItemMemory { get; }
-        public List<MemoryAddress> NPCItemMemory { get; }
+        public List<MemoryAddress> RoomMemory { get; } =
+            new List<MemoryAddress>(592);
+        public List<MemoryAddress> OverworldEventMemory { get; } =
+            new List<MemoryAddress>(130);
+        public List<MemoryAddress> ItemMemory { get; } =
+            new List<MemoryAddress>(144);
+        public List<MemoryAddress> NPCItemMemory { get; } =
+            new List<MemoryAddress>(2);
 
         public Action<LogLevel, string> LogHandler { get; set; }
         
@@ -31,11 +36,6 @@ namespace OpenTracker.Models
         public AutoTracker()
         {
             SNESConnector = SNESConnectorFactory.GetSNESConnector(HandleLog);
-
-            RoomMemory = new List<MemoryAddress>(592);
-            OverworldEventMemory = new List<MemoryAddress>(130);
-            ItemMemory = new List<MemoryAddress>(144);
-            NPCItemMemory = new List<MemoryAddress>(2);
 
             for (int i = 0; i < 592; i++)
             {

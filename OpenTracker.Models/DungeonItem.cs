@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.Enums;
+using OpenTracker.Models.Requirements;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,7 +11,6 @@ namespace OpenTracker.Models
     /// </summary>
     public class DungeonItem : INotifyPropertyChanged
     {
-        private readonly Game _game;
         private readonly DungeonData _dungeonData;
         private readonly DungeonItemID _iD;
 
@@ -44,9 +44,8 @@ namespace OpenTracker.Models
         /// <param name="iD">
         /// The item identity.
         /// </param>
-        public DungeonItem(Game game, DungeonData dungeonData, DungeonItemID iD)
+        public DungeonItem(DungeonData dungeonData, DungeonItemID iD)
         {
-            _game = game ?? throw new ArgumentNullException(nameof(game));
             _dungeonData = dungeonData ?? throw new ArgumentNullException(nameof(dungeonData));
             _iD = iD;
             Connections = new List<RequirementNodeConnection>();
@@ -666,7 +665,7 @@ namespace OpenTracker.Models
 
                 if (!requirementSubscriptions.Contains(connection.Requirement))
                 {
-                    _game.Requirements[connection.Requirement].PropertyChanged += OnRequirementChanged;
+                    RequirementDictionary.Instance[connection.Requirement].PropertyChanged += OnRequirementChanged;
                     requirementSubscriptions.Add(connection.Requirement);
                 }
             }
@@ -730,7 +729,7 @@ namespace OpenTracker.Models
                 }
 
                 AccessibilityLevel requirementAccessibility =
-                    _game.Requirements[connection.Requirement].Accessibility;
+                    RequirementDictionary.Instance[connection.Requirement].Accessibility;
 
                 AccessibilityLevel finalConnectionAccessibility =
                     (AccessibilityLevel)Math.Min(Math.Min((byte)nodeAccessibility,

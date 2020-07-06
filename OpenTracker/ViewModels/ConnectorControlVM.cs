@@ -17,7 +17,6 @@ namespace OpenTracker.ViewModels
     public class ConnectorControlVM : ViewModelBase, IClickHandler, IPointerOver
     {
         private readonly UndoRedoManager _undoRedoManager;
-        private readonly Game _game;
         private readonly MainWindowVM _mainWindow;
         private readonly AppSettings _appSettings;
 
@@ -29,7 +28,7 @@ namespace OpenTracker.ViewModels
         }
 
         public bool Visible =>
-            _game.Mode.EntranceShuffle;
+            Mode.Instance.EntranceShuffle;
 
         public (MapLocation, MapLocation) Connection { get; }
 
@@ -84,9 +83,6 @@ namespace OpenTracker.ViewModels
         /// <param name="undoRedoManager">
         /// The undo/redo manager.
         /// </param>
-        /// <param name="game">
-        /// The game data.
-        /// </param>
         /// <param name="mainWindow">
         /// The main window view-model parent class.
         /// </param>
@@ -96,11 +92,10 @@ namespace OpenTracker.ViewModels
         /// <param name="connection">
         /// The connection data.
         /// </param>
-        public ConnectorControlVM(UndoRedoManager undoRedoManager, Game game, MainWindowVM mainWindow,
+        public ConnectorControlVM(UndoRedoManager undoRedoManager, MainWindowVM mainWindow,
             AppSettings appSettings, (MapLocation, MapLocation) connection)
         {
             _undoRedoManager = undoRedoManager;
-            _game = game ?? throw new ArgumentNullException(nameof(game));
             _mainWindow = mainWindow ?? throw new ArgumentNullException(nameof(mainWindow));
             _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
 
@@ -108,7 +103,7 @@ namespace OpenTracker.ViewModels
 
             PropertyChanged += OnPropertyChanged;
             _mainWindow.PropertyChanged += OnMainWindowChanged;
-            _game.Mode.PropertyChanged += OnModeChanged;
+            Mode.Instance.PropertyChanged += OnModeChanged;
             _appSettings.PropertyChanged += OnAppSettingsChanged;
         }
 
@@ -191,7 +186,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void RemoveConnector()
         {
-            _undoRedoManager.Execute(new RemoveConnection(_game, Connection));
+            _undoRedoManager.Execute(new RemoveConnection(Connection));
         }
 
         /// <summary>

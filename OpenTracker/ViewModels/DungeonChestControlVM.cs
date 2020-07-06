@@ -14,11 +14,10 @@ namespace OpenTracker.ViewModels
     /// <summary>
     /// This is the view-model for the dungeon chest control on the items panel.
     /// </summary>
-    public class DungeonChestControlVM : ViewModelBase, IClickHandler
+    public class DungeonChestControlVM : SmallItemControlVMBase, IClickHandler
     {
         private readonly UndoRedoManager _undoRedoManager;
         private readonly AppSettings _appSettings;
-        private readonly Game _game;
         private readonly ISection _section;
 
         public string FontColor =>
@@ -31,27 +30,15 @@ namespace OpenTracker.ViewModels
             {
                 if (_section.IsAvailable())
                 {
-                    switch (_section.Accessibility)
+                    return _section.Accessibility switch
                     {
-                        case AccessibilityLevel.None:
-                        case AccessibilityLevel.Inspect:
-                            {
-                                return "avares://OpenTracker/Assets/Images/chest0.png";
-                            }
-                        case AccessibilityLevel.Partial:
-                        case AccessibilityLevel.SequenceBreak:
-                        case AccessibilityLevel.Normal:
-                            {
-                                return "avares://OpenTracker/Assets/Images/chest1.png";
-                            }
-                    }
+                        AccessibilityLevel.None => "avares://OpenTracker/Assets/Images/chest0.png",
+                        AccessibilityLevel.Inspect => "avares://OpenTracker/Assets/Images/chest0.png",
+                        _ => "avares://OpenTracker/Assets/Images/chest1.png"
+                    };
                 }
-                else
-                {
-                    return "avares://OpenTracker/Assets/Images/chest2.png";
-                }
-
-                return null;
+                
+                return "avares://OpenTracker/Assets/Images/chest2.png";
             }
         }
 
@@ -67,18 +54,14 @@ namespace OpenTracker.ViewModels
         /// <param name="appSettings">
         /// The app settings data.
         /// </param>
-        /// <param name="game">
-        /// The game data.
-        /// </param>
         /// <param name="section">
         /// The dungeon section represented by the control.
         /// </param>
-        public DungeonChestControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
-            Game game, ISection section)
+        public DungeonChestControlVM(
+            UndoRedoManager undoRedoManager, AppSettings appSettings, ISection section)
         {
-            _undoRedoManager = undoRedoManager;
+            _undoRedoManager = undoRedoManager ?? throw new ArgumentNullException(nameof(undoRedoManager));
             _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
-            _game = game ?? throw new ArgumentNullException(nameof(game));
             _section = section ?? throw new ArgumentNullException(nameof(section));
 
             _appSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
@@ -146,7 +129,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void CollectSection()
         {
-            _undoRedoManager.Execute(new CollectSection(_game, _section));
+            _undoRedoManager.Execute(new CollectSection(_section));
         }
 
         /// <summary>

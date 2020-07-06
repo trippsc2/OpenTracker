@@ -12,177 +12,157 @@
 
     <StackPanel x:Key="HCItems" Orientation="Horizontal">
       <Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/hc.png" />
-      <ContentControl Margin="2,0,0,0" Content="{Binding HCSmallKeys}"
-                      IsVisible="{Binding Path=SmallKeyShuffle}"
-                      IsHitTestVisible="{Binding Path=SmallKeyShuffle}" />
-      <Panel Height="16" Width="16" IsVisible="{Binding Path=BigKeyShuffle}"
-             IsHitTestVisible="{Binding Path=BigKeyShuffle}" />
-      <view:DungeonChestControl Margin="0,0,6,0" DataContext="{Binding Path=HCItems}" />
+      <ItemsControl Items="{Binding HCItems}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" Margin="0,0,4,0"/>
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      </ItemsControl>
     </StackPanel>
 
     <StackPanel x:Key="ATItems" Grid.Column="1" Orientation="Horizontal" IsVisible="{Binding
-                Path=SmallKeyShuffle}" IsHitTestVisible="{Binding Path=SmallKeyShuffle}">
+                ATItemsVisible}" IsHitTestVisible="{Binding ATItemsVisible}">
       <Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/at.png" />
-      <view:KeyControl Margin="2,0,0,0" DataContext="{Binding Path=ATSmallKeys}" />
-      <Panel Height="16" Width="16" IsVisible="{Binding Path=BigKeyShuffle}"
-             IsHitTestVisible="{Binding Path=BigKeyShuffle}" />
-      <view:DungeonChestControl DataContext="{Binding Path=ATItems}" />
+      <ItemsControl Items="{Binding ATItems}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      </ItemsControl>
     </StackPanel>
 
     <StackPanel x:Key="EPItems" Orientation="Horizontal">
       <Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/ep.png" />
-      <Panel Margin="2,0,0,0" Height="16" Width="16" IsVisible="{Binding
-                 Path=SmallKeyShuffle}" IsHitTestVisible="{Binding Path=SmallKeyShuffle}" />
-      <view:KeyControl DataContext="{Binding Path=EPBigKey}" IsVisible="{Binding
-                           Path=BigKeyShuffle}" IsHitTestVisible="{Binding Path=BigKeyShuffle}" />
-      <view:DungeonChestControl DataContext="{Binding Path=EPItems}" />
-      <view:PrizeControl DataContext="{Binding Path=EPPrize}" />
-      <view:BossControl DataContext="{Binding Path=EPBoss}" IsVisible="{Binding
-                            Path=BossShuffle}" IsHitTestVisible="{Binding Path=BossShuffle}" />
+      <ItemsControl Items="{Binding EPItems}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      </ItemsControl>
     </StackPanel>
 
     <StackPanel x:Key="DPItems" Orientation="Horizontal">
       <Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/dp.png" />
-      <view:KeyControl Margin="2,0,0,0" DataContext="{Binding Path=DPSmallKeys}"
-                       IsVisible="{Binding Path=SmallKeyShuffle}"
-                       IsHitTestVisible="{Binding Path=SmallKeyShuffle}" />
-      <view:KeyControl DataContext="{Binding Path=DPBigKey}" IsVisible="{Binding
-                           Path=BigKeyShuffle}" IsHitTestVisible="{Binding Path=BigKeyShuffle}" />
-      <view:DungeonChestControl DataContext="{Binding Path=DPItems}" />
-      <view:PrizeControl DataContext="{Binding Path=DPPrize}" />
-      <view:BossControl DataContext="{Binding Path=DPBoss}" IsVisible="{Binding
-                            Path=BossShuffle}" IsHitTestVisible="{Binding Path=BossShuffle}" />
+      <ItemsControl Items="{Binding DPItems}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      </ItemsControl>
     </StackPanel>
 
     <StackPanel x:Key="THItems" Orientation="Horizontal">
       <Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/th.png" />
-      <view:KeyControl Margin="2,0,0,0" DataContext="{Binding Path=THSmallKeys}"
-                       IsVisible="{Binding Path=SmallKeyShuffle}"
-                       IsHitTestVisible="{Binding Path=SmallKeyShuffle}" />
-      <view:KeyControl DataContext="{Binding Path=THBigKey}" IsVisible="{Binding
-                           Path=BigKeyShuffle}" IsHitTestVisible="{Binding Path=BigKeyShuffle}" />
-      <view:DungeonChestControl DataContext="{Binding Path=THItems}" />
-      <view:PrizeControl DataContext="{Binding Path=THPrize}" />
-      <view:BossControl DataContext="{Binding Path=THBoss}" IsVisible="{Binding
-                            Path=BossShuffle}" IsHitTestVisible="{Binding Path=BossShuffle}" />
+      <ItemsControl Items="{Binding ToHItems}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      </ItemsControl>
     </StackPanel>
 
     <StackPanel x:Key="PDItems" Orientation="Horizontal">
       <Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/pd.png" />
-      <view:KeyControl Margin="2,0,0,0" DataContext="{Binding Path=PDSmallKeys}"
-                       IsVisible="{Binding Path=SmallKeyShuffle}"
-                       IsHitTestVisible="{Binding Path=SmallKeyShuffle}" />
-      <view:KeyControl DataContext="{Binding Path=PDBigKey}" IsVisible="{Binding
-                           Path=BigKeyShuffle}" IsHitTestVisible="{Binding Path=BigKeyShuffle}" />
-      <view:DungeonChestControl DataContext="{Binding Path=PDItems}" />
-      <view:PrizeControl DataContext="{Binding Path=PDPrize}" />
-      <view:BossControl DataContext="{Binding Path=PDBoss}" IsVisible="{Binding
-                            Path=BossShuffle}" IsHitTestVisible="{Binding Path=BossShuffle}" />
+      <ItemsControl Items="{Binding PoDItems}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      </ItemsControl>
     </StackPanel>
 
     <StackPanel x:Key="SPItems" Orientation="Horizontal">
       <Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/sp.png" />
-      <view:KeyControl Margin="2,0,0,0" DataContext="{Binding Path=SPSmallKeys}"
-                       IsVisible="{Binding Path=SmallKeyShuffle}"
-                       IsHitTestVisible="{Binding Path=SmallKeyShuffle}" />
-      <view:KeyControl DataContext="{Binding Path=SPBigKey}" IsVisible="{Binding
-                           Path=BigKeyShuffle}" IsHitTestVisible="{Binding Path=BigKeyShuffle}" />
-      <view:DungeonChestControl DataContext="{Binding Path=SPItems}" />
-      <view:PrizeControl DataContext="{Binding Path=SPPrize}" />
-      <view:BossControl DataContext="{Binding Path=SPBoss}" IsVisible="{Binding
-                            Path=BossShuffle}" IsHitTestVisible="{Binding Path=BossShuffle}" />
+      <ItemsControl Items="{Binding SPItems}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      </ItemsControl>
     </StackPanel>
 
     <StackPanel x:Key="SWItems" Orientation="Horizontal">
       <Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/sw.png" />
-      <view:KeyControl Margin="2,0,0,0" DataContext="{Binding Path=SWSmallKeys}"
-                       IsVisible="{Binding Path=SmallKeyShuffle}"
-                       IsHitTestVisible="{Binding Path=SmallKeyShuffle}" />
-      <view:KeyControl DataContext="{Binding Path=SWBigKey}" IsVisible="{Binding
-                           Path=BigKeyShuffle}" IsHitTestVisible="{Binding Path=BigKeyShuffle}" />
-      <view:DungeonChestControl DataContext="{Binding Path=SWItems}" />
-      <view:PrizeControl DataContext="{Binding Path=SWPrize}" />
-      <view:BossControl DataContext="{Binding Path=SWBoss}" IsVisible="{Binding
-                            Path=BossShuffle}" IsHitTestVisible="{Binding Path=BossShuffle}" />
+      <ItemsControl Items="{Binding SWItems}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      </ItemsControl>
     </StackPanel>
 
     <StackPanel x:Key="TTItems" Orientation="Horizontal">
       <Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/tt.png" />
-      <view:KeyControl Margin="2,0,0,0" DataContext="{Binding Path=TTSmallKeys}"
-                       IsVisible="{Binding Path=SmallKeyShuffle}"
-                       IsHitTestVisible="{Binding Path=SmallKeyShuffle}" />
-      <view:KeyControl DataContext="{Binding Path=TTBigKey}" IsVisible="{Binding
-                           Path=BigKeyShuffle}" IsHitTestVisible="{Binding Path=BigKeyShuffle}" />
-      <view:DungeonChestControl DataContext="{Binding Path=TTItems}" />
-      <view:PrizeControl DataContext="{Binding Path=TTPrize}" />
-      <view:BossControl DataContext="{Binding Path=TTBoss}" IsVisible="{Binding
-                            Path=BossShuffle}" IsHitTestVisible="{Binding Path=BossShuffle}" />
+      <ItemsControl Items="{Binding TTItems}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      </ItemsControl>
     </StackPanel>
 
     <StackPanel x:Key="IPItems" Orientation="Horizontal">
       <Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/ip.png" />
-      <view:KeyControl Margin="2,0,0,0" DataContext="{Binding Path=IPSmallKeys}"
-                       IsVisible="{Binding Path=SmallKeyShuffle}"
-                       IsHitTestVisible="{Binding Path=SmallKeyShuffle}" />
-      <view:KeyControl DataContext="{Binding Path=IPBigKey}" IsVisible="{Binding
-                           Path=BigKeyShuffle}" IsHitTestVisible="{Binding Path=BigKeyShuffle}" />
-      <view:DungeonChestControl DataContext="{Binding Path=IPItems}" />
-      <view:PrizeControl DataContext="{Binding Path=IPPrize}" />
-      <view:BossControl DataContext="{Binding Path=IPBoss}" IsVisible="{Binding
-                            Path=BossShuffle}" IsHitTestVisible="{Binding Path=BossShuffle}" />
+      <ItemsControl Items="{Binding IPItems}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      </ItemsControl>
     </StackPanel>
 
     <StackPanel x:Key="MMItems" Orientation="Horizontal">
       <Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/mm.png" />
-      <view:KeyControl Margin="2,0,0,0" DataContext="{Binding Path=MMSmallKeys}"
-                       IsVisible="{Binding Path=SmallKeyShuffle}"
-                       IsHitTestVisible="{Binding Path=SmallKeyShuffle}" />
-      <view:KeyControl DataContext="{Binding Path=MMBigKey}" IsVisible="{Binding
-                           Path=BigKeyShuffle}" IsHitTestVisible="{Binding Path=BigKeyShuffle}" />
-      <view:DungeonChestControl DataContext="{Binding Path=MMItems}" />
-      <view:PrizeControl DataContext="{Binding Path=MMPrize}" />
-      <view:BossControl DataContext="{Binding Path=MMBoss}" IsVisible="{Binding
-                            Path=BossShuffle}" IsHitTestVisible="{Binding Path=BossShuffle}" />
+      <ItemsControl Items="{Binding MMItems}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      </ItemsControl>
     </StackPanel>
 
     <StackPanel x:Key="TRItems" Orientation="Horizontal">
       <Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/tr.png" />
-      <view:KeyControl Margin="2,0,0,0" DataContext="{Binding Path=TRSmallKeys}"
-                       IsVisible="{Binding Path=SmallKeyShuffle}"
-                       IsHitTestVisible="{Binding Path=SmallKeyShuffle}" />
-      <view:KeyControl DataContext="{Binding Path=TRBigKey}" IsVisible="{Binding
-                           Path=BigKeyShuffle}" IsHitTestVisible="{Binding Path=BigKeyShuffle}" />
-      <view:DungeonChestControl DataContext="{Binding Path=TRItems}" />
-      <view:PrizeControl DataContext="{Binding Path=TRPrize}" />
-      <view:BossControl DataContext="{Binding Path=TRBoss}" IsVisible="{Binding
-                            Path=BossShuffle}" IsHitTestVisible="{Binding Path=BossShuffle}" />
+      <ItemsControl Items="{Binding TRItems}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      </ItemsControl>
     </StackPanel>
 
     <StackPanel x:Key="GTItems" Orientation="Horizontal">
       <Image Classes="DungeonLabel" Source="avares://OpenTracker/Assets/Images/gt.png" />
-      <view:KeyControl Margin="2,0,0,0" DataContext="{Binding Path=GTSmallKeys}"
-                       IsVisible="{Binding Path=SmallKeyShuffle}"
-                       IsHitTestVisible="{Binding Path=SmallKeyShuffle}" />
-      <view:KeyControl DataContext="{Binding Path=GTBigKey}" IsVisible="{Binding
-                           Path=BigKeyShuffle}" IsHitTestVisible="{Binding Path=BigKeyShuffle}" />
-      <view:DungeonChestControl DataContext="{Binding Path=GTItems}" />
-      <view:BossControl DataContext="{Binding Path=GTBoss1}" IsVisible="{Binding
-                            Path=BossShuffle}" IsHitTestVisible="{Binding Path=BossShuffle}" />
-      <view:BossControl DataContext="{Binding Path=GTBoss2}" IsVisible="{Binding
-                            Path=BossShuffle}" IsHitTestVisible="{Binding Path=BossShuffle}" />
-      <view:BossControl DataContext="{Binding Path=GTBoss3}" IsVisible="{Binding
-                            Path=BossShuffle}" IsHitTestVisible="{Binding Path=BossShuffle}" />
+      <ItemsControl Items="{Binding GTItems}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Orientation="Horizontal" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+      </ItemsControl>
     </StackPanel>
 
     <Panel x:Key="HorizontalDungeonLayout" Margin="6,0,4,0"
                 HorizontalAlignment="Left" VerticalAlignment="Top">
       <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch">
 
-        <Grid Margin="0,0,0,8" ColumnDefinitions="*,*" HorizontalAlignment="Stretch"
-              VerticalAlignment="Top">
+        <StackPanel Margin="0,0,0,8" Orientation="Horizontal" HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top">
           <ContentControl Grid.Column="0" Content="{DynamicResource HCItems}" />
           <ContentControl Grid.Column="1" Content="{DynamicResource ATItems}" />
-        </Grid>
+        </StackPanel>
 
         <ContentControl Content="{DynamicResource EPItems}" />
         <ContentControl Content="{DynamicResource DPItems}" />
@@ -229,7 +209,7 @@
 
   </UserControl.Resources>
 
-  <Border Classes="ControlBorder" Margin="{Binding Path=PanelMargin, Mode=OneWay}">
+  <Border Classes="ControlBorder" Margin="{Binding PanelMargin, Mode=OneWay}">
     <StackPanel Orientation="Vertical">
 
       <Border Classes="UIPanelTitle ItemsPanelTitle">
@@ -238,20 +218,15 @@
           <TextBlock Classes="UIPanelTitleText" Grid.Column="0" Text="Items" />
 
           <!-- Mode Settings Button and Popup -->
-          <Panel Grid.Column="2">
-            <Image Source="avares://OpenTracker/Assets/Images/settings.png" PointerReleased="OpenModeSettingsPopup"
-                 ToolTip.Tip="Mode Settings" />
-            <view:ModeSettingsControl DataContext="{Binding Path=ModeSettings}" />
-          </Panel>
+          <ContentControl Content="{Binding ModeSettings}" Grid.Column="2" />
 
         </Grid>
       </Border>
 
       <Border Classes="UIPanelBody ItemsPanelBody">
-        <StackPanel Orientation="{Binding Path=ItemsPanelOrientation}">
+        <StackPanel Orientation="{Binding ItemsPanelOrientation}">
 
-          <ItemsControl Items="{Binding Path=Items}">
-
+          <ItemsControl Items="{Binding Items}">
             <ItemsControl.ItemsPanel>
               <ItemsPanelTemplate>
                 <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="238" MaxHeight="200"
@@ -259,27 +234,23 @@
                        VerticalAlignment="Top" />
               </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
-
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <view:ItemControl />
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-
           </ItemsControl>
 
           <ContentControl Name="DungeonItems">
             <i:Interaction.Behaviors>
+              
               <ia:DataTriggerBehavior Binding="{Binding Path=ItemsPanelHorizontalOrientation}"
                                       ComparisonCondition="Equal" Value="True">
                 <ia:ChangePropertyAction TargetObject="{Binding #DungeonItems}" PropertyName="Content"
                                          Value="{DynamicResource HorizontalDungeonLayout}"/>
               </ia:DataTriggerBehavior>
+              
               <ia:DataTriggerBehavior Binding="{Binding Path=ItemsPanelHorizontalOrientation}"
                                       ComparisonCondition="NotEqual" Value="True">
                 <ia:ChangePropertyAction TargetObject="{Binding #DungeonItems}" PropertyName="Content"
                                          Value="{DynamicResource VerticalDungeonLayout}"/>
               </ia:DataTriggerBehavior>
+              
             </i:Interaction.Behaviors>
           </ContentControl>
 

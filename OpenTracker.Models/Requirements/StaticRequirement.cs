@@ -9,6 +9,8 @@ namespace OpenTracker.Models.Requirements
     /// </summary>
     public class StaticRequirement : IRequirement
     {
+        public bool Met =>
+            true;
         public AccessibilityLevel Accessibility { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;

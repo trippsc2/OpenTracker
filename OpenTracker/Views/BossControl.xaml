@@ -10,7 +10,8 @@
 		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />
 	</UserControl.Resources>
 	
-	<Panel Classes="DungeonItem" PointerReleased="OnClick">
+	<Panel Classes="DungeonItem" PointerReleased="OnClick" IsVisible="{Binding Visible}"
+         IsHitTestVisible="{Binding Visible}">
 		<Image Classes="DungeonItem" Source="{Binding Path=ImageSource, Converter={StaticResource
 			   BitmapValueConverter}}" />
 	</Panel>

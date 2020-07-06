@@ -13,7 +13,6 @@ namespace OpenTracker.Models.Items
 
         public ItemType Type { get; }
         public int Maximum { get; }
-        public Action AutoTrack { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

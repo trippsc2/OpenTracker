@@ -6,7 +6,6 @@
     /// </summary>
     public class AddConnection : IUndoable
     {
-        private readonly Game _game;
         private readonly (MapLocation, MapLocation) _connection;
 
         /// <summary>
@@ -18,9 +17,8 @@
         /// <param name="connection">
         /// A tuple of the two map locations that are being collected.
         /// </param>
-        public AddConnection(Game game, (MapLocation, MapLocation) connection)
+        public AddConnection((MapLocation, MapLocation) connection)
         {
-            _game = game;
             _connection = connection;
         }
 
@@ -29,7 +27,7 @@
         /// </summary>
         public void Execute()
         {
-            _game.Connections.Add(_connection);
+            ConnectionCollection.Instance.Add(_connection);
         }
 
         /// <summary>
@@ -37,7 +35,7 @@
         /// </summary>
         public void Undo()
         {
-            _game.Connections.Remove(_connection);
+            ConnectionCollection.Instance.Remove(_connection);
         }
     }
 }

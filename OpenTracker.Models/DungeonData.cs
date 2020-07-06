@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.Enums;
+using OpenTracker.Models.Locations;
 using OpenTracker.Models.Sections;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,6 @@ namespace OpenTracker.Models
     /// </summary>
     public class DungeonData
     {
-        private readonly Game _game;
         private readonly Location _location;
         private readonly DungeonItemSection _dungeonItemSection;
 
@@ -26,9 +26,8 @@ namespace OpenTracker.Models
         /// <param name="game">The game data parent class.</param>
         /// <param name="location">The location data parent class.</param>
         /// <param name="dungeonItemSection">The dungeon item section to which this data belongs.</param>
-        public DungeonData(Game game, Location location, DungeonItemSection dungeonItemSection)
+        public DungeonData(Location location, DungeonItemSection dungeonItemSection)
         {
-            _game = game ?? throw new ArgumentNullException(nameof(game));
             _location = location ?? throw new ArgumentNullException(nameof(location));
             _dungeonItemSection = dungeonItemSection ??
                 throw new ArgumentNullException(nameof(dungeonItemSection));
@@ -231,10 +230,10 @@ namespace OpenTracker.Models
             }
 
             for (int i = (int)firstNode; i <= (int)lastNode; i++)
-                RequirementNodes.Add((RequirementNodeID)i, new DungeonNode(_game, this, (RequirementNodeID)i));
+                RequirementNodes.Add((RequirementNodeID)i, new DungeonNode(this, (RequirementNodeID)i));
 
             for (int i = (int)firstItem; i <= (int)lastItem; i++)
-                DungeonItems.Add((DungeonItemID)i, new DungeonItem(_game, this, (DungeonItemID)i));
+                DungeonItems.Add((DungeonItemID)i, new DungeonItem(this, (DungeonItemID)i));
 
             if (firstSmallKeyDoor.HasValue && lastSmallKeyDoor.HasValue)
             {
@@ -255,7 +254,7 @@ namespace OpenTracker.Models
                     if (DungeonItems.ContainsKey((DungeonItemID)i))
                         BossItems.Add(DungeonItems[(DungeonItemID)i]);
                     else
-                        BossItems.Add(new DungeonItem(_game, this, (DungeonItemID)i));
+                        BossItems.Add(new DungeonItem(this, (DungeonItemID)i));
                 }
             }
 
@@ -264,9 +263,6 @@ namespace OpenTracker.Models
 
             foreach (KeyDoor bigKeyDoor in BigKeyDoors.Values)
                 bigKeyDoor.Initialize();
-
-            foreach (DungeonNode node in RequirementNodes.Values)
-                node.Initialize();
         }
 
         /// <summary>
@@ -371,21 +367,21 @@ namespace OpenTracker.Models
                 return true;
             }
 
-            if (_game.Mode.SmallKeyShuffle)
+            if (Mode.Instance.SmallKeyShuffle)
             {
                 return true;
             }
 
             foreach (KeyLayout keyLayout in _dungeonItemSection.KeyLayouts)
             {
-                if (!_game.Mode.Validate(keyLayout.ModeRequirement))
+                if (!Mode.Instance.Validate(keyLayout.ModeRequirement))
                 {
                     continue;
                 }
 
                 if (_dungeonItemSection.BigKey > 0)
                 {
-                    if (_game.Mode.BigKeyShuffle)
+                    if (Mode.Instance.BigKeyShuffle)
                     {
                         if (keyLayout.BigKeyLocations.Count > 0)
                         {
@@ -468,14 +464,14 @@ namespace OpenTracker.Models
                 return true;
             }
 
-            if (_game.Mode.BigKeyShuffle)
+            if (Mode.Instance.BigKeyShuffle)
             {
                 return true;
             }
 
             foreach (BigKeyPlacement placement in _dungeonItemSection.BigKeyPlacements)
             {
-                if (!_game.Mode.Validate(placement.ModeRequirement))
+                if (!placement.Requirement.Met)
                 {
                     continue;
                 }
@@ -572,7 +568,7 @@ namespace OpenTracker.Models
                 }
             }
 
-            if (!_game.Mode.MapCompassShuffle)
+            if (!Mode.Instance.MapCompassShuffle)
             {
                 inaccessibleItems -= _dungeonItemSection.MapCompass;
             }
@@ -582,7 +578,7 @@ namespace OpenTracker.Models
                 return (AccessibilityLevel.SequenceBreak, _dungeonItemSection.Available);
             }
 
-            if (!_game.Mode.BigKeyShuffle && !bigKeyValue)
+            if (!Mode.Instance.BigKeyShuffle && !bigKeyValue)
             {
                 inaccessibleItems -= _dungeonItemSection.BigKey;
             }
@@ -592,7 +588,7 @@ namespace OpenTracker.Models
                 return (AccessibilityLevel.SequenceBreak, _dungeonItemSection.Available);
             }
 
-            if (!_game.Mode.SmallKeyShuffle)
+            if (!Mode.Instance.SmallKeyShuffle)
             {
                 inaccessibleItems -= _dungeonItemSection.SmallKey - smallKeyValue;
             }

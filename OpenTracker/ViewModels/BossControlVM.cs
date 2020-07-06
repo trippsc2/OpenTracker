@@ -8,20 +8,22 @@ using System;
 using System.ComponentModel;
 using System.Text;
 using OpenTracker.ViewModels.Bases;
+using OpenTracker.Models.Requirements;
+using OpenTracker.Models.BossPlacements;
 
 namespace OpenTracker.ViewModels
 {
     /// <summary>
     /// This is the view-model for the boss control in the items panel.
     /// </summary>
-    public class BossControlVM : ViewModelBase, IClickHandler
+    public class BossControlVM : SmallItemControlVMBase, IClickHandler
     {
         private readonly UndoRedoManager _undoRedoManager;
-        private readonly Game _game;
         private readonly BossSection _bossSection;
+        private readonly IRequirement _requirement;
 
-        public bool BossShuffle =>
-            _game.Mode.BossShuffle;
+        public bool Visible =>
+            _requirement.Met;
 
         public string ImageSource
         {
@@ -58,19 +60,19 @@ namespace OpenTracker.ViewModels
         /// <param name="bossSection">
         /// The boss section to which the boss belongs.
         /// </param>
-        public BossControlVM(UndoRedoManager undoRedoManager, Game game,
-            BossSection bossSection)
+        public BossControlVM(
+            UndoRedoManager undoRedoManager, BossSection bossSection)
         {
-            _undoRedoManager = undoRedoManager;
-            _game = game ?? throw new ArgumentNullException(nameof(game));
+            _undoRedoManager = undoRedoManager ?? throw new ArgumentNullException(nameof(undoRedoManager));
             _bossSection = bossSection ?? throw new ArgumentNullException(nameof(bossSection));
+            _requirement = RequirementDictionary.Instance[RequirementType.BossShuffleOn];
 
-            _game.Mode.PropertyChanged += OnModeChanged;
             _bossSection.BossPlacement.PropertyChanged += OnBossChanged;
+            _requirement.PropertyChanged += OnRequirementChanged;
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// Subscribes to the PropertyChanged event on the IRequirement interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -78,12 +80,9 @@ namespace OpenTracker.ViewModels
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.BossShuffle))
-            {
-                this.RaisePropertyChanged(nameof(BossShuffle));
-            }
+            this.RaisePropertyChanged(nameof(Visible));
         }
 
         /// <summary>
@@ -97,7 +96,7 @@ namespace OpenTracker.ViewModels
         /// </param>
         private void OnBossChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(BossPlacement.Boss))
+            if (e.PropertyName == nameof(IBossPlacement.Boss))
             {
                 this.RaisePropertyChanged(nameof(ImageSource));
             }

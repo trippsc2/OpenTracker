@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.Enums;
+using OpenTracker.Models.Utils;
 using System;
 using System.ComponentModel;
 
@@ -7,7 +8,7 @@ namespace OpenTracker.Models
     /// <summary>
     /// This is the class for the game mode settings.
     /// </summary>
-    public class Mode : INotifyPropertyChanging, INotifyPropertyChanged
+    public class Mode : Singleton<Mode>, INotifyPropertyChanging, INotifyPropertyChanged
     {
         public event PropertyChangingEventHandler PropertyChanging;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -20,7 +21,8 @@ namespace OpenTracker.Models
         public bool BigKeyShuffle =>
             DungeonItemShuffle >= DungeonItemShuffle.Keysanity;
 
-        private ItemPlacement _itemPlacement;
+        private ItemPlacement _itemPlacement =
+            ItemPlacement.Advanced;
         public ItemPlacement ItemPlacement
         {
             get => _itemPlacement;
@@ -35,7 +37,8 @@ namespace OpenTracker.Models
             }
         }
 
-        private DungeonItemShuffle _dungeonItemShuffle;
+        private DungeonItemShuffle _dungeonItemShuffle =
+            DungeonItemShuffle.Standard;
         public DungeonItemShuffle DungeonItemShuffle
         {
             get => _dungeonItemShuffle;
@@ -50,7 +53,8 @@ namespace OpenTracker.Models
             }
         }
 
-        private WorldState _worldState;
+        private WorldState _worldState =
+            WorldState.StandardOpen;
         public WorldState WorldState
         {
             get => _worldState;
@@ -65,7 +69,7 @@ namespace OpenTracker.Models
             }
         }
 
-        private bool _entranceShuffle;
+        private bool _entranceShuffle = false;
         public bool EntranceShuffle
         {
             get => _entranceShuffle;
@@ -80,7 +84,7 @@ namespace OpenTracker.Models
             }
         }
 
-        private bool _bossShuffle;
+        private bool _bossShuffle = false;
         public bool BossShuffle
         {
             get => _bossShuffle;
@@ -95,7 +99,7 @@ namespace OpenTracker.Models
             }
         }
 
-        private bool _enemyShuffle;
+        private bool _enemyShuffle = false;
         public bool EnemyShuffle
         {
             get => _enemyShuffle;
@@ -131,36 +135,8 @@ namespace OpenTracker.Models
         /// <param name="enemyShuffle">
         /// A boolean representing whether Enemy Shuffle is enabled.
         /// </param>
-        public Mode(ItemPlacement itemPlacement = ItemPlacement.Advanced,
-            DungeonItemShuffle dungeonItemShuffle = DungeonItemShuffle.Standard,
-            WorldState worldState = WorldState.StandardOpen, bool entranceShuffle = false,
-            bool bossShuffle = false, bool enemyShuffle = false)
+        public Mode()
         {
-            ItemPlacement = itemPlacement;
-            DungeonItemShuffle = dungeonItemShuffle;
-            WorldState = worldState;
-            EntranceShuffle = entranceShuffle;
-            BossShuffle = bossShuffle;
-            EnemyShuffle = enemyShuffle;
-        }
-
-        /// <summary>
-        /// Constructor that copies the settings of another Mode class.
-        /// </summary>
-        /// <param name="source">
-        /// The source Mode class to be copied.
-        /// </param>
-        public Mode(Mode source)
-        {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
-
-            ItemPlacement = source.ItemPlacement;
-            DungeonItemShuffle = source.DungeonItemShuffle;
-            WorldState = source.WorldState;
-            EntranceShuffle = source.EntranceShuffle;
-            BossShuffle = source.BossShuffle;
-            EnemyShuffle = source.EnemyShuffle;
         }
 
         /// <summary>
@@ -188,6 +164,28 @@ namespace OpenTracker.Models
 
             if (propertyName == nameof(WorldState) && WorldState == Enums.WorldState.Inverted)
                 ItemPlacement = Enums.ItemPlacement.Advanced;
+        }
+
+        /// <summary>
+        /// Returns a copy of the mode class.
+        /// </summary>
+        /// <param name="source">
+        /// The source Mode class from which to copy.
+        /// </param>
+        /// <returns>
+        /// A copy of the mode class.
+        /// </returns>
+        public Mode Copy()
+        {
+            return new Mode()
+            {
+                ItemPlacement = ItemPlacement,
+                DungeonItemShuffle = DungeonItemShuffle,
+                WorldState = WorldState,
+                EntranceShuffle = EntranceShuffle,
+                BossShuffle = BossShuffle,
+                EnemyShuffle = EnemyShuffle
+            };
         }
 
         /// <summary>

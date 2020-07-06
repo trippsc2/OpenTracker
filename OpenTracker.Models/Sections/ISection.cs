@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.Enums;
+using OpenTracker.Models.Requirements;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Sections
@@ -9,11 +10,9 @@ namespace OpenTracker.Models.Sections
     public interface ISection : INotifyPropertyChanging, INotifyPropertyChanged
     {
         string Name { get; }
-        bool HasMarking { get; }
-        ModeRequirement ModeRequirement { get; }
+        IRequirement Requirement { get; }
         AccessibilityLevel Accessibility { get; }
         bool UserManipulated { get; set; }
-        MarkingType? Marking { get; set; }
         int Available { get; set; }
 
         bool IsAvailable();

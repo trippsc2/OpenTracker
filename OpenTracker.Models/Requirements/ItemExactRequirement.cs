@@ -13,6 +13,9 @@ namespace OpenTracker.Models.Requirements
         private readonly IItem _item;
         private readonly int _count;
 
+        public bool Met =>
+            Accessibility != AccessibilityLevel.None;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private AccessibilityLevel _accessibility;

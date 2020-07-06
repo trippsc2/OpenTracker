@@ -1,4 +1,5 @@
-﻿using OpenTracker.Models.Enums;
+﻿using OpenTracker.Models.BossPlacements;
+using OpenTracker.Models.Enums;
 using OpenTracker.Models.Items;
 using System;
 using System.ComponentModel;
@@ -10,15 +11,13 @@ namespace OpenTracker.Models.Sections
     /// </summary>
     public class BossSection : ISection
     {
-        private readonly Game _game;
-
         public string Name { get; } = "Boss";
         public bool HasMarking { get => false; }
         public bool PrizeVisible { get; } = true;
         public ModeRequirement ModeRequirement { get; }
         public bool UserManipulated { get; set; }
         public MarkingType? Marking { get => null; set { } }
-        public BossPlacement BossPlacement { get; }
+        public IBossPlacement BossPlacement { get; }
 
         public Action AutoTrack { get; }
 
@@ -80,10 +79,8 @@ namespace OpenTracker.Models.Sections
         /// <param name="index">
         /// The index of the location.
         /// </param>
-        public BossSection(Game game, LocationID iD, int index = 0)
+        public BossSection(LocationID iD, int index = 0)
         {
-            _game = game ?? throw new ArgumentNullException(nameof(game));
-
             ModeRequirement = new ModeRequirement();
             Available = 1;
 
@@ -91,12 +88,12 @@ namespace OpenTracker.Models.Sections
             {
                 case LocationID.AgahnimTower:
                     {
-                        Prize = _game.Items[ItemType.Aga];
-                        BossPlacement = _game.BossPlacements[BossPlacementID.ATBoss];
+                        Prize = ItemDictionary.Instance[ItemType.Aga];
+                        BossPlacement = BossPlacementDictionary.Instance[BossPlacementID.ATBoss];
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 133, 2);
+                            bool? result = AutoTracker.Instance.CheckMemoryByte(MemorySegmentType.Item, 133, 2);
 
                             if (result.HasValue)
                             {
@@ -111,16 +108,16 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.ItemMemory[133].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.ItemMemory[133].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.EasternPalace:
                     {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.EPBoss];
+                        BossPlacement = BossPlacementDictionary.Instance[BossPlacementID.EPBoss];
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 401, 8);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 401, 8);
 
                             if (result.HasValue)
                             {
@@ -135,16 +132,16 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[401].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[401].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.DesertPalace:
                     {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.DPBoss];
+                        BossPlacement = BossPlacementDictionary.Instance[BossPlacementID.DPBoss];
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 103, 8);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 103, 8);
 
                             if (result.HasValue)
                             {
@@ -159,16 +156,16 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[103].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[103].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.TowerOfHera:
                     {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.ToHBoss];
+                        BossPlacement = BossPlacementDictionary.Instance[BossPlacementID.ToHBoss];
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 15, 8);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 15, 8);
 
                             if (result.HasValue)
                             {
@@ -183,16 +180,16 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[15].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[15].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.PalaceOfDarkness:
                     {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.PoDBoss];
+                        BossPlacement = BossPlacementDictionary.Instance[BossPlacementID.PoDBoss];
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 181, 8);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 181, 8);
 
                             if (result.HasValue)
                             {
@@ -207,16 +204,16 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[181].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[181].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.SwampPalace:
                     {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.SPBoss];
+                        BossPlacement = BossPlacementDictionary.Instance[BossPlacementID.SPBoss];
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 13, 8);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 13, 8);
 
                             if (result.HasValue)
                             {
@@ -231,16 +228,16 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[13].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[13].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.SkullWoods:
                     {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.SWBoss];
+                        BossPlacement = BossPlacementDictionary.Instance[BossPlacementID.SWBoss];
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 83, 8);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 83, 8);
 
                             if (result.HasValue)
                             {
@@ -255,16 +252,16 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[83].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[83].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.ThievesTown:
                     {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.TTBoss];
+                        BossPlacement = BossPlacementDictionary.Instance[BossPlacementID.TTBoss];
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 345, 8);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 345, 8);
 
                             if (result.HasValue)
                             {
@@ -279,16 +276,16 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[345].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[345].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.IcePalace:
                     {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.IPBoss];
+                        BossPlacement = BossPlacementDictionary.Instance[BossPlacementID.IPBoss];
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 445, 8);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 445, 8);
 
                             if (result.HasValue)
                             {
@@ -303,16 +300,16 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[445].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[445].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.MiseryMire:
                     {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.MMBoss];
+                        BossPlacement = BossPlacementDictionary.Instance[BossPlacementID.MMBoss];
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 289, 8);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 289, 8);
 
                             if (result.HasValue)
                             {
@@ -327,16 +324,16 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[289].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[289].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.TurtleRock:
                     {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.TRBoss];
+                        BossPlacement = BossPlacementDictionary.Instance[BossPlacementID.TRBoss];
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 329, 8);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 329, 8);
                             
                             if (result.HasValue)
                             {
@@ -351,13 +348,13 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[329].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[329].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.GanonsTower when index == 0:
                     {
                         PrizeVisible = false;
-                        BossPlacement = _game.BossPlacements[BossPlacementID.GTBoss1];
+                        BossPlacement = BossPlacementDictionary.Instance[BossPlacementID.GTBoss1];
 
                         Name = "Boss 1";
                     }
@@ -365,7 +362,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.GanonsTower when index == 1:
                     {
                         PrizeVisible = false;
-                        BossPlacement = _game.BossPlacements[BossPlacementID.GTBoss2];
+                        BossPlacement = BossPlacementDictionary.Instance[BossPlacementID.GTBoss2];
 
                         Name = "Boss 2";
                     }
@@ -373,15 +370,15 @@ namespace OpenTracker.Models.Sections
                 case LocationID.GanonsTower when index == 2:
                     {
                         PrizeVisible = false;
-                        BossPlacement = _game.BossPlacements[BossPlacementID.GTBoss3];
+                        BossPlacement = BossPlacementDictionary.Instance[BossPlacementID.GTBoss3];
 
                         Name = "Boss 3";
                     }
                     break;
                 case LocationID.GanonsTower:
                     {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.GTFinalBoss];
-                        Prize = _game.Items[ItemType.Aga2];
+                        BossPlacement = BossPlacementDictionary.Instance[BossPlacementID.GTFinalBoss];
+                        Prize = ItemDictionary.Instance[ItemType.Aga2];
 
                         Name = "Aga";
                     }
@@ -494,7 +491,7 @@ namespace OpenTracker.Models.Sections
             Available = 1;
             BossPlacement.Reset();
 
-            if (Prize != _game.Items[ItemType.Aga] || Prize != _game.Items[ItemType.Aga2])
+            if (Prize != ItemDictionary.Instance[ItemType.Aga] || Prize != ItemDictionary.Instance[ItemType.Aga2])
             {
                 Prize = null;
             }

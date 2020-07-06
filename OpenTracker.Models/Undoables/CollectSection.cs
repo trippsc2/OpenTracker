@@ -11,7 +11,6 @@ namespace OpenTracker.Models.Undoables
     /// </summary>
     public class CollectSection : IUndoable
     {
-        private readonly Game _game;
         private readonly ISection _section;
         private MarkingType? _previousMarking;
         private bool _previousUserManipulated;
@@ -28,10 +27,9 @@ namespace OpenTracker.Models.Undoables
         /// <param name="section">
         /// The section to be collected.
         /// </param>
-        public CollectSection(Game game, ISection section)
+        public CollectSection(ISection section)
         {
-            _game = game;
-            _section = section;
+            _section = section ?? throw new ArgumentNullException(nameof(section));
         }
 
         /// <summary>
@@ -49,7 +47,7 @@ namespace OpenTracker.Models.Undoables
             {
                 if (Enum.TryParse(_section.Marking.ToString(), out ItemType itemType))
                 {
-                    var item = _game.Items[itemType];
+                    var item = ItemDictionary.Instance[itemType];
 
                     if (item.Current < item.Maximum)
                         _markedItem = item;

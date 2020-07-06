@@ -9,17 +9,10 @@ namespace OpenTracker.ViewModels
     /// </summary>
     public class UndoRedoManager
     {
-        public ObservableStack<IUndoable> UndoableActions { get; }
-        public ObservableStack<IUndoable> RedoableActions { get; }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public UndoRedoManager()
-        {
-            UndoableActions = new ObservableStack<IUndoable>();
-            RedoableActions = new ObservableStack<IUndoable>();
-        }
+        public ObservableStack<IUndoable> UndoableActions { get; } =
+            new ObservableStack<IUndoable>();
+        public ObservableStack<IUndoable> RedoableActions { get; } =
+            new ObservableStack<IUndoable>();
 
         /// <summary>
         /// Returns whether any actions can be undone.

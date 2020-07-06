@@ -8,16 +8,14 @@ using System;
 using System.ComponentModel;
 using System.Text;
 using OpenTracker.ViewModels.Bases;
-
 namespace OpenTracker.ViewModels
 {
     /// <summary>
     /// This is the view-model of the prize control on the items panel.
     /// </summary>
-    public class PrizeControlVM : ViewModelBase, IClickHandler
+    public class PrizeControlVM : SmallItemControlVMBase, IClickHandler
     {
         private readonly UndoRedoManager _undoRedoManager;
-        private readonly Game _game;
         private readonly BossSection _prizeSection;
 
         public string ImageSource
@@ -49,16 +47,12 @@ namespace OpenTracker.ViewModels
         /// <param name="undoRedoManager">
         /// The undo/redo manager.
         /// </param>
-        /// <param name="game">
-        /// The game data.
-        /// </param>
         /// <param name="prizeSection">
         /// The prize section to be represented.
         /// </param>
-        public PrizeControlVM(UndoRedoManager undoRedoManager, Game game, BossSection prizeSection)
+        public PrizeControlVM(UndoRedoManager undoRedoManager, BossSection prizeSection)
         {
-            _undoRedoManager = undoRedoManager;
-            _game = game;
+            _undoRedoManager = undoRedoManager ?? throw new ArgumentNullException(nameof(undoRedoManager));
             _prizeSection = prizeSection ?? throw new ArgumentNullException(nameof(prizeSection));
 
             _prizeSection.PropertyChanged += OnSectionChanged;
@@ -98,7 +92,7 @@ namespace OpenTracker.ViewModels
             if (_prizeSection.Prize == null)
             {
                 _undoRedoManager.Execute(new ChangePrize(_prizeSection,
-                    _game.Items[ItemType.Crystal]));
+                    ItemDictionary.Instance[ItemType.Crystal]));
             }
             else if (_prizeSection.Prize.Type == ItemType.GreenPendant)
             {
@@ -106,7 +100,7 @@ namespace OpenTracker.ViewModels
             }
             else
             {
-                var newPrize = _game.Items[_prizeSection.Prize.Type + 1];
+                var newPrize = ItemDictionary.Instance[_prizeSection.Prize.Type + 1];
                 _undoRedoManager.Execute(new ChangePrize(_prizeSection, newPrize));
             }
         }

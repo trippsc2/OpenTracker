@@ -14,6 +14,8 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Reactive;
 using OpenTracker.ViewModels.Bases;
+using OpenTracker.Models.Locations;
+using OpenTracker.Models.Items;
 
 namespace OpenTracker.ViewModels
 {
@@ -22,7 +24,6 @@ namespace OpenTracker.ViewModels
     {
         private readonly UndoRedoManager _undoRedoManager;
         private readonly AppSettings _appSettings;
-        private readonly Game _game;
         private readonly MainWindowVM _mainWindow;
 
         public MapLocation MapLocation { get; }
@@ -87,18 +88,13 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        public bool Visible
-        {
-            get
-            {
-                return _game.Mode.Validate(MapLocation.ModeRequirement) &&
-                    (_appSettings.DisplayAllLocations ||
-                    ((MapLocation.Location.Sections[0].Marking != null ||
-                    MapLocation.Location.Accessibility != AccessibilityLevel.Cleared) &&
-                    (MapLocation.Location.Sections[0] is EntranceSection ||
-                    MapLocation.Location.Accessibility != AccessibilityLevel.None)));
-            }
-        }
+        public bool Visible =>
+            Mode.Instance.Validate(MapLocation.Requirement) &&
+                (_appSettings.DisplayAllLocations ||
+                ((MapLocation.Location.Sections[0].Marking != null ||
+                MapLocation.Location.Accessibility != AccessibilityLevel.Cleared) &&
+                (MapLocation.Location.Sections[0] is EntranceSection ||
+                MapLocation.Location.Accessibility != AccessibilityLevel.None)));
 
         public Dock ImageDock { get; }
 
@@ -161,7 +157,7 @@ namespace OpenTracker.ViewModels
                         case MarkingType.Shield:
                         case MarkingType.Mail:
                             {
-                                var item = _game.Items[Enum.Parse<ItemType>(section.Marking.ToString())];
+                                var item = ItemDictionary.Instance[Enum.Parse<ItemType>(section.Marking.ToString())];
                                 itemNumber = Math.Min(item.Current + 1, item.Maximum);
 
                                 return $"avares://OpenTracker/Assets/Images/Items/" +
@@ -170,7 +166,7 @@ namespace OpenTracker.ViewModels
                             }
                         case MarkingType.Sword:
                             {
-                                var sword = _game.Items[ItemType.Sword];
+                                var sword = ItemDictionary.Instance[ItemType.Sword];
 
                                 if (sword.Current == 0)
                                 {
@@ -331,11 +327,10 @@ namespace OpenTracker.ViewModels
         /// The map location to be represented.
         /// </param>
         public MapEntranceControlVM(UndoRedoManager undoRedoManager, AppSettings appSettings,
-            Game game, MainWindowVM mainWindow, MapLocation mapLocation)
+            MainWindowVM mainWindow, MapLocation mapLocation)
         {
             _undoRedoManager = undoRedoManager;
             _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
-            _game = game ?? throw new ArgumentNullException(nameof(game));
             _mainWindow = mainWindow ?? throw new ArgumentNullException(nameof(mainWindow));
             MapLocation = mapLocation ?? throw new ArgumentNullException(nameof(mapLocation));
 
@@ -399,7 +394,7 @@ namespace OpenTracker.ViewModels
 
             _appSettings.PropertyChanged += OnAppSettingsChanged;
             _appSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
-            _game.Mode.PropertyChanged += OnModeChanged;
+            Mode.Instance.PropertyChanged += OnModeChanged;
             _mainWindow.PropertyChanged += OnMainWindowChanged;
             MapLocation.Location.PropertyChanged += OnLocationChanged;
 
@@ -478,7 +473,7 @@ namespace OpenTracker.ViewModels
             UpdatePosition();
 
             if (e.PropertyName == nameof(Mode.WorldState) &&
-                MapLocation.ModeRequirement.WorldState.HasValue)
+                MapLocation.Requirement.WorldState.HasValue)
             {
                 UpdateVisibility();
             }
@@ -517,13 +512,13 @@ namespace OpenTracker.ViewModels
         /// </param>
         private void OnLocationChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Models.Location.Accessibility))
+            if (e.PropertyName == nameof(ILocation.Accessibility))
             {
                 UpdateColor();
                 UpdateVisibility();
             }
 
-            if (e.PropertyName == nameof(Models.Location.Total))
+            if (e.PropertyName == nameof(ILocation.Total))
             {
                 UpdatePosition();
             }
@@ -640,7 +635,7 @@ namespace OpenTracker.ViewModels
                     case MarkingType.Mail:
                         {
                             ItemType itemType = Enum.Parse<ItemType>(section.Marking.Value.ToString());
-                            _game.Items[itemType].PropertyChanged -= OnItemChanged;
+                            ItemDictionary.Instance[itemType].PropertyChanged -= OnItemChanged;
                         }
                         break;
                 }
@@ -666,7 +661,7 @@ namespace OpenTracker.ViewModels
                     case MarkingType.Mail:
                         {
                             ItemType itemType = Enum.Parse<ItemType>(section.Marking.Value.ToString());
-                            _game.Items[itemType].PropertyChanged += OnItemChanged;
+                            ItemDictionary.Instance[itemType].PropertyChanged += OnItemChanged;
                         }
                         break;
                 }
@@ -729,7 +724,7 @@ namespace OpenTracker.ViewModels
 
             if (canBeCleared)
             {
-                _undoRedoManager.Execute(new ClearLocation(_game, MapLocation.Location, force));
+                _undoRedoManager.Execute(new ClearLocation(MapLocation.Location, force));
             }
         }
 
@@ -752,7 +747,7 @@ namespace OpenTracker.ViewModels
             if (existingPinnedLocation == null)
             {
                 _undoRedoManager.Execute(new PinLocation(pinnedLocations,
-                    new LocationControlVM(_undoRedoManager, _appSettings, _game, _mainWindow,
+                    new LocationControlVM(_undoRedoManager, _appSettings, _mainWindow,
                     MapLocation.Location)));
             }
             else if (pinnedLocations[0] != existingPinnedLocation)
@@ -792,8 +787,7 @@ namespace OpenTracker.ViewModels
 
             if (location is MapEntranceControlVM entrance)
             {
-                _undoRedoManager.Execute(new AddConnection(_game,
-                    (entrance.MapLocation, MapLocation)));
+                _undoRedoManager.Execute(new AddConnection((entrance.MapLocation, MapLocation)));
             }
         }
     }

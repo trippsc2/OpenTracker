@@ -1,4 +1,6 @@
 ﻿using OpenTracker.Models.Enums;
+using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Requirements;
 using System;
 using System.Collections.Generic;
 
@@ -10,11 +12,12 @@ namespace OpenTracker.Models
     public class DungeonNode : RequirementNode
     {
         private readonly DungeonData _dungeonData;
-        private readonly List<KeyDoor> _smallKeyDoors;
-        private readonly List<KeyDoor> _bigKeyDoors;
+        private readonly List<KeyDoor> _smallKeyDoors = new List<KeyDoor>();
+        private readonly List<KeyDoor> _bigKeyDoors = new List<KeyDoor>();
 
         public int FreeKeysProvided { get; }
-        public List<RequirementNodeConnection> DungeonConnections { get; }
+		public List<RequirementNodeConnection> DungeonConnections { get; } =
+			new List<RequirementNodeConnection>();
 
 		/// <summary>
 		/// Constructor
@@ -28,12 +31,9 @@ namespace OpenTracker.Models
 		/// <param name="iD">
 		/// The node identity.
 		/// </param>
-        public DungeonNode(Game game, DungeonData dungeonData, RequirementNodeID iD)  : base(game, iD)
+        public DungeonNode(DungeonData dungeonData, RequirementNodeID iD)  : base(iD)
         {
             _dungeonData = dungeonData ?? throw new ArgumentNullException(nameof(dungeonData));
-            DungeonConnections = new List<RequirementNodeConnection>();
-            _smallKeyDoors = new List<KeyDoor>();
-            _bigKeyDoors = new List<KeyDoor>();
 
             switch (ID)
             {
@@ -74,6 +74,8 @@ namespace OpenTracker.Models
                     }
                     break;
             }
+
+			SubscribeToDungeonNodes();
         }
 
 		/// <summary>
@@ -98,7 +100,7 @@ namespace OpenTracker.Models
 
 			foreach (RequirementNodeConnection connection in Connections)
 			{
-				if (!Game.Mode.Validate(connection.ModeRequirement))
+				if (!Mode.Instance.Validate(connection.ModeRequirement))
 				{
 					continue;
 				}
@@ -108,14 +110,14 @@ namespace OpenTracker.Models
 					continue;
 				}
 
-				AccessibilityLevel nodeAccessibility = Game.RequirementNodes[connection.FromNode].Accessibility;
+				AccessibilityLevel nodeAccessibility = RequirementNodeDictionary.Instance[connection.FromNode].Accessibility;
 
 				if (nodeAccessibility < AccessibilityLevel.SequenceBreak)
 				{
 					continue;
 				}
 
-				AccessibilityLevel requirementAccessibility = Game.Requirements[connection.Requirement].Accessibility;
+				AccessibilityLevel requirementAccessibility = RequirementDictionary.Instance[connection.Requirement].Accessibility;
 
 				AccessibilityLevel finalConnectionAccessibility =
 					(AccessibilityLevel)Math.Min(Math.Min((byte)nodeAccessibility, (byte)requirementAccessibility),
@@ -134,7 +136,7 @@ namespace OpenTracker.Models
 
 			foreach (RequirementNodeConnection dungeonConnection in DungeonConnections)
             {
-				if (!Game.Mode.Validate(dungeonConnection.ModeRequirement))
+				if (!Mode.Instance.Validate(dungeonConnection.ModeRequirement))
 				{
 					continue;
 				}
@@ -153,7 +155,7 @@ namespace OpenTracker.Models
 				}
 
                 AccessibilityLevel requirementAccessibility =
-                    Game.Requirements[dungeonConnection.Requirement].Accessibility;
+                    RequirementDictionary.Instance[dungeonConnection.Requirement].Accessibility;
 
                 AccessibilityLevel finalConnectionAccessibility =
                     (AccessibilityLevel)Math.Min(Math.Min((byte)nodeAccessibility, (byte)requirementAccessibility),
@@ -196,7 +198,7 @@ namespace OpenTracker.Models
 		/// <summary>
 		/// Initializes the dungeon node.
 		/// </summary>
-        public override void Initialize()
+        private void SubscribeToDungeonNodes()
         {
             switch (ID)
             {
@@ -1000,36 +1002,26 @@ namespace OpenTracker.Models
 					break;
 			}
 
-			foreach (RequirementNodeConnection connection in DungeonConnections)
-            {
-                if (!NodeSubscriptions.Contains(connection.FromNode))
-                {
-                    _dungeonData.RequirementNodes[connection.FromNode].PropertyChanged += OnRequirementChanged;
-                    NodeSubscriptions.Add(connection.FromNode);
-                }
+			SubscribeToNodesAndRequirements();
 
-                if (!RequirementSubscriptions.Contains(connection.Requirement))
-                {
-                    Game.Requirements[connection.Requirement].PropertyChanged += OnRequirementChanged;
-                    RequirementSubscriptions.Add(connection.Requirement);
-                }
-            }
-
-            foreach (KeyDoor smallKeyDoor in _dungeonData.SmallKeyDoors.Values)
-            {
-				if (smallKeyDoor.ConnectedNodes.Contains(this))
+			if (_dungeonData != null)
+			{
+				foreach (KeyDoor smallKeyDoor in _dungeonData.SmallKeyDoors.Values)
 				{
-					_smallKeyDoors.Add(smallKeyDoor);
+					if (smallKeyDoor.ConnectedNodes.Contains(this))
+					{
+						_smallKeyDoors.Add(smallKeyDoor);
+					}
 				}
-            }
 
-            foreach (KeyDoor bigKeyDoor in _dungeonData.BigKeyDoors.Values)
-            {
-				if (bigKeyDoor.ConnectedNodes.Contains(this))
+				foreach (KeyDoor bigKeyDoor in _dungeonData.BigKeyDoors.Values)
 				{
-					_bigKeyDoors.Add(bigKeyDoor);
+					if (bigKeyDoor.ConnectedNodes.Contains(this))
+					{
+						_bigKeyDoors.Add(bigKeyDoor);
+					}
 				}
-            }
+			}
 
 			foreach (KeyDoor smallKeyDoor in _smallKeyDoors)
 			{
@@ -1040,8 +1032,6 @@ namespace OpenTracker.Models
 			{
 				bigKeyDoor.PropertyChanged += OnRequirementChanged;
 			}
-
-            base.Initialize();
         }
     }
 }

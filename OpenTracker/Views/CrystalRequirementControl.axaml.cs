@@ -5,11 +5,12 @@ using OpenTracker.Interfaces;
 
 namespace OpenTracker.Views
 {
-    public class ItemControl : UserControl
+    public class CrystalRequirementControl : UserControl
     {
-        private IClickHandler ViewModelClickHandler => DataContext as IClickHandler;
+        private IClickHandler ViewModelClickHandler =>
+            DataContext as IClickHandler;
 
-        public ItemControl()
+        public CrystalRequirementControl()
         {
             this.InitializeComponent();
         }

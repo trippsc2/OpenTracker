@@ -1,4 +1,8 @@
-﻿using OpenTracker.Models.Enums;
+﻿using OpenTracker.Models.BossPlacements;
+using OpenTracker.Models.Enums;
+using OpenTracker.Models.Items;
+using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.SequenceBreaks;
 using System;
 using System.Collections.Generic;
 
@@ -41,21 +45,16 @@ namespace OpenTracker.Models.Requirements
         /// <returns>
         /// A world state requirement.
         /// </returns>
-        private static IRequirement GetWorldStateRequirement(Game game, RequirementType type)
+        private static IRequirement GetWorldStateRequirement(RequirementType type)
         {
-            if (game == null)
-            {
-                throw new ArgumentNullException(nameof(game));
-            }
-
             return type switch
             {
                 RequirementType.WorldStateStandardOpen => new WorldStateRequirement(
-                    game.Mode, WorldState.StandardOpen),
+                    Mode.Instance, WorldState.StandardOpen),
                 RequirementType.WorldStateInverted => new WorldStateRequirement(
-                    game.Mode, WorldState.Inverted),
+                    Mode.Instance, WorldState.Inverted),
                 RequirementType.WorldStateRetro => new WorldStateRequirement(
-                    game.Mode, WorldState.Retro),
+                    Mode.Instance, WorldState.Retro),
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
@@ -72,19 +71,14 @@ namespace OpenTracker.Models.Requirements
         /// <returns>
         /// A item placement requirement.
         /// </returns>
-        private static IRequirement GetItemPlacementRequirement(Game game, RequirementType type)
+        private static IRequirement GetItemPlacementRequirement(RequirementType type)
         {
-            if (game == null)
-            {
-                throw new ArgumentNullException(nameof(game));
-            }
-
             return type switch
             {
                 RequirementType.ItemPlacementBasic => new ItemPlacementRequirement(
-                    game.Mode, ItemPlacement.Basic),
+                    Mode.Instance, ItemPlacement.Basic),
                 RequirementType.ItemPlacementAdvanced => new ItemPlacementRequirement(
-                    game.Mode, ItemPlacement.Advanced),
+                    Mode.Instance, ItemPlacement.Advanced),
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
@@ -101,23 +95,37 @@ namespace OpenTracker.Models.Requirements
         /// <returns>
         /// A dungeon item shuffle requirement.
         /// </returns>
-        private static IRequirement GetDungeonItemShuffleRequirement(Game game, RequirementType type)
+        private static IRequirement GetDungeonItemShuffleRequirement(RequirementType type)
         {
-            if (game == null)
-            {
-                throw new ArgumentNullException(nameof(game));
-            }
-
             return type switch
             {
                 RequirementType.DungeonItemShuffleStandard => new DungeonItemShuffleRequirement(
-                    game.Mode, DungeonItemShuffle.Standard),
+                    Mode.Instance, DungeonItemShuffle.Standard),
                 RequirementType.DungeonItemShuffleMapsCompasses => new DungeonItemShuffleRequirement(
-                    game.Mode, DungeonItemShuffle.MapsCompasses),
+                    Mode.Instance, DungeonItemShuffle.MapsCompasses),
                 RequirementType.DungeonItemShuffleMapsCompassesSmallKeys => new DungeonItemShuffleRequirement(
-                    game.Mode, DungeonItemShuffle.MapsCompassesSmallKeys),
+                    Mode.Instance, DungeonItemShuffle.MapsCompassesSmallKeys),
                 RequirementType.DungeonItemShuffleKeysanity => new DungeonItemShuffleRequirement(
-                    game.Mode, DungeonItemShuffle.Keysanity),
+                    Mode.Instance, DungeonItemShuffle.Keysanity),
+                _ => throw new ArgumentOutOfRangeException(nameof(type))
+            };
+        }
+
+        /// <summary>
+        /// Returns a boss shuffle requirement.
+        /// </summary>
+        /// <param name="type">
+        /// The requirement type.
+        /// </param>
+        /// <returns>
+        /// A boss shuffle requirement.
+        /// </returns>
+        private static IRequirement GetBossShuffleRequirement(RequirementType type)
+        {
+            return type switch
+            {
+                RequirementType.BossShuffleOff => new BossShuffleRequirement(Mode.Instance, false),
+                RequirementType.BossShuffleOn => new BossShuffleRequirement(Mode.Instance, true),
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
@@ -134,17 +142,31 @@ namespace OpenTracker.Models.Requirements
         /// <returns>
         /// A enemy shuffle requirement.
         /// </returns>
-        private static IRequirement GetEnemyShuffleRequirement(Game game, RequirementType type)
+        private static IRequirement GetEnemyShuffleRequirement(RequirementType type)
         {
-            if (game == null)
-            {
-                throw new ArgumentNullException(nameof(game));
-            }
-
             return type switch
             {
-                RequirementType.EnemyShuffleOff => new EnemyShuffleRequirement(game.Mode, false),
-                RequirementType.EnemyShuffleOn => new EnemyShuffleRequirement(game.Mode, true),
+                RequirementType.EnemyShuffleOff => new EnemyShuffleRequirement(false),
+                RequirementType.EnemyShuffleOn => new EnemyShuffleRequirement(true),
+                _ => throw new ArgumentOutOfRangeException(nameof(type))
+            };
+        }
+
+        /// <summary>
+        /// Returns a entrance shuffle requirement.
+        /// </summary>
+        /// <param name="type">
+        /// The requirement type.
+        /// </param>
+        /// <returns>
+        /// A entrance shuffle requirement.
+        /// </returns>
+        private static IRequirement GetEntranceShuffleRequirement(RequirementType type)
+        {
+            return type switch
+            {
+                RequirementType.EntranceShuffleOff => new EntranceShuffleRequirement(false),
+                RequirementType.EntranceShuffleOn => new EntranceShuffleRequirement(true),
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
@@ -161,27 +183,22 @@ namespace OpenTracker.Models.Requirements
         /// <returns>
         /// An item exact amount requirement.
         /// </returns>
-        private static IRequirement GetItemExactRequirement(Game game, RequirementType type)
+        private static IRequirement GetItemExactRequirement(RequirementType type)
         {
-            if (game == null)
-            {
-                throw new ArgumentNullException(nameof(game));
-            }
-
             return type switch
             {
-                RequirementType.Swordless => new ItemExactRequirement(game.Items[ItemType.Sword], 0),
-                RequirementType.Mushroom => new ItemExactRequirement(game.Items[ItemType.Mushroom], 1),
-                RequirementType.BombosMM => new ItemExactRequirement(game.Items[ItemType.BombosDungeons], 1),
-                RequirementType.BombosTR => new ItemExactRequirement(game.Items[ItemType.BombosDungeons], 2),
-                RequirementType.BombosBoth => new ItemExactRequirement(game.Items[ItemType.BombosDungeons], 3),
-                RequirementType.EtherMM => new ItemExactRequirement(game.Items[ItemType.EtherDungeons], 1),
-                RequirementType.EtherTR => new ItemExactRequirement(game.Items[ItemType.EtherDungeons], 2),
-                RequirementType.EtherBoth => new ItemExactRequirement(game.Items[ItemType.EtherDungeons], 3),
-                RequirementType.QuakeMM => new ItemExactRequirement(game.Items[ItemType.QuakeDungeons], 1),
-                RequirementType.QuakeTR => new ItemExactRequirement(game.Items[ItemType.QuakeDungeons], 2),
-                RequirementType.QuakeBoth => new ItemExactRequirement(game.Items[ItemType.QuakeDungeons], 3),
-                RequirementType.NoFlippers => new ItemExactRequirement(game.Items[ItemType.Flippers], 0),
+                RequirementType.Swordless => new ItemExactRequirement(ItemDictionary.Instance[ItemType.Sword], 0),
+                RequirementType.Mushroom => new ItemExactRequirement(ItemDictionary.Instance[ItemType.Mushroom], 1),
+                RequirementType.BombosMM => new ItemExactRequirement(ItemDictionary.Instance[ItemType.BombosDungeons], 1),
+                RequirementType.BombosTR => new ItemExactRequirement(ItemDictionary.Instance[ItemType.BombosDungeons], 2),
+                RequirementType.BombosBoth => new ItemExactRequirement(ItemDictionary.Instance[ItemType.BombosDungeons], 3),
+                RequirementType.EtherMM => new ItemExactRequirement(ItemDictionary.Instance[ItemType.EtherDungeons], 1),
+                RequirementType.EtherTR => new ItemExactRequirement(ItemDictionary.Instance[ItemType.EtherDungeons], 2),
+                RequirementType.EtherBoth => new ItemExactRequirement(ItemDictionary.Instance[ItemType.EtherDungeons], 3),
+                RequirementType.QuakeMM => new ItemExactRequirement(ItemDictionary.Instance[ItemType.QuakeDungeons], 1),
+                RequirementType.QuakeTR => new ItemExactRequirement(ItemDictionary.Instance[ItemType.QuakeDungeons], 2),
+                RequirementType.QuakeBoth => new ItemExactRequirement(ItemDictionary.Instance[ItemType.QuakeDungeons], 3),
+                RequirementType.NoFlippers => new ItemExactRequirement(ItemDictionary.Instance[ItemType.Flippers], 0),
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
@@ -198,118 +215,113 @@ namespace OpenTracker.Models.Requirements
         /// <returns>
         /// An item requirement.
         /// </returns>
-        private static IRequirement GetItemRequirement(Game game, RequirementType type)
+        private static IRequirement GetItemRequirement(RequirementType type)
         {
-            if (game == null)
-            {
-                throw new ArgumentNullException(nameof(game));
-            }
-
             return type switch
             {
-                RequirementType.Sword1 => new ItemRequirement(game.Items[ItemType.Sword], 2),
-                RequirementType.Sword2 => new ItemRequirement(game.Items[ItemType.Sword], 3),
-                RequirementType.Sword3 => new ItemRequirement(game.Items[ItemType.Sword], 4),
-                RequirementType.Shield3 => new ItemRequirement(game.Items[ItemType.Shield], 3),
-                RequirementType.Aga => new ItemRequirement(game.Items[ItemType.Aga]),
-                RequirementType.Bow => new ItemRequirement(game.Items[ItemType.Bow]),
-                RequirementType.Boomerang => new ItemRequirement(game.Items[ItemType.Boomerang]),
-                RequirementType.RedBoomerang => new ItemRequirement(game.Items[ItemType.RedBoomerang]),
-                RequirementType.Hookshot => new ItemRequirement(game.Items[ItemType.Hookshot]),
-                RequirementType.Powder => new ItemRequirement(game.Items[ItemType.Powder]),
-                RequirementType.Boots => new ItemRequirement(game.Items[ItemType.Boots]),
-                RequirementType.FireRod => new ItemRequirement(game.Items[ItemType.FireRod]),
-                RequirementType.IceRod => new ItemRequirement(game.Items[ItemType.IceRod]),
-                RequirementType.Bombos => new ItemRequirement(game.Items[ItemType.Bombos]),
-                RequirementType.Ether => new ItemRequirement(game.Items[ItemType.Ether]),
-                RequirementType.Quake => new ItemRequirement(game.Items[ItemType.Quake]),
-                RequirementType.Gloves1 => new ItemRequirement(game.Items[ItemType.Gloves]),
-                RequirementType.Gloves2 => new ItemRequirement(game.Items[ItemType.Gloves], 2),
-                RequirementType.Lamp => new ItemRequirement(game.Items[ItemType.Lamp]),
-                RequirementType.Hammer => new ItemRequirement(game.Items[ItemType.Hammer]),
-                RequirementType.Flute => new ItemRequirement(game.Items[ItemType.Flute]),
-                RequirementType.Net => new ItemRequirement(game.Items[ItemType.Net]),
-                RequirementType.Book => new ItemRequirement(game.Items[ItemType.Book]),
-                RequirementType.Shovel => new ItemRequirement(game.Items[ItemType.Shovel]),
-                RequirementType.Flippers => new ItemRequirement(game.Items[ItemType.Flippers]),
-                RequirementType.Bottle => new ItemRequirement(game.Items[ItemType.Bottle]),
-                RequirementType.CaneOfSomaria => new ItemRequirement(game.Items[ItemType.CaneOfSomaria]),
-                RequirementType.CaneOfByrna => new ItemRequirement(game.Items[ItemType.CaneOfByrna]),
-                RequirementType.Cape => new ItemRequirement(game.Items[ItemType.Cape]),
-                RequirementType.Mirror => new ItemRequirement(game.Items[ItemType.Mirror]),
-                RequirementType.HalfMagic => new ItemRequirement(game.Items[ItemType.HalfMagic]),
-                RequirementType.MoonPearl => new ItemRequirement(game.Items[ItemType.MoonPearl]),
-                RequirementType.Aga2 => new ItemRequirement(game.Items[ItemType.Aga2]),
-                RequirementType.RedCrystal => new ItemRequirement(game.Items[ItemType.RedCrystal], 2),
-                RequirementType.Pendant => new ItemRequirement(game.Items[ItemType.Pendant], 2),
-                RequirementType.GreenPendant => new ItemRequirement(game.Items[ItemType.GreenPendant]),
-                RequirementType.TRSmallKey2 => new ItemRequirement(game.Items[ItemType.TRSmallKey], 2),
-                RequirementType.LightWorldAccess => new ItemRequirement(game.Items[ItemType.LightWorldAccess]),
+                RequirementType.Sword1 => new ItemRequirement(ItemDictionary.Instance[ItemType.Sword], 2),
+                RequirementType.Sword2 => new ItemRequirement(ItemDictionary.Instance[ItemType.Sword], 3),
+                RequirementType.Sword3 => new ItemRequirement(ItemDictionary.Instance[ItemType.Sword], 4),
+                RequirementType.Shield3 => new ItemRequirement(ItemDictionary.Instance[ItemType.Shield], 3),
+                RequirementType.Aga => new ItemRequirement(ItemDictionary.Instance[ItemType.Aga]),
+                RequirementType.Bow => new ItemRequirement(ItemDictionary.Instance[ItemType.Bow]),
+                RequirementType.Boomerang => new ItemRequirement(ItemDictionary.Instance[ItemType.Boomerang]),
+                RequirementType.RedBoomerang => new ItemRequirement(ItemDictionary.Instance[ItemType.RedBoomerang]),
+                RequirementType.Hookshot => new ItemRequirement(ItemDictionary.Instance[ItemType.Hookshot]),
+                RequirementType.Powder => new ItemRequirement(ItemDictionary.Instance[ItemType.Powder]),
+                RequirementType.Boots => new ItemRequirement(ItemDictionary.Instance[ItemType.Boots]),
+                RequirementType.FireRod => new ItemRequirement(ItemDictionary.Instance[ItemType.FireRod]),
+                RequirementType.IceRod => new ItemRequirement(ItemDictionary.Instance[ItemType.IceRod]),
+                RequirementType.Bombos => new ItemRequirement(ItemDictionary.Instance[ItemType.Bombos]),
+                RequirementType.Ether => new ItemRequirement(ItemDictionary.Instance[ItemType.Ether]),
+                RequirementType.Quake => new ItemRequirement(ItemDictionary.Instance[ItemType.Quake]),
+                RequirementType.Gloves1 => new ItemRequirement(ItemDictionary.Instance[ItemType.Gloves]),
+                RequirementType.Gloves2 => new ItemRequirement(ItemDictionary.Instance[ItemType.Gloves], 2),
+                RequirementType.Lamp => new ItemRequirement(ItemDictionary.Instance[ItemType.Lamp]),
+                RequirementType.Hammer => new ItemRequirement(ItemDictionary.Instance[ItemType.Hammer]),
+                RequirementType.Flute => new ItemRequirement(ItemDictionary.Instance[ItemType.Flute]),
+                RequirementType.Net => new ItemRequirement(ItemDictionary.Instance[ItemType.Net]),
+                RequirementType.Book => new ItemRequirement(ItemDictionary.Instance[ItemType.Book]),
+                RequirementType.Shovel => new ItemRequirement(ItemDictionary.Instance[ItemType.Shovel]),
+                RequirementType.Flippers => new ItemRequirement(ItemDictionary.Instance[ItemType.Flippers]),
+                RequirementType.Bottle => new ItemRequirement(ItemDictionary.Instance[ItemType.Bottle]),
+                RequirementType.CaneOfSomaria => new ItemRequirement(ItemDictionary.Instance[ItemType.CaneOfSomaria]),
+                RequirementType.CaneOfByrna => new ItemRequirement(ItemDictionary.Instance[ItemType.CaneOfByrna]),
+                RequirementType.Cape => new ItemRequirement(ItemDictionary.Instance[ItemType.Cape]),
+                RequirementType.Mirror => new ItemRequirement(ItemDictionary.Instance[ItemType.Mirror]),
+                RequirementType.HalfMagic => new ItemRequirement(ItemDictionary.Instance[ItemType.HalfMagic]),
+                RequirementType.MoonPearl => new ItemRequirement(ItemDictionary.Instance[ItemType.MoonPearl]),
+                RequirementType.Aga2 => new ItemRequirement(ItemDictionary.Instance[ItemType.Aga2]),
+                RequirementType.RedCrystal => new ItemRequirement(ItemDictionary.Instance[ItemType.RedCrystal], 2),
+                RequirementType.Pendant => new ItemRequirement(ItemDictionary.Instance[ItemType.Pendant], 2),
+                RequirementType.GreenPendant => new ItemRequirement(ItemDictionary.Instance[ItemType.GreenPendant]),
+                RequirementType.TRSmallKey2 => new ItemRequirement(ItemDictionary.Instance[ItemType.TRSmallKey], 2),
+                RequirementType.LightWorldAccess => new ItemRequirement(ItemDictionary.Instance[ItemType.LightWorldAccess]),
                 RequirementType.DeathMountainEntryAccess => new ItemRequirement(
-                    game.Items[ItemType.DeathMountainEntryAccess]),
+                    ItemDictionary.Instance[ItemType.DeathMountainEntryAccess]),
                 RequirementType.DeathMountainExitAccess => new ItemRequirement(
-                    game.Items[ItemType.DeathMountainExitAccess]),
-                RequirementType.GrassHouseAccess => new ItemRequirement(game.Items[ItemType.GrassHouseAccess]),
-                RequirementType.BombHutAccess => new ItemRequirement(game.Items[ItemType.BombHutAccess]),
-                RequirementType.RaceGameLedgeAccess => new ItemRequirement(game.Items[ItemType.RaceGameLedgeAccess]),
+                    ItemDictionary.Instance[ItemType.DeathMountainExitAccess]),
+                RequirementType.GrassHouseAccess => new ItemRequirement(ItemDictionary.Instance[ItemType.GrassHouseAccess]),
+                RequirementType.BombHutAccess => new ItemRequirement(ItemDictionary.Instance[ItemType.BombHutAccess]),
+                RequirementType.RaceGameLedgeAccess => new ItemRequirement(ItemDictionary.Instance[ItemType.RaceGameLedgeAccess]),
                 RequirementType.SouthOfGroveLedgeAccess => new ItemRequirement(
-                    game.Items[ItemType.SouthOfGroveLedgeAccess]),
-                RequirementType.DesertLedgeAccess => new ItemRequirement(game.Items[ItemType.DesertLedgeAccess]),
+                    ItemDictionary.Instance[ItemType.SouthOfGroveLedgeAccess]),
+                RequirementType.DesertLedgeAccess => new ItemRequirement(ItemDictionary.Instance[ItemType.DesertLedgeAccess]),
                 RequirementType.DesertPalaceBackEntranceAccess => new ItemRequirement(
-                    game.Items[ItemType.DesertPalaceBackEntranceAccess]),
+                    ItemDictionary.Instance[ItemType.DesertPalaceBackEntranceAccess]),
                 RequirementType.CheckerboardLedgeAccess => new ItemRequirement(
-                    game.Items[ItemType.CheckerboardLedgeAccess]),
+                    ItemDictionary.Instance[ItemType.CheckerboardLedgeAccess]),
                 RequirementType.LWGraveyardLedgeAccess => new ItemRequirement(
-                    game.Items[ItemType.LWGraveyardLedgeAccess]),
+                    ItemDictionary.Instance[ItemType.LWGraveyardLedgeAccess]),
                 RequirementType.LWKingsTombAccess => new ItemRequirement(
-                    game.Items[ItemType.LWKingsTombAccess]),
+                    ItemDictionary.Instance[ItemType.LWKingsTombAccess]),
                 RequirementType.HyruleCastleTopAccess => new ItemRequirement(
-                    game.Items[ItemType.HyruleCastleTopAccess]),
+                    ItemDictionary.Instance[ItemType.HyruleCastleTopAccess]),
                 RequirementType.WaterfallFairyAccess => new ItemRequirement(
-                    game.Items[ItemType.WaterfallFairyAccess]),
-                RequirementType.LWWitchAreaAccess => new ItemRequirement(game.Items[ItemType.LWWitchAreaAccess]),
+                    ItemDictionary.Instance[ItemType.WaterfallFairyAccess]),
+                RequirementType.LWWitchAreaAccess => new ItemRequirement(ItemDictionary.Instance[ItemType.LWWitchAreaAccess]),
                 RequirementType.LakeHyliaFairyIslandAccess => new ItemRequirement(
-                    game.Items[ItemType.LakeHyliaFairyIslandAccess]),
+                    ItemDictionary.Instance[ItemType.LakeHyliaFairyIslandAccess]),
                 RequirementType.DeathMountainWestBottomAccess => new ItemRequirement(
-                    game.Items[ItemType.DeathMountainWestBottomAccess]),
+                    ItemDictionary.Instance[ItemType.DeathMountainWestBottomAccess]),
                 RequirementType.DeathMountainWestTopAccess => new ItemRequirement(
-                    game.Items[ItemType.DeathMountainWestTopAccess]),
+                    ItemDictionary.Instance[ItemType.DeathMountainWestTopAccess]),
                 RequirementType.DeathMountainEastBottomAccess => new ItemRequirement(
-                    game.Items[ItemType.DeathMountainEastBottomAccess]),
+                    ItemDictionary.Instance[ItemType.DeathMountainEastBottomAccess]),
                 RequirementType.DeathMountainEastTopConnectorAccess => new ItemRequirement(
-                    game.Items[ItemType.DeathMountainEastTopConnectorAccess]),
-                RequirementType.SpiralCaveAccess => new ItemRequirement(game.Items[ItemType.SpiralCaveAccess]),
-                RequirementType.MimicCaveAccess => new ItemRequirement(game.Items[ItemType.MimicCaveAccess]),
+                    ItemDictionary.Instance[ItemType.DeathMountainEastTopConnectorAccess]),
+                RequirementType.SpiralCaveAccess => new ItemRequirement(ItemDictionary.Instance[ItemType.SpiralCaveAccess]),
+                RequirementType.MimicCaveAccess => new ItemRequirement(ItemDictionary.Instance[ItemType.MimicCaveAccess]),
                 RequirementType.DeathMountainEastTopAccess => new ItemRequirement(
-                    game.Items[ItemType.DeathMountainEastTopAccess]),
+                    ItemDictionary.Instance[ItemType.DeathMountainEastTopAccess]),
                 RequirementType.DarkWorldWestAccess => new ItemRequirement(
-                    game.Items[ItemType.DarkWorldWestAccess]),
-                RequirementType.BumperCaveAccess => new ItemRequirement(game.Items[ItemType.BumperCaveAccess]),
+                    ItemDictionary.Instance[ItemType.DarkWorldWestAccess]),
+                RequirementType.BumperCaveAccess => new ItemRequirement(ItemDictionary.Instance[ItemType.BumperCaveAccess]),
                 RequirementType.BumperCaveTopAccess => new ItemRequirement(
-                    game.Items[ItemType.BumperCaveTopAccess]),
-                RequirementType.HammerHouseAccess => new ItemRequirement(game.Items[ItemType.HammerHouseAccess]),
+                    ItemDictionary.Instance[ItemType.BumperCaveTopAccess]),
+                RequirementType.HammerHouseAccess => new ItemRequirement(ItemDictionary.Instance[ItemType.HammerHouseAccess]),
                 RequirementType.HammerPegsAreaAccess => new ItemRequirement(
-                    game.Items[ItemType.HammerPegsAreaAccess]),
+                    ItemDictionary.Instance[ItemType.HammerPegsAreaAccess]),
                 RequirementType.DarkWorldSouthAccess => new ItemRequirement(
-                    game.Items[ItemType.DarkWorldSouthAccess]),
-                RequirementType.MireAreaAccess => new ItemRequirement(game.Items[ItemType.MireAreaAccess]),
-                RequirementType.DWWitchAreaAccess => new ItemRequirement(game.Items[ItemType.DWWitchAreaAccess]),
-                RequirementType.DarkWorldEastAccess => new ItemRequirement(game.Items[ItemType.DarkWorldEastAccess]),
-                RequirementType.IcePalaceAccess => new ItemRequirement(game.Items[ItemType.IcePalaceAccess]),
+                    ItemDictionary.Instance[ItemType.DarkWorldSouthAccess]),
+                RequirementType.MireAreaAccess => new ItemRequirement(ItemDictionary.Instance[ItemType.MireAreaAccess]),
+                RequirementType.DWWitchAreaAccess => new ItemRequirement(ItemDictionary.Instance[ItemType.DWWitchAreaAccess]),
+                RequirementType.DarkWorldEastAccess => new ItemRequirement(ItemDictionary.Instance[ItemType.DarkWorldEastAccess]),
+                RequirementType.IcePalaceAccess => new ItemRequirement(ItemDictionary.Instance[ItemType.IcePalaceAccess]),
                 RequirementType.DarkWorldSouthEastAccess => new ItemRequirement(
-                    game.Items[ItemType.DarkWorldSouthEastAccess]),
+                    ItemDictionary.Instance[ItemType.DarkWorldSouthEastAccess]),
                 RequirementType.DarkDeathMountainWestBottomAccess => new ItemRequirement(
-                    game.Items[ItemType.DarkDeathMountainWestBottomAccess]),
+                    ItemDictionary.Instance[ItemType.DarkDeathMountainWestBottomAccess]),
                 RequirementType.DarkDeathMountainTopAccess => new ItemRequirement(
-                    game.Items[ItemType.DarkDeathMountainTopAccess]),
+                    ItemDictionary.Instance[ItemType.DarkDeathMountainTopAccess]),
                 RequirementType.DWFloatingIslandAccess => new ItemRequirement(
-                    game.Items[ItemType.DWFloatingIslandAccess]),
+                    ItemDictionary.Instance[ItemType.DWFloatingIslandAccess]),
                 RequirementType.DarkDeathMountainEastBottomAccess => new ItemRequirement(
-                    game.Items[ItemType.DarkDeathMountainEastBottomAccess]),
+                    ItemDictionary.Instance[ItemType.DarkDeathMountainEastBottomAccess]),
                 RequirementType.TurtleRockTunnelAccess => new ItemRequirement(
-                    game.Items[ItemType.TurtleRockTunnelAccess]),
+                    ItemDictionary.Instance[ItemType.TurtleRockTunnelAccess]),
                 RequirementType.TurtleRockSafetyDoorAccess => new ItemRequirement(
-                    game.Items[ItemType.TurtleRockSafetyDoorAccess]),
+                    ItemDictionary.Instance[ItemType.TurtleRockSafetyDoorAccess]),
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
@@ -326,105 +338,100 @@ namespace OpenTracker.Models.Requirements
         /// <returns>
         /// A sequence break requirement.
         /// </returns>
-        private static IRequirement GetSequenceBreakRequirement(Game game, RequirementType type)
+        private static IRequirement GetSequenceBreakRequirement(RequirementType type)
         {
-            if (game == null)
-            {
-                throw new ArgumentNullException(nameof(game));
-            }
-
             return type switch
             {
                 RequirementType.SBBlindPedestal => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.BlindPedestal]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.BlindPedestal]),
                 RequirementType.SBBonkOverLedge => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.BonkOverLedge]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.BonkOverLedge]),
                 RequirementType.SBBumperCaveHookshot => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.BumperCaveHookshot]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.BumperCaveHookshot]),
                 RequirementType.SBTRLaserSkip => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.TRLaserSkip]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.TRLaserSkip]),
                 RequirementType.SBLanmolasBombs => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.LanmolasBombs]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.LanmolasBombs]),
                 RequirementType.SBArrghusBasic => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.ArrghusBasic]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.ArrghusBasic]),
                 RequirementType.SBMothulaBasic => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.MothulaBasic]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.MothulaBasic]),
                 RequirementType.SBBlindBasic => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.BlindBasic]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.BlindBasic]),
                 RequirementType.SBKholdstareBasic => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.KholdstareBasic]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.KholdstareBasic]),
                 RequirementType.SBVitreousBasic => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.VitreousBasic]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.VitreousBasic]),
                 RequirementType.SBTrinexxBasic => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.TrinexxBasic]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.TrinexxBasic]),
                 RequirementType.SBBombDuplicationAncillaOverload => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.BombDuplicationAncillaOverload]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.BombDuplicationAncillaOverload]),
                 RequirementType.SBBombDuplicationMirror => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.BombDuplicationMirror]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.BombDuplicationMirror]),
                 RequirementType.SBBombJumpPoDHammerJump => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.BombJumpPoDHammerJump]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.BombJumpPoDHammerJump]),
                 RequirementType.SBBombJumpSWBigChest => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.BombJumpSWBigChest]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.BombJumpSWBigChest]),
                 RequirementType.SBBombJumpIPBJ => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.BombJumpIPBJ]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.BombJumpIPBJ]),
                 RequirementType.SBBombJumpIPHookshotGap => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.BombJumpIPHookshotGap]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.BombJumpIPHookshotGap]),
                 RequirementType.SBBombJumpIPFreezorRoomGap => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.BombJumpIPFreezorRoomGap]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.BombJumpIPFreezorRoomGap]),
                 RequirementType.SBDarkRoomDeathMountainEntry => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.DarkRoomDeathMountainEntry]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.DarkRoomDeathMountainEntry]),
                 RequirementType.SBDarkRoomDeathMountainExit => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.DarkRoomDeathMountainExit]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.DarkRoomDeathMountainExit]),
                 RequirementType.SBDarkRoomHC => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.DarkRoomHC]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.DarkRoomHC]),
                 RequirementType.SBDarkRoomAT => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.DarkRoomAT]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.DarkRoomAT]),
                 RequirementType.SBDarkRoomEPRight => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.DarkRoomEPRight]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.DarkRoomEPRight]),
                 RequirementType.SBDarkRoomEPBack => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.DarkRoomEPBack]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.DarkRoomEPBack]),
                 RequirementType.SBDarkRoomPoDDarkBasement => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.DarkRoomPoDDarkBasement]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.DarkRoomPoDDarkBasement]),
                 RequirementType.SBDarkRoomPoDDarkMaze => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.DarkRoomPoDDarkMaze]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.DarkRoomPoDDarkMaze]),
                 RequirementType.SBDarkRoomPoDBossArea => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.DarkRoomPoDBossArea]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.DarkRoomPoDBossArea]),
                 RequirementType.SBDarkRoomMM => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.DarkRoomMM]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.DarkRoomMM]),
                 RequirementType.SBDarkRoomTR => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.DarkRoomTR]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.DarkRoomTR]),
                 RequirementType.SBFakeFlippersFairyRevival => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.FakeFlippersFairyRevival]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.FakeFlippersFairyRevival]),
                 RequirementType.SBFakeFlippersQirnJump => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.FakeFlippersQirnJump]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.FakeFlippersQirnJump]),
                 RequirementType.SBFakeFlippersScreenTransition => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.FakeFlippersScreenTransition]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.FakeFlippersScreenTransition]),
                 RequirementType.SBFakeFlippersSplashDeletion => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.FakeFlippersSplashDeletion]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.FakeFlippersSplashDeletion]),
                 RequirementType.SBWaterWalk => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.WaterWalk]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.WaterWalk]),
                 RequirementType.SBWaterWalkFromWaterfallCave => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.WaterWalkFromWaterfallCave]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.WaterWalkFromWaterfallCave]),
                 RequirementType.SBSuperBunnyFallInHole => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.SuperBunnyFallInHole]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.SuperBunnyFallInHole]),
                 RequirementType.SBSuperBunnyMirror => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.SuperBunnyMirror]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.SuperBunnyMirror]),
                 RequirementType.SBCameraUnlock => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.CameraUnlock]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.CameraUnlock]),
                 RequirementType.SBDungeonRevive => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.DungeonRevive]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.DungeonRevive]),
                 RequirementType.SBFakePowder => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.FakePowder]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.FakePowder]),
                 RequirementType.SBHover => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.Hover]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.Hover]),
                 RequirementType.SBMimicClip => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.MimicClip]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.MimicClip]),
                 RequirementType.SBSpikeCave => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.SpikeCave]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.SpikeCave]),
                 RequirementType.SBToHHerapot => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.ToHHerapot]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.ToHHerapot]),
                 RequirementType.SBIPIceBreaker => new SequenceBreakRequirement(
-                    game.SequenceBreaks[SequenceBreakType.IPIceBreaker]),
+                    SequenceBreakDictionary.Instance[SequenceBreakType.IPIceBreaker]),
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
@@ -441,31 +448,40 @@ namespace OpenTracker.Models.Requirements
         /// <returns>
         /// A boss requirement.
         /// </returns>
-        private static IRequirement GetBossRequirement(Game game, RequirementType type)
+        private static IRequirement GetBossRequirement(RequirementType type)
         {
-            if (game == null)
-            {
-                throw new ArgumentNullException(nameof(game));
-            }
-
             return type switch
             {
-                RequirementType.ATBoss => new BossRequirement(game, game.BossPlacements[BossPlacementID.ATBoss]),
-                RequirementType.EPBoss => new BossRequirement(game, game.BossPlacements[BossPlacementID.EPBoss]),
-                RequirementType.DPBoss => new BossRequirement(game, game.BossPlacements[BossPlacementID.DPBoss]),
-                RequirementType.ToHBoss => new BossRequirement(game, game.BossPlacements[BossPlacementID.ToHBoss]),
-                RequirementType.PoDBoss => new BossRequirement(game, game.BossPlacements[BossPlacementID.PoDBoss]),
-                RequirementType.SPBoss => new BossRequirement(game, game.BossPlacements[BossPlacementID.SPBoss]),
-                RequirementType.SWBoss => new BossRequirement(game, game.BossPlacements[BossPlacementID.SWBoss]),
-                RequirementType.TTBoss => new BossRequirement(game, game.BossPlacements[BossPlacementID.TTBoss]),
-                RequirementType.IPBoss => new BossRequirement(game, game.BossPlacements[BossPlacementID.IPBoss]),
-                RequirementType.MMBoss => new BossRequirement(game, game.BossPlacements[BossPlacementID.MMBoss]),
-                RequirementType.TRBoss => new BossRequirement(game, game.BossPlacements[BossPlacementID.TRBoss]),
-                RequirementType.GTBoss1 => new BossRequirement(game, game.BossPlacements[BossPlacementID.GTBoss1]),
-                RequirementType.GTBoss2 => new BossRequirement(game, game.BossPlacements[BossPlacementID.GTBoss2]),
-                RequirementType.GTBoss3 => new BossRequirement(game, game.BossPlacements[BossPlacementID.GTBoss3]),
+                RequirementType.ATBoss => new BossRequirement(
+                    BossPlacementDictionary.Instance[BossPlacementID.ATBoss]),
+                RequirementType.EPBoss => new BossRequirement(
+                    BossPlacementDictionary.Instance[BossPlacementID.EPBoss]),
+                RequirementType.DPBoss => new BossRequirement(
+                    BossPlacementDictionary.Instance[BossPlacementID.DPBoss]),
+                RequirementType.ToHBoss => new BossRequirement(
+                    BossPlacementDictionary.Instance[BossPlacementID.ToHBoss]),
+                RequirementType.PoDBoss => new BossRequirement(
+                    BossPlacementDictionary.Instance[BossPlacementID.PoDBoss]),
+                RequirementType.SPBoss => new BossRequirement(
+                    BossPlacementDictionary.Instance[BossPlacementID.SPBoss]),
+                RequirementType.SWBoss => new BossRequirement(
+                    BossPlacementDictionary.Instance[BossPlacementID.SWBoss]),
+                RequirementType.TTBoss => new BossRequirement(
+                    BossPlacementDictionary.Instance[BossPlacementID.TTBoss]),
+                RequirementType.IPBoss => new BossRequirement(
+                    BossPlacementDictionary.Instance[BossPlacementID.IPBoss]),
+                RequirementType.MMBoss => new BossRequirement(
+                    BossPlacementDictionary.Instance[BossPlacementID.MMBoss]),
+                RequirementType.TRBoss => new BossRequirement(
+                    BossPlacementDictionary.Instance[BossPlacementID.TRBoss]),
+                RequirementType.GTBoss1 => new BossRequirement(
+                    BossPlacementDictionary.Instance[BossPlacementID.GTBoss1]),
+                RequirementType.GTBoss2 => new BossRequirement(
+                    BossPlacementDictionary.Instance[BossPlacementID.GTBoss2]),
+                RequirementType.GTBoss3 => new BossRequirement(
+                    BossPlacementDictionary.Instance[BossPlacementID.GTBoss3]),
                 RequirementType.GTFinalBoss => new BossRequirement(
-                    game, game.BossPlacements[BossPlacementID.GTFinalBoss]),
+                    BossPlacementDictionary.Instance[BossPlacementID.GTFinalBoss]),
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
@@ -482,7 +498,7 @@ namespace OpenTracker.Models.Requirements
         /// <returns>
         /// A requirement of the proper type.
         /// </returns>
-        private static IRequirement GetRequirement(Game game, RequirementType type)
+        internal static IRequirement GetRequirement(RequirementType type)
         {
             switch (type)
             {
@@ -496,24 +512,42 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.WorldStateInverted:
                 case RequirementType.WorldStateRetro:
                     {
-                        return GetWorldStateRequirement(game, type);
+                        return GetWorldStateRequirement(type);
                     }
                 case RequirementType.DungeonItemShuffleStandard:
                 case RequirementType.DungeonItemShuffleMapsCompasses:
                 case RequirementType.DungeonItemShuffleMapsCompassesSmallKeys:
                 case RequirementType.DungeonItemShuffleKeysanity:
                     {
-                        return GetDungeonItemShuffleRequirement(game, type);
+                        return GetDungeonItemShuffleRequirement(type);
                     }
                 case RequirementType.ItemPlacementBasic:
                 case RequirementType.ItemPlacementAdvanced:
                     {
-                        return GetItemPlacementRequirement(game, type);
+                        return GetItemPlacementRequirement(type);
+                    }
+                case RequirementType.BossShuffleOff:
+                case RequirementType.BossShuffleOn:
+                    {
+                        return GetBossShuffleRequirement(type);
                     }
                 case RequirementType.EnemyShuffleOff:
                 case RequirementType.EnemyShuffleOn:
                     {
-                        return GetEnemyShuffleRequirement(game, type);
+                        return GetEnemyShuffleRequirement(type);
+                    }
+                case RequirementType.EntranceShuffleOff:
+                case RequirementType.EntranceShuffleOn:
+                    {
+                        return GetEntranceShuffleRequirement(type);
+                    }
+                case RequirementType.WorldStateNonInverted:
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen],
+                            RequirementDictionary.Instance[RequirementType.WorldStateRetro]
+                        });
                     }
                 case RequirementType.SmallKeyShuffleOff:
                     {
@@ -521,13 +555,13 @@ namespace OpenTracker.Models.Requirements
                         {
                             new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.WorldStateStandardOpen],
-                                game.Requirements[RequirementType.WorldStateInverted]
+                                RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen],
+                                RequirementDictionary.Instance[RequirementType.WorldStateInverted]
                             }),
                             new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.DungeonItemShuffleStandard],
-                                game.Requirements[RequirementType.DungeonItemShuffleMapsCompasses]
+                                RequirementDictionary.Instance[RequirementType.DungeonItemShuffleStandard],
+                                RequirementDictionary.Instance[RequirementType.DungeonItemShuffleMapsCompasses]
                             })
                         });
                     }
@@ -535,9 +569,41 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.WorldStateRetro],
-                            game.Requirements[RequirementType.DungeonItemShuffleMapsCompassesSmallKeys],
-                            game.Requirements[RequirementType.DungeonItemShuffleKeysanity]
+                            RequirementDictionary.Instance[RequirementType.WorldStateRetro],
+                            RequirementDictionary.Instance[RequirementType.DungeonItemShuffleMapsCompassesSmallKeys],
+                            RequirementDictionary.Instance[RequirementType.DungeonItemShuffleKeysanity]
+                        });
+                    }
+                case RequirementType.WorldStateInvertedEntranceShuffleOff:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.WorldStateInverted],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]
+                        });
+                    }
+                case RequirementType.WorldStateInvertedEntranceShuffleOn:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.WorldStateInverted],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                        });
+                    }
+                case RequirementType.WorldStateNonInvertedEntranceShuffleOff:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]
+                        });
+                    }
+                case RequirementType.WorldStateRetroEntranceShuffleOff:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.WorldStateRetro],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]
                         });
                     }
                 case RequirementType.Swordless:
@@ -553,7 +619,7 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.QuakeBoth:
                 case RequirementType.NoFlippers:
                     {
-                        return GetItemExactRequirement(game, type);
+                        return GetItemExactRequirement(type);
                     }
                 case RequirementType.Sword1:
                 case RequirementType.Sword2:
@@ -633,7 +699,7 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.TurtleRockTunnelAccess:
                 case RequirementType.TurtleRockSafetyDoorAccess:
                     {
-                        return GetItemRequirement(game, type);
+                        return GetItemRequirement(type);
                     }
                 case RequirementType.SBBlindPedestal:
                 case RequirementType.SBBonkOverLedge:
@@ -681,66 +747,67 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.SBToHHerapot:
                 case RequirementType.SBIPIceBreaker:
                     {
-                        return GetSequenceBreakRequirement(game, type);
+                        return GetSequenceBreakRequirement(type);
                     }
                 case RequirementType.GTCrystal:
                     {
-                        return new CrystalRequirement(game);
+                        return new CrystalRequirement();
                     }
                 case RequirementType.LightWorld:
                     {
-                        return new RequirementNodeRequirement(game.RequirementNodes[RequirementNodeID.LightWorld]);
+                        return new RequirementNodeRequirement(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld]);
                     }
                 case RequirementType.AllMedallions:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.Bombos],
-                            game.Requirements[RequirementType.Ether],
-                            game.Requirements[RequirementType.Quake]
+                            RequirementDictionary.Instance[RequirementType.Bombos],
+                            RequirementDictionary.Instance[RequirementType.Ether],
+                            RequirementDictionary.Instance[RequirementType.Quake]
                         });
                     }
                 case RequirementType.ExtendMagic1:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.Bottle],
-                                game.Requirements[RequirementType.HalfMagic]
+                                RequirementDictionary.Instance[RequirementType.Bottle],
+                                RequirementDictionary.Instance[RequirementType.HalfMagic]
                             });
                     }
                 case RequirementType.ExtendMagic2:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.Bottle],
-                                game.Requirements[RequirementType.HalfMagic]
+                                RequirementDictionary.Instance[RequirementType.Bottle],
+                                RequirementDictionary.Instance[RequirementType.HalfMagic]
                             });
                     }
                 case RequirementType.FireRodDarkRoom:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.FireRod],
-                            game.Requirements[RequirementType.ItemPlacementAdvanced]
+                            RequirementDictionary.Instance[RequirementType.FireRod],
+                            RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced]
                         });
                     }
                 case RequirementType.UseMedallion:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.Swordless],
-                            game.Requirements[RequirementType.Sword1]
+                            RequirementDictionary.Instance[RequirementType.Swordless],
+                            RequirementDictionary.Instance[RequirementType.Sword1]
                         });
                     }
                 case RequirementType.MeltThings:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.FireRod],
+                            RequirementDictionary.Instance[RequirementType.FireRod],
                             new AggregateRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.Bombos],
-                                game.Requirements[RequirementType.UseMedallion]
+                                RequirementDictionary.Instance[RequirementType.Bombos],
+                                RequirementDictionary.Instance[RequirementType.UseMedallion]
                             })
                         });
                     }
@@ -748,44 +815,44 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.WorldStateStandardOpen],
-                            game.Requirements[RequirementType.WorldStateRetro],
-                            game.Requirements[RequirementType.MoonPearl]
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen],
+                            RequirementDictionary.Instance[RequirementType.WorldStateRetro],
+                            RequirementDictionary.Instance[RequirementType.MoonPearl]
                         });
                     }
                 case RequirementType.NotBunnyDW:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.WorldStateInverted],
-                            game.Requirements[RequirementType.MoonPearl]
+                            RequirementDictionary.Instance[RequirementType.WorldStateInverted],
+                            RequirementDictionary.Instance[RequirementType.MoonPearl]
                         });
                     }
                 case RequirementType.Armos:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.Sword1],
-                            game.Requirements[RequirementType.Hammer],
-                            game.Requirements[RequirementType.Bow],
-                            game.Requirements[RequirementType.Boomerang],
-                            game.Requirements[RequirementType.RedBoomerang],
+                            RequirementDictionary.Instance[RequirementType.Sword1],
+                            RequirementDictionary.Instance[RequirementType.Hammer],
+                            RequirementDictionary.Instance[RequirementType.Bow],
+                            RequirementDictionary.Instance[RequirementType.Boomerang],
+                            RequirementDictionary.Instance[RequirementType.RedBoomerang],
                             new AggregateRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.ExtendMagic2],
+                                RequirementDictionary.Instance[RequirementType.ExtendMagic2],
                                 new AlternativeRequirement(new List<IRequirement>
                                 {
-                                    game.Requirements[RequirementType.FireRod],
-                                    game.Requirements[RequirementType.IceRod]
+                                    RequirementDictionary.Instance[RequirementType.FireRod],
+                                    RequirementDictionary.Instance[RequirementType.IceRod]
                                 })
                             }),
                             new AggregateRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.ExtendMagic1],
+                                RequirementDictionary.Instance[RequirementType.ExtendMagic1],
                                 new AlternativeRequirement(new List<IRequirement>
                                 {
-                                    game.Requirements[RequirementType.CaneOfByrna],
-                                    game.Requirements[RequirementType.CaneOfSomaria]
+                                    RequirementDictionary.Instance[RequirementType.CaneOfByrna],
+                                    RequirementDictionary.Instance[RequirementType.CaneOfSomaria]
                                 })
                             })
                         });
@@ -794,44 +861,44 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.Sword1],
-                            game.Requirements[RequirementType.Hammer],
-                            game.Requirements[RequirementType.Bow],
-                            game.Requirements[RequirementType.FireRod],
-                            game.Requirements[RequirementType.IceRod],
-                            game.Requirements[RequirementType.CaneOfByrna],
-                            game.Requirements[RequirementType.CaneOfSomaria],
-                            game.Requirements[RequirementType.SBLanmolasBombs]
+                            RequirementDictionary.Instance[RequirementType.Sword1],
+                            RequirementDictionary.Instance[RequirementType.Hammer],
+                            RequirementDictionary.Instance[RequirementType.Bow],
+                            RequirementDictionary.Instance[RequirementType.FireRod],
+                            RequirementDictionary.Instance[RequirementType.IceRod],
+                            RequirementDictionary.Instance[RequirementType.CaneOfByrna],
+                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria],
+                            RequirementDictionary.Instance[RequirementType.SBLanmolasBombs]
                         });
                     }
                 case RequirementType.Moldorm:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.Sword1],
-                            game.Requirements[RequirementType.Hammer]
+                            RequirementDictionary.Instance[RequirementType.Sword1],
+                            RequirementDictionary.Instance[RequirementType.Hammer]
                         });
                     }
                 case RequirementType.ArrghusSB:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.Hookshot],
+                            RequirementDictionary.Instance[RequirementType.Hookshot],
                             new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.Hammer],
-                                game.Requirements[RequirementType.Sword1],
+                                RequirementDictionary.Instance[RequirementType.Hammer],
+                                RequirementDictionary.Instance[RequirementType.Sword1],
                                 new AggregateRequirement(new List<IRequirement>
                                 {
                                     new AlternativeRequirement(new List<IRequirement>
                                     {
-                                        game.Requirements[RequirementType.ExtendMagic1],
-                                        game.Requirements[RequirementType.Bow]
+                                        RequirementDictionary.Instance[RequirementType.ExtendMagic1],
+                                        RequirementDictionary.Instance[RequirementType.Bow]
                                     }),
                                     new AlternativeRequirement(new List<IRequirement>
                                     {
-                                        game.Requirements[RequirementType.FireRod],
-                                        game.Requirements[RequirementType.IceRod]
+                                        RequirementDictionary.Instance[RequirementType.FireRod],
+                                        RequirementDictionary.Instance[RequirementType.IceRod]
                                     })
                                 })
                             }),
@@ -841,13 +908,13 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.ArrghusSB],
+                            RequirementDictionary.Instance[RequirementType.ArrghusSB],
                             new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.SBArrghusBasic],
-                                game.Requirements[RequirementType.ItemPlacementAdvanced],
-                                game.Requirements[RequirementType.Swordless],
-                                game.Requirements[RequirementType.Sword2]
+                                RequirementDictionary.Instance[RequirementType.SBArrghusBasic],
+                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
+                                RequirementDictionary.Instance[RequirementType.Swordless],
+                                RequirementDictionary.Instance[RequirementType.Sword2]
                             })
                         });
                     }
@@ -855,31 +922,31 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.Sword1],
-                            game.Requirements[RequirementType.Hammer],
+                            RequirementDictionary.Instance[RequirementType.Sword1],
+                            RequirementDictionary.Instance[RequirementType.Hammer],
                             new AggregateRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.ExtendMagic1],
-                                game.Requirements[RequirementType.FireRod]
+                                RequirementDictionary.Instance[RequirementType.ExtendMagic1],
+                                RequirementDictionary.Instance[RequirementType.FireRod]
                             }),
-                            game.Requirements[RequirementType.CaneOfSomaria],
-                            game.Requirements[RequirementType.CaneOfByrna]
+                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria],
+                            RequirementDictionary.Instance[RequirementType.CaneOfByrna]
                         });
                     }
                 case RequirementType.Mothula:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.MothulaSB],
+                            RequirementDictionary.Instance[RequirementType.MothulaSB],
                             new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.SBMothulaBasic],
-                                game.Requirements[RequirementType.ItemPlacementAdvanced],
-                                game.Requirements[RequirementType.Sword2],
+                                RequirementDictionary.Instance[RequirementType.SBMothulaBasic],
+                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
+                                RequirementDictionary.Instance[RequirementType.Sword2],
                                 new AggregateRequirement(new List<IRequirement>
                                 {
-                                    game.Requirements[RequirementType.ExtendMagic1],
-                                    game.Requirements[RequirementType.FireRod]
+                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1],
+                                    RequirementDictionary.Instance[RequirementType.FireRod]
                                 })
                             })
                         });
@@ -888,29 +955,29 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.Sword1],
-                            game.Requirements[RequirementType.Hammer],
-                            game.Requirements[RequirementType.CaneOfSomaria],
-                            game.Requirements[RequirementType.CaneOfByrna]
+                            RequirementDictionary.Instance[RequirementType.Sword1],
+                            RequirementDictionary.Instance[RequirementType.Hammer],
+                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria],
+                            RequirementDictionary.Instance[RequirementType.CaneOfByrna]
                         });
                     }
                 case RequirementType.Blind:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.BlindSB],
+                            RequirementDictionary.Instance[RequirementType.BlindSB],
                             new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.SBBlindBasic],
-                                game.Requirements[RequirementType.ItemPlacementAdvanced],
-                                game.Requirements[RequirementType.Swordless],
+                                RequirementDictionary.Instance[RequirementType.SBBlindBasic],
+                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
+                                RequirementDictionary.Instance[RequirementType.Swordless],
                                 new AggregateRequirement(new List<IRequirement>
                                 {
-                                    game.Requirements[RequirementType.Sword1],
+                                    RequirementDictionary.Instance[RequirementType.Sword1],
                                     new AlternativeRequirement(new List<IRequirement>
                                     {
-                                        game.Requirements[RequirementType.Cape],
-                                        game.Requirements[RequirementType.CaneOfByrna]
+                                        RequirementDictionary.Instance[RequirementType.Cape],
+                                        RequirementDictionary.Instance[RequirementType.CaneOfByrna]
                                     })
                                 })
                             })
@@ -920,22 +987,22 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.MeltThings],
+                            RequirementDictionary.Instance[RequirementType.MeltThings],
                             new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.Hammer],
-                                game.Requirements[RequirementType.Sword1],
+                                RequirementDictionary.Instance[RequirementType.Hammer],
+                                RequirementDictionary.Instance[RequirementType.Sword1],
                                 new AggregateRequirement(new List<IRequirement>
                                 {
-                                    game.Requirements[RequirementType.ExtendMagic2],
-                                    game.Requirements[RequirementType.FireRod]
+                                    RequirementDictionary.Instance[RequirementType.ExtendMagic2],
+                                    RequirementDictionary.Instance[RequirementType.FireRod]
                                 }),
                                 new AggregateRequirement(new List<IRequirement>
                                 {
-                                    game.Requirements[RequirementType.ExtendMagic1],
-                                    game.Requirements[RequirementType.FireRod],
-                                    game.Requirements[RequirementType.Bombos],
-                                    game.Requirements[RequirementType.Swordless]
+                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1],
+                                    RequirementDictionary.Instance[RequirementType.FireRod],
+                                    RequirementDictionary.Instance[RequirementType.Bombos],
+                                    RequirementDictionary.Instance[RequirementType.Swordless]
                                 })
                             })
                         });
@@ -944,22 +1011,22 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.KholdstareSB],
+                            RequirementDictionary.Instance[RequirementType.KholdstareSB],
                             new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.SBKholdstareBasic],
-                                game.Requirements[RequirementType.Sword2],
+                                RequirementDictionary.Instance[RequirementType.SBKholdstareBasic],
+                                RequirementDictionary.Instance[RequirementType.Sword2],
                                 new AggregateRequirement(new List<IRequirement>
                                 {
-                                    game.Requirements[RequirementType.ExtendMagic2],
-                                    game.Requirements[RequirementType.FireRod]
+                                    RequirementDictionary.Instance[RequirementType.ExtendMagic2],
+                                    RequirementDictionary.Instance[RequirementType.FireRod]
                                 }),
                                 new AggregateRequirement(new List<IRequirement>
                                 {
-                                    game.Requirements[RequirementType.Bombos],
-                                    game.Requirements[RequirementType.UseMedallion],
-                                    game.Requirements[RequirementType.ExtendMagic1],
-                                    game.Requirements[RequirementType.FireRod]
+                                    RequirementDictionary.Instance[RequirementType.Bombos],
+                                    RequirementDictionary.Instance[RequirementType.UseMedallion],
+                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1],
+                                    RequirementDictionary.Instance[RequirementType.FireRod]
                                 })
                             })
                         });
@@ -968,22 +1035,22 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.Hammer],
-                            game.Requirements[RequirementType.Sword1],
-                            game.Requirements[RequirementType.Bow]
+                            RequirementDictionary.Instance[RequirementType.Hammer],
+                            RequirementDictionary.Instance[RequirementType.Sword1],
+                            RequirementDictionary.Instance[RequirementType.Bow]
                         });
                     }
                 case RequirementType.Vitreous:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.VitreousSB],
+                            RequirementDictionary.Instance[RequirementType.VitreousSB],
                             new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.SBVitreousBasic],
-                                game.Requirements[RequirementType.ItemPlacementAdvanced],
-                                game.Requirements[RequirementType.Sword2],
-                                game.Requirements[RequirementType.Bow]
+                                RequirementDictionary.Instance[RequirementType.SBVitreousBasic],
+                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
+                                RequirementDictionary.Instance[RequirementType.Sword2],
+                                RequirementDictionary.Instance[RequirementType.Bow]
                             })
                         });
                     }
@@ -991,21 +1058,21 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.FireRod],
-                            game.Requirements[RequirementType.IceRod],
+                            RequirementDictionary.Instance[RequirementType.FireRod],
+                            RequirementDictionary.Instance[RequirementType.IceRod],
                             new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.Sword3],
-                                game.Requirements[RequirementType.Hammer],
+                                RequirementDictionary.Instance[RequirementType.Sword3],
+                                RequirementDictionary.Instance[RequirementType.Hammer],
                                 new AggregateRequirement(new List<IRequirement>
                                 {
-                                    game.Requirements[RequirementType.ExtendMagic1],
-                                    game.Requirements[RequirementType.Sword2]
+                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1],
+                                    RequirementDictionary.Instance[RequirementType.Sword2]
                                 }),
                                 new AggregateRequirement(new List<IRequirement>
                                 {
-                                    game.Requirements[RequirementType.ExtendMagic2],
-                                    game.Requirements[RequirementType.Sword1]
+                                    RequirementDictionary.Instance[RequirementType.ExtendMagic2],
+                                    RequirementDictionary.Instance[RequirementType.Sword1]
                                 })
                             })
                         });
@@ -1014,17 +1081,17 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.TrinexxSB],
+                            RequirementDictionary.Instance[RequirementType.TrinexxSB],
                             new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.SBTrinexxBasic],
-                                game.Requirements[RequirementType.ItemPlacementAdvanced],
-                                game.Requirements[RequirementType.Swordless],
-                                game.Requirements[RequirementType.Sword3],
+                                RequirementDictionary.Instance[RequirementType.SBTrinexxBasic],
+                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
+                                RequirementDictionary.Instance[RequirementType.Swordless],
+                                RequirementDictionary.Instance[RequirementType.Sword3],
                                 new AggregateRequirement(new List<IRequirement>
                                 {
-                                    game.Requirements[RequirementType.ExtendMagic1],
-                                    game.Requirements[RequirementType.Sword2]
+                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1],
+                                    RequirementDictionary.Instance[RequirementType.Sword2]
                                 })
                             })
                         });
@@ -1033,27 +1100,27 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.Sword1],
-                            game.Requirements[RequirementType.Hammer],
-                            game.Requirements[RequirementType.Net]
+                            RequirementDictionary.Instance[RequirementType.Sword1],
+                            RequirementDictionary.Instance[RequirementType.Hammer],
+                            RequirementDictionary.Instance[RequirementType.Net]
                         });
                     }
                 case RequirementType.UnknownBoss:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SequenceBreak],
+                            RequirementDictionary.Instance[RequirementType.SequenceBreak],
                             new AggregateRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.Armos],
-                                game.Requirements[RequirementType.Lanmolas],
-                                game.Requirements[RequirementType.Moldorm],
-                                game.Requirements[RequirementType.Arrghus],
-                                game.Requirements[RequirementType.Mothula],
-                                game.Requirements[RequirementType.Blind],
-                                game.Requirements[RequirementType.Kholdstare],
-                                game.Requirements[RequirementType.Vitreous],
-                                game.Requirements[RequirementType.Trinexx]
+                                RequirementDictionary.Instance[RequirementType.Armos],
+                                RequirementDictionary.Instance[RequirementType.Lanmolas],
+                                RequirementDictionary.Instance[RequirementType.Moldorm],
+                                RequirementDictionary.Instance[RequirementType.Arrghus],
+                                RequirementDictionary.Instance[RequirementType.Mothula],
+                                RequirementDictionary.Instance[RequirementType.Blind],
+                                RequirementDictionary.Instance[RequirementType.Kholdstare],
+                                RequirementDictionary.Instance[RequirementType.Vitreous],
+                                RequirementDictionary.Instance[RequirementType.Trinexx]
                             })
                         });
                     }
@@ -1073,33 +1140,33 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.GTBoss3:
                 case RequirementType.GTFinalBoss:
                     {
-                        return GetBossRequirement(game, type);
+                        return GetBossRequirement(type);
                     }
                 case RequirementType.ATBarrier:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.Cape],
+                            RequirementDictionary.Instance[RequirementType.Cape],
                             new AggregateRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.Swordless],
-                                game.Requirements[RequirementType.Hammer]
+                                RequirementDictionary.Instance[RequirementType.Swordless],
+                                RequirementDictionary.Instance[RequirementType.Hammer]
                             }),
-                            game.Requirements[RequirementType.Sword2]
+                            RequirementDictionary.Instance[RequirementType.Sword2]
                         });
                     }
                 case RequirementType.BombDuplicationAncillaOverload:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SBBombDuplicationAncillaOverload],
-                            game.Requirements[RequirementType.NotBunnyDW],
-                            game.Requirements[RequirementType.Bow],
-                            game.Requirements[RequirementType.CaneOfSomaria],
+                            RequirementDictionary.Instance[RequirementType.SBBombDuplicationAncillaOverload],
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
+                            RequirementDictionary.Instance[RequirementType.Bow],
+                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria],
                             new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.Boomerang],
-                                game.Requirements[RequirementType.RedBoomerang]
+                                RequirementDictionary.Instance[RequirementType.Boomerang],
+                                RequirementDictionary.Instance[RequirementType.RedBoomerang]
                             })
                         });
                     }
@@ -1107,40 +1174,40 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyDW],
-                            game.Requirements[RequirementType.Flippers],
-                            game.Requirements[RequirementType.Mirror]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
+                            RequirementDictionary.Instance[RequirementType.Flippers],
+                            RequirementDictionary.Instance[RequirementType.Mirror]
                         });
                     }
                 case RequirementType.BombJumpPoDHammerJump:
                     {
-                        return game.Requirements[RequirementType.SBBombJumpPoDHammerJump];
+                        return RequirementDictionary.Instance[RequirementType.SBBombJumpPoDHammerJump];
                     }
                 case RequirementType.BombJumpSWBigChest:
                     {
-                        return game.Requirements[RequirementType.SBBombJumpSWBigChest];
+                        return RequirementDictionary.Instance[RequirementType.SBBombJumpSWBigChest];
                     }
                 case RequirementType.BombJumpIPBJ:
                     {
-                        return game.Requirements[RequirementType.SBBombJumpIPBJ];
+                        return RequirementDictionary.Instance[RequirementType.SBBombJumpIPBJ];
                     }
                 case RequirementType.BombJumpIPHookshotGap:
                     {
-                        return game.Requirements[RequirementType.SBBombJumpIPHookshotGap];
+                        return RequirementDictionary.Instance[RequirementType.SBBombJumpIPHookshotGap];
                     }
                 case RequirementType.BombJumpIPFreezorRoomGap:
                     {
-                        return game.Requirements[RequirementType.SBBombJumpIPFreezorRoomGap];
+                        return RequirementDictionary.Instance[RequirementType.SBBombJumpIPFreezorRoomGap];
                     }
                 case RequirementType.BonkOverLedge:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.Boots],
+                            RequirementDictionary.Instance[RequirementType.Boots],
                             new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.SBBonkOverLedge],
-                                game.Requirements[RequirementType.ItemPlacementAdvanced]
+                                RequirementDictionary.Instance[RequirementType.SBBonkOverLedge],
+                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced]
                             })
                         });
                     }
@@ -1148,13 +1215,13 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.Cape],
-                            game.Requirements[RequirementType.MoonPearl],
+                            RequirementDictionary.Instance[RequirementType.Cape],
+                            RequirementDictionary.Instance[RequirementType.MoonPearl],
                             new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.Hookshot],
-                                game.Requirements[RequirementType.ItemPlacementAdvanced],
-                                game.Requirements[RequirementType.SBBumperCaveHookshot]
+                                RequirementDictionary.Instance[RequirementType.Hookshot],
+                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
+                                RequirementDictionary.Instance[RequirementType.SBBumperCaveHookshot]
                             })
                         });
                     }
@@ -1162,119 +1229,119 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SBCameraUnlock],
-                            game.Requirements[RequirementType.Bottle]
+                            RequirementDictionary.Instance[RequirementType.SBCameraUnlock],
+                            RequirementDictionary.Instance[RequirementType.Bottle]
                         });
                     }
                 case RequirementType.Curtains:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.Swordless],
-                            game.Requirements[RequirementType.Sword1]
+                            RequirementDictionary.Instance[RequirementType.Swordless],
+                            RequirementDictionary.Instance[RequirementType.Sword1]
                         });
                     }
                 case RequirementType.DarkRoomDeathMountainEntry:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SBDarkRoomDeathMountainEntry],
-                            game.Requirements[RequirementType.Lamp]
+                            RequirementDictionary.Instance[RequirementType.SBDarkRoomDeathMountainEntry],
+                            RequirementDictionary.Instance[RequirementType.Lamp]
                         });
                     }
                 case RequirementType.DarkRoomDeathMountainExit:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SBDarkRoomDeathMountainExit],
-                            game.Requirements[RequirementType.Lamp]
+                            RequirementDictionary.Instance[RequirementType.SBDarkRoomDeathMountainExit],
+                            RequirementDictionary.Instance[RequirementType.Lamp]
                         });
                     }
                 case RequirementType.DarkRoomHC:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SBDarkRoomHC],
-                            game.Requirements[RequirementType.Lamp],
-                            game.Requirements[RequirementType.FireRodDarkRoom]
+                            RequirementDictionary.Instance[RequirementType.SBDarkRoomHC],
+                            RequirementDictionary.Instance[RequirementType.Lamp],
+                            RequirementDictionary.Instance[RequirementType.FireRodDarkRoom]
                         });
                     }
                 case RequirementType.DarkRoomAT:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SBDarkRoomAT],
-                            game.Requirements[RequirementType.Lamp]
+                            RequirementDictionary.Instance[RequirementType.SBDarkRoomAT],
+                            RequirementDictionary.Instance[RequirementType.Lamp]
                         });
                     }
                 case RequirementType.DarkRoomEPRight:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SBDarkRoomEPRight],
-                            game.Requirements[RequirementType.Lamp]
+                            RequirementDictionary.Instance[RequirementType.SBDarkRoomEPRight],
+                            RequirementDictionary.Instance[RequirementType.Lamp]
                         });
                     }
                 case RequirementType.DarkRoomEPBack:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SBDarkRoomEPBack],
-                            game.Requirements[RequirementType.Lamp],
-                            game.Requirements[RequirementType.FireRodDarkRoom]
+                            RequirementDictionary.Instance[RequirementType.SBDarkRoomEPBack],
+                            RequirementDictionary.Instance[RequirementType.Lamp],
+                            RequirementDictionary.Instance[RequirementType.FireRodDarkRoom]
                         });
                     }
                 case RequirementType.DarkRoomPoDDarkBasement:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SBDarkRoomPoDDarkBasement],
-                            game.Requirements[RequirementType.Lamp],
-                            game.Requirements[RequirementType.FireRodDarkRoom]
+                            RequirementDictionary.Instance[RequirementType.SBDarkRoomPoDDarkBasement],
+                            RequirementDictionary.Instance[RequirementType.Lamp],
+                            RequirementDictionary.Instance[RequirementType.FireRodDarkRoom]
                         });
                     }
                 case RequirementType.DarkRoomPoDDarkMaze:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SBDarkRoomPoDDarkMaze],
-                            game.Requirements[RequirementType.Lamp]
+                            RequirementDictionary.Instance[RequirementType.SBDarkRoomPoDDarkMaze],
+                            RequirementDictionary.Instance[RequirementType.Lamp]
                         });
                     }
                 case RequirementType.DarkRoomPoDBossArea:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SBDarkRoomPoDBossArea],
-                            game.Requirements[RequirementType.Lamp]
+                            RequirementDictionary.Instance[RequirementType.SBDarkRoomPoDBossArea],
+                            RequirementDictionary.Instance[RequirementType.Lamp]
                         });
                     }
                 case RequirementType.DarkRoomMM:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SBDarkRoomMM],
-                            game.Requirements[RequirementType.Lamp]
+                            RequirementDictionary.Instance[RequirementType.SBDarkRoomMM],
+                            RequirementDictionary.Instance[RequirementType.Lamp]
                         });
                     }
                 case RequirementType.DarkRoomTR:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SBDarkRoomTR],
-                            game.Requirements[RequirementType.Lamp]
+                            RequirementDictionary.Instance[RequirementType.SBDarkRoomTR],
+                            RequirementDictionary.Instance[RequirementType.Lamp]
                         });
                     }
                 case RequirementType.DungeonRevive:
                     {
-                        return game.Requirements[RequirementType.SBDungeonRevive];
+                        return RequirementDictionary.Instance[RequirementType.SBDungeonRevive];
                     }
                 case RequirementType.FakeFlippersFairyRevival:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SBFakeFlippersFairyRevival],
-                            game.Requirements[RequirementType.Bottle]
+                            RequirementDictionary.Instance[RequirementType.SBFakeFlippersFairyRevival],
+                            RequirementDictionary.Instance[RequirementType.Bottle]
                         });
                     }
                 case RequirementType.FakeFlippersSplashDeletion:
@@ -1283,39 +1350,39 @@ namespace OpenTracker.Models.Requirements
                         {
                             new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.Bow],
-                                game.Requirements[RequirementType.RedBoomerang],
-                                game.Requirements[RequirementType.CaneOfSomaria],
-                                game.Requirements[RequirementType.IceRod]
+                                RequirementDictionary.Instance[RequirementType.Bow],
+                                RequirementDictionary.Instance[RequirementType.RedBoomerang],
+                                RequirementDictionary.Instance[RequirementType.CaneOfSomaria],
+                                RequirementDictionary.Instance[RequirementType.IceRod]
                             }),
-                            game.Requirements[RequirementType.SBFakeFlippersSplashDeletion]
+                            RequirementDictionary.Instance[RequirementType.SBFakeFlippersSplashDeletion]
                         });
                     }
                 case RequirementType.FireSource:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.Lamp],
-                            game.Requirements[RequirementType.FireRod]
+                            RequirementDictionary.Instance[RequirementType.Lamp],
+                            RequirementDictionary.Instance[RequirementType.FireRod]
                         });
                     }
                 case RequirementType.Hover:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SBHover],
-                            game.Requirements[RequirementType.Boots]
+                            RequirementDictionary.Instance[RequirementType.SBHover],
+                            RequirementDictionary.Instance[RequirementType.Boots]
                         });
                     }
                 case RequirementType.LaserBridge:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SBTRLaserSkip],
-                            game.Requirements[RequirementType.ItemPlacementAdvanced],
-                            game.Requirements[RequirementType.Cape],
-                            game.Requirements[RequirementType.CaneOfByrna],
-                            game.Requirements[RequirementType.Shield3]
+                            RequirementDictionary.Instance[RequirementType.SBTRLaserSkip],
+                            RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
+                            RequirementDictionary.Instance[RequirementType.Cape],
+                            RequirementDictionary.Instance[RequirementType.CaneOfByrna],
+                            RequirementDictionary.Instance[RequirementType.Shield3]
                         });
                     }
                 case RequirementType.Pedestal:
@@ -1324,19 +1391,19 @@ namespace OpenTracker.Models.Requirements
                         {
                             new AggregateRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.Pendant],
-                                game.Requirements[RequirementType.GreenPendant],
+                                RequirementDictionary.Instance[RequirementType.Pendant],
+                                RequirementDictionary.Instance[RequirementType.GreenPendant],
                                 new AlternativeRequirement(new List<IRequirement>
                                 {
-                                    game.Requirements[RequirementType.SBBlindPedestal],
-                                    game.Requirements[RequirementType.ItemPlacementAdvanced],
-                                    game.Requirements[RequirementType.Book]
+                                    RequirementDictionary.Instance[RequirementType.SBBlindPedestal],
+                                    RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
+                                    RequirementDictionary.Instance[RequirementType.Book]
                                 })
                             }),
                             new AggregateRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.Book],
-                                game.Requirements[RequirementType.Inspect]
+                                RequirementDictionary.Instance[RequirementType.Book],
+                                RequirementDictionary.Instance[RequirementType.Inspect]
                             })
                         });
                     }
@@ -1344,45 +1411,45 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.EnemyShuffleOn],
-                            game.Requirements[RequirementType.Bow]
+                            RequirementDictionary.Instance[RequirementType.EnemyShuffleOn],
+                            RequirementDictionary.Instance[RequirementType.Bow]
                         });
                     }
                 case RequirementType.SPEntry:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.MoonPearl],
-                            game.Requirements[RequirementType.Mirror],
-                            game.Requirements[RequirementType.LightWorld]
+                            RequirementDictionary.Instance[RequirementType.MoonPearl],
+                            RequirementDictionary.Instance[RequirementType.Mirror],
+                            RequirementDictionary.Instance[RequirementType.LightWorld]
                         });
                     }
                 case RequirementType.SuperBunnyFallInHole:
                     {
-                        return game.Requirements[RequirementType.SBSuperBunnyFallInHole];
+                        return RequirementDictionary.Instance[RequirementType.SBSuperBunnyFallInHole];
                     }
                 case RequirementType.SuperBunnyMirror:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SBSuperBunnyMirror],
-                            game.Requirements[RequirementType.Mirror]
+                            RequirementDictionary.Instance[RequirementType.SBSuperBunnyMirror],
+                            RequirementDictionary.Instance[RequirementType.Mirror]
                         });
                     }
                 case RequirementType.Tablet:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.Book],
+                            RequirementDictionary.Instance[RequirementType.Book],
                             new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.Inspect],
+                                RequirementDictionary.Instance[RequirementType.Inspect],
                                 new AggregateRequirement(new List<IRequirement>
                                 {
-                                    game.Requirements[RequirementType.Swordless],
-                                    game.Requirements[RequirementType.Hammer]
+                                    RequirementDictionary.Instance[RequirementType.Swordless],
+                                    RequirementDictionary.Instance[RequirementType.Hammer]
                                 }),
-                                game.Requirements[RequirementType.Sword2]
+                                RequirementDictionary.Instance[RequirementType.Sword2]
                             })
                         });
                     }
@@ -1390,52 +1457,52 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SBToHHerapot],
-                            game.Requirements[RequirementType.Hookshot]
+                            RequirementDictionary.Instance[RequirementType.SBToHHerapot],
+                            RequirementDictionary.Instance[RequirementType.Hookshot]
                         });
                     }
                 case RequirementType.IPIceBreaker:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SBIPIceBreaker],
-                            game.Requirements[RequirementType.CaneOfSomaria]
+                            RequirementDictionary.Instance[RequirementType.SBIPIceBreaker],
+                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria]
                         });
                     }
                 case RequirementType.MMMedallion:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyDW],
-                            game.Requirements[RequirementType.UseMedallion],
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
+                            RequirementDictionary.Instance[RequirementType.UseMedallion],
                             new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.AllMedallions],
+                                RequirementDictionary.Instance[RequirementType.AllMedallions],
                                 new AggregateRequirement(new List<IRequirement>
                                 {
-                                    game.Requirements[RequirementType.Bombos],
+                                    RequirementDictionary.Instance[RequirementType.Bombos],
                                     new AlternativeRequirement(new List<IRequirement>
                                     {
-                                        game.Requirements[RequirementType.BombosMM],
-                                        game.Requirements[RequirementType.BombosBoth]
+                                        RequirementDictionary.Instance[RequirementType.BombosMM],
+                                        RequirementDictionary.Instance[RequirementType.BombosBoth]
                                     })
                                 }),
                                 new AggregateRequirement(new List<IRequirement>
                                 {
-                                    game.Requirements[RequirementType.Ether],
+                                    RequirementDictionary.Instance[RequirementType.Ether],
                                     new AlternativeRequirement(new List<IRequirement>
                                     {
-                                        game.Requirements[RequirementType.EtherMM],
-                                        game.Requirements[RequirementType.EtherBoth]
+                                        RequirementDictionary.Instance[RequirementType.EtherMM],
+                                        RequirementDictionary.Instance[RequirementType.EtherBoth]
                                     })
                                 }),
                                 new AggregateRequirement(new List<IRequirement>
                                 {
-                                    game.Requirements[RequirementType.Quake],
+                                    RequirementDictionary.Instance[RequirementType.Quake],
                                     new AlternativeRequirement(new List<IRequirement>
                                     {
-                                        game.Requirements[RequirementType.QuakeMM],
-                                        game.Requirements[RequirementType.QuakeBoth]
+                                        RequirementDictionary.Instance[RequirementType.QuakeMM],
+                                        RequirementDictionary.Instance[RequirementType.QuakeBoth]
                                     })
                                 }),
                             })
@@ -1445,36 +1512,36 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyDW],
-                            game.Requirements[RequirementType.UseMedallion],
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
+                            RequirementDictionary.Instance[RequirementType.UseMedallion],
                             new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.AllMedallions],
+                                RequirementDictionary.Instance[RequirementType.AllMedallions],
                                 new AggregateRequirement(new List<IRequirement>
                                 {
-                                    game.Requirements[RequirementType.Bombos],
+                                    RequirementDictionary.Instance[RequirementType.Bombos],
                                     new AlternativeRequirement(new List<IRequirement>
                                     {
-                                        game.Requirements[RequirementType.BombosTR],
-                                        game.Requirements[RequirementType.BombosBoth]
+                                        RequirementDictionary.Instance[RequirementType.BombosTR],
+                                        RequirementDictionary.Instance[RequirementType.BombosBoth]
                                     })
                                 }),
                                 new AggregateRequirement(new List<IRequirement>
                                 {
-                                    game.Requirements[RequirementType.Ether],
+                                    RequirementDictionary.Instance[RequirementType.Ether],
                                     new AlternativeRequirement(new List<IRequirement>
                                     {
-                                        game.Requirements[RequirementType.EtherTR],
-                                        game.Requirements[RequirementType.EtherBoth]
+                                        RequirementDictionary.Instance[RequirementType.EtherTR],
+                                        RequirementDictionary.Instance[RequirementType.EtherBoth]
                                     })
                                 }),
                                 new AggregateRequirement(new List<IRequirement>
                                 {
-                                    game.Requirements[RequirementType.Quake],
+                                    RequirementDictionary.Instance[RequirementType.Quake],
                                     new AlternativeRequirement(new List<IRequirement>
                                     {
-                                        game.Requirements[RequirementType.QuakeTR],
-                                        game.Requirements[RequirementType.QuakeBoth]
+                                        RequirementDictionary.Instance[RequirementType.QuakeTR],
+                                        RequirementDictionary.Instance[RequirementType.QuakeBoth]
                                     })
                                 }),
                             })
@@ -1486,16 +1553,16 @@ namespace OpenTracker.Models.Requirements
                         {
                             new AggregateRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.SmallKeyShuffleOn],
-                                game.Requirements[RequirementType.TRSmallKey2]
+                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn],
+                                RequirementDictionary.Instance[RequirementType.TRSmallKey2]
                             }),
                             new AggregateRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.SmallKeyShuffleOff],
+                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff],
                                 new AlternativeRequirement(new List<IRequirement>
                                 {
-                                    game.Requirements[RequirementType.FireRod],
-                                    game.Requirements[RequirementType.SequenceBreak]
+                                    RequirementDictionary.Instance[RequirementType.FireRod],
+                                    RequirementDictionary.Instance[RequirementType.SequenceBreak]
                                 })
                             })
                         });
@@ -1504,20 +1571,20 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SBWaterWalk],
-                            game.Requirements[RequirementType.Boots]
+                            RequirementDictionary.Instance[RequirementType.SBWaterWalk],
+                            RequirementDictionary.Instance[RequirementType.Boots]
                         });
                     }
                 case RequirementType.WaterWalkFromWaterfallCave:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SBWaterWalkFromWaterfallCave],
-                            game.Requirements[RequirementType.NoFlippers],
+                            RequirementDictionary.Instance[RequirementType.SBWaterWalkFromWaterfallCave],
+                            RequirementDictionary.Instance[RequirementType.NoFlippers],
                             new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.MoonPearl],
-                                game.Requirements[RequirementType.WaterfallFairyAccess]
+                                RequirementDictionary.Instance[RequirementType.MoonPearl],
+                                RequirementDictionary.Instance[RequirementType.WaterfallFairyAccess]
                             })
                         });
                     }
@@ -1525,32 +1592,32 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyLW],
-                            game.Requirements[RequirementType.Boots]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
+                            RequirementDictionary.Instance[RequirementType.Boots]
                         });
                     }
                 case RequirementType.LWFakeFlippersFairyRevival:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyLW],
-                            game.Requirements[RequirementType.FakeFlippersFairyRevival]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
+                            RequirementDictionary.Instance[RequirementType.FakeFlippersFairyRevival]
                         });
                     }
                 case RequirementType.LWFakeFlippersScreenTransition:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.SBFakeFlippersScreenTransition],
-                            game.Requirements[RequirementType.NotBunnyLW]
+                            RequirementDictionary.Instance[RequirementType.SBFakeFlippersScreenTransition],
+                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]
                         });
                     }
                 case RequirementType.LWFakeFlippersSplashDeletion:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyLW],
-                            game.Requirements[RequirementType.FakeFlippersSplashDeletion]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
+                            RequirementDictionary.Instance[RequirementType.FakeFlippersSplashDeletion]
                         });
                     }
                 case RequirementType.LWFlute:
@@ -1559,57 +1626,57 @@ namespace OpenTracker.Models.Requirements
                         {
                             new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.WorldStateStandardOpen],
-                                game.Requirements[RequirementType.WorldStateRetro]
+                                RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen],
+                                RequirementDictionary.Instance[RequirementType.WorldStateRetro]
                             }),
-                            game.Requirements[RequirementType.Flute]
+                            RequirementDictionary.Instance[RequirementType.Flute]
                         });
                     }
                 case RequirementType.LWHammer:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyLW],
-                            game.Requirements[RequirementType.Hammer]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
+                            RequirementDictionary.Instance[RequirementType.Hammer]
                         });
                     }
                 case RequirementType.LWHookshot:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyLW],
-                            game.Requirements[RequirementType.Hookshot]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
+                            RequirementDictionary.Instance[RequirementType.Hookshot]
                         });
                     }
                 case RequirementType.LWLift1:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyLW],
-                            game.Requirements[RequirementType.Gloves1]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
+                            RequirementDictionary.Instance[RequirementType.Gloves1]
                         });
                     }
                 case RequirementType.LWLift2:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyLW],
-                            game.Requirements[RequirementType.Gloves2]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
+                            RequirementDictionary.Instance[RequirementType.Gloves2]
                         });
                     }
                 case RequirementType.LWPowder:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyLW],
+                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
                             new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.Powder],
+                                RequirementDictionary.Instance[RequirementType.Powder],
                                 new AggregateRequirement(new List<IRequirement>
                                 {
-                                    game.Requirements[RequirementType.SBFakePowder],
-                                    game.Requirements[RequirementType.Mushroom],
-                                    game.Requirements[RequirementType.CaneOfSomaria]
+                                    RequirementDictionary.Instance[RequirementType.SBFakePowder],
+                                    RequirementDictionary.Instance[RequirementType.Mushroom],
+                                    RequirementDictionary.Instance[RequirementType.CaneOfSomaria]
                                 })
                             })
                         });
@@ -1618,129 +1685,129 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyLW],
-                            game.Requirements[RequirementType.Shovel]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
+                            RequirementDictionary.Instance[RequirementType.Shovel]
                         });
                     }
                 case RequirementType.LWSwim:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyLW],
-                            game.Requirements[RequirementType.Flippers]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
+                            RequirementDictionary.Instance[RequirementType.Flippers]
                         });
                     }
                 case RequirementType.LWWaterWalk:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyLW],
-                            game.Requirements[RequirementType.WaterWalk]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
+                            RequirementDictionary.Instance[RequirementType.WaterWalk]
                         });
                     }
                 case RequirementType.DWDash:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyDW],
-                            game.Requirements[RequirementType.Boots]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
+                            RequirementDictionary.Instance[RequirementType.Boots]
                         });
                     }
                 case RequirementType.DWFakeFlippersFairyRevival:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyDW],
-                            game.Requirements[RequirementType.FakeFlippersFairyRevival]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
+                            RequirementDictionary.Instance[RequirementType.FakeFlippersFairyRevival]
                         });
                     }
                 case RequirementType.DWFakeFlippersQirnJump:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyDW],
-                            game.Requirements[RequirementType.SBFakeFlippersQirnJump]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
+                            RequirementDictionary.Instance[RequirementType.SBFakeFlippersQirnJump]
                         });
                     }
                 case RequirementType.DWFakeFlippersSplashDeletion:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyDW],
-                            game.Requirements[RequirementType.FakeFlippersSplashDeletion]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
+                            RequirementDictionary.Instance[RequirementType.FakeFlippersSplashDeletion]
                         });
                     }
                 case RequirementType.DWFireRod:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyDW],
-                            game.Requirements[RequirementType.FireRod]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
+                            RequirementDictionary.Instance[RequirementType.FireRod]
                         });
                     }
                 case RequirementType.DWFlute:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.WorldStateInverted],
-                            game.Requirements[RequirementType.MoonPearl],
-                            game.Requirements[RequirementType.Flute]
+                            RequirementDictionary.Instance[RequirementType.WorldStateInverted],
+                            RequirementDictionary.Instance[RequirementType.MoonPearl],
+                            RequirementDictionary.Instance[RequirementType.Flute]
                         });
                     }
                 case RequirementType.DWHammer:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyDW],
-                            game.Requirements[RequirementType.Hammer]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
+                            RequirementDictionary.Instance[RequirementType.Hammer]
                         });
                     }
                 case RequirementType.DWHookshot:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyDW],
-                            game.Requirements[RequirementType.Hookshot]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
+                            RequirementDictionary.Instance[RequirementType.Hookshot]
                         });
                     }
                 case RequirementType.DWHover:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyDW],
-                            game.Requirements[RequirementType.Hover]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
+                            RequirementDictionary.Instance[RequirementType.Hover]
                         });
                     }
                 case RequirementType.DWLift1:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyDW],
-                            game.Requirements[RequirementType.Gloves1]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
+                            RequirementDictionary.Instance[RequirementType.Gloves1]
                         });
                     }
                 case RequirementType.DWLift2:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyDW],
-                            game.Requirements[RequirementType.Gloves2]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
+                            RequirementDictionary.Instance[RequirementType.Gloves2]
                         });
                     }
                 case RequirementType.DWSpikeCave:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyDW],
-                            game.Requirements[RequirementType.Hammer],
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
+                            RequirementDictionary.Instance[RequirementType.Hammer],
                             new AlternativeRequirement(new List<IRequirement>
                             {
-                                game.Requirements[RequirementType.SequenceBreak],
-                                game.Requirements[RequirementType.CaneOfByrna],
+                                RequirementDictionary.Instance[RequirementType.SequenceBreak],
+                                RequirementDictionary.Instance[RequirementType.CaneOfByrna],
                                 new AggregateRequirement(new List<IRequirement>
                                 {
-                                    game.Requirements[RequirementType.Cape],
-                                    game.Requirements[RequirementType.ExtendMagic1]
+                                    RequirementDictionary.Instance[RequirementType.Cape],
+                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1]
                                 })
                             })
                         });
@@ -1749,40 +1816,21 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyDW],
-                            game.Requirements[RequirementType.Flippers]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
+                            RequirementDictionary.Instance[RequirementType.Flippers]
                         });
                     }
                 case RequirementType.DWWaterWalk:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
-                            game.Requirements[RequirementType.NotBunnyDW],
-                            game.Requirements[RequirementType.WaterWalk]
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
+                            RequirementDictionary.Instance[RequirementType.WaterWalk]
                         });
                     }
             }
 
             throw new ArgumentOutOfRangeException(nameof(type));
-        }
-
-        internal static void GetAllRequirements(
-            Game game, Dictionary<RequirementType, IRequirement> requirements)
-        {
-            if (game == null)
-            {
-                throw new ArgumentNullException(nameof(game));
-            }
-
-            if (requirements == null)
-            {
-                throw new ArgumentNullException(nameof(requirements));
-            }
-
-            foreach (RequirementType type in Enum.GetValues(typeof(RequirementType)))
-            {
-                requirements.Add(type, GetRequirement(game, type));
-            }
         }
     }
 }

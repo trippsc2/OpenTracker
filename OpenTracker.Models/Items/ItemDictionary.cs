@@ -1,36 +1,55 @@
 ﻿using OpenTracker.Models.Enums;
-using OpenTracker.Models.Items;
-using System;
+using OpenTracker.Models.Utils;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace OpenTracker.Models.Dictionaries
+namespace OpenTracker.Models.Items
 {
     /// <summary>
     /// This is the dictionary container for items, both tracked and untracked
     /// </summary>
-    public class ItemDictionary : Dictionary<ItemType, IItem>
+    public class ItemDictionary : Singleton<ItemDictionary>, IDictionary<ItemType, IItem>
     {
-        private readonly Mode _mode;
+        private static readonly ConcurrentDictionary<ItemType, IItem> _dictionary =
+            new ConcurrentDictionary<ItemType, IItem>();
+
+        public ICollection<ItemType> Keys =>
+            ((IDictionary<ItemType, IItem>)_dictionary).Keys;
+
+        public ICollection<IItem> Values =>
+            ((IDictionary<ItemType, IItem>)_dictionary).Values;
+
+        public int Count =>
+            ((ICollection<KeyValuePair<ItemType, IItem>>)_dictionary).Count;
+
+        public bool IsReadOnly =>
+            ((ICollection<KeyValuePair<ItemType, IItem>>)_dictionary).IsReadOnly;
+
+        public IItem this[ItemType key]
+        {
+            get
+            {
+                if (!ContainsKey(key))
+                {
+                    Create(key);
+                }
+
+                return ((IDictionary<ItemType, IItem>)_dictionary)[key];
+            }
+            set => ((IDictionary<ItemType, IItem>)_dictionary)[key] = value;
+        }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="mode">
-        /// The game data parent class.
-        /// </param>
-        public ItemDictionary(Game game) : base()
+        public ItemDictionary()
         {
-            if (game == null)
-            {
-                throw new ArgumentNullException(nameof(game));
-            }
+        }
 
-            _mode = game.Mode;
-
-            foreach (ItemType type in Enum.GetValues(typeof(ItemType)))
-            {
-                Add(type, ItemFactory.GetItem(game, type));
-            }
+        private void Create(ItemType key)
+        {
+            Add(key, ItemFactory.GetItem(key));
         }
 
         /// <summary>
@@ -77,12 +96,12 @@ namespace OpenTracker.Models.Dictionaries
                 case ItemType.TRSmallKey:
                 case ItemType.GTSmallKey:
                     {
-                        if (_mode.WorldState == WorldState.Retro)
+                        if (Mode.Instance.WorldState == WorldState.Retro)
                         {
                             return this[type].Current + this[ItemType.SmallKey].Current >= minimumValue;
                         }
 
-                        return _mode.DungeonItemShuffle < DungeonItemShuffle.MapsCompassesSmallKeys ||
+                        return Mode.Instance.DungeonItemShuffle < DungeonItemShuffle.MapsCompassesSmallKeys ||
                             this[type].Current >= minimumValue;
                     }
                 case ItemType.EPBigKey:
@@ -97,7 +116,7 @@ namespace OpenTracker.Models.Dictionaries
                 case ItemType.TRBigKey:
                 case ItemType.GTBigKey:
                     {
-                        return _mode.DungeonItemShuffle < DungeonItemShuffle.Keysanity ||
+                        return Mode.Instance.DungeonItemShuffle < DungeonItemShuffle.Keysanity ||
                             this[type].Current >= minimumValue;
                     }
                 case ItemType.LightWorldAccess:
@@ -130,7 +149,7 @@ namespace OpenTracker.Models.Dictionaries
                 case ItemType.TurtleRockTunnelAccess:
                 case ItemType.TurtleRockSafetyDoorAccess:
                     {
-                        return _mode.EntranceShuffle && this[type].Current >= minimumValue;
+                        return Mode.Instance.EntranceShuffle && this[type].Current >= minimumValue;
                     }
                 default:
                     {
@@ -292,7 +311,7 @@ namespace OpenTracker.Models.Dictionaries
         /// </returns>
         public bool CanPassRedEyegoreGoriyaRooms()
         {
-            return CanShootArrows() || _mode.EnemyShuffle;
+            return CanShootArrows() || Mode.Instance.EnemyShuffle;
         }
 
         /// <summary>
@@ -305,7 +324,7 @@ namespace OpenTracker.Models.Dictionaries
         /// </returns>
         public bool NotBunnyInLightWorld()
         {
-            return _mode.WorldState != WorldState.Inverted || Has(ItemType.MoonPearl);
+            return Mode.Instance.WorldState != WorldState.Inverted || Has(ItemType.MoonPearl);
         }
 
         /// <summary>
@@ -318,7 +337,7 @@ namespace OpenTracker.Models.Dictionaries
         /// </returns>
         public bool NotBunnyInDarkWorld()
         {
-            return _mode.WorldState == WorldState.Inverted || Has(ItemType.MoonPearl);
+            return Mode.Instance.WorldState == WorldState.Inverted || Has(ItemType.MoonPearl);
         }
 
         /// <summary>
@@ -330,6 +349,66 @@ namespace OpenTracker.Models.Dictionaries
             {
                 item.Reset();
             }
+        }
+
+        public void Add(ItemType key, IItem value)
+        {
+            ((IDictionary<ItemType, IItem>)_dictionary).Add(key, value);
+        }
+
+        public bool ContainsKey(ItemType key)
+        {
+            return ((IDictionary<ItemType, IItem>)_dictionary).ContainsKey(key);
+        }
+
+        public bool Remove(ItemType key)
+        {
+            return ((IDictionary<ItemType, IItem>)_dictionary).Remove(key);
+        }
+
+        public bool TryGetValue(ItemType key, out IItem value)
+        {
+            if (!ContainsKey(key))
+            {
+                Create(key);
+            }
+
+            return ((IDictionary<ItemType, IItem>)_dictionary).TryGetValue(key, out value);
+        }
+
+        public void Add(KeyValuePair<ItemType, IItem> item)
+        {
+            ((ICollection<KeyValuePair<ItemType, IItem>>)_dictionary).Add(item);
+        }
+
+        public void Clear()
+        {
+            ((ICollection<KeyValuePair<ItemType, IItem>>)_dictionary).Clear();
+        }
+
+        public bool Contains(KeyValuePair<ItemType, IItem> item)
+        {
+            return ((ICollection<KeyValuePair<ItemType, IItem>>)_dictionary).Contains(item);
+        }
+
+        public void CopyTo(KeyValuePair<ItemType, IItem>[] array, int arrayIndex)
+        {
+            ((ICollection<KeyValuePair<ItemType, IItem>>)_dictionary).CopyTo(array, arrayIndex);
+        }
+
+        public bool Remove(KeyValuePair<ItemType, IItem> item)
+        {
+            return ((ICollection<KeyValuePair<ItemType, IItem>>)_dictionary).Remove(item);
+        }
+
+        public IEnumerator<KeyValuePair<ItemType, IItem>> GetEnumerator()
+        {
+            return ((IEnumerable<KeyValuePair<ItemType, IItem>>)_dictionary).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable)_dictionary).GetEnumerator();
         }
     }
 }

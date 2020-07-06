@@ -1,4 +1,5 @@
-﻿using OpenTracker.Models.Enums;
+﻿using OpenTracker.Models.BossPlacements;
+using OpenTracker.Models.Enums;
 using System;
 using System.ComponentModel;
 
@@ -9,8 +10,10 @@ namespace OpenTracker.Models.Requirements
     /// </summary>
     internal class BossRequirement : IRequirement
     {
-        private readonly Game _game;
-        private readonly BossPlacement _bossPlacement;
+        private readonly IBossPlacement _bossPlacement;
+
+        public bool Met =>
+            Accessibility != AccessibilityLevel.None;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -57,12 +60,11 @@ namespace OpenTracker.Models.Requirements
         /// <param name="bossPlacement">
         /// The boss placement to provide requirements.
         /// </param>
-        public BossRequirement(Game game, BossPlacement bossPlacement)
+        public BossRequirement(IBossPlacement bossPlacement)
         {
-            _game = game ?? throw new ArgumentNullException(nameof(game));
             _bossPlacement = bossPlacement ?? throw new ArgumentNullException(nameof(bossPlacement));
 
-            game.Mode.PropertyChanged += OnModeChanged;
+            Mode.Instance.PropertyChanged += OnModeChanged;
             _bossPlacement.PropertyChanged += OnBossPlacementChanged;
             
             UpdateRequirement();
@@ -144,23 +146,23 @@ namespace OpenTracker.Models.Requirements
             {
                 CurrentBossRequirement = boss.Value switch
                 {
-                    BossType.Armos => _game.Requirements[RequirementType.Armos],
-                    BossType.Lanmolas => _game.Requirements[RequirementType.Lanmolas],
-                    BossType.Moldorm => _game.Requirements[RequirementType.Moldorm],
-                    BossType.HelmasaurKing => _game.Requirements[RequirementType.None],
-                    BossType.Arrghus => _game.Requirements[RequirementType.Arrghus],
-                    BossType.Mothula => _game.Requirements[RequirementType.Mothula],
-                    BossType.Blind => _game.Requirements[RequirementType.Blind],
-                    BossType.Kholdstare => _game.Requirements[RequirementType.Kholdstare],
-                    BossType.Vitreous => _game.Requirements[RequirementType.Vitreous],
-                    BossType.Trinexx => _game.Requirements[RequirementType.Trinexx],
-                    BossType.Aga => _game.Requirements[RequirementType.AgaBoss],
+                    BossType.Armos => RequirementDictionary.Instance[RequirementType.Armos],
+                    BossType.Lanmolas => RequirementDictionary.Instance[RequirementType.Lanmolas],
+                    BossType.Moldorm => RequirementDictionary.Instance[RequirementType.Moldorm],
+                    BossType.HelmasaurKing => RequirementDictionary.Instance[RequirementType.None],
+                    BossType.Arrghus => RequirementDictionary.Instance[RequirementType.Arrghus],
+                    BossType.Mothula => RequirementDictionary.Instance[RequirementType.Mothula],
+                    BossType.Blind => RequirementDictionary.Instance[RequirementType.Blind],
+                    BossType.Kholdstare => RequirementDictionary.Instance[RequirementType.Kholdstare],
+                    BossType.Vitreous => RequirementDictionary.Instance[RequirementType.Vitreous],
+                    BossType.Trinexx => RequirementDictionary.Instance[RequirementType.Trinexx],
+                    BossType.Aga => RequirementDictionary.Instance[RequirementType.AgaBoss],
                     _ => throw new Exception()
                 };
             }
             else
             {
-                Accessibility = _game.Requirements[RequirementType.UnknownBoss].Accessibility;
+                Accessibility = RequirementDictionary.Instance[RequirementType.UnknownBoss].Accessibility;
             }
         }
 

@@ -5,8 +5,9 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Design", "CA1000:Do not declare static members on generic types", Justification = "Generic Singleton requires static generic properties.", Scope = "member", Target = "~P:OpenTracker.Models.Utils.Singleton`1.Instance")]
+[assembly: SuppressMessage("Design", "CA1000:Do not declare static members on generic types", Justification = "Generic Singleton requires a static instance.", Scope = "member", Target = "~P:OpenTracker.Models.Utils.Singleton`1.Instance")]
 [assembly: SuppressMessage("Design", "CA1010:Generic interface should also be implemented", Justification = "ObservableStack does not need to implement ICollection.", Scope = "type", Target = "~T:OpenTracker.Models.Utils.ObservableStack`1")]
+[assembly: SuppressMessage("Design", "CA1052:Static holder types should be Static or NotInheritable", Justification = "Generic Singleton must be non-static.", Scope = "type", Target = "~T:OpenTracker.Models.Utils.Singleton`1")]
 [assembly: SuppressMessage("Design", "CA1056:Uri properties should not be strings", Justification = "WebSocketSharp library takes a string for the Uri instead of Uri class.", Scope = "member", Target = "~P:OpenTracker.Models.SNESConnectors.ISNESConnector.Uri")]
 [assembly: SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "Localization will occur at a later date.", Scope = "member", Target = "~M:OpenTracker.Models.SNESConnectors.USB2SNESConnector.AttachDevice(System.Int32)~System.Boolean")]
 [assembly: SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters", Justification = "Localization will occur at a later date.", Scope = "member", Target = "~M:OpenTracker.Models.SNESConnectors.USB2SNESConnector.AttachDeviceIfNeeded(System.Int32)~System.Boolean")]

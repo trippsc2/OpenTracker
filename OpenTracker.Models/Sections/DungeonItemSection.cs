@@ -1,4 +1,8 @@
 ﻿using OpenTracker.Models.Enums;
+using OpenTracker.Models.Items;
+using OpenTracker.Models.Locations;
+using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Requirements;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -14,7 +18,6 @@ namespace OpenTracker.Models.Sections
     /// </summary>
     public class DungeonItemSection : ISection
     {
-        private readonly Game _game;
         private readonly Location _location;
         private readonly int _baseTotal;
         private readonly DungeonData _dungeonData;
@@ -118,18 +121,17 @@ namespace OpenTracker.Models.Sections
         /// <param name="location">
         /// The data for the location to which this section belongs.
         /// </param>
-        public DungeonItemSection(Game game, Location location)
+        public DungeonItemSection(Location location)
         {
-            _game = game ?? throw new ArgumentNullException(nameof(game));
             _location = location ?? throw new ArgumentNullException(nameof(location));
-            _dungeonData = new DungeonData(_game, _location, this);
+            _dungeonData = new DungeonData(_location, this);
             _dungeonDataQueue = new ConcurrentQueue<DungeonData>();
             KeyLayouts = new List<KeyLayout>();
             BigKeyPlacements = new List<BigKeyPlacement>();
 
             for (int i = 0; i < Environment.ProcessorCount - 1; i++)
             {
-                _dungeonDataQueue.Enqueue(new DungeonData(_game, _location, this));
+                _dungeonDataQueue.Enqueue(new DungeonData(_location, this));
             }
 
             switch (_location.ID)
@@ -151,18 +153,18 @@ namespace OpenTracker.Models.Sections
 
                         CanComplete = () =>
                         {
-                            if (_game.RequirementNodes[RequirementNodeID.HCFrontEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.RequirementNodes[RequirementNodeID.HCSanctuaryEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.DarkRoomHC].Accessibility == AccessibilityLevel.Normal)
+                            if (RequirementNodeDictionary.Instance[RequirementNodeID.HCFrontEntry].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementNodeDictionary.Instance[RequirementNodeID.HCSanctuaryEntry].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.DarkRoomHC].Accessibility == AccessibilityLevel.Normal)
                             {
-                                if (_game.Mode.SmallKeyShuffle)
+                                if (Mode.Instance.SmallKeyShuffle)
                                 {
-                                    return _game.RequirementNodes[RequirementNodeID.HCBackEntry].Accessibility == AccessibilityLevel.Normal ||
-                                        _game.Items.Has(ItemType.HCSmallKey);
+                                    return RequirementNodeDictionary.Instance[RequirementNodeID.HCBackEntry].Accessibility == AccessibilityLevel.Normal ||
+                                        ItemDictionary.Instance.Has(ItemType.HCSmallKey);
                                 }
                                 else
                                 {
-                                    return _game.RequirementNodes[RequirementNodeID.HCBackEntry].Accessibility == AccessibilityLevel.Normal;
+                                    return RequirementNodeDictionary.Instance[RequirementNodeID.HCBackEntry].Accessibility == AccessibilityLevel.Normal;
                                 }
                             }
 
@@ -182,11 +184,11 @@ namespace OpenTracker.Models.Sections
 
                         CanComplete = () =>
                         {
-                            return _game.RequirementNodes[RequirementNodeID.ATEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.DarkRoomAT].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.Curtains].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.ATBoss].Accessibility == AccessibilityLevel.Normal &&
-                                (!_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.ATSmallKey, 2));
+                            return RequirementNodeDictionary.Instance[RequirementNodeID.ATEntry].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.DarkRoomAT].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.Curtains].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.ATBoss].Accessibility == AccessibilityLevel.Normal &&
+                                (!Mode.Instance.SmallKeyShuffle || ItemDictionary.Instance.Has(ItemType.ATSmallKey, 2));
                         };
                     }
                     break;
@@ -203,17 +205,22 @@ namespace OpenTracker.Models.Sections
                                 DungeonItemID.EPMapChest,
                                 DungeonItemID.EPCompassChest,
                                 DungeonItemID.EPBigKeyChest,
-                            }, new ModeRequirement())
+                            })
                         };
 
                         CanComplete = () =>
                         {
-                            return _game.RequirementNodes[RequirementNodeID.EPEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.DarkRoomEPRight].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.DarkRoomEPBack].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.RedEyegoreGoriya].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.EPBoss].Accessibility == AccessibilityLevel.Normal &&
-                                (!_game.Mode.BigKeyShuffle || _game.Items.Has(ItemType.EPBigKey));
+                            return RequirementNodeDictionary.Instance[RequirementNodeID.EPEntry]
+                                .Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.DarkRoomEPRight]
+                                .Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.DarkRoomEPBack]
+                                .Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.RedEyegoreGoriya]
+                                .Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.EPBoss]
+                                .Accessibility == AccessibilityLevel.Normal &&
+                                (!Mode.Instance.BigKeyShuffle || ItemDictionary.Instance.Has(ItemType.EPBigKey));
                         };
                     }
                     break;
@@ -236,19 +243,19 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.DPTorch,
                             DungeonItemID.DPCompassChest,
                             DungeonItemID.DPBigKeyChest
-                        }, new ModeRequirement()));
+                        }));
                         HasMarking = true;
 
                         CanComplete = () =>
                         {
-                            return (_game.RequirementNodes[RequirementNodeID.DPFrontEntry].Accessibility == AccessibilityLevel.Normal ||
-                                _game.RequirementNodes[RequirementNodeID.DPLeftEntry].Accessibility == AccessibilityLevel.Normal) &&
-                                _game.RequirementNodes[RequirementNodeID.DPBackEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.Boots].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.FireSource].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.DPBoss].Accessibility == AccessibilityLevel.Normal &&
-                                (!_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.DPSmallKey)) &&
-                                (!_game.Mode.BigKeyShuffle || _game.Items.Has(ItemType.DPBigKey));
+                            return (RequirementNodeDictionary.Instance[RequirementNodeID.DPFrontEntry].Accessibility == AccessibilityLevel.Normal ||
+                                RequirementNodeDictionary.Instance[RequirementNodeID.DPLeftEntry].Accessibility == AccessibilityLevel.Normal) &&
+                                RequirementNodeDictionary.Instance[RequirementNodeID.DPBackEntry].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.Boots].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.FireSource].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.DPBoss].Accessibility == AccessibilityLevel.Normal &&
+                                (!Mode.Instance.SmallKeyShuffle || ItemDictionary.Instance.Has(ItemType.DPSmallKey)) &&
+                                (!Mode.Instance.BigKeyShuffle || ItemDictionary.Instance.Has(ItemType.DPBigKey));
                         };
                     }
                     break;
@@ -273,15 +280,15 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.ToHBasementCage,
                             DungeonItemID.ToHMapChest,
                             DungeonItemID.ToHBigKeyChest
-                        }, new ModeRequirement()));
+                        }));
 
                         CanComplete = () =>
                         {
-                            return _game.RequirementNodes[RequirementNodeID.ToHEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.FireSource].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.ToHBoss].Accessibility == AccessibilityLevel.Normal &&
-                                (!_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.ToHSmallKey)) &&
-                                (!_game.Mode.BigKeyShuffle || _game.Items.Has(ItemType.ToHBigKey));
+                            return RequirementNodeDictionary.Instance[RequirementNodeID.ToHEntry].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.FireSource].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.ToHBoss].Accessibility == AccessibilityLevel.Normal &&
+                                (!Mode.Instance.SmallKeyShuffle || ItemDictionary.Instance.Has(ItemType.ToHSmallKey)) &&
+                                (!Mode.Instance.BigKeyShuffle || ItemDictionary.Instance.Has(ItemType.ToHBigKey));
                         };
                     }
                     break;
@@ -328,20 +335,20 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.PoDHarmlessHellway,
                             DungeonItemID.PoDDarkMazeTop,
                             DungeonItemID.PoDDarkMazeBottom
-                        }, new ModeRequirement()));
+                        }));
 
                         CanComplete = () =>
                         {
-                            return _game.RequirementNodes[RequirementNodeID.PoDEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.RedEyegoreGoriya].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.Bow].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.Hammer].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.DarkRoomPoDDarkBasement].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.DarkRoomPoDDarkMaze].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.DarkRoomPoDBossArea].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.PoDBoss].Accessibility == AccessibilityLevel.Normal &&
-                                (!_game.Mode.BigKeyShuffle || _game.Items.Has(ItemType.PoDBigKey)) &&
-                                (!_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.PoDSmallKey, 5));
+                            return RequirementNodeDictionary.Instance[RequirementNodeID.PoDEntry].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.RedEyegoreGoriya].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.Bow].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.Hammer].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.DarkRoomPoDDarkBasement].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.DarkRoomPoDDarkMaze].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.DarkRoomPoDBossArea].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.PoDBoss].Accessibility == AccessibilityLevel.Normal &&
+                                (!Mode.Instance.BigKeyShuffle || ItemDictionary.Instance.Has(ItemType.PoDBigKey)) &&
+                                (!Mode.Instance.SmallKeyShuffle || ItemDictionary.Instance.Has(ItemType.PoDSmallKey, 5));
                         };
                     }
                     break;
@@ -368,17 +375,17 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.SPFloodedRoomRight,
                             DungeonItemID.SPWaterfallRoom,
                             DungeonItemID.SPBoss
-                        }, new ModeRequirement()));
+                        }));
 
                         CanComplete = () =>
                         {
-                            return _game.RequirementNodes[RequirementNodeID.SPEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.Flippers].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.Hammer].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.Hookshot].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.SPBoss].Accessibility == AccessibilityLevel.Normal &&
-                                (!_game.Mode.BigKeyShuffle || _game.Items.Has(ItemType.SPBigKey)) &&
-                                (!_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.SPSmallKey));
+                            return RequirementNodeDictionary.Instance[RequirementNodeID.SPEntry].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.Flippers].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.Hammer].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.Hookshot].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.SPBoss].Accessibility == AccessibilityLevel.Normal &&
+                                (!Mode.Instance.BigKeyShuffle || ItemDictionary.Instance.Has(ItemType.SPBigKey)) &&
+                                (!Mode.Instance.SmallKeyShuffle || ItemDictionary.Instance.Has(ItemType.SPSmallKey));
                         };
                     }
                     break;
@@ -412,21 +419,21 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.SWCompassChest,
                             DungeonItemID.SWPinballRoom,
                             DungeonItemID.SWBridgeRoom,
-                        }, new ModeRequirement()));
+                        }));
 
                         CanComplete = () =>
                         {
-                            return _game.RequirementNodes[RequirementNodeID.SWFrontEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.RequirementNodes[RequirementNodeID.SWFrontLeftDropEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.RequirementNodes[RequirementNodeID.SWPinballRoomEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.RequirementNodes[RequirementNodeID.SWFrontTopDropEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.RequirementNodes[RequirementNodeID.SWFrontBackConnectorEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.RequirementNodes[RequirementNodeID.SWBackEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.FireRod].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.Curtains].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.SWBoss].Accessibility == AccessibilityLevel.Normal &&
-                                (!_game.Mode.BigKeyShuffle || _game.Items.Has(ItemType.SWBigKey)) &&
-                                (!_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.SWSmallKey));
+                            return RequirementNodeDictionary.Instance[RequirementNodeID.SWFrontEntry].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementNodeDictionary.Instance[RequirementNodeID.SWFrontLeftDropEntry].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementNodeDictionary.Instance[RequirementNodeID.SWPinballRoomEntry].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementNodeDictionary.Instance[RequirementNodeID.SWFrontTopDropEntry].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementNodeDictionary.Instance[RequirementNodeID.SWFrontBackConnectorEntry].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementNodeDictionary.Instance[RequirementNodeID.SWBackEntry].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.FireRod].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.Curtains].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.SWBoss].Accessibility == AccessibilityLevel.Normal &&
+                                (!Mode.Instance.BigKeyShuffle || ItemDictionary.Instance.Has(ItemType.SWBigKey)) &&
+                                (!Mode.Instance.SmallKeyShuffle || ItemDictionary.Instance.Has(ItemType.SWSmallKey));
                         };
                     }
                     break;
@@ -454,15 +461,15 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.TTAmbushChest,
                             DungeonItemID.TTCompassChest,
                             DungeonItemID.TTBigKeyChest
-                        }, new ModeRequirement()));
+                        }));
 
                         CanComplete = () =>
                         {
-                            return _game.RequirementNodes[RequirementNodeID.TTEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.Hammer].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.TTBoss].Accessibility == AccessibilityLevel.Normal &&
-                                (!_game.Mode.BigKeyShuffle || _game.Items.Has(ItemType.TTBigKey)) &&
-                                (!_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.TTSmallKey));
+                            return RequirementNodeDictionary.Instance[RequirementNodeID.TTEntry].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.Hammer].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.TTBoss].Accessibility == AccessibilityLevel.Normal &&
+                                (!Mode.Instance.BigKeyShuffle || ItemDictionary.Instance.Has(ItemType.TTBigKey)) &&
+                                (!Mode.Instance.SmallKeyShuffle || ItemDictionary.Instance.Has(ItemType.TTSmallKey));
                         };
                     }
                     break;
@@ -515,32 +522,32 @@ namespace OpenTracker.Models.Sections
                             DungeonItemID.IPBigKeyChest,
                             DungeonItemID.IPFreezorChest,
                             DungeonItemID.IPIcedTRoom,
-                        }, new ModeRequirement()));
+                        }));
 
                         CanComplete = () =>
                         {
-                            if (_game.RequirementNodes[RequirementNodeID.IPEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.MeltThings].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.Hammer].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.Gloves1].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.IPBoss].Accessibility == AccessibilityLevel.Normal &&
-                                (!_game.Mode.BigKeyShuffle || _game.Items.Has(ItemType.IPBigKey)))
+                            if (RequirementNodeDictionary.Instance[RequirementNodeID.IPEntry].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.MeltThings].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.Hammer].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.Gloves1].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.IPBoss].Accessibility == AccessibilityLevel.Normal &&
+                                (!Mode.Instance.BigKeyShuffle || ItemDictionary.Instance.Has(ItemType.IPBigKey)))
                             {
-                                if (_game.Mode.SmallKeyShuffle)
+                                if (Mode.Instance.SmallKeyShuffle)
                                 {
-                                    if (_game.Items.Has(ItemType.IPSmallKey) && _game.Items.Has(ItemType.CaneOfSomaria))
+                                    if (ItemDictionary.Instance.Has(ItemType.IPSmallKey) && ItemDictionary.Instance.Has(ItemType.CaneOfSomaria))
                                     {
                                         return true;
                                     }
 
-                                    if (_game.Items.Has(ItemType.IPSmallKey))
+                                    if (ItemDictionary.Instance.Has(ItemType.IPSmallKey))
                                     {
                                         return true;
                                     }
                                 }
                                 else
                                 {
-                                    if (_game.Items.Has(ItemType.CaneOfSomaria))
+                                    if (ItemDictionary.Instance.Has(ItemType.CaneOfSomaria))
                                     {
                                         return true;
                                     }
@@ -608,19 +615,18 @@ namespace OpenTracker.Models.Sections
                                 DungeonItemID.MMCompassChest,
                                 DungeonItemID.MMBigKeyChest,
                                 DungeonItemID.MMMapChest,
-                            },
-                            new ModeRequirement()));
+                            }));
 
                         CanComplete = () =>
                         {
-                            return _game.RequirementNodes[RequirementNodeID.MMEntry].Accessibility == AccessibilityLevel.Normal &&
-                                (_game.Requirements[RequirementType.BonkOverLedge].Accessibility == AccessibilityLevel.Normal ||
-                                _game.Requirements[RequirementType.Hookshot].Accessibility == AccessibilityLevel.Normal) &&
-                                _game.Requirements[RequirementType.FireSource].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.CaneOfSomaria].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.DarkRoomMM].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.MMBoss].Accessibility == AccessibilityLevel.Normal &&
-                                (!_game.Mode.BigKeyShuffle || _game.Items.Has(ItemType.MMBigKey));
+                            return RequirementNodeDictionary.Instance[RequirementNodeID.MMEntry].Accessibility == AccessibilityLevel.Normal &&
+                                (RequirementDictionary.Instance[RequirementType.BonkOverLedge].Accessibility == AccessibilityLevel.Normal ||
+                                RequirementDictionary.Instance[RequirementType.Hookshot].Accessibility == AccessibilityLevel.Normal) &&
+                                RequirementDictionary.Instance[RequirementType.FireSource].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.CaneOfSomaria].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.DarkRoomMM].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.MMBoss].Accessibility == AccessibilityLevel.Normal &&
+                                (!Mode.Instance.BigKeyShuffle || ItemDictionary.Instance.Has(ItemType.MMBigKey));
                         };
                     }
                     break;
@@ -685,73 +691,62 @@ namespace OpenTracker.Models.Sections
                                 DungeonItemID.TRLaserBridgeBottomLeft,
                                 DungeonItemID.TRLaserBrdigeBottomRight
                             },
-                            new ModeRequirement(worldState: WorldState.StandardOpen, entranceShuffle: false)));
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                RequirementDictionary.Instance[RequirementType.WorldStateInverted],
+                                RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                            })));
                         BigKeyPlacements.Add(new BigKeyPlacement(new List<DungeonItemID>
                             {
                                 DungeonItemID.TRCompassChest,
                                 DungeonItemID.TRRollerRoomLeft,
                                 DungeonItemID.TRRollerRoomRight,
                                 DungeonItemID.TRChainChomps,
-                                DungeonItemID.TRBigKeyChest,
-                                DungeonItemID.TRCrystarollerRoom,
-                                DungeonItemID.TRLaserBridgeTopLeft,
-                                DungeonItemID.TRLaserBridgeTopRight,
-                                DungeonItemID.TRLaserBridgeBottomLeft,
-                                DungeonItemID.TRLaserBrdigeBottomRight
+                                DungeonItemID.TRBigKeyChest
                             },
-                            new ModeRequirement(worldState: WorldState.StandardOpen, entranceShuffle: true)));
-                        BigKeyPlacements.Add(new BigKeyPlacement(new List<DungeonItemID>
+                            new AggregateRequirement(new List<IRequirement>
                             {
-                                DungeonItemID.TRCompassChest,
-                                DungeonItemID.TRRollerRoomLeft,
-                                DungeonItemID.TRRollerRoomRight,
-                                DungeonItemID.TRChainChomps,
-                                DungeonItemID.TRBigKeyChest,
-                                DungeonItemID.TRCrystarollerRoom,
-                                DungeonItemID.TRLaserBridgeTopLeft,
-                                DungeonItemID.TRLaserBridgeTopRight,
-                                DungeonItemID.TRLaserBridgeBottomLeft,
-                                DungeonItemID.TRLaserBrdigeBottomRight
-                            },
-                            new ModeRequirement(worldState: WorldState.Inverted)));
+                                RequirementDictionary.Instance[RequirementType.EntranceShuffleOff],
+                                RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]
+                            })));
 
                         CanComplete = () =>
                         {
-                            if (_game.Requirements[RequirementType.FireRod].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.CaneOfSomaria].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.TRBoss].Accessibility == AccessibilityLevel.Normal &&
-                                (!_game.Mode.BigKeyShuffle || _game.Items.Has(ItemType.TRBigKey)))
+                            if (RequirementDictionary.Instance[RequirementType.FireRod].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.CaneOfSomaria].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.TRBoss].Accessibility == AccessibilityLevel.Normal &&
+                                (!Mode.Instance.BigKeyShuffle || ItemDictionary.Instance.Has(ItemType.TRBigKey)))
                             {
-                                if (_game.RequirementNodes[RequirementNodeID.TRBackEntry].Accessibility == AccessibilityLevel.Normal)
+                                if (RequirementNodeDictionary.Instance[RequirementNodeID.TRBackEntry].Accessibility == AccessibilityLevel.Normal)
                                 {
-                                    if (_game.RequirementNodes[RequirementNodeID.TRMiddleEntry].Accessibility == AccessibilityLevel.Normal)
+                                    if (RequirementNodeDictionary.Instance[RequirementNodeID.TRMiddleEntry].Accessibility == AccessibilityLevel.Normal)
                                     {
-                                        if (_game.RequirementNodes[RequirementNodeID.TRFrontEntry].Accessibility == AccessibilityLevel.Normal)
+                                        if (RequirementNodeDictionary.Instance[RequirementNodeID.TRFrontEntry].Accessibility == AccessibilityLevel.Normal)
                                         {
-                                            return !_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.TRSmallKey);
+                                            return !Mode.Instance.SmallKeyShuffle || ItemDictionary.Instance.Has(ItemType.TRSmallKey);
                                         }
 
-                                        return !_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.TRSmallKey, 2);
+                                        return !Mode.Instance.SmallKeyShuffle || ItemDictionary.Instance.Has(ItemType.TRSmallKey, 2);
                                     }
 
-                                    return _game.Requirements[RequirementType.DarkRoomTR].Accessibility == AccessibilityLevel.Normal &&
-                                        (!_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.TRSmallKey, 2));
+                                    return RequirementDictionary.Instance[RequirementType.DarkRoomTR].Accessibility == AccessibilityLevel.Normal &&
+                                        (!Mode.Instance.SmallKeyShuffle || ItemDictionary.Instance.Has(ItemType.TRSmallKey, 2));
                                 }
 
-                                if (_game.RequirementNodes[RequirementNodeID.TRMiddleEntry].Accessibility == AccessibilityLevel.Normal)
+                                if (RequirementNodeDictionary.Instance[RequirementNodeID.TRMiddleEntry].Accessibility == AccessibilityLevel.Normal)
                                 {
-                                    if (_game.RequirementNodes[RequirementNodeID.TRFrontEntry].Accessibility == AccessibilityLevel.Normal)
+                                    if (RequirementNodeDictionary.Instance[RequirementNodeID.TRFrontEntry].Accessibility == AccessibilityLevel.Normal)
                                     {
-                                        return !_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.TRSmallKey, 2);
+                                        return !Mode.Instance.SmallKeyShuffle || ItemDictionary.Instance.Has(ItemType.TRSmallKey, 2);
                                     }
 
-                                    return !_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.TRSmallKey, 3);
+                                    return !Mode.Instance.SmallKeyShuffle || ItemDictionary.Instance.Has(ItemType.TRSmallKey, 3);
                                 }
 
-                                if (_game.RequirementNodes[RequirementNodeID.TRFrontEntry].Accessibility == AccessibilityLevel.Normal)
+                                if (RequirementNodeDictionary.Instance[RequirementNodeID.TRFrontEntry].Accessibility == AccessibilityLevel.Normal)
                                 {
-                                    return _game.Requirements[RequirementType.DarkRoomTR].Accessibility == AccessibilityLevel.Normal &&
-                                        (!_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.TRSmallKey, 4));
+                                    return RequirementDictionary.Instance[RequirementType.DarkRoomTR].Accessibility == AccessibilityLevel.Normal &&
+                                        (!Mode.Instance.SmallKeyShuffle || ItemDictionary.Instance.Has(ItemType.TRSmallKey, 4));
                                 }
                             }
 
@@ -896,24 +891,24 @@ namespace OpenTracker.Models.Sections
                                 DungeonItemID.GTBigKeyRoomTopLeft,
                                 DungeonItemID.GTBigKeyRoomTopRight,
                                 DungeonItemID.GTBigKeyChest
-                            }, new ModeRequirement()));
+                            }));
                         HasMarking = true;
 
                         CanComplete = () =>
                         {
-                            return _game.RequirementNodes[RequirementNodeID.GTEntry].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.Boots].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.Hammer].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.Hookshot].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.FireRod].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.CaneOfSomaria].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.RedEyegoreGoriya].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.GTBoss1].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.GTBoss2].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.GTBoss3].Accessibility == AccessibilityLevel.Normal &&
-                                _game.Requirements[RequirementType.GTFinalBoss].Accessibility == AccessibilityLevel.Normal &&
-                                (!_game.Mode.BigKeyShuffle || _game.Items.Has(ItemType.GTBigKey)) &&
-                                (!_game.Mode.SmallKeyShuffle || _game.Items.Has(ItemType.GTSmallKey, 2));
+                            return RequirementNodeDictionary.Instance[RequirementNodeID.GTEntry].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.Boots].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.Hammer].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.Hookshot].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.FireRod].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.CaneOfSomaria].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.RedEyegoreGoriya].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.GTBoss1].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.GTBoss2].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.GTBoss3].Accessibility == AccessibilityLevel.Normal &&
+                                RequirementDictionary.Instance[RequirementType.GTFinalBoss].Accessibility == AccessibilityLevel.Normal &&
+                                (!Mode.Instance.BigKeyShuffle || ItemDictionary.Instance.Has(ItemType.GTBigKey)) &&
+                                (!Mode.Instance.SmallKeyShuffle || ItemDictionary.Instance.Has(ItemType.GTSmallKey, 2));
                         };
                     }
                     break;
@@ -922,6 +917,58 @@ namespace OpenTracker.Models.Sections
             _baseTotal = _dungeonData.DungeonItems.Count - MapCompass - SmallKey - BigKey;
 
             SetTotal(false);
+
+            Mode.Instance.PropertyChanged += OnModeChanged;
+
+            if (SmallKeyType.HasValue)
+            {
+                ItemDictionary.Instance[SmallKeyType.Value].PropertyChanged += OnRequirementChanged;
+            }
+
+            if (BigKeyType.HasValue)
+            {
+                ItemDictionary.Instance[BigKeyType.Value].PropertyChanged += OnRequirementChanged;
+            }
+
+            List<RequirementNodeID> nodeSubscriptions = new List<RequirementNodeID>();
+            List<RequirementType> requirementSubscriptions = new List<RequirementType>();
+
+            if (_location.ID == LocationID.IcePalace)
+            {
+                ItemDictionary.Instance[ItemType.CaneOfSomaria].PropertyChanged += OnRequirementChanged;
+            }
+
+            foreach (DungeonNode node in _dungeonData.RequirementNodes.Values)
+            {
+                foreach (RequirementNodeConnection connection in node.Connections)
+                {
+                    if (!nodeSubscriptions.Contains(connection.FromNode))
+                    {
+                        RequirementNodeDictionary.Instance[connection.FromNode].PropertyChanged += OnRequirementChanged;
+                    }
+                }
+
+                foreach (RequirementNodeConnection dungeonConnection in node.DungeonConnections)
+                {
+                    if (!requirementSubscriptions.Contains(dungeonConnection.Requirement))
+                    {
+                        RequirementDictionary.Instance[dungeonConnection.Requirement].PropertyChanged += OnRequirementChanged;
+                    }
+                }
+            }
+
+            foreach (DungeonItem item in _dungeonData.DungeonItems.Values)
+            {
+                foreach (RequirementNodeConnection connection in item.Connections)
+                {
+                    if (!requirementSubscriptions.Contains(connection.Requirement))
+                    {
+                        RequirementDictionary.Instance[connection.Requirement].PropertyChanged += OnRequirementChanged;
+                    }
+                }
+            }
+
+            UpdateAccessibility();
         }
 
         /// <summary>
@@ -993,9 +1040,9 @@ namespace OpenTracker.Models.Sections
         private void SetTotal(bool updateAccessibility = true)
         {
             int newTotal = _baseTotal +
-                (_game.Mode.MapCompassShuffle ? MapCompass : 0) +
-                (_game.Mode.SmallKeyShuffle ? SmallKey : 0) +
-                (_game.Mode.BigKeyShuffle ? BigKey : 0);
+                (Mode.Instance.MapCompassShuffle ? MapCompass : 0) +
+                (Mode.Instance.SmallKeyShuffle ? SmallKey : 0) +
+                (Mode.Instance.BigKeyShuffle ? BigKey : 0);
 
             int delta = newTotal - Total;
 
@@ -1019,14 +1066,14 @@ namespace OpenTracker.Models.Sections
         {
             List<int> smallKeysValues = new List<int>();
 
-            if (_game.Mode.SmallKeyShuffle)
+            if (Mode.Instance.SmallKeyShuffle)
             {
                 int smallKeyValue;
 
                 if (SmallKeyType.HasValue)
                 {
-                    smallKeyValue = Math.Min(SmallKey, _game.Items[SmallKeyType.Value].Current +
-                        (_game.Mode.WorldState == WorldState.Retro ? _game.Items[ItemType.SmallKey].Current : 0));
+                    smallKeyValue = Math.Min(SmallKey, ItemDictionary.Instance[SmallKeyType.Value].Current +
+                        (Mode.Instance.WorldState == WorldState.Retro ? ItemDictionary.Instance[ItemType.SmallKey].Current : 0));
                 }
                 else
                 {
@@ -1057,13 +1104,13 @@ namespace OpenTracker.Models.Sections
         {
             List<bool> bigKeyValues = new List<bool>();
 
-            if (_game.Mode.SmallKeyShuffle)
+            if (Mode.Instance.SmallKeyShuffle)
             {
                 bool bigKeyValue;
 
                 if (BigKeyType.HasValue)
                 {
-                    bigKeyValue = _game.Items[BigKeyType.Value].Current > 0;
+                    bigKeyValue = ItemDictionary.Instance[BigKeyType.Value].Current > 0;
                 }
                 else
                 {
@@ -1346,64 +1393,6 @@ namespace OpenTracker.Models.Sections
             Marking = null;
             Available = Total;
             UserManipulated = false;
-        }
-
-        /// <summary>
-        /// Initializes the section.
-        /// </summary>
-        public void Initialize()
-        {
-            _game.Mode.PropertyChanged += OnModeChanged;
-
-            if (SmallKeyType.HasValue)
-            {
-                _game.Items[SmallKeyType.Value].PropertyChanged += OnRequirementChanged;
-            }
-
-            if (BigKeyType.HasValue)
-            {
-                _game.Items[BigKeyType.Value].PropertyChanged += OnRequirementChanged;
-            }
-
-            List<RequirementNodeID> nodeSubscriptions = new List<RequirementNodeID>();
-            List<RequirementType> requirementSubscriptions = new List<RequirementType>();
-
-            if (_location.ID == LocationID.IcePalace)
-            {
-                _game.Items[ItemType.CaneOfSomaria].PropertyChanged += OnRequirementChanged;
-            }
-
-            foreach (DungeonNode node in _dungeonData.RequirementNodes.Values)
-            {
-                foreach (RequirementNodeConnection connection in node.Connections)
-                {
-                    if (!nodeSubscriptions.Contains(connection.FromNode))
-                    {
-                        _game.RequirementNodes[connection.FromNode].PropertyChanged += OnRequirementChanged;
-                    }
-                }
-
-                foreach (RequirementNodeConnection dungeonConnection in node.DungeonConnections)
-                {
-                    if (!requirementSubscriptions.Contains(dungeonConnection.Requirement))
-                    {
-                        _game.Requirements[dungeonConnection.Requirement].PropertyChanged += OnRequirementChanged;
-                    }
-                }
-            }
-
-            foreach (DungeonItem item in _dungeonData.DungeonItems.Values)
-            {
-                foreach (RequirementNodeConnection connection in item.Connections)
-                {
-                    if (!requirementSubscriptions.Contains(connection.Requirement))
-                    {
-                        _game.Requirements[connection.Requirement].PropertyChanged += OnRequirementChanged;
-                    }
-                }
-            }
-
-            UpdateAccessibility();
         }
     }
 }

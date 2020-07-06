@@ -35,7 +35,6 @@
     <AvaloniaResource Remove="Views\ColorSelectDialog.xaml" />
     <AvaloniaResource Remove="Views\ConnectorControl.xaml" />
     <AvaloniaResource Remove="Views\DungeonChestControl.xaml" />
-    <AvaloniaResource Remove="Views\KeyControl.xaml" />
     <AvaloniaResource Remove="Views\LocationControl.xaml" />
     <AvaloniaResource Remove="Views\MapEntranceControl.xaml" />
     <AvaloniaResource Remove="Views\MarkingSelectControl.xaml" />
@@ -45,13 +44,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Views\AutoTrackerDialog.xaml" />
+    <None Remove="Views\BigKeyControl.xaml" />
     <None Remove="Views\BossControl.xaml" />
     <None Remove="Views\ColorPickerControl.xaml" />
     <None Remove="Views\ColorSelectDialog.xaml" />
     <None Remove="Views\ConnectorControl.xaml" />
     <None Remove="Views\DungeonChestControl.xaml" />
     <None Remove="Views\ItemsPanelControl.xaml" />
-    <None Remove="Views\KeyControl.xaml" />
     <None Remove="Views\LocationControl.xaml" />
     <None Remove="Views\MapEntranceControl.xaml" />
     <None Remove="Views\MapLocationControl.xaml" />
@@ -60,6 +59,8 @@
     <None Remove="Views\ModeSettingsControl.xaml" />
     <None Remove="Views\PrizeControl.xaml" />
     <None Remove="Views\SectionControl.xaml" />
+    <None Remove="Views\SmallItemSpacerControl.xaml" />
+    <None Remove="Views\SmallKeyControl.xaml" />
     <None Remove="Views\TopMenuControl.xaml" />
   </ItemGroup>
   <ItemGroup>
@@ -78,11 +79,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\MapControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Views\ItemControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
@@ -107,11 +103,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\KeyControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Views\PrizeControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
@@ -131,9 +122,6 @@
     <Compile Update="Views\PrizeControl.xaml.cs">
       <DependentUpon>PrizeControl.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\ItemControl.xaml.cs">
-      <DependentUpon>ItemControl.xaml</DependentUpon>
-    </Compile>
     <Compile Update="Views\MessageBoxDialog.xaml.cs">
       <DependentUpon>MessageBoxDialog.xaml</DependentUpon>
     </Compile>
@@ -142,9 +130,6 @@
     </Compile>
     <Compile Update="Views\SectionControl.xaml.cs">
       <DependentUpon>SectionControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\KeyControl.xaml.cs">
-      <DependentUpon>KeyControl.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\MarkingSelectControl.xaml.cs">
       <DependentUpon>MarkingSelectControl.xaml</DependentUpon>
@@ -157,9 +142,6 @@
     <None Update="Themes\Default.xaml">
       <Generator></Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Views\ItemControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -203,7 +185,16 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <AvaloniaResource Update="Views\BigKeyControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </AvaloniaResource>
     <AvaloniaResource Update="Views\ItemsPanelControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </AvaloniaResource>
+    <AvaloniaResource Update="Views\SmallItemSpacerControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </AvaloniaResource>
+    <AvaloniaResource Update="Views\SmallKeyControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </AvaloniaResource>
     <AvaloniaResource Update="Views\TopMenuControl.xaml">
@@ -214,8 +205,5 @@
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ViewModels\Factories\" />
   </ItemGroup>
 </Project>

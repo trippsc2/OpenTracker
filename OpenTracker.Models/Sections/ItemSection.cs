@@ -1,4 +1,8 @@
 ﻿using OpenTracker.Models.Enums;
+using OpenTracker.Models.Items;
+using OpenTracker.Models.Locations;
+using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Requirements;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,14 +14,10 @@ namespace OpenTracker.Models.Sections
     /// </summary>
     public class ItemSection : ISection
     {
-        private readonly Game _game;
-        private readonly Location _location;
         private readonly List<RequirementNodeConnection> _connections;
 
         public string Name { get; }
-        public bool HasMarking { get; }
-        public ModeRequirement ModeRequirement { get; }
-        public Action AutoTrack { get; }
+        public IRequirement Requirement { get; }
         public bool UserManipulated { get; set; }
 
         public event PropertyChangingEventHandler PropertyChanging;
@@ -67,21 +67,6 @@ namespace OpenTracker.Models.Sections
 
         public int Total { get; }
 
-        private MarkingType? _marking;
-        public MarkingType? Marking
-        {
-            get => _marking;
-            set
-            {
-                if (_marking != value)
-                {
-                    OnPropertyChanging(nameof(Marking));
-                    _marking = value;
-                    OnPropertyChanged(nameof(Marking));
-                }
-            }
-        }
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -94,13 +79,24 @@ namespace OpenTracker.Models.Sections
         /// <param name="index">
         /// The index of the location.
         /// </param>
-        public ItemSection(Game game, Location location, int index = 0)
+        public ItemSection(
+            string name, int total, List<RequirementNodeConnection> connections,
+            IRequirement requirement = null)
         {
-            _game = game ?? throw new ArgumentNullException(nameof(game));
-            _location = location ?? throw new ArgumentNullException(nameof(location));
-            _connections = new List<RequirementNodeConnection>();
+            Name = name ?? throw new ArgumentNullException(nameof(name));
+            Total = total;
+            _connections = connections ?? throw new ArgumentNullException(nameof(connections));
 
-            switch (_location.ID)
+            if (requirement != null)
+            {
+                Requirement = requirement;
+            }
+            else
+            {
+                Requirement = RequirementDictionary.Instance[RequirementType.None];
+            }
+
+            switch (location.ID)
             {
                 case LocationID.Pedestal:
                     {
@@ -112,7 +108,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 128, 64);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 128, 64);
 
                             if (result.HasValue)
                             {
@@ -120,7 +116,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.OverworldEventMemory[128].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.OverworldEventMemory[128].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.LumberjackCave:
@@ -135,7 +131,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 453, 2);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 453, 2);
 
                             if (result.HasValue)
                             {
@@ -143,7 +139,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[453].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[453].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.BlindsHouse when index == 0:
@@ -157,7 +153,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            int? result = _game.AutoTracker.CheckMemoryFlagArray(
+                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
                                 new (MemorySegmentType, int, byte)[4]
                                 {
                                     (MemorySegmentType.Room, 570, 32),
@@ -172,8 +168,8 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[570].PropertyChanged += OnMemoryChanged;
-                        _game.AutoTracker.RoomMemory[571].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[570].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[571].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.BlindsHouse:
@@ -185,7 +181,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 570, 16);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 570, 16);
 
                             if (result.HasValue)
                             {
@@ -193,7 +189,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[570].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[570].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.TheWell when index == 0:
@@ -207,7 +203,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            int? result = _game.AutoTracker.CheckMemoryFlagArray(
+                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
                                 new (MemorySegmentType, int, byte)[4]
                                 {
                                     (MemorySegmentType.Room, 94, 32),
@@ -222,8 +218,8 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[94].PropertyChanged += OnMemoryChanged;
-                        _game.AutoTracker.RoomMemory[95].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[94].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[95].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.TheWell:
@@ -235,7 +231,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 94, 16);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 94, 16);
 
                             if (result.HasValue)
                             {
@@ -243,7 +239,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[94].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[94].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.BottleVendor:
@@ -255,7 +251,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 137, 2);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Item, 137, 2);
 
                             if (result.HasValue)
                             {
@@ -263,7 +259,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.ItemMemory[137].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.ItemMemory[137].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.ChickenHouse:
@@ -275,7 +271,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 528, 16);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 528, 16);
 
                             if (result.HasValue)
                             {
@@ -283,7 +279,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[528].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[528].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.Tavern:
@@ -297,7 +293,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 518, 16);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 518, 16);
 
                             if (result.HasValue)
                             {
@@ -305,7 +301,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[518].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[518].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.SickKid:
@@ -317,7 +313,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 4);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 4);
 
                             if (result.HasValue)
                             {
@@ -325,7 +321,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.MagicBat:
@@ -337,7 +333,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 128);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 128);
 
                             if (result.HasValue)
                             {
@@ -345,7 +341,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.RaceGame:
@@ -360,7 +356,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 40, 64);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 40, 64);
 
                             if (result.HasValue)
                             {
@@ -368,7 +364,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.OverworldEventMemory[40].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.OverworldEventMemory[40].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.Library:
@@ -383,7 +379,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 128);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 128);
 
                             if (result.HasValue)
                             {
@@ -391,7 +387,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.MushroomSpot:
@@ -404,7 +400,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 16);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 16);
 
                             if (result.HasValue)
                             {
@@ -412,7 +408,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.ForestHideout:
@@ -427,7 +423,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 451, 2);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 451, 2);
 
                             if (result.HasValue)
                             {
@@ -435,7 +431,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[451].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[451].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.CastleSecret when index == 0:
@@ -449,7 +445,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 134, 1);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Item, 134, 1);
 
                             if (result.HasValue)
                             {
@@ -457,7 +453,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.ItemMemory[134].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.ItemMemory[134].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.CastleSecret:
@@ -471,7 +467,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 170, 16);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 170, 16);
 
                             if (result.HasValue)
                             {
@@ -479,7 +475,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[170].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[170].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.LinksHouse:
@@ -491,7 +487,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            int? result = _game.AutoTracker.CheckMemoryFlagArray(
+                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
                                 new (MemorySegmentType, int, byte)[2]
                                 {
                                     (MemorySegmentType.Room, 1, 4),
@@ -504,8 +500,8 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[1].PropertyChanged += OnMemoryChanged;
-                        _game.AutoTracker.RoomMemory[520].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[1].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[520].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.GroveDiggingSpot:
@@ -517,7 +513,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 42, 64);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 42, 64);
 
                             if (result.HasValue)
                             {
@@ -525,7 +521,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.OverworldEventMemory[42].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.OverworldEventMemory[42].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.PyramidLedge:
@@ -537,7 +533,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 91, 64);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 91, 64);
 
                             if (result.HasValue)
                             {
@@ -545,7 +541,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.OverworldEventMemory[91].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.OverworldEventMemory[91].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.FatFairy:
@@ -557,7 +553,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            int? result = _game.AutoTracker.CheckMemoryFlagArray(
+                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
                                 new (MemorySegmentType, int, byte)[2]
                                 {
                                     (MemorySegmentType.Room, 556, 16),
@@ -570,7 +566,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[556].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[556].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.HauntedGrove:
@@ -582,7 +578,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 8);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 8);
 
                             if (result.HasValue)
                             {
@@ -590,7 +586,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.HypeCave:
@@ -602,7 +598,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            int? result = _game.AutoTracker.CheckMemoryFlagArray(
+                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
                                 new (MemorySegmentType, int, byte)[5]
                                 {
                                     (MemorySegmentType.Room, 572, 16),
@@ -618,8 +614,8 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[572].PropertyChanged += OnMemoryChanged;
-                        _game.AutoTracker.RoomMemory[573].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[572].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[573].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.BombosTablet:
@@ -632,7 +628,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 2);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 2);
 
                             if (result.HasValue)
                             {
@@ -640,7 +636,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.SouthOfGrove:
@@ -652,7 +648,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 567, 4);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 567, 4);
 
                             if (result.HasValue)
                             {
@@ -660,7 +656,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[567].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[567].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.DiggingGame:
@@ -672,7 +668,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 104, 64);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 104, 64);
 
                             if (result.HasValue)
                             {
@@ -680,7 +676,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.OverworldEventMemory[104].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.OverworldEventMemory[104].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.WitchsHut:
@@ -692,7 +688,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 32);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 32);
 
                             if (result.HasValue)
                             {
@@ -700,7 +696,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.WaterfallFairy:
@@ -712,7 +708,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            int? result = _game.AutoTracker.CheckMemoryFlagArray(
+                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
                                 new (MemorySegmentType, int, byte)[2]
                                 {
                                     (MemorySegmentType.Room, 552, 16),
@@ -725,7 +721,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[552].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[552].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.ZoraArea when index == 0:
@@ -746,7 +742,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 129, 64);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 129, 64);
 
                             if (result.HasValue)
                             {
@@ -754,7 +750,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.OverworldEventMemory[129].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.OverworldEventMemory[129].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.ZoraArea:
@@ -766,7 +762,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 2);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 2);
 
                             if (result.HasValue)
                             {
@@ -774,7 +770,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.Catfish:
@@ -786,7 +782,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 32);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 32);
 
                             if (result.HasValue)
                             {
@@ -794,7 +790,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.SahasrahlasHut when index == 0:
@@ -806,7 +802,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            int? result = _game.AutoTracker.CheckMemoryFlagArray(
+                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
                                 new (MemorySegmentType, int, byte)[3]
                                 {
                                     (MemorySegmentType.Room, 522, 16),
@@ -820,7 +816,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[522].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[522].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.SahasrahlasHut:
@@ -832,7 +828,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 16);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 16);
 
                             if (result.HasValue)
                             {
@@ -840,7 +836,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.BonkRocks:
@@ -852,7 +848,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 584, 16);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 584, 16);
 
                             if (result.HasValue)
                             {
@@ -860,7 +856,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[584].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[584].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.KingsTomb:
@@ -872,7 +868,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 550, 16);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 550, 16);
 
                             if (result.HasValue)
                             {
@@ -880,7 +876,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[550].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[550].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.GraveyardLedge:
@@ -892,7 +888,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 567, 2);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 567, 2);
 
                             if (result.HasValue)
                             {
@@ -900,7 +896,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[567].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[567].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.DesertLedge:
@@ -915,7 +911,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 48, 64);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 48, 64);
 
                             if (result.HasValue)
                             {
@@ -923,7 +919,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.OverworldEventMemory[48].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.OverworldEventMemory[48].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.AginahsCave:
@@ -935,7 +931,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 532, 16);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 532, 16);
 
                             if (result.HasValue)
                             {
@@ -943,7 +939,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[532].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[532].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.CShapedHouse:
@@ -957,7 +953,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 568, 16);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 568, 16);
 
                             if (result.HasValue)
                             {
@@ -965,7 +961,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[568].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[568].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.TreasureGame:
@@ -979,7 +975,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 525, 4);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 525, 4);
 
                             if (result.HasValue)
                             {
@@ -987,7 +983,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[525].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[525].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.BombableShack:
@@ -999,7 +995,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 524, 16);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 524, 16);
 
                             if (result.HasValue)
                             {
@@ -1007,7 +1003,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[524].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[524].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.Blacksmith:
@@ -1019,7 +1015,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 4);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 4);
 
                             if (result.HasValue)
                             {
@@ -1027,7 +1023,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.PurpleChest:
@@ -1039,7 +1035,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 137, 16);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Item, 137, 16);
 
                             if (result.HasValue)
                             {
@@ -1047,7 +1043,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.ItemMemory[137].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.ItemMemory[137].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.HammerPegs:
@@ -1059,7 +1055,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 591, 4);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 591, 4);
 
                             if (result.HasValue)
                             {
@@ -1067,7 +1063,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[591].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[591].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.BumperCave:
@@ -1082,7 +1078,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 74, 64);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 74, 64);
 
                             if (result.HasValue)
                             {
@@ -1090,7 +1086,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.OverworldEventMemory[74].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.OverworldEventMemory[74].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.Dam when index == 0:
@@ -1105,7 +1101,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 534, 16);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 534, 16);
 
                             if (result.HasValue)
                             {
@@ -1113,7 +1109,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[534].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[534].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.Dam:
@@ -1125,7 +1121,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 59, 64);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 59, 64);
 
                             if (result.HasValue)
                             {
@@ -1133,7 +1129,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.OverworldEventMemory[59].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.OverworldEventMemory[59].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.MiniMoldormCave:
@@ -1145,7 +1141,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            int? result = _game.AutoTracker.CheckMemoryFlagArray(
+                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
                                 new (MemorySegmentType, int, byte)[5]
                                 {
                                     (MemorySegmentType.Room, 582, 16),
@@ -1161,8 +1157,8 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[582].PropertyChanged += OnMemoryChanged;
-                        _game.AutoTracker.RoomMemory[583].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[582].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[583].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.IceRodCave:
@@ -1174,7 +1170,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 576, 16);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 576, 16);
 
                             if (result.HasValue)
                             {
@@ -1182,7 +1178,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[576].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[576].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.LakeHyliaIsland:
@@ -1197,7 +1193,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 53, 64);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 53, 64);
 
                             if (result.HasValue)
                             {
@@ -1205,7 +1201,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.OverworldEventMemory[53].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.OverworldEventMemory[53].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.Hobo:
@@ -1217,7 +1213,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Item, 137, 1);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Item, 137, 1);
 
                             if (result.HasValue)
                             {
@@ -1225,7 +1221,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.ItemMemory[137].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.ItemMemory[137].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.MireShack:
@@ -1239,7 +1235,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            int? result = _game.AutoTracker.CheckMemoryFlagArray(
+                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
                                 new (MemorySegmentType, int, byte)[2]
                                 {
                                     (MemorySegmentType.Room, 538, 16),
@@ -1252,7 +1248,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[538].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[538].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.CheckerboardCave:
@@ -1264,7 +1260,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 589, 2);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 589, 2);
 
                             if (result.HasValue)
                             {
@@ -1272,7 +1268,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[589].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[589].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.OldMan:
@@ -1284,7 +1280,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 1);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 1);
 
                             if (result.HasValue)
                             {
@@ -1292,7 +1288,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.SpectacleRock when index == 0:
@@ -1307,7 +1303,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 3, 64);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 3, 64);
 
                             if (result.HasValue)
                             {
@@ -1315,7 +1311,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.OverworldEventMemory[3].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.OverworldEventMemory[3].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.SpectacleRock:
@@ -1328,7 +1324,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 469, 4);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 469, 4);
 
                             if (result.HasValue)
                             {
@@ -1336,7 +1332,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[469].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[469].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.EtherTablet:
@@ -1349,7 +1345,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 1);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 1);
 
                             if (result.HasValue)
                             {
@@ -1357,7 +1353,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.SpikeCave:
@@ -1369,7 +1365,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 558, 16);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 558, 16);
 
                             if (result.HasValue)
                             {
@@ -1377,7 +1373,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[558].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[558].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.SpiralCave:
@@ -1391,7 +1387,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 508, 16);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 508, 16);
 
                             if (result.HasValue)
                             {
@@ -1399,7 +1395,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[508].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[508].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.ParadoxCave when index == 0:
@@ -1413,7 +1409,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            int? result = _game.AutoTracker.CheckMemoryFlagArray(
+                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
                                 new (MemorySegmentType, int, byte)[2]
                                 {
                                     (MemorySegmentType.Room, 510, 16),
@@ -1426,7 +1422,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[510].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[510].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.ParadoxCave:
@@ -1444,7 +1440,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            int? result = _game.AutoTracker.CheckMemoryFlagArray(
+                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
                                 new (MemorySegmentType, int, byte)[5]
                                 {
                                     (MemorySegmentType.Room, 478, 16),
@@ -1460,8 +1456,8 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[478].PropertyChanged += OnMemoryChanged;
-                        _game.AutoTracker.RoomMemory[479].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[478].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[479].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.SuperBunnyCave:
@@ -1479,7 +1475,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            int? result = _game.AutoTracker.CheckMemoryFlagArray(
+                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
                                 new (MemorySegmentType, int, byte)[2]
                                 {
                                     (MemorySegmentType.Room, 496, 16),
@@ -1492,7 +1488,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[496].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[496].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.HookshotCave when index == 0:
@@ -1506,7 +1502,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 120, 128);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 120, 128);
 
                             if (result.HasValue)
                             {
@@ -1514,7 +1510,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[120].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[120].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.HookshotCave:
@@ -1528,7 +1524,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            int? result = _game.AutoTracker.CheckMemoryFlagArray(
+                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
                                 new (MemorySegmentType, int, byte)[3]
                                 {
                                     (MemorySegmentType.Room, 120, 16),
@@ -1542,7 +1538,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[120].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[120].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.FloatingIsland:
@@ -1557,7 +1553,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 5, 64);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 5, 64);
 
                             if (result.HasValue)
                             {
@@ -1565,7 +1561,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.OverworldEventMemory[5].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.OverworldEventMemory[5].PropertyChanged += OnMemoryChanged;
                     }
                     break;
                 case LocationID.MimicCave:
@@ -1577,7 +1573,7 @@ namespace OpenTracker.Models.Sections
 
                         AutoTrack = () =>
                         {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 536, 16);
+                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 536, 16);
 
                             if (result.HasValue)
                             {
@@ -1585,7 +1581,7 @@ namespace OpenTracker.Models.Sections
                             }
                         };
 
-                        _game.AutoTracker.RoomMemory[536].PropertyChanged += OnMemoryChanged;
+                        AutoTracker.Instance.RoomMemory[536].PropertyChanged += OnMemoryChanged;
                     }
                     break;
             }
@@ -1599,20 +1595,15 @@ namespace OpenTracker.Models.Sections
             {
                 if (!nodeSubscriptions.Contains(connection.FromNode))
                 {
-                    _game.RequirementNodes[connection.FromNode].PropertyChanged += OnRequirementChanged;
+                    RequirementNodeDictionary.Instance[connection.FromNode].PropertyChanged += OnRequirementChanged;
                     nodeSubscriptions.Add(connection.FromNode);
                 }
 
                 if (!requirementSubscriptions.Contains(connection.Requirement))
                 {
-                    _game.Requirements[connection.Requirement].PropertyChanged += OnRequirementChanged;
+                    RequirementDictionary.Instance[connection.Requirement].PropertyChanged += OnRequirementChanged;
                     requirementSubscriptions.Add(connection.Requirement);
                 }
-            }
-
-            if (ModeRequirement == null)
-            {
-                ModeRequirement = new ModeRequirement();
             }
 
             UpdateAccessibility();
@@ -1669,23 +1660,6 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the MemoryAddress class.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnMemoryChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (!UserManipulated)
-            {
-                AutoTrack();
-            }
-        }
-
-        /// <summary>
         /// Updates the accessibility and number of accessible items.
         /// </summary>
         private void UpdateAccessibility()
@@ -1697,7 +1671,7 @@ namespace OpenTracker.Models.Sections
                 AccessibilityLevel nodeAccessibility = AccessibilityLevel.Normal;
                 
                 nodeAccessibility = (AccessibilityLevel)Math.Min((byte)nodeAccessibility,
-                    (byte)_game.RequirementNodes[connection.FromNode].Accessibility);
+                    (byte)RequirementNodeDictionary.Instance[connection.FromNode].Accessibility);
 
                 if (nodeAccessibility < AccessibilityLevel.SequenceBreak)
                 {
@@ -1705,7 +1679,7 @@ namespace OpenTracker.Models.Sections
                 }
 
                 AccessibilityLevel requirementAccessibility =
-                    _game.Requirements[connection.Requirement].Accessibility;
+                    RequirementDictionary.Instance[connection.Requirement].Accessibility;
 
                 AccessibilityLevel finalConnectionAccessibility =
                     (AccessibilityLevel)Math.Min(Math.Min((byte)nodeAccessibility,
@@ -1732,22 +1706,6 @@ namespace OpenTracker.Models.Sections
             else
             {
                 Accessible = 0;
-            }
-        }
-
-        /// <summary>
-        /// Collects the item represented by the marking.
-        /// </summary>
-        private void CollectMarkingItem()
-        {
-            if (Marking.HasValue)
-            {
-                if (Enum.TryParse(Marking.Value.ToString(), out ItemType itemType))
-                {
-                    _game.Items[itemType].Change(1);
-                }
-
-                Marking = null;
             }
         }
 
@@ -1782,7 +1740,6 @@ namespace OpenTracker.Models.Sections
         /// </summary>
         public void Reset()
         {
-            Marking = null;
             Available = Total;
             UserManipulated = false;
         }

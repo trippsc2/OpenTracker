@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.Enums;
 using OpenTracker.Models.Items;
+using OpenTracker.Models.Locations;
 using OpenTracker.Models.Sections;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,6 @@ namespace OpenTracker.Models.Undoables
     /// </summary>
     public class ClearLocation : IUndoable
     {
-        private readonly Game _game;
         private readonly Location _location;
         private readonly bool _force;
         private readonly List<int?> _previousLocationCounts;
@@ -24,18 +24,14 @@ namespace OpenTracker.Models.Undoables
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="game">
-        /// The game data.
-        /// </param>
         /// <param name="location">
         /// The location to be cleared.
         /// </param>
         /// <param name="force">
         /// A boolean representing whether to override logic and clear the location.
         /// </param>
-        public ClearLocation(Game game, Location location, bool force = false)
+        public ClearLocation(Location location, bool force = false)
         {
-            _game = game;
             _location = location;
             _force = force;
             _previousLocationCounts = new List<int?>();
@@ -74,7 +70,7 @@ namespace OpenTracker.Models.Undoables
                     {
                         if (Enum.TryParse(section.Marking.Value.ToString(), out ItemType itemType))
                         {
-                            var item = _game.Items[itemType];
+                            var item = ItemDictionary.Instance[itemType];
 
                             if (item.Current < item.Maximum)
                             {

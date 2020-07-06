@@ -1,4 +1,7 @@
 ﻿using OpenTracker.Models.Enums;
+using OpenTracker.Models.Items;
+using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Requirements;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,11 +15,15 @@ namespace OpenTracker.Models
     {
         private readonly ItemType? _directAccessItem;
 
-        protected Game Game { get; }
-        protected List<RequirementNodeID> NodeSubscriptions { get; }
-        protected List<RequirementType> RequirementSubscriptions { get; }
+        protected List<RequirementNodeID> PendingNodeSubscriptions { get; } =
+            new List<RequirementNodeID>();
+        protected List<RequirementNodeID> NodeSubscriptions { get; } =
+            new List<RequirementNodeID>();
+        protected List<RequirementType> RequirementSubscriptions { get; } =
+            new List<RequirementType>();
         public RequirementNodeID ID { get; }
-        public List<RequirementNodeConnection> Connections { get; }
+        public List<RequirementNodeConnection> Connections { get; } =
+            new List<RequirementNodeConnection>();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -37,17 +44,12 @@ namespace OpenTracker.Models
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="game">
-        /// The game data.
-        /// </param>
-        /// <param name="iD">
+        /// <param name="id">
         /// The requirement node identity.
         /// </param>
-        public RequirementNode(Game game, RequirementNodeID iD)
+        public RequirementNode(RequirementNodeID id)
         {
-            Game = game ?? throw new ArgumentNullException(nameof(game));
-            ID = iD;
-            Connections = new List<RequirementNodeConnection>();
+            ID = id;
 
             switch (ID)
             {
@@ -2518,13 +2520,15 @@ namespace OpenTracker.Models
                     break;
             }
 
-            NodeSubscriptions = new List<RequirementNodeID>();
-            RequirementSubscriptions = new List<RequirementType>();
-
-            Game.Mode.PropertyChanged += OnModeChanged;
+            Mode.Instance.PropertyChanged += OnModeChanged;
+            RequirementNodeDictionary.Instance.NodeCreated += OnNodeCreated;
 
             if (_directAccessItem.HasValue)
-                Game.Items[_directAccessItem.Value].PropertyChanged += OnRequirementChanged;
+            {
+                ItemDictionary.Instance[_directAccessItem.Value].PropertyChanged += OnRequirementChanged;
+            }
+
+            SubscribeToNodesAndRequirements();
         }
 
         /// <summary>
@@ -2536,6 +2540,34 @@ namespace OpenTracker.Models
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        /// <summary>
+        /// Subscribes to the NodeCreated event on the RequirementNodeDictionary class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnNodeCreated(object sender, RequirementNodeID id)
+        {
+            if (id == ID)
+            {
+                UpdateAccessibility();
+            }
+
+            if (PendingNodeSubscriptions.Contains(id))
+            {
+                RequirementNodeDictionary.Instance[id].PropertyChanged += OnRequirementChanged;
+                PendingNodeSubscriptions.Remove(id);
+            }
+
+            if (PendingNodeSubscriptions.Count == 0)
+            {
+                RequirementNodeDictionary.Instance.NodeCreated -= OnNodeCreated;
+            }
         }
 
         /// <summary>
@@ -2587,7 +2619,7 @@ namespace OpenTracker.Models
                 return AccessibilityLevel.Normal;
             }
 
-            if (_directAccessItem.HasValue && Game.Items.Has(_directAccessItem.Value))
+            if (_directAccessItem.HasValue && ItemDictionary.Instance.Has(_directAccessItem.Value))
             {
                 return AccessibilityLevel.Normal;
             }
@@ -2603,7 +2635,7 @@ namespace OpenTracker.Models
 
             foreach (RequirementNodeConnection connection in Connections)
             {
-                if (!Game.Mode.Validate(connection.ModeRequirement))
+                if (!Mode.Instance.Validate(connection.ModeRequirement))
                 {
                     continue;
                 }
@@ -2614,14 +2646,14 @@ namespace OpenTracker.Models
                 }
 
                 AccessibilityLevel nodeAccessibility =
-                    Game.RequirementNodes[connection.FromNode].GetNodeAccessibility(newExcludedNodes);
+                    RequirementNodeDictionary.Instance[connection.FromNode].GetNodeAccessibility(newExcludedNodes);
 
                 if (nodeAccessibility < AccessibilityLevel.SequenceBreak)
                 {
                     continue;
                 }
 
-                AccessibilityLevel requirementAccessibility = Game.Requirements[connection.Requirement].Accessibility;
+                AccessibilityLevel requirementAccessibility = RequirementDictionary.Instance[connection.Requirement].Accessibility;
 
                 AccessibilityLevel finalConnectionAccessibility =
                     (AccessibilityLevel)Math.Min(Math.Min((byte)nodeAccessibility, (byte)requirementAccessibility),
@@ -2652,24 +2684,30 @@ namespace OpenTracker.Models
         /// <summary>
         /// Initializes the node.
         /// </summary>
-        public virtual void Initialize()
+        protected void SubscribeToNodesAndRequirements()
         {
             foreach (RequirementNodeConnection connection in Connections)
             {
-                if (!NodeSubscriptions.Contains(connection.FromNode))
+                if (!NodeSubscriptions.Contains(connection.FromNode) ||
+                    !PendingNodeSubscriptions.Contains(connection.FromNode))
                 {
-                    Game.RequirementNodes[connection.FromNode].PropertyChanged += OnRequirementChanged;
-                    NodeSubscriptions.Add(connection.FromNode);
+                    if (RequirementNodeDictionary.Instance.ContainsKey(connection.FromNode))
+                    {
+                        RequirementNodeDictionary.Instance[connection.FromNode].PropertyChanged += OnRequirementChanged;
+                        NodeSubscriptions.Add(connection.FromNode);
+                    }
+                    else
+                    {
+                        PendingNodeSubscriptions.Add(connection.FromNode);
+                    }
                 }
 
                 if (!RequirementSubscriptions.Contains(connection.Requirement))
                 {
-                    Game.Requirements[connection.Requirement].PropertyChanged += OnRequirementChanged;
+                    RequirementDictionary.Instance[connection.Requirement].PropertyChanged += OnRequirementChanged;
                     RequirementSubscriptions.Add(connection.Requirement);
                 }
             }
-
-            UpdateAccessibility();
         }
     }
 }

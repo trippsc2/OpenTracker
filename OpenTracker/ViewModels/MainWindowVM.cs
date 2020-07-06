@@ -5,8 +5,13 @@ using Avalonia.Threading;
 using Newtonsoft.Json;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
+using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Enums;
+using OpenTracker.Models.Items;
+using OpenTracker.Models.Locations;
+using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Sections;
+using OpenTracker.Models.SequenceBreaks;
 using OpenTracker.ViewModels.Bases;
 using ReactiveUI;
 using System;
@@ -28,7 +33,6 @@ namespace OpenTracker.ViewModels
         private readonly IDialogService _dialogService;
         private readonly UndoRedoManager _undoRedoManager;
         private readonly AppSettings _appSettings;
-        private readonly Game _game;
 
         public static ObservableCollection<MarkingSelectControlVM> NonEntranceMarkingSelect { get; } = 
             new ObservableCollection<MarkingSelectControlVM>();
@@ -279,7 +283,6 @@ namespace OpenTracker.ViewModels
         public MainWindowVM()
         {
             _undoRedoManager = new UndoRedoManager();
-            _game = new Game();
 
             _undoRedoManager.UndoableActions.CollectionChanged += OnUndoChanged;
             _undoRedoManager.RedoableActions.CollectionChanged += OnRedoChanged;
@@ -308,10 +311,10 @@ namespace OpenTracker.ViewModels
             }
 
             TopMenu = new TopMenuControlVM(this, _appSettings);
-            ItemsPanel = new ItemsPanelControlVM(this, _appSettings, _game, _undoRedoManager);
+            ItemsPanel = new ItemsPanelControlVM(this, _appSettings, _undoRedoManager);
 
             _appSettings.PropertyChanged += OnAppSettingsChanged;
-            _game.Connections.CollectionChanged += OnConnectionsChanged;
+            ConnectionCollection.Instance.CollectionChanged += OnConnectionsChanged;
 
             if (NonEntranceMarkingSelect.Count == 0)
             {
@@ -353,13 +356,13 @@ namespace OpenTracker.ViewModels
                         case MarkingType.HalfMagic:
                         case MarkingType.BigKey:
                             {
-                                NonEntranceMarkingSelect.Add(new MarkingSelectControlVM(_game, (MarkingType)i));
+                                NonEntranceMarkingSelect.Add(new MarkingSelectControlVM((MarkingType)i));
                             }
                             break;
                         case MarkingType.Quake:
                             {
-                                NonEntranceMarkingSelect.Add(new MarkingSelectControlVM(_game, (MarkingType)i));
-                                NonEntranceMarkingSelect.Add(new MarkingSelectControlVM(_game, null));
+                                NonEntranceMarkingSelect.Add(new MarkingSelectControlVM((MarkingType)i));
+                                NonEntranceMarkingSelect.Add(new MarkingSelectControlVM(null));
                             }
                             break;
                     }
@@ -370,7 +373,7 @@ namespace OpenTracker.ViewModels
             {
                 for (int i = 0; i < Enum.GetValues(typeof(MarkingType)).Length; i++)
                 {
-                    EntranceMarkingSelect.Add(new MarkingSelectControlVM(_game, (MarkingType)i));
+                    EntranceMarkingSelect.Add(new MarkingSelectControlVM((MarkingType)i));
                 }
             }
 
@@ -380,26 +383,27 @@ namespace OpenTracker.ViewModels
             MapLocations = new ObservableCollection<MapLocationControlVM>();
             Locations = new ObservableCollection<LocationControlVM>();
 
-            foreach (Models.Location location in _game.Locations.Values)
+            foreach (LocationID id in Enum.GetValues(typeof(LocationID)))
             {
+                var location = LocationDictionary.Instance[id];
                 foreach (MapLocation mapLocation in location.MapLocations)
                 {
                     if (location.Sections[0] is EntranceSection)
                     {
                         MapEntrances.Add(new MapEntranceControlVM(_undoRedoManager, _appSettings,
-                            _game, this, mapLocation));
+                            this, mapLocation));
                     }
                     else
                     {
                         MapLocations.Add(new MapLocationControlVM(_undoRedoManager, _appSettings,
-                            _game, this, mapLocation));
+                            this, mapLocation));
                     }
                 }
             }
 
             for (int i = 0; i < Enum.GetValues(typeof(MapID)).Length; i++)
             {
-                Maps.Add(new MapControlVM(_game, this, (MapID)i));
+                Maps.Add(new MapControlVM(this, (MapID)i));
             }
         }
 
@@ -468,8 +472,8 @@ namespace OpenTracker.ViewModels
         /// </param>
         private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(AppSettings.LayoutOrientation) &&
-                e.PropertyName == nameof(AppSettings.HorizontalUIPanelPlacement) &&
+            if (e.PropertyName == nameof(AppSettings.LayoutOrientation) ||
+                e.PropertyName == nameof(AppSettings.HorizontalUIPanelPlacement) ||
                 e.PropertyName == nameof(AppSettings.VerticalUIPanelPlacement))
             {
                 UpdateUIPanelDock();
@@ -480,7 +484,7 @@ namespace OpenTracker.ViewModels
                 UpdateMapOrientation();
             }
 
-            if (e.PropertyName == nameof(AppSettings.HorizontalItemsPlacement) &&
+            if (e.PropertyName == nameof(AppSettings.HorizontalItemsPlacement) ||
                 e.PropertyName == nameof(AppSettings.VerticalItemsPlacement))
             {
                 UpdateUIPanelOrientationDock();
@@ -504,7 +508,7 @@ namespace OpenTracker.ViewModels
                 foreach (object item in e.NewItems)
                 {
                     (MapLocation, MapLocation) connection = ((MapLocation, MapLocation))item;
-                    Connectors.Add(new ConnectorControlVM(_undoRedoManager, _game, this,
+                    Connectors.Add(new ConnectorControlVM(_undoRedoManager, this,
                         _appSettings, connection));
                 }
             }
@@ -533,7 +537,7 @@ namespace OpenTracker.ViewModels
                 foreach ((MapLocation, MapLocation) connection in
                     (ObservableCollection<(MapLocation, MapLocation)>)sender)
                 {
-                    Connectors.Add(new ConnectorControlVM(_undoRedoManager, _game, this,
+                    Connectors.Add(new ConnectorControlVM(_undoRedoManager, this,
                         _appSettings, connection));
                 }
             }
@@ -620,7 +624,7 @@ namespace OpenTracker.ViewModels
                 File.Delete(path);
             }
 
-            SaveData saveData = new SaveData(_game);
+            SaveData saveData = new SaveData(true);
 
             string json = JsonConvert.SerializeObject(saveData);
 
@@ -639,23 +643,23 @@ namespace OpenTracker.ViewModels
 
             SaveData saveData = JsonConvert.DeserializeObject<SaveData>(jsonContent);
 
-            _game.Mode.ItemPlacement = saveData.Mode.ItemPlacement;
-            _game.Mode.DungeonItemShuffle = saveData.Mode.DungeonItemShuffle;
-            _game.Mode.WorldState = saveData.Mode.WorldState;
-            _game.Mode.EntranceShuffle = saveData.Mode.EntranceShuffle;
-            _game.Mode.BossShuffle = saveData.Mode.BossShuffle;
-            _game.Mode.EnemyShuffle = saveData.Mode.EnemyShuffle;
+            Mode.Instance.ItemPlacement = saveData.Mode.ItemPlacement;
+            Mode.Instance.DungeonItemShuffle = saveData.Mode.DungeonItemShuffle;
+            Mode.Instance.WorldState = saveData.Mode.WorldState;
+            Mode.Instance.EntranceShuffle = saveData.Mode.EntranceShuffle;
+            Mode.Instance.BossShuffle = saveData.Mode.BossShuffle;
+            Mode.Instance.EnemyShuffle = saveData.Mode.EnemyShuffle;
 
             foreach (ItemType item in saveData.ItemCounts.Keys)
             {
-                _game.Items[item].SetCurrent(saveData.ItemCounts[item]);
+                ItemDictionary.Instance[item].SetCurrent(saveData.ItemCounts[item]);
             }
 
             foreach (LocationID location in saveData.LocationSectionCounts.Keys)
             {
                 foreach (int i in saveData.LocationSectionCounts[location].Keys)
                 {
-                    _game.Locations[location].Sections[i].Available =
+                    LocationDictionary.Instance[location].Sections[i].Available =
                         saveData.LocationSectionCounts[location][i];
                 }
             }
@@ -664,7 +668,7 @@ namespace OpenTracker.ViewModels
             {
                 foreach (int i in saveData.LocationSectionMarkings[location].Keys)
                 {
-                    _game.Locations[location].Sections[i].Marking =
+                    LocationDictionary.Instance[location].Sections[i].Marking =
                         saveData.LocationSectionMarkings[location][i];
                 }
             }
@@ -673,12 +677,12 @@ namespace OpenTracker.ViewModels
             {
                 if (saveData.PrizePlacements[locationIndex] == null)
                 {
-                    _game.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].Prize = null;
+                    LocationDictionary.Instance[locationIndex.Item1].BossSections[locationIndex.Item2].Prize = null;
                 }
                 else
                 {
-                    _game.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].Prize =
-                        _game.Items[saveData.PrizePlacements[locationIndex].Value];
+                    LocationDictionary.Instance[locationIndex.Item1].BossSections[locationIndex.Item2].Prize =
+                        ItemDictionary.Instance[saveData.PrizePlacements[locationIndex].Value];
                 }
             }
 
@@ -686,21 +690,21 @@ namespace OpenTracker.ViewModels
             {
                 if (saveData.BossPlacements[locationIndex] == null)
                 {
-                    _game.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].BossPlacement.Boss = null;
+                    LocationDictionary.Instance[locationIndex.Item1].BossSections[locationIndex.Item2].BossPlacement.Boss = null;
                 }
                 else
                 {
-                    _game.Locations[locationIndex.Item1].BossSections[locationIndex.Item2].BossPlacement.Boss =
+                    LocationDictionary.Instance[locationIndex.Item1].BossSections[locationIndex.Item2].BossPlacement.Boss =
                         saveData.BossPlacements[locationIndex].Value;
                 }
             }
 
             foreach ((LocationID, int, LocationID, int) connection in saveData.Connections)
             {
-                MapLocation location1 = _game.Locations[connection.Item1].MapLocations[connection.Item2];
-                MapLocation location2 = _game.Locations[connection.Item3].MapLocations[connection.Item4];
+                MapLocation location1 = LocationDictionary.Instance[connection.Item1].MapLocations[connection.Item2];
+                MapLocation location2 = LocationDictionary.Instance[connection.Item3].MapLocations[connection.Item4];
 
-                _game.Connections.Add((location1, location2));
+                ConnectionCollection.Instance.Add((location1, location2));
             }
         }
 
@@ -721,7 +725,12 @@ namespace OpenTracker.ViewModels
             {
                 _undoRedoManager.Reset();
                 Locations.Clear();
-                _game.Reset();
+                AutoTracker.Instance.Stop();
+                BossPlacementDictionary.Instance.Reset();
+                ItemDictionary.Instance.Reset();
+                LocationDictionary.Instance.Reset();
+                PrizePlacementDictionary.Instance.Reset();
+                ConnectionCollection.Instance.Clear();
             });
         }
 
@@ -795,7 +804,7 @@ namespace OpenTracker.ViewModels
         /// </returns>
         public object GetAutoTrackerViewModel()
         {
-            return new AutoTrackerDialogVM(_game.AutoTracker);
+            return new AutoTrackerDialogVM(AutoTracker.Instance);
         }
 
         /// <summary>

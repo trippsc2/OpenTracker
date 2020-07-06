@@ -1,5 +1,4 @@
 ﻿using OpenTracker.Models.Enums;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
@@ -9,8 +8,10 @@ namespace OpenTracker.Models.Requirements
     /// </summary>
     internal class EnemyShuffleRequirement : IRequirement
     {
-        private readonly Mode _mode;
         private readonly bool _enemyShuffle;
+
+        public bool Met =>
+            Accessibility != AccessibilityLevel.None;
 
         public event PropertyChangedEventHandler PropertyChanged;
         
@@ -31,18 +32,14 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="mode">
-        /// The mode data class.
-        /// </param>
         /// <param name="enemyShuffle">
         /// The required enemy shuffle value.
         /// </param>
-        public EnemyShuffleRequirement(Mode mode, bool enemyShuffle)
+        public EnemyShuffleRequirement(bool enemyShuffle)
         {
-            _mode = mode ?? throw new ArgumentNullException(nameof(mode));
             _enemyShuffle = enemyShuffle;
             
-            _mode.PropertyChanged += OnModeChanged;
+            Mode.Instance.PropertyChanged += OnModeChanged;
             
             UpdateAccessibility();
         }
@@ -80,7 +77,7 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         private void UpdateAccessibility()
         {
-            Accessibility = _mode.EnemyShuffle == _enemyShuffle ?
+            Accessibility = Mode.Instance.EnemyShuffle == _enemyShuffle ?
                 AccessibilityLevel.Normal : AccessibilityLevel.None;
         }
     }

@@ -351,6 +351,590 @@ namespace OpenTracker.Models.Items
         }
 
         /// <summary>
+        /// Returns the function for autotracking the specified item.
+        /// </summary>
+        /// <param name="type">
+        /// The item type.
+        /// </param>
+        /// <returns>
+        /// A function for autotracking the specified item.
+        /// </returns>
+        private static Func<int, int?> GetAutoTrackFunction(ItemType type)
+        {
+            return type switch
+            {
+                ItemType.Sword => (current) =>
+                {
+                    if (current > 0)
+                    {
+                        byte? result = AutoTracker.Instance.CheckMemoryByteValue(
+                            MemorySegmentType.Item, 25);
+
+                        if (result.HasValue && result.Value != 255)
+                        {
+                            return result.Value + 1;
+                        }
+                    }
+
+                    return null;
+                },
+                ItemType.Shield => (current) =>
+                {
+                    return AutoTracker.Instance.CheckMemoryByteValue(MemorySegmentType.Item, 26);
+                },
+                ItemType.Mail => (current) =>
+                {
+                    return AutoTracker.Instance.CheckMemoryByteValue(MemorySegmentType.Item, 27);
+                },
+                ItemType.Bow => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryByte(MemorySegmentType.Item, 0);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.Arrows => (current) =>
+                {
+                    bool? result = AutoTracker.Instance.CheckMemoryFlag(
+                        MemorySegmentType.Item, 78, 64);
+
+                    if (result.HasValue && result.Value)
+                    {
+                        return 2;
+                    }
+                    else
+                    {
+                        result = AutoTracker.Instance.CheckMemoryByte(MemorySegmentType.Item, 55);
+
+                        if (result.HasValue)
+                        {
+                            return result.Value ? 1 : 0;
+                        }
+                    }
+
+                    return null;
+                },
+                ItemType.Boomerang => (current) =>
+                {
+                    bool? result = AutoTracker.Instance.CheckMemoryFlag(
+                        MemorySegmentType.Item, 76, 128);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.RedBoomerang => (current) =>
+                {
+                    bool? result = AutoTracker.Instance.CheckMemoryFlag(
+                        MemorySegmentType.Item, 76, 64);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.Hookshot => (current) =>
+                {
+                    bool? result = AutoTracker.Instance.CheckMemoryByte(
+                        MemorySegmentType.Item, 2);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.Bomb => (current) =>
+                {
+                    bool? result = AutoTracker.Instance.CheckMemoryByte(
+                        MemorySegmentType.Item, 3);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.BigBomb => (current) =>
+                {
+                    return AutoTracker.Instance.CheckMemoryFlagArray(
+                        new (MemorySegmentType, int, byte)[2]
+                        {
+                            (MemorySegmentType.Room, 556, 16),
+                            (MemorySegmentType.Room, 556, 32)
+                        });
+                },
+                ItemType.Powder => (current) =>
+                {
+                    bool? result = AutoTracker.Instance.CheckMemoryFlag(
+                        MemorySegmentType.Item, 76, 16);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.MagicBat => (current) =>
+                {
+                    bool? result = AutoTracker.Instance.CheckMemoryFlag(
+                        MemorySegmentType.NPCItem, 1, 128);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.Mushroom => (current) =>
+                {
+                    bool? witchTurnIn = AutoTracker.Instance.CheckMemoryFlag(
+                        MemorySegmentType.NPCItem, 1, 32);
+                    bool? mushroom = AutoTracker.Instance.CheckMemoryFlag(
+                        MemorySegmentType.Item, 76, 32);
+
+                    if (witchTurnIn.HasValue || mushroom.HasValue)
+                    {
+                        if (witchTurnIn.HasValue && witchTurnIn.Value)
+                        {
+                            return 2;
+                        }
+
+                        if (mushroom.HasValue && mushroom.Value)
+                        {
+                            return 1;
+                        }
+                        
+                        return 0;
+                    }
+
+                    return null;
+                },
+                ItemType.Boots => (current) =>
+                {
+                    bool? result = AutoTracker.Instance.CheckMemoryByte(
+                        MemorySegmentType.Item, 21);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.FireRod => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryByte(MemorySegmentType.Item, 5);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.IceRod => (current) =>
+                {
+                    bool? result = AutoTracker.Instance.CheckMemoryByte(
+                        MemorySegmentType.Item, 6);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.Bombos => (current) =>
+                {
+                    bool? result = AutoTracker.Instance.CheckMemoryByte(
+                        MemorySegmentType.Item, 7);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.Ether => (current) =>
+                {
+                    bool? result = AutoTracker.Instance.CheckMemoryByte(
+                        MemorySegmentType.Item, 8);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.Quake => (current) =>
+                {
+                    bool? result = AutoTracker.Instance.CheckMemoryByte(
+                        MemorySegmentType.Item, 9);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.Gloves => (current) =>
+                {
+                    int? result = AutoTracker.Instance
+                        .CheckMemoryByteValue(MemorySegmentType.Item, 20);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value;
+                    }
+
+                    return null;
+                },
+                ItemType.Lamp => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryByte(MemorySegmentType.Item, 10);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.Hammer => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryByte(MemorySegmentType.Item, 11);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.Flute => (current) =>
+                {
+                    int? result = AutoTracker.Instance.CheckMemoryFlagArray(
+                        new (MemorySegmentType, int, byte)[2]
+                        {
+                            (MemorySegmentType.Item, 76, 1),
+                            (MemorySegmentType.Item, 76, 2)
+                        });
+
+                    if (result.HasValue)
+                    {
+                        return result.Value > 0 ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.FluteActivated => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryFlag(MemorySegmentType.Item, 76, 1);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.Net => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryByte(MemorySegmentType.Item, 13);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.Book => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryByte(MemorySegmentType.Item, 14);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.Shovel => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryFlag(MemorySegmentType.Item, 76, 4);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.Flippers => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryByte(MemorySegmentType.Item, 22);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.Bottle => (current) =>
+                {
+                    int? result = AutoTracker.Instance.CheckMemoryByteArray(
+                        new (MemorySegmentType, int)[4]
+                        {
+                            (MemorySegmentType.Item, 28),
+                            (MemorySegmentType.Item, 29),
+                            (MemorySegmentType.Item, 30),
+                            (MemorySegmentType.Item, 31)
+                        });
+
+                    if (result.HasValue)
+                    {
+                        return result.Value;
+                    }
+
+                    return null;
+                },
+                ItemType.CaneOfSomaria => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryByte(MemorySegmentType.Item, 16);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.CaneOfByrna => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryByte(MemorySegmentType.Item, 17);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.Cape => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryByte(MemorySegmentType.Item, 18);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.Mirror => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryByte(MemorySegmentType.Item, 19);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.HalfMagic => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryByte(MemorySegmentType.Item, 59);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.MoonPearl => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryByte(MemorySegmentType.Item, 23);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.EPBigKey => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryFlag(MemorySegmentType.Item, 39, 32);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.DPBigKey => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryFlag(MemorySegmentType.Item, 39, 16);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.ToHBigKey => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryFlag(MemorySegmentType.Item, 38, 32);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.PoDBigKey => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryFlag(MemorySegmentType.Item, 39, 2);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.SPBigKey => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryFlag(MemorySegmentType.Item, 39, 4);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.SWBigKey => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryFlag(MemorySegmentType.Item, 38, 128);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.TTBigKey => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryFlag(MemorySegmentType.Item, 38, 16);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.IPBigKey => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryFlag(MemorySegmentType.Item, 38, 64);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.MMBigKey => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryFlag(MemorySegmentType.Item, 39, 1);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.TRBigKey => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryFlag(MemorySegmentType.Item, 38, 8);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                ItemType.GTBigKey => (current) =>
+                {
+                    bool? result = AutoTracker.Instance
+                        .CheckMemoryFlag(MemorySegmentType.Item, 38, 4);
+
+                    if (result.HasValue)
+                    {
+                        return result.Value ? 1 : 0;
+                    }
+
+                    return null;
+                },
+                _ => throw new ArgumentOutOfRangeException(nameof(type))
+            };
+        }
+
+        /// <summary>
         /// Returns a finished item.
         /// </summary>
         /// <param name="type">
@@ -359,13 +943,8 @@ namespace OpenTracker.Models.Items
         /// <returns>
         /// A finished item.
         /// </returns>
-        internal static IItem GetItem(Game game, ItemType type)
+        internal static IItem GetItem(ItemType type)
         {
-            if (game == null)
-            {
-                throw new ArgumentNullException(nameof(game));
-            }
-
             switch (type)
             {
                 case ItemType.Sword:
@@ -415,7 +994,9 @@ namespace OpenTracker.Models.Items
                 case ItemType.TRBigKey:
                 case ItemType.GTBigKey:
                     {
-                        return new AutoTrackedItem(game, GetBaseItem(type), GetMemoryAddresses(type));
+                        return new AutoTrackedItem(
+                            GetBaseItem(type), GetAutoTrackFunction(type),
+                            GetMemoryAddresses(type));
                     }
                 default:
                     {

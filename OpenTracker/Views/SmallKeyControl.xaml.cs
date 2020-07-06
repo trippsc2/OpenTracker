@@ -5,11 +5,11 @@ using OpenTracker.Interfaces;
 
 namespace OpenTracker.Views
 {
-    public class KeyControl : UserControl
+    public class SmallKeyControl : UserControl
     {
         public IClickHandler ViewModelClickHandler => DataContext as IClickHandler;
 
-        public KeyControl()
+        public SmallKeyControl()
         {
             this.InitializeComponent();
         }

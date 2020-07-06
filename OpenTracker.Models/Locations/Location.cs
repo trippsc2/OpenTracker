@@ -5,19 +5,16 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 
-namespace OpenTracker.Models
+namespace OpenTracker.Models.Locations
 {
     /// <summary>
     /// This is the class containing location data.
     /// </summary>
-    public class Location : INotifyPropertyChanged
+    public class Location : ILocation
     {
-        private readonly Game _game;
-
         public LocationID ID { get; }
         public string Name { get; }
 
-        public List<BossSection> BossSections { get; private set; }
         public List<MapLocation> MapLocations { get; }
         public List<ISection> Sections { get; }
 
@@ -82,28 +79,23 @@ namespace OpenTracker.Models
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="game">
-        /// The game data parent class.
-        /// </param>
-        /// <param name="iD">
+        /// <param name="id">
         /// The ID of the location.
         /// </param>
-        public Location(Game game, LocationID iD)
+        public Location(
+            LocationID id, string name, List<MapLocation> mapLocations, List<ISection> sections)
         {
-            _game = game;
-
-            ID = iD;
-
-            BossSections = new List<BossSection>();
-            MapLocations = new List<MapLocation>();
-            Sections = new List<ISection>();
+            ID = id;
+            Name = name ?? throw new ArgumentNullException(nameof(name));
+            MapLocations = mapLocations ?? throw new ArgumentNullException(nameof(mapLocations));
+            Sections = sections ?? throw new ArgumentNullException(nameof(sections));
 
             int itemSections = 0;
             bool dungeonSection = false;
             bool entranceSection = false;
             bool takeAnySection = false;
 
-            switch (iD)
+            switch (id)
             {
                 case LocationID.Pedestal:
                     {
@@ -613,7 +605,7 @@ namespace OpenTracker.Models
                             new ModeRequirement(entranceShuffle: true)));
                         //itemSections = 1;
                         dungeonSection = true;
-                        BossSections.Add(new BossSection(game, iD));
+                        BossSections.Add(new BossSection(id));
                     }
                     break;
                 case LocationID.EasternPalace:
@@ -625,7 +617,7 @@ namespace OpenTracker.Models
                             new ModeRequirement(entranceShuffle: true)));
                         //itemSections = 1;
                         dungeonSection = true;
-                        BossSections.Add(new BossSection(game, iD));
+                        BossSections.Add(new BossSection(id));
                     }
                     break;
                 case LocationID.DesertPalace:
@@ -637,7 +629,7 @@ namespace OpenTracker.Models
                             new ModeRequirement(entranceShuffle: true)));
                         //itemSections = 1;
                         dungeonSection = true;
-                        BossSections.Add(new BossSection(game, iD));
+                        BossSections.Add(new BossSection(id));
                     }
                     break;
                 case LocationID.TowerOfHera:
@@ -649,7 +641,7 @@ namespace OpenTracker.Models
                             new ModeRequirement(entranceShuffle: true)));
                         //itemSections = 1;
                         dungeonSection = true;
-                        BossSections.Add(new BossSection(game, iD));
+                        BossSections.Add(new BossSection(id));
                     }
                     break;
                 case LocationID.PalaceOfDarkness:
@@ -661,7 +653,7 @@ namespace OpenTracker.Models
                             new ModeRequirement(entranceShuffle: true)));
                         //itemSections = 1;
                         dungeonSection = true;
-                        BossSections.Add(new BossSection(game, iD));
+                        BossSections.Add(new BossSection(id));
                     }
                     break;
                 case LocationID.SwampPalace:
@@ -673,7 +665,7 @@ namespace OpenTracker.Models
                             new ModeRequirement(entranceShuffle: true)));
                         //itemSections = 1;
                         dungeonSection = true;
-                        BossSections.Add(new BossSection(game, iD));
+                        BossSections.Add(new BossSection(id));
                     }
                     break;
                 case LocationID.SkullWoods:
@@ -685,7 +677,7 @@ namespace OpenTracker.Models
                             new ModeRequirement(entranceShuffle: true)));
                         //itemSections = 1;
                         dungeonSection = true;
-                        BossSections.Add(new BossSection(game, iD));
+                        BossSections.Add(new BossSection(id));
                     }
                     break;
                 case LocationID.ThievesTown:
@@ -697,7 +689,7 @@ namespace OpenTracker.Models
                             new ModeRequirement(entranceShuffle: true)));
                         //itemSections = 1;
                         dungeonSection = true;
-                        BossSections.Add(new BossSection(game, iD));
+                        BossSections.Add(new BossSection(id));
                     }
                     break;
                 case LocationID.IcePalace:
@@ -709,7 +701,7 @@ namespace OpenTracker.Models
                             new ModeRequirement(entranceShuffle: true)));
                         //itemSections = 1;
                         dungeonSection = true;
-                        BossSections.Add(new BossSection(game, iD));
+                        BossSections.Add(new BossSection(id));
                     }
                     break;
                 case LocationID.MiseryMire:
@@ -721,7 +713,7 @@ namespace OpenTracker.Models
                             new ModeRequirement(entranceShuffle: true)));
                         //itemSections = 1;
                         dungeonSection = true;
-                        BossSections.Add(new BossSection(game, iD));
+                        BossSections.Add(new BossSection(id));
                     }
                     break;
                 case LocationID.TurtleRock:
@@ -733,7 +725,7 @@ namespace OpenTracker.Models
                             new ModeRequirement(entranceShuffle: true)));
                         //itemSections = 1;
                         dungeonSection = true;
-                        BossSections.Add(new BossSection(game, iD));
+                        BossSections.Add(new BossSection(id));
                     }
                     break;
                 case LocationID.GanonsTower:
@@ -747,10 +739,10 @@ namespace OpenTracker.Models
                             new ModeRequirement(entranceShuffle: true)));
                         //itemSections = 1;
                         dungeonSection = true;
-                        BossSections.Add(new BossSection(game, iD, 0));
-                        BossSections.Add(new BossSection(game, iD, 1));
-                        BossSections.Add(new BossSection(game, iD, 2));
-                        BossSections.Add(new BossSection(game, iD, 3));
+                        BossSections.Add(new BossSection(id, 0));
+                        BossSections.Add(new BossSection(id, 1));
+                        BossSections.Add(new BossSection(id, 2));
+                        BossSections.Add(new BossSection(id, 3));
                     }
                     break;
                 case LocationID.LumberjackHouseEntrance:
@@ -1999,27 +1991,22 @@ namespace OpenTracker.Models
 
             for (int i = 0; i < itemSections; i++)
             {
-                Sections.Add(new ItemSection(_game, this, i));
+                Sections.Add(new ItemSection(this, i));
             }
 
             if (dungeonSection)
             {
-                Sections.Add(new DungeonItemSection(_game, this));
+                Sections.Add(new DungeonItemSection(this));
             }
 
             if (entranceSection)
             {
-                Sections.Add(new EntranceSection(_game, ID));
+                Sections.Add(new EntranceSection(ID));
             }
 
             if (takeAnySection)
             {
-                Sections.Add(new TakeAnySection(_game, ID));
-            }
-
-            foreach (BossSection bossSection in BossSections)
-            {
-                Sections.Add(bossSection);
+                Sections.Add(new TakeAnySection(ID));
             }
 
             foreach (ISection section in Sections)
@@ -2085,7 +2072,7 @@ namespace OpenTracker.Models
 
             foreach (ISection section in Sections)
             {
-                if (section.IsAvailable() && _game.Mode.Validate(section.ModeRequirement))
+                if (section.IsAvailable() && Mode.Instance.Validate(section.ModeRequirement))
                 {
                     available = true;
                     AccessibilityLevel sectionAccessibility = section.Accessibility;
@@ -2190,20 +2177,6 @@ namespace OpenTracker.Models
             }
 
             Total = total;
-        }
-
-        /// <summary>
-        /// Initializes the location data.
-        /// </summary>
-        public void Initialize()
-        {
-            foreach (var section in Sections)
-            {
-                if (section is DungeonItemSection dungeonItemSection)
-                {
-                    dungeonItemSection.Initialize();
-                }
-            }
         }
 
         /// <summary>

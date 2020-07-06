@@ -7,14 +7,6 @@ namespace OpenTracker.Views
 {
     public class ItemsPanelControl : UserControl
     {
-        public static AvaloniaProperty<bool> ModeSettingsPopupOpenProperty =
-            AvaloniaProperty.Register<MainWindow, bool>(nameof(ModeSettingsPopupOpen));
-        public bool ModeSettingsPopupOpen
-        {
-            get => GetValue(ModeSettingsPopupOpenProperty);
-            set => SetValue(ModeSettingsPopupOpenProperty, value);
-        }
-
         public ItemsPanelControl()
         {
             this.InitializeComponent();
@@ -23,14 +15,6 @@ namespace OpenTracker.Views
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
-        }
-
-        private void OpenModeSettingsPopup(object sender, PointerReleasedEventArgs e)
-        {
-            if (e.InitialPressMouseButton == MouseButton.Left)
-            {
-                ModeSettingsPopupOpen = true;
-            }
         }
     }
 }

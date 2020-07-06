@@ -11,6 +11,9 @@ namespace OpenTracker.Models.Requirements
         private readonly IItem _crystal;
         private readonly IItem _redCrystal;
 
+        public bool Met =>
+            Accessibility != AccessibilityLevel.None;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private AccessibilityLevel _accessibility;
@@ -33,16 +36,11 @@ namespace OpenTracker.Models.Requirements
         /// <param name="game">
         /// The game data.
         /// </param>
-        public CrystalRequirement(Game game)
+        public CrystalRequirement()
         {
-            if (game == null)
-            {
-                throw new ArgumentNullException(nameof(game));
-            }
-
-            _gtCrystal = game.Items[ItemType.TowerCrystals];
-            _crystal = game.Items[ItemType.Crystal];
-            _redCrystal = game.Items[ItemType.RedCrystal];
+            _gtCrystal = ItemDictionary.Instance[ItemType.TowerCrystals];
+            _crystal = ItemDictionary.Instance[ItemType.Crystal];
+            _redCrystal = ItemDictionary.Instance[ItemType.RedCrystal];
 
             _gtCrystal.PropertyChanged += OnItemChanged;
             _crystal.PropertyChanged += OnItemChanged;

@@ -10,8 +10,6 @@ namespace OpenTracker.ViewModels
 {
     public class MarkingSelectControlVM : ViewModelBase
     {
-        private readonly Game _game;
-
         public MarkingType? Marking { get; }
 
         public string ImageSource
@@ -66,7 +64,7 @@ namespace OpenTracker.ViewModels
                         case MarkingType.Shield:
                         case MarkingType.Mail:
                             {
-                                var item = _game.Items[Enum.Parse<ItemType>(Marking.ToString())];
+                                var item = ItemDictionary.Instance[Enum.Parse<ItemType>(Marking.ToString())];
                                 itemNumber = Math.Min(item.Current + 1, item.Maximum);
 
                                 return "avares://OpenTracker/Assets/Images/Items/" +
@@ -75,7 +73,7 @@ namespace OpenTracker.ViewModels
                             }
                         case MarkingType.Sword:
                             {
-                                var sword = _game.Items[ItemType.Sword];
+                                var sword = ItemDictionary.Instance[ItemType.Sword];
 
                                 if (sword.Current == 0)
                                 {
@@ -140,16 +138,15 @@ namespace OpenTracker.ViewModels
         /// <param name="marking">
         /// The marking to be represented by this option.
         /// </param>
-        public MarkingSelectControlVM(Game game, MarkingType? marking)
+        public MarkingSelectControlVM(MarkingType? marking)
         {
-            _game = game ?? throw new ArgumentNullException(nameof(game));
             Marking = marking;
 
             if (Marking != null)
             {
                 if (Enum.TryParse(Marking.ToString(), out ItemType itemType))
                 {
-                    _game.Items[itemType].PropertyChanged += OnItemChanged;
+                    ItemDictionary.Instance[itemType].PropertyChanged += OnItemChanged;
 
                     switch (itemType)
                     {
@@ -157,7 +154,7 @@ namespace OpenTracker.ViewModels
                         case ItemType.Ether:
                         case ItemType.Quake:
                             {
-                                _game.Items[itemType + 1].PropertyChanged += OnItemChanged;
+                                ItemDictionary.Instance[itemType + 1].PropertyChanged += OnItemChanged;
                             }
                             break;
                     }

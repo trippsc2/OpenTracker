@@ -8,9 +8,12 @@ namespace OpenTracker.Models.Requirements
     /// <summary>
     /// This is the class for aggregating a set of requirements.
     /// </summary>
-    internal class AggregateRequirement : IRequirement
+    public class AggregateRequirement : IRequirement
     {
         private readonly List<IRequirement> _requirements;
+
+        public bool Met =>
+            Accessibility != AccessibilityLevel.None;
 
         public event PropertyChangedEventHandler PropertyChanged;
 

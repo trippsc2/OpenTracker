@@ -1,4 +1,6 @@
 ﻿using OpenTracker.Models.Enums;
+using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Requirements;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,7 +12,6 @@ namespace OpenTracker.Models.Sections
     /// </summary>
     public class TakeAnySection : ISection
     {
-        private readonly Game _game;
         private readonly List<RequirementNodeConnection> _connections;
 
         public bool HasMarking => false;
@@ -73,9 +74,8 @@ namespace OpenTracker.Models.Sections
         /// <param name="iD">
         /// The location identity.
         /// </param>
-        public TakeAnySection(Game game, LocationID iD)
+        public TakeAnySection(LocationID iD)
         {
-            _game = game ?? throw new ArgumentNullException(nameof(game));
             _connections = new List<RequirementNodeConnection>();
             ModeRequirement = new ModeRequirement();
             Available = 1;
@@ -207,13 +207,13 @@ namespace OpenTracker.Models.Sections
             {
                 if (!nodeSubscriptions.Contains(connection.FromNode))
                 {
-                    _game.RequirementNodes[connection.FromNode].PropertyChanged += OnRequirementChanged;
+                    RequirementNodeDictionary.Instance[connection.FromNode].PropertyChanged += OnRequirementChanged;
                     nodeSubscriptions.Add(connection.FromNode);
                 }
 
                 if (!requirementSubscriptions.Contains(connection.Requirement))
                 {
-                    _game.Requirements[connection.Requirement].PropertyChanged += OnRequirementChanged;
+                    RequirementDictionary.Instance[connection.Requirement].PropertyChanged += OnRequirementChanged;
                     requirementSubscriptions.Add(connection.Requirement);
                 }
             }
@@ -270,7 +270,7 @@ namespace OpenTracker.Models.Sections
                 AccessibilityLevel nodeAccessibility = AccessibilityLevel.Normal;
                 
                 nodeAccessibility = (AccessibilityLevel)Math.Min((byte)nodeAccessibility,
-                    (byte)_game.RequirementNodes[connection.FromNode].Accessibility);
+                    (byte)RequirementNodeDictionary.Instance[connection.FromNode].Accessibility);
 
                 if (nodeAccessibility < AccessibilityLevel.SequenceBreak)
                 {
@@ -278,7 +278,7 @@ namespace OpenTracker.Models.Sections
                 }
 
                 AccessibilityLevel requirementAccessibility =
-                    _game.Requirements[connection.Requirement].Accessibility;
+                    RequirementDictionary.Instance[connection.Requirement].Accessibility;
 
                 AccessibilityLevel finalConnectionAccessibility =
                     (AccessibilityLevel)Math.Min(Math.Min((byte)nodeAccessibility,

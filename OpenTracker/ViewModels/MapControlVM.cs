@@ -14,7 +14,6 @@ namespace OpenTracker.ViewModels
     /// </summary>
     public class MapControlVM : ViewModelBase
     {
-        private readonly Game _game;
         private readonly MainWindowVM _mainWindow;
         private readonly MapID _iD;
 
@@ -34,7 +33,7 @@ namespace OpenTracker.ViewModels
         {
             get
             {
-                WorldState worldState = _game.Mode.WorldState == WorldState.Inverted ?
+                WorldState worldState = Mode.Instance.WorldState == WorldState.Inverted ?
                     WorldState.Inverted : WorldState.StandardOpen;
 
                 return $"avares://OpenTracker/Assets/Images/Maps/" +
@@ -46,22 +45,18 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="game">
-        /// The game data.
-        /// </param>
         /// <param name="mainWindow">
         /// The view-model of the main window.
         /// </param>
         /// <param name="iD">
         /// The map identity.
         /// </param>
-        public MapControlVM(Game game, MainWindowVM mainWindow, MapID iD)
+        public MapControlVM(MainWindowVM mainWindow, MapID iD)
         {
-            _game = game ?? throw new ArgumentNullException(nameof(game));
             _mainWindow = mainWindow ?? throw new ArgumentNullException(nameof(mainWindow));
             _iD = iD;
 
-            _game.Mode.PropertyChanged += OnModeChanged;
+            Mode.Instance.PropertyChanged += OnModeChanged;
             _mainWindow.PropertyChanged += OnMainWindowChanged;
         }
 

@@ -11,6 +11,9 @@ namespace OpenTracker.Models.Requirements
     {
         private readonly SequenceBreak _sequenceBreak;
 
+        public bool Met =>
+            Accessibility != AccessibilityLevel.None;
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private AccessibilityLevel _accessibility;
