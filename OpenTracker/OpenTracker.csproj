@@ -4,11 +4,11 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <ApplicationIcon>triforce.ico</ApplicationIcon>
     <Win32Resource />
-    <Version>1.2.1</Version>
+    <Version>1.2.2</Version>
     <Authors>Tripp</Authors>
-    <AssemblyVersion>1.2.1.0</AssemblyVersion>
-    <FileVersion>1.2.1.0</FileVersion>
-    <CFBundleShortVersionString>1.2.1</CFBundleShortVersionString>
+    <AssemblyVersion>1.2.2.0</AssemblyVersion>
+    <FileVersion>1.2.2.0</FileVersion>
+    <CFBundleShortVersionString>1.2.2</CFBundleShortVersionString>
     <RuntimeIdentifiers>osx-x64;linux-x64;debian-x64;rhel-x64;win-x64;win-x86;win7-x64;win7-x86</RuntimeIdentifiers>
   </PropertyGroup>
   <ItemGroup>
