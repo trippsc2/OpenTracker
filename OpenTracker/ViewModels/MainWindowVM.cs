@@ -10,13 +10,14 @@ using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Connections;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
-using OpenTracker.Models.Modes;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo;
-using OpenTracker.ViewModels.MapAreaControls;
+using OpenTracker.ViewModels.ColorSelect;
+using OpenTracker.ViewModels.MapArea;
 using OpenTracker.ViewModels.SequenceBreaks;
+using OpenTracker.ViewModels.UIPanels;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -37,10 +38,10 @@ namespace OpenTracker.ViewModels
         private readonly IDialogService _dialogService;
         private AutoTrackerDialogVM _autoTrackerDialog;
 
-        public static ObservableCollection<MarkingSelectControlVM> NonEntranceMarkingSelect { get; } = 
-            new ObservableCollection<MarkingSelectControlVM>();
-        public static ObservableCollection<MarkingSelectControlVM> EntranceMarkingSelect { get; } = 
-            new ObservableCollection<MarkingSelectControlVM>();
+        public static ObservableCollection<MarkingSelectVM> NonEntranceMarkingSelect { get; } = 
+            new ObservableCollection<MarkingSelectVM>();
+        public static ObservableCollection<MarkingSelectVM> EntranceMarkingSelect { get; } = 
+            new ObservableCollection<MarkingSelectVM>();
 
         public bool? Maximized
         {
@@ -151,39 +152,9 @@ namespace OpenTracker.ViewModels
                 };
             }
         }
-        public Dock UIPanelOrientationDock
-        {
-            get
-            {
-                switch (UIPanelDock)
-                {
-                    case Dock.Left:
-                    case Dock.Right:
-                        {
-                            return AppSettings.Instance.VerticalItemsPlacement switch
-                            {
-                                VerticalAlignment.Top => Dock.Top,
-                                _ => Dock.Bottom,
-                            };
-                        }
-                    case Dock.Bottom:
-                    case Dock.Top:
-                        {
-                            return AppSettings.Instance.HorizontalItemsPlacement switch
-                            {
-                                HorizontalAlignment.Left => Dock.Left,
-                                _ => Dock.Right,
-                            };
-                        }
-                }
 
-                return Dock.Right;
-            }
-        }
-
-        public TopMenuControlVM TopMenu { get; }
-        public ItemsPanelControlVM ItemsPanel { get; }
-        public LocationsPanelControlVM LocationsPanel { get; }
+        public TopMenuVM TopMenu { get; }
+        public UIPanelVM UIPanel { get; }
         public MapAreaControlVM MapArea { get; }
 
         public ReactiveCommand<Unit, Unit> OpenResetDialogCommand { get; }
@@ -244,9 +215,8 @@ namespace OpenTracker.ViewModels
             ToggleDisplayAllLocationsCommand = ReactiveCommand.Create(ToggleDisplayAllLocations);
             PropertyChanged += OnPropertyChanged;
 
-            TopMenu = new TopMenuControlVM(this);
-            ItemsPanel = new ItemsPanelControlVM(this);
-            LocationsPanel = new LocationsPanelControlVM(this);
+            TopMenu = new TopMenuVM(this);
+            UIPanel = new UIPanelVM(this);
             MapArea = new MapAreaControlVM(this);
 
             AppSettings.Instance.PropertyChanged += OnAppSettingsChanged;
@@ -291,13 +261,13 @@ namespace OpenTracker.ViewModels
                         case MarkingType.HalfMagic:
                         case MarkingType.BigKey:
                             {
-                                NonEntranceMarkingSelect.Add(new MarkingSelectControlVM((MarkingType)i));
+                                NonEntranceMarkingSelect.Add(new MarkingSelectVM((MarkingType)i));
                             }
                             break;
                         case MarkingType.Quake:
                             {
-                                NonEntranceMarkingSelect.Add(new MarkingSelectControlVM((MarkingType)i));
-                                NonEntranceMarkingSelect.Add(new MarkingSelectControlVM(null));
+                                NonEntranceMarkingSelect.Add(new MarkingSelectVM((MarkingType)i));
+                                NonEntranceMarkingSelect.Add(new MarkingSelectVM(null));
                             }
                             break;
                     }
@@ -308,7 +278,7 @@ namespace OpenTracker.ViewModels
             {
                 for (int i = 0; i < Enum.GetValues(typeof(MarkingType)).Length; i++)
                 {
-                    EntranceMarkingSelect.Add(new MarkingSelectControlVM((MarkingType)i));
+                    EntranceMarkingSelect.Add(new MarkingSelectVM((MarkingType)i));
                 }
             }
         }
@@ -333,7 +303,6 @@ namespace OpenTracker.ViewModels
             {
                 this.RaisePropertyChanged(nameof(UIPanelHorizontalAlignment));
                 this.RaisePropertyChanged(nameof(UIPanelVerticalAlignment));
-                UpdateUIPanelOrientationDock();
             }
         }
 
@@ -382,12 +351,6 @@ namespace OpenTracker.ViewModels
             {
                 UpdateUIPanelDock();
             }
-
-            if (e.PropertyName == nameof(AppSettings.HorizontalItemsPlacement) ||
-                e.PropertyName == nameof(AppSettings.VerticalItemsPlacement))
-            {
-                UpdateUIPanelOrientationDock();
-            }
         }
 
         /// <summary>
@@ -430,14 +393,6 @@ namespace OpenTracker.ViewModels
         private void UpdateUIPanelDock()
         {
             this.RaisePropertyChanged(nameof(UIPanelDock));
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the UIPanelOrientationDock property.
-        /// </summary>
-        private void UpdateUIPanelOrientationDock()
-        {
-            this.RaisePropertyChanged(nameof(UIPanelOrientationDock));
         }
 
         /// <summary>
@@ -502,7 +457,7 @@ namespace OpenTracker.ViewModels
             Dispatcher.UIThread.InvokeAsync(() =>
             {
                 UndoRedoManager.Instance.Reset();
-                LocationsPanel.Reset();
+                UIPanel.LocationsPanel.Reset();
                 AutoTracker.Instance.Stop();
                 BossPlacementDictionary.Instance.Reset();
                 ItemDictionary.Instance.Reset();

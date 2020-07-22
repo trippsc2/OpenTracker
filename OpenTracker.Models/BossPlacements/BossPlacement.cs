@@ -10,7 +10,7 @@ namespace OpenTracker.Models.BossPlacements
     /// </summary>
     public class BossPlacement : IBossPlacement
     {
-        private readonly BossType _defaultBoss;
+        public BossType DefaultBoss { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -41,7 +41,7 @@ namespace OpenTracker.Models.BossPlacements
                 Boss = BossType.Aga;
             }
 
-            _defaultBoss = defaultBoss;
+            DefaultBoss = defaultBoss;
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace OpenTracker.Models.BossPlacements
                 return Boss;
             }
 
-            return _defaultBoss;
+            return DefaultBoss;
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace OpenTracker.Models.BossPlacements
         /// </summary>
         public void Reset()
         {
-            if (_defaultBoss != BossType.Aga)
+            if (DefaultBoss != BossType.Aga)
             {
                 Boss = null;
             }

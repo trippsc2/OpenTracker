@@ -5,6 +5,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.ThemeManager;
 using Avalonia.Threading;
 using OpenTracker.Interfaces;
+using OpenTracker.Views.ColorSelect;
 using OpenTracker.Views.SequenceBreaks;
 using System;
 using System.ComponentModel;

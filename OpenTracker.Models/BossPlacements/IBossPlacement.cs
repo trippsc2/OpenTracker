@@ -9,6 +9,7 @@ namespace OpenTracker.Models.BossPlacements
     public interface IBossPlacement : INotifyPropertyChanged
     {
         BossType? Boss { get; set; }
+        BossType DefaultBoss { get; }
 
         BossType? GetCurrentBoss();
         void Load(BossPlacementSaveData saveData);

@@ -1,0 +1,41 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OpenTracker.Views.UIPanels.LocationsPanel.PinnedLocations.Sections.SectionIcons.MarkingSectionIcon">
+  
+  <UserControl.Resources>
+    <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
+  </UserControl.Resources>
+
+  <Panel Name="MarkingPopupTarget" PointerReleased="OnClick">
+
+    <Image Classes="SectionIcon" Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}" />
+
+    <Popup IsOpen="{Binding MarkingPopupOpen, Mode=TwoWay}" StaysOpen="False" PlacementMode="Top"
+           PlacementTarget="{Binding #MarkingPopupTarget}" HorizontalOffset="16" VerticalOffset="16">
+      <Border Classes="Popup">
+        <StackPanel Orientation="Vertical">
+
+          <ItemsControl Items="{Binding MarkingSelect}">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="{Binding MarkingSelectWidth}"
+                           MaxHeight="{Binding MarkingSelectHeight}" Margin="0,0,0,10"
+                           Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+          </ItemsControl>
+
+          <Border Classes="Separator" Grid.Row="1" Margin="0,2" />
+          <Button Classes="ClearMarking" Command="{Binding ClearVisibleItemCommand}">Clear</Button>
+
+        </StackPanel>
+      </Border>
+    </Popup>
+
+  </Panel>
+
+</UserControl>

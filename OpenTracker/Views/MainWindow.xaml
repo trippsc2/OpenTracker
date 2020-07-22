@@ -28,19 +28,11 @@
 	</Window.KeyBindings>
 
 	<DockPanel>
-
     <ContentControl Content="{Binding TopMenu}" DockPanel.Dock="Top" />
-
-		<DockPanel DockPanel.Dock="{Binding UIPanelDock, Mode=OneWay}" HorizontalAlignment="{Binding 
-               UIPanelHorizontalAlignment, Mode=OneWay}" VerticalAlignment="{Binding 
-               UIPanelVerticalAlignment, Mode=OneWay}">
-			<ContentControl Content="{Binding ItemsPanel}" DockPanel.Dock="{Binding UIPanelOrientationDock,
-                      Mode=OneWay}" />
-      <ContentControl Content="{Binding LocationsPanel}" />
-    </DockPanel>
-
+		<ContentControl Content="{Binding UIPanel}" DockPanel.Dock="{Binding UIPanelDock, Mode=OneWay}"
+                    HorizontalAlignment="{Binding UIPanelHorizontalAlignment, Mode=OneWay}"
+                    VerticalAlignment="{Binding UIPanelVerticalAlignment, Mode=OneWay}" />
     <ContentControl Content="{Binding MapArea}" />
-	
 	</DockPanel>
 
 </Window>

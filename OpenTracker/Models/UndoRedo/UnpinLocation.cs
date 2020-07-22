@@ -1,4 +1,4 @@
-﻿using OpenTracker.ViewModels;
+﻿using OpenTracker.ViewModels.UIPanels.LocationsPanel.PinnedLocations;
 using System.Collections.ObjectModel;
 
 namespace OpenTracker.Models.UndoRedo
@@ -8,8 +8,8 @@ namespace OpenTracker.Models.UndoRedo
     /// </summary>
     public class UnpinLocation : IUndoable
     {
-        private readonly ObservableCollection<PinnedLocationControlVM> _pinnedLocations;
-        private readonly PinnedLocationControlVM _pinnedLocation;
+        private readonly ObservableCollection<PinnedLocationVM> _pinnedLocations;
+        private readonly PinnedLocationVM _pinnedLocation;
         private int? _existingIndex;
 
         /// <summary>
@@ -21,8 +21,8 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="pinnedLocation">
         /// The pinned location view-model to be added.
         /// </param>
-        public UnpinLocation(ObservableCollection<PinnedLocationControlVM> pinnedLocations,
-            PinnedLocationControlVM pinnedLocation)
+        public UnpinLocation(ObservableCollection<PinnedLocationVM> pinnedLocations,
+            PinnedLocationVM pinnedLocation)
         {
             _pinnedLocations = pinnedLocations;
             _pinnedLocation = pinnedLocation;

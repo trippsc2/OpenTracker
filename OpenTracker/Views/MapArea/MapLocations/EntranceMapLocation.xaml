@@ -1,0 +1,25 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OpenTracker.Views.MapArea.MapLocations.EntranceMapLocation">
+
+  <UserControl.Resources>
+    <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
+  </UserControl.Resources>
+
+  <DockPanel IsVisible="{Binding Visible}" IsHitTestVisible="{Binding Visible}" DragDrop.AllowDrop="True"
+             PointerEnter="OnPointerEnter" PointerLeave="OnPointerLeave">
+
+    <ContentControl DockPanel.Dock="{Binding MarkingDock}" Content="{Binding Marking}" />
+      
+    <Panel DoubleTapped="OnDoubleClick" PointerPressed="OnPointerPressed" PointerReleased="OnClick">
+      <Polygon Points="{Binding Points}" Fill="{Binding Color}" Stroke="{Binding BorderColor}"
+               StrokeThickness="5" />
+    </Panel>
+
+  </DockPanel>
+
+</UserControl>
