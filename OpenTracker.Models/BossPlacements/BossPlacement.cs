@@ -1,10 +1,12 @@
-﻿using OpenTracker.Models.Enums;
+﻿using OpenTracker.Models.Modes;
+using OpenTracker.Models.SaveLoad;
+using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.BossPlacements
 {
     /// <summary>
-    /// This is the class for the boss placement.
+    /// This is the class for a boss placement.
     /// </summary>
     public class BossPlacement : IBossPlacement
     {
@@ -29,11 +31,8 @@ namespace OpenTracker.Models.BossPlacements
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="game">
-        /// The game data parent class.
-        /// </param>
-        /// <param name="iD">
-        /// The boss placement ID.
+        /// <param name="defaultBoss">
+        /// The default boss type for the boss placement.
         /// </param>
         public BossPlacement(BossType defaultBoss)
         {
@@ -60,7 +59,7 @@ namespace OpenTracker.Models.BossPlacements
         /// Returns the current boss type.
         /// </summary>
         /// <returns>
-        /// The boss type.
+        /// The current boss type for this boss placement.
         /// </returns>
         public BossType? GetCurrentBoss()
         {
@@ -81,6 +80,33 @@ namespace OpenTracker.Models.BossPlacements
             {
                 Boss = null;
             }
+        }
+
+        /// <summary>
+        /// Returns a new boss placement save data instance for this boss placement.
+        /// </summary>
+        /// <returns>
+        /// A new boss placement save data instance.
+        /// </returns>
+        public BossPlacementSaveData Save()
+        {
+            return new BossPlacementSaveData()
+            {
+                Boss = Boss
+            };
+        }
+
+        /// <summary>
+        /// Loads boss placement save data.
+        /// </summary>
+        public void Load(BossPlacementSaveData saveData)
+        {
+            if (saveData == null)
+            {
+                throw new ArgumentNullException(nameof(saveData));
+            }
+
+            Boss = saveData.Boss;
         }
     }
 }

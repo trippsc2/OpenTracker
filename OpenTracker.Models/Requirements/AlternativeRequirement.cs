@@ -1,5 +1,4 @@
-﻿using OpenTracker.Models.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -86,8 +85,7 @@ namespace OpenTracker.Models.Requirements
 
             foreach (var requirement in _requirements)
             {
-                accessibility = (AccessibilityLevel)Math.Max(
-                    (byte)accessibility, (byte)requirement.Accessibility);
+                accessibility = AccessibilityLevelMethods.Max(accessibility, requirement.Accessibility);
 
                 if (accessibility == AccessibilityLevel.Normal)
                 {

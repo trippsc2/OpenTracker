@@ -1,5 +1,4 @@
-﻿using OpenTracker.Models.Enums;
-using OpenTracker.Models.Items;
+﻿using OpenTracker.Models.Items;
 using System;
 using System.ComponentModel;
 
@@ -63,7 +62,7 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the Item class.
+        /// Subscribes to the PropertyChanged event on the IItem interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.

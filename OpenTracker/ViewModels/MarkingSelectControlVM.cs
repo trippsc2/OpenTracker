@@ -1,6 +1,5 @@
-﻿using OpenTracker.Models;
-using OpenTracker.Models.Enums;
-using OpenTracker.ViewModels.Bases;
+﻿using OpenTracker.Models.Items;
+using OpenTracker.Models.Sections;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
@@ -8,6 +7,9 @@ using System.Globalization;
 
 namespace OpenTracker.ViewModels
 {
+    /// <summary>
+    /// This is the ViewModel for the marking select control.
+    /// </summary>
     public class MarkingSelectControlVM : ViewModelBase
     {
         public MarkingType? Marking { get; }
@@ -19,6 +21,7 @@ namespace OpenTracker.ViewModels
                 if (Marking != null)
                 {
                     int itemNumber;
+
                     switch (Marking)
                     {
                         case MarkingType.Bow:
@@ -132,9 +135,6 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="game">
-        /// The game data.
-        /// </param>
         /// <param name="marking">
         /// The marking to be represented by this option.
         /// </param>
@@ -163,7 +163,7 @@ namespace OpenTracker.ViewModels
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the Item class.
+        /// Subscribes to the PropertyChanged event on the IItem interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.

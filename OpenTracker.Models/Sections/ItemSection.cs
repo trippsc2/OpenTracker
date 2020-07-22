@@ -1,8 +1,7 @@
-﻿using OpenTracker.Models.Enums;
-using OpenTracker.Models.Items;
-using OpenTracker.Models.Locations;
+﻿using OpenTracker.Models.AutoTracking;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Models.SaveLoad;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,15 +11,15 @@ namespace OpenTracker.Models.Sections
     /// <summary>
     /// This is the class containing item sections of locations.
     /// </summary>
-    public class ItemSection : ISection
+    public class ItemSection : IItemSection
     {
         private readonly List<RequirementNodeConnection> _connections;
 
+        private Func<int?> AutoTrackFunction { get; }
         public string Name { get; }
         public IRequirement Requirement { get; }
         public bool UserManipulated { get; set; }
 
-        public event PropertyChangingEventHandler PropertyChanging;
         public event PropertyChangedEventHandler PropertyChanged;
 
         private AccessibilityLevel _accessibility;
@@ -70,1542 +69,48 @@ namespace OpenTracker.Models.Sections
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="game">
-        /// The game data.
+        /// <param name="name">
+        /// A string representing the name of the section.
         /// </param>
-        /// <param name="iD">
-        /// The location identity.
+        /// <param name="total">
+        /// A 32-bit signed integer representing the total number of items in the section.
         /// </param>
-        /// <param name="index">
-        /// The index of the location.
+        /// <param name="connections">
+        /// The list of connections to this section.
+        /// </param>
+        /// <param name="autoTrackFunction">
+        /// The autotracking function.
+        /// </param>
+        /// <param name="memoryAddresses">
+        /// The list of memory addresses to subscribe to for autotracking.
+        /// </param>
+        /// <param name="requirement">
+        /// The requirement for this section to be visible.
         /// </param>
         public ItemSection(
             string name, int total, List<RequirementNodeConnection> connections,
+            Func<int?> autoTrackFunction, List<(MemorySegmentType, int)> memoryAddresses,
             IRequirement requirement = null)
         {
+            if (memoryAddresses == null)
+            {
+                throw new ArgumentNullException(nameof(memoryAddresses));
+            }
+
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Total = total;
             _connections = connections ?? throw new ArgumentNullException(nameof(connections));
-
-            if (requirement != null)
-            {
-                Requirement = requirement;
-            }
-            else
-            {
-                Requirement = RequirementDictionary.Instance[RequirementType.None];
-            }
-
-            switch (location.ID)
-            {
-                case LocationID.Pedestal:
-                    {
-                        Total = 1;
-                        Name = "Pedestal";
-                        HasMarking = true;
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.Pedestal, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 128, 64);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.OverworldEventMemory[128].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.LumberjackCave:
-                    {
-                        Total = 1;
-                        Name = "Cave";
-                        HasMarking = true;
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LumberjackCaveEntrance,
-                            RequirementType.None, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.Inspect, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 453, 2);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[453].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.BlindsHouse when index == 0:
-                    {
-                        Total = 4;
-                        Name = "Main";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.NotBunnyLW, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.SuperBunnyMirror, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[4]
-                                {
-                                    (MemorySegmentType.Room, 570, 32),
-                                    (MemorySegmentType.Room, 570, 64),
-                                    (MemorySegmentType.Room, 570, 128),
-                                    (MemorySegmentType.Room, 571, 1)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                Available = Total - result.Value;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[570].PropertyChanged += OnMemoryChanged;
-                        AutoTracker.Instance.RoomMemory[571].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.BlindsHouse:
-                    {
-                        Total = 1;
-                        Name = "Bomb";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.NotBunnyLW, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 570, 16);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[570].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.TheWell when index == 0:
-                    {
-                        Total = 4;
-                        Name = "Cave";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.NotBunnyLW, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.SuperBunnyFallInHole, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[4]
-                                {
-                                    (MemorySegmentType.Room, 94, 32),
-                                    (MemorySegmentType.Room, 94, 64),
-                                    (MemorySegmentType.Room, 94, 128),
-                                    (MemorySegmentType.Room, 95, 1)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                Available = Total - result.Value;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[94].PropertyChanged += OnMemoryChanged;
-                        AutoTracker.Instance.RoomMemory[95].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.TheWell:
-                    {
-                        Total = 1;
-                        Name = "Bomb";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.NotBunnyLW, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 94, 16);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[94].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.BottleVendor:
-                    {
-                        Total = 1;
-                        Name = "Man";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.None, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Item, 137, 2);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.ItemMemory[137].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.ChickenHouse:
-                    {
-                        Total = 1;
-                        Name = "Bombable Wall";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.NotBunnyLW, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 528, 16);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[528].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.Tavern:
-                    {
-                        Total = 1;
-                        Name = "Back Room";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.NotBunnyLW, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.SuperBunnyMirror, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 518, 16);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[518].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.SickKid:
-                    {
-                        Total = 1;
-                        Name = "By The Bed";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.Bottle, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 4);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.MagicBat:
-                    {
-                        Total = 1;
-                        Name = "Magic Bowl";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.MagicBatLedge,
-                            RequirementType.LWPowder, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 128);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.RaceGame:
-                    {
-                        Total = 1;
-                        Name = "Take This Trash";
-                        HasMarking = true;
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.RaceGameLedge,
-                            RequirementType.NotBunnyLW, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.Inspect, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 40, 64);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.OverworldEventMemory[40].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.Library:
-                    {
-                        Total = 1;
-                        Name = "On The Shelf";
-                        HasMarking = true;
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.LWDash, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.Inspect, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 128);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.MushroomSpot:
-                    {
-                        Total = 1;
-                        Name = "Shroom";
-                        HasMarking = true;
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.NotBunnyLW, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 16);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.ForestHideout:
-                    {
-                        Total = 1;
-                        Name = "Hideout";
-                        HasMarking = true;
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.ForestHideout,
-                            RequirementType.None, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.Inspect, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 451, 2);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[451].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.CastleSecret when index == 0:
-                    {
-                        Total = 1;
-                        Name = "Uncle";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.CastleSecretFront,
-                            RequirementType.None, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.CastleSecretBack,
-                            RequirementType.None, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Item, 134, 1);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.ItemMemory[134].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.CastleSecret:
-                    {
-                        Total = 1;
-                        Name = "Hallway";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.CastleSecretFront,
-                            RequirementType.None, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.CastleSecretBack,
-                            RequirementType.None, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 170, 16);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[170].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.LinksHouse:
-                    {
-                        Total = 1;
-                        Name = "By The Door";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.Start,
-                            RequirementType.None, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[2]
-                                {
-                                    (MemorySegmentType.Room, 1, 4),
-                                    (MemorySegmentType.Room, 520, 16)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value > 0 ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[1].PropertyChanged += OnMemoryChanged;
-                        AutoTracker.Instance.RoomMemory[520].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.GroveDiggingSpot:
-                    {
-                        Total = 1;
-                        Name = "Hidden Treasure";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.LWShovel, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 42, 64);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.OverworldEventMemory[42].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.PyramidLedge:
-                    {
-                        Total = 1;
-                        Name = "Ledge";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldEast,
-                            RequirementType.None, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 91, 64);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.OverworldEventMemory[91].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.FatFairy:
-                    {
-                        Total = 2;
-                        Name = "Big Bomb Spot";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.FatFairy,
-                            RequirementType.None, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[2]
-                                {
-                                    (MemorySegmentType.Room, 556, 16),
-                                    (MemorySegmentType.Room, 556, 32)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                Available = Total - result.Value;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[556].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.HauntedGrove:
-                    {
-                        Total = 1;
-                        Name = "Stumpy";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldSouth,
-                            RequirementType.None, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 8);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.HypeCave:
-                    {
-                        Total = 5;
-                        Name = "Cave";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldSouth,
-                            RequirementType.NotBunnyDW, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[5]
-                                {
-                                    (MemorySegmentType.Room, 572, 16),
-                                    (MemorySegmentType.Room, 572, 32),
-                                    (MemorySegmentType.Room, 572, 64),
-                                    (MemorySegmentType.Room, 572, 128),
-                                    (MemorySegmentType.Room, 573, 4)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                Available = Total - result.Value;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[572].PropertyChanged += OnMemoryChanged;
-                        AutoTracker.Instance.RoomMemory[573].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.BombosTablet:
-                    {
-                        Total = 1;
-                        Name = "Tablet";
-                        HasMarking = true;
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.BombosTabletLedge,
-                            RequirementType.Tablet, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 2);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.SouthOfGrove:
-                    {
-                        Total = 1;
-                        Name = "Circle of Bushes";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.SouthOfGroveLedge,
-                            RequirementType.NotBunnyLW, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 567, 4);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[567].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.DiggingGame:
-                    {
-                        Total = 1;
-                        Name = "Dig For Treasure";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldSouth,
-                            RequirementType.NotBunnyDW, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 104, 64);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.OverworldEventMemory[104].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.WitchsHut:
-                    {
-                        Total = 1;
-                        Name = "Assistant";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LWWitchArea,
-                            RequirementType.Mushroom, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 32);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.WaterfallFairy:
-                    {
-                        Total = 2;
-                        Name = "Waterfall Cave";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.WaterfallFairy,
-                            RequirementType.None, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[2]
-                                {
-                                    (MemorySegmentType.Room, 552, 16),
-                                    (MemorySegmentType.Room, 552, 32)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                Available = Total - result.Value;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[552].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.ZoraArea when index == 0:
-                    {
-                        Total = 1;
-                        Name = "Ledge";
-                        HasMarking = true;
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
-                            RequirementType.LWSwim, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
-                            RequirementType.LWFakeFlippersFairyRevival, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
-                            RequirementType.LWFakeFlippersSplashDeletion, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
-                            RequirementType.LWWaterWalk, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
-                            RequirementType.Inspect, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 129, 64);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.OverworldEventMemory[129].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.ZoraArea:
-                    {
-                        Total = 1;
-                        Name = "King Zora";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.Zora,
-                            RequirementType.None, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 2);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.Catfish:
-                    {
-                        Total = 1;
-                        Name = "Ring of Stones";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.Catfish,
-                            RequirementType.NotBunnyDW, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 32);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.SahasrahlasHut when index == 0:
-                    {
-                        Total = 3;
-                        Name = "Back Room";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.NotBunnyLW, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[3]
-                                {
-                                    (MemorySegmentType.Room, 522, 16),
-                                    (MemorySegmentType.Room, 522, 32),
-                                    (MemorySegmentType.Room, 522, 64)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                Available = Total - result.Value;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[522].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.SahasrahlasHut:
-                    {
-                        Total = 1;
-                        Name = "Saha";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.GreenPendant, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 16);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.BonkRocks:
-                    {
-                        Total = 1;
-                        Name = "Cave";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.NorthBonkRocks,
-                            RequirementType.None, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 584, 16);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[584].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.KingsTomb:
-                    {
-                        Total = 1;
-                        Name = "The Crypt";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.KingsTombGrave,
-                            RequirementType.None, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 550, 16);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[550].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.GraveyardLedge:
-                    {
-                        Total = 1;
-                        Name = "Cave";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LWGraveyardLedge,
-                            RequirementType.NotBunnyLW, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 567, 2);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[567].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.DesertLedge:
-                    {
-                        Total = 1;
-                        Name = "Ledge";
-                        HasMarking = true;
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DesertLedge,
-                            RequirementType.None, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.Inspect, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 48, 64);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.OverworldEventMemory[48].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.AginahsCave:
-                    {
-                        Total = 1;
-                        Name = "Cave";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.NotBunnyLW, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 532, 16);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[532].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.CShapedHouse:
-                    {
-                        Total = 1;
-                        Name = "House";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
-                            RequirementType.NotBunnyDW, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
-                            RequirementType.SuperBunnyMirror, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 568, 16);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[568].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.TreasureGame:
-                    {
-                        Total = 1;
-                        Name = "Prize";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
-                            RequirementType.NotBunnyDW, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
-                            RequirementType.SuperBunnyMirror, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 525, 4);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[525].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.BombableShack:
-                    {
-                        Total = 1;
-                        Name = "Downstairs";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.BombableShack,
-                            RequirementType.None, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 524, 16);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[524].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.Blacksmith:
-                    {
-                        Total = 1;
-                        Name = "Bring Frog Home";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.BlacksmithPrison,
-                            RequirementType.LightWorld, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 4);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.PurpleChest:
-                    {
-                        Total = 1;
-                        Name = "Gary";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.HammerPegsArea,
-                            RequirementType.LightWorld, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Item, 137, 16);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.ItemMemory[137].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.HammerPegs:
-                    {
-                        Total = 1;
-                        Name = "Cave";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.HammerPegs,
-                            RequirementType.None, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 591, 4);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[591].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.BumperCave:
-                    {
-                        Total = 1;
-                        Name = "Ledge";
-                        HasMarking = true;
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.BumperCaveTop,
-                            RequirementType.None, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
-                            RequirementType.Inspect, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 74, 64);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.OverworldEventMemory[74].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.Dam when index == 0:
-                    {
-                        Total = 1;
-                        Name = "Inside";
-                        ModeRequirement = new ModeRequirement(entranceShuffle: false);
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.NotBunnyLW, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.SuperBunnyMirror, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 534, 16);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[534].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.Dam:
-                    {
-                        Total = 1;
-                        Name = "Outside";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.None, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 59, 64);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.OverworldEventMemory[59].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.MiniMoldormCave:
-                    {
-                        Total = 5;
-                        Name = "Cave";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.MiniMoldormCave,
-                            RequirementType.None, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[5]
-                                {
-                                    (MemorySegmentType.Room, 582, 16),
-                                    (MemorySegmentType.Room, 582, 32),
-                                    (MemorySegmentType.Room, 582, 64),
-                                    (MemorySegmentType.Room, 582, 128),
-                                    (MemorySegmentType.Room, 583, 4)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                Available = Total - result.Value;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[582].PropertyChanged += OnMemoryChanged;
-                        AutoTracker.Instance.RoomMemory[583].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.IceRodCave:
-                    {
-                        Total = 1;
-                        Name = "Cave";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.IceRodCave,
-                            RequirementType.None, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 576, 16);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[576].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.LakeHyliaIsland:
-                    {
-                        Total = 1;
-                        Name = "Island";
-                        HasMarking = true;
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LakeHyliaIsland,
-                            RequirementType.None, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.Inspect, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 53, 64);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.OverworldEventMemory[53].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.Hobo:
-                    {
-                        Total = 1;
-                        Name = "Under The Bridge";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LWLakeHylia,
-                            RequirementType.None, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Item, 137, 1);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.ItemMemory[137].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.MireShack:
-                    {
-                        Total = 2;
-                        Name = "Shack";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.MireArea,
-                            RequirementType.NotBunnyDW, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.MireArea,
-                            RequirementType.SuperBunnyMirror, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[2]
-                                {
-                                    (MemorySegmentType.Room, 538, 16),
-                                    (MemorySegmentType.Room, 538, 32)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                Available = Total - result.Value;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[538].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.CheckerboardCave:
-                    {
-                        Total = 1;
-                        Name = "Cave";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.CheckerboardCave,
-                            RequirementType.None, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 589, 2);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[589].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.OldMan:
-                    {
-                        Total = 1;
-                        Name = "Old Man";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestBottom,
-                            RequirementType.DarkRoomDeathMountainEntry, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 0, 1);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.NPCItemMemory[0].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.SpectacleRock when index == 0:
-                    {
-                        Total = 1;
-                        Name = "Top";
-                        HasMarking = true;
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.SpectacleRockTop,
-                            RequirementType.None, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestBottom,
-                            RequirementType.Inspect, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 3, 64);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.OverworldEventMemory[3].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.SpectacleRock:
-                    {
-                        Total = 1;
-                        Name = "Cave";
-                        ModeRequirement = new ModeRequirement(entranceShuffle: false);
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestBottom,
-                            RequirementType.None, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 469, 4);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[469].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.EtherTablet:
-                    {
-                        Total = 1;
-                        Name = "Tablet";
-                        HasMarking = true;
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestTop,
-                            RequirementType.Tablet, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.NPCItem, 1, 1);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.NPCItemMemory[1].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.SpikeCave:
-                    {
-                        Total = 1;
-                        Name = "Cave";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainWestBottom,
-                            RequirementType.DWSpikeCave, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 558, 16);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[558].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.SpiralCave:
-                    {
-                        Total = 1;
-                        Name = "Cave";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop,
-                            RequirementType.NotBunnyLW, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop,
-                            RequirementType.SuperBunnyFallInHole, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 508, 16);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[508].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.ParadoxCave when index == 0:
-                    {
-                        Total = 2;
-                        Name = "Bottom";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop,
-                            RequirementType.NotBunnyLW, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastBottom,
-                            RequirementType.NotBunnyLW, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[2]
-                                {
-                                    (MemorySegmentType.Room, 510, 16),
-                                    (MemorySegmentType.Room, 510, 32)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                Available = Total - result.Value;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[510].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.ParadoxCave:
-                    {
-                        Total = 5;
-                        Name = "Top";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop,
-                            RequirementType.NotBunnyLW, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastBottom,
-                            RequirementType.NotBunnyLW, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop,
-                            RequirementType.SuperBunnyFallInHole, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastBottom,
-                            RequirementType.SuperBunnyFallInHole, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[5]
-                                {
-                                    (MemorySegmentType.Room, 478, 16),
-                                    (MemorySegmentType.Room, 478, 32),
-                                    (MemorySegmentType.Room, 478, 64),
-                                    (MemorySegmentType.Room, 478, 128),
-                                    (MemorySegmentType.Room, 479, 1)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                Available = Total - result.Value;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[478].PropertyChanged += OnMemoryChanged;
-                        AutoTracker.Instance.RoomMemory[479].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.SuperBunnyCave:
-                    {
-                        Total = 2;
-                        Name = "Cave";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainTop,
-                            RequirementType.NotBunnyDW, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainEastBottom,
-                            RequirementType.NotBunnyDW, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainTop,
-                            RequirementType.SuperBunnyMirror, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainEastBottom,
-                            RequirementType.SuperBunnyFallInHole, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[2]
-                                {
-                                    (MemorySegmentType.Room, 496, 16),
-                                    (MemorySegmentType.Room, 496, 32)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                Available = Total - result.Value;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[496].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.HookshotCave when index == 0:
-                    {
-                        Total = 1;
-                        Name = "Bonkable Chest";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.HookshotCave,
-                            RequirementType.DWHookshot, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.HookshotCave,
-                            RequirementType.DWDash, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 120, 128);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[120].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.HookshotCave:
-                    {
-                        Total = 3;
-                        Name = "Back";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.HookshotCave,
-                            RequirementType.DWHookshot, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.HookshotCave,
-                            RequirementType.DWHover, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[3]
-                                {
-                                    (MemorySegmentType.Room, 120, 16),
-                                    (MemorySegmentType.Room, 120, 32),
-                                    (MemorySegmentType.Room, 120, 64)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                Available = Total - result.Value;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[120].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.FloatingIsland:
-                    {
-                        Total = 1;
-                        Name = "Island";
-                        HasMarking = true;
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LWFloatingIsland,
-                            RequirementType.None, new ModeRequirement()));
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop,
-                            RequirementType.Inspect, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.OverworldEvent, 5, 64);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.OverworldEventMemory[5].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.MimicCave:
-                    {
-                        Total = 1;
-                        Name = "Cave";
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.MimicCave,
-                            RequirementType.LWHammer, new ModeRequirement()));
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(MemorySegmentType.Room, 536, 16);
-
-                            if (result.HasValue)
-                            {
-                                Available = result.Value ? 0 : 1;
-                            }
-                        };
-
-                        AutoTracker.Instance.RoomMemory[536].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-            }
-
+            Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.None];
+            AutoTrackFunction = autoTrackFunction ??
+                throw new ArgumentNullException(nameof(autoTrackFunction));
             Available = Total;
 
-            List<RequirementNodeID> nodeSubscriptions = new List<RequirementNodeID>();
-            List<RequirementType> requirementSubscriptions = new List<RequirementType>();
-
-            foreach (RequirementNodeConnection connection in _connections)
+            foreach ((MemorySegmentType, int) address in memoryAddresses)
             {
-                if (!nodeSubscriptions.Contains(connection.FromNode))
-                {
-                    RequirementNodeDictionary.Instance[connection.FromNode].PropertyChanged += OnRequirementChanged;
-                    nodeSubscriptions.Add(connection.FromNode);
-                }
-
-                if (!requirementSubscriptions.Contains(connection.Requirement))
-                {
-                    RequirementDictionary.Instance[connection.Requirement].PropertyChanged += OnRequirementChanged;
-                    requirementSubscriptions.Add(connection.Requirement);
-                }
+                SubscribeToMemoryAddress(address.Item1, address.Item2);
             }
 
+            SubscribeToConnections();
             UpdateAccessibility();
         }
 
@@ -1615,20 +120,6 @@ namespace OpenTracker.Models.Sections
         /// <param name="propertyName">
         /// The string of the property name of the changed property.
         /// </param>
-        private void OnPropertyChanging(string propertyName)
-        {
-            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the Mode class.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -1636,16 +127,11 @@ namespace OpenTracker.Models.Sections
             if (propertyName == nameof(Available))
             {
                 UpdateAccessibility();
-
-                if (!IsAvailable())
-                {
-                    CollectMarkingItem();
-                }
             }
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the Requirement and RequirementNode
+        /// Subscribes to the PropertyChanged event on the IRequirement and RequirementNode
         /// classes that are requirements for dungeon items.
         /// </summary>
         /// <param name="sender">
@@ -1657,6 +143,92 @@ namespace OpenTracker.Models.Sections
         private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateAccessibility();
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the MemoryAddress class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnMemoryChanged(object sender, PropertyChangedEventArgs e)
+        {
+            AutoTrack();
+        }
+
+        /// <summary>
+        /// Autotrack the item.
+        /// </summary>
+        private void AutoTrack()
+        {
+            if (UserManipulated)
+            {
+                return;
+            }
+
+            int? result = AutoTrackFunction();
+
+            if (result.HasValue)
+            {
+                Available = result.Value;
+            }
+        }
+
+        /// <summary>
+        /// Creates subscription to the PropertyChanged event on the MemoryAddress class.
+        /// </summary>
+        /// <param name="segment">
+        /// The memory segment to which to subscribe.
+        /// </param>
+        /// <param name="index">
+        /// The index within the memory address list to which to subscribe.
+        /// </param>
+        private void SubscribeToMemoryAddress(MemorySegmentType segment, int index)
+        {
+            List<MemoryAddress> memory = segment switch
+            {
+                MemorySegmentType.Room => AutoTracker.Instance.RoomMemory,
+                MemorySegmentType.OverworldEvent => AutoTracker.Instance.OverworldEventMemory,
+                MemorySegmentType.Item => AutoTracker.Instance.ItemMemory,
+                MemorySegmentType.NPCItem => AutoTracker.Instance.NPCItemMemory,
+                _ => throw new ArgumentOutOfRangeException(nameof(segment))
+            };
+
+            if (index >= memory.Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            memory[index].PropertyChanged += OnMemoryChanged;
+        }
+
+        /// <summary>
+        /// Creates subscription to the PropertyChanged event on the RequirementNode class and
+        /// IRequirement interface.
+        /// </summary>
+        private void SubscribeToConnections()
+        {
+            foreach (RequirementNodeConnection connection in _connections)
+            {
+                List<RequirementNodeID> nodeSubscriptions = new List<RequirementNodeID>();
+                List<IRequirement> requirementSubscriptions = new List<IRequirement>();
+
+                if (!nodeSubscriptions.Contains(connection.FromNode))
+                {
+                    RequirementNodeDictionary.Instance[connection.FromNode].PropertyChanged +=
+                        OnRequirementChanged;
+                    nodeSubscriptions.Add(connection.FromNode);
+                }
+
+                if (!requirementSubscriptions.Contains(connection.Requirement))
+                {
+                    connection.Requirement.PropertyChanged += OnRequirementChanged;
+                    requirementSubscriptions.Add(connection.Requirement);
+                }
+            }
         }
 
         /// <summary>
@@ -1678,12 +250,11 @@ namespace OpenTracker.Models.Sections
                     continue;
                 }
 
-                AccessibilityLevel requirementAccessibility =
-                    RequirementDictionary.Instance[connection.Requirement].Accessibility;
+                AccessibilityLevel requirementAccessibility = connection.Requirement.Accessibility;
 
                 AccessibilityLevel finalConnectionAccessibility =
-                    (AccessibilityLevel)Math.Min(Math.Min((byte)nodeAccessibility,
-                    (byte)requirementAccessibility), (byte)connection.MaximumAccessibility);
+                    (AccessibilityLevel)Math.Min((byte)nodeAccessibility,
+                    (byte)requirementAccessibility);
 
                 if (finalConnectionAccessibility == AccessibilityLevel.Normal)
                 {
@@ -1710,6 +281,28 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
+        /// Returns whether the section can be cleared or collected.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether the section can be cleared or collected.
+        /// </returns>
+        public bool CanBeCleared(bool force)
+        {
+            return IsAvailable() && (force || Accessibility > AccessibilityLevel.Inspect);
+        }
+
+        /// <summary>
+        /// Returns whether the section can be uncollected.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether the section can be uncollected.
+        /// </returns>
+        public bool CanBeUncleared()
+        {
+            return Available < Total;
+        }
+
+        /// <summary>
         /// Clears the section.
         /// </summary>
         /// <param name="force">
@@ -1720,8 +313,7 @@ namespace OpenTracker.Models.Sections
             do
             {
                 Available--;
-            } while ((Accessibility > AccessibilityLevel.Inspect || force ||
-                (Accessibility == AccessibilityLevel.Inspect && Marking == null)) && Available > 0);
+            } while ((Accessibility > AccessibilityLevel.None || force) && Available > 0);
         }
 
         /// <summary>
@@ -1742,6 +334,33 @@ namespace OpenTracker.Models.Sections
         {
             Available = Total;
             UserManipulated = false;
+        }
+
+        /// <summary>
+        /// Returns a new section save data instance for this section.
+        /// </summary>
+        /// <returns>
+        /// A new section save data instance.
+        /// </returns>
+        public SectionSaveData Save()
+        {
+            return new SectionSaveData()
+            {
+                Available = Available
+            };
+        }
+
+        /// <summary>
+        /// Loads section save data.
+        /// </summary>
+        public void Load(SectionSaveData saveData)
+        {
+            if (saveData == null)
+            {
+                throw new ArgumentNullException(nameof(saveData));
+            }
+
+            Available = saveData.Available;
         }
     }
 }

@@ -1,10 +1,14 @@
-﻿using OpenTracker.Models.Enums;
+﻿using OpenTracker.Models.AutoTracking;
+using OpenTracker.Models.SaveLoad;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Items
 {
+    /// <summary>
+    /// This is the class containing autotracking data for an item.
+    /// </summary>
     public class AutoTrackedItem : IItem
     {
         private readonly IItem _item;
@@ -15,8 +19,11 @@ namespace OpenTracker.Models.Items
             _item.Type;
         public int Maximum =>
             _item.Maximum;
-        public int Current => 
-            _item.Current;
+        public int Current
+        {
+            get => _item.Current;
+            set => _item.Current = value;
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -95,7 +102,7 @@ namespace OpenTracker.Models.Items
         /// <param name="index">
         /// The index within the memory address list to which to subscribe.
         /// </param>
-        internal void SubscribeToMemoryAddress(MemorySegmentType segment, int index)
+        private void SubscribeToMemoryAddress(MemorySegmentType segment, int index)
         {
             List<MemoryAddress> memory = segment switch
             {
@@ -119,7 +126,7 @@ namespace OpenTracker.Models.Items
         /// or ignore the maximum value.
         /// </summary>
         /// <param name="delta">
-        /// A 32-bit integer representing the delta value of the change.
+        /// A 32-bit signed integer representing the delta value of the change.
         /// </param>
         /// <param name="ignoreMaximum">
         /// A boolean representing whether the maximum is ignored.
@@ -130,22 +137,49 @@ namespace OpenTracker.Models.Items
         }
 
         /// <summary>
-        /// Sets the current value of the item.
+        /// Resets the item to its starting values.
         /// </summary>
-        /// <param name="current">
-        /// A 32-bit integer representing the new current value.
-        /// </param>
         public void Reset()
         {
             _item.Reset();
         }
 
         /// <summary>
-        /// Resets the item to its starting values.
+        /// Sets the current value of the item.
         /// </summary>
+        /// <param name="current">
+        /// A 32-bit signed integer representing the new current value.
+        /// </param>
         public void SetCurrent(int current = 0)
         {
             _item.SetCurrent(current);
+        }
+
+        /// <summary>
+        /// Returns a new item save data instance for this item.
+        /// </summary>
+        /// <returns>
+        /// A new item save data instance.
+        /// </returns>
+        public ItemSaveData Save()
+        {
+            return new ItemSaveData()
+            {
+                Current = Current
+            };
+        }
+
+        /// <summary>
+        /// Loads item save data.
+        /// </summary>
+        public void Load(ItemSaveData saveData)
+        {
+            if (saveData == null)
+            {
+                throw new ArgumentNullException(nameof(saveData));
+            }
+
+            Current = saveData.Current;
         }
     }
 }

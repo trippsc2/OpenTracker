@@ -1,10 +1,10 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
-using OpenTracker.Models;
-using OpenTracker.Models.Enums;
-using OpenTracker.ViewModels.Bases;
-using OpenTracker.ViewModels.Factories;
+using OpenTracker.Models.Locations;
+using OpenTracker.Models.Modes;
+using OpenTracker.ViewModels.LargeItemControls;
+using OpenTracker.ViewModels.SmallItemControls;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -12,17 +12,17 @@ using System.ComponentModel;
 
 namespace OpenTracker.ViewModels
 {
+    /// <summary>
+    /// This is the ViewModel class for the Items panel control.
+    /// </summary>
     public class ItemsPanelControlVM : ViewModelBase
     {
         private readonly MainWindowVM _mainWindow;
-        private readonly Mode _mode;
 
         public bool ATItemsVisible =>
-            _mode.SmallKeyShuffle;
-
+            Mode.Instance.SmallKeyShuffle;
         public Dock UIPanelOrientationDock =>
             _mainWindow.UIPanelOrientationDock;
-
         public Thickness PanelMargin
         {
             get
@@ -36,7 +36,6 @@ namespace OpenTracker.ViewModels
                 };
             }
         }
-
         public Orientation ItemsPanelOrientation
         {
             get
@@ -49,10 +48,8 @@ namespace OpenTracker.ViewModels
                 };
             }
         }
-
         public bool ItemsPanelHorizontalOrientation =>
             ItemsPanelOrientation == Orientation.Horizontal;
-
         public ModeSettingsControlVM ModeSettings { get; }
 
         public ObservableCollection<LargeItemControlVMBase> Items { get; } =
@@ -84,58 +81,46 @@ namespace OpenTracker.ViewModels
         public ObservableCollection<SmallItemControlVMBase> GTItems { get; } =
             new ObservableCollection<SmallItemControlVMBase>();
 
-        public ItemsPanelControlVM(
-            MainWindowVM mainWindow, AppSettings appSettings, UndoRedoManager undoRedoManager)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="mainWindow">
+        /// The main window ViewModel parent class.
+        /// </param>
+        public ItemsPanelControlVM(MainWindowVM mainWindow)
         {
-            if (appSettings == null)
-            {
-                throw new ArgumentNullException(nameof(appSettings));
-            }
-
-            if (undoRedoManager == null)
-            {
-                throw new ArgumentNullException(nameof(undoRedoManager));
-            }
-
             _mainWindow = mainWindow ?? throw new ArgumentNullException(nameof(mainWindow));
-            _mode = Mode.Instance;
+            ModeSettings = new ModeSettingsControlVM();
 
-            ModeSettings = new ModeSettingsControlVM(Mode.Instance, undoRedoManager);
-
-            LargeItemControlVMFactory.GetLargeItemControlVMs(
-                undoRedoManager, appSettings, Items);
-            SmallItemControlVMFactory.GetSmallItemControlVMs(
-                undoRedoManager, appSettings, this, LocationID.HyruleCastle, HCItems);
-            SmallItemControlVMFactory.GetSmallItemControlVMs(
-                undoRedoManager, appSettings, this, LocationID.AgahnimTower, ATItems);
-            SmallItemControlVMFactory.GetSmallItemControlVMs(
-                undoRedoManager, appSettings, this, LocationID.EasternPalace, EPItems);
-            SmallItemControlVMFactory.GetSmallItemControlVMs(
-                undoRedoManager, appSettings, this, LocationID.DesertPalace, DPItems);
-            SmallItemControlVMFactory.GetSmallItemControlVMs(
-                undoRedoManager, appSettings, this, LocationID.TowerOfHera, ToHItems);
-            SmallItemControlVMFactory.GetSmallItemControlVMs(
-                undoRedoManager, appSettings, this, LocationID.PalaceOfDarkness, PoDItems);
-            SmallItemControlVMFactory.GetSmallItemControlVMs(
-                undoRedoManager, appSettings, this, LocationID.SwampPalace, SPItems);
-            SmallItemControlVMFactory.GetSmallItemControlVMs(
-                undoRedoManager, appSettings, this, LocationID.SkullWoods, SWItems);
-            SmallItemControlVMFactory.GetSmallItemControlVMs(
-                undoRedoManager, appSettings, this, LocationID.ThievesTown, TTItems);
-            SmallItemControlVMFactory.GetSmallItemControlVMs(
-                undoRedoManager, appSettings, this, LocationID.IcePalace, IPItems);
-            SmallItemControlVMFactory.GetSmallItemControlVMs(
-                undoRedoManager, appSettings, this, LocationID.MiseryMire, MMItems);
-            SmallItemControlVMFactory.GetSmallItemControlVMs(
-                undoRedoManager, appSettings, this, LocationID.TurtleRock, TRItems);
-            SmallItemControlVMFactory.GetSmallItemControlVMs(
-                undoRedoManager, appSettings, this, LocationID.GanonsTower, GTItems);
+            LargeItemControlVMFactory.GetLargeItemControlVMs(Items);
+            SmallItemControlVMFactory.GetSmallItemControlVMs(LocationID.HyruleCastle, this, HCItems);
+            SmallItemControlVMFactory.GetSmallItemControlVMs(LocationID.AgahnimTower, this, ATItems);
+            SmallItemControlVMFactory.GetSmallItemControlVMs(LocationID.EasternPalace, this, EPItems);
+            SmallItemControlVMFactory.GetSmallItemControlVMs(LocationID.DesertPalace, this, DPItems);
+            SmallItemControlVMFactory.GetSmallItemControlVMs(LocationID.TowerOfHera, this, ToHItems);
+            SmallItemControlVMFactory.GetSmallItemControlVMs(LocationID.PalaceOfDarkness, this, PoDItems);
+            SmallItemControlVMFactory.GetSmallItemControlVMs(LocationID.SwampPalace, this, SPItems);
+            SmallItemControlVMFactory.GetSmallItemControlVMs(LocationID.SkullWoods, this, SWItems);
+            SmallItemControlVMFactory.GetSmallItemControlVMs(LocationID.ThievesTown, this, TTItems);
+            SmallItemControlVMFactory.GetSmallItemControlVMs(LocationID.IcePalace, this, IPItems);
+            SmallItemControlVMFactory.GetSmallItemControlVMs(LocationID.MiseryMire, this, MMItems);
+            SmallItemControlVMFactory.GetSmallItemControlVMs(LocationID.TurtleRock, this, TRItems);
+            SmallItemControlVMFactory.GetSmallItemControlVMs(LocationID.GanonsTower, this, GTItems);
 
             PropertyChanged += OnPropertyChanged;
             _mainWindow.PropertyChanged += OnMainWindowChanged;
-            _mode.PropertyChanged += OnModeChanged;
+            Mode.Instance.PropertyChanged += OnModeChanged;
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on this class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(UIPanelOrientationDock))
@@ -149,6 +134,15 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the MainWindowVM class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnMainWindowChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(MainWindowVM.UIPanelOrientationDock))
@@ -162,6 +156,15 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Mode.WorldState) ||

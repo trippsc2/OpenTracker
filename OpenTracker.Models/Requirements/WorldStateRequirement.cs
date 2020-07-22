@@ -1,5 +1,4 @@
-﻿using OpenTracker.Models.Enums;
-using System;
+﻿using OpenTracker.Models.Modes;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
@@ -9,7 +8,6 @@ namespace OpenTracker.Models.Requirements
     /// </summary>
     internal class WorldStateRequirement : IRequirement
     {
-        private readonly Mode _mode;
         private readonly WorldState _worldState;
 
         public bool Met =>
@@ -34,18 +32,14 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="mode">
-        /// The mode data class.
-        /// </param>
         /// <param name="worldState">
         /// The required world state.
         /// </param>
-        public WorldStateRequirement(Mode mode, WorldState worldState)
+        public WorldStateRequirement(WorldState worldState)
         {
-            _mode = mode ?? throw new ArgumentNullException(nameof(mode));
             _worldState = worldState;
 
-            _mode.PropertyChanged += OnModeChanged;
+            Mode.Instance.PropertyChanged += OnModeChanged;
 
             UpdateAccessibility();
         }
@@ -83,7 +77,7 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         private void UpdateAccessibility()
         {
-            Accessibility = _mode.WorldState == _worldState ?
+            Accessibility = Mode.Instance.WorldState == _worldState ?
                 AccessibilityLevel.Normal : AccessibilityLevel.None;
         }
     }

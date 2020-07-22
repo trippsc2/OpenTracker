@@ -1,4 +1,4 @@
-﻿using OpenTracker.Models.Enums;
+﻿using OpenTracker.Models.RequirementNodes;
 using System;
 using System.ComponentModel;
 
@@ -9,7 +9,7 @@ namespace OpenTracker.Models.Requirements
     /// </summary>
     internal class RequirementNodeRequirement : IRequirement
     {
-        private readonly RequirementNode _node;
+        private readonly IRequirementNode _node;
 
         public bool Met =>
             Accessibility != AccessibilityLevel.None;
@@ -36,7 +36,7 @@ namespace OpenTracker.Models.Requirements
         /// <param name="node">
         /// The required requirement node.
         /// </param>
-        public RequirementNodeRequirement(RequirementNode node)
+        public RequirementNodeRequirement(IRequirementNode node)
         {
             _node = node ?? throw new ArgumentNullException(nameof(node));
 
@@ -57,7 +57,7 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the RequirementNode class.
+        /// Subscribes to the PropertyChanged event on the IRequirementNode interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.

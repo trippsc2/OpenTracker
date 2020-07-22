@@ -1,4 +1,4 @@
-﻿using OpenTracker.Models.Enums;
+﻿using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Utils;
 using System;
 using System.Collections;
@@ -18,13 +18,10 @@ namespace OpenTracker.Models.Locations
 
         public ICollection<LocationID> Keys =>
             ((IDictionary<LocationID, ILocation>)_dictionary).Keys;
-
         public ICollection<ILocation> Values =>
             ((IDictionary<LocationID, ILocation>)_dictionary).Values;
-
         public int Count =>
             ((ICollection<KeyValuePair<LocationID, ILocation>>)_dictionary).Count;
-
         public bool IsReadOnly =>
             ((ICollection<KeyValuePair<LocationID, ILocation>>)_dictionary).IsReadOnly;
 
@@ -54,9 +51,16 @@ namespace OpenTracker.Models.Locations
         {
         }
 
+        /// <summary>
+        /// Creates a new location for the specified key.
+        /// </summary>
+        /// <param name="key">
+        /// The key.
+        /// </param>
         private void Create(LocationID key)
         {
             Add(key, LocationFactory.GetLocation(key));
+            LocationCreated?.Invoke(this, key);
         }
 
         /// <summary>
@@ -128,6 +132,41 @@ namespace OpenTracker.Models.Locations
         IEnumerator IEnumerable.GetEnumerator()
         {
             return ((IEnumerable)_dictionary).GetEnumerator();
+        }
+
+        /// <summary>
+        /// Returns a dictionary of location save data.
+        /// </summary>
+        /// <returns>
+        /// A dictionary of location save data.
+        /// </returns>
+        public Dictionary<LocationID, LocationSaveData> Save()
+        {
+            Dictionary<LocationID, LocationSaveData> locations =
+                new Dictionary<LocationID, LocationSaveData>();
+
+            foreach (var id in Keys)
+            {
+                locations.Add(id, this[id].Save());
+            }
+
+            return locations;
+        }
+
+        /// <summary>
+        /// Loads a dictionary of location save data.
+        /// </summary>
+        public void Load(Dictionary<LocationID, LocationSaveData> saveData)
+        {
+            if (saveData == null)
+            {
+                throw new ArgumentNullException(nameof(saveData));
+            }
+
+            foreach (var id in saveData.Keys)
+            {
+                this[id].Load(saveData[id]);
+            }
         }
     }
 }

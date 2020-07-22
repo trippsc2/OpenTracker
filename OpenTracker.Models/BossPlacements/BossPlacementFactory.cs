@@ -1,10 +1,21 @@
-﻿using OpenTracker.Models.Enums;
-using System;
+﻿using System;
 
 namespace OpenTracker.Models.BossPlacements
 {
+    /// <summary>
+    /// This is the class to containing creation logic for boss placements.
+    /// </summary>
     public static class BossPlacementFactory
     {
+        /// <summary>
+        /// Returns a newly created boss placement.
+        /// </summary>
+        /// <param name="id">
+        /// The boss placement ID.
+        /// </param>
+        /// <returns>
+        /// A newly created boss placement.
+        /// </returns>
         internal static IBossPlacement GetBossPlacement(BossPlacementID id)
         {
             switch (id)

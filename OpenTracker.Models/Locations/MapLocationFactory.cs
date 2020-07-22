@@ -1,12 +1,23 @@
-﻿using OpenTracker.Models.Enums;
-using OpenTracker.Models.Requirements;
+﻿using OpenTracker.Models.Requirements;
 using System;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.Locations
 {
+    /// <summary>
+    /// This is the class for creating map locations.
+    /// </summary>
     internal static class MapLocationFactory
     {
+        /// <summary>
+        /// Returns the list of map locations for the specified location.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID.
+        /// </param>
+        /// <returns>
+        /// The list of map locations.
+        /// </returns>
         internal static List<MapLocation> GetMapLocations(LocationID id)
         {
             return id switch
@@ -299,7 +310,7 @@ namespace OpenTracker.Models.Locations
                         RequirementDictionary.Instance[RequirementType.WorldStateNonInvertedEntranceShuffleOff]),
                     new MapLocation(
                         id, MapID.DarkWorld, 816, 378,
-                        RequirementDictionary.Instance[RequirementType.WorldStateNonInvertedEntranceShuffleOff])
+                        RequirementDictionary.Instance[RequirementType.WorldStateInvertedEntranceShuffleOff])
                 },
                 LocationID.SpectacleRock => new List<MapLocation>
                 {
@@ -363,11 +374,9 @@ namespace OpenTracker.Models.Locations
                 LocationID.HyruleCastle => new List<MapLocation>
                 {
                     new MapLocation(
-                        id, MapID.LightWorld, 1925, 791,
+                        id, MapID.LightWorld, 1003, 906,
                         RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]),
-                    new MapLocation(
-                        id, MapID.LightWorld, 1925, 780,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn])
+                    new MapLocation(id, MapID.LightWorld, 925, 536)
                 },
                 LocationID.AgahnimTower => new List<MapLocation>
                 {

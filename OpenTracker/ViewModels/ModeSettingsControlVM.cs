@@ -1,22 +1,17 @@
-﻿using OpenTracker.Models;
-using OpenTracker.Models.Undoables;
-using OpenTracker.Models.Enums;
+﻿using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
 using System.Reactive;
-using OpenTracker.ViewModels.Bases;
+using OpenTracker.Models.Modes;
 
 namespace OpenTracker.ViewModels
 {
     /// <summary>
-    /// This is the view-model for the mode settings popup control.
+    /// This is the ViewModel for the mode settings popup control.
     /// </summary>
     public class ModeSettingsControlVM : ViewModelBase
     {
-        private readonly UndoRedoManager _undoRedoManager;
-        private readonly Mode _mode;
-
         public ReactiveCommand<string, Unit> ItemPlacementCommand { get; }
         public ReactiveCommand<string, Unit> DungeonItemShuffleCommand { get; }
         public ReactiveCommand<string, Unit> WorldStateCommand { get; }
@@ -25,32 +20,32 @@ namespace OpenTracker.ViewModels
         public ReactiveCommand<Unit, Unit> EnemyShuffleCommand { get; }
 
         public bool BasicItemPlacement =>
-            _mode.ItemPlacement == ItemPlacement.Basic;
+            Mode.Instance.ItemPlacement == ItemPlacement.Basic;
         public bool AdvancedItemPlacement =>
-            _mode.ItemPlacement == ItemPlacement.Advanced;
+            Mode.Instance.ItemPlacement == ItemPlacement.Advanced;
 
         public bool StandardDungeonItemShuffle =>
-            _mode.DungeonItemShuffle == DungeonItemShuffle.Standard;
+            Mode.Instance.DungeonItemShuffle == DungeonItemShuffle.Standard;
         public bool MapsCompassesDungeonItemShuffle =>
-            _mode.DungeonItemShuffle == DungeonItemShuffle.MapsCompasses;
+            Mode.Instance.DungeonItemShuffle == DungeonItemShuffle.MapsCompasses;
         public bool MapsCompassesSmallKeysDungeonItemShuffle =>
-            _mode.DungeonItemShuffle == DungeonItemShuffle.MapsCompassesSmallKeys;
+            Mode.Instance.DungeonItemShuffle == DungeonItemShuffle.MapsCompassesSmallKeys;
         public bool KeysanityDungeonItemShuffle =>
-            _mode.DungeonItemShuffle == DungeonItemShuffle.Keysanity;
+            Mode.Instance.DungeonItemShuffle == DungeonItemShuffle.Keysanity;
 
         public bool StandardOpenWorldState =>
-            _mode.WorldState == WorldState.StandardOpen;
+            Mode.Instance.WorldState == WorldState.StandardOpen;
         public bool InvertedWorldState =>
-            _mode.WorldState == WorldState.Inverted;
+            Mode.Instance.WorldState == WorldState.Inverted;
         public bool RetroWorldState =>
-            _mode.WorldState == WorldState.Retro;
+            Mode.Instance.WorldState == WorldState.Retro;
 
         public bool EntranceShuffle =>
-            _mode.EntranceShuffle;
+            Mode.Instance.EntranceShuffle;
         public bool BossShuffle =>
-            _mode.BossShuffle;
+            Mode.Instance.BossShuffle;
         public bool EnemyShuffle =>
-            _mode.EnemyShuffle;
+            Mode.Instance.EnemyShuffle;
 
         private bool _modeSettingsPopupOpen;
         public bool ModeSettingsPopupOpen
@@ -62,20 +57,12 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="mode">
-        /// The game mode data.
-        /// </param>
-        /// <param name="undoRedoManager">
-        /// The undo/redo manager.
-        /// </param>
-        public ModeSettingsControlVM(Mode mode, UndoRedoManager undoRedoManager)
+        public ModeSettingsControlVM()
         {
-            _undoRedoManager = undoRedoManager;
-            _mode = mode ?? throw new ArgumentNullException(nameof(mode));
+            Mode.Instance.PropertyChanged += OnModeChanged;
 
-            _mode.PropertyChanged += OnModeChanged;
-
-            ItemPlacementCommand = ReactiveCommand.Create<string>(SetItemPlacement, this.WhenAnyValue(x => x.StandardOpenWorldState));
+            ItemPlacementCommand = ReactiveCommand.Create<string>(
+                SetItemPlacement, this.WhenAnyValue(x => x.StandardOpenWorldState));
             DungeonItemShuffleCommand = ReactiveCommand.Create<string>(SetDungeonItemShuffle);
             WorldStateCommand = ReactiveCommand.Create<string>(SetWorldState);
             EntranceShuffleCommand = ReactiveCommand.Create(ToggleEntranceShuffle);
@@ -96,17 +83,23 @@ namespace OpenTracker.ViewModels
         {
             if (e.PropertyName == nameof(Mode.ItemPlacement))
             {
-                UpdateItemPlacement();
+                this.RaisePropertyChanged(nameof(BasicItemPlacement));
+                this.RaisePropertyChanged(nameof(AdvancedItemPlacement));
             }
 
             if (e.PropertyName == nameof(Mode.DungeonItemShuffle))
             {
-                UpdateDungeonItemShuffle();
+                this.RaisePropertyChanged(nameof(StandardDungeonItemShuffle));
+                this.RaisePropertyChanged(nameof(MapsCompassesDungeonItemShuffle));
+                this.RaisePropertyChanged(nameof(MapsCompassesSmallKeysDungeonItemShuffle));
+                this.RaisePropertyChanged(nameof(KeysanityDungeonItemShuffle));
             }
 
             if (e.PropertyName == nameof(Mode.WorldState))
             {
-                UpdateWorldState();
+                this.RaisePropertyChanged(nameof(StandardOpenWorldState));
+                this.RaisePropertyChanged(nameof(InvertedWorldState));
+                this.RaisePropertyChanged(nameof(RetroWorldState));
             }
 
             if (e.PropertyName == nameof(Mode.EntranceShuffle))
@@ -126,41 +119,6 @@ namespace OpenTracker.ViewModels
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the BasicItemPlacement and AdvancedItemPlacement
-        /// properties.
-        /// </summary>
-        private void UpdateItemPlacement()
-        {
-            this.RaisePropertyChanged(nameof(BasicItemPlacement));
-            this.RaisePropertyChanged(nameof(AdvancedItemPlacement));
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the StandardDungeonItemShuffle,
-        /// MapsCompassesDungeonItemShuffle, MapsCompassesSmallKeysDungeonItemShuffle,
-        /// and KeysanityDungeonItemShuffle properties.
-        /// properties.
-        /// </summary>
-        private void UpdateDungeonItemShuffle()
-        {
-            this.RaisePropertyChanged(nameof(StandardDungeonItemShuffle));
-            this.RaisePropertyChanged(nameof(MapsCompassesDungeonItemShuffle));
-            this.RaisePropertyChanged(nameof(MapsCompassesSmallKeysDungeonItemShuffle));
-            this.RaisePropertyChanged(nameof(KeysanityDungeonItemShuffle));
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the StandardOpenWorldState, InvertedWorldState,
-        /// and RetroWorldState properties.
-        /// </summary>
-        private void UpdateWorldState()
-        {
-            this.RaisePropertyChanged(nameof(StandardOpenWorldState));
-            this.RaisePropertyChanged(nameof(InvertedWorldState));
-            this.RaisePropertyChanged(nameof(RetroWorldState));
-        }
-
-        /// <summary>
         /// Sets the Item Placement setting to the specified value.
         /// </summary>
         /// <param name="itemPlacementString">
@@ -170,7 +128,7 @@ namespace OpenTracker.ViewModels
         {
             if (Enum.TryParse(itemPlacementString, out ItemPlacement itemPlacement))
             {
-                _undoRedoManager.Execute(new ChangeItemPlacement(_mode, itemPlacement));
+                UndoRedoManager.Instance.Execute(new ChangeItemPlacement(itemPlacement));
             }
         }
 
@@ -184,7 +142,7 @@ namespace OpenTracker.ViewModels
         {
             if (Enum.TryParse(dungeonItemShuffleString, out DungeonItemShuffle dungeonItemShuffle))
             {
-                _undoRedoManager.Execute(new ChangeDungeonItemShuffle(_mode, dungeonItemShuffle));
+                UndoRedoManager.Instance.Execute(new ChangeDungeonItemShuffle(dungeonItemShuffle));
             }
         }
 
@@ -198,7 +156,7 @@ namespace OpenTracker.ViewModels
         {
             if (Enum.TryParse(worldStateString, out WorldState worldState))
             {
-                _undoRedoManager.Execute(new ChangeWorldState(_mode, worldState));
+                UndoRedoManager.Instance.Execute(new ChangeWorldState(worldState));
             }
         }
 
@@ -207,7 +165,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleEntranceShuffle()
         {
-            _undoRedoManager.Execute(new ChangeEntranceShuffle(_mode, !_mode.EntranceShuffle));
+            UndoRedoManager.Instance.Execute(new ChangeEntranceShuffle(!Mode.Instance.EntranceShuffle));
         }
 
         /// <summary>
@@ -215,7 +173,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleBossShuffle()
         {
-            _undoRedoManager.Execute(new ChangeBossShuffle(_mode, !_mode.BossShuffle));
+            UndoRedoManager.Instance.Execute(new ChangeBossShuffle(!Mode.Instance.BossShuffle));
         }
 
         /// <summary>
@@ -223,7 +181,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleEnemyShuffle()
         {
-            _undoRedoManager.Execute(new ChangeEnemyShuffle(_mode, !_mode.EnemyShuffle));
+            UndoRedoManager.Instance.Execute(new ChangeEnemyShuffle(!Mode.Instance.EnemyShuffle));
         }
     }
 }

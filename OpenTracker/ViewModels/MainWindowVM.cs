@@ -5,14 +5,17 @@ using Avalonia.Threading;
 using Newtonsoft.Json;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
+using OpenTracker.Models.AutoTracking;
 using OpenTracker.Models.BossPlacements;
-using OpenTracker.Models.Enums;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
+using OpenTracker.Models.Modes;
 using OpenTracker.Models.PrizePlacements;
+using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Sections;
-using OpenTracker.Models.SequenceBreaks;
-using OpenTracker.ViewModels.Bases;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.ViewModels.MapAreaControls;
+using OpenTracker.ViewModels.SequenceBreaks;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -25,14 +28,13 @@ using System.Reactive.Linq;
 namespace OpenTracker.ViewModels
 {
     /// <summary>
-    /// This is the view-model for the main window.
+    /// This is the ViewModel for the main window.
     /// </summary>
     public class MainWindowVM : ViewModelBase, IAutoTrackerAccess, IColorSelectAccess,
-        IDynamicLayout, IOpen, ISave, ISaveAppSettings, IBounds
+        IDynamicLayout, IOpen, ISave, ISaveAppSettings, IBounds, ISequenceBreakAccess
     {
         private readonly IDialogService _dialogService;
-        private readonly UndoRedoManager _undoRedoManager;
-        private readonly AppSettings _appSettings;
+        private AutoTrackerDialogVM _autoTrackerDialog;
 
         public static ObservableCollection<MarkingSelectControlVM> NonEntranceMarkingSelect { get; } = 
             new ObservableCollection<MarkingSelectControlVM>();
@@ -41,32 +43,28 @@ namespace OpenTracker.ViewModels
 
         public bool? Maximized
         {
-            get => _appSettings.Maximized;
-            set => _appSettings.Maximized = value;
+            get => AppSettings.Instance.Maximized;
+            set => AppSettings.Instance.Maximized = value;
         }
-
         public double? X
         {
-            get => _appSettings.X;
-            set => _appSettings.X = value;
+            get => AppSettings.Instance.X;
+            set => AppSettings.Instance.X = value;
         }
-
         public double? Y
         {
-            get => _appSettings.Y;
-            set => _appSettings.Y = value;
+            get => AppSettings.Instance.Y;
+            set => AppSettings.Instance.Y = value;
         }
-
         public double? Width
         {
-            get => _appSettings.Width;
-            set => _appSettings.Width = value;
+            get => AppSettings.Instance.Width;
+            set => AppSettings.Instance.Width = value;
         }
-
         public double? Height
         {
-            get => _appSettings.Height;
-            set => _appSettings.Height = value;
+            get => AppSettings.Instance.Height;
+            set => AppSettings.Instance.Height = value;
         }
 
         private Orientation _orientation;
@@ -80,13 +78,13 @@ namespace OpenTracker.ViewModels
         {
             get
             {
-                if (_appSettings.LayoutOrientation.HasValue)
+                if (AppSettings.Instance.LayoutOrientation.HasValue)
                 {
-                    switch (_appSettings.LayoutOrientation.Value)
+                    switch (AppSettings.Instance.LayoutOrientation.Value)
                     {
                         case Orientation.Horizontal:
                             {
-                                return _appSettings.HorizontalUIPanelPlacement switch
+                                return AppSettings.Instance.HorizontalUIPanelPlacement switch
                                 {
                                     VerticalAlignment.Top => Dock.Top,
                                     _ => Dock.Bottom,
@@ -94,7 +92,7 @@ namespace OpenTracker.ViewModels
                             }
                         case Orientation.Vertical:
                             {
-                                return _appSettings.VerticalUIPanelPlacement switch
+                                return AppSettings.Instance.VerticalUIPanelPlacement switch
                                 {
                                     HorizontalAlignment.Left => Dock.Left,
                                     _ => Dock.Right,
@@ -108,7 +106,7 @@ namespace OpenTracker.ViewModels
                     {
                         case Orientation.Horizontal:
                             {
-                                return _appSettings.HorizontalUIPanelPlacement switch
+                                return AppSettings.Instance.HorizontalUIPanelPlacement switch
                                 {
                                     VerticalAlignment.Top => Dock.Top,
                                     _ => Dock.Bottom,
@@ -116,7 +114,7 @@ namespace OpenTracker.ViewModels
                             }
                         case Orientation.Vertical:
                             {
-                                return _appSettings.VerticalUIPanelPlacement switch
+                                return AppSettings.Instance.VerticalUIPanelPlacement switch
                                 {
                                     HorizontalAlignment.Left => Dock.Left,
                                     _ => Dock.Right,
@@ -128,7 +126,6 @@ namespace OpenTracker.ViewModels
                 return Dock.Right;
             }
         }
-
         public HorizontalAlignment UIPanelHorizontalAlignment
         {
             get
@@ -141,7 +138,6 @@ namespace OpenTracker.ViewModels
                 };
             }
         }
-
         public VerticalAlignment UIPanelVerticalAlignment
         {
             get
@@ -154,7 +150,6 @@ namespace OpenTracker.ViewModels
                 };
             }
         }
-
         public Dock UIPanelOrientationDock
         {
             get
@@ -164,7 +159,7 @@ namespace OpenTracker.ViewModels
                     case Dock.Left:
                     case Dock.Right:
                         {
-                            return _appSettings.VerticalItemsPlacement switch
+                            return AppSettings.Instance.VerticalItemsPlacement switch
                             {
                                 VerticalAlignment.Top => Dock.Top,
                                 _ => Dock.Bottom,
@@ -173,7 +168,7 @@ namespace OpenTracker.ViewModels
                     case Dock.Bottom:
                     case Dock.Top:
                         {
-                            return _appSettings.HorizontalItemsPlacement switch
+                            return AppSettings.Instance.HorizontalItemsPlacement switch
                             {
                                 HorizontalAlignment.Left => Dock.Left,
                                 _ => Dock.Right,
@@ -185,56 +180,10 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        public Thickness LocationsPanelMargin
-        {
-            get
-            {
-                return UIPanelOrientationDock switch
-                {
-                    Dock.Left => new Thickness(1, 0, 2, 2),
-                    Dock.Bottom => new Thickness(2, 2, 0, 1),
-                    Dock.Right => new Thickness(2, 0, 1, 2),
-                    _ => new Thickness(2, 1, 0, 2),
-                };
-            }
-        }
-
-        public Orientation LocationsPanelOrientation
-        {
-            get
-            {
-                return UIPanelDock switch
-                {
-                    Dock.Left => Orientation.Vertical,
-                    Dock.Right => Orientation.Vertical,
-                    _ => Orientation.Horizontal,
-                };
-            }
-        }
-
-        public Orientation MapPanelOrientation
-        {
-            get
-            {
-                if (_appSettings.MapOrientation.HasValue)
-                {
-                    return _appSettings.MapOrientation.Value;
-                }
-                else
-                {
-                    return Orientation;
-                }
-            }
-        }
-
         public TopMenuControlVM TopMenu { get; }
         public ItemsPanelControlVM ItemsPanel { get; }
-
-        public ObservableCollection<LocationControlVM> Locations { get; }
-        public ObservableCollection<MapControlVM> Maps { get; }
-        public ObservableCollection<ConnectorControlVM> Connectors { get; }
-        public ObservableCollection<MapEntranceControlVM> MapEntrances { get; }
-        public ObservableCollection<MapLocationControlVM> MapLocations { get; }
+        public LocationsPanelControlVM LocationsPanel { get; }
+        public MapAreaControlVM MapArea { get; }
 
         public ReactiveCommand<Unit, Unit> OpenResetDialogCommand { get; }
         public ReactiveCommand<Unit, Unit> UndoCommand { get; }
@@ -282,10 +231,8 @@ namespace OpenTracker.ViewModels
         /// </summary>
         public MainWindowVM()
         {
-            _undoRedoManager = new UndoRedoManager();
-
-            _undoRedoManager.UndoableActions.CollectionChanged += OnUndoChanged;
-            _undoRedoManager.RedoableActions.CollectionChanged += OnRedoChanged;
+            UndoRedoManager.Instance.UndoableActions.CollectionChanged += OnUndoChanged;
+            UndoRedoManager.Instance.RedoableActions.CollectionChanged += OnRedoChanged;
 
             OpenResetDialogCommand = ReactiveCommand.CreateFromObservable(OpenResetDialogAsync);
             OpenResetDialogCommand.IsExecuting.ToProperty(
@@ -296,25 +243,12 @@ namespace OpenTracker.ViewModels
             ToggleDisplayAllLocationsCommand = ReactiveCommand.Create(ToggleDisplayAllLocations);
             PropertyChanged += OnPropertyChanged;
 
-            string appSettingsPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                "OpenTracker", "OpenTracker.json");
+            TopMenu = new TopMenuControlVM(this);
+            ItemsPanel = new ItemsPanelControlVM(this);
+            LocationsPanel = new LocationsPanelControlVM(this);
+            MapArea = new MapAreaControlVM(this);
 
-            if (File.Exists(appSettingsPath))
-            {
-                string jsonContent = File.ReadAllText(appSettingsPath);
-                _appSettings = JsonConvert.DeserializeObject<AppSettings>(jsonContent);
-            }
-            else
-            {
-                _appSettings = new AppSettings();
-            }
-
-            TopMenu = new TopMenuControlVM(this, _appSettings);
-            ItemsPanel = new ItemsPanelControlVM(this, _appSettings, _undoRedoManager);
-
-            _appSettings.PropertyChanged += OnAppSettingsChanged;
-            ConnectionCollection.Instance.CollectionChanged += OnConnectionsChanged;
+            AppSettings.Instance.PropertyChanged += OnAppSettingsChanged;
 
             if (NonEntranceMarkingSelect.Count == 0)
             {
@@ -376,39 +310,10 @@ namespace OpenTracker.ViewModels
                     EntranceMarkingSelect.Add(new MarkingSelectControlVM((MarkingType)i));
                 }
             }
-
-            Maps = new ObservableCollection<MapControlVM>();
-            Connectors = new ObservableCollection<ConnectorControlVM>();
-            MapEntrances = new ObservableCollection<MapEntranceControlVM>();
-            MapLocations = new ObservableCollection<MapLocationControlVM>();
-            Locations = new ObservableCollection<LocationControlVM>();
-
-            foreach (LocationID id in Enum.GetValues(typeof(LocationID)))
-            {
-                var location = LocationDictionary.Instance[id];
-                foreach (MapLocation mapLocation in location.MapLocations)
-                {
-                    if (location.Sections[0] is EntranceSection)
-                    {
-                        MapEntrances.Add(new MapEntranceControlVM(_undoRedoManager, _appSettings,
-                            this, mapLocation));
-                    }
-                    else
-                    {
-                        MapLocations.Add(new MapLocationControlVM(_undoRedoManager, _appSettings,
-                            this, mapLocation));
-                    }
-                }
-            }
-
-            for (int i = 0; i < Enum.GetValues(typeof(MapID)).Length; i++)
-            {
-                Maps.Add(new MapControlVM(this, (MapID)i));
-            }
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on itself.
+        /// Subscribes to the PropertyChanged event on this class.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -421,20 +326,18 @@ namespace OpenTracker.ViewModels
             if (e.PropertyName == nameof(Orientation))
             {
                 UpdateUIPanelDock();
-                UpdateMapOrientation();
             }
 
             if (e.PropertyName == nameof(UIPanelDock))
             {
                 this.RaisePropertyChanged(nameof(UIPanelHorizontalAlignment));
                 this.RaisePropertyChanged(nameof(UIPanelVerticalAlignment));
-                this.RaisePropertyChanged(nameof(UIPanelOrientationDock));
-                this.RaisePropertyChanged(nameof(LocationsPanelMargin));
+                UpdateUIPanelOrientationDock();
             }
         }
 
         /// <summary>
-        /// Subscribes to the CollectionChanged event on the ObservableStack of undoable actions.
+        /// Subscribes to the CollectionChanged event on the observable stack of undoable actions.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -448,7 +351,7 @@ namespace OpenTracker.ViewModels
         }
 
         /// <summary>
-        /// Subscribes to the CollectionChanged event on the ObservableStack of redoable actions.
+        /// Subscribes to the CollectionChanged event on the observable stack of redoable actions.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -479,11 +382,6 @@ namespace OpenTracker.ViewModels
                 UpdateUIPanelDock();
             }
 
-            if (e.PropertyName == nameof(AppSettings.MapOrientation))
-            {
-                UpdateMapOrientation();
-            }
-
             if (e.PropertyName == nameof(AppSettings.HorizontalItemsPlacement) ||
                 e.PropertyName == nameof(AppSettings.VerticalItemsPlacement))
             {
@@ -492,63 +390,12 @@ namespace OpenTracker.ViewModels
         }
 
         /// <summary>
-        /// Subscribes to the CollectionChanged event on the ObservableCollection of map entrance
-        /// connections.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnConnectionsChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Add)
-            {
-                foreach (object item in e.NewItems)
-                {
-                    (MapLocation, MapLocation) connection = ((MapLocation, MapLocation))item;
-                    Connectors.Add(new ConnectorControlVM(_undoRedoManager, this,
-                        _appSettings, connection));
-                }
-            }
-
-            if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                foreach (object item in e.OldItems)
-                {
-                    (MapLocation, MapLocation) connection = ((MapLocation, MapLocation))item;
-
-                    foreach (ConnectorControlVM connector in Connectors)
-                    {
-                        if (connector.Connection == connection)
-                        {
-                            Connectors.Remove(connector);
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-                Connectors.Clear();
-
-                foreach ((MapLocation, MapLocation) connection in
-                    (ObservableCollection<(MapLocation, MapLocation)>)sender)
-                {
-                    Connectors.Add(new ConnectorControlVM(_undoRedoManager, this,
-                        _appSettings, connection));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Updates the CanUndo property.
+        /// Updates the CanUndo property with a value representing whether there are objects in the
+        /// Undoable stack.
         /// </summary>
         private void UpdateCanUndo()
         {
-            CanUndo = _undoRedoManager.CanUndo();
+            CanUndo = UndoRedoManager.Instance.CanUndo();
         }
 
         /// <summary>
@@ -556,15 +403,16 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void Undo()
         {
-            _undoRedoManager.Undo();
+            UndoRedoManager.Instance.Undo();
         }
 
         /// <summary>
-        /// Updates the CanRedo property.
+        /// Updates the CanRedo property with a value representing whether there are objects in the
+        /// Redoable stack.
         /// </summary>
         private void UpdateCanRedo()
         {
-            CanRedo = _undoRedoManager.CanRedo();
+            CanRedo = UndoRedoManager.Instance.CanRedo();
         }
 
         /// <summary>
@@ -572,7 +420,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void Redo()
         {
-            _undoRedoManager.Redo();
+            UndoRedoManager.Instance.Redo();
         }
 
         /// <summary>
@@ -581,14 +429,6 @@ namespace OpenTracker.ViewModels
         private void UpdateUIPanelDock()
         {
             this.RaisePropertyChanged(nameof(UIPanelDock));
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the MapPanelOrientation property.
-        /// </summary>
-        private void UpdateMapOrientation()
-        {
-            this.RaisePropertyChanged(nameof(MapPanelOrientation));
         }
 
         /// <summary>
@@ -624,7 +464,8 @@ namespace OpenTracker.ViewModels
                 File.Delete(path);
             }
 
-            SaveData saveData = new SaveData(true);
+            SaveData saveData = new SaveData();
+            saveData.Save();
 
             string json = JsonConvert.SerializeObject(saveData);
 
@@ -640,72 +481,8 @@ namespace OpenTracker.ViewModels
         public void Open(string path)
         {
             string jsonContent = File.ReadAllText(path);
-
             SaveData saveData = JsonConvert.DeserializeObject<SaveData>(jsonContent);
-
-            Mode.Instance.ItemPlacement = saveData.Mode.ItemPlacement;
-            Mode.Instance.DungeonItemShuffle = saveData.Mode.DungeonItemShuffle;
-            Mode.Instance.WorldState = saveData.Mode.WorldState;
-            Mode.Instance.EntranceShuffle = saveData.Mode.EntranceShuffle;
-            Mode.Instance.BossShuffle = saveData.Mode.BossShuffle;
-            Mode.Instance.EnemyShuffle = saveData.Mode.EnemyShuffle;
-
-            foreach (ItemType item in saveData.ItemCounts.Keys)
-            {
-                ItemDictionary.Instance[item].SetCurrent(saveData.ItemCounts[item]);
-            }
-
-            foreach (LocationID location in saveData.LocationSectionCounts.Keys)
-            {
-                foreach (int i in saveData.LocationSectionCounts[location].Keys)
-                {
-                    LocationDictionary.Instance[location].Sections[i].Available =
-                        saveData.LocationSectionCounts[location][i];
-                }
-            }
-
-            foreach (LocationID location in saveData.LocationSectionMarkings.Keys)
-            {
-                foreach (int i in saveData.LocationSectionMarkings[location].Keys)
-                {
-                    LocationDictionary.Instance[location].Sections[i].Marking =
-                        saveData.LocationSectionMarkings[location][i];
-                }
-            }
-
-            foreach ((LocationID, int) locationIndex in saveData.PrizePlacements.Keys)
-            {
-                if (saveData.PrizePlacements[locationIndex] == null)
-                {
-                    LocationDictionary.Instance[locationIndex.Item1].BossSections[locationIndex.Item2].Prize = null;
-                }
-                else
-                {
-                    LocationDictionary.Instance[locationIndex.Item1].BossSections[locationIndex.Item2].Prize =
-                        ItemDictionary.Instance[saveData.PrizePlacements[locationIndex].Value];
-                }
-            }
-
-            foreach ((LocationID, int) locationIndex in saveData.BossPlacements.Keys)
-            {
-                if (saveData.BossPlacements[locationIndex] == null)
-                {
-                    LocationDictionary.Instance[locationIndex.Item1].BossSections[locationIndex.Item2].BossPlacement.Boss = null;
-                }
-                else
-                {
-                    LocationDictionary.Instance[locationIndex.Item1].BossSections[locationIndex.Item2].BossPlacement.Boss =
-                        saveData.BossPlacements[locationIndex].Value;
-                }
-            }
-
-            foreach ((LocationID, int, LocationID, int) connection in saveData.Connections)
-            {
-                MapLocation location1 = LocationDictionary.Instance[connection.Item1].MapLocations[connection.Item2];
-                MapLocation location2 = LocationDictionary.Instance[connection.Item3].MapLocations[connection.Item4];
-
-                ConnectionCollection.Instance.Add((location1, location2));
-            }
+            saveData.Load();
         }
 
         /// <summary>
@@ -713,7 +490,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleDisplayAllLocations()
         {
-            _appSettings.DisplayAllLocations = !_appSettings.DisplayAllLocations;
+            AppSettings.Instance.DisplayAllLocations = !AppSettings.Instance.DisplayAllLocations;
         }
 
         /// <summary>
@@ -723,8 +500,8 @@ namespace OpenTracker.ViewModels
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                _undoRedoManager.Reset();
-                Locations.Clear();
+                UndoRedoManager.Instance.Reset();
+                LocationsPanel.Reset();
                 AutoTracker.Instance.Stop();
                 BossPlacementDictionary.Instance.Reset();
                 ItemDictionary.Instance.Reset();
@@ -775,12 +552,11 @@ namespace OpenTracker.ViewModels
         /// </param>
         public void SaveAppSettings(bool maximized, Rect bounds)
         {
-            _appSettings.Maximized = maximized;
-
-            _appSettings.X = bounds.X;
-            _appSettings.Y = bounds.Y;
-            _appSettings.Width = bounds.Width;
-            _appSettings.Height = bounds.Height;
+            AppSettings.Instance.Maximized = maximized;
+            AppSettings.Instance.X = bounds.X;
+            AppSettings.Instance.Y = bounds.Y;
+            AppSettings.Instance.Width = bounds.Width;
+            AppSettings.Instance.Height = bounds.Height;
 
             string appSettingsPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -791,31 +567,46 @@ namespace OpenTracker.ViewModels
                 File.Delete(appSettingsPath);
             }
 
-            string json = JsonConvert.SerializeObject(_appSettings, Formatting.Indented);
-
+            string json = JsonConvert.SerializeObject(AppSettings.Instance, Formatting.Indented);
             File.WriteAllText(appSettingsPath, json);
         }
 
         /// <summary>
-        /// Returns a new autotracker view-model.
+        /// Returns the autotracker ViewModel.
         /// </summary>
         /// <returns>
-        /// A new autotracker view-model.
+        /// The autotracker ViewModel.
         /// </returns>
         public object GetAutoTrackerViewModel()
         {
-            return new AutoTrackerDialogVM(AutoTracker.Instance);
+            if (_autoTrackerDialog == null)
+            {
+                _autoTrackerDialog = new AutoTrackerDialogVM();
+            }
+
+            return _autoTrackerDialog;
         }
 
         /// <summary>
-        /// Returns a new color select view-model.
+        /// Returns a new color select ViewModel.
         /// </summary>
         /// <returns>
-        /// A new color select view-model.
+        /// A new color select ViewModel.
         /// </returns>
         public object GetColorSelectViewModel()
         {
-            return new ColorSelectDialogVM(_appSettings);
+            return new ColorSelectDialogVM();
+        }
+
+        /// <summary>
+        /// Returns a new sequence break dialog ViewModel.
+        /// </summary>
+        /// <returns>
+        /// A new color select ViewModel.
+        /// </returns>
+        public object GetSequenceBreakViewModel()
+        {
+            return SequenceBreakDialogVMFactory.GetSequenceBreakDialogVM();
         }
     }
 }

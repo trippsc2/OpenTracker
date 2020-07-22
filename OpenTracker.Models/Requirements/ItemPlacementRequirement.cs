@@ -1,5 +1,4 @@
-﻿using OpenTracker.Models.Enums;
-using System;
+﻿using OpenTracker.Models.Modes;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
@@ -9,7 +8,6 @@ namespace OpenTracker.Models.Requirements
     /// </summary>
     internal class ItemPlacementRequirement : IRequirement
     {
-        private readonly Mode _mode;
         private readonly ItemPlacement _itemPlacement;
 
         public bool Met =>
@@ -34,18 +32,14 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="mode">
-        /// The mode data class.
-        /// </param>
         /// <param name="itemPlacement">
         /// The required item placement.
         /// </param>
-        public ItemPlacementRequirement(Mode mode, ItemPlacement itemPlacement)
+        public ItemPlacementRequirement(ItemPlacement itemPlacement)
         {
-            _mode = mode ?? throw new ArgumentNullException(nameof(mode));
             _itemPlacement = itemPlacement;
 
-            _mode.PropertyChanged += OnModeChanged;
+            Mode.Instance.PropertyChanged += OnModeChanged;
 
             UpdateAccessibility();
         }
@@ -83,7 +77,7 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         private void UpdateAccessibility()
         {
-            Accessibility = _mode.ItemPlacement == _itemPlacement ?
+            Accessibility = Mode.Instance.ItemPlacement == _itemPlacement ?
                 AccessibilityLevel.Normal : AccessibilityLevel.None;
         }
     }

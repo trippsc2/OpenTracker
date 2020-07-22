@@ -1,4 +1,4 @@
-﻿using OpenTracker.Models.Enums;
+﻿using OpenTracker.Models.SequenceBreaks;
 using System;
 using System.ComponentModel;
 
@@ -57,7 +57,7 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// Subscribes to the PropertyChanged event on the SequenceBreak class.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.

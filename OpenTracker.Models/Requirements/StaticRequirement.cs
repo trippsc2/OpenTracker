@@ -1,5 +1,4 @@
-﻿using OpenTracker.Models.Enums;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
@@ -11,7 +10,20 @@ namespace OpenTracker.Models.Requirements
     {
         public bool Met =>
             true;
-        public AccessibilityLevel Accessibility { get; }
+
+        private AccessibilityLevel _accessibility;
+        public AccessibilityLevel Accessibility
+        {
+            get => _accessibility;
+            private set
+            {
+                if (_accessibility != value)
+                {
+                    _accessibility = value;
+                    OnPropertyChanged(nameof(Accessibility));
+                }
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         
@@ -24,6 +36,17 @@ namespace OpenTracker.Models.Requirements
         public StaticRequirement(AccessibilityLevel accessibility)
         {
             Accessibility = accessibility;
+        }
+
+        /// <summary>
+        /// Raises the PropertyChanged event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
+        /// </param>
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

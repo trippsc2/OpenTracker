@@ -1,5 +1,5 @@
 ﻿using OpenTracker.Models.BossPlacements;
-using OpenTracker.Models.Enums;
+using OpenTracker.Models.Modes;
 using System;
 using System.ComponentModel;
 
@@ -146,6 +146,7 @@ namespace OpenTracker.Models.Requirements
             {
                 CurrentBossRequirement = boss.Value switch
                 {
+                    BossType.Test => RequirementDictionary.Instance[RequirementType.None],
                     BossType.Armos => RequirementDictionary.Instance[RequirementType.Armos],
                     BossType.Lanmolas => RequirementDictionary.Instance[RequirementType.Lanmolas],
                     BossType.Moldorm => RequirementDictionary.Instance[RequirementType.Moldorm],

@@ -1,5 +1,4 @@
-﻿using OpenTracker.Models.Enums;
-using OpenTracker.Models.Utils;
+﻿using OpenTracker.Models.Utils;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -11,24 +10,21 @@ namespace OpenTracker.Models.RequirementNodes
     /// This is the dictionary containing all requirement node data
     /// </summary>
     public class RequirementNodeDictionary : Singleton<RequirementNodeDictionary>,
-        IDictionary<RequirementNodeID, RequirementNode>
+        IDictionary<RequirementNodeID, IRequirementNode>
     {
-        private static readonly ConcurrentDictionary<RequirementNodeID, RequirementNode> _dictionary =
-            new ConcurrentDictionary<RequirementNodeID, RequirementNode>();
+        private static readonly ConcurrentDictionary<RequirementNodeID, IRequirementNode> _dictionary =
+            new ConcurrentDictionary<RequirementNodeID, IRequirementNode>();
 
         public ICollection<RequirementNodeID> Keys =>
-            ((IDictionary<RequirementNodeID, RequirementNode>)_dictionary).Keys;
-
-        public ICollection<RequirementNode> Values =>
-            ((IDictionary<RequirementNodeID, RequirementNode>)_dictionary).Values;
-
+            ((IDictionary<RequirementNodeID, IRequirementNode>)_dictionary).Keys;
+        public ICollection<IRequirementNode> Values =>
+            ((IDictionary<RequirementNodeID, IRequirementNode>)_dictionary).Values;
         public int Count =>
-            ((ICollection<KeyValuePair<RequirementNodeID, RequirementNode>>)_dictionary).Count;
-
+            ((ICollection<KeyValuePair<RequirementNodeID, IRequirementNode>>)_dictionary).Count;
         public bool IsReadOnly =>
-            ((ICollection<KeyValuePair<RequirementNodeID, RequirementNode>>)_dictionary).IsReadOnly;
+            ((ICollection<KeyValuePair<RequirementNodeID, IRequirementNode>>)_dictionary).IsReadOnly;
 
-        public RequirementNode this[RequirementNodeID key]
+        public IRequirementNode this[RequirementNodeID key]
         {
             get
             {
@@ -37,9 +33,9 @@ namespace OpenTracker.Models.RequirementNodes
                     Create(key);
                 }
 
-                return ((IDictionary<RequirementNodeID, RequirementNode>)_dictionary)[key];
+                return ((IDictionary<RequirementNodeID, IRequirementNode>)_dictionary)[key];
             }
-            set => ((IDictionary<RequirementNodeID, RequirementNode>)_dictionary)[key] = value;
+            set => ((IDictionary<RequirementNodeID, IRequirementNode>)_dictionary)[key] = value;
         }
 
         public event EventHandler<RequirementNodeID> NodeCreated;
@@ -54,70 +50,76 @@ namespace OpenTracker.Models.RequirementNodes
         {
         }
 
+        /// <summary>
+        /// Creates a new requirement node for the specified key.
+        /// </summary>
+        /// <param name="key">
+        /// The key.
+        /// </param>
         private void Create(RequirementNodeID key)
         {
-            Add(key, new RequirementNode(key));
+            Add(key, RequirementNodeFactory.GetRequirementNode(key));
             NodeCreated?.Invoke(this, key);
         }
 
-        public void Add(RequirementNodeID key, RequirementNode value)
+        public void Add(RequirementNodeID key, IRequirementNode value)
         {
-            ((IDictionary<RequirementNodeID, RequirementNode>)_dictionary).Add(key, value);
+            ((IDictionary<RequirementNodeID, IRequirementNode>)_dictionary).Add(key, value);
+        }
+
+        public void Add(KeyValuePair<RequirementNodeID, IRequirementNode> item)
+        {
+            ((ICollection<KeyValuePair<RequirementNodeID, IRequirementNode>>)_dictionary).Add(item);
+        }
+
+        public void Clear()
+        {
+            _dictionary.Clear();
+        }
+
+        public bool Contains(KeyValuePair<RequirementNodeID, IRequirementNode> item)
+        {
+            return ((ICollection<KeyValuePair<RequirementNodeID, IRequirementNode>>)_dictionary).Contains(item);
         }
 
         public bool ContainsKey(RequirementNodeID key)
         {
-            return ((IDictionary<RequirementNodeID, RequirementNode>)_dictionary).ContainsKey(key);
+            return _dictionary.ContainsKey(key);
+        }
+
+        public void CopyTo(KeyValuePair<RequirementNodeID, IRequirementNode>[] array, int arrayIndex)
+        {
+            ((ICollection<KeyValuePair<RequirementNodeID, IRequirementNode>>)_dictionary).CopyTo(array, arrayIndex);
         }
 
         public bool Remove(RequirementNodeID key)
         {
-            return ((IDictionary<RequirementNodeID, RequirementNode>)_dictionary).Remove(key);
+            return ((IDictionary<RequirementNodeID, IRequirementNode>)_dictionary).Remove(key);
         }
 
-        public bool TryGetValue(RequirementNodeID key, out RequirementNode value)
+        public bool Remove(KeyValuePair<RequirementNodeID, IRequirementNode> item)
+        {
+            return ((ICollection<KeyValuePair<RequirementNodeID, IRequirementNode>>)_dictionary).Remove(item);
+        }
+
+        public bool TryGetValue(RequirementNodeID key, out IRequirementNode value)
         {
             if (!ContainsKey(key))
             {
                 Create(key);
             }
 
-            return ((IDictionary<RequirementNodeID, RequirementNode>)_dictionary).TryGetValue(key, out value);
+            return _dictionary.TryGetValue(key, out value);
         }
 
-        public void Add(KeyValuePair<RequirementNodeID, RequirementNode> item)
+        public IEnumerator<KeyValuePair<RequirementNodeID, IRequirementNode>> GetEnumerator()
         {
-            ((ICollection<KeyValuePair<RequirementNodeID, RequirementNode>>)_dictionary).Add(item);
-        }
-
-        public void Clear()
-        {
-            ((ICollection<KeyValuePair<RequirementNodeID, RequirementNode>>)_dictionary).Clear();
-        }
-
-        public bool Contains(KeyValuePair<RequirementNodeID, RequirementNode> item)
-        {
-            return ((ICollection<KeyValuePair<RequirementNodeID, RequirementNode>>)_dictionary).Contains(item);
-        }
-
-        public void CopyTo(KeyValuePair<RequirementNodeID, RequirementNode>[] array, int arrayIndex)
-        {
-            ((ICollection<KeyValuePair<RequirementNodeID, RequirementNode>>)_dictionary).CopyTo(array, arrayIndex);
-        }
-
-        public bool Remove(KeyValuePair<RequirementNodeID, RequirementNode> item)
-        {
-            return ((ICollection<KeyValuePair<RequirementNodeID, RequirementNode>>)_dictionary).Remove(item);
-        }
-
-        public IEnumerator<KeyValuePair<RequirementNodeID, RequirementNode>> GetEnumerator()
-        {
-            return ((IEnumerable<KeyValuePair<RequirementNodeID, RequirementNode>>)_dictionary).GetEnumerator();
+            return _dictionary.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable)_dictionary).GetEnumerator();
+            return _dictionary.GetEnumerator();
         }
     }
 }

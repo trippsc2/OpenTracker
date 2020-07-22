@@ -1,10 +1,11 @@
-﻿using OpenTracker.Models.Enums;
-using OpenTracker.Models.Items;
-using System;
+﻿using OpenTracker.Models.Items;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
+    /// <summary>
+    /// This is the class for GT crystal requirements.
+    /// </summary>
     public class CrystalRequirement : IRequirement
     {
         private readonly IItem _gtCrystal;
@@ -33,9 +34,6 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="game">
-        /// The game data.
-        /// </param>
         public CrystalRequirement()
         {
             _gtCrystal = ItemDictionary.Instance[ItemType.TowerCrystals];
@@ -61,7 +59,7 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the Item class.
+        /// Subscribes to the PropertyChanged event on the IItem interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.

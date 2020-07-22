@@ -29,135 +29,17 @@
 
 	<DockPanel>
 
-		<!-- Window MenuBar -->
     <ContentControl Content="{Binding TopMenu}" DockPanel.Dock="Top" />
 
-		<!-- UI Panels -->
 		<DockPanel DockPanel.Dock="{Binding UIPanelDock, Mode=OneWay}" HorizontalAlignment="{Binding 
                UIPanelHorizontalAlignment, Mode=OneWay}" VerticalAlignment="{Binding 
                UIPanelVerticalAlignment, Mode=OneWay}">
+			<ContentControl Content="{Binding ItemsPanel}" DockPanel.Dock="{Binding UIPanelOrientationDock,
+                      Mode=OneWay}" />
+      <ContentControl Content="{Binding LocationsPanel}" />
+    </DockPanel>
 
-			<!-- Items Panel -->
-			<ContentControl Content="{Binding ItemsPanel}" DockPanel.Dock="{Binding
-                      UIPanelOrientationDock, Mode=OneWay}" />
-
-			<!-- Locations Panel -->
-			<Border Classes="ControlBorder" Margin="{Binding Path=LocationsPanelMargin, Mode=OneWay}">
-				<Grid RowDefinitions="Auto, *" VerticalAlignment="Stretch">
-
-					<Border Classes="UIPanelTitle LocationsPanelTitle" Grid.Row="0">
-						<TextBlock Classes="UIPanelTitleText" Text="Locations" />
-					</Border>
-
-					<Border Classes="UIPanelBody LocationsPanelBody" Grid.Row="1">
-						<ItemsControl Items="{Binding Path=Locations}">
-
-							<ItemsControl.ItemsPanel>
-								<ItemsPanelTemplate>
-									<WrapPanel Orientation="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow},
-										   Path=DataContext.LocationsPanelOrientation, Mode=OneWay}" />
-								</ItemsPanelTemplate>
-							</ItemsControl.ItemsPanel>
-
-							<ItemsControl.ItemTemplate>
-								<DataTemplate>
-									<view:LocationControl Margin="1" />
-								</DataTemplate>
-							</ItemsControl.ItemTemplate>
-
-						</ItemsControl>
-					</Border>
-
-				</Grid>
-			</Border>
-		
-		</DockPanel>
-
-		<!-- Map Area -->
-		<Panel>
-			<Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-        <Panel>
-
-          <ItemsControl x:Name="MapItemsControl" Items="{Binding Path=Maps}">
-
-            <ItemsControl.ItemsPanel>
-              <ItemsPanelTemplate>
-                <StackPanel Orientation="{Binding RelativeSource={RelativeSource AncestorType=view:MainWindow},
-										Path=DataContext.MapPanelOrientation, Mode=OneWay}" />
-              </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <view:MapControl />
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-
-          </ItemsControl>
-
-          <ItemsControl Items="{Binding Path=Connectors}">
-
-            <ItemsControl.ItemsPanel>
-              <ItemsPanelTemplate>
-                <Panel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-              </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <view:ConnectorControl />
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-
-          </ItemsControl>
-
-          <ItemsControl Classes="Canvas" Items="{Binding Path=MapLocations}">
-            <ItemsControl.Styles>
-              <Style Selector="ItemsControl.Canvas > ContentPresenter">
-                <Setter Property="Canvas.Left" Value="{Binding Path=CanvasX}" />
-                <Setter Property="Canvas.Top" Value="{Binding Path=CanvasY}" />
-              </Style>
-            </ItemsControl.Styles>
-
-            <ItemsControl.ItemsPanel>
-              <ItemsPanelTemplate>
-                <Canvas />
-              </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <view:MapLocationControl />
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-
-          </ItemsControl>
-
-          <ItemsControl Classes="Canvas" Items="{Binding Path=MapEntrances}">
-            <ItemsControl.Styles>
-              <Style Selector="ItemsControl.Canvas > ContentPresenter">
-                <Setter Property="Canvas.Left" Value="{Binding Path=CanvasX}" />
-                <Setter Property="Canvas.Top" Value="{Binding Path=CanvasY}" />
-              </Style>
-            </ItemsControl.Styles>
-
-            <ItemsControl.ItemsPanel>
-              <ItemsPanelTemplate>
-                <Canvas />
-              </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-
-            <ItemsControl.ItemTemplate>
-              <DataTemplate>
-                <view:MapEntranceControl />
-              </DataTemplate>
-            </ItemsControl.ItemTemplate>
-
-          </ItemsControl>
-
-        </Panel>
-      </Viewbox>
-		</Panel>
+    <ContentControl Content="{Binding MapArea}" />
 	
 	</DockPanel>
 

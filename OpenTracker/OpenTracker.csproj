@@ -4,11 +4,11 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <ApplicationIcon>triforce.ico</ApplicationIcon>
     <Win32Resource />
-    <Version>1.2.1</Version>
+    <Version>1.2.2</Version>
     <Authors>Tripp</Authors>
-    <AssemblyVersion>1.2.1.0</AssemblyVersion>
-    <FileVersion>1.2.1.0</FileVersion>
-    <CFBundleShortVersionString>1.2.1</CFBundleShortVersionString>
+    <AssemblyVersion>1.2.2.0</AssemblyVersion>
+    <FileVersion>1.2.2.0</FileVersion>
+    <CFBundleShortVersionString>1.2.2</CFBundleShortVersionString>
     <RuntimeIdentifiers>osx-x64;linux-x64;debian-x64;rhel-x64;win-x64;win-x86;win7-x64;win7-x86</RuntimeIdentifiers>
   </PropertyGroup>
   <ItemGroup>
@@ -35,11 +35,11 @@
     <AvaloniaResource Remove="Views\ColorSelectDialog.xaml" />
     <AvaloniaResource Remove="Views\ConnectorControl.xaml" />
     <AvaloniaResource Remove="Views\DungeonChestControl.xaml" />
-    <AvaloniaResource Remove="Views\LocationControl.xaml" />
     <AvaloniaResource Remove="Views\MapEntranceControl.xaml" />
     <AvaloniaResource Remove="Views\MarkingSelectControl.xaml" />
     <AvaloniaResource Remove="Views\MessageBoxDialog.xaml" />
     <AvaloniaResource Remove="Views\ModeSettingsControl.xaml" />
+    <AvaloniaResource Remove="Views\PinnedLocationControl.xaml" />
     <AvaloniaResource Remove="Views\PrizeControl.xaml" />
   </ItemGroup>
   <ItemGroup>
@@ -51,14 +51,13 @@
     <None Remove="Views\ConnectorControl.xaml" />
     <None Remove="Views\DungeonChestControl.xaml" />
     <None Remove="Views\ItemsPanelControl.xaml" />
-    <None Remove="Views\LocationControl.xaml" />
     <None Remove="Views\MapEntranceControl.xaml" />
     <None Remove="Views\MapLocationControl.xaml" />
     <None Remove="Views\MarkingSelectControl.xaml" />
     <None Remove="Views\MessageBoxDialog.xaml" />
     <None Remove="Views\ModeSettingsControl.xaml" />
+    <None Remove="Views\PinnedLocationControl.xaml" />
     <None Remove="Views\PrizeControl.xaml" />
-    <None Remove="Views\SectionControl.xaml" />
     <None Remove="Views\SmallItemSpacerControl.xaml" />
     <None Remove="Views\SmallKeyControl.xaml" />
     <None Remove="Views\TopMenuControl.xaml" />
@@ -78,22 +77,17 @@
     <PackageReference Include="ThemeEditor.Controls.ColorPicker" Version="0.9.4" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\MapControl.xaml">
+    <EmbeddedResource Include="Views\MapAreaControls\MapControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\MapLocationControl.xaml">
+    <EmbeddedResource Include="Views\MapAreaControls\MapLocationControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\LocationControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Views\SectionControl.xaml">
+    <EmbeddedResource Include="Views\PinnedLocationControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
@@ -103,12 +97,12 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\PrizeControl.xaml">
+    <EmbeddedResource Include="Views\SmallItemControls\PrizeSmallItemControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\BossControl.xaml">
+    <EmbeddedResource Include="Views\SmallItemControls\BossSmallItemControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
@@ -119,20 +113,65 @@
     <Compile Update="Views\AutoTrackerDialog.xaml.cs">
       <DependentUpon>AutoTrackerDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\PrizeControl.xaml.cs">
-      <DependentUpon>PrizeControl.xaml</DependentUpon>
+    <Compile Update="Views\LargeItemControls\CrystalRequirementLargeItemControl.axaml.cs">
+      <DependentUpon>CrystalRequirementLargeItemControl.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\LargeItemControls\PairLargeItemControl.axaml.cs">
+      <DependentUpon>PairLargeItemControl.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\LargeItemControls\SmallKeyLargeItemControl.axaml.cs">
+      <DependentUpon>SmallKeyLargeItemControl.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\LargeItemControls\SpacerLargeItemControl.axaml.cs">
+      <DependentUpon>SpacerLargeItemControl.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MapAreaControls\ConnectionControl.xaml.cs">
+      <DependentUpon>ConnectionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MapAreaControls\EntranceMapLocationControl.xaml.cs">
+      <DependentUpon>EntranceMapLocationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SectionControls\BossSectionIconControl.axaml.cs">
+      <DependentUpon>BossSectionIconControl.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SectionControls\EntranceSectionIconControl.axaml.cs">
+      <DependentUpon>EntranceSectionIconControl.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SectionControls\ItemSectionIconControl.axaml.cs">
+      <DependentUpon>ItemSectionIconControl.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SectionControls\PrizeSectionIconControl.axaml.cs">
+      <DependentUpon>PrizeSectionIconControl.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SectionControls\TakeAnySectionIconControl.axaml.cs">
+      <DependentUpon>TakeAnySectionIconControl.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SmallItemControls\BigKeySmallItemControl.xaml.cs">
+      <DependentUpon>BigKeySmallItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SmallItemControls\BossSmallItemControl.xaml.cs">
+      <DependentUpon>BossSmallItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SmallItemControls\DungeonItemSmallItemControl.xaml.cs">
+      <DependentUpon>DungeonItemSmallItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SmallItemControls\PrizeSmallItemControl.xaml.cs">
+      <DependentUpon>PrizeSmallItemControl.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\MessageBoxDialog.xaml.cs">
       <DependentUpon>MessageBoxDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\LocationControl.xaml.cs">
-      <DependentUpon>LocationControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SectionControl.xaml.cs">
-      <DependentUpon>SectionControl.xaml</DependentUpon>
+    <Compile Update="Views\PinnedLocationControl.xaml.cs">
+      <DependentUpon>PinnedLocationControl.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\MarkingSelectControl.xaml.cs">
       <DependentUpon>MarkingSelectControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SmallItemControls\SmallKeySmallItemControl.xaml.cs">
+      <DependentUpon>SmallKeySmallItemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\SmallItemControls\SpacerSmallItemControl.xaml.cs">
+      <DependentUpon>SpacerSmallItemControl.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -170,31 +209,31 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\MapEntranceControl.xaml">
+    <EmbeddedResource Include="Views\MapAreaControls\EntranceMapLocationControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\ConnectorControl.xaml">
+    <EmbeddedResource Include="Views\MapAreaControls\ConnectionControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\DungeonChestControl.xaml">
+    <EmbeddedResource Include="Views\SmallItemControls\DungeonItemSmallItemControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <AvaloniaResource Update="Views\BigKeyControl.xaml">
+    <AvaloniaResource Update="Views\SmallItemControls\BigKeySmallItemControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </AvaloniaResource>
     <AvaloniaResource Update="Views\ItemsPanelControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </AvaloniaResource>
-    <AvaloniaResource Update="Views\SmallItemSpacerControl.xaml">
+    <AvaloniaResource Update="Views\SmallItemControls\SpacerSmallItemControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </AvaloniaResource>
-    <AvaloniaResource Update="Views\SmallKeyControl.xaml">
+    <AvaloniaResource Update="Views\SmallItemControls\SmallKeySmallItemControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </AvaloniaResource>
     <AvaloniaResource Update="Views\TopMenuControl.xaml">

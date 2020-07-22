@@ -1,5 +1,5 @@
-﻿using OpenTracker.Models.Enums;
-using OpenTracker.Models.Requirements;
+﻿using OpenTracker.Models.Requirements;
+using OpenTracker.Models.SaveLoad;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Sections
@@ -7,7 +7,7 @@ namespace OpenTracker.Models.Sections
     /// <summary>
     /// This is the interface for item/entrance sections of a location.
     /// </summary>
-    public interface ISection : INotifyPropertyChanging, INotifyPropertyChanged
+    public interface ISection : INotifyPropertyChanged
     {
         string Name { get; }
         IRequirement Requirement { get; }
@@ -16,7 +16,11 @@ namespace OpenTracker.Models.Sections
         int Available { get; set; }
 
         bool IsAvailable();
+        bool CanBeCleared(bool force);
         void Clear(bool force);
         void Reset();
+        bool CanBeUncleared();
+        SectionSaveData Save();
+        void Load(SectionSaveData saveData);
     }
 }

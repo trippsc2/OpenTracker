@@ -1,8 +1,10 @@
-﻿using OpenTracker.Models.Enums;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
+    /// <summary>
+    /// This is the interface for requirements.
+    /// </summary>
     public interface IRequirement : INotifyPropertyChanged
     {
         bool Met { get; }

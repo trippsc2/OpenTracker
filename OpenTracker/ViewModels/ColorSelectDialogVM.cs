@@ -1,8 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Media;
 using OpenTracker.Models;
-using OpenTracker.Models.Enums;
-using OpenTracker.ViewModels.Bases;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
@@ -10,12 +8,10 @@ using System.ComponentModel;
 namespace OpenTracker.ViewModels
 {
     /// <summary>
-    /// This is the view-model for the color select dialog window.
+    /// This is the ViewModel for the color select dialog window.
     /// </summary>
     public class ColorSelectDialogVM : ViewModelBase
     {
-        private readonly AppSettings _appSettings;
-
         private SolidColorBrush _emphasisFontColor;
         public SolidColorBrush EmphasisFontColor
         {
@@ -68,15 +64,10 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="appSettings">
-        /// The application settings.
-        /// </param>
-        public ColorSelectDialogVM(AppSettings appSettings)
+        public ColorSelectDialogVM()
         {
-            _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
-
-            appSettings.PropertyChanged += OnAppSettingsChanged;
-            appSettings.AccessibilityColors.PropertyChanged += OnAccessibilityColorsChanged;
+            AppSettings.Instance.PropertyChanged += OnAppSettingsChanged;
+            AppSettings.Instance.AccessibilityColors.PropertyChanged += OnAccessibilityColorsChanged;
 
             UpdateEmphasisFontColor();
             UpdateAccessibilityColors();
@@ -131,7 +122,7 @@ namespace OpenTracker.ViewModels
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the AppSettings classes.
+        /// Subscribes to the PropertyChanged event on the AppSettings class.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -167,7 +158,7 @@ namespace OpenTracker.ViewModels
         }
 
         /// <summary>
-        /// Updates the value of EmphasisFontColor from the AppSettings class.
+        /// Updates the EmphasisFontColor property value from the AppSettings class.
         /// </summary>
         private void UpdateEmphasisFontColor()
         {
@@ -176,20 +167,20 @@ namespace OpenTracker.ViewModels
                 EmphasisFontColor.PropertyChanged -= OnColorChanged;
             }
 
-            EmphasisFontColor = SolidColorBrush.Parse(_appSettings.EmphasisFontColor);
+            EmphasisFontColor = SolidColorBrush.Parse(AppSettings.Instance.EmphasisFontColor);
             EmphasisFontColor.PropertyChanged += OnColorChanged;
         }
 
         /// <summary>
-        /// Sets the value of EmphasisFontColor to the AppSettings class.
+        /// Sets EmphasisFontColor value in the AppSettings class.
         /// </summary>
         private void SetEmphasisFontColor()
         {
-            _appSettings.EmphasisFontColor = EmphasisFontColor.Color.ToString();
+            AppSettings.Instance.EmphasisFontColor = EmphasisFontColor.Color.ToString();
         }
 
         /// <summary>
-        /// Updates the value of ConnectorColor from the AppSettings class.
+        /// Updates the ConnectorColor property value from the AppSettings class.
         /// </summary>
         private void UpdateConnectorColor()
         {
@@ -198,20 +189,20 @@ namespace OpenTracker.ViewModels
                 ConnectorColor.PropertyChanged -= OnColorChanged;
             }
 
-            ConnectorColor = SolidColorBrush.Parse(_appSettings.ConnectorColor);
+            ConnectorColor = SolidColorBrush.Parse(AppSettings.Instance.ConnectorColor);
             ConnectorColor.PropertyChanged += OnColorChanged;
         }
 
         /// <summary>
-        /// Sets the value of ConnectorColor to the AppSettings class.
+        /// Sets ConnectorColor value in the AppSettings class.
         /// </summary>
         private void SetConnectorColor()
         {
-            _appSettings.ConnectorColor = ConnectorColor.Color.ToString();
+            AppSettings.Instance.ConnectorColor = ConnectorColor.Color.ToString();
         }
 
         /// <summary>
-        /// Updates the values of AccessibilityColors from the AppSettings class.
+        /// Updates AccessibilityColors property value from the AppSettings class.
         /// </summary>
         private void UpdateAccessibilityColors()
         {
@@ -241,15 +232,15 @@ namespace OpenTracker.ViewModels
             }
 
             AccessibilityNoneColor = SolidColorBrush
-                .Parse(_appSettings.AccessibilityColors[AccessibilityLevel.None]);
+                .Parse(AppSettings.Instance.AccessibilityColors[AccessibilityLevel.None]);
             AccessibilityInspectColor = SolidColorBrush
-                .Parse(_appSettings.AccessibilityColors[AccessibilityLevel.Inspect]);
+                .Parse(AppSettings.Instance.AccessibilityColors[AccessibilityLevel.Inspect]);
             AccessibilityPartialColor = SolidColorBrush
-                .Parse(_appSettings.AccessibilityColors[AccessibilityLevel.Partial]);
+                .Parse(AppSettings.Instance.AccessibilityColors[AccessibilityLevel.Partial]);
             AccessibilitySequenceBreakColor = SolidColorBrush
-                .Parse(_appSettings.AccessibilityColors[AccessibilityLevel.SequenceBreak]);
+                .Parse(AppSettings.Instance.AccessibilityColors[AccessibilityLevel.SequenceBreak]);
             AccessibilityNormalColor = SolidColorBrush
-                .Parse(_appSettings.AccessibilityColors[AccessibilityLevel.Normal]);
+                .Parse(AppSettings.Instance.AccessibilityColors[AccessibilityLevel.Normal]);
 
             AccessibilityNoneColor.PropertyChanged += OnColorChanged;
             AccessibilityInspectColor.PropertyChanged += OnColorChanged;
@@ -259,8 +250,8 @@ namespace OpenTracker.ViewModels
         }
 
         /// <summary>
-        /// Sets the value of the specified accessibility level in AccessibilityColors
-        /// to the AppSettings class.
+        /// Sets the specified accessibility level in AccessibilityColors property in the AppSettings
+        /// class.
         /// </summary>
         /// <param name="accessibility">
         /// The accessibility level to be set.
@@ -282,7 +273,7 @@ namespace OpenTracker.ViewModels
                 throw new ArgumentOutOfRangeException(nameof(accessibility));
             }
 
-            _appSettings.AccessibilityColors[accessibility] = color.ToString();
+            AppSettings.Instance.AccessibilityColors[accessibility] = color.ToString();
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using OpenTracker.Models.Enums;
-using OpenTracker.Models.Requirements;
+﻿using OpenTracker.Models.Requirements;
 
 namespace OpenTracker.Models.Locations
 {
@@ -41,19 +40,20 @@ namespace OpenTracker.Models.Locations
             Map = map;
             X = x;
             Y = y;
+            Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.None];
 
             LocationDictionary.Instance.LocationCreated += OnLocationCreated;
-
-            if (requirement != null)
-            {
-                Requirement = requirement;
-            }
-            else
-            {
-                Requirement = RequirementDictionary.Instance[RequirementType.None];
-            }
         }
 
+        /// <summary>
+        /// Subscribes to the LocationCreated event on the LocationDictionary class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the LocationCreated event.
+        /// </param>
         private void OnLocationCreated(object sender, LocationID id)
         {
             if (id == _locationID)

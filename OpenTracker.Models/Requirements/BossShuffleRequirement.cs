@@ -1,5 +1,4 @@
-﻿using OpenTracker.Models.Enums;
-using System;
+﻿using OpenTracker.Models.Modes;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
@@ -9,7 +8,6 @@ namespace OpenTracker.Models.Requirements
     /// </summary>
     internal class BossShuffleRequirement : IRequirement
     {
-        private readonly Mode _mode;
         private readonly bool _bossShuffle;
 
         public bool Met =>
@@ -34,18 +32,14 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="mode">
-        /// The mode data class.
-        /// </param>
         /// <param name="bossShuffle">
         /// The required boss shuffle value.
         /// </param>
-        public BossShuffleRequirement(Mode mode, bool bossShuffle)
+        public BossShuffleRequirement(bool bossShuffle)
         {
-            _mode = mode ?? throw new ArgumentNullException(nameof(mode));
             _bossShuffle = bossShuffle;
 
-            _mode.PropertyChanged += OnModeChanged;
+            Mode.Instance.PropertyChanged += OnModeChanged;
 
             UpdateAccessibility();
         }
@@ -83,7 +77,7 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         private void UpdateAccessibility()
         {
-            Accessibility = _mode.BossShuffle == _bossShuffle ?
+            Accessibility = Mode.Instance.BossShuffle == _bossShuffle ?
                 AccessibilityLevel.Normal : AccessibilityLevel.None;
         }
     }

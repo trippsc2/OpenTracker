@@ -1,6 +1,5 @@
 ﻿using Avalonia.Layout;
 using OpenTracker.Models;
-using OpenTracker.ViewModels.Bases;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
@@ -8,48 +7,49 @@ using System.Reactive;
 
 namespace OpenTracker.ViewModels
 {
+    /// <summary>
+    /// This is the ViewModel class for the top menu control.
+    /// </summary>
     public class TopMenuControlVM : ViewModelBase
     {
-        private readonly AppSettings _appSettings;
-
         public bool DisplayAllLocations =>
-            _appSettings.DisplayAllLocations;
+            AppSettings.Instance.DisplayAllLocations;
         public bool ShowItemCountsOnMap =>
-            _appSettings.ShowItemCountsOnMap;
+            AppSettings.Instance.ShowItemCountsOnMap;
 
         public bool DynamicLayoutOrientation =>
-            _appSettings.LayoutOrientation == null;
+            AppSettings.Instance.LayoutOrientation == null;
         public bool HorizontalLayoutOrientation =>
-            _appSettings.LayoutOrientation == Orientation.Horizontal;
+            AppSettings.Instance.LayoutOrientation == Orientation.Horizontal;
         public bool VerticalLayoutOrientation =>
-            _appSettings.LayoutOrientation == Orientation.Vertical;
+            AppSettings.Instance.LayoutOrientation == Orientation.Vertical;
 
         public bool DynamicMapOrientation =>
-            _appSettings.MapOrientation == null;
+            AppSettings.Instance.MapOrientation == null;
         public bool HorizontalMapOrientation =>
-            _appSettings.MapOrientation == Orientation.Horizontal;
+            AppSettings.Instance.MapOrientation == Orientation.Horizontal;
         public bool VerticalMapOrientation =>
-            _appSettings.MapOrientation == Orientation.Vertical;
+            AppSettings.Instance.MapOrientation == Orientation.Vertical;
 
         public bool TopHorizontalUIPanelPlacement =>
-            _appSettings.HorizontalUIPanelPlacement == VerticalAlignment.Top;
+            AppSettings.Instance.HorizontalUIPanelPlacement == VerticalAlignment.Top;
         public bool BottomHorizontalUIPanelPlacement =>
-            _appSettings.HorizontalUIPanelPlacement == VerticalAlignment.Bottom;
+            AppSettings.Instance.HorizontalUIPanelPlacement == VerticalAlignment.Bottom;
 
         public bool LeftVerticalUIPanelPlacement =>
-            _appSettings.VerticalUIPanelPlacement == HorizontalAlignment.Left;
+            AppSettings.Instance.VerticalUIPanelPlacement == HorizontalAlignment.Left;
         public bool RightVerticalUIPanelPlacement =>
-            _appSettings.VerticalUIPanelPlacement == HorizontalAlignment.Right;
+            AppSettings.Instance.VerticalUIPanelPlacement == HorizontalAlignment.Right;
 
         public bool LeftHorizontalItemsPlacement =>
-            _appSettings.HorizontalItemsPlacement == HorizontalAlignment.Left;
+            AppSettings.Instance.HorizontalItemsPlacement == HorizontalAlignment.Left;
         public bool RightHorizontalItemsPlacement =>
-            _appSettings.HorizontalItemsPlacement == HorizontalAlignment.Right;
+            AppSettings.Instance.HorizontalItemsPlacement == HorizontalAlignment.Right;
 
         public bool TopVerticalItemsPlacement =>
-            _appSettings.VerticalItemsPlacement == VerticalAlignment.Top;
+            AppSettings.Instance.VerticalItemsPlacement == VerticalAlignment.Top;
         public bool BottomVerticalItemsPlacement =>
-            _appSettings.VerticalItemsPlacement == VerticalAlignment.Bottom;
+            AppSettings.Instance.VerticalItemsPlacement == VerticalAlignment.Bottom;
 
         public ReactiveCommand<Unit, Unit> OpenResetDialogCommand { get; }
         public ReactiveCommand<Unit, Unit> UndoCommand { get; }
@@ -69,17 +69,12 @@ namespace OpenTracker.ViewModels
         /// <param name="mainWindow">
         /// The view-model of the main window.
         /// </param>
-        /// <param name="appSettings">
-        /// The app settings.
-        /// </param>
-        public TopMenuControlVM(MainWindowVM mainWindow, AppSettings appSettings)
+        public TopMenuControlVM(MainWindowVM mainWindow)
         {
             if (mainWindow == null)
             {
                 throw new ArgumentNullException(nameof(mainWindow));
             }
-
-            _appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
 
             OpenResetDialogCommand = mainWindow.OpenResetDialogCommand;
             UndoCommand = mainWindow.UndoCommand;
@@ -93,7 +88,7 @@ namespace OpenTracker.ViewModels
             SetHorizontalItemsPlacementCommand = ReactiveCommand.Create<string>(SetHorizontalItemsPlacement);
             SetVerticalItemsPlacementCommand = ReactiveCommand.Create<string>(SetVerticalItemsPlacement);
 
-            _appSettings.PropertyChanged += OnAppSettingsChanged;
+            AppSettings.Instance.PropertyChanged += OnAppSettingsChanged;
         }
 
         /// <summary>
@@ -119,95 +114,41 @@ namespace OpenTracker.ViewModels
 
             if (e.PropertyName == nameof(AppSettings.LayoutOrientation))
             {
-                UpdateLayoutOrientation();
+                this.RaisePropertyChanged(nameof(DynamicLayoutOrientation));
+                this.RaisePropertyChanged(nameof(HorizontalLayoutOrientation));
+                this.RaisePropertyChanged(nameof(VerticalLayoutOrientation));
             }
 
             if (e.PropertyName == nameof(AppSettings.MapOrientation))
             {
-                UpdateMapOrientation();
+                this.RaisePropertyChanged(nameof(DynamicMapOrientation));
+                this.RaisePropertyChanged(nameof(HorizontalMapOrientation));
+                this.RaisePropertyChanged(nameof(VerticalMapOrientation));
             }
 
             if (e.PropertyName == nameof(AppSettings.HorizontalUIPanelPlacement))
             {
-                UpdateHorizontalUIPanelPlacement();
+                this.RaisePropertyChanged(nameof(TopHorizontalUIPanelPlacement));
+                this.RaisePropertyChanged(nameof(BottomHorizontalUIPanelPlacement));
             }
 
             if (e.PropertyName == nameof(AppSettings.VerticalUIPanelPlacement))
             {
-                UpdateVerticalUIPanelPlacement();
+                this.RaisePropertyChanged(nameof(LeftVerticalUIPanelPlacement));
+                this.RaisePropertyChanged(nameof(RightVerticalUIPanelPlacement));
             }
 
             if (e.PropertyName == nameof(AppSettings.HorizontalItemsPlacement))
             {
-                UpdateHorizontalItemsPlacement();
+                this.RaisePropertyChanged(nameof(LeftHorizontalItemsPlacement));
+                this.RaisePropertyChanged(nameof(RightHorizontalItemsPlacement));
             }
 
             if (e.PropertyName == nameof(AppSettings.VerticalItemsPlacement))
             {
-                UpdateVerticalItemsPlacement();
+                this.RaisePropertyChanged(nameof(TopVerticalItemsPlacement));
+                this.RaisePropertyChanged(nameof(BottomVerticalItemsPlacement));
             }
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the UIPanelDock, DynamicLayoutOrientation,
-        /// HorizontalLayoutOrientation, and VerticalLayoutOrientation properties.
-        /// </summary>
-        private void UpdateLayoutOrientation()
-        {
-            this.RaisePropertyChanged(nameof(DynamicLayoutOrientation));
-            this.RaisePropertyChanged(nameof(HorizontalLayoutOrientation));
-            this.RaisePropertyChanged(nameof(VerticalLayoutOrientation));
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the MapPanelOrientation, DynamicMapOrientation,
-        /// HorizontalMapOrientation, and VerticalMapOrientation properties.
-        /// </summary>
-        private void UpdateMapOrientation()
-        {
-            this.RaisePropertyChanged(nameof(DynamicMapOrientation));
-            this.RaisePropertyChanged(nameof(HorizontalMapOrientation));
-            this.RaisePropertyChanged(nameof(VerticalMapOrientation));
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the UIPanelDock, TopHorizontalUIPanelPlacement,
-        /// and BottomHorizontalUIPanelPlacement properties.
-        /// </summary>
-        private void UpdateHorizontalUIPanelPlacement()
-        {
-            this.RaisePropertyChanged(nameof(TopHorizontalUIPanelPlacement));
-            this.RaisePropertyChanged(nameof(BottomHorizontalUIPanelPlacement));
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the UIPanelDock, LeftVerticalUIPanelPlacement,
-        /// and RightVerticalUIPanelPlacement properties.
-        /// </summary>
-        private void UpdateVerticalUIPanelPlacement()
-        {
-            this.RaisePropertyChanged(nameof(LeftVerticalUIPanelPlacement));
-            this.RaisePropertyChanged(nameof(RightVerticalUIPanelPlacement));
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the UIPanelOrientationDock, ItemsPanelMargin,
-        /// LeftHorizontalItemsPlacement, and RightHorizontalItemsPlacement properties.
-        /// </summary>
-        private void UpdateHorizontalItemsPlacement()
-        {
-            this.RaisePropertyChanged(nameof(LeftHorizontalItemsPlacement));
-            this.RaisePropertyChanged(nameof(RightHorizontalItemsPlacement));
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the UIPanelOrientationDock, ItemsPanelMargin,
-        /// TopVerticalItemsPlacement, and BottomVerticalItemsPlacement properties.
-        /// </summary>
-        private void UpdateVerticalItemsPlacement()
-        {
-            this.RaisePropertyChanged(nameof(TopVerticalItemsPlacement));
-            this.RaisePropertyChanged(nameof(BottomVerticalItemsPlacement));
         }
 
         /// <summary>
@@ -215,7 +156,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleShowItemCountsOnMap()
         {
-            _appSettings.ShowItemCountsOnMap = !_appSettings.ShowItemCountsOnMap;
+            AppSettings.Instance.ShowItemCountsOnMap = !AppSettings.Instance.ShowItemCountsOnMap;
         }
 
         /// <summary>
@@ -228,11 +169,11 @@ namespace OpenTracker.ViewModels
         {
             if (orientationString == "Dynamic")
             {
-                _appSettings.LayoutOrientation = null;
+                AppSettings.Instance.LayoutOrientation = null;
             }
             else if (Enum.TryParse(orientationString, out Orientation orientation))
             {
-                _appSettings.LayoutOrientation = orientation;
+                AppSettings.Instance.LayoutOrientation = orientation;
             }
         }
 
@@ -246,11 +187,11 @@ namespace OpenTracker.ViewModels
         {
             if (orientationString == "Dynamic")
             {
-                _appSettings.MapOrientation = null;
+                AppSettings.Instance.MapOrientation = null;
             }
             else if (Enum.TryParse(orientationString, out Orientation orientation))
             {
-                _appSettings.MapOrientation = orientation;
+                AppSettings.Instance.MapOrientation = orientation;
             }
         }
 
@@ -264,7 +205,7 @@ namespace OpenTracker.ViewModels
         {
             if (Enum.TryParse(orientationString, out VerticalAlignment orientation))
             {
-                _appSettings.HorizontalUIPanelPlacement = orientation;
+                AppSettings.Instance.HorizontalUIPanelPlacement = orientation;
             }
         }
 
@@ -278,7 +219,7 @@ namespace OpenTracker.ViewModels
         {
             if (Enum.TryParse(orientationString, out HorizontalAlignment orientation))
             {
-                _appSettings.VerticalUIPanelPlacement = orientation;
+                AppSettings.Instance.VerticalUIPanelPlacement = orientation;
             }
         }
 
@@ -292,7 +233,7 @@ namespace OpenTracker.ViewModels
         {
             if (Enum.TryParse(orientationString, out HorizontalAlignment orientation))
             {
-                _appSettings.HorizontalItemsPlacement = orientation;
+                AppSettings.Instance.HorizontalItemsPlacement = orientation;
             }
         }
 
@@ -306,7 +247,7 @@ namespace OpenTracker.ViewModels
         {
             if (Enum.TryParse(orientationString, out VerticalAlignment orientation))
             {
-                _appSettings.VerticalItemsPlacement = orientation;
+                AppSettings.Instance.VerticalItemsPlacement = orientation;
             }
         }
     }

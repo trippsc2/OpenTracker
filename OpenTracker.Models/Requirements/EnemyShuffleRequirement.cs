@@ -1,4 +1,4 @@
-﻿using OpenTracker.Models.Enums;
+﻿using OpenTracker.Models.Modes;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements

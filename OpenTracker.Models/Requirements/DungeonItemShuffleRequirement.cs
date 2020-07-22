@@ -1,5 +1,4 @@
-﻿using OpenTracker.Models.Enums;
-using System;
+﻿using OpenTracker.Models.Modes;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
@@ -9,7 +8,6 @@ namespace OpenTracker.Models.Requirements
     /// </summary>
     internal class DungeonItemShuffleRequirement : IRequirement
     {
-        private readonly Mode _mode;
         private readonly DungeonItemShuffle _dungeonItemShuffle;
 
         public bool Met =>
@@ -34,21 +32,16 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="mode">
-        /// The mode data class.
-        /// </param>
         /// <param name="dungeonItemShuffle">
         /// The required dungeon item shuffle.
         /// </param>
-        public DungeonItemShuffleRequirement(Mode mode, DungeonItemShuffle dungeonItemShuffle)
+        public DungeonItemShuffleRequirement(DungeonItemShuffle dungeonItemShuffle)
         {
-            _mode = mode ?? throw new ArgumentNullException(nameof(mode));
             _dungeonItemShuffle = dungeonItemShuffle;
 
-            _mode.PropertyChanged += OnModeChanged;
+            Mode.Instance.PropertyChanged += OnModeChanged;
 
             UpdateAccessibility();
-
         }
 
         /// <summary>
@@ -84,7 +77,7 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         private void UpdateAccessibility()
         {
-            Accessibility = _mode.DungeonItemShuffle == _dungeonItemShuffle ?
+            Accessibility = Mode.Instance.DungeonItemShuffle == _dungeonItemShuffle ?
                 AccessibilityLevel.Normal : AccessibilityLevel.None;
         }
     }

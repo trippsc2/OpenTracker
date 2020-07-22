@@ -1,9 +1,12 @@
-﻿using OpenTracker.Models.Enums;
+﻿using OpenTracker.Models.AutoTracking;
 using System;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.Items
 {
+    /// <summary>
+    /// This is the class for creating items.
+    /// </summary>
     public static class ItemFactory
     {
         /// <summary>
@@ -58,7 +61,7 @@ namespace OpenTracker.Models.Items
                     {
                         return 2;
                     }
-                case ItemType.Aga:
+                case ItemType.Aga1:
                 case ItemType.Bow:
                 case ItemType.Boomerang:
                 case ItemType.RedBoomerang:
