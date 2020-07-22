@@ -8,9 +8,8 @@ namespace OpenTracker.Models.Modes
     /// <summary>
     /// This is the class for the game mode settings.
     /// </summary>
-    public class Mode : Singleton<Mode>, INotifyPropertyChanging, INotifyPropertyChanged
+    public class Mode : Singleton<Mode>, INotifyPropertyChanged
     {
-        public event PropertyChangingEventHandler PropertyChanging;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public bool MapCompassShuffle =>
@@ -21,8 +20,7 @@ namespace OpenTracker.Models.Modes
         public bool BigKeyShuffle =>
             DungeonItemShuffle >= DungeonItemShuffle.Keysanity;
 
-        private ItemPlacement _itemPlacement =
-            ItemPlacement.Advanced;
+        private ItemPlacement _itemPlacement = ItemPlacement.Advanced;
         public ItemPlacement ItemPlacement
         {
             get => _itemPlacement;
@@ -30,15 +28,13 @@ namespace OpenTracker.Models.Modes
             {
                 if (_itemPlacement != value)
                 {
-                    OnPropertyChanging(nameof(ItemPlacement));
                     _itemPlacement = value;
                     OnPropertyChanged(nameof(ItemPlacement));
                 }
             }
         }
 
-        private DungeonItemShuffle _dungeonItemShuffle =
-            DungeonItemShuffle.Standard;
+        private DungeonItemShuffle _dungeonItemShuffle = DungeonItemShuffle.Standard;
         public DungeonItemShuffle DungeonItemShuffle
         {
             get => _dungeonItemShuffle;
@@ -46,15 +42,13 @@ namespace OpenTracker.Models.Modes
             {
                 if (_dungeonItemShuffle != value)
                 {
-                    OnPropertyChanging(nameof(DungeonItemShuffle));
                     _dungeonItemShuffle = value;
                     OnPropertyChanged(nameof(DungeonItemShuffle));
                 }
             }
         }
 
-        private WorldState _worldState =
-            WorldState.StandardOpen;
+        private WorldState _worldState = WorldState.StandardOpen;
         public WorldState WorldState
         {
             get => _worldState;
@@ -62,7 +56,6 @@ namespace OpenTracker.Models.Modes
             {
                 if (_worldState != value)
                 {
-                    OnPropertyChanging(nameof(WorldState));
                     _worldState = value;
                     OnPropertyChanged(nameof(WorldState));
                 }
@@ -77,7 +70,6 @@ namespace OpenTracker.Models.Modes
             {
                 if (_entranceShuffle != value)
                 {
-                    OnPropertyChanging(nameof(EntranceShuffle));
                     _entranceShuffle = value;
                     OnPropertyChanged(nameof(EntranceShuffle));
                 }
@@ -92,7 +84,6 @@ namespace OpenTracker.Models.Modes
             {
                 if (_bossShuffle != value)
                 {
-                    OnPropertyChanging(nameof(BossShuffle));
                     _bossShuffle = value;
                     OnPropertyChanged(nameof(BossShuffle));
                 }
@@ -107,22 +98,10 @@ namespace OpenTracker.Models.Modes
             {
                 if (_enemyShuffle != value)
                 {
-                    OnPropertyChanging(nameof(EnemyShuffle));
                     _enemyShuffle = value;
                     OnPropertyChanged(nameof(EnemyShuffle));
                 }
             }
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanging event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changing property.
-        /// </param>
-        private void OnPropertyChanging(string propertyName)
-        {
-            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
         }
 
         /// <summary>
@@ -179,28 +158,6 @@ namespace OpenTracker.Models.Modes
             EntranceShuffle = saveData.EntranceShuffle;
             BossShuffle = saveData.BossShuffle;
             EnemyShuffle = saveData.EnemyShuffle;
-        }
-
-        /// <summary>
-        /// Returns a copy of the mode class.
-        /// </summary>
-        /// <param name="source">
-        /// The source Mode class from which to copy.
-        /// </param>
-        /// <returns>
-        /// A copy of the mode class.
-        /// </returns>
-        public Mode Copy()
-        {
-            return new Mode()
-            {
-                ItemPlacement = ItemPlacement,
-                DungeonItemShuffle = DungeonItemShuffle,
-                WorldState = WorldState,
-                EntranceShuffle = EntranceShuffle,
-                BossShuffle = BossShuffle,
-                EnemyShuffle = EnemyShuffle
-            };
         }
     }
 }

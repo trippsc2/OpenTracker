@@ -7,6 +7,7 @@ using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.AutoTracking;
 using OpenTracker.Models.BossPlacements;
+using OpenTracker.Models.Connections;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;

@@ -6,7 +6,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.PinnedLocationControl"
              >
-	<Border Classes="ControlBorder Location">
+	<Border Classes="ControlBorder Location" Margin="1">
 		<Grid RowDefinitions="Auto, Auto, Auto" Margin="4">
 
 			<Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" HorizontalAlignment="Stretch"

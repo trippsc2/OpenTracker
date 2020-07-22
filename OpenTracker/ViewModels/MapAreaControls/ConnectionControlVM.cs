@@ -2,6 +2,7 @@
 using Avalonia.Layout;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
+using OpenTracker.Models.Connections;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.UndoRedo;
@@ -28,26 +29,26 @@ namespace OpenTracker.ViewModels.MapAreaControls
         public bool Visible =>
             Mode.Instance.EntranceShuffle;
 
-        public (MapLocation, MapLocation) Connection { get; }
+        public Connection Connection { get; }
 
         public Point Start =>
             _mapArea.MapPanelOrientation switch
             {
-                Orientation.Vertical => Connection.Item1.Map == MapID.DarkWorld ?
-                    new Point(Connection.Item1.X + 23, Connection.Item1.Y + 2046) :
-                    new Point(Connection.Item1.X + 23, Connection.Item1.Y + 13),
-                _ => Connection.Item1.Map == MapID.DarkWorld ?
-                    new Point(Connection.Item1.X + 2046, Connection.Item1.Y + 23) :
-                    new Point(Connection.Item1.X + 13, Connection.Item1.Y + 23)
+                Orientation.Vertical => Connection.Location1.Map == MapID.DarkWorld ?
+                    new Point(Connection.Location1.X + 23, Connection.Location1.Y + 2046) :
+                    new Point(Connection.Location1.X + 23, Connection.Location1.Y + 13),
+                _ => Connection.Location1.Map == MapID.DarkWorld ?
+                    new Point(Connection.Location1.X + 2046, Connection.Location1.Y + 23) :
+                    new Point(Connection.Location1.X + 13, Connection.Location1.Y + 23)
             };
         public Point End => _mapArea.MapPanelOrientation switch
         {
-            Orientation.Vertical => Connection.Item2.Map == MapID.DarkWorld ?
-                new Point(Connection.Item2.X + 23, Connection.Item2.Y + 2046) :
-                new Point(Connection.Item2.X + 23, Connection.Item2.Y + 13),
-            _ => Connection.Item2.Map == MapID.DarkWorld ?
-                new Point(Connection.Item2.X + 2046, Connection.Item2.Y + 23) :
-                new Point(Connection.Item2.X + 13, Connection.Item2.Y + 23)
+            Orientation.Vertical => Connection.Location2.Map == MapID.DarkWorld ?
+                new Point(Connection.Location2.X + 23, Connection.Location2.Y + 2046) :
+                new Point(Connection.Location2.X + 23, Connection.Location2.Y + 13),
+            _ => Connection.Location2.Map == MapID.DarkWorld ?
+                new Point(Connection.Location2.X + 2046, Connection.Location2.Y + 23) :
+                new Point(Connection.Location2.X + 13, Connection.Location2.Y + 23)
         };
         public string Color =>
             Highlighted ? "#ffffffff" : AppSettings.Instance.ConnectorColor;
@@ -61,9 +62,9 @@ namespace OpenTracker.ViewModels.MapAreaControls
         /// <param name="mapArea">
         /// The map area ViewModel parent class.
         /// </param>
-        public ConnectionControlVM((MapLocation, MapLocation) connection, MapAreaControlVM mapArea)
+        public ConnectionControlVM(Connection connection, MapAreaControlVM mapArea)
         {
-            Connection = connection;
+            Connection = connection ?? throw new ArgumentNullException(nameof(connection));
             _mapArea = mapArea ?? throw new ArgumentNullException(nameof(mapArea));
 
             PropertyChanged += OnPropertyChanged;

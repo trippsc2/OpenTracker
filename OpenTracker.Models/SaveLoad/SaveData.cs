@@ -1,9 +1,8 @@
 ﻿using OpenTracker.Models.BossPlacements;
+using OpenTracker.Models.Connections;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.PrizePlacements;
-using OpenTracker.Models.Sections;
-using System;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.SaveLoad

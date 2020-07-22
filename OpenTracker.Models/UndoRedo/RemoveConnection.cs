@@ -1,4 +1,5 @@
-﻿using OpenTracker.Models.Locations;
+﻿using OpenTracker.Models.Connections;
+using OpenTracker.Models.Locations;
 
 namespace OpenTracker.Models.UndoRedo
 {
@@ -8,7 +9,7 @@ namespace OpenTracker.Models.UndoRedo
     /// </summary>
     public class RemoveConnection : IUndoable
     {
-        private readonly (MapLocation, MapLocation) _connection;
+        private readonly Connection _connection;
 
         /// <summary>
         /// Constructor
@@ -16,7 +17,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="connection">
         /// The connection tuple to be removed.
         /// </param>
-        public RemoveConnection((MapLocation, MapLocation) connection)
+        public RemoveConnection(Connection connection)
         {
             _connection = connection;
         }

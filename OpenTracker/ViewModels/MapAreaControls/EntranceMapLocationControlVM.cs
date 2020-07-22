@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Layout;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
+using OpenTracker.Models.Connections;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Sections;
@@ -24,6 +25,7 @@ namespace OpenTracker.ViewModels.MapAreaControls
         private readonly MapLocation _mapLocation;
         private readonly MapAreaControlVM _mapArea;
         private readonly ObservableCollection<PinnedLocationControlVM> _pinnedLocations;
+        private PinnedLocationControlVM _pinnedLocation;
 
         public Dock MarkingDock { get; }
 
@@ -295,26 +297,13 @@ namespace OpenTracker.ViewModels.MapAreaControls
         /// </summary>
         public void OnDoubleClick()
         {
-            PinnedLocationControlVM existingPinnedLocation = null;
-
-            foreach (PinnedLocationControlVM pinnedLocation in _pinnedLocations)
+            if (_pinnedLocation == null)
             {
-                if (pinnedLocation.Location == _mapLocation.Location)
-                {
-                    existingPinnedLocation = pinnedLocation;
-                }
+                _pinnedLocation = PinnedLocationControlVMFactory.GetLocationControlVM(
+                    _mapLocation.Location, _pinnedLocations);
             }
 
-            if (existingPinnedLocation == null)
-            {
-                UndoRedoManager.Instance.Execute(new PinLocation(
-                    _pinnedLocations, LocationControlVMFactory.GetLocationControlVM(
-                        _mapLocation.Location, _pinnedLocations)));
-            }
-            else if (_pinnedLocations[0] != existingPinnedLocation)
-            {
-                UndoRedoManager.Instance.Execute(new PinLocation(_pinnedLocations, existingPinnedLocation));
-            }
+            UndoRedoManager.Instance.Execute(new PinLocation(_pinnedLocation, _pinnedLocations));
         }
 
         /// <summary>
@@ -348,7 +337,8 @@ namespace OpenTracker.ViewModels.MapAreaControls
 
             if (location is EntranceMapLocationControlVM entrance)
             {
-                UndoRedoManager.Instance.Execute(new AddConnection((entrance._mapLocation, _mapLocation)));
+                UndoRedoManager.Instance.Execute(new AddConnection(new Connection(
+                    entrance._mapLocation, _mapLocation)));
             }
         }
 

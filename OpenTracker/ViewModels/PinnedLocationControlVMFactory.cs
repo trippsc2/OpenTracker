@@ -8,7 +8,7 @@ namespace OpenTracker.ViewModels
     /// <summary>
     /// This is the class for creating pinned location control ViewModel classes.
     /// </summary>
-    public static class LocationControlVMFactory
+    public static class PinnedLocationControlVMFactory
     {
         /// <summary>
         /// Returns an observable collection of section control ViewModel instances for the

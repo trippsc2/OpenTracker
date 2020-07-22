@@ -1,4 +1,5 @@
-﻿using OpenTracker.Models.Locations;
+﻿using OpenTracker.Models.Connections;
+using System;
 
 namespace OpenTracker.Models.UndoRedo
 {
@@ -8,7 +9,7 @@ namespace OpenTracker.Models.UndoRedo
     /// </summary>
     public class AddConnection : IUndoable
     {
-        private readonly (MapLocation, MapLocation) _connection;
+        private readonly Connection _connection;
 
         /// <summary>
         /// Constructor
@@ -16,9 +17,9 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="connection">
         /// A tuple of the two map locations that are being collected.
         /// </param>
-        public AddConnection((MapLocation, MapLocation) connection)
+        public AddConnection(Connection connection)
         {
-            _connection = connection;
+            _connection = connection ?? throw new ArgumentNullException(nameof(connection));
         }
 
         /// <summary>
@@ -29,7 +30,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </returns>
         public bool CanExecute()
         {
-            return true;
+            return !ConnectionCollection.Instance.Contains(_connection);
         }
 
         /// <summary>

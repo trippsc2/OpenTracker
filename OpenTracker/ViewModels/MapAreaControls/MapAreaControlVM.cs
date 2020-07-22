@@ -1,5 +1,6 @@
 ﻿using Avalonia.Layout;
 using OpenTracker.Models;
+using OpenTracker.Models.Connections;
 using OpenTracker.Models.Locations;
 using ReactiveUI;
 using System;
@@ -86,7 +87,7 @@ namespace OpenTracker.ViewModels.MapAreaControls
             {
                 foreach (object item in e.NewItems)
                 {
-                    Connectors.Add(new ConnectionControlVM(((MapLocation, MapLocation))item, this));
+                    Connectors.Add(new ConnectionControlVM((Connection)item, this));
                 }
             }
 
@@ -94,7 +95,7 @@ namespace OpenTracker.ViewModels.MapAreaControls
             {
                 foreach (object item in e.OldItems)
                 {
-                    (MapLocation, MapLocation) connection = ((MapLocation, MapLocation))item;
+                    Connection connection = (Connection)item;
 
                     foreach (ConnectionControlVM connector in Connectors)
                     {
@@ -111,8 +112,7 @@ namespace OpenTracker.ViewModels.MapAreaControls
             {
                 Connectors.Clear();
 
-                foreach ((MapLocation, MapLocation) connection in
-                    (ObservableCollection<(MapLocation, MapLocation)>)sender)
+                foreach (Connection connection in (ObservableCollection<Connection>)sender)
                 {
                     Connectors.Add(new ConnectionControlVM(connection, this));
                 }

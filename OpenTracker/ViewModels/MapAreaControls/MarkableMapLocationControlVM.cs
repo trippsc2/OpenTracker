@@ -27,6 +27,7 @@ namespace OpenTracker.ViewModels.MapAreaControls
         private readonly ObservableCollection<PinnedLocationControlVM> _pinnedLocations;
         private readonly Dock _entranceMarkingDock;
         private readonly Dock _nonEntranceMarkingDock;
+        private PinnedLocationControlVM _pinnedLocation;
 
         private Dock _markingDock;
         public Dock MarkingDock
@@ -440,26 +441,13 @@ namespace OpenTracker.ViewModels.MapAreaControls
         /// </summary>
         public void OnDoubleClick()
         {
-            PinnedLocationControlVM existingPinnedLocation = null;
-
-            foreach (PinnedLocationControlVM pinnedLocation in _pinnedLocations)
+            if (_pinnedLocation == null)
             {
-                if (pinnedLocation.Location == _mapLocation.Location)
-                {
-                    existingPinnedLocation = pinnedLocation;
-                }
+                _pinnedLocation = PinnedLocationControlVMFactory.GetLocationControlVM(
+                    _mapLocation.Location, _pinnedLocations);
             }
 
-            if (existingPinnedLocation == null)
-            {
-                UndoRedoManager.Instance.Execute(new PinLocation(
-                    _pinnedLocations, LocationControlVMFactory.GetLocationControlVM(
-                        _mapLocation.Location, _pinnedLocations)));
-            }
-            else if (_pinnedLocations[0] != existingPinnedLocation)
-            {
-                UndoRedoManager.Instance.Execute(new PinLocation(_pinnedLocations, existingPinnedLocation));
-            }
+            UndoRedoManager.Instance.Execute(new PinLocation(_pinnedLocation, _pinnedLocations));
         }
 
         /// <summary>
