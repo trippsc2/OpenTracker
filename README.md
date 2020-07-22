@@ -149,4 +149,4 @@ This project is licensed under the MIT license.
 - KatDevsGames - Thank you for developing ConnectorLib.  It was a great reference for my Autotracker connector code.
 - EmoSaru - Thank you for creating EmoTracker and providing inspiration for this app.
 - Avalonia team - Thank you for delivering a cross-platform desktop app framework for .NET programmers.
-- Wiesław Šoltés - Thank you for creating the Avalonia theme-related libraries and theme editor app.
+- Wiesław Šoltés - Thank you for creating all of the various Avalonia extension libraries.  Your work has been extremely helpful to this project!
