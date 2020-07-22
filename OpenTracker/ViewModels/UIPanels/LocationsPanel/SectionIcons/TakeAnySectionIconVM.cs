@@ -1,30 +1,53 @@
 ﻿using OpenTracker.Interfaces;
+using OpenTracker.Models;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
 
-namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.PinnedLocations.Sections.SectionIcons
+namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
 {
     /// <summary>
-    /// This is the ViewModel of the section icon control representing an entrance.
+    /// This is the ViewModel of the section icon control representing a take any section.
     /// </summary>
-    public class EntranceSectionIconVM : SectionIconVMBase, IClickHandler
+    public class TakeAnySectionIconVM : SectionIconVMBase, IClickHandler
     {
-        private readonly IEntranceSection _section;
+        private readonly ITakeAnySection _section;
 
-        public string ImageSource =>
-            _section.IsAvailable() ? "avares://OpenTracker/Assets/Images/door0.png" :
-            "avares://OpenTracker/Assets/Images/door1.png";
+        public string ImageSource
+        {
+            get
+            {
+                if (_section.IsAvailable())
+                {
+                    switch (_section.Accessibility)
+                    {
+                        case AccessibilityLevel.None:
+                        case AccessibilityLevel.Inspect:
+                            {
+                                return "avares://OpenTracker/Assets/Images/chest0.png";
+                            }
+                        case AccessibilityLevel.Partial:
+                        case AccessibilityLevel.SequenceBreak:
+                        case AccessibilityLevel.Normal:
+                            {
+                                return "avares://OpenTracker/Assets/Images/chest1.png";
+                            }
+                    }
+                }
+
+                return "avares://OpenTracker/Assets/Images/chest2.png";
+            }
+        }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="section">
-        /// The entrance section to be represented.
+        /// The take any section to be represented.
         /// </param>
-        public EntranceSectionIconVM(IEntranceSection section)
+        public TakeAnySectionIconVM(ITakeAnySection section)
         {
             _section = section ?? throw new ArgumentNullException(nameof(section));
 
@@ -32,7 +55,7 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.PinnedLocations.Section
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IBossSection interface.
+        /// Subscribes to the PropertyChanged event on the ISection interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.

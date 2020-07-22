@@ -4,7 +4,7 @@ using OpenTracker.Models;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.UndoRedo;
-using OpenTracker.ViewModels.UIPanels.LocationsPanel.PinnedLocations;
+using OpenTracker.ViewModels.UIPanels.LocationsPanel;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;

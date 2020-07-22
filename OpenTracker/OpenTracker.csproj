@@ -87,7 +87,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\UIPanels\LocationsPanel\PinnedLocations\PinnedLocation.xaml">
+    <EmbeddedResource Include="Views\UIPanels\LocationsPanel\PinnedLocation.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
@@ -134,7 +134,7 @@
     <Compile Update="Views\ModeSettings.xaml.cs">
       <DependentUpon>ModeSettings.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\UIPanels\LocationsPanel\PinnedLocations\Sections\Section.axaml.cs">
+    <Compile Update="Views\UIPanels\LocationsPanel\Section.axaml.cs">
       <DependentUpon>Section.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\UIPanels\ItemsPanel\ItemsPanelControl.xaml.cs">
@@ -164,22 +164,22 @@
     <Compile Update="Views\MapArea\MapLocations\EntranceMapLocation.xaml.cs">
       <DependentUpon>EntranceMapLocation.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\UIPanels\LocationsPanel\PinnedLocations\Sections\SectionIcons\BossSectionIcon.axaml.cs">
+    <Compile Update="Views\UIPanels\LocationsPanel\SectionIcons\BossSectionIcon.axaml.cs">
       <DependentUpon>BossSectionIcon.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\UIPanels\LocationsPanel\PinnedLocations\Sections\SectionIcons\EntranceSectionIcon.axaml.cs">
+    <Compile Update="Views\UIPanels\LocationsPanel\SectionIcons\EntranceSectionIcon.axaml.cs">
       <DependentUpon>EntranceSectionIcon.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\UIPanels\LocationsPanel\PinnedLocations\Sections\SectionIcons\ItemSectionIcon.axaml.cs">
+    <Compile Update="Views\UIPanels\LocationsPanel\SectionIcons\ItemSectionIcon.axaml.cs">
       <DependentUpon>ItemSectionIcon.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\UIPanels\LocationsPanel\PinnedLocations\Sections\SectionIcons\MarkingSectionIcon.axaml.cs">
+    <Compile Update="Views\UIPanels\LocationsPanel\SectionIcons\MarkingSectionIcon.axaml.cs">
       <DependentUpon>MarkingSectionIcon.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\UIPanels\LocationsPanel\PinnedLocations\Sections\SectionIcons\PrizeSectionIcon.axaml.cs">
+    <Compile Update="Views\UIPanels\LocationsPanel\SectionIcons\PrizeSectionIcon.axaml.cs">
       <DependentUpon>PrizeSectionIcon.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\UIPanels\LocationsPanel\PinnedLocations\Sections\SectionIcons\TakeAnySectionIcon.axaml.cs">
+    <Compile Update="Views\UIPanels\LocationsPanel\SectionIcons\TakeAnySectionIcon.axaml.cs">
       <DependentUpon>TakeAnySectionIcon.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\UIPanels\ItemsPanel\SmallItems\BigKeySmallItem.xaml.cs">
@@ -197,7 +197,7 @@
     <Compile Update="Views\MessageBoxDialog.xaml.cs">
       <DependentUpon>MessageBoxDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\UIPanels\LocationsPanel\PinnedLocations\PinnedLocation.xaml.cs">
+    <Compile Update="Views\UIPanels\LocationsPanel\PinnedLocation.xaml.cs">
       <DependentUpon>PinnedLocation.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\MarkingSelect.xaml.cs">

@@ -2,7 +2,7 @@
 using Avalonia.Controls;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Sections;
-using OpenTracker.ViewModels.UIPanels.LocationsPanel.PinnedLocations;
+using OpenTracker.ViewModels.UIPanels.LocationsPanel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

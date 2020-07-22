@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
-using OpenTracker.ViewModels.UIPanels.LocationsPanel.PinnedLocations;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;

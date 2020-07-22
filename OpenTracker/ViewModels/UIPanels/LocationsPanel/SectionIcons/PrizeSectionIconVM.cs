@@ -1,64 +1,59 @@
 ﻿using OpenTracker.Interfaces;
-using OpenTracker.Models;
+using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
-using System.Globalization;
+using System.Text;
 
-namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.PinnedLocations.Sections.SectionIcons
+namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
 {
     /// <summary>
-    /// This is the ViewModel of the section icon control representing an item section.
+    /// This is the ViewModel of the section icon control representing a prize section.
     /// </summary>
-    public class ItemSectionIconVM : SectionIconVMBase, IClickHandler
+    public class PrizeSectionIconVM : SectionIconVMBase, IClickHandler
     {
-        private readonly IItemSection _section;
+        private readonly IPrizeSection _section;
 
         public string ImageSource
         {
             get
             {
-                if (_section.IsAvailable())
+                var sb = new StringBuilder();
+                sb.Append("avares://OpenTracker/Assets/Images/Prizes/");
+
+                if (_section.PrizePlacement.Prize == null)
                 {
-                    switch (_section.Accessibility)
-                    {
-                        case AccessibilityLevel.None:
-                        case AccessibilityLevel.Inspect:
-                            {
-                                return "avares://OpenTracker/Assets/Images/chest0.png";
-                            }
-                        case AccessibilityLevel.Partial:
-                        case AccessibilityLevel.SequenceBreak:
-                        case AccessibilityLevel.Normal:
-                            {
-                                return "avares://OpenTracker/Assets/Images/chest1.png";
-                            }
-                    }
+                    sb.Append("unknown");
+                }
+                else
+                {
+                    sb.Append(_section.PrizePlacement.Prize.Type.ToString().ToLowerInvariant());
                 }
 
-                return "avares://OpenTracker/Assets/Images/chest2.png";
+                sb.Append(_section.IsAvailable() ? "0.png" : "1.png");
+
+                return sb.ToString();
             }
         }
-        public string AvailableCount =>
-            _section.Available.ToString(CultureInfo.InvariantCulture);
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="section">
-        /// The item section to be represented.
+        /// <param name="prizeSection">
+        /// The prize section to be presented.
         /// </param>
-        public ItemSectionIconVM(IItemSection section)
+        public PrizeSectionIconVM(IPrizeSection prizeSection)
         {
-            _section = section ?? throw new ArgumentNullException(nameof(section));
+            _section = prizeSection ?? throw new ArgumentNullException(nameof(prizeSection));
 
             _section.PropertyChanged += OnSectionChanged;
+            _section.PrizePlacement.PropertyChanged += OnPrizeChanged; 
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IItemSection interface.
+        /// Subscribes to the PropertyChanged event on the ISection interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -68,15 +63,26 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.PinnedLocations.Section
         /// </param>
         private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ISection.Accessibility))
-            {
-                UpdateImage();
-            }
-
             if (e.PropertyName == nameof(ISection.Available))
             {
                 UpdateImage();
-                this.RaisePropertyChanged(nameof(AvailableCount));
+            }
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IPrizePlacement interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnPrizeChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IPrizePlacement.Prize))
+            {
+                UpdateImage();
             }
         }
 
@@ -100,7 +106,7 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.PinnedLocations.Section
         }
 
         /// <summary>
-        /// Handles right click and uncollects the section.
+        /// Handles right clicks and uncollects the section.
         /// </summary>
         /// <param name="force">
         /// A boolean representing whether the logic should be ignored.

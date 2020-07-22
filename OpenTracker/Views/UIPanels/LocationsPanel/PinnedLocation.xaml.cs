@@ -3,14 +3,14 @@ using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using OpenTracker.Interfaces;
 
-namespace OpenTracker.Views.UIPanels.LocationsPanel.PinnedLocations.Sections.SectionIcons
+namespace OpenTracker.Views.UIPanels.LocationsPanel
 {
-    public class TakeAnySectionIcon : UserControl
+    public class PinnedLocation : UserControl
     {
-        private IClickHandler ViewModelClickHandler =>
+        public IClickHandler ViewModelClickHandler =>
             DataContext as IClickHandler;
 
-        public TakeAnySectionIcon()
+        public PinnedLocation()
         {
             InitializeComponent();
         }
@@ -24,12 +24,7 @@ namespace OpenTracker.Views.UIPanels.LocationsPanel.PinnedLocations.Sections.Sec
         {
             if (e.InitialPressMouseButton == MouseButton.Left)
             {
-                ViewModelClickHandler.OnLeftClick(e.KeyModifiers == KeyModifiers.Control);
-            }
-
-            if (e.InitialPressMouseButton == MouseButton.Right)
-            {
-                ViewModelClickHandler.OnRightClick(e.KeyModifiers == KeyModifiers.Control);
+                ViewModelClickHandler.OnLeftClick();
             }
         }
     }

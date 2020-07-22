@@ -8,7 +8,7 @@ using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo;
-using OpenTracker.ViewModels.UIPanels.LocationsPanel.PinnedLocations;
+using OpenTracker.ViewModels.UIPanels.LocationsPanel;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;

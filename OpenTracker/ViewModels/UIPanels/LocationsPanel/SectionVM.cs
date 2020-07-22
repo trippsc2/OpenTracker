@@ -2,13 +2,13 @@
 using OpenTracker.Models;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Sections;
-using OpenTracker.ViewModels.UIPanels.LocationsPanel.PinnedLocations.Sections.SectionIcons;
+using OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.PinnedLocations.Sections
+namespace OpenTracker.ViewModels.UIPanels.LocationsPanel
 {
     /// <summary>
     /// This is the ViewModel of the section control.

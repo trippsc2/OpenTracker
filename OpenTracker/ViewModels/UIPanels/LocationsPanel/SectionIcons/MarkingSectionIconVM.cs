@@ -9,7 +9,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Reactive;
 
-namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.PinnedLocations.Sections.SectionIcons
+namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
 {
     /// <summary>
     /// This is the ViewModel of the section icon control representing a section marking.

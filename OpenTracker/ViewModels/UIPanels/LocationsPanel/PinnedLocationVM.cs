@@ -1,11 +1,10 @@
 ﻿using OpenTracker.Interfaces;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.UndoRedo;
-using OpenTracker.ViewModels.UIPanels.LocationsPanel.PinnedLocations.Sections;
 using System;
 using System.Collections.ObjectModel;
 
-namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.PinnedLocations
+namespace OpenTracker.ViewModels.UIPanels.LocationsPanel
 {
     /// <summary>
     /// This is the ViewModel for the pinned location control.

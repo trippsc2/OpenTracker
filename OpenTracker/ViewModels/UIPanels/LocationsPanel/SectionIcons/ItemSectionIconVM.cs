@@ -5,15 +5,16 @@ using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
+using System.Globalization;
 
-namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.PinnedLocations.Sections.SectionIcons
+namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
 {
     /// <summary>
-    /// This is the ViewModel of the section icon control representing a take any section.
+    /// This is the ViewModel of the section icon control representing an item section.
     /// </summary>
-    public class TakeAnySectionIconVM : SectionIconVMBase, IClickHandler
+    public class ItemSectionIconVM : SectionIconVMBase, IClickHandler
     {
-        private readonly ITakeAnySection _section;
+        private readonly IItemSection _section;
 
         public string ImageSource
         {
@@ -40,14 +41,16 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.PinnedLocations.Section
                 return "avares://OpenTracker/Assets/Images/chest2.png";
             }
         }
+        public string AvailableCount =>
+            _section.Available.ToString(CultureInfo.InvariantCulture);
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="section">
-        /// The take any section to be represented.
+        /// The item section to be represented.
         /// </param>
-        public TakeAnySectionIconVM(ITakeAnySection section)
+        public ItemSectionIconVM(IItemSection section)
         {
             _section = section ?? throw new ArgumentNullException(nameof(section));
 
@@ -55,7 +58,7 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.PinnedLocations.Section
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the ISection interface.
+        /// Subscribes to the PropertyChanged event on the IItemSection interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -65,11 +68,24 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.PinnedLocations.Section
         /// </param>
         private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ISection.Accessibility) ||
-                e.PropertyName == nameof(ISection.Available))
+            if (e.PropertyName == nameof(ISection.Accessibility))
             {
-                this.RaisePropertyChanged(nameof(ImageSource));
+                UpdateImage();
             }
+
+            if (e.PropertyName == nameof(ISection.Available))
+            {
+                UpdateImage();
+                this.RaisePropertyChanged(nameof(AvailableCount));
+            }
+        }
+
+        /// <summary>
+        /// Raises the PropertyChanged event for the ImageSource property.
+        /// </summary>
+        private void UpdateImage()
+        {
+            this.RaisePropertyChanged(nameof(ImageSource));
         }
 
         /// <summary>
@@ -84,7 +100,7 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.PinnedLocations.Section
         }
 
         /// <summary>
-        /// Handles right clicks and uncollects the section.
+        /// Handles right click and uncollects the section.
         /// </summary>
         /// <param name="force">
         /// A boolean representing whether the logic should be ignored.

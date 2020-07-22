@@ -3,14 +3,14 @@ using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using OpenTracker.Interfaces;
 
-namespace OpenTracker.Views.UIPanels.LocationsPanel.PinnedLocations.Sections.SectionIcons
+namespace OpenTracker.Views.UIPanels.LocationsPanel.SectionIcons
 {
-    public class MarkingSectionIcon : UserControl
+    public class EntranceSectionIcon : UserControl
     {
         private IClickHandler ViewModelClickHandler =>
             DataContext as IClickHandler;
 
-        public MarkingSectionIcon()
+        public EntranceSectionIcon()
         {
             InitializeComponent();
         }

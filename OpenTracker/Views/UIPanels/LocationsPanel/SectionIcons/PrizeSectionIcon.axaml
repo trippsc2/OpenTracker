@@ -7,7 +7,7 @@
              xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OpenTracker.Views.UIPanels.LocationsPanel.PinnedLocations.Sections.SectionIcons.PrizeSectionIcon">
+             x:Class="OpenTracker.Views.UIPanels.LocationsPanel.SectionIcons.PrizeSectionIcon">
 
   <UserControl.Resources>
     <vc:BitmapValueConverter x:Key="BitmapValueConverter" />

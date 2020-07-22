@@ -1,11 +1,11 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace OpenTracker.Views.UIPanels.LocationsPanel.PinnedLocations.Sections
+namespace OpenTracker.Views.UIPanels.LocationsPanel.SectionIcons
 {
-    public class Section : UserControl
+    public class BossSectionIcon : UserControl
     {
-        public Section()
+        public BossSectionIcon()
         {
             InitializeComponent();
         }
