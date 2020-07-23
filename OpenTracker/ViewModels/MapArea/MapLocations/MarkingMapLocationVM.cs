@@ -1,13 +1,11 @@
 ﻿using OpenTracker.Interfaces;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Sections;
-using OpenTracker.Models.UndoRedo;
+using OpenTracker.ViewModels.MarkingSelect;
 using ReactiveUI;
 using System;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
-using System.Reactive;
 
 namespace OpenTracker.ViewModels.MapArea.MapLocations
 {
@@ -138,19 +136,7 @@ namespace OpenTracker.ViewModels.MapArea.MapLocations
             }
         }
 
-        private bool _markingPopupOpen;
-        public bool MarkingPopupOpen
-        {
-            get => _markingPopupOpen;
-            set => this.RaiseAndSetIfChanged(ref _markingPopupOpen, value);
-        }
-
-        public ObservableCollection<MarkingSelectVM> MarkingSelect { get; }
-        public double MarkingSelectWidth { get; }
-        public double MarkingSelectHeight { get; }
-
-        public ReactiveCommand<MarkingType?, Unit> ChangeMarkingCommand { get; }
-        public ReactiveCommand<Unit, Unit> ClearVisibleItemCommand { get; }
+        public MarkingSelectPopupVM MarkingSelect { get; }
 
         /// <summary>
         /// Constructor
@@ -158,27 +144,11 @@ namespace OpenTracker.ViewModels.MapArea.MapLocations
         /// <param name="section">
         /// The section marking to be represented.
         /// </param>
-        /// <param name="markingSelect">
-        /// The observable collection of marking select control ViewModel instances.
-        /// </param>
-        /// <param name="markingSelectWidth">
-        /// A floating point number representing the width of the marking select popup.
-        /// </param>
-        /// <param name="markingSelectHeight">
-        /// A floating point number representing the height of the marking select popup.
-        /// </param>
-        public MarkingMapLocationVM(
-            IMarkableSection section, ObservableCollection<MarkingSelectVM> markingSelect,
-            double markingSelectWidth, double markingSelectHeight)
+        public MarkingMapLocationVM(IMarkableSection section)
         {
             _section = section ?? throw new ArgumentNullException(nameof(section));
 
-            MarkingSelect = markingSelect ?? throw new ArgumentNullException(nameof(markingSelect));
-            MarkingSelectWidth = markingSelectWidth;
-            MarkingSelectHeight = markingSelectHeight;
-
-            ChangeMarkingCommand = ReactiveCommand.Create<MarkingType?>(ChangeMarking);
-            ClearVisibleItemCommand = ReactiveCommand.Create(ClearMarking);
+            MarkingSelect = MarkingSelectVMFactory.GetMarkingSelectPopupVM(section);
 
             _section.PropertyChanging += OnSectionChanging;
             _section.PropertyChanged += OnSectionChanged;
@@ -291,32 +261,6 @@ namespace OpenTracker.ViewModels.MapArea.MapLocations
         }
 
         /// <summary>
-        /// Clears the marking of the section.
-        /// </summary>
-        private void ClearMarking()
-        {
-            UndoRedoManager.Instance.Execute(new MarkSection(_section, null));
-            MarkingPopupOpen = false;
-        }
-
-        /// <summary>
-        /// Changes the marking of the section to the specified marking.
-        /// </summary>
-        /// <param name="marking">
-        /// The marking to be set.
-        /// </param>
-        public void ChangeMarking(MarkingType? marking)
-        {
-            if (marking == null)
-            {
-                return;
-            }
-
-            UndoRedoManager.Instance.Execute(new MarkSection(_section, marking));
-            MarkingPopupOpen = false;
-        }
-
-        /// <summary>
         /// Handles left clicks and opens the marking select popup.
         /// </summary>
         /// <param name="force">
@@ -324,7 +268,7 @@ namespace OpenTracker.ViewModels.MapArea.MapLocations
         /// </param>
         public void OnLeftClick(bool force)
         {
-            MarkingPopupOpen = true;
+            MarkingSelect.PopupOpen = true;
         }
 
         /// <summary>

@@ -15,54 +15,6 @@ namespace OpenTracker.ViewModels.MapArea.MapLocations
     internal static class MapLocationVMFactory
     {
         /// <summary>
-        /// Returns an observable collection of marking select control ViewModel instances for
-        /// the supplied section.
-        /// </summary>
-        /// <param name="section">
-        /// The section.
-        /// </param>
-        /// <returns>
-        /// An observable collection of marking select control ViewModel instances.
-        /// </returns>
-        private static ObservableCollection<MarkingSelectVM> GetMarkingSelectControlVMs(
-            IMarkableSection section)
-        {
-            return section is IEntranceSection ?
-                MainWindowVM.EntranceMarkingSelect :
-                MainWindowVM.NonEntranceMarkingSelect;
-        }
-
-        /// <summary>
-        /// Returns a number representing the width of the marking select popup for the specified
-        /// section.
-        /// </summary>
-        /// <param name="section">
-        /// The section.
-        /// </param>
-        /// <returns>
-        /// A floating point number representing the width of the marking select popup.
-        /// </returns>
-        private static double GetMarkingSelectWidth(IMarkableSection section)
-        {
-            return section is IEntranceSection ? 272.0 : 238.0;
-        }
-
-        /// <summary>
-        /// Returns a number representing the height of the marking select popup for the specified
-        /// section.
-        /// </summary>
-        /// <param name="section">
-        /// The section.
-        /// </param>
-        /// <returns>
-        /// A floating point number representing the height of the marking select popup.
-        /// </returns>
-        private static double GetMarkingSelectHeight(IMarkableSection section)
-        {
-            return section is IEntranceSection ? 280.0 : 200.0;
-        }
-
-        /// <summary>
         /// Returns a new marking map location control ViewModel instance for the speicifed
         /// section.
         /// </summary>
@@ -74,9 +26,7 @@ namespace OpenTracker.ViewModels.MapArea.MapLocations
         /// </returns>
         private static MarkingMapLocationVM GetMapLocationMarkingControlVM(IMarkableSection section)
         {
-            return new MarkingMapLocationVM(
-                section, GetMarkingSelectControlVMs(section), GetMarkingSelectWidth(section),
-                GetMarkingSelectHeight(section));
+            return new MarkingMapLocationVM(section);
         }
 
         /// <summary>

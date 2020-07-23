@@ -5,12 +5,12 @@ using System;
 using System.ComponentModel;
 using System.Globalization;
 
-namespace OpenTracker.ViewModels
+namespace OpenTracker.ViewModels.MarkingSelect
 {
     /// <summary>
-    /// This is the ViewModel for the marking select control.
+    /// This is the ViewModel for the marking select button control.
     /// </summary>
-    public class MarkingSelectVM : ViewModelBase
+    public class MarkingSelectButtonVM : ViewModelBase
     {
         public MarkingType? Marking { get; }
 
@@ -136,9 +136,9 @@ namespace OpenTracker.ViewModels
         /// Constructor
         /// </summary>
         /// <param name="marking">
-        /// The marking to be represented by this option.
+        /// The marking to be represented by this button.
         /// </param>
-        public MarkingSelectVM(MarkingType? marking)
+        public MarkingSelectButtonVM(MarkingType? marking)
         {
             Marking = marking;
 

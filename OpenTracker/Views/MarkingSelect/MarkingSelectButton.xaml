@@ -4,16 +4,16 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OpenTracker.Views.MarkingSelect">
+             x:Class="OpenTracker.Views.MarkingSelect.MarkingSelectButton">
 	
 	<UserControl.Resources>
 		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />
 	</UserControl.Resources>
 
-  <Button Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},
-          Path=DataContext.ChangeMarkingCommand}" Background="{DynamicResource ThemeBackgroundBrush}"
-          BorderThickness="0" CommandParameter="{Binding Path=Marking}">
-    <Image Source="{Binding Path=ImageSource, Converter={StaticResource BitmapValueConverter}}"
+  <Button Command="{Binding $parent[ItemsControl].DataContext.ChangeMarkingCommand}"
+          Background="{DynamicResource ThemeBackgroundBrush}"
+          BorderThickness="0" CommandParameter="{Binding Marking}">
+    <Image Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}"
            Height="32" Width="32" />
   </Button>
 

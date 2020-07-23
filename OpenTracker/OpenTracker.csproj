@@ -36,7 +36,7 @@
     <AvaloniaResource Remove="Views\ConnectorControl.xaml" />
     <AvaloniaResource Remove="Views\DungeonChestControl.xaml" />
     <AvaloniaResource Remove="Views\MapEntranceControl.xaml" />
-    <AvaloniaResource Remove="Views\MarkingSelect.xaml" />
+    <AvaloniaResource Remove="Views\MarkingSelectButton.xaml" />
     <AvaloniaResource Remove="Views\MessageBoxDialog.xaml" />
     <AvaloniaResource Remove="Views\ModeSettings.xaml" />
     <AvaloniaResource Remove="Views\PinnedLocationControl.xaml" />
@@ -53,7 +53,7 @@
     <None Remove="Views\ItemsPanel.xaml" />
     <None Remove="Views\MapEntranceControl.xaml" />
     <None Remove="Views\MapLocationControl.xaml" />
-    <None Remove="Views\MarkingSelect.xaml" />
+    <None Remove="Views\MarkingSelectButton.xaml" />
     <None Remove="Views\MessageBoxDialog.xaml" />
     <None Remove="Views\ModeSettings.xaml" />
     <None Remove="Views\PinnedLocationControl.xaml" />
@@ -92,7 +92,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\MarkingSelect.xaml">
+    <EmbeddedResource Include="Views\MarkingSelect\MarkingSelectButton.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
@@ -200,8 +200,8 @@
     <Compile Update="Views\UIPanels\LocationsPanel\PinnedLocation.xaml.cs">
       <DependentUpon>PinnedLocation.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\MarkingSelect.xaml.cs">
-      <DependentUpon>MarkingSelect.xaml</DependentUpon>
+    <Compile Update="Views\MarkingSelect\MarkingSelectButton.xaml.cs">
+      <DependentUpon>MarkingSelectButton.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\UIPanels\ItemsPanel\SmallItems\SmallKeySmallItem.xaml.cs">
       <DependentUpon>SmallKeySmallItem.xaml</DependentUpon>

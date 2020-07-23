@@ -8,6 +8,7 @@ namespace OpenTracker.Models.UndoRedo
     public class TogglePrize : IUndoable
     {
         private readonly ISection _section;
+        private readonly bool _force;
 
         /// <summary>
         /// Constructor
@@ -15,9 +16,13 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="section">
         /// The boss section data for the prize to be toggled.
         /// </param>
-        public TogglePrize(ISection section)
+        /// <param name="force">
+        /// A boolean representing whether to bypass logic on the prize.
+        /// </param>
+        public TogglePrize(ISection section, bool force)
         {
             _section = section;
+            _force = force;
         }
 
         /// <summary>
@@ -28,7 +33,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </returns>
         public bool CanExecute()
         {
-            return true;
+            return _section.CanBeUncleared() || _section.CanBeCleared(_force);
         }
 
         /// <summary>

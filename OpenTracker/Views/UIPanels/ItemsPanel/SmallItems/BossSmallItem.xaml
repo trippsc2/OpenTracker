@@ -14,6 +14,7 @@
          IsHitTestVisible="{Binding Visible}">
 		<Image Classes="DungeonItem" Source="{Binding Path=ImageSource, Converter={StaticResource
 			   BitmapValueConverter}}" />
+    <ContentControl Content="{Binding BossSelect}" />
 	</Panel>
 	
 </UserControl>

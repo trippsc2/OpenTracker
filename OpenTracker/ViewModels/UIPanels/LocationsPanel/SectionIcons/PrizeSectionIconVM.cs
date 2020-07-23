@@ -95,25 +95,25 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
         }
 
         /// <summary>
-        /// Handles left clicks and collects the section.
+        /// Handles left clicks and toggles the prize section.
         /// </summary>
         /// <param name="force">
         /// A boolean representing whether the logic should be ignored.
         /// </param>
-        public void OnLeftClick(bool force)
+        public void OnLeftClick(bool force = false)
         {
-            UndoRedoManager.Instance.Execute(new CollectSection(_section, force));
+            UndoRedoManager.Instance.Execute(new TogglePrize(_section, force));
         }
 
         /// <summary>
-        /// Handles right clicks and uncollects the section.
+        /// Handles right clicks and changes the prize.
         /// </summary>
         /// <param name="force">
         /// A boolean representing whether the logic should be ignored.
         /// </param>
-        public void OnRightClick(bool force)
+        public void OnRightClick(bool force = false)
         {
-            UndoRedoManager.Instance.Execute(new UncollectSection(_section));
+            UndoRedoManager.Instance.Execute(new ChangePrize(_section.PrizePlacement));
         }
     }
 }

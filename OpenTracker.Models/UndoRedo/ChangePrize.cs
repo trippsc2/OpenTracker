@@ -9,7 +9,6 @@ namespace OpenTracker.Models.UndoRedo
     public class ChangePrize : IUndoable
     {
         private readonly IPrizePlacement _prizePlacement;
-        private readonly IItem _item;
         private IItem _previousItem;
 
         /// <summary>
@@ -21,10 +20,9 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="item">
         /// The item of the prize to be placed.
         /// </param>
-        public ChangePrize(IPrizePlacement prizePlacement, IItem item)
+        public ChangePrize(IPrizePlacement prizePlacement)
         {
             _prizePlacement = prizePlacement;
-            _item = item;
         }
 
         /// <summary>
@@ -44,7 +42,19 @@ namespace OpenTracker.Models.UndoRedo
         public void Execute()
         {
             _previousItem = _prizePlacement.Prize;
-            _prizePlacement.Prize = _item;
+
+            if (_prizePlacement.Prize == null)
+            {
+                _prizePlacement.Prize = ItemDictionary.Instance[ItemType.Crystal];
+            }
+            else if (_prizePlacement.Prize.Type == ItemType.GreenPendant)
+            {
+                _prizePlacement.Prize = null;
+            }
+            else
+            {
+                _prizePlacement.Prize = ItemDictionary.Instance[_prizePlacement.Prize.Type + 1];
+            }
         }
 
         /// <summary>

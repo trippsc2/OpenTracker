@@ -7,7 +7,8 @@ namespace OpenTracker.Views.UIPanels.ItemsPanel.SmallItems
 {
     public class BossSmallItem : UserControl
     {
-        public IClickHandler ViewModelClickHandler => DataContext as IClickHandler;
+        public IClickHandler ViewModelClickHandler =>
+            DataContext as IClickHandler;
 
         public BossSmallItem()
         {

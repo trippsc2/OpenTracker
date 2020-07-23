@@ -3,13 +3,13 @@ using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using OpenTracker.Interfaces;
 
-namespace OpenTracker.Views
+namespace OpenTracker.Views.MarkingSelect
 {
-    public class MarkingSelect : UserControl
+    public class MarkingSelectButton : UserControl
     {
         public ISelectItem ViewModelSelectItem => DataContext as ISelectItem;
 
-        public MarkingSelect()
+        public MarkingSelectButton()
         {
             InitializeComponent();
         }

@@ -3,19 +3,18 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
-             xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OpenTracker.Views.UIPanels.LocationsPanel.SectionIcons.BossSectionIcon">
+             x:Class="OpenTracker.Views.BossSelect.BossSelectButton">
 
   <UserControl.Resources>
     <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
   </UserControl.Resources>
 
-  <Panel PointerReleased="OnClick" IsVisible="{Binding Visible}"
-         IsHitTestVisible="{Binding Visible}">
+  <Button Command="{Binding $parent[ItemsControl].DataContext.ChangeBossCommand}"
+          Background="{DynamicResource ThemeBackgroundBrush}"
+          BorderThickness="0" CommandParameter="{Binding Boss}">
     <Image Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}"
            Height="32" Width="32" />
-    <ContentControl Content="{Binding BossSelect}" />
-  </Panel>
-  
+  </Button>
+
 </UserControl>

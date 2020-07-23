@@ -52,7 +52,7 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel
 
             if (section is IBossSection bossSection)
             {
-                icons.Add(new BossSectionIconVM(bossSection));
+                icons.Add(new BossSectionIconVM(bossSection.BossPlacement));
             }
 
             return icons;

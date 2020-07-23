@@ -19,30 +19,8 @@
              BitmapValueConverter}}" />
     </Border>
 
-    <Popup IsOpen="{Binding MarkingPopupOpen, Mode=TwoWay}" StaysOpen="False" PlacementMode="Pointer">
-      <Border Classes="Popup">
-        <StackPanel Orientation="Vertical">
-
-          <ItemsControl Items="{Binding MarkingSelect}">
-            <ItemsControl.ItemsPanel>
-              <ItemsPanelTemplate>
-                <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="{Binding
-                           $parent[view:MarkingMapLocation].DataContext.MarkingSelectWidth}"
-                           MaxHeight="{Binding
-                           $parent[view:MarkingMapLocation].DataContext.MarkingSelectHeight}"
-                           Margin="0,0,0,10" Orientation="Horizontal" HorizontalAlignment="Left"
-                           VerticalAlignment="Top" />
-              </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-          </ItemsControl>
-
-          <Border Classes="Separator" Grid.Row="1" Margin="0,2" />
-          <Button Classes="ClearMarking" Command="{Binding ClearVisibleItemCommand}">Clear</Button>
-
-        </StackPanel>
-      </Border>
-    </Popup>
-
+    <ContentControl Content="{Binding MarkingSelect}" />
+    
   </Panel>
   
 </UserControl>

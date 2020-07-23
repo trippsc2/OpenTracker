@@ -20,7 +20,6 @@ using OpenTracker.ViewModels.SequenceBreaks;
 using OpenTracker.ViewModels.UIPanels;
 using ReactiveUI;
 using System;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
@@ -37,11 +36,6 @@ namespace OpenTracker.ViewModels
     {
         private readonly IDialogService _dialogService;
         private AutoTrackerDialogVM _autoTrackerDialog;
-
-        public static ObservableCollection<MarkingSelectVM> NonEntranceMarkingSelect { get; } = 
-            new ObservableCollection<MarkingSelectVM>();
-        public static ObservableCollection<MarkingSelectVM> EntranceMarkingSelect { get; } = 
-            new ObservableCollection<MarkingSelectVM>();
 
         public bool? Maximized
         {
@@ -220,67 +214,6 @@ namespace OpenTracker.ViewModels
             MapArea = new MapAreaControlVM(this);
 
             AppSettings.Instance.PropertyChanged += OnAppSettingsChanged;
-
-            if (NonEntranceMarkingSelect.Count == 0)
-            {
-                for (int i = 0; i < Enum.GetValues(typeof(MarkingType)).Length; i++)
-                {
-                    switch ((MarkingType)i)
-                    {
-                        case MarkingType.Sword:
-                        case MarkingType.Shield:
-                        case MarkingType.Mail:
-                        case MarkingType.Boots:
-                        case MarkingType.Gloves:
-                        case MarkingType.Flippers:
-                        case MarkingType.MoonPearl:
-                        case MarkingType.Bow:
-                        case MarkingType.SilverArrows:
-                        case MarkingType.Boomerang:
-                        case MarkingType.RedBoomerang:
-                        case MarkingType.Hookshot:
-                        case MarkingType.Bomb:
-                        case MarkingType.Mushroom:
-                        case MarkingType.FireRod:
-                        case MarkingType.IceRod:
-                        case MarkingType.Bombos:
-                        case MarkingType.Ether:
-                        case MarkingType.Powder:
-                        case MarkingType.Lamp:
-                        case MarkingType.Hammer:
-                        case MarkingType.Flute:
-                        case MarkingType.Net:
-                        case MarkingType.Book:
-                        case MarkingType.Shovel:
-                        case MarkingType.SmallKey:
-                        case MarkingType.Bottle:
-                        case MarkingType.CaneOfSomaria:
-                        case MarkingType.CaneOfByrna:
-                        case MarkingType.Cape:
-                        case MarkingType.Mirror:
-                        case MarkingType.HalfMagic:
-                        case MarkingType.BigKey:
-                            {
-                                NonEntranceMarkingSelect.Add(new MarkingSelectVM((MarkingType)i));
-                            }
-                            break;
-                        case MarkingType.Quake:
-                            {
-                                NonEntranceMarkingSelect.Add(new MarkingSelectVM((MarkingType)i));
-                                NonEntranceMarkingSelect.Add(new MarkingSelectVM(null));
-                            }
-                            break;
-                    }
-                }
-            }
-
-            if (EntranceMarkingSelect.Count == 0)
-            {
-                for (int i = 0; i < Enum.GetValues(typeof(MarkingType)).Length; i++)
-                {
-                    EntranceMarkingSelect.Add(new MarkingSelectVM((MarkingType)i));
-                }
-            }
         }
 
         /// <summary>

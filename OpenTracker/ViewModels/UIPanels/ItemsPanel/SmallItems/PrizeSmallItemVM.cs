@@ -89,46 +89,25 @@ namespace OpenTracker.ViewModels.UIPanels.ItemsPanel.SmallItems
         }
 
         /// <summary>
-        /// Change the prize of the dungeon.
-        /// </summary>
-        private void ChangePrize()
-        {
-            if (_section.PrizePlacement.Prize == null)
-            {
-                UndoRedoManager.Instance.Execute(new ChangePrize(_section.PrizePlacement,
-                    ItemDictionary.Instance[ItemType.Crystal]));
-            }
-            else if (_section.PrizePlacement.Prize.Type == ItemType.GreenPendant)
-            {
-                UndoRedoManager.Instance.Execute(new ChangePrize(_section.PrizePlacement, null));
-            }
-            else
-            {
-                var newPrize = ItemDictionary.Instance[_section.PrizePlacement.Prize.Type + 1];
-                UndoRedoManager.Instance.Execute(new ChangePrize(_section.PrizePlacement, newPrize));
-            }
-        }
-
-        /// <summary>
-        /// Handles left clicks.
+        /// Handles left clicks and toggles the prize section.
         /// </summary>
         /// <param name="force">
         /// A boolean representing whether the logic should be ignored.
         /// </param>
         public void OnLeftClick(bool force = false)
         {
-            UndoRedoManager.Instance.Execute(new TogglePrize(_section));
+            UndoRedoManager.Instance.Execute(new TogglePrize(_section, true));
         }
 
         /// <summary>
-        /// Handles right clicks.
+        /// Handles right clicks and changes the prize.
         /// </summary>
         /// <param name="force">
         /// A boolean representing whether the logic should be ignored.
         /// </param>
         public void OnRightClick(bool force = false)
         {
-            ChangePrize();
+            UndoRedoManager.Instance.Execute(new ChangePrize(_section.PrizePlacement));
         }
     }
 }
