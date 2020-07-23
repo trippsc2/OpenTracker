@@ -2823,7 +2823,7 @@ namespace OpenTracker.Models.Sections
                         return () =>
                         {
                             bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 445, 8);
+                                MemorySegmentType.Room, 289, 8);
 
                             if (result.HasValue)
                             {
@@ -2838,7 +2838,7 @@ namespace OpenTracker.Models.Sections
                         return () =>
                         {
                             bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 289, 8);
+                                MemorySegmentType.Room, 329, 8);
 
                             if (result.HasValue)
                             {
@@ -2850,18 +2850,7 @@ namespace OpenTracker.Models.Sections
                     }
                 case LocationID.GanonsTower:
                     {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 329, 8);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
+                        return () => null;
                     }
             }
 
@@ -3335,22 +3324,19 @@ namespace OpenTracker.Models.Sections
                     {
                         return new List<(MemorySegmentType, int)>
                         {
-                            (MemorySegmentType.Room, 445)
+                            (MemorySegmentType.Room, 289)
                         };
                     }
                 case LocationID.TurtleRock:
                     {
                         return new List<(MemorySegmentType, int)>
                         {
-                            (MemorySegmentType.Room, 289)
+                            (MemorySegmentType.Room, 329)
                         };
                     }
                 case LocationID.GanonsTower:
                     {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 329)
-                        };
+                        return new List<(MemorySegmentType, int)>(0);
                     }
             }
 
