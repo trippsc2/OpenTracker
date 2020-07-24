@@ -1,6 +1,9 @@
-﻿using OpenTracker.Models.SaveLoad;
+﻿using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.Markings;
+using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Sections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Locations
@@ -18,6 +21,7 @@ namespace OpenTracker.Models.Locations
         string Name { get; }
         List<ISection> Sections { get; }
         int Total { get; }
+        ObservableCollection<IMarking> Notes { get; }
 
         bool CanBeCleared(bool force);
         void Load(LocationSaveData saveData);

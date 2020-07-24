@@ -1,9 +1,9 @@
-﻿using System.ComponentModel;
+﻿using OpenTracker.Models.Markings;
 
 namespace OpenTracker.Models.Sections
 {
-    public interface IMarkableSection : INotifyPropertyChanging, ISection
+    public interface IMarkableSection : ISection
     {
-        MarkingType? Marking { get; set; }
+        IMarking Marking { get; }
     }
 }

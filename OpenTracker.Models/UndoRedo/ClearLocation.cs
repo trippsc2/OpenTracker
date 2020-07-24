@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.Locations;
+using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
 using System;
 using System.Collections.Generic;
@@ -57,7 +58,7 @@ namespace OpenTracker.Models.UndoRedo
                 {
                     if (section is IMarkableSection markableSection)
                     {
-                        _previousMarkings.Add(markableSection.Marking);
+                        _previousMarkings.Add(markableSection.Marking.Value);
                     }
                     else
                     {
@@ -92,7 +93,7 @@ namespace OpenTracker.Models.UndoRedo
 
                 if (_previousMarkings[i] != null)
                 {
-                    (_location.Sections[i] as IMarkableSection).Marking = _previousMarkings[i];
+                    (_location.Sections[i] as IMarkableSection).Marking.Value = _previousMarkings[i];
                 }
 
                 if (_previousUserManipulated[i] != null)

@@ -1,5 +1,6 @@
 ﻿using Avalonia.Media;
 using OpenTracker.Models;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Sections;
 using OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons;

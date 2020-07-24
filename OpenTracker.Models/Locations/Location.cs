@@ -1,7 +1,10 @@
-﻿using OpenTracker.Models.SaveLoad;
+﻿using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.Markings;
+using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Sections;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 
@@ -17,6 +20,8 @@ namespace OpenTracker.Models.Locations
 
         public List<MapLocation> MapLocations { get; }
         public List<ISection> Sections { get; }
+        public ObservableCollection<IMarking> Notes { get; } =
+            new ObservableCollection<IMarking>();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -308,15 +313,22 @@ namespace OpenTracker.Models.Locations
         public LocationSaveData Save()
         {
             List<SectionSaveData> sections = new List<SectionSaveData>();
+            List<MarkingType?> markings = new List<MarkingType?>();
 
             foreach (var section in Sections)
             {
                 sections.Add(section.Save());
             }
 
+            foreach (var marking in Notes)
+            {
+                markings.Add(marking.Value);
+            }
+
             return new LocationSaveData()
             {
-                Sections = sections
+                Sections = sections,
+                Markings = markings
             };
         }
 
@@ -330,9 +342,19 @@ namespace OpenTracker.Models.Locations
                 throw new ArgumentNullException(nameof(saveData));
             }
 
+            Notes.Clear();
+
             for (int i = 0; i < saveData.Sections.Count; i++)
             {
                 Sections[i].Load(saveData.Sections[i]);
+            }
+
+            foreach (var marking in saveData.Markings)
+            {
+                Notes.Add(new Marking()
+                {
+                    Value = marking
+                });
             }
         }
     }

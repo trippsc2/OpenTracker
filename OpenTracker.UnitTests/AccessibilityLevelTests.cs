@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models;
+using OpenTracker.Models.AccessibilityLevels;
 using Xunit;
 
 namespace OpenTracker.UnitTests

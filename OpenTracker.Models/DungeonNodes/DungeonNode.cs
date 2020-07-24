@@ -1,4 +1,5 @@
-﻿using OpenTracker.Models.Dungeons;
+﻿using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;

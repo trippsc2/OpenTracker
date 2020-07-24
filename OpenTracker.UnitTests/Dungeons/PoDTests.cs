@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;

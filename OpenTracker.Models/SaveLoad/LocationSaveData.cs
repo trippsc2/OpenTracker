@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using OpenTracker.Models.Markings;
+using System.Collections.Generic;
 
 namespace OpenTracker.Models.SaveLoad
 {
@@ -8,5 +9,6 @@ namespace OpenTracker.Models.SaveLoad
     public class LocationSaveData
     {
         public List<SectionSaveData> Sections { get; set; }
+        public List<MarkingType?> Markings { get; set; }
     }
 }

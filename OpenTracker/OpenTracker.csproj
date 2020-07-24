@@ -92,7 +92,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\MarkingSelect\MarkingSelectButton.xaml">
+    <EmbeddedResource Include="Views\Markings\MarkingSelectButton.xaml">
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
   </ItemGroup>
@@ -131,8 +131,14 @@
     <Compile Update="Views\MapArea\MapLocations\TakeAnyMapLocation.axaml.cs">
       <DependentUpon>TakeAnyMapLocation.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Markings\MarkingSelect.axaml.cs">
+      <DependentUpon>MarkingSelect.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\ModeSettings.xaml.cs">
       <DependentUpon>ModeSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\UIPanels\LocationsPanel\PinnedLocationNoteArea.axaml.cs">
+      <DependentUpon>PinnedLocationNoteArea.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\UIPanels\LocationsPanel\Section.axaml.cs">
       <DependentUpon>Section.axaml</DependentUpon>
@@ -200,7 +206,7 @@
     <Compile Update="Views\UIPanels\LocationsPanel\PinnedLocation.xaml.cs">
       <DependentUpon>PinnedLocation.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\MarkingSelect\MarkingSelectButton.xaml.cs">
+    <Compile Update="Views\Markings\MarkingSelectButton.xaml.cs">
       <DependentUpon>MarkingSelectButton.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\UIPanels\ItemsPanel\SmallItems\SmallKeySmallItem.xaml.cs">

@@ -1,8 +1,10 @@
-﻿using OpenTracker.Models.Sections;
+﻿using OpenTracker.Models.Locations;
+using OpenTracker.Models.Markings;
+using OpenTracker.Models.Sections;
 using System;
 using System.Collections.ObjectModel;
 
-namespace OpenTracker.ViewModels.MarkingSelect
+namespace OpenTracker.ViewModels.Markings
 {
     /// <summary>
     /// This is the class for creating marking select control ViewModel classes.
@@ -85,49 +87,49 @@ namespace OpenTracker.ViewModels.MarkingSelect
 
         /// <summary>
         /// Returns a new marking select popup control ViewModel instance for the specified
-        /// non-entrance section and parent class.
+        /// marking.
         /// </summary>
-        /// <param name="section">
-        /// The non-entrance section.
+        /// <param name="marking">
+        /// The marking.
         /// </param>
         /// <returns>
         /// A new marking select popup control ViewModel instance.
         /// </returns>
-        private static MarkingSelectPopupVM GetNonEntranceMarkingSelectPopupVM(
-            IMarkableSection section)
+        private static MarkingSelectVM GetNonEntranceMarkingSelectPopupVM(
+            IMarking marking)
         {
             if (NonEntranceMarkingSelect.Count == 0)
             {
                 PopulateNonEntranceMarkingSelect();
             }
 
-            return new MarkingSelectPopupVM(section, NonEntranceMarkingSelect, 238.0, 200.0);
+            return new MarkingSelectVM(marking, NonEntranceMarkingSelect, 238.0, 200.0);
         }
 
         /// <summary>
         /// Returns a new marking select popup control ViewModel instance for the specified
-        /// entrance section and parent class.
+        /// marking.
         /// </summary>
-        /// <param name="section">
-        /// The entrance section.
+        /// <param name="marking">
+        /// The marking.
         /// </param>
         /// <returns>
         /// A new marking select popup control ViewModel instance.
         /// </returns>
-        private static MarkingSelectPopupVM GetEntranceMarkingSelectPopupVM(
-            IMarkableSection section)
+        private static MarkingSelectVM GetEntranceMarkingSelectPopupVM(
+            IMarking marking)
         {
             if (EntranceMarkingSelect.Count == 0)
             {
                 PopulateEntranceMarkingSelect();
             }
 
-            return new MarkingSelectPopupVM(section, EntranceMarkingSelect, 272.0, 280.0);
+            return new MarkingSelectVM(marking, EntranceMarkingSelect, 272.0, 280.0);
         }
 
         /// <summary>
         /// Returns a new marking select popup control ViewModel instance for the specified
-        /// section and parent class.
+        /// section.
         /// </summary>
         /// <param name="section">
         /// The section.
@@ -135,14 +137,47 @@ namespace OpenTracker.ViewModels.MarkingSelect
         /// <returns>
         /// A new marking select popup control ViewModel instance.
         /// </returns>
-        internal static MarkingSelectPopupVM GetMarkingSelectPopupVM(IMarkableSection section)
+        internal static MarkingSelectVM GetMarkingSelectVM(IMarkableSection section)
         {
-            if (section is IEntranceSection)
+            if (section == null)
             {
-                return GetEntranceMarkingSelectPopupVM(section);
+                throw new ArgumentNullException(nameof(section));
             }
 
-            return GetNonEntranceMarkingSelectPopupVM(section);
+            if (section is IEntranceSection)
+            {
+                return GetEntranceMarkingSelectPopupVM(section.Marking);
+            }
+
+            return GetNonEntranceMarkingSelectPopupVM(section.Marking);
+        }
+
+        /// <summary>
+        /// Returns a new marking select popup control ViewModel instance.
+        /// </summary>
+        /// <param name="marking">
+        /// The marking.
+        /// </param>
+        /// <param name="location">
+        /// The location.
+        /// </param>
+        /// <returns>
+        /// A new marking select popup control ViewModel instance.
+        /// </returns>
+        internal static NoteMarkingSelectVM GetNoteMarkingSelectVM(
+            IMarking marking, ILocation location)
+        {
+            if (marking == null)
+            {
+                throw new ArgumentNullException(nameof(marking));
+            }
+
+            if (location == null)
+            {
+                throw new ArgumentNullException(nameof(location));
+            }
+
+            return new NoteMarkingSelectVM(marking, NonEntranceMarkingSelect, location);
         }
     }
 }

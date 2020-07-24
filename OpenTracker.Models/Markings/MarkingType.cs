@@ -1,4 +1,4 @@
-﻿namespace OpenTracker.Models.Sections
+﻿namespace OpenTracker.Models.Markings
 {
     /// <summary>
     /// This is the enum type for marking types.

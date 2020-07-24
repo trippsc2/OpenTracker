@@ -1,7 +1,8 @@
 ﻿using OpenTracker.Interfaces;
 using OpenTracker.Models.Items;
+using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
-using OpenTracker.ViewModels.MarkingSelect;
+using OpenTracker.ViewModels.Markings;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
@@ -14,18 +15,18 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
     /// </summary>
     public class MarkingSectionIconVM : SectionIconVMBase, IClickHandler
     {
-        private readonly IMarkableSection _section;
+        private readonly IMarking _marking;
 
         public string ImageSource
         {
             get
             {
-                if (_section.Marking == null)
+                if (_marking.Value == null)
                 {
                     return "avares://OpenTracker/Assets/Images/Items/unknown1.png";
                 }
 
-                switch (_section.Marking)
+                switch (_marking.Value)
                 {
                     case MarkingType.Bow:
                     case MarkingType.SilverArrows:
@@ -35,7 +36,7 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
                     case MarkingType.BigKey:
                         {
                             return "avares://OpenTracker/Assets/Images/Items/visible-" +
-                                $"{_section.Marking.ToString().ToLowerInvariant()}.png";
+                                $"{_marking.Value.ToString().ToLowerInvariant()}.png";
                         }
                     case MarkingType.Hookshot:
                     case MarkingType.Bomb:
@@ -63,7 +64,7 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
                     case MarkingType.Aga:
                         {
                             return "avares://OpenTracker/Assets/Images/Items/" +
-                                $"{_section.Marking.ToString().ToLowerInvariant()}1.png";
+                                $"{_marking.Value.ToString().ToLowerInvariant()}1.png";
                         }
                     case MarkingType.Bottle:
                     case MarkingType.Gloves:
@@ -71,10 +72,10 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
                     case MarkingType.Mail:
                         {
                             var item = ItemDictionary.Instance[Enum.Parse<ItemType>(
-                                _section.Marking.ToString())];
+                                _marking.Value.ToString())];
 
                             return "avares://OpenTracker/Assets/Images/Items/" +
-                                _section.Marking.ToString().ToLowerInvariant() +
+                                _marking.Value.ToString().ToLowerInvariant() +
                                 Math.Min(item.Current + 1, item.Maximum).ToString(
                                 CultureInfo.InvariantCulture) + ".png";
                         }
@@ -93,7 +94,7 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
                             }
 
                             return "avares://OpenTracker/Assets/Images/Items/" +
-                                _section.Marking.ToString().ToLowerInvariant() +
+                                _marking.Value.ToString().ToLowerInvariant() +
                                 $"{itemNumber.ToString(CultureInfo.InvariantCulture)}.png";
                         }
                     case MarkingType.HCFront:
@@ -116,7 +117,7 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
                     case MarkingType.GT:
                         {
                             return "avares://OpenTracker/Assets/Images/" +
-                                $"{_section.Marking.ToString().ToLowerInvariant()}.png";
+                                $"{_marking.Value.ToString().ToLowerInvariant()}.png";
                         }
                     case MarkingType.ToH:
                         {
@@ -136,7 +137,7 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
             }
         }
 
-        public MarkingSelectPopupVM MarkingSelect { get; }
+        public MarkingSelectVM MarkingSelect { get; }
 
         /// <summary>
         /// Constructor
@@ -146,15 +147,20 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
         /// </param>
         public MarkingSectionIconVM(IMarkableSection section)
         {
-            _section = section ?? throw new ArgumentNullException(nameof(section));
-            MarkingSelect = MarkingSelectVMFactory.GetMarkingSelectPopupVM(section);
+            if (section == null)
+            {
+                throw new ArgumentNullException(nameof(section));
+            }
 
-            _section.PropertyChanging += OnSectionChanging;
-            _section.PropertyChanged += OnSectionChanged;
+            _marking = section.Marking;
+            MarkingSelect = MarkingSelectVMFactory.GetMarkingSelectVM(section);
+
+            _marking.PropertyChanging += OnMarkingChanging;
+            _marking.PropertyChanged += OnSectionChanged;
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanging event on the ISection interface.
+        /// Subscribes to the PropertyChanging event on the IMarking interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -162,16 +168,16 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
         /// <param name="e">
         /// The arguments of the PropertyChanging event.
         /// </param>
-        private void OnSectionChanging(object sender, PropertyChangingEventArgs e)
+        private void OnMarkingChanging(object sender, PropertyChangingEventArgs e)
         {
-            if (e.PropertyName == nameof(IMarkableSection.Marking))
+            if (e.PropertyName == nameof(IMarking.Value))
             {
                 UnsubscribeFromMarkingItem();
             }
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IBossSection interface.
+        /// Subscribes to the PropertyChanged event on the IMarking interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -181,7 +187,7 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
         /// </param>
         private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IMarkableSection.Marking))
+            if (e.PropertyName == nameof(IMarking.Value))
             {
                 SubscribeToMarkingItem();
                 UpdateImage();
@@ -207,9 +213,9 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
         /// </summary>
         private void UnsubscribeFromMarkingItem()
         {
-            if (_section.Marking.HasValue)
+            if (_marking.Value.HasValue)
             {
-                switch (_section.Marking.Value)
+                switch (_marking.Value.Value)
                 {
                     case MarkingType.Bottle:
                     case MarkingType.Gloves:
@@ -217,7 +223,7 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
                     case MarkingType.Shield:
                     case MarkingType.Mail:
                         {
-                            ItemType itemType = Enum.Parse<ItemType>(_section.Marking.Value.ToString());
+                            ItemType itemType = Enum.Parse<ItemType>(_marking.Value.Value.ToString());
                             ItemDictionary.Instance[itemType].PropertyChanged -= OnMarkedItemChanged;
                         }
                         break;
@@ -230,9 +236,9 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
         /// </summary>
         private void SubscribeToMarkingItem()
         {
-            if (_section.Marking.HasValue)
+            if (_marking.Value.HasValue)
             {
-                switch (_section.Marking.Value)
+                switch (_marking.Value.Value)
                 {
                     case MarkingType.Bottle:
                     case MarkingType.Gloves:
@@ -240,7 +246,7 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
                     case MarkingType.Shield:
                     case MarkingType.Mail:
                         {
-                            ItemType itemType = Enum.Parse<ItemType>(_section.Marking.Value.ToString());
+                            ItemType itemType = Enum.Parse<ItemType>(_marking.Value.Value.ToString());
                             ItemDictionary.Instance[itemType].PropertyChanged += OnMarkedItemChanged;
                         }
                         break;

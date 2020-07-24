@@ -1,4 +1,6 @@
-﻿namespace OpenTracker.Models.Sections
+﻿using OpenTracker.Models.AccessibilityLevels;
+
+namespace OpenTracker.Models.Sections
 {
     public interface IDungeonItemSection : IItemSection
     {

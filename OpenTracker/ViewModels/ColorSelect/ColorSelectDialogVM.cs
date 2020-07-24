@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Media;
 using OpenTracker.Models;
+using OpenTracker.Models.AccessibilityLevels;
 using ReactiveUI;
 using System;
 using System.ComponentModel;

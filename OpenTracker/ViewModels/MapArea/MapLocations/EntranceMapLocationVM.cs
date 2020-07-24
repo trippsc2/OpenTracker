@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Layout;
 using OpenTracker.Interfaces;
 using OpenTracker.Models;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Connections;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Requirements;

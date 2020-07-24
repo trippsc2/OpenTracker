@@ -1,4 +1,5 @@
-﻿using OpenTracker.Models.DungeonItems;
+﻿using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Requirements;
 using System;

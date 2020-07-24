@@ -11,13 +11,14 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel
     /// </summary>
     public class PinnedLocationVM : ViewModelBase, IClickHandler
     {
+        private readonly ILocation _location;
         private readonly ObservableCollection<PinnedLocationVM> _pinnedLocations;
 
         public string Name =>
-            Location.Name;
-        public ILocation Location { get; }
+            _location.Name;
         public ObservableCollection<SectionVM> Sections { get; } =
             new ObservableCollection<SectionVM>();
+        public PinnedLocationNoteAreaVM Notes { get; }
 
         /// <summary>
         /// Constructor
@@ -35,10 +36,11 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel
             ILocation location, ObservableCollection<PinnedLocationVM> pinnedLocations,
             ObservableCollection<SectionVM> sections)
         {
-            Location = location ?? throw new ArgumentNullException(nameof(location));
+            _location = location ?? throw new ArgumentNullException(nameof(location));
             _pinnedLocations = pinnedLocations ??
                 throw new ArgumentNullException(nameof(pinnedLocations));
             Sections = sections ?? throw new ArgumentNullException(nameof(sections));
+            Notes = new PinnedLocationNoteAreaVM(_location);
         }
 
         /// <summary>

@@ -1,4 +1,6 @@
-﻿using OpenTracker.Models.Items;
+﻿using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.Items;
+using OpenTracker.Models.Markings;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
@@ -19,8 +21,9 @@ namespace OpenTracker.Models.Sections
         public string Name { get; }
         public IRequirement Requirement { get; }
         public bool UserManipulated { get; set; }
+        public IMarking Marking { get; } =
+            MarkingFactory.GetMarking();
 
-        public event PropertyChangingEventHandler PropertyChanging;
         public event PropertyChangedEventHandler PropertyChanged;
 
         private AccessibilityLevel _accessibility;
@@ -47,21 +50,6 @@ namespace OpenTracker.Models.Sections
                 {
                     _available = value;
                     OnPropertyChanged(nameof(Available));
-                }
-            }
-        }
-
-        private MarkingType? _marking;
-        public MarkingType? Marking
-        {
-            get => _marking;
-            set
-            {
-                if (_marking != value)
-                {
-                    OnPropertyChanging(nameof(Marking));
-                    _marking = value;
-                    OnPropertyChanged(nameof(Marking));
                 }
             }
         }
@@ -96,17 +84,6 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
-        /// Raises the PropertyChanging event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changing property.
-        /// </param>
-        private void OnPropertyChanging(string propertyName)
-        {
-            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
-        }
-
-        /// <summary>
         /// Raises the PropertyChanged event for the specified property.
         /// </summary>
         /// <param name="propertyName">
@@ -132,7 +109,7 @@ namespace OpenTracker.Models.Sections
                         _itemProvided.Change(1, true);
                     }
 
-                    Marking = null;
+                    Marking.Value = null;
                 }
             }
         }
@@ -267,7 +244,7 @@ namespace OpenTracker.Models.Sections
         /// </summary>
         public void Reset()
         {
-            Marking = null;
+            Marking.Value = null;
             Available = 1;
         }
 
@@ -283,7 +260,7 @@ namespace OpenTracker.Models.Sections
             {
                 Available = Available,
                 UserManipulated = UserManipulated,
-                Marking = Marking
+                Marking = Marking.Value
             };
         }
 
@@ -299,7 +276,7 @@ namespace OpenTracker.Models.Sections
 
             Available = saveData.Available;
             UserManipulated = saveData.UserManipulated;
-            Marking = saveData.Marking;
+            Marking.Value = saveData.Marking;
         }
     }
 }

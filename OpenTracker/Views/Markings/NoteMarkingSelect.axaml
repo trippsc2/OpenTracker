@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OpenTracker.Views.MarkingSelect.MarkingSelectPopup">
+             x:Class="OpenTracker.Views.Markings.NoteMarkingSelect">
   <Popup IsOpen="{Binding PopupOpen, Mode=TwoWay}" StaysOpen="False" PlacementMode="Pointer">
     <Border Classes="Popup">
       <StackPanel Orientation="Vertical">
@@ -11,15 +11,15 @@
         <ItemsControl Items="{Binding Buttons}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
-              <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="{Binding Width}"
-                         MaxHeight="{Binding Height}" Margin="0,0,0,10" Orientation="Horizontal"
+              <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="238"
+                         MaxHeight="200" Margin="0,0,0,10" Orientation="Horizontal"
                          HorizontalAlignment="Left" VerticalAlignment="Top" />
             </ItemsPanelTemplate>
           </ItemsControl.ItemsPanel>
         </ItemsControl>
 
         <Border Classes="Separator" Grid.Row="1" Margin="0,2" />
-        <Button Classes="ClearMarking" Command="{Binding ClearMarkingCommand}">Clear</Button>
+        <Button Classes="ClearMarking" Command="{Binding RemoveNoteCommand}">Remove</Button>
 
       </StackPanel>
     </Border>

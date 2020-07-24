@@ -1,11 +1,11 @@
 ﻿using OpenTracker.Models.Items;
-using OpenTracker.Models.Sections;
+using OpenTracker.Models.Markings;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
 using System.Globalization;
 
-namespace OpenTracker.ViewModels.MarkingSelect
+namespace OpenTracker.ViewModels.Markings
 {
     /// <summary>
     /// This is the ViewModel for the marking select button control.

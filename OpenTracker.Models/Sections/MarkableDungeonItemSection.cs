@@ -1,4 +1,6 @@
-﻿using OpenTracker.Models.Requirements;
+﻿using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.Markings;
+using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using System;
 using System.ComponentModel;
@@ -29,8 +31,9 @@ namespace OpenTracker.Models.Sections
         }
         public int Total =>
             _section.Total;
+        public IMarking Marking { get; } =
+            MarkingFactory.GetMarking();
 
-        public event PropertyChangingEventHandler PropertyChanging;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public AccessibilityLevel Accessibility
@@ -44,21 +47,6 @@ namespace OpenTracker.Models.Sections
             set => _section.Accessible = value;
         }
 
-        private MarkingType? _marking;
-        public MarkingType? Marking
-        {
-            get => _marking;
-            set
-            {
-                if (_marking != value)
-                {
-                    OnPropertyChanging(nameof(Marking));
-                    _marking = value;
-                    OnPropertyChanged(nameof(Marking));
-                }
-            }
-        }
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -70,28 +58,6 @@ namespace OpenTracker.Models.Sections
             _section = section ?? throw new ArgumentNullException(nameof(section));
 
             _section.PropertyChanged += OnPropertyChanged;
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanging event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changing property.
-        /// </param>
-        private void OnPropertyChanging(string propertyName)
-        {
-            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
@@ -111,7 +77,7 @@ namespace OpenTracker.Models.Sections
             {
                 if (!IsAvailable())
                 {
-                    Marking = null;
+                    Marking.Value = null;
                 }
             }
         }
@@ -129,7 +95,8 @@ namespace OpenTracker.Models.Sections
                 return true;
             }
 
-            return IsAvailable() && Accessibility == AccessibilityLevel.Inspect && !Marking.HasValue;
+            return IsAvailable() && Accessibility == AccessibilityLevel.Inspect &&
+                !Marking.Value.HasValue;
         }
 
         /// <summary>
@@ -185,7 +152,7 @@ namespace OpenTracker.Models.Sections
             {
                 Available = Available,
                 UserManipulated = UserManipulated,
-                Marking = Marking
+                Marking = Marking.Value
             };
         }
 
@@ -201,7 +168,7 @@ namespace OpenTracker.Models.Sections
 
             Available = saveData.Available;
             UserManipulated = saveData.UserManipulated;
-            Marking = saveData.Marking;
+            Marking.Value = saveData.Marking;
         }
     }
 }

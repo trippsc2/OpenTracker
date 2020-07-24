@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OpenTracker.Models
+namespace OpenTracker.Models.AccessibilityLevels
 {
     /// <summary>
     /// This is the class containing methods for getting the maximum or minimum AccessibilityLevel.

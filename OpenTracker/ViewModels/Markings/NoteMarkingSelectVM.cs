@@ -1,22 +1,22 @@
-﻿using OpenTracker.Models.Sections;
+﻿using OpenTracker.Models.Locations;
+using OpenTracker.Models.Markings;
 using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.Reactive;
 
-namespace OpenTracker.ViewModels.MarkingSelect
+namespace OpenTracker.ViewModels.Markings
 {
     /// <summary>
-    /// This is the ViewModel class for the marking select popup control.
+    /// This is the ViewModel class for the note marking select popup control.
     /// </summary>
-    public class MarkingSelectPopupVM : ViewModelBase
+    public class NoteMarkingSelectVM : ViewModelBase
     {
-        private readonly IMarkableSection _section;
+        private readonly IMarking _marking;
+        private readonly ILocation _location;
 
         public ObservableCollection<MarkingSelectButtonVM> Buttons { get; }
-        public double Width { get; }
-        public double Height { get; }
 
         private bool _popupOpen;
         public bool PopupOpen
@@ -26,42 +26,38 @@ namespace OpenTracker.ViewModels.MarkingSelect
         }
 
         public ReactiveCommand<MarkingType?, Unit> ChangeMarkingCommand { get; }
-        public ReactiveCommand<Unit, Unit> ClearMarkingCommand { get; }
+        public ReactiveCommand<Unit, Unit> RemoveNoteCommand { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="section">
+        /// <param name="marking">
         /// The marking to be represented.
         /// </param>
         /// <param name="buttons">
         /// The observable collection of marking select button ViewModel instances.
         /// </param>
-        /// <param name="width">
-        /// The width of the popup.
+        /// <param name="location">
+        /// The location.
         /// </param>
-        /// <param name="height">
-        /// The height of the popup.
-        /// </param>
-        public MarkingSelectPopupVM(
-            IMarkableSection section, ObservableCollection<MarkingSelectButtonVM> buttons,
-            double width, double height)
+        public NoteMarkingSelectVM(
+            IMarking marking, ObservableCollection<MarkingSelectButtonVM> buttons,
+            ILocation location)
         {
-            _section = section ?? throw new ArgumentNullException(nameof(section));
+            _marking = marking ?? throw new ArgumentNullException(nameof(marking));
             Buttons = buttons ?? throw new ArgumentNullException(nameof(buttons));
-            Width = width;
-            Height = height;
+            _location = location ?? throw new ArgumentNullException(nameof(location));
 
             ChangeMarkingCommand = ReactiveCommand.Create<MarkingType?>(ChangeMarking);
-            ClearMarkingCommand = ReactiveCommand.Create(ClearMarking);
+            RemoveNoteCommand = ReactiveCommand.Create(RemoveNote);
         }
 
         /// <summary>
-        /// Clears the marking of the section.
+        /// Remove the note.
         /// </summary>
-        private void ClearMarking()
+        private void RemoveNote()
         {
-            UndoRedoManager.Instance.Execute(new MarkSection(_section, null));
+            UndoRedoManager.Instance.Execute(new RemoveNote(_marking, _location));
             PopupOpen = false;
         }
 
@@ -78,7 +74,7 @@ namespace OpenTracker.ViewModels.MarkingSelect
                 return;
             }
 
-            UndoRedoManager.Instance.Execute(new MarkSection(_section, marking));
+            UndoRedoManager.Instance.Execute(new SetMarking(_marking, marking));
             PopupOpen = false;
         }
     }

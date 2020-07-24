@@ -10,8 +10,9 @@
     <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
   </UserControl.Resources>
 
-  <Panel Name="MarkingPopupTarget" PointerReleased="OnClick">
-    <Image Classes="SectionIcon" Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}" />
+  <Panel PointerReleased="OnClick">
+    <Image Classes="SectionIcon" Source="{Binding ImageSource, Converter={StaticResource
+           BitmapValueConverter}}" />
     <ContentControl Content="{Binding MarkingSelect}" />
   </Panel>
 

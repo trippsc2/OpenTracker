@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Interfaces;
 using OpenTracker.Models;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo;
 using ReactiveUI;

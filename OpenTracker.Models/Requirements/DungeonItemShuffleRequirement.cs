@@ -1,4 +1,5 @@
-﻿using OpenTracker.Models.Modes;
+﻿using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.Modes;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements

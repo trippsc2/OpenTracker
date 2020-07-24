@@ -1,30 +1,30 @@
-﻿using OpenTracker.Models.Sections;
+﻿using OpenTracker.Models.Markings;
 using System;
 
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to mark a location section.
+    /// This is the class for an undoable action to set a marking.
     /// </summary>
-    public class MarkSection : IUndoable
+    public class SetMarking : IUndoable
     {
-        private readonly IMarkableSection _section;
-        private readonly MarkingType? _marking;
+        private readonly IMarking _marking;
+        private readonly MarkingType? _newMarking;
         private MarkingType? _previousMarking;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="section">
+        /// <param name="marking">
         /// The section data to be marked.
         /// </param>
-        /// <param name="marking">
+        /// <param name="newMarking">
         /// The marking to be applied to the section.
         /// </param>
-        public MarkSection(IMarkableSection section, MarkingType? marking)
+        public SetMarking(IMarking marking, MarkingType? newMarking)
         {
-            _section = section ?? throw new ArgumentNullException(nameof(section));
-            _marking = marking;
+            _marking = marking ?? throw new ArgumentNullException(nameof(marking));
+            _newMarking = newMarking;
         }
 
         /// <summary>
@@ -43,8 +43,8 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Execute()
         {
-            _previousMarking = _section.Marking;
-            _section.Marking = _marking;
+            _previousMarking = _marking.Value;
+            _marking.Value = _newMarking;
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Undo()
         {
-            _section.Marking = _previousMarking;
+            _marking.Value = _previousMarking;
         }
     }
 }
