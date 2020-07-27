@@ -48,7 +48,7 @@
 			<Setter Property="Padding" Value="5" />
 		</Style>
 
-		<Style Selector="Border.CrystalCount">
+		<Style Selector="Border.LargeItemCount">
 			<Setter Property="Background" Value="#000000" />
 			<Setter Property="Padding" Value="4,0" />
 			<Setter Property="HorizontalAlignment" Value="Right" />
@@ -126,7 +126,7 @@
 			<Setter Property="Margin" Value="4" />
 		</Style>
 
-		<Style Selector="TextBlock.CrystalCount">
+		<Style Selector="TextBlock.LargeItemCount">
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
 			<Setter Property="FontSize" Value="10" />
 			<Setter Property="FontWeight" Value="SemiBold" />
@@ -185,6 +185,21 @@
 			<Setter Property="VerticalAlignment" Value="Center" />
 		</Style>
 
+    <Style Selector="TextBlock.SequenceBreakTitle">
+      <Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
+      <Setter Property="FontSize" Value="12" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Margin" Value="4" />
+    </Style>
+
+    <Style Selector="TextBlock.SequenceBreakLabel">
+      <Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="Margin" Value="4" />
+      <Setter Property="HorizontalAlignment" Value="Right" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
     <Style Selector="TextBlock.AutoTrackerLabel">
       <Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
       <Setter Property="FontSize" Value="12" />
@@ -223,7 +238,7 @@
       <Setter Property="IsHitTestVisible" Value="False" />
 		</Style>
 
-		<Style Selector="CheckBox.ModeSettings">
+    <Style Selector="CheckBox.ModeSettings">
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/#Open Sans" />
 			<Setter Property="FontSize" Value="11" />
 			<Setter Property="Margin" Value="4" />
@@ -234,7 +249,13 @@
       <Setter Property="IsHitTestVisible" Value="False" />
     </Style>
 
-		<Style Selector="Panel.ItemControl">
+    <Style Selector="CheckBox.SequenceBreak">
+      <Setter Property="FontFamily" Value="avares://OpenTracker/Assets/#Open Sans" />
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="Margin" Value="4" />
+    </Style>
+
+    <Style Selector="Panel.ItemControl">
 			<Setter Property="Margin" Value="1,4" />
 			<Setter Property="Height" Value="32" />
 			<Setter Property="Width" Value="32" />
@@ -254,6 +275,7 @@
 		<Style Selector="Image.DungeonItem">
 			<Setter Property="Height" Value="16" />
 			<Setter Property="Width" Value="16" />
+      <Setter Property="Margin" Value="0,0,2,0" />
 		</Style>
 
 		<Style Selector="Image.Close">

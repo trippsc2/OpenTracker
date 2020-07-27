@@ -1,0 +1,27 @@
+﻿using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.Requirements;
+using OpenTracker.Models.SaveLoad;
+using System.ComponentModel;
+
+namespace OpenTracker.Models.Sections
+{
+    /// <summary>
+    /// This is the interface for item/entrance sections of a location.
+    /// </summary>
+    public interface ISection : INotifyPropertyChanged
+    {
+        string Name { get; }
+        IRequirement Requirement { get; }
+        AccessibilityLevel Accessibility { get; }
+        bool UserManipulated { get; set; }
+        int Available { get; set; }
+
+        bool IsAvailable();
+        bool CanBeCleared(bool force);
+        void Clear(bool force);
+        void Reset();
+        bool CanBeUncleared();
+        SectionSaveData Save();
+        void Load(SectionSaveData saveData);
+    }
+}

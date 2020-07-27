@@ -1,28 +1,22 @@
-﻿using OpenTracker.Models.Enums;
-using OpenTracker.Models.Interfaces;
+﻿using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.BossPlacements;
+using OpenTracker.Models.Requirements;
+using OpenTracker.Models.SaveLoad;
 using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the class containing boss/prize sections of dungeons.
+    /// This is the section class containing a boss and no dungeon prize (GT non-Aga2 bosses).
     /// </summary>
-    public class BossSection : ISection
+    public class BossSection : IBossSection
     {
-        private readonly Game _game;
-
-        public string Name { get; } = "Boss";
-        public bool HasMarking { get => false; }
-        public bool PrizeVisible { get; } = true;
-        public ModeRequirement ModeRequirement { get; }
+        public string Name { get; }
+        public IRequirement Requirement { get; }
         public bool UserManipulated { get; set; }
-        public MarkingType? Marking { get => null; set { } }
-        public BossPlacement BossPlacement { get; }
+        public IBossPlacement BossPlacement { get; }
 
-        public Action AutoTrack { get; }
-
-        public event PropertyChangingEventHandler PropertyChanging;
         public event PropertyChangedEventHandler PropertyChanged;
 
         private AccessibilityLevel _accessibility;
@@ -53,356 +47,25 @@ namespace OpenTracker.Models.Sections
             }
         }
 
-        private Item _prize;
-        public Item Prize
-        {
-            get => _prize;
-            set
-            {
-                if (_prize != value)
-                {
-                    OnPropertyChanging(nameof(Prize));
-                    _prize = value;
-                    OnPropertyChanged(nameof(Prize));
-                }
-            }
-        }
-
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="game">
-        /// The game data.
+        /// <param name="name">
+        /// A string representing the name of the section.
         /// </param>
-        /// <param name="iD">
-        /// The location identity.
+        /// <param name="bossPlacement">
+        /// The boss placement for this boss section.
         /// </param>
-        /// <param name="index">
-        /// The index of the location.
+        /// <param name="requirement">
+        /// The requirement for this section to be visible.
         /// </param>
-        public BossSection(Game game, LocationID iD, int index = 0)
+        public BossSection(
+            string name, IBossPlacement bossPlacement, IRequirement requirement = null)
         {
-            _game = game ?? throw new ArgumentNullException(nameof(game));
-
-            ModeRequirement = new ModeRequirement();
+            Name = name ?? throw new ArgumentNullException(nameof(name));
+            BossPlacement = bossPlacement;
+            Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.None];
             Available = 1;
-
-            switch (iD)
-            {
-                case LocationID.AgahnimTower:
-                    {
-                        Prize = _game.Items[ItemType.Aga];
-                        BossPlacement = _game.BossPlacements[BossPlacementID.ATBoss];
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = _game.AutoTracker.CheckMemoryByte(MemorySegmentType.Item, 133, 2);
-
-                            if (result.HasValue)
-                            {
-                                if (result.Value)
-                                {
-                                    Available = 0;
-                                }
-                                else
-                                {
-                                    Available = 1;
-                                }
-                            }
-                        };
-
-                        _game.AutoTracker.ItemMemory[133].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.EasternPalace:
-                    {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.EPBoss];
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 401, 8);
-
-                            if (result.HasValue)
-                            {
-                                if (result.Value)
-                                {
-                                    Available = 0;
-                                }
-                                else
-                                {
-                                    Available = 1;
-                                }
-                            }
-                        };
-
-                        _game.AutoTracker.RoomMemory[401].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.DesertPalace:
-                    {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.DPBoss];
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 103, 8);
-
-                            if (result.HasValue)
-                            {
-                                if (result.Value)
-                                {
-                                    Available = 0;
-                                }
-                                else
-                                {
-                                    Available = 1;
-                                }
-                            }
-                        };
-
-                        _game.AutoTracker.RoomMemory[103].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.TowerOfHera:
-                    {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.ToHBoss];
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 15, 8);
-
-                            if (result.HasValue)
-                            {
-                                if (result.Value)
-                                {
-                                    Available = 0;
-                                }
-                                else
-                                {
-                                    Available = 1;
-                                }
-                            }
-                        };
-
-                        _game.AutoTracker.RoomMemory[15].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.PalaceOfDarkness:
-                    {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.PoDBoss];
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 181, 8);
-
-                            if (result.HasValue)
-                            {
-                                if (result.Value)
-                                {
-                                    Available = 0;
-                                }
-                                else
-                                {
-                                    Available = 1;
-                                }
-                            }
-                        };
-
-                        _game.AutoTracker.RoomMemory[181].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.SwampPalace:
-                    {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.SPBoss];
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 13, 8);
-
-                            if (result.HasValue)
-                            {
-                                if (result.Value)
-                                {
-                                    Available = 0;
-                                }
-                                else
-                                {
-                                    Available = 1;
-                                }
-                            }
-                        };
-
-                        _game.AutoTracker.RoomMemory[13].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.SkullWoods:
-                    {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.SWBoss];
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 83, 8);
-
-                            if (result.HasValue)
-                            {
-                                if (result.Value)
-                                {
-                                    Available = 0;
-                                }
-                                else
-                                {
-                                    Available = 1;
-                                }
-                            }
-                        };
-
-                        _game.AutoTracker.RoomMemory[83].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.ThievesTown:
-                    {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.TTBoss];
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 345, 8);
-
-                            if (result.HasValue)
-                            {
-                                if (result.Value)
-                                {
-                                    Available = 0;
-                                }
-                                else
-                                {
-                                    Available = 1;
-                                }
-                            }
-                        };
-
-                        _game.AutoTracker.RoomMemory[345].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.IcePalace:
-                    {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.IPBoss];
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 445, 8);
-
-                            if (result.HasValue)
-                            {
-                                if (result.Value)
-                                {
-                                    Available = 0;
-                                }
-                                else
-                                {
-                                    Available = 1;
-                                }
-                            }
-                        };
-
-                        _game.AutoTracker.RoomMemory[445].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.MiseryMire:
-                    {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.MMBoss];
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 289, 8);
-
-                            if (result.HasValue)
-                            {
-                                if (result.Value)
-                                {
-                                    Available = 0;
-                                }
-                                else
-                                {
-                                    Available = 1;
-                                }
-                            }
-                        };
-
-                        _game.AutoTracker.RoomMemory[289].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.TurtleRock:
-                    {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.TRBoss];
-
-                        AutoTrack = () =>
-                        {
-                            bool? result = _game.AutoTracker.CheckMemoryFlag(MemorySegmentType.Room, 329, 8);
-                            
-                            if (result.HasValue)
-                            {
-                                if (result.Value)
-                                {
-                                    Available = 0;
-                                }
-                                else
-                                {
-                                    Available = 1;
-                                }
-                            }
-                        };
-
-                        _game.AutoTracker.RoomMemory[329].PropertyChanged += OnMemoryChanged;
-                    }
-                    break;
-                case LocationID.GanonsTower when index == 0:
-                    {
-                        PrizeVisible = false;
-                        BossPlacement = _game.BossPlacements[BossPlacementID.GTBoss1];
-
-                        Name = "Boss 1";
-                    }
-                    break;
-                case LocationID.GanonsTower when index == 1:
-                    {
-                        PrizeVisible = false;
-                        BossPlacement = _game.BossPlacements[BossPlacementID.GTBoss2];
-
-                        Name = "Boss 2";
-                    }
-                    break;
-                case LocationID.GanonsTower when index == 2:
-                    {
-                        PrizeVisible = false;
-                        BossPlacement = _game.BossPlacements[BossPlacementID.GTBoss3];
-
-                        Name = "Boss 3";
-                    }
-                    break;
-                case LocationID.GanonsTower:
-                    {
-                        BossPlacement = _game.BossPlacements[BossPlacementID.GTFinalBoss];
-                        Prize = _game.Items[ItemType.Aga2];
-
-                        Name = "Aga";
-                    }
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanging event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changing property.
-        /// </param>
-        private void OnPropertyChanging(string propertyName)
-        {
-            if (propertyName == nameof(Prize) && Prize != null && !IsAvailable())
-            {
-                Prize.Change(-1, true);
-            }
-            
-            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
         }
 
         /// <summary>
@@ -413,55 +76,29 @@ namespace OpenTracker.Models.Sections
         /// </param>
         private void OnPropertyChanged(string propertyName)
         {
-            if (propertyName == nameof(Available) && Prize != null)
-            {
-                if (Prize.Type == ItemType.Aga)
-                {
-                    if (IsAvailable())
-                    {
-                        Prize.Change(-1, false);
-                    }
-                    else
-                    {
-                        Prize.Change(1, false);
-                    }
-                }
-                else
-                {
-                    if (IsAvailable())
-                    {
-                        Prize.Change(-1, true);
-                    }
-                    else
-                    {
-                        Prize.Change(1, true);
-                    }
-                }
-            }
-
-            if (propertyName == nameof(Prize) && Prize != null && !IsAvailable())
-            {
-                Prize.Change(1, true);
-            }
-            
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the MemoryAddress class.
+        /// Returns whether the section can be cleared or collected.
         /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnMemoryChanged(object sender, PropertyChangedEventArgs e)
+        /// <returns>
+        /// A boolean representing whether the section can be cleared or collected.
+        /// </returns>
+        public virtual bool CanBeCleared(bool force)
         {
-            if (!UserManipulated)
-            {
-                AutoTrack();
-            }
+            return IsAvailable() && (force || Accessibility > AccessibilityLevel.Inspect);
+        }
+
+        /// <summary>
+        /// Returns whether the section can be uncollected.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether the section can be uncollected.
+        /// </returns>
+        public bool CanBeUncleared()
+        {
+            return Available == 0;
         }
 
         /// <summary>
@@ -492,12 +129,35 @@ namespace OpenTracker.Models.Sections
         public void Reset()
         {
             Available = 1;
-            BossPlacement.Reset();
+        }
 
-            if (Prize != _game.Items[ItemType.Aga] || Prize != _game.Items[ItemType.Aga2])
+        /// <summary>
+        /// Returns a new section save data instance for this section.
+        /// </summary>
+        /// <returns>
+        /// A new section save data instance.
+        /// </returns>
+        public SectionSaveData Save()
+        {
+            return new SectionSaveData()
             {
-                Prize = null;
+                Available = Available,
+                UserManipulated = UserManipulated
+            };
+        }
+
+        /// <summary>
+        /// Loads section save data.
+        /// </summary>
+        public void Load(SectionSaveData saveData)
+        {
+            if (saveData == null)
+            {
+                throw new ArgumentNullException(nameof(saveData));
             }
+
+            Available = saveData.Available;
+            UserManipulated = saveData.UserManipulated;
         }
     }
 }

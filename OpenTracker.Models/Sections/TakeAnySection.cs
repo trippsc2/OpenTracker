@@ -1,5 +1,7 @@
-﻿using OpenTracker.Models.Enums;
-using OpenTracker.Models.Interfaces;
+﻿using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Requirements;
+using OpenTracker.Models.SaveLoad;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,19 +9,17 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the class containing take any sections of locations.
+    /// This is the class containing take any sections.
     /// </summary>
-    public class TakeAnySection : ISection
+    public class TakeAnySection : ITakeAnySection
     {
-        private readonly Game _game;
         private readonly List<RequirementNodeConnection> _connections;
 
-        public bool HasMarking => false;
-        public string Name => "Take Any";
-        public ModeRequirement ModeRequirement { get; }
+        public string Name =>
+            "Take Any";
+        public IRequirement Requirement { get; }
         public bool UserManipulated { get; set; }
 
-        public event PropertyChangingEventHandler PropertyChanging;
         public event PropertyChangedEventHandler PropertyChanged;
 
         private AccessibilityLevel _accessibility;
@@ -50,187 +50,33 @@ namespace OpenTracker.Models.Sections
             }
         }
 
-        private MarkingType? _marking;
-        public MarkingType? Marking
-        {
-            get => _marking;
-            set
-            {
-                if (_marking != value)
-                {
-                    OnPropertyChanging(nameof(Marking));
-                    _marking = value;
-                    OnPropertyChanged(nameof(Marking));
-                }
-            }
-        }
-
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="game">
-        /// The game data.
+        /// <param name="connections">
+        /// The list of connections to this section.
         /// </param>
-        /// <param name="iD">
-        /// The location identity.
+        /// <param name="requirement">
+        /// The requirement for this section to be visible.
         /// </param>
-        public TakeAnySection(Game game, LocationID iD)
+        public TakeAnySection(
+            List<RequirementNodeConnection> connections, IRequirement requirement = null)
         {
-            _game = game ?? throw new ArgumentNullException(nameof(game));
-            _connections = new List<RequirementNodeConnection>();
-            ModeRequirement = new ModeRequirement();
+            _connections = connections ?? throw new ArgumentNullException(nameof(connections));
+
+            if (requirement != null)
+            {
+                Requirement = requirement;
+            }
+            else
+            {
+                Requirement = RequirementDictionary.Instance[RequirementType.None];
+            }
+
             Available = 1;
 
-            switch (iD)
-            {
-                case LocationID.TreesFairyCaveTakeAny:
-                case LocationID.KakarikoFortuneTellerTakeAny:
-                case LocationID.PegsFairyCaveTakeAny:
-                case LocationID.ForestChestGameTakeAny:
-                case LocationID.LumberjackHouseTakeAny:
-                case LocationID.LeftSnitchHouseTakeAny:
-                case LocationID.RightSnitchHouseTakeAny:
-                case LocationID.ThiefCaveTakeAny:
-                case LocationID.IceBeeCaveTakeAny:
-                case LocationID.FortuneTellerTakeAny:
-                case LocationID.ChestGameTakeAny:
-                    {
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.LightWorld,
-                            RequirementType.None, new ModeRequirement()));
-                    }
-                    break;
-                case LocationID.GrassHouseTakeAny:
-                    {
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.GrassHouse,
-                            RequirementType.None, new ModeRequirement()));
-                    }
-                    break;
-                case LocationID.BombHutTakeAny:
-                    {
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.BombHut,
-                            RequirementType.None, new ModeRequirement()));
-                    }
-                    break;
-                case LocationID.IceFairyCaveTakeAny:
-                    {
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.IceFairyCave,
-                            RequirementType.None, new ModeRequirement()));
-                    }
-                    break;
-                case LocationID.RupeeCaveTakeAny:
-                    {
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.RupeeCave,
-                            RequirementType.None, new ModeRequirement()));
-                    }
-                    break;
-                case LocationID.CentralBonkRocksTakeAny:
-                    {
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.CentralBonkRocks,
-                            RequirementType.None, new ModeRequirement()));
-                    }
-                    break;
-                case LocationID.HypeFairyCaveTakeAny:
-                    {
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.HypeFairyCave,
-                            RequirementType.None, new ModeRequirement()));
-                    }
-                    break;
-                case LocationID.EDMFairyCaveTakeAny:
-                    {
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainEastBottom,
-                            RequirementType.None, new ModeRequirement()));
-                    }
-                    break;
-                case LocationID.DarkChapelTakeAny:
-                case LocationID.DarkVillageFortuneTellerTakeAny:
-                    {
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldWest,
-                            RequirementType.None, new ModeRequirement()));
-                    }
-                    break;
-                case LocationID.DarkTreesFairyCaveTakeAny:
-                case LocationID.DarkSahasrahlaTakeAny:
-                case LocationID.DarkFluteSpotFiveTakeAny:
-                    {
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldEast,
-                            RequirementType.None, new ModeRequirement()));
-                    }
-                    break;
-                case LocationID.ArrowGameTakeAny:
-                    {
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldSouth,
-                            RequirementType.None, new ModeRequirement()));
-                    }
-                    break;
-                case LocationID.DarkCentralBonkRocksTakeAny:
-                    {
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DWCentralBonkRocks,
-                            RequirementType.None, new ModeRequirement()));
-                    }
-                    break;
-                case LocationID.DarkIceRodCaveTakeAny:
-                    {
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DWIceRodCave,
-                            RequirementType.None, new ModeRequirement()));
-                    }
-                    break;
-                case LocationID.DarkFakeIceRodCaveTakeAny:
-                    {
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DarkWorldSouthEast,
-                            RequirementType.None, new ModeRequirement()));
-                    }
-                    break;
-                case LocationID.DarkIceRodRockTakeAny:
-                    {
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DWIceRodRock,
-                            RequirementType.None, new ModeRequirement()));
-                    }
-                    break;
-                case LocationID.DarkMountainFairyTakeAny:
-                    {
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.DeathMountainWestBottom,
-                            RequirementType.None, new ModeRequirement()));
-                    }
-                    break;
-                case LocationID.MireRightShackTakeAny:
-                case LocationID.MireCaveTakeAny:
-                    {
-                        _connections.Add(new RequirementNodeConnection(RequirementNodeID.MireArea,
-                            RequirementType.None, new ModeRequirement()));
-                    }
-                    break;
-            }
-
-            List<RequirementNodeID> nodeSubscriptions = new List<RequirementNodeID>();
-            List<RequirementType> requirementSubscriptions = new List<RequirementType>();
-
-            foreach (RequirementNodeConnection connection in _connections)
-            {
-                if (!nodeSubscriptions.Contains(connection.FromNode))
-                {
-                    _game.RequirementNodes[connection.FromNode].PropertyChanged += OnRequirementChanged;
-                    nodeSubscriptions.Add(connection.FromNode);
-                }
-
-                if (!requirementSubscriptions.Contains(connection.Requirement))
-                {
-                    _game.Requirements[connection.Requirement].PropertyChanged += OnRequirementChanged;
-                    requirementSubscriptions.Add(connection.Requirement);
-                }
-            }
-
+            SubscribeToConnections();
             UpdateAccessibility();
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanging event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changing property.
-        /// </param>
-        private void OnPropertyChanging(string propertyName)
-        {
-            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
         }
 
         /// <summary>
@@ -245,8 +91,8 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the Requirement and RequirementNode
-        /// classes that are requirements for dungeon items.
+        /// Subscribes to the PropertyChanged event on the IRequirement interface and
+        /// RequirementNode class.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -257,6 +103,32 @@ namespace OpenTracker.Models.Sections
         private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateAccessibility();
+        }
+
+        /// <summary>
+        /// Creates subscription to the PropertyChanged event on the RequirementNode class and
+        /// IRequirement interface.
+        /// </summary>
+        private void SubscribeToConnections()
+        {
+            foreach (RequirementNodeConnection connection in _connections)
+            {
+                List<RequirementNodeID> nodeSubscriptions = new List<RequirementNodeID>();
+                List<IRequirement> requirementSubscriptions = new List<IRequirement>();
+
+                if (!nodeSubscriptions.Contains(connection.FromNode))
+                {
+                    RequirementNodeDictionary.Instance[connection.FromNode].PropertyChanged +=
+                        OnRequirementChanged;
+                    nodeSubscriptions.Add(connection.FromNode);
+                }
+
+                if (!requirementSubscriptions.Contains(connection.Requirement))
+                {
+                    connection.Requirement.PropertyChanged += OnRequirementChanged;
+                    requirementSubscriptions.Add(connection.Requirement);
+                }
+            }
         }
 
         /// <summary>
@@ -271,7 +143,7 @@ namespace OpenTracker.Models.Sections
                 AccessibilityLevel nodeAccessibility = AccessibilityLevel.Normal;
                 
                 nodeAccessibility = (AccessibilityLevel)Math.Min((byte)nodeAccessibility,
-                    (byte)_game.RequirementNodes[connection.FromNode].Accessibility);
+                    (byte)RequirementNodeDictionary.Instance[connection.FromNode].Accessibility);
 
                 if (nodeAccessibility < AccessibilityLevel.SequenceBreak)
                 {
@@ -279,11 +151,11 @@ namespace OpenTracker.Models.Sections
                 }
 
                 AccessibilityLevel requirementAccessibility =
-                    _game.Requirements[connection.Requirement].Accessibility;
+                    connection.Requirement.Accessibility;
 
                 AccessibilityLevel finalConnectionAccessibility =
-                    (AccessibilityLevel)Math.Min(Math.Min((byte)nodeAccessibility,
-                    (byte)requirementAccessibility), (byte)connection.MaximumAccessibility);
+                    (AccessibilityLevel)Math.Min((byte)nodeAccessibility,
+                    (byte)requirementAccessibility);
 
                 if (finalConnectionAccessibility == AccessibilityLevel.Normal)
                 {
@@ -298,6 +170,28 @@ namespace OpenTracker.Models.Sections
             }
 
             Accessibility = finalAccessibility;
+        }
+
+        /// <summary>
+        /// Returns whether the section can be cleared or collected.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether the section can be cleared or collected.
+        /// </returns>
+        public bool CanBeCleared(bool force)
+        {
+            return IsAvailable() && (force || Accessibility > AccessibilityLevel.Inspect);
+        }
+
+        /// <summary>
+        /// Returns whether the section can be uncollected.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether the section can be uncollected.
+        /// </returns>
+        public bool CanBeUncleared()
+        {
+            return Available == 0;
         }
 
         /// <summary>
@@ -327,8 +221,36 @@ namespace OpenTracker.Models.Sections
         /// </summary>
         public void Reset()
         {
-            Marking = null;
             Available = 1;
+        }
+
+        /// <summary>
+        /// Returns a new section save data instance for this section.
+        /// </summary>
+        /// <returns>
+        /// A new section save data instance.
+        /// </returns>
+        public SectionSaveData Save()
+        {
+            return new SectionSaveData()
+            {
+                Available = Available,
+                UserManipulated = UserManipulated
+            };
+        }
+
+        /// <summary>
+        /// Loads section save data.
+        /// </summary>
+        public void Load(SectionSaveData saveData)
+        {
+            if (saveData == null)
+            {
+                throw new ArgumentNullException(nameof(saveData));
+            }
+
+            Available = saveData.Available;
+            UserManipulated = saveData.UserManipulated;
         }
     }
 }

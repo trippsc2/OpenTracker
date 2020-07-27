@@ -1,0 +1,41 @@
+﻿using OpenTracker.Models.Dungeons;
+using OpenTracker.Models.Requirements;
+
+namespace OpenTracker.Models.KeyLayouts
+{
+    public class EndKeyLayout : IKeyLayout
+    {
+        private readonly IRequirement _requirement;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="requirement">
+        /// The requirement for this key layout to be valid.
+        /// </param>
+        public EndKeyLayout(IRequirement requirement = null)
+        {
+            _requirement = requirement ?? RequirementDictionary.Instance[RequirementType.None];
+        }
+
+        /// <summary>
+        /// Returns whether the key layout is possible in the current game state.
+        /// </summary>
+        /// <param name="dungeonData">
+        /// The dungeon mutable data.
+        /// </param>
+        /// <param name="smallKeys">
+        /// A 32-bit signed integer representing the number of small keys collected.
+        /// </param>
+        /// <param name="bigKey">
+        /// A boolean representing whether the big key was collected.
+        /// </param>
+        /// <returns>
+        /// A boolean representing whether the key layout is possible.
+        /// </returns>
+        public bool CanBeTrue(IMutableDungeon dungeonData, int smallKeys, bool bigKey)
+        {
+            return _requirement.Met;
+        }
+    }
+}

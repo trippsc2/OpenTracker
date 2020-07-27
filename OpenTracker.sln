@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenTracker.Models", "OpenT
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "OpenTracker.Setup", "OpenTracker.Setup\OpenTracker.Setup.vdproj", "{DB115491-340A-452D-93EB-9D843273F45D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTracker.UnitTests", "OpenTracker.UnitTests\OpenTracker.UnitTests.csproj", "{E97EA1E8-352B-4FDF-97F3-7C679BFA8D6A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{5DB05A1F-56E3-4035-8898-5CFB22DB3568}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DB115491-340A-452D-93EB-9D843273F45D}.Debug|Any CPU.ActiveCfg = Debug
 		{DB115491-340A-452D-93EB-9D843273F45D}.Release|Any CPU.ActiveCfg = Release
+		{E97EA1E8-352B-4FDF-97F3-7C679BFA8D6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E97EA1E8-352B-4FDF-97F3-7C679BFA8D6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E97EA1E8-352B-4FDF-97F3-7C679BFA8D6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E97EA1E8-352B-4FDF-97F3-7C679BFA8D6A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

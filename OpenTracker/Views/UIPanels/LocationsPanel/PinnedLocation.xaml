@@ -1,0 +1,33 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OpenTracker.Views.UIPanels.LocationsPanel.PinnedLocation"
+             >
+	<Border Classes="ControlBorder Location" Margin="1">
+		<Grid RowDefinitions="Auto,Auto,Auto,Auto" Margin="4">
+
+			<Grid Grid.Row="0" ColumnDefinitions="Auto, *, Auto" HorizontalAlignment="Stretch"
+				  VerticalAlignment="Center">
+				<TextBlock Classes="LocationName" Grid.Column="0" Text="{Binding Name}" />
+				<Image Classes="Close" Source="avares://OpenTracker/Assets/Images/close.png" Grid.Column="2"
+					   PointerReleased="OnClick" />
+			</Grid>
+
+			<Border Classes="Separator" Grid.Row="1" Margin="0,2" />
+
+			<ItemsControl Grid.Row="2" Items="{Binding Sections}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<StackPanel Margin="0,2" Orientation="Horizontal" />
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+			</ItemsControl>
+
+      <ContentControl Grid.Row="3" Content="{Binding Notes}" />
+
+		</Grid>
+	</Border>
+</UserControl>

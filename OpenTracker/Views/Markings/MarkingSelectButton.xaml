@@ -1,0 +1,20 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OpenTracker.Views.Markings.MarkingSelectButton">
+	
+	<UserControl.Resources>
+		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />
+	</UserControl.Resources>
+
+  <Button Command="{Binding $parent[ItemsControl].DataContext.ChangeMarkingCommand}"
+          Background="{DynamicResource ThemeBackgroundBrush}"
+          BorderThickness="0" CommandParameter="{Binding Marking}">
+    <Image Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}"
+           Height="32" Width="32" />
+  </Button>
+
+</UserControl>

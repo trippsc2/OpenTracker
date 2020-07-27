@@ -6,6 +6,9 @@ using System.Reactive;
 
 namespace OpenTracker.ViewModels
 {
+    /// <summary>
+    /// This is the ViewModel for the message box dialog window.
+    /// </summary>
     public class MessageBoxDialogVM : ViewModelBase, IDialogRequestClose
     {
         public ReactiveCommand<Unit, Unit> YesCommand { get; }

@@ -1,11 +1,12 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.ThemeManager;
 using Avalonia.Threading;
 using OpenTracker.Interfaces;
+using OpenTracker.Views.ColorSelect;
+using OpenTracker.Views.SequenceBreaks;
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace OpenTracker.Views
         private Orientation? _orientation;
         private AutoTrackerDialog _autoTrackerDialog;
         private ColorSelectDialog _colorSelectDialog;
+        private SequenceBreakDialog _sequenceBreakDialog;
 
         public IAutoTrackerAccess ViewModelAutoTrackerAccess =>
             DataContext as IAutoTrackerAccess;
@@ -32,6 +34,8 @@ namespace OpenTracker.Views
             DataContext as ISave;
         public ISaveAppSettings ViewModelSaveAppSettings =>
             DataContext as ISaveAppSettings;
+        public ISequenceBreakAccess ViewModelSequenceBreakAccess =>
+            DataContext as ISequenceBreakAccess;
 
         public static AvaloniaProperty<IThemeSelector> SelectorProperty =
             AvaloniaProperty.Register<MainWindow, IThemeSelector>(nameof(Selector));
@@ -39,14 +43,6 @@ namespace OpenTracker.Views
         {
             get => GetValue(SelectorProperty);
             set => SetValue(SelectorProperty, value);
-        }
-
-        public static AvaloniaProperty<bool> ModeSettingsPopupOpenProperty =
-            AvaloniaProperty.Register<MainWindow, bool>(nameof(ModeSettingsPopupOpen));
-        public bool ModeSettingsPopupOpen
-        {
-            get => GetValue(ModeSettingsPopupOpenProperty);
-            set => SetValue(ModeSettingsPopupOpenProperty, value);
         }
 
         public static AvaloniaProperty<string> CurrentFilePathProperty =
@@ -152,21 +148,14 @@ namespace OpenTracker.Views
 
             string[] path = await dialog.ShowAsync(this).ConfigureAwait(false);
 
-            if (path != null)
+            if (path != null && path.Length > 0)
             {
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     CurrentFilePath = path[0];
                     ViewModelOpen.Open(CurrentFilePath);
-                }).ConfigureAwait(false);
-            }
-        }
-
-        private void OpenModeSettingsPopup(object sender, PointerReleasedEventArgs e)
-        {
-            if (e.InitialPressMouseButton == MouseButton.Left)
-            {
-                ModeSettingsPopupOpen = true;
+                })
+                    .ConfigureAwait(false);
             }
         }
 
@@ -182,6 +171,11 @@ namespace OpenTracker.Views
             if (_colorSelectDialog != null && _colorSelectDialog.IsVisible)
             {
                 _colorSelectDialog?.Close();
+            }
+
+            if (_sequenceBreakDialog != null && _sequenceBreakDialog.IsVisible)
+            {
+                _sequenceBreakDialog?.Close();
             }
         }
 
@@ -214,6 +208,22 @@ namespace OpenTracker.Views
                     DataContext = ViewModelColorSelectAccess.GetColorSelectViewModel()
                 };
                 _colorSelectDialog.Show();
+            }
+        }
+
+        public void SequenceBreak()
+        {
+            if (_sequenceBreakDialog != null && _sequenceBreakDialog.IsVisible)
+            {
+                _sequenceBreakDialog.Activate();
+            }
+            else
+            {
+                _sequenceBreakDialog = new SequenceBreakDialog()
+                {
+                    DataContext = ViewModelSequenceBreakAccess.GetSequenceBreakViewModel()
+                };
+                _sequenceBreakDialog.Show();
             }
         }
     }
