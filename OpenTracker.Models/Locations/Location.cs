@@ -313,7 +313,7 @@ namespace OpenTracker.Models.Locations
         public LocationSaveData Save()
         {
             List<SectionSaveData> sections = new List<SectionSaveData>();
-            List<MarkingType?> markings = new List<MarkingType?>();
+            List<MarkType?> markings = new List<MarkType?>();
 
             foreach (var section in Sections)
             {
@@ -322,7 +322,7 @@ namespace OpenTracker.Models.Locations
 
             foreach (var marking in Notes)
             {
-                markings.Add(marking.Value);
+                markings.Add(marking.Mark);
             }
 
             return new LocationSaveData()
@@ -353,7 +353,7 @@ namespace OpenTracker.Models.Locations
             {
                 Notes.Add(new Marking()
                 {
-                    Value = marking
+                    Mark = marking
                 });
             }
         }

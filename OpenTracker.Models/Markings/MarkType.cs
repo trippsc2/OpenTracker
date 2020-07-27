@@ -3,7 +3,7 @@
     /// <summary>
     /// This is the enum type for marking types.
     /// </summary>
-    public enum MarkingType
+    public enum MarkType
     {
         HCFront,
         HCLeft,

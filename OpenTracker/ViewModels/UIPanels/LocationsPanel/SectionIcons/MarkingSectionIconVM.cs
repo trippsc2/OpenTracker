@@ -21,65 +21,65 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
         {
             get
             {
-                if (_marking.Value == null)
+                if (_marking.Mark == null)
                 {
                     return "avares://OpenTracker/Assets/Images/Items/unknown1.png";
                 }
 
-                switch (_marking.Value)
+                switch (_marking.Mark)
                 {
-                    case MarkingType.Bow:
-                    case MarkingType.SilverArrows:
-                    case MarkingType.Boomerang:
-                    case MarkingType.RedBoomerang:
-                    case MarkingType.SmallKey:
-                    case MarkingType.BigKey:
+                    case MarkType.Bow:
+                    case MarkType.SilverArrows:
+                    case MarkType.Boomerang:
+                    case MarkType.RedBoomerang:
+                    case MarkType.SmallKey:
+                    case MarkType.BigKey:
                         {
                             return "avares://OpenTracker/Assets/Images/Items/visible-" +
-                                $"{_marking.Value.ToString().ToLowerInvariant()}.png";
+                                $"{_marking.Mark.ToString().ToLowerInvariant()}.png";
                         }
-                    case MarkingType.Hookshot:
-                    case MarkingType.Bomb:
-                    case MarkingType.Mushroom:
-                    case MarkingType.Powder:
-                    case MarkingType.FireRod:
-                    case MarkingType.IceRod:
-                    case MarkingType.Bombos:
-                    case MarkingType.Ether:
-                    case MarkingType.Quake:
-                    case MarkingType.Shovel:
-                    case MarkingType.Lamp:
-                    case MarkingType.Hammer:
-                    case MarkingType.Flute:
-                    case MarkingType.Net:
-                    case MarkingType.Book:
-                    case MarkingType.MoonPearl:
-                    case MarkingType.CaneOfSomaria:
-                    case MarkingType.CaneOfByrna:
-                    case MarkingType.Cape:
-                    case MarkingType.Mirror:
-                    case MarkingType.Boots:
-                    case MarkingType.Flippers:
-                    case MarkingType.HalfMagic:
-                    case MarkingType.Aga:
+                    case MarkType.Hookshot:
+                    case MarkType.Bomb:
+                    case MarkType.Mushroom:
+                    case MarkType.Powder:
+                    case MarkType.FireRod:
+                    case MarkType.IceRod:
+                    case MarkType.Bombos:
+                    case MarkType.Ether:
+                    case MarkType.Quake:
+                    case MarkType.Shovel:
+                    case MarkType.Lamp:
+                    case MarkType.Hammer:
+                    case MarkType.Flute:
+                    case MarkType.Net:
+                    case MarkType.Book:
+                    case MarkType.MoonPearl:
+                    case MarkType.CaneOfSomaria:
+                    case MarkType.CaneOfByrna:
+                    case MarkType.Cape:
+                    case MarkType.Mirror:
+                    case MarkType.Boots:
+                    case MarkType.Flippers:
+                    case MarkType.HalfMagic:
+                    case MarkType.Aga:
                         {
                             return "avares://OpenTracker/Assets/Images/Items/" +
-                                $"{_marking.Value.ToString().ToLowerInvariant()}1.png";
+                                $"{_marking.Mark.ToString().ToLowerInvariant()}1.png";
                         }
-                    case MarkingType.Bottle:
-                    case MarkingType.Gloves:
-                    case MarkingType.Shield:
-                    case MarkingType.Mail:
+                    case MarkType.Bottle:
+                    case MarkType.Gloves:
+                    case MarkType.Shield:
+                    case MarkType.Mail:
                         {
                             var item = ItemDictionary.Instance[Enum.Parse<ItemType>(
-                                _marking.Value.ToString())];
+                                _marking.Mark.ToString())];
 
                             return "avares://OpenTracker/Assets/Images/Items/" +
-                                _marking.Value.ToString().ToLowerInvariant() +
+                                _marking.Mark.ToString().ToLowerInvariant() +
                                 Math.Min(item.Current + 1, item.Maximum).ToString(
                                 CultureInfo.InvariantCulture) + ".png";
                         }
-                    case MarkingType.Sword:
+                    case MarkType.Sword:
                         {
                             var sword = ItemDictionary.Instance[ItemType.Sword];
                             int itemNumber;
@@ -94,40 +94,40 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
                             }
 
                             return "avares://OpenTracker/Assets/Images/Items/" +
-                                _marking.Value.ToString().ToLowerInvariant() +
+                                _marking.Mark.ToString().ToLowerInvariant() +
                                 $"{itemNumber.ToString(CultureInfo.InvariantCulture)}.png";
                         }
-                    case MarkingType.HCFront:
-                    case MarkingType.HCLeft:
-                    case MarkingType.HCRight:
-                    case MarkingType.EP:
-                    case MarkingType.SP:
-                    case MarkingType.SW:
-                    case MarkingType.DPFront:
-                    case MarkingType.DPLeft:
-                    case MarkingType.DPRight:
-                    case MarkingType.DPBack:
-                    case MarkingType.TT:
-                    case MarkingType.IP:
-                    case MarkingType.MM:
-                    case MarkingType.TRFront:
-                    case MarkingType.TRLeft:
-                    case MarkingType.TRRight:
-                    case MarkingType.TRBack:
-                    case MarkingType.GT:
+                    case MarkType.HCFront:
+                    case MarkType.HCLeft:
+                    case MarkType.HCRight:
+                    case MarkType.EP:
+                    case MarkType.SP:
+                    case MarkType.SW:
+                    case MarkType.DPFront:
+                    case MarkType.DPLeft:
+                    case MarkType.DPRight:
+                    case MarkType.DPBack:
+                    case MarkType.TT:
+                    case MarkType.IP:
+                    case MarkType.MM:
+                    case MarkType.TRFront:
+                    case MarkType.TRLeft:
+                    case MarkType.TRRight:
+                    case MarkType.TRBack:
+                    case MarkType.GT:
                         {
                             return "avares://OpenTracker/Assets/Images/" +
-                                $"{_marking.Value.ToString().ToLowerInvariant()}.png";
+                                $"{_marking.Mark.ToString().ToLowerInvariant()}.png";
                         }
-                    case MarkingType.ToH:
+                    case MarkType.ToH:
                         {
                             return "avares://OpenTracker/Assets/Images/th.png";
                         }
-                    case MarkingType.PoD:
+                    case MarkType.PoD:
                         {
                             return "avares://OpenTracker/Assets/Images/pd.png";
                         }
-                    case MarkingType.Ganon:
+                    case MarkType.Ganon:
                         {
                             return "avares://OpenTracker/Assets/Images/ganon.png";
                         }
@@ -170,7 +170,7 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
         /// </param>
         private void OnMarkingChanging(object sender, PropertyChangingEventArgs e)
         {
-            if (e.PropertyName == nameof(IMarking.Value))
+            if (e.PropertyName == nameof(IMarking.Mark))
             {
                 UnsubscribeFromMarkingItem();
             }
@@ -187,7 +187,7 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
         /// </param>
         private void OnSectionChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IMarking.Value))
+            if (e.PropertyName == nameof(IMarking.Mark))
             {
                 SubscribeToMarkingItem();
                 UpdateImage();
@@ -213,17 +213,17 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
         /// </summary>
         private void UnsubscribeFromMarkingItem()
         {
-            if (_marking.Value.HasValue)
+            if (_marking.Mark.HasValue)
             {
-                switch (_marking.Value.Value)
+                switch (_marking.Mark.Value)
                 {
-                    case MarkingType.Bottle:
-                    case MarkingType.Gloves:
-                    case MarkingType.Sword:
-                    case MarkingType.Shield:
-                    case MarkingType.Mail:
+                    case MarkType.Bottle:
+                    case MarkType.Gloves:
+                    case MarkType.Sword:
+                    case MarkType.Shield:
+                    case MarkType.Mail:
                         {
-                            ItemType itemType = Enum.Parse<ItemType>(_marking.Value.Value.ToString());
+                            ItemType itemType = Enum.Parse<ItemType>(_marking.Mark.Value.ToString());
                             ItemDictionary.Instance[itemType].PropertyChanged -= OnMarkedItemChanged;
                         }
                         break;
@@ -236,17 +236,17 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons
         /// </summary>
         private void SubscribeToMarkingItem()
         {
-            if (_marking.Value.HasValue)
+            if (_marking.Mark.HasValue)
             {
-                switch (_marking.Value.Value)
+                switch (_marking.Mark.Value)
                 {
-                    case MarkingType.Bottle:
-                    case MarkingType.Gloves:
-                    case MarkingType.Sword:
-                    case MarkingType.Shield:
-                    case MarkingType.Mail:
+                    case MarkType.Bottle:
+                    case MarkType.Gloves:
+                    case MarkType.Sword:
+                    case MarkType.Shield:
+                    case MarkType.Mail:
                         {
-                            ItemType itemType = Enum.Parse<ItemType>(_marking.Value.Value.ToString());
+                            ItemType itemType = Enum.Parse<ItemType>(_marking.Mark.Value.ToString());
                             ItemDictionary.Instance[itemType].PropertyChanged += OnMarkedItemChanged;
                         }
                         break;

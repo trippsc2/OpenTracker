@@ -191,7 +191,8 @@ namespace OpenTracker.Models.Dungeons
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Mode.WorldState) ||
-                e.PropertyName == nameof(Mode.DungeonItemShuffle))
+                e.PropertyName == nameof(Mode.DungeonItemShuffle) ||
+                e.PropertyName == nameof(Mode.GuaranteedBossItems))
             {
                 UpdateSectionAccessibility();
             }

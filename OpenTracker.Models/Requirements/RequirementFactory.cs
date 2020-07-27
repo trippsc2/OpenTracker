@@ -173,6 +173,27 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
+        /// Returns a guaranteed boss items requirement.
+        /// </summary>
+        /// <param name="type">
+        /// The requirement type.
+        /// </param>
+        /// <returns>
+        /// A guaranteed boss items requirement.
+        /// </returns>
+        private static IRequirement GetGuaranteedBossItemsRequirement(RequirementType type)
+        {
+            return type switch
+            {
+                RequirementType.GuaranteedBossItemsOff =>
+                    new GuaranteedBossItemsRequirement(false),
+                RequirementType.GuaranteedBossItemsOn =>
+                    new GuaranteedBossItemsRequirement(true),
+                _ => throw new ArgumentOutOfRangeException(nameof(type))
+            };
+        }
+
+        /// <summary>
         /// Returns an item exact amount requirement.
         /// </summary>
         /// <param name="game">
@@ -594,6 +615,11 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.EntranceShuffleOn:
                     {
                         return GetEntranceShuffleRequirement(type);
+                    }
+                case RequirementType.GuaranteedBossItemsOff:
+                case RequirementType.GuaranteedBossItemsOn:
+                    {
+                        return GetGuaranteedBossItemsRequirement(type);
                     }
                 case RequirementType.WorldStateNonInverted:
                     {

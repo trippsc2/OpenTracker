@@ -18,6 +18,7 @@ namespace OpenTracker.ViewModels
         public ReactiveCommand<Unit, Unit> EntranceShuffleCommand { get; }
         public ReactiveCommand<Unit, Unit> BossShuffleCommand { get; }
         public ReactiveCommand<Unit, Unit> EnemyShuffleCommand { get; }
+        public ReactiveCommand<Unit, Unit> GuaranteedBossItemsCommand { get; }
 
         public bool BasicItemPlacement =>
             Mode.Instance.ItemPlacement == ItemPlacement.Basic;
@@ -46,6 +47,8 @@ namespace OpenTracker.ViewModels
             Mode.Instance.BossShuffle;
         public bool EnemyShuffle =>
             Mode.Instance.EnemyShuffle;
+        public bool GuaranteedBossItems =>
+            Mode.Instance.GuaranteedBossItems;
 
         private bool _modeSettingsPopupOpen;
         public bool ModeSettingsPopupOpen
@@ -68,6 +71,7 @@ namespace OpenTracker.ViewModels
             EntranceShuffleCommand = ReactiveCommand.Create(ToggleEntranceShuffle);
             BossShuffleCommand = ReactiveCommand.Create(ToggleBossShuffle);
             EnemyShuffleCommand = ReactiveCommand.Create(ToggleEnemyShuffle);
+            GuaranteedBossItemsCommand = ReactiveCommand.Create(ToggleGuaranteedBossItems);
         }
 
         /// <summary>
@@ -115,6 +119,11 @@ namespace OpenTracker.ViewModels
             if (e.PropertyName == nameof(Mode.EnemyShuffle))
             {
                 this.RaisePropertyChanged(nameof(EnemyShuffle));
+            }
+
+            if (e.PropertyName == nameof(Mode.GuaranteedBossItems))
+            {
+                this.RaisePropertyChanged(nameof(GuaranteedBossItems));
             }
         }
 
@@ -182,6 +191,15 @@ namespace OpenTracker.ViewModels
         private void ToggleEnemyShuffle()
         {
             UndoRedoManager.Instance.Execute(new ChangeEnemyShuffle(!Mode.Instance.EnemyShuffle));
+        }
+
+        /// <summary>
+        /// Toggles the guaranteed boss items setting.
+        /// </summary>
+        private void ToggleGuaranteedBossItems()
+        {
+            UndoRedoManager.Instance.Execute(new ChangeGuaranteedBossItems(
+                !Mode.Instance.GuaranteedBossItems));
         }
     }
 }

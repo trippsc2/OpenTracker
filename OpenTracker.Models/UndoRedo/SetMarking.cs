@@ -9,8 +9,8 @@ namespace OpenTracker.Models.UndoRedo
     public class SetMarking : IUndoable
     {
         private readonly IMarking _marking;
-        private readonly MarkingType? _newMarking;
-        private MarkingType? _previousMarking;
+        private readonly MarkType? _newMarking;
+        private MarkType? _previousMarking;
 
         /// <summary>
         /// Constructor
@@ -21,7 +21,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="newMarking">
         /// The marking to be applied to the section.
         /// </param>
-        public SetMarking(IMarking marking, MarkingType? newMarking)
+        public SetMarking(IMarking marking, MarkType? newMarking)
         {
             _marking = marking ?? throw new ArgumentNullException(nameof(marking));
             _newMarking = newMarking;
@@ -43,8 +43,8 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Execute()
         {
-            _previousMarking = _marking.Value;
-            _marking.Value = _newMarking;
+            _previousMarking = _marking.Mark;
+            _marking.Mark = _newMarking;
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Undo()
         {
-            _marking.Value = _previousMarking;
+            _marking.Mark = _previousMarking;
         }
     }
 }

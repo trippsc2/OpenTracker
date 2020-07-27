@@ -14,7 +14,7 @@ namespace OpenTracker.Models.UndoRedo
         private readonly ILocation _location;
         private readonly bool _force;
         private readonly List<int?> _previousLocationCounts = new List<int?>();
-        private readonly List<MarkingType?> _previousMarkings = new List<MarkingType?>();
+        private readonly List<MarkType?> _previousMarkings = new List<MarkType?>();
         private readonly List<bool?> _previousUserManipulated = new List<bool?>();
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace OpenTracker.Models.UndoRedo
                 {
                     if (section is IMarkableSection markableSection)
                     {
-                        _previousMarkings.Add(markableSection.Marking.Value);
+                        _previousMarkings.Add(markableSection.Marking.Mark);
                     }
                     else
                     {
@@ -93,7 +93,7 @@ namespace OpenTracker.Models.UndoRedo
 
                 if (_previousMarkings[i] != null)
                 {
-                    (_location.Sections[i] as IMarkableSection).Marking.Value = _previousMarkings[i];
+                    (_location.Sections[i] as IMarkableSection).Marking.Mark = _previousMarkings[i];
                 }
 
                 if (_previousUserManipulated[i] != null)

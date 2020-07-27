@@ -109,7 +109,7 @@ namespace OpenTracker.Models.Sections
                         _itemProvided.Change(1, true);
                     }
 
-                    Marking.Value = null;
+                    Marking.Mark = null;
                 }
             }
         }
@@ -244,7 +244,7 @@ namespace OpenTracker.Models.Sections
         /// </summary>
         public void Reset()
         {
-            Marking.Value = null;
+            Marking.Mark = null;
             Available = 1;
         }
 
@@ -260,7 +260,7 @@ namespace OpenTracker.Models.Sections
             {
                 Available = Available,
                 UserManipulated = UserManipulated,
-                Marking = Marking.Value
+                Marking = Marking.Mark
             };
         }
 
@@ -276,7 +276,7 @@ namespace OpenTracker.Models.Sections
 
             Available = saveData.Available;
             UserManipulated = saveData.UserManipulated;
-            Marking.Value = saveData.Marking;
+            Marking.Mark = saveData.Marking;
         }
     }
 }

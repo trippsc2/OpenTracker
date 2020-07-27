@@ -22,50 +22,50 @@ namespace OpenTracker.ViewModels.Markings
         /// </summary>
         private static void PopulateNonEntranceMarkingSelect()
         {
-            for (int i = 0; i < Enum.GetValues(typeof(MarkingType)).Length; i++)
+            for (int i = 0; i < Enum.GetValues(typeof(MarkType)).Length; i++)
             {
-                switch ((MarkingType)i)
+                switch ((MarkType)i)
                 {
-                    case MarkingType.Sword:
-                    case MarkingType.Shield:
-                    case MarkingType.Mail:
-                    case MarkingType.Boots:
-                    case MarkingType.Gloves:
-                    case MarkingType.Flippers:
-                    case MarkingType.MoonPearl:
-                    case MarkingType.Bow:
-                    case MarkingType.SilverArrows:
-                    case MarkingType.Boomerang:
-                    case MarkingType.RedBoomerang:
-                    case MarkingType.Hookshot:
-                    case MarkingType.Bomb:
-                    case MarkingType.Mushroom:
-                    case MarkingType.FireRod:
-                    case MarkingType.IceRod:
-                    case MarkingType.Bombos:
-                    case MarkingType.Ether:
-                    case MarkingType.Powder:
-                    case MarkingType.Lamp:
-                    case MarkingType.Hammer:
-                    case MarkingType.Flute:
-                    case MarkingType.Net:
-                    case MarkingType.Book:
-                    case MarkingType.Shovel:
-                    case MarkingType.SmallKey:
-                    case MarkingType.Bottle:
-                    case MarkingType.CaneOfSomaria:
-                    case MarkingType.CaneOfByrna:
-                    case MarkingType.Cape:
-                    case MarkingType.Mirror:
-                    case MarkingType.HalfMagic:
-                    case MarkingType.BigKey:
+                    case MarkType.Sword:
+                    case MarkType.Shield:
+                    case MarkType.Mail:
+                    case MarkType.Boots:
+                    case MarkType.Gloves:
+                    case MarkType.Flippers:
+                    case MarkType.MoonPearl:
+                    case MarkType.Bow:
+                    case MarkType.SilverArrows:
+                    case MarkType.Boomerang:
+                    case MarkType.RedBoomerang:
+                    case MarkType.Hookshot:
+                    case MarkType.Bomb:
+                    case MarkType.Mushroom:
+                    case MarkType.FireRod:
+                    case MarkType.IceRod:
+                    case MarkType.Bombos:
+                    case MarkType.Ether:
+                    case MarkType.Powder:
+                    case MarkType.Lamp:
+                    case MarkType.Hammer:
+                    case MarkType.Flute:
+                    case MarkType.Net:
+                    case MarkType.Book:
+                    case MarkType.Shovel:
+                    case MarkType.SmallKey:
+                    case MarkType.Bottle:
+                    case MarkType.CaneOfSomaria:
+                    case MarkType.CaneOfByrna:
+                    case MarkType.Cape:
+                    case MarkType.Mirror:
+                    case MarkType.HalfMagic:
+                    case MarkType.BigKey:
                         {
-                            NonEntranceMarkingSelect.Add(new MarkingSelectButtonVM((MarkingType)i));
+                            NonEntranceMarkingSelect.Add(new MarkingSelectButtonVM((MarkType)i));
                         }
                         break;
-                    case MarkingType.Quake:
+                    case MarkType.Quake:
                         {
-                            NonEntranceMarkingSelect.Add(new MarkingSelectButtonVM((MarkingType)i));
+                            NonEntranceMarkingSelect.Add(new MarkingSelectButtonVM((MarkType)i));
                             NonEntranceMarkingSelect.Add(new MarkingSelectButtonVM(null));
                         }
                         break;
@@ -79,9 +79,9 @@ namespace OpenTracker.ViewModels.Markings
         /// </summary>
         private static void PopulateEntranceMarkingSelect()
         {
-            for (int i = 0; i < Enum.GetValues(typeof(MarkingType)).Length; i++)
+            for (int i = 0; i < Enum.GetValues(typeof(MarkType)).Length; i++)
             {
-                EntranceMarkingSelect.Add(new MarkingSelectButtonVM((MarkingType)i));
+                EntranceMarkingSelect.Add(new MarkingSelectButtonVM((MarkType)i));
             }
         }
 

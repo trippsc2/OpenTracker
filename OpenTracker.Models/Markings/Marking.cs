@@ -7,17 +7,17 @@ namespace OpenTracker.Models.Markings
         public event PropertyChangingEventHandler PropertyChanging;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private MarkingType? _value;
-        public MarkingType? Value
+        private MarkType? _mark;
+        public MarkType? Mark
         {
-            get => _value;
+            get => _mark;
             set
             {
-                if (_value != value)
+                if (_mark != value)
                 {
-                    OnPropertyChanging(nameof(Value));
-                    _value = value;
-                    OnPropertyChanged(nameof(Value));
+                    OnPropertyChanging(nameof(Mark));
+                    _mark = value;
+                    OnPropertyChanged(nameof(Mark));
                 }
             }
         }

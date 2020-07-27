@@ -104,6 +104,20 @@ namespace OpenTracker.Models.Modes
             }
         }
 
+        private bool _guaranteedBossItems = false;
+        public bool GuaranteedBossItems
+        {
+            get => _guaranteedBossItems;
+            set
+            {
+                if (_guaranteedBossItems != value)
+                {
+                    _guaranteedBossItems = value;
+                    OnPropertyChanged(nameof(GuaranteedBossItems));
+                }
+            }
+        }
+
         /// <summary>
         /// Raises the PropertyChanged event for the specified property.
         /// </summary>

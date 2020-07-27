@@ -23,6 +23,8 @@
         EnemyShuffleOn,
         EntranceShuffleOff,
         EntranceShuffleOn,
+        GuaranteedBossItemsOff,
+        GuaranteedBossItemsOn,
         WorldStateNonInverted,
         SmallKeyShuffleOff,
         SmallKeyShuffleOn,

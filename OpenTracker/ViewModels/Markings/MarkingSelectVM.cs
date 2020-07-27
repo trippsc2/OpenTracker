@@ -25,7 +25,7 @@ namespace OpenTracker.ViewModels.Markings
             set => this.RaiseAndSetIfChanged(ref _popupOpen, value);
         }
 
-        public ReactiveCommand<MarkingType?, Unit> ChangeMarkingCommand { get; }
+        public ReactiveCommand<MarkType?, Unit> ChangeMarkingCommand { get; }
         public ReactiveCommand<Unit, Unit> ClearMarkingCommand { get; }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace OpenTracker.ViewModels.Markings
             Width = width;
             Height = height;
 
-            ChangeMarkingCommand = ReactiveCommand.Create<MarkingType?>(ChangeMarking);
+            ChangeMarkingCommand = ReactiveCommand.Create<MarkType?>(ChangeMarking);
             ClearMarkingCommand = ReactiveCommand.Create(ClearMarking);
         }
 
@@ -71,7 +71,7 @@ namespace OpenTracker.ViewModels.Markings
         /// <param name="marking">
         /// The marking to be set.
         /// </param>
-        private void ChangeMarking(MarkingType? marking)
+        private void ChangeMarking(MarkType? marking)
         {
             if (marking == null)
             {

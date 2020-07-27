@@ -222,15 +222,21 @@ namespace OpenTracker.Models.Dungeons
         /// </returns>
         public (AccessibilityLevel, int) GetItemAccessibility(int smallKeyValue, bool bigKeyValue)
         {
+            int inaccessibleBosses = 0;
             int inaccessibleItems = 0;
             bool sequenceBreak = false;
 
-            foreach (DungeonItem item in Items.Values)
+            foreach (DungeonItemID item in Items.Keys)
             {
-                switch (item.Accessibility)
+                switch (Items[item].Accessibility)
                 {
                     case AccessibilityLevel.None:
                         {
+                            if (_dungeon.Bosses.Contains(item))
+                            {
+                                inaccessibleBosses++;
+                            }
+
                             inaccessibleItems++;
                         }
                         break;
@@ -292,6 +298,11 @@ namespace OpenTracker.Models.Dungeons
             if (!Mode.Instance.MapCompassShuffle)
             {
                 inaccessibleItems -= _dungeon.Map + _dungeon.Compass;
+
+                if (Mode.Instance.GuaranteedBossItems)
+                {
+                    inaccessibleItems = Math.Max(inaccessibleItems, inaccessibleBosses);
+                }
             }
 
             if (inaccessibleItems <= 0)

@@ -25,7 +25,7 @@ namespace OpenTracker.ViewModels.Markings
             set => this.RaiseAndSetIfChanged(ref _popupOpen, value);
         }
 
-        public ReactiveCommand<MarkingType?, Unit> ChangeMarkingCommand { get; }
+        public ReactiveCommand<MarkType?, Unit> ChangeMarkingCommand { get; }
         public ReactiveCommand<Unit, Unit> RemoveNoteCommand { get; }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace OpenTracker.ViewModels.Markings
             Buttons = buttons ?? throw new ArgumentNullException(nameof(buttons));
             _location = location ?? throw new ArgumentNullException(nameof(location));
 
-            ChangeMarkingCommand = ReactiveCommand.Create<MarkingType?>(ChangeMarking);
+            ChangeMarkingCommand = ReactiveCommand.Create<MarkType?>(ChangeMarking);
             RemoveNoteCommand = ReactiveCommand.Create(RemoveNote);
         }
 
@@ -67,7 +67,7 @@ namespace OpenTracker.ViewModels.Markings
         /// <param name="marking">
         /// The marking to be set.
         /// </param>
-        private void ChangeMarking(MarkingType? marking)
+        private void ChangeMarking(MarkType? marking)
         {
             if (marking == null)
             {
