@@ -67,36 +67,25 @@ namespace OpenTracker.Models.Items
         }
 
         /// <summary>
-        /// Changes the current value by the specified delta and specifying whether the obey
-        /// or ignore the maximum value.
+        /// Returns whether an item can be added.
         /// </summary>
-        /// <param name="delta">
-        /// A 32-bit integer representing the delta value of the change.
-        /// </param>
-        /// <param name="ignoreMaximum">
-        /// A boolean representing whether the maximum is ignored.
-        /// </param>
-        public void Change(int delta, bool ignoreMaximum = false)
+        /// <returns>
+        /// A boolean representing whether an item can be added.
+        /// </returns>
+        public bool CanAdd()
         {
-            if (ignoreMaximum)
-            {
-                Current += delta;
-            }
-            else
-            {
-                Current = Math.Min(Maximum, Current + delta);
-            }
+            return Current < Maximum;
         }
 
         /// <summary>
-        /// Sets the current value of the item.
+        /// Returns whether an item can be removed.
         /// </summary>
-        /// <param name="current">
-        /// A 32-bit integer representing the new current value.
-        /// </param>
-        public void SetCurrent(int current = 0)
+        /// <returns>
+        /// A boolean representing whether an item can be removed.
+        /// </returns>
+        public bool CanRemove()
         {
-            Current = current;
+            return Current > 0;
         }
 
         /// <summary>

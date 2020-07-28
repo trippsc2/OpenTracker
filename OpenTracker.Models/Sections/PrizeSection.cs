@@ -79,11 +79,11 @@ namespace OpenTracker.Models.Sections
                 {
                     if (IsAvailable())
                     {
-                        PrizePlacement.Prize.Change(-1, true);
+                        PrizePlacement.Prize.Current--;
                     }
                     else
                     {
-                        PrizePlacement.Prize.Change(1, true);
+                        PrizePlacement.Prize.Current++;
                     }
                 }
             }
@@ -100,10 +100,13 @@ namespace OpenTracker.Models.Sections
         /// </param>
         private void OnPrizeChanging(object sender, PropertyChangingEventArgs e)
         {
-            if (!IsAvailable() && PrizePlacement != null &&
-                PrizePlacement.Prize != null)
+            if (e.PropertyName == nameof(IPrizePlacement.Prize))
             {
-                PrizePlacement.Prize.Change(-1, true);
+                if (!IsAvailable() && PrizePlacement != null &&
+                PrizePlacement.Prize != null)
+                {
+                    PrizePlacement.Prize.Current--;
+                }
             }
         }
 
@@ -118,10 +121,13 @@ namespace OpenTracker.Models.Sections
         /// </param>
         private void OnPrizeChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (!IsAvailable() && PrizePlacement != null &&
-                PrizePlacement.Prize != null)
+            if (e.PropertyName == nameof(IPrizePlacement.Prize))
             {
-                PrizePlacement.Prize.Change(1, true);
+                if (!IsAvailable() && PrizePlacement != null &&
+                PrizePlacement.Prize != null)
+                {
+                    PrizePlacement.Prize.Current++;
+                }
             }
         }
 

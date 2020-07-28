@@ -89,7 +89,7 @@ namespace OpenTracker.Models.Items
 
             if (result.HasValue)
             {
-                SetCurrent(Math.Min(Maximum, result.Value));
+                Current = Math.Min(Maximum, result.Value);
             }
         }
 
@@ -122,18 +122,25 @@ namespace OpenTracker.Models.Items
         }
 
         /// <summary>
-        /// Changes the current value by the specified delta and specifying whether the obey
-        /// or ignore the maximum value.
+        /// Returns whether an item can be added.
         /// </summary>
-        /// <param name="delta">
-        /// A 32-bit signed integer representing the delta value of the change.
-        /// </param>
-        /// <param name="ignoreMaximum">
-        /// A boolean representing whether the maximum is ignored.
-        /// </param>
-        public void Change(int delta, bool ignoreMaximum = false)
+        /// <returns>
+        /// A boolean representing whether an item can be added.
+        /// </returns>
+        public bool CanAdd()
         {
-            _item.Change(delta, ignoreMaximum);
+            return _item.CanAdd();
+        }
+
+        /// <summary>
+        /// Returns whether an item can be removed.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether an item can be removed.
+        /// </returns>
+        public bool CanRemove()
+        {
+            return _item.CanRemove();
         }
 
         /// <summary>
@@ -142,17 +149,6 @@ namespace OpenTracker.Models.Items
         public void Reset()
         {
             _item.Reset();
-        }
-
-        /// <summary>
-        /// Sets the current value of the item.
-        /// </summary>
-        /// <param name="current">
-        /// A 32-bit signed integer representing the new current value.
-        /// </param>
-        public void SetCurrent(int current = 0)
-        {
-            _item.SetCurrent(current);
         }
 
         /// <summary>

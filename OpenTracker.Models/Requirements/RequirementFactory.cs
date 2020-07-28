@@ -1919,6 +1919,7 @@ namespace OpenTracker.Models.Requirements
                         return new AggregateRequirement(new List<IRequirement>
                         {
                             RequirementDictionary.Instance[RequirementType.NotBunnyDW],
+                            RequirementDictionary.Instance[RequirementType.Gloves1],
                             RequirementDictionary.Instance[RequirementType.Hammer],
                             new AlternativeRequirement(new List<IRequirement>
                             {

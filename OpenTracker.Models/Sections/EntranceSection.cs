@@ -99,14 +99,14 @@ namespace OpenTracker.Models.Sections
                 {
                     if (_itemProvided != null)
                     {
-                        _itemProvided.Change(-1, true);
+                        _itemProvided.Current--;
                     }
                 }
                 else
                 {
                     if (_itemProvided != null)
                     {
-                        _itemProvided.Change(1, true);
+                        _itemProvided.Current++;
                     }
 
                     Marking.Mark = null;

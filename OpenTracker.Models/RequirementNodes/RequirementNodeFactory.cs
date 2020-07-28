@@ -545,7 +545,11 @@ namespace OpenTracker.Models.RequirementNodes
                         RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
                     new RequirementNodeConnection(
                         RequirementNodeID.DWLakeHylia,
-                        RequirementDictionary.Instance[RequirementType.DWMirror])
+                        new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.Flippers],
+                            RequirementDictionary.Instance[RequirementType.DWMirror]
+                        }))
                 },
                 RequirementNodeID.LakeHyliaFairyIsland => new List<RequirementNodeConnection>
                 {

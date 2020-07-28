@@ -32,8 +32,8 @@ namespace OpenTracker.Views
             DataContext as IOpen;
         public ISave ViewModelSave =>
             DataContext as ISave;
-        public ISaveAppSettings ViewModelSaveAppSettings =>
-            DataContext as ISaveAppSettings;
+        public ICloseHandler ViewModelSaveAppSettings =>
+            DataContext as ICloseHandler;
         public ISequenceBreakAccess ViewModelSequenceBreakAccess =>
             DataContext as ISequenceBreakAccess;
 
@@ -161,7 +161,7 @@ namespace OpenTracker.Views
 
         private void OnClose(object sender, CancelEventArgs e)
         {
-            ViewModelSaveAppSettings.SaveAppSettings(WindowState == WindowState.Maximized, Bounds);
+            ViewModelSaveAppSettings.Close(WindowState == WindowState.Maximized, Bounds);
 
             if (_autoTrackerDialog != null && _autoTrackerDialog.IsVisible)
             {

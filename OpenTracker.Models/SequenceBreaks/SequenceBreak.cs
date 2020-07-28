@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using OpenTracker.Models.SaveLoad;
+using System;
+using System.ComponentModel;
 
 namespace OpenTracker.Models.SequenceBreaks
 {
@@ -53,6 +55,33 @@ namespace OpenTracker.Models.SequenceBreaks
         public void Reset()
         {
             Enabled = _starting;
+        }
+
+        /// <summary>
+        /// Returns a new sequence break save data instance for this sequence break.
+        /// </summary>
+        /// <returns>
+        /// A new sequence break save data instance.
+        /// </returns>
+        public SequenceBreakSaveData Save()
+        {
+            return new SequenceBreakSaveData()
+            {
+                Enabled = Enabled
+            };
+        }
+
+        /// <summary>
+        /// Loads sequence break save data.
+        /// </summary>
+        public void Load(SequenceBreakSaveData saveData)
+        {
+            if (saveData == null)
+            {
+                throw new ArgumentNullException(nameof(saveData));
+            }
+            
+            Enabled = saveData.Enabled;
         }
     }
 }

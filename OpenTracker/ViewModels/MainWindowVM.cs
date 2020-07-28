@@ -12,7 +12,7 @@ using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.SaveLoad;
-using OpenTracker.Models.Sections;
+using OpenTracker.Models.SequenceBreaks;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.ViewModels.ColorSelect;
 using OpenTracker.ViewModels.MapArea;
@@ -20,6 +20,7 @@ using OpenTracker.ViewModels.SequenceBreaks;
 using OpenTracker.ViewModels.UIPanels;
 using ReactiveUI;
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
@@ -32,7 +33,7 @@ namespace OpenTracker.ViewModels
     /// This is the ViewModel for the main window.
     /// </summary>
     public class MainWindowVM : ViewModelBase, IAutoTrackerAccess, IColorSelectAccess,
-        IDynamicLayout, IOpen, ISave, ISaveAppSettings, IBounds, ISequenceBreakAccess
+        IDynamicLayout, IOpen, ISave, ICloseHandler, IBounds, ISequenceBreakAccess
     {
         private readonly IDialogService _dialogService;
         private AutoTrackerDialogVM _autoTrackerDialog;
@@ -214,6 +215,7 @@ namespace OpenTracker.ViewModels
             MapArea = new MapAreaControlVM(this);
 
             AppSettings.Instance.PropertyChanged += OnAppSettingsChanged;
+            LoadSequenceBreaks();
         }
 
         /// <summary>
@@ -393,9 +395,9 @@ namespace OpenTracker.ViewModels
                 UIPanel.LocationsPanel.Reset();
                 AutoTracker.Instance.Stop();
                 BossPlacementDictionary.Instance.Reset();
-                ItemDictionary.Instance.Reset();
                 LocationDictionary.Instance.Reset();
                 PrizePlacementDictionary.Instance.Reset();
+                ItemDictionary.Instance.Reset();
                 ConnectionCollection.Instance.Clear();
             });
         }
@@ -420,17 +422,6 @@ namespace OpenTracker.ViewModels
         }
 
         /// <summary>
-        /// Returns the observable result of the OpenResetDialog method.
-        /// </summary>
-        /// <returns>
-        /// The observable result of the OpenResetDialog method.
-        /// </returns>
-        private IObservable<Unit> OpenResetDialogAsync()
-        {
-            return Observable.Start(() => { OpenResetDialog(); });
-        }
-
-        /// <summary>
         /// Saves the app settings to a file.
         /// </summary>
         /// <param name="maximized">
@@ -439,7 +430,7 @@ namespace OpenTracker.ViewModels
         /// <param name="bounds">
         /// The boundaries of the window.
         /// </param>
-        public void SaveAppSettings(bool maximized, Rect bounds)
+        private static void SaveAppSettings(bool maximized, Rect bounds)
         {
             AppSettings.Instance.Maximized = maximized;
             AppSettings.Instance.X = bounds.X;
@@ -458,6 +449,71 @@ namespace OpenTracker.ViewModels
 
             string json = JsonConvert.SerializeObject(AppSettings.Instance, Formatting.Indented);
             File.WriteAllText(appSettingsPath, json);
+        }
+
+        /// <summary>
+        /// Saves the sequence break settings to a file.
+        /// </summary>
+        private static void SaveSequenceBreaks()
+        {
+            string sequenceBreakPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "OpenTracker", "sequencebreak.json");
+
+            if (File.Exists(sequenceBreakPath))
+            {
+                File.Delete(sequenceBreakPath);
+            }
+
+            var sequenceBreakData = SequenceBreakDictionary.Instance.Save();
+
+            string json = JsonConvert.SerializeObject(sequenceBreakData, Formatting.Indented);
+            File.WriteAllText(sequenceBreakPath, json);
+        }
+
+        /// <summary>
+        /// Loads the sequence break settings from a file.
+        /// </summary>
+        private static void LoadSequenceBreaks()
+        {
+            string sequenceBreakPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "OpenTracker", "sequencebreak.json");
+
+            if (File.Exists(sequenceBreakPath))
+            {
+                string jsonContent = File.ReadAllText(sequenceBreakPath);
+                Dictionary<SequenceBreakType, SequenceBreakSaveData> sequenceBreaks = JsonConvert
+                    .DeserializeObject<Dictionary<SequenceBreakType, SequenceBreakSaveData>>(jsonContent);
+
+                SequenceBreakDictionary.Instance.Load(sequenceBreaks);
+            }
+        }
+
+        /// <summary>
+        /// Returns the observable result of the OpenResetDialog method.
+        /// </summary>
+        /// <returns>
+        /// The observable result of the OpenResetDialog method.
+        /// </returns>
+        private IObservable<Unit> OpenResetDialogAsync()
+        {
+            return Observable.Start(() => { OpenResetDialog(); });
+        }
+
+        /// <summary>
+        /// Handles closing the app.
+        /// </summary>
+        /// <param name="maximized">
+        /// A boolean representing whether the window is maximized.
+        /// </param>
+        /// <param name="bounds">
+        /// The boundaries of the window.
+        /// </param>
+        public void Close(bool maximized, Rect bounds)
+        {
+            SaveAppSettings(maximized, bounds);
+            SaveSequenceBreaks();
         }
 
         /// <summary>

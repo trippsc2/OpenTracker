@@ -12,9 +12,9 @@ namespace OpenTracker.Models.Items
         int Maximum { get; }
         int Current { get; set; }
 
-        void Change(int delta, bool ignoreMaximum = false);
+        bool CanAdd();
+        bool CanRemove();
         void Reset();
-        void SetCurrent(int current = 0);
         ItemSaveData Save();
         void Load(ItemSaveData saveData);
     }

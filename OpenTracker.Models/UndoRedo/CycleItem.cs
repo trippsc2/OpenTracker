@@ -38,11 +38,11 @@ namespace OpenTracker.Models.UndoRedo
         {
             if (_item.Current == _item.Maximum)
             {
-                _item.SetCurrent();
+                _item.Current = 0;
             }
             else
             {
-                _item.Change(1);
+                _item.Current++;
             }
         }
 
@@ -53,11 +53,11 @@ namespace OpenTracker.Models.UndoRedo
         {
             if (_item.Current == 0)
             {
-                _item.SetCurrent(_item.Maximum);
+                _item.Current = _item.Maximum;
             }
             else
             {
-                _item.Change(-1);
+                _item.Current--;
             }
         }
     }

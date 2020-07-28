@@ -1,4 +1,5 @@
-﻿using OpenTracker.Models.Utils;
+﻿using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.Utils;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -128,6 +129,41 @@ namespace OpenTracker.Models.SequenceBreaks
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _dictionary.GetEnumerator();
+        }
+
+        /// <summary>
+        /// Returns a dictionary of sequence break save data.
+        /// </summary>
+        /// <returns>
+        /// A dictionary of sequence break save data.
+        /// </returns>
+        public Dictionary<SequenceBreakType, SequenceBreakSaveData> Save()
+        {
+            Dictionary<SequenceBreakType, SequenceBreakSaveData> sequenceBreaks =
+                new Dictionary<SequenceBreakType, SequenceBreakSaveData>();
+
+            foreach (var type in Keys)
+            {
+                sequenceBreaks.Add(type, this[type].Save());
+            }
+
+            return sequenceBreaks;
+        }
+
+        /// <summary>
+        /// Loads a dictionary of prize placement save data.
+        /// </summary>
+        public void Load(Dictionary<SequenceBreakType, SequenceBreakSaveData> saveData)
+        {
+            if (saveData == null)
+            {
+                throw new ArgumentNullException(nameof(saveData));
+            }
+
+            foreach (var type in saveData.Keys)
+            {
+                this[type].Load(saveData[type]);
+            }
         }
     }
 }

@@ -28,7 +28,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </returns>
         public bool CanExecute()
         {
-            return _item.Current < _item.Maximum;
+            return _item.CanAdd();
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Execute()
         {
-            _item.Change(1);
+            _item.Current++;
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Undo()
         {
-            _item.Change(-1);
+            _item.Current--;
         }
     }
 }

@@ -5,8 +5,8 @@ namespace OpenTracker.Interfaces
     /// <summary>
     /// This is the interface for saving app settings.
     /// </summary>
-    public interface ISaveAppSettings
+    public interface ICloseHandler
     {
-        void SaveAppSettings(bool maximized, Rect bounds);
+        void Close(bool maximized, Rect bounds);
     }
 }
