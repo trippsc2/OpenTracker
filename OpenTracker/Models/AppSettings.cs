@@ -283,7 +283,7 @@ namespace OpenTracker.Models
             VerticalUIPanelPlacement = appSettings.VerticalUIPanelPlacement;
             HorizontalItemsPlacement = appSettings.HorizontalItemsPlacement;
             VerticalItemsPlacement = appSettings.VerticalItemsPlacement;
-            UIScale = appSettings.UIScale;
+            UIScale = appSettings.UIScale == 0.0 ? 1.0 : appSettings.UIScale;
             EmphasisFontColor = appSettings.EmphasisFontColor;
             ConnectorColor = appSettings.ConnectorColor;
 
