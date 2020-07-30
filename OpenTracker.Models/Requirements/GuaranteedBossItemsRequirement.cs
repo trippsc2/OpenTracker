@@ -78,7 +78,7 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         private void UpdateAccessibility()
         {
-            Accessibility = Mode.Instance.EntranceShuffle == _guaranteedBossItems ?
+            Accessibility = Mode.Instance.GuaranteedBossItems == _guaranteedBossItems ?
                 AccessibilityLevel.Normal : AccessibilityLevel.None;
         }
     }

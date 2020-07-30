@@ -946,7 +946,7 @@ namespace OpenTracker.Models.Items
         /// <returns>
         /// A finished item.
         /// </returns>
-        internal static IItem GetItem(ItemType type)
+        public static IItem GetItem(ItemType type)
         {
             switch (type)
             {

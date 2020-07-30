@@ -159,6 +159,20 @@ namespace OpenTracker.Models
             }
         }
 
+        private double _uiScale = 1.0;
+        public double UIScale
+        {
+            get => _uiScale;
+            set
+            {
+                if (_uiScale != value)
+                {
+                    _uiScale = value;
+                    OnPropertyChanged(nameof(UIScale));
+                }
+            }
+        }
+
         private string _emphasisFontColor;
         public string EmphasisFontColor
         {

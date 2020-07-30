@@ -1,5 +1,4 @@
-﻿using OpenTracker.Models;
-using OpenTracker.Models.AccessibilityLevels;
+﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Items;
@@ -12,6 +11,7 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.DungeonNodes
 {
+    [Collection("Tests")]
     public class SPNodeTests
     {
         [Theory]
@@ -44,7 +44,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
 
             foreach (var item in items)
             {
-                ItemDictionary.Instance[item.Item1].SetCurrent(item.Item2);
+                ItemDictionary.Instance[item.Item1].Current = item.Item2;
             }
 
             foreach (var sequenceBreak in sequenceBreaksDisabled)

@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using OpenTracker.Models;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
 using OpenTracker.ViewModels.UIPanels.ItemsPanel.LargeItems;
@@ -20,6 +21,8 @@ namespace OpenTracker.ViewModels.UIPanels.ItemsPanel
         private readonly MainWindowVM _mainWindow;
         private readonly UIPanelVM _uiPanel;
 
+        public double Scale =>
+            AppSettings.Instance.UIScale;
         public bool ATItemsVisible =>
             Mode.Instance.SmallKeyShuffle;
         public Thickness PanelMargin
@@ -127,6 +130,7 @@ namespace OpenTracker.ViewModels.UIPanels.ItemsPanel
             _uiPanel.PropertyChanged += OnUIPanelChanged;
             _mainWindow.PropertyChanged += OnMainWindowChanged;
             Mode.Instance.PropertyChanged += OnModeChanged;
+            AppSettings.Instance.PropertyChanged += OnAppSettingsChanged;
         }
 
         /// <summary>
@@ -195,6 +199,23 @@ namespace OpenTracker.ViewModels.UIPanels.ItemsPanel
                 e.PropertyName == nameof(Mode.DungeonItemShuffle))
             {
                 this.RaisePropertyChanged(nameof(ATItemsVisible));
+            }
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the AppSettings class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(AppSettings.UIScale))
+            {
+                this.RaisePropertyChanged(nameof(Scale));
             }
         }
     }

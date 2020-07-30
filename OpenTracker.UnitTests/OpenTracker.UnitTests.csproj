@@ -24,8 +24,4 @@
     <ProjectReference Include="..\OpenTracker.Models\OpenTracker.Models.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="RequirementNodes\" />
-  </ItemGroup>
-
 </Project>

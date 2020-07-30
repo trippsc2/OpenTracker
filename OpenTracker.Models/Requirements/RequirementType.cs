@@ -5,7 +5,7 @@
     /// </summary>
     public enum RequirementType
     {
-        None,
+        NoRequirement,
         Inspect,
         SequenceBreak,
         WorldStateStandardOpen,
@@ -37,7 +37,7 @@
         Sword2,
         Sword3,
         Shield3,
-        Aga,
+        Aga1,
         Bow,
         Boomerang,
         RedBoomerang,

@@ -48,7 +48,7 @@ namespace OpenTracker.Models.KeyLayouts
             _bigKeyInLocations = bigKeyInLocations;
             _children = children ?? throw new ArgumentNullException(nameof(children));
             _dungeon = dungeon ?? throw new ArgumentNullException(nameof(dungeon));
-            _requirement = requirement ?? RequirementDictionary.Instance[RequirementType.None];
+            _requirement = requirement ?? RequirementDictionary.Instance[RequirementType.NoRequirement];
         }
 
         /// <summary>

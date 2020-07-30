@@ -15,7 +15,7 @@ namespace OpenTracker.Models.KeyLayouts
         /// </param>
         public EndKeyLayout(IRequirement requirement = null)
         {
-            _requirement = requirement ?? RequirementDictionary.Instance[RequirementType.None];
+            _requirement = requirement ?? RequirementDictionary.Instance[RequirementType.NoRequirement];
         }
 
         /// <summary>

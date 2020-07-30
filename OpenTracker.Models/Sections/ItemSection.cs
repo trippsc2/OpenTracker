@@ -101,7 +101,7 @@ namespace OpenTracker.Models.Sections
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Total = total;
             _connections = connections ?? throw new ArgumentNullException(nameof(connections));
-            Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.None];
+            Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.NoRequirement];
             AutoTrackFunction = autoTrackFunction ??
                 throw new ArgumentNullException(nameof(autoTrackFunction));
             Available = Total;

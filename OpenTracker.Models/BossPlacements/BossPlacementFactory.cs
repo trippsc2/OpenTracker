@@ -16,7 +16,7 @@ namespace OpenTracker.Models.BossPlacements
         /// <returns>
         /// A newly created boss placement.
         /// </returns>
-        internal static IBossPlacement GetBossPlacement(BossPlacementID id)
+        public static IBossPlacement GetBossPlacement(BossPlacementID id)
         {
             switch (id)
             {

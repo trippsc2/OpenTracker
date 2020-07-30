@@ -100,7 +100,7 @@ namespace OpenTracker.Models.Sections
         public DungeonItemSection(IDungeon dungeon, IRequirement requirement = null)
         {
             _dungeon = dungeon ?? throw new ArgumentNullException(nameof(dungeon));
-            Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.None];
+            Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.NoRequirement];
 
             Mode.Instance.PropertyChanged += OnModeChanged;
             LocationDictionary.Instance.LocationCreated += OnLocationCreated;

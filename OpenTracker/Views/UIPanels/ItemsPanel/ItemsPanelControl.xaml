@@ -214,49 +214,52 @@
 
       <Border Classes="UIPanelTitle ItemsPanelTitle">
         <Grid ColumnDefinitions="Auto,*,Auto">
-
           <TextBlock Classes="UIPanelTitleText" Grid.Column="0" Text="Items" />
-
-          <!-- Mode Settings Button and Popup -->
           <ContentControl Content="{Binding ModeSettings}" Grid.Column="2" />
-
         </Grid>
       </Border>
 
-      <Border Classes="UIPanelBody ItemsPanelBody">
-        <StackPanel Orientation="{Binding ItemsPanelOrientation}">
+      <LayoutTransformControl>
+        
+        <LayoutTransformControl.LayoutTransform>
+          <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}" />
+        </LayoutTransformControl.LayoutTransform>
+        
+        <Border Classes="UIPanelBody ItemsPanelBody">
+          <StackPanel Orientation="{Binding ItemsPanelOrientation}">
 
-          <ItemsControl Items="{Binding Items}">
-            <ItemsControl.ItemsPanel>
-              <ItemsPanelTemplate>
-                <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="238" MaxHeight="200"
-                       Orientation="Horizontal" HorizontalAlignment="Left"
-                       VerticalAlignment="Top" />
-              </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-          </ItemsControl>
+            <ItemsControl Items="{Binding Items}">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="238" MaxHeight="200"
+                         Orientation="Horizontal" HorizontalAlignment="Left"
+                         VerticalAlignment="Top" />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+            </ItemsControl>
 
-          <ContentControl Name="DungeonItems">
-            <i:Interaction.Behaviors>
-              
-              <ia:DataTriggerBehavior Binding="{Binding Path=ItemsPanelHorizontalOrientation}"
-                                      ComparisonCondition="Equal" Value="True">
-                <ia:ChangePropertyAction TargetObject="{Binding #DungeonItems}" PropertyName="Content"
-                                         Value="{DynamicResource HorizontalDungeonLayout}"/>
-              </ia:DataTriggerBehavior>
-              
-              <ia:DataTriggerBehavior Binding="{Binding Path=ItemsPanelHorizontalOrientation}"
-                                      ComparisonCondition="NotEqual" Value="True">
-                <ia:ChangePropertyAction TargetObject="{Binding #DungeonItems}" PropertyName="Content"
-                                         Value="{DynamicResource VerticalDungeonLayout}"/>
-              </ia:DataTriggerBehavior>
-              
-            </i:Interaction.Behaviors>
-          </ContentControl>
+            <ContentControl Name="DungeonItems">
+              <i:Interaction.Behaviors>
 
-        </StackPanel>
-      </Border>
+                <ia:DataTriggerBehavior Binding="{Binding Path=ItemsPanelHorizontalOrientation}"
+                                        ComparisonCondition="Equal" Value="True">
+                  <ia:ChangePropertyAction TargetObject="{Binding #DungeonItems}" PropertyName="Content"
+                                           Value="{DynamicResource HorizontalDungeonLayout}"/>
+                </ia:DataTriggerBehavior>
 
+                <ia:DataTriggerBehavior Binding="{Binding Path=ItemsPanelHorizontalOrientation}"
+                                        ComparisonCondition="NotEqual" Value="True">
+                  <ia:ChangePropertyAction TargetObject="{Binding #DungeonItems}" PropertyName="Content"
+                                           Value="{DynamicResource VerticalDungeonLayout}"/>
+                </ia:DataTriggerBehavior>
+
+              </i:Interaction.Behaviors>
+            </ContentControl>
+
+          </StackPanel>
+        </Border>
+      </LayoutTransformControl>
+      
     </StackPanel>
   </Border>
 

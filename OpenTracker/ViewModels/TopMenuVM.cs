@@ -51,6 +51,17 @@ namespace OpenTracker.ViewModels
         public bool BottomVerticalItemsPlacement =>
             AppSettings.Instance.VerticalItemsPlacement == VerticalAlignment.Bottom;
 
+        public bool NoneUIScale =>
+            AppSettings.Instance.UIScale == 1.0;
+        public bool TwentyFivePercentUIScale =>
+            AppSettings.Instance.UIScale == 1.25;
+        public bool FiftyPercentUIScale =>
+            AppSettings.Instance.UIScale == 1.50;
+        public bool SeventyFivePercentUIScale =>
+            AppSettings.Instance.UIScale == 1.75;
+        public bool OneHundredPercentUIScale =>
+            AppSettings.Instance.UIScale == 2.0;
+
         public ReactiveCommand<Unit, Unit> OpenResetDialogCommand { get; }
         public ReactiveCommand<Unit, Unit> UndoCommand { get; }
         public ReactiveCommand<Unit, Unit> RedoCommand { get; }
@@ -62,12 +73,13 @@ namespace OpenTracker.ViewModels
         public ReactiveCommand<string, Unit> SetVerticalUIPanelPlacementCommand { get; }
         public ReactiveCommand<string, Unit> SetHorizontalItemsPlacementCommand { get; }
         public ReactiveCommand<string, Unit> SetVerticalItemsPlacementCommand { get; }
+        public ReactiveCommand<string, Unit> SetUIScaleCommand { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="mainWindow">
-        /// The view-model of the main window.
+        /// The ViewModel of the main window.
         /// </param>
         public TopMenuVM(MainWindowVM mainWindow)
         {
@@ -87,6 +99,7 @@ namespace OpenTracker.ViewModels
             SetVerticalUIPanelPlacementCommand = ReactiveCommand.Create<string>(SetVerticalUIPanelPlacement);
             SetHorizontalItemsPlacementCommand = ReactiveCommand.Create<string>(SetHorizontalItemsPlacement);
             SetVerticalItemsPlacementCommand = ReactiveCommand.Create<string>(SetVerticalItemsPlacement);
+            SetUIScaleCommand = ReactiveCommand.Create<string>(SetUIScale);
 
             AppSettings.Instance.PropertyChanged += OnAppSettingsChanged;
         }
@@ -148,6 +161,15 @@ namespace OpenTracker.ViewModels
             {
                 this.RaisePropertyChanged(nameof(TopVerticalItemsPlacement));
                 this.RaisePropertyChanged(nameof(BottomVerticalItemsPlacement));
+            }
+
+            if (e.PropertyName == nameof(AppSettings.UIScale))
+            {
+                this.RaisePropertyChanged(nameof(NoneUIScale));
+                this.RaisePropertyChanged(nameof(TwentyFivePercentUIScale));
+                this.RaisePropertyChanged(nameof(FiftyPercentUIScale));
+                this.RaisePropertyChanged(nameof(SeventyFivePercentUIScale));
+                this.RaisePropertyChanged(nameof(OneHundredPercentUIScale));
             }
         }
 
@@ -249,6 +271,17 @@ namespace OpenTracker.ViewModels
             {
                 AppSettings.Instance.VerticalItemsPlacement = orientation;
             }
+        }
+
+        /// <summary>
+        /// Sets the UI scale to the specified value.
+        /// </summary>
+        /// <param name="uiScaleValue">
+        /// A floating point number representing the UI scale value.
+        /// </param>
+        private static void SetUIScale(string uiScaleValue)
+        {
+            AppSettings.Instance.UIScale = double.Parse(uiScaleValue);
         }
     }
 }

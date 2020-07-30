@@ -40,7 +40,7 @@ namespace OpenTracker.Models.Locations
             Map = map;
             X = x;
             Y = y;
-            Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.None];
+            Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.NoRequirement];
 
             LocationDictionary.Instance.LocationCreated += OnLocationCreated;
         }

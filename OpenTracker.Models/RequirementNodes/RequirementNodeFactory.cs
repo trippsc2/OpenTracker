@@ -72,7 +72,7 @@ namespace OpenTracker.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouth,
                         new AggregateRequirement(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.Aga],
+                            RequirementDictionary.Instance[RequirementType.Aga1],
                             RequirementDictionary.Instance[RequirementType.WorldStateInverted]
                         }))
                 },
@@ -80,7 +80,7 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.Aga]),
+                        RequirementDictionary.Instance[RequirementType.Aga1]),
                 },
                 RequirementNodeID.LumberjackCaveEntrance => new List<RequirementNodeConnection>
                 {
@@ -957,7 +957,7 @@ namespace OpenTracker.Models.RequirementNodes
                             new AggregateRequirement(new List<IRequirement>
                             {
                                 RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
-                                RequirementDictionary.Instance[RequirementType.Aga]
+                                RequirementDictionary.Instance[RequirementType.Aga1]
                             }),
                             RequirementDictionary.Instance[RequirementType.LWMirror]
                         }))
@@ -1087,7 +1087,7 @@ namespace OpenTracker.Models.RequirementNodes
                             new AggregateRequirement(new List<IRequirement>
                             {
                                 RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
-                                RequirementDictionary.Instance[RequirementType.Aga]
+                                RequirementDictionary.Instance[RequirementType.Aga1]
                             }),
                             RequirementDictionary.Instance[RequirementType.LWMirror]
                         })),
@@ -1480,7 +1480,18 @@ namespace OpenTracker.Models.RequirementNodes
                         RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]),
                     new RequirementNodeConnection(
                         RequirementNodeID.DarkWorldSouth,
-                        RequirementDictionary.Instance[RequirementType.SPEntry])
+                        new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
+                            RequirementDictionary.Instance[RequirementType.SPEntry]
+                        })),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LightWorld,
+                        new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.WorldStateInverted],
+                            RequirementDictionary.Instance[RequirementType.SPEntry]
+                        }))
                 },
                 RequirementNodeID.SWFrontEntry => new List<RequirementNodeConnection>
                 {

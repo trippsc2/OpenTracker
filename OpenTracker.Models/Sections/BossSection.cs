@@ -64,7 +64,7 @@ namespace OpenTracker.Models.Sections
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             BossPlacement = bossPlacement;
-            Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.None];
+            Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.NoRequirement];
             Available = 1;
         }
 

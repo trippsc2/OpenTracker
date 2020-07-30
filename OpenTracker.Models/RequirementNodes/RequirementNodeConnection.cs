@@ -23,7 +23,7 @@ namespace OpenTracker.Models.RequirementNodes
             RequirementNodeID fromNode, IRequirement requirement = null)
         {
             FromNode = fromNode;
-            Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.None];
+            Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.NoRequirement];
         }
     }
 }

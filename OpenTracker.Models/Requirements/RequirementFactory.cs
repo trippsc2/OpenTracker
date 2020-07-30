@@ -27,7 +27,7 @@ namespace OpenTracker.Models.Requirements
         {
             return type switch
             {
-                RequirementType.None => new StaticRequirement(AccessibilityLevel.Normal),
+                RequirementType.NoRequirement => new StaticRequirement(AccessibilityLevel.Normal),
                 RequirementType.Inspect => new StaticRequirement(AccessibilityLevel.Inspect),
                 RequirementType.SequenceBreak => new StaticRequirement(AccessibilityLevel.SequenceBreak),
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
@@ -249,7 +249,7 @@ namespace OpenTracker.Models.Requirements
                     ItemDictionary.Instance[ItemType.Sword], 4),
                 RequirementType.Shield3 => new ItemRequirement(
                     ItemDictionary.Instance[ItemType.Shield], 3),
-                RequirementType.Aga => new ItemRequirement(
+                RequirementType.Aga1 => new ItemRequirement(
                     ItemDictionary.Instance[ItemType.Aga1]),
                 RequirementType.Bow => new ItemRequirement(
                     ItemDictionary.Instance[ItemType.Bow]),
@@ -577,7 +577,7 @@ namespace OpenTracker.Models.Requirements
         {
             switch (type)
             {
-                case RequirementType.None:
+                case RequirementType.NoRequirement:
                 case RequirementType.Inspect:
                 case RequirementType.SequenceBreak:
                     {
@@ -705,7 +705,7 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.Sword2:
                 case RequirementType.Sword3:
                 case RequirementType.Shield3:
-                case RequirementType.Aga:
+                case RequirementType.Aga1:
                 case RequirementType.Bow:
                 case RequirementType.Boomerang:
                 case RequirementType.RedBoomerang:
@@ -1512,8 +1512,7 @@ namespace OpenTracker.Models.Requirements
                         return new AggregateRequirement(new List<IRequirement>
                         {
                             RequirementDictionary.Instance[RequirementType.MoonPearl],
-                            RequirementDictionary.Instance[RequirementType.Mirror],
-                            RequirementDictionary.Instance[RequirementType.LightWorld]
+                            RequirementDictionary.Instance[RequirementType.Mirror]
                         });
                     }
                 case RequirementType.SuperBunnyFallInHole:

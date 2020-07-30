@@ -76,7 +76,7 @@ namespace OpenTracker.Models.Sections
             Name = name ?? throw new ArgumentNullException(nameof(name));
             _itemProvided = itemProvided;
             _connections = connections ?? throw new ArgumentNullException(nameof(connections));
-            Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.None];
+            Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.NoRequirement];
             Available = 1;
 
             SubscribeToConnections();

@@ -70,7 +70,7 @@ namespace OpenTracker.Models.Sections
             }
             else
             {
-                Requirement = RequirementDictionary.Instance[RequirementType.None];
+                Requirement = RequirementDictionary.Instance[RequirementType.NoRequirement];
             }
 
             Available = 1;

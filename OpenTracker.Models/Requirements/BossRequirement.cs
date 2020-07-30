@@ -147,11 +147,11 @@ namespace OpenTracker.Models.Requirements
             {
                 CurrentBossRequirement = boss.Value switch
                 {
-                    BossType.Test => RequirementDictionary.Instance[RequirementType.None],
+                    BossType.Test => RequirementDictionary.Instance[RequirementType.NoRequirement],
                     BossType.Armos => RequirementDictionary.Instance[RequirementType.Armos],
                     BossType.Lanmolas => RequirementDictionary.Instance[RequirementType.Lanmolas],
                     BossType.Moldorm => RequirementDictionary.Instance[RequirementType.Moldorm],
-                    BossType.HelmasaurKing => RequirementDictionary.Instance[RequirementType.None],
+                    BossType.HelmasaurKing => RequirementDictionary.Instance[RequirementType.NoRequirement],
                     BossType.Arrghus => RequirementDictionary.Instance[RequirementType.Arrghus],
                     BossType.Mothula => RequirementDictionary.Instance[RequirementType.Mothula],
                     BossType.Blind => RequirementDictionary.Instance[RequirementType.Blind],

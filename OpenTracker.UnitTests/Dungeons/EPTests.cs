@@ -1,5 +1,4 @@
-﻿using OpenTracker.Models;
-using OpenTracker.Models.AccessibilityLevels;
+﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
@@ -12,6 +11,7 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Dungeons
 {
+    [Collection("Tests")]
     public class EPTests
     {
         [Theory]
@@ -26,7 +26,7 @@ namespace OpenTracker.UnitTests.Dungeons
 
             foreach (var item in items)
             {
-                ItemDictionary.Instance[item.Item1].SetCurrent(item.Item2);
+                ItemDictionary.Instance[item.Item1].Current = item.Item2;
             }
 
             foreach (var sequenceBreak in sequenceBreaks)
@@ -177,7 +177,7 @@ namespace OpenTracker.UnitTests.Dungeons
 
             foreach (var item in items)
             {
-                ItemDictionary.Instance[item.Item1].SetCurrent(item.Item2);
+                ItemDictionary.Instance[item.Item1].Current = item.Item2;
             }
 
             foreach (var sequenceBreak in sequenceBreaks)
@@ -803,7 +803,7 @@ namespace OpenTracker.UnitTests.Dungeons
 
             foreach (var item in items)
             {
-                ItemDictionary.Instance[item.Item1].SetCurrent(item.Item2);
+                ItemDictionary.Instance[item.Item1].Current = item.Item2;
             }
 
             foreach (var sequenceBreak in sequenceBreaks)

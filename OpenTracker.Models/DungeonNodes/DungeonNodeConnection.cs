@@ -24,7 +24,7 @@ namespace OpenTracker.Models.DungeonNodes
             DungeonNodeID fromNode, IRequirement requirement = null)
         {
             FromNode = fromNode;
-            Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.None];
+            Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.NoRequirement];
         }
     }
 }

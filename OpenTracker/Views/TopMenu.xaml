@@ -294,6 +294,50 @@
 
         </MenuItem>
 
+        <MenuItem Classes="Menu InnerMenu" Header="UI Scale">
+          
+          <MenuItem Classes="Menu InnerMenu" Header="None"
+                Command="{Binding SetUIScaleCommand}" CommandParameter="1.0">
+            <MenuItem.Icon>
+              <CheckBox Classes="Menu" IsChecked="{Binding NoneUIScale, Mode=OneWay}"
+                     Command="{Binding SetUIScaleCommand}" CommandParameter="1.0" />
+            </MenuItem.Icon>
+          </MenuItem>
+
+          <MenuItem Classes="Menu InnerMenu" Header="25%"
+                Command="{Binding SetUIScaleCommand}" CommandParameter="1.25">
+            <MenuItem.Icon>
+              <CheckBox Classes="Menu" IsChecked="{Binding TwentyFivePercentUIScale, Mode=OneWay}"
+                     Command="{Binding SetUIScaleCommand}" CommandParameter="1.25" />
+            </MenuItem.Icon>
+          </MenuItem>
+
+          <MenuItem Classes="Menu InnerMenu" Header="50%"
+                Command="{Binding SetUIScaleCommand}" CommandParameter="1.5">
+            <MenuItem.Icon>
+              <CheckBox Classes="Menu" IsChecked="{Binding FiftyPercentUIScale, Mode=OneWay}"
+                     Command="{Binding SetUIScaleCommand}" CommandParameter="1.5" />
+            </MenuItem.Icon>
+          </MenuItem>
+          
+          <MenuItem Classes="Menu InnerMenu" Header="75%"
+                Command="{Binding SetUIScaleCommand}" CommandParameter="1.75">
+            <MenuItem.Icon>
+              <CheckBox Classes="Menu" IsChecked="{Binding SeventyFivePercentUIScale, Mode=OneWay}"
+                     Command="{Binding SetUIScaleCommand}" CommandParameter="1.75" />
+            </MenuItem.Icon>
+          </MenuItem>
+          
+          <MenuItem Classes="Menu InnerMenu" Header="100%"
+                Command="{Binding SetUIScaleCommand}" CommandParameter="2.0">
+            <MenuItem.Icon>
+              <CheckBox Classes="Menu" IsChecked="{Binding OneHundredPercentUIScale, Mode=OneWay}"
+                     Command="{Binding SetUIScaleCommand}" CommandParameter="2.0" />
+            </MenuItem.Icon>
+          </MenuItem>
+
+        </MenuItem>
+
       </MenuItem>
 
     </Menu>
