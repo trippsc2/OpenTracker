@@ -159,7 +159,7 @@ namespace OpenTracker.Models
             }
         }
 
-        private double _uiScale = 1.0;
+        private double _uiScale;
         public double UIScale
         {
             get => _uiScale;
@@ -234,18 +234,19 @@ namespace OpenTracker.Models
                     VerticalUIPanelPlacement = HorizontalAlignment.Left;
                     HorizontalItemsPlacement = HorizontalAlignment.Left;
                     VerticalItemsPlacement = VerticalAlignment.Top;
+                    UIScale = 1.0;
                     EmphasisFontColor = "#ff00ff00";
                     ConnectorColor = "#ff40e0d0";
 
                     AccessibilityColors = new ObservableDictionary<AccessibilityLevel, string>()
-                {
-                    { AccessibilityLevel.None, "#ffff3030" },
-                    { AccessibilityLevel.Partial, "#ffff8c00" },
-                    { AccessibilityLevel.Inspect, "#ff6495ed" },
-                    { AccessibilityLevel.SequenceBreak, "#ffffff00" },
-                    { AccessibilityLevel.Normal, "#ff00ff00" },
-                    { AccessibilityLevel.Cleared, "#ff333333" }
-                };
+                    {
+                        { AccessibilityLevel.None, "#ffff3030" },
+                        { AccessibilityLevel.Partial, "#ffff8c00" },
+                        { AccessibilityLevel.Inspect, "#ff6495ed" },
+                        { AccessibilityLevel.SequenceBreak, "#ffffff00" },
+                        { AccessibilityLevel.Normal, "#ff00ff00" },
+                        { AccessibilityLevel.Cleared, "#ff333333" }
+                    };
                 }
             }
         }
@@ -282,6 +283,7 @@ namespace OpenTracker.Models
             VerticalUIPanelPlacement = appSettings.VerticalUIPanelPlacement;
             HorizontalItemsPlacement = appSettings.HorizontalItemsPlacement;
             VerticalItemsPlacement = appSettings.VerticalItemsPlacement;
+            UIScale = appSettings.UIScale;
             EmphasisFontColor = appSettings.EmphasisFontColor;
             ConnectorColor = appSettings.ConnectorColor;
 
