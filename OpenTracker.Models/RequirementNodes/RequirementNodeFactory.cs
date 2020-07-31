@@ -644,7 +644,7 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DeathMountainWestBottomAccess]),
+                        RequirementDictionary.Instance[RequirementType.DeathMountainEastBottomAccess]),
                     new RequirementNodeConnection(
                         RequirementNodeID.DeathMountainWestBottom,
                         RequirementDictionary.Instance[RequirementType.LWHookshot]),
