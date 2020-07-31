@@ -846,6 +846,9 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.HammerHouse => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.HammerHouseAccess]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.DarkWorldWest,
                         RequirementDictionary.Instance[RequirementType.DWHammer])
                 },
@@ -1248,7 +1251,9 @@ namespace OpenTracker.Models.RequirementNodes
                     new RequirementNodeConnection(
                         RequirementNodeID.DarkDeathMountainWestBottom,
                         RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
-                    new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainEastBottom)
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DarkDeathMountainEastBottom,
+                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOff])
                 },
                 RequirementNodeID.GanonsTowerEntrance => new List<RequirementNodeConnection>
                 {

@@ -1041,8 +1041,7 @@ namespace OpenTracker.Models.Sections
                     {
                         return new List<RequirementNodeConnection>
                         {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld)
+                            new RequirementNodeConnection(RequirementNodeID.LightWorld)
                         };
                     }
                 case LocationID.LumberjackCaveEntrance:

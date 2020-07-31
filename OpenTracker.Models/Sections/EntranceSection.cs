@@ -74,10 +74,10 @@ namespace OpenTracker.Models.Sections
             IRequirement requirement = null)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
+            Available = 1;
             _itemProvided = itemProvided;
             _connections = connections ?? throw new ArgumentNullException(nameof(connections));
             Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.NoRequirement];
-            Available = 1;
 
             SubscribeToConnections();
             UpdateAccessibility();

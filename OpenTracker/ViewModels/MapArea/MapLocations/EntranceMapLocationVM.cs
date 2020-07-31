@@ -90,9 +90,9 @@ namespace OpenTracker.ViewModels.MapArea.MapLocations
 
         public bool Visible =>
             _mapLocation.Requirement.Met && (AppSettings.Instance.DisplayAllLocations ||
-                (_mapLocation.Location.Sections[0] is IMarkableSection markableSection &&
-                markableSection.Marking != null) ||
-                _mapLocation.Location.Accessibility != AccessibilityLevel.Cleared);
+            (_mapLocation.Location.Sections[0] is IMarkableSection markableSection &&
+            markableSection.Marking.Mark != null) ||
+            _mapLocation.Location.Accessibility != AccessibilityLevel.Cleared);
 
         public MarkingMapLocationVM Marking { get; }
         public List<Point> Points { get; }
