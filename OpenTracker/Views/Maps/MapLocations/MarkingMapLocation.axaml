@@ -1,0 +1,26 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
+             xmlns:view="clr-namespace:OpenTracker.Views.MapArea.MapLocations;assembly=OpenTracker"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OpenTracker.Views.Maps.MapLocations.MarkingMapLocation">
+
+  <UserControl.Resources>
+    <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
+  </UserControl.Resources>
+
+  <Panel Width="56" Height="56" PointerReleased="OnClick">
+    
+    <Border Width="56" Height="56" Background="#99000000">
+      <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Uniform"
+             Width="56" Height="56" Source="{Binding ImageSource, Converter={StaticResource
+             BitmapValueConverter}}" />
+    </Border>
+
+    <ContentControl Content="{Binding MarkingSelect}" />
+    
+  </Panel>
+  
+</UserControl>

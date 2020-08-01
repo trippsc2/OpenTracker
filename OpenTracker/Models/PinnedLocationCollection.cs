@@ -1,4 +1,4 @@
-﻿using OpenTracker.ViewModels.UIPanels.LocationsPanel;
+﻿using OpenTracker.ViewModels.PinnedLocations;
 using System.Collections.ObjectModel;
 
 namespace OpenTracker.Models

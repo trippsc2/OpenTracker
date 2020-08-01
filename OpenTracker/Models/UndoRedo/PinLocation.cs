@@ -1,4 +1,4 @@
-﻿using OpenTracker.ViewModels.UIPanels.LocationsPanel;
+﻿using OpenTracker.ViewModels.PinnedLocations;
 using System;
 
 namespace OpenTracker.Models.UndoRedo
