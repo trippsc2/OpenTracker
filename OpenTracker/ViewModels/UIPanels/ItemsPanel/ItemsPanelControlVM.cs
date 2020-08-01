@@ -42,7 +42,7 @@ namespace OpenTracker.ViewModels.UIPanels.ItemsPanel
         {
             get
             {
-                return _mainWindow.UIPanelDock switch
+                return _mainWindow.UIDock switch
                 {
                     Dock.Left => Orientation.Vertical,
                     Dock.Right => Orientation.Vertical,
@@ -178,7 +178,7 @@ namespace OpenTracker.ViewModels.UIPanels.ItemsPanel
         /// </param>
         private void OnMainWindowChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(MainWindowVM.UIPanelDock))
+            if (e.PropertyName == nameof(MainWindowVM.UIDock))
             {
                 this.RaisePropertyChanged(nameof(ItemsPanelOrientation));
             }

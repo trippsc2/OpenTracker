@@ -71,7 +71,7 @@ namespace OpenTracker.ViewModels
             private set => this.RaiseAndSetIfChanged(ref _orientation, value);
         }
 
-        public Dock UIPanelDock
+        public Dock UIDock
         {
             get
             {
@@ -121,30 +121,6 @@ namespace OpenTracker.ViewModels
                 }
 
                 return Dock.Right;
-            }
-        }
-        public HorizontalAlignment UIPanelHorizontalAlignment
-        {
-            get
-            {
-                return UIPanelDock switch
-                {
-                    Dock.Left => HorizontalAlignment.Left,
-                    Dock.Right => HorizontalAlignment.Right,
-                    _ => HorizontalAlignment.Stretch,
-                };
-            }
-        }
-        public VerticalAlignment UIPanelVerticalAlignment
-        {
-            get
-            {
-                return UIPanelDock switch
-                {
-                    Dock.Bottom => VerticalAlignment.Bottom,
-                    Dock.Top => VerticalAlignment.Top,
-                    _ => VerticalAlignment.Stretch,
-                };
             }
         }
 
@@ -232,12 +208,6 @@ namespace OpenTracker.ViewModels
             if (e.PropertyName == nameof(Orientation))
             {
                 UpdateUIPanelDock();
-            }
-
-            if (e.PropertyName == nameof(UIPanelDock))
-            {
-                this.RaisePropertyChanged(nameof(UIPanelHorizontalAlignment));
-                this.RaisePropertyChanged(nameof(UIPanelVerticalAlignment));
             }
         }
 
@@ -327,7 +297,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void UpdateUIPanelDock()
         {
-            this.RaisePropertyChanged(nameof(UIPanelDock));
+            this.RaisePropertyChanged(nameof(UIDock));
         }
 
         /// <summary>

@@ -20,7 +20,7 @@ namespace OpenTracker.ViewModels.UIPanels
         {
             get
             {
-                switch (_mainWindow.UIPanelDock)
+                switch (_mainWindow.UIDock)
                 {
                     case Dock.Left:
                     case Dock.Right:
@@ -94,7 +94,7 @@ namespace OpenTracker.ViewModels.UIPanels
         /// </param>
         private void OnMainWindowChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(MainWindowVM.UIPanelDock))
+            if (e.PropertyName == nameof(MainWindowVM.UIDock))
             {
                 UpdateUIPanelOrientationDock();
             }

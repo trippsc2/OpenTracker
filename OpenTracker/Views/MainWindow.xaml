@@ -29,9 +29,7 @@
 
 	<DockPanel>
     <ContentControl Content="{Binding TopMenu}" DockPanel.Dock="Top" />
-		<ContentControl Content="{Binding UIPanel}" DockPanel.Dock="{Binding UIPanelDock, Mode=OneWay}"
-                    HorizontalAlignment="{Binding UIPanelHorizontalAlignment, Mode=OneWay}"
-                    VerticalAlignment="{Binding UIPanelVerticalAlignment, Mode=OneWay}" />
+		<ContentControl Content="{Binding UIPanel}" DockPanel.Dock="{Binding UIDock, Mode=OneWay}" />
     <ContentControl Content="{Binding MapArea}" />
 	</DockPanel>
 

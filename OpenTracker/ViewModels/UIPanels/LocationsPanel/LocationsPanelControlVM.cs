@@ -25,7 +25,7 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel
                 _ => new Thickness(2, 1, 0, 2),
             };
         public Orientation LocationsPanelOrientation =>
-            _mainWindow.UIPanelDock switch
+            _mainWindow.UIDock switch
             {
                 Dock.Left => Orientation.Vertical,
                 Dock.Right => Orientation.Vertical,
@@ -81,7 +81,7 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel
         /// </param>
         private void OnMainWindowChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(MainWindowVM.UIPanelDock))
+            if (e.PropertyName == nameof(MainWindowVM.UIDock))
             {
                 this.RaisePropertyChanged(nameof(LocationsPanelOrientation));
             }
