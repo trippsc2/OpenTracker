@@ -1,5 +1,5 @@
-﻿using OpenTracker.Models;
-using OpenTracker.Models.BossPlacements;
+﻿using OpenTracker.Models.BossPlacements;
+using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
 using System;
@@ -17,7 +17,7 @@ namespace OpenTracker.ViewModels.BossSelect
         private readonly IBossPlacement _bossPlacement;
 
         public double Scale =>
-            AppSettings.Instance.UIScale;
+            AppSettings.Instance.Layout.UIScale;
 
         public ObservableCollection<BossSelectButtonVM> Buttons { get; }
 
@@ -47,11 +47,11 @@ namespace OpenTracker.ViewModels.BossSelect
             Buttons = buttons ?? throw new ArgumentNullException(nameof(buttons));
             ChangeBossCommand = ReactiveCommand.Create<BossType?>(ChangeBoss);
 
-            AppSettings.Instance.PropertyChanged += OnAppSettingsChanged;
+            AppSettings.Instance.Layout.PropertyChanged += OnAppSettingsChanged;
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the AppSettings class.
+        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -61,7 +61,7 @@ namespace OpenTracker.ViewModels.BossSelect
         /// </param>
         private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(AppSettings.UIScale))
+            if (e.PropertyName == nameof(LayoutSettings.UIScale))
             {
                 this.RaisePropertyChanged(nameof(Scale));
             }

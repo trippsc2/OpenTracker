@@ -13,6 +13,7 @@ using OpenTracker.Models.Locations;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.SequenceBreaks;
+using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.ViewModels.ColorSelect;
 using OpenTracker.ViewModels.MapArea;
@@ -40,89 +41,36 @@ namespace OpenTracker.ViewModels
 
         public bool? Maximized
         {
-            get => AppSettings.Instance.Maximized;
-            set => AppSettings.Instance.Maximized = value;
+            get => AppSettings.Instance.Bounds.Maximized;
+            set => AppSettings.Instance.Bounds.Maximized = value;
         }
         public double? X
         {
-            get => AppSettings.Instance.X;
-            set => AppSettings.Instance.X = value;
+            get => AppSettings.Instance.Bounds.X;
+            set => AppSettings.Instance.Bounds.X = value;
         }
         public double? Y
         {
-            get => AppSettings.Instance.Y;
-            set => AppSettings.Instance.Y = value;
+            get => AppSettings.Instance.Bounds.Y;
+            set => AppSettings.Instance.Bounds.Y = value;
         }
         public double? Width
         {
-            get => AppSettings.Instance.Width;
-            set => AppSettings.Instance.Width = value;
+            get => AppSettings.Instance.Bounds.Width;
+            set => AppSettings.Instance.Bounds.Width = value;
         }
         public double? Height
         {
-            get => AppSettings.Instance.Height;
-            set => AppSettings.Instance.Height = value;
+            get => AppSettings.Instance.Bounds.Height;
+            set => AppSettings.Instance.Bounds.Height = value;
         }
 
-        private Orientation _orientation;
-        public Orientation Orientation
-        {
-            get => _orientation;
-            private set => this.RaiseAndSetIfChanged(ref _orientation, value);
-        }
-
-        public Dock UIDock
-        {
-            get
+        public Dock UIDock =>
+            AppSettings.Instance.Layout.CurrentLayoutOrientation switch
             {
-                if (AppSettings.Instance.LayoutOrientation.HasValue)
-                {
-                    switch (AppSettings.Instance.LayoutOrientation.Value)
-                    {
-                        case Orientation.Horizontal:
-                            {
-                                return AppSettings.Instance.HorizontalUIPanelPlacement switch
-                                {
-                                    VerticalAlignment.Top => Dock.Top,
-                                    _ => Dock.Bottom,
-                                };
-                            }
-                        case Orientation.Vertical:
-                            {
-                                return AppSettings.Instance.VerticalUIPanelPlacement switch
-                                {
-                                    HorizontalAlignment.Left => Dock.Left,
-                                    _ => Dock.Right,
-                                };
-                            }
-                    }
-                }
-                else
-                {
-                    switch (Orientation)
-                    {
-                        case Orientation.Horizontal:
-                            {
-                                return AppSettings.Instance.HorizontalUIPanelPlacement switch
-                                {
-                                    VerticalAlignment.Top => Dock.Top,
-                                    _ => Dock.Bottom,
-                                };
-                            }
-                        case Orientation.Vertical:
-                            {
-                                return AppSettings.Instance.VerticalUIPanelPlacement switch
-                                {
-                                    HorizontalAlignment.Left => Dock.Left,
-                                    _ => Dock.Right,
-                                };
-                            }
-                    }
-                }
-
-                return Dock.Right;
-            }
-        }
+                Orientation.Horizontal => AppSettings.Instance.Layout.HorizontalUIPanelPlacement,
+                _ => AppSettings.Instance.Layout.VerticalUIPanelPlacement
+            };
 
         public TopMenuVM TopMenu { get; }
         public UIPanelVM UIPanel { get; }
@@ -184,31 +132,13 @@ namespace OpenTracker.ViewModels
             UndoCommand = ReactiveCommand.Create(Undo, this.WhenAnyValue(x => x.CanUndo));
             RedoCommand = ReactiveCommand.Create(Redo, this.WhenAnyValue(x => x.CanRedo));
             ToggleDisplayAllLocationsCommand = ReactiveCommand.Create(ToggleDisplayAllLocations);
-            PropertyChanged += OnPropertyChanged;
 
             TopMenu = new TopMenuVM(this);
             UIPanel = new UIPanelVM(this);
             MapArea = new MapAreaControlVM(this);
 
-            AppSettings.Instance.PropertyChanged += OnAppSettingsChanged;
+            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
             LoadSequenceBreaks();
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on this class.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Orientation))
-            {
-                UpdateUIPanelDock();
-            }
         }
 
         /// <summary>
@@ -240,7 +170,7 @@ namespace OpenTracker.ViewModels
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the AppSettings class.
+        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -248,13 +178,13 @@ namespace OpenTracker.ViewModels
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
+        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(AppSettings.LayoutOrientation) ||
-                e.PropertyName == nameof(AppSettings.HorizontalUIPanelPlacement) ||
-                e.PropertyName == nameof(AppSettings.VerticalUIPanelPlacement))
+            if (e.PropertyName == nameof(LayoutSettings.CurrentLayoutOrientation) ||
+                e.PropertyName == nameof(LayoutSettings.HorizontalUIPanelPlacement) ||
+                e.PropertyName == nameof(LayoutSettings.VerticalUIPanelPlacement))
             {
-                UpdateUIPanelDock();
+                this.RaisePropertyChanged(nameof(UIDock));
             }
         }
 
@@ -293,14 +223,6 @@ namespace OpenTracker.ViewModels
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the UIPanelDock property.
-        /// </summary>
-        private void UpdateUIPanelDock()
-        {
-            this.RaisePropertyChanged(nameof(UIDock));
-        }
-
-        /// <summary>
         /// Changes the expected orientation layout, if dynamic orientation is enabled,
         /// to the specified orientation.
         /// </summary>
@@ -309,7 +231,7 @@ namespace OpenTracker.ViewModels
         /// </param>
         public void ChangeLayout(Orientation orientation)
         {
-            Orientation = orientation;
+            AppSettings.Instance.Layout.CurrentDynamicOrientation = orientation;
         }
 
         /// <summary>
@@ -351,7 +273,8 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleDisplayAllLocations()
         {
-            AppSettings.Instance.DisplayAllLocations = !AppSettings.Instance.DisplayAllLocations;
+            AppSettings.Instance.Tracker.DisplayAllLocations =
+                !AppSettings.Instance.Tracker.DisplayAllLocations;
         }
 
         /// <summary>
@@ -362,7 +285,7 @@ namespace OpenTracker.ViewModels
             Dispatcher.UIThread.InvokeAsync(() =>
             {
                 UndoRedoManager.Instance.Reset();
-                UIPanel.LocationsPanel.Reset();
+                PinnedLocationCollection.Instance.Clear();
                 AutoTracker.Instance.Stop();
                 BossPlacementDictionary.Instance.Reset();
                 LocationDictionary.Instance.Reset();
@@ -402,11 +325,11 @@ namespace OpenTracker.ViewModels
         /// </param>
         private static void SaveAppSettings(bool maximized, Rect bounds)
         {
-            AppSettings.Instance.Maximized = maximized;
-            AppSettings.Instance.X = bounds.X;
-            AppSettings.Instance.Y = bounds.Y;
-            AppSettings.Instance.Width = bounds.Width;
-            AppSettings.Instance.Height = bounds.Height;
+            AppSettings.Instance.Bounds.Maximized = maximized;
+            AppSettings.Instance.Bounds.X = bounds.X;
+            AppSettings.Instance.Bounds.Y = bounds.Y;
+            AppSettings.Instance.Bounds.Width = bounds.Width;
+            AppSettings.Instance.Bounds.Height = bounds.Height;
 
             string appSettingsPath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -417,7 +340,7 @@ namespace OpenTracker.ViewModels
                 File.Delete(appSettingsPath);
             }
 
-            string json = JsonConvert.SerializeObject(AppSettings.Instance, Formatting.Indented);
+            string json = JsonConvert.SerializeObject(AppSettings.Instance.Save(), Formatting.Indented);
             File.WriteAllText(appSettingsPath, json);
         }
 

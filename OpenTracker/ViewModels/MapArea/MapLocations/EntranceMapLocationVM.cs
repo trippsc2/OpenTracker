@@ -8,6 +8,7 @@ using OpenTracker.Models.Connections;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Sections;
+using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.ViewModels.UIPanels.LocationsPanel;
 using ReactiveUI;
@@ -25,8 +26,6 @@ namespace OpenTracker.ViewModels.MapArea.MapLocations
         IConnectLocation, IDoubleClickHandler, IPointerOver
     {
         private readonly MapLocation _mapLocation;
-        private readonly MapAreaControlVM _mapArea;
-        private readonly ObservableCollection<PinnedLocationVM> _pinnedLocations;
         private PinnedLocationVM _pinnedLocation;
 
         public Dock MarkingDock { get; }
@@ -49,7 +48,7 @@ namespace OpenTracker.ViewModels.MapArea.MapLocations
                     _ => _mapLocation.X - 28,
                 };
 
-                if (_mapArea.MapPanelOrientation == Orientation.Vertical)
+                if (AppSettings.Instance.Layout.CurrentMapOrientation == Orientation.Vertical)
                 {
                     return x + 23;
                 }
@@ -74,7 +73,7 @@ namespace OpenTracker.ViewModels.MapArea.MapLocations
                     _ => _mapLocation.Y - 28,
                 };
 
-                if (_mapArea.MapPanelOrientation == Orientation.Vertical)
+                if (AppSettings.Instance.Layout.CurrentMapOrientation == Orientation.Vertical)
                 {
                     if (_mapLocation.Map == MapID.DarkWorld)
                     {
@@ -89,7 +88,7 @@ namespace OpenTracker.ViewModels.MapArea.MapLocations
         }
 
         public bool Visible =>
-            _mapLocation.Requirement.Met && (AppSettings.Instance.DisplayAllLocations ||
+            _mapLocation.Requirement.Met && (AppSettings.Instance.Tracker.DisplayAllLocations ||
             (_mapLocation.Location.Sections[0] is IMarkableSection markableSection &&
             markableSection.Marking.Mark != null) ||
             _mapLocation.Location.Accessibility != AccessibilityLevel.Cleared);
@@ -98,7 +97,7 @@ namespace OpenTracker.ViewModels.MapArea.MapLocations
         public List<Point> Points { get; }
 
         public string Color =>
-            AppSettings.Instance.AccessibilityColors[_mapLocation.Location.Accessibility];
+            AppSettings.Instance.Colors.AccessibilityColors[_mapLocation.Location.Accessibility];
         public string BorderColor =>
             Highlighted ? "#FFFFFFFF" : "#FF000000";
 
@@ -124,13 +123,10 @@ namespace OpenTracker.ViewModels.MapArea.MapLocations
         /// The list of points for the triangle polygon.
         /// </param>
         public EntranceMapLocationVM(
-            MapLocation mapLocation, MapAreaControlVM mapArea,
-            ObservableCollection<PinnedLocationVM> pinnedLocations,
-            MarkingMapLocationVM marking, Dock markingDock, List<Point> points)
+            MapLocation mapLocation,  MarkingMapLocationVM marking, Dock markingDock,
+            List<Point> points)
         {
-            _mapArea = mapArea ?? throw new ArgumentNullException(nameof(mapArea));
             _mapLocation = mapLocation ?? throw new ArgumentNullException(nameof(mapLocation));
-            _pinnedLocations = pinnedLocations ?? throw new ArgumentNullException(nameof(pinnedLocations));
             Marking = marking ?? throw new ArgumentNullException(nameof(marking));
             MarkingDock = markingDock;
             Points = points ?? throw new ArgumentNullException(nameof(points));
@@ -141,9 +137,9 @@ namespace OpenTracker.ViewModels.MapArea.MapLocations
             }
 
             PropertyChanged += OnPropertyChanged;
-            AppSettings.Instance.PropertyChanged += OnAppSettingsChanged;
-            AppSettings.Instance.AccessibilityColors.PropertyChanged += OnColorChanged;
-            _mapArea.PropertyChanged += OnMapAreaChanged;
+            AppSettings.Instance.Tracker.PropertyChanged += OnTrackerSettingsChanged;
+            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            AppSettings.Instance.Colors.AccessibilityColors.PropertyChanged += OnColorChanged;
             _mapLocation.Location.PropertyChanged += OnLocationChanged;
             _mapLocation.Requirement.PropertyChanged += OnRequirementChanged;
         }
@@ -166,24 +162,6 @@ namespace OpenTracker.ViewModels.MapArea.MapLocations
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the MapAreaControlVM class.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnMapAreaChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(MapAreaControlVM.MapPanelOrientation))
-            {
-                this.RaisePropertyChanged(nameof(CanvasX));
-                this.RaisePropertyChanged(nameof(CanvasY));
-            }
-        }
-
-        /// <summary>
         /// Subscribes to the PropertyChanged event on the IRequirement interface.
         /// </summary>
         /// <param name="sender">
@@ -201,7 +179,7 @@ namespace OpenTracker.ViewModels.MapArea.MapLocations
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the AppSettings class.
+        /// Subscribes to the PropertyChanged event on the TrackerSettings class.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -209,11 +187,29 @@ namespace OpenTracker.ViewModels.MapArea.MapLocations
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
+        private void OnTrackerSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(AppSettings.DisplayAllLocations))
+            if (e.PropertyName == nameof(TrackerSettings.DisplayAllLocations))
             {
                 UpdateVisibility();
+            }
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(LayoutSettings.CurrentMapOrientation))
+            {
+                this.RaisePropertyChanged(nameof(CanvasX));
+                this.RaisePropertyChanged(nameof(CanvasY));
             }
         }
 
@@ -291,10 +287,10 @@ namespace OpenTracker.ViewModels.MapArea.MapLocations
             if (_pinnedLocation == null)
             {
                 _pinnedLocation = PinnedLocationVMFactory.GetLocationControlVM(
-                    _mapLocation.Location, _pinnedLocations);
+                    _mapLocation.Location);
             }
 
-            UndoRedoManager.Instance.Execute(new PinLocation(_pinnedLocation, _pinnedLocations));
+            UndoRedoManager.Instance.Execute(new PinLocation(_pinnedLocation));
         }
 
         /// <summary>

@@ -11,7 +11,8 @@
 		<vc:BitmapValueConverter x:Key="BitmapValueConverter" />
 	</UserControl.Resources>
 
-  <Border BorderBrush="{DynamicResource ThemeBorderLowBrush}" BorderThickness="3" Margin="{Binding MapMargin}">
+  <Border BorderBrush="{DynamicResource ThemeBorderLowBrush}" BorderThickness="3"
+          Margin="{Binding Margin}">
 		<Panel>
 			<Image Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}"
 				   Height="2007" Width="2007" />

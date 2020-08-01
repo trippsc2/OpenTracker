@@ -1,6 +1,6 @@
 ﻿using OpenTracker.Interfaces;
-using OpenTracker.Models;
 using OpenTracker.Models.Locations;
+using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
 using System;
@@ -15,10 +15,9 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel
     public class PinnedLocationVM : ViewModelBase, IClickHandler
     {
         private readonly ILocation _location;
-        private readonly ObservableCollection<PinnedLocationVM> _pinnedLocations;
 
         public double Scale =>
-            AppSettings.Instance.UIScale;
+            AppSettings.Instance.Layout.UIScale;
         public string Name =>
             _location.Name;
         public ObservableCollection<SectionVM> Sections { get; } =
@@ -37,21 +36,17 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel
         /// <param name="sections">
         /// The observable collection of section control ViewModels.
         /// </param>
-        public PinnedLocationVM(
-            ILocation location, ObservableCollection<PinnedLocationVM> pinnedLocations,
-            ObservableCollection<SectionVM> sections)
+        public PinnedLocationVM(ILocation location, ObservableCollection<SectionVM> sections)
         {
             _location = location ?? throw new ArgumentNullException(nameof(location));
-            _pinnedLocations = pinnedLocations ??
-                throw new ArgumentNullException(nameof(pinnedLocations));
             Sections = sections ?? throw new ArgumentNullException(nameof(sections));
             Notes = new PinnedLocationNoteAreaVM(_location);
 
-            AppSettings.Instance.PropertyChanged += OnAppSettingsChanged;
+            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the AppSettings class.
+        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -59,9 +54,9 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
+        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(AppSettings.UIScale))
+            if (e.PropertyName == nameof(LayoutSettings.UIScale))
             {
                 this.RaisePropertyChanged(nameof(Scale));
             }
@@ -75,7 +70,7 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel
         /// </param>
         public void OnLeftClick(bool force = false)
         {
-            UndoRedoManager.Instance.Execute(new UnpinLocation(_pinnedLocations, this));
+            UndoRedoManager.Instance.Execute(new UnpinLocation(this));
         }
 
         /// <summary>

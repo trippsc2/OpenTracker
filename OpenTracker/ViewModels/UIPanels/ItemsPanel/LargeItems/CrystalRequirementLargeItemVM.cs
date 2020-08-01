@@ -1,6 +1,7 @@
 ﻿using OpenTracker.Interfaces;
 using OpenTracker.Models;
 using OpenTracker.Models.Items;
+using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
 using System;
@@ -21,7 +22,8 @@ namespace OpenTracker.ViewModels.UIPanels.ItemsPanel.LargeItems
         public string ImageCount =>
             (7 - _item.Current).ToString(CultureInfo.InvariantCulture);
         public string TextColor =>
-            _item.Current == 0 ? AppSettings.Instance.EmphasisFontColor : "#ffffffff";
+            _item.Current == 0 ?
+            AppSettings.Instance.Colors.EmphasisFontColor : "#ffffffff";
 
         /// <summary>
         /// Constructor
@@ -36,7 +38,7 @@ namespace OpenTracker.ViewModels.UIPanels.ItemsPanel.LargeItems
                 $"{_item.Type.ToString().ToLowerInvariant()}.png";
 
             _item.PropertyChanged += OnItemChanged;
-            AppSettings.Instance.PropertyChanged += OnAppSettingsChanged;
+            AppSettings.Instance.Colors.PropertyChanged += OnColorsChanged;
         }
 
         /// <summary>
@@ -58,7 +60,7 @@ namespace OpenTracker.ViewModels.UIPanels.ItemsPanel.LargeItems
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the AppSettings class.
+        /// Subscribes to the PropertyChanged event on the ColorSettings class.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -66,9 +68,9 @@ namespace OpenTracker.ViewModels.UIPanels.ItemsPanel.LargeItems
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
+        private void OnColorsChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(AppSettings.EmphasisFontColor))
+            if (e.PropertyName == nameof(ColorSettings.EmphasisFontColor))
             {
                 UpdateTextColor();
             }

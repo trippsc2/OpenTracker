@@ -1,8 +1,8 @@
 ﻿using Avalonia.Media;
-using OpenTracker.Models;
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Sections;
+using OpenTracker.Models.Settings;
 using OpenTracker.ViewModels.UIPanels.LocationsPanel.SectionIcons;
 using ReactiveUI;
 using System;
@@ -19,7 +19,7 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel
         private readonly ISection _section;
 
         public Color FontColor =>
-            Color.Parse(AppSettings.Instance.AccessibilityColors[_section.Accessibility]);
+            Color.Parse(AppSettings.Instance.Colors.AccessibilityColors[_section.Accessibility]);
         public bool Visible =>
             _section.Requirement.Met;
         public string Name =>
@@ -38,13 +38,12 @@ namespace OpenTracker.ViewModels.UIPanels.LocationsPanel
         /// <param name="icons">
         /// The observable collection of section icon control ViewModel instances.
         /// </param>
-        public SectionVM(
-            ISection section, ObservableCollection<SectionIconVMBase> icons)
+        public SectionVM(ISection section, ObservableCollection<SectionIconVMBase> icons)
         {
             _section = section ?? throw new ArgumentNullException(nameof(section));
             Icons = icons ?? throw new ArgumentNullException(nameof(icons));
 
-            AppSettings.Instance.AccessibilityColors.PropertyChanged += OnColorChanged;
+            AppSettings.Instance.Colors.AccessibilityColors.PropertyChanged += OnColorChanged;
             _section.PropertyChanged += OnSectionChanged;
             _section.Requirement.PropertyChanged += OnRequirementChanged;
         }

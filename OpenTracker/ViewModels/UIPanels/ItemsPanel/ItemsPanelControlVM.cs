@@ -1,13 +1,10 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Layout;
-using OpenTracker.Models;
+﻿using Avalonia.Layout;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
+using OpenTracker.Models.Settings;
 using OpenTracker.ViewModels.UIPanels.ItemsPanel.LargeItems;
 using OpenTracker.ViewModels.UIPanels.ItemsPanel.SmallItems;
 using ReactiveUI;
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
@@ -18,40 +15,14 @@ namespace OpenTracker.ViewModels.UIPanels.ItemsPanel
     /// </summary>
     public class ItemsPanelControlVM : ViewModelBase
     {
-        private readonly MainWindowVM _mainWindow;
-        private readonly UIPanelVM _uiPanel;
-
         public double Scale =>
-            AppSettings.Instance.UIScale;
+            AppSettings.Instance.Layout.UIScale;
         public bool ATItemsVisible =>
             Mode.Instance.SmallKeyShuffle;
-        public Thickness PanelMargin
-        {
-            get
-            {
-                return _uiPanel.UIPanelOrientationDock switch
-                {
-                    Dock.Left => new Thickness(2, 0, 1, 2),
-                    Dock.Bottom => new Thickness(2, 1, 0, 2),
-                    Dock.Right => new Thickness(1, 0, 2, 2),
-                    _ => new Thickness(2, 2, 0, 1),
-                };
-            }
-        }
-        public Orientation ItemsPanelOrientation
-        {
-            get
-            {
-                return _mainWindow.UIDock switch
-                {
-                    Dock.Left => Orientation.Vertical,
-                    Dock.Right => Orientation.Vertical,
-                    _ => Orientation.Horizontal,
-                };
-            }
-        }
-        public bool ItemsPanelHorizontalOrientation =>
-            ItemsPanelOrientation == Orientation.Horizontal;
+        public Orientation Orientation =>
+            AppSettings.Instance.Layout.CurrentLayoutOrientation;
+        public bool HorizontalOrientation =>
+            Orientation == Orientation.Horizontal;
         public ModeSettingsVM ModeSettings { get; }
 
         public ObservableCollection<LargeItemVMBase> Items { get; } =
@@ -86,16 +57,8 @@ namespace OpenTracker.ViewModels.UIPanels.ItemsPanel
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="uiPanel">
-        /// The UI panels ViewModel parent class.
-        /// </param>
-        /// <param name="mainWindow">
-        /// The main window ViewModel parent class.
-        /// </param>
-        public ItemsPanelControlVM(UIPanelVM uiPanel, MainWindowVM mainWindow)
+        public ItemsPanelControlVM()
         {
-            _uiPanel = uiPanel ?? throw new ArgumentNullException(nameof(uiPanel));
-            _mainWindow = mainWindow ?? throw new ArgumentNullException(nameof(mainWindow));
             ModeSettings = new ModeSettingsVM();
 
             LargeItemControlVMFactory.GetLargeItemControlVMs(Items);
@@ -127,10 +90,8 @@ namespace OpenTracker.ViewModels.UIPanels.ItemsPanel
                 LocationID.GanonsTower, this, GTItems);
 
             PropertyChanged += OnPropertyChanged;
-            _uiPanel.PropertyChanged += OnUIPanelChanged;
-            _mainWindow.PropertyChanged += OnMainWindowChanged;
             Mode.Instance.PropertyChanged += OnModeChanged;
-            AppSettings.Instance.PropertyChanged += OnAppSettingsChanged;
+            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>
@@ -144,43 +105,9 @@ namespace OpenTracker.ViewModels.UIPanels.ItemsPanel
         /// </param>
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ItemsPanelOrientation))
+            if (e.PropertyName == nameof(Orientation))
             {
-                this.RaisePropertyChanged(nameof(ItemsPanelHorizontalOrientation));
-            }
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the UIPanelVM class.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnUIPanelChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(UIPanelVM.UIPanelOrientationDock))
-            {
-                this.RaisePropertyChanged(nameof(PanelMargin));
-            }
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the MainWindowVM class.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnMainWindowChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(MainWindowVM.UIDock))
-            {
-                this.RaisePropertyChanged(nameof(ItemsPanelOrientation));
+                this.RaisePropertyChanged(nameof(HorizontalOrientation));
             }
         }
 
@@ -203,7 +130,7 @@ namespace OpenTracker.ViewModels.UIPanels.ItemsPanel
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the AppSettings class.
+        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -211,9 +138,14 @@ namespace OpenTracker.ViewModels.UIPanels.ItemsPanel
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
+        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(AppSettings.UIScale))
+            if (e.PropertyName == nameof(LayoutSettings.CurrentLayoutOrientation))
+            {
+                this.RaisePropertyChanged(nameof(Orientation));
+            }
+
+            if (e.PropertyName == nameof(LayoutSettings.UIScale))
             {
                 this.RaisePropertyChanged(nameof(Scale));
             }

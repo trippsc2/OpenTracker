@@ -1,6 +1,7 @@
 ﻿using Avalonia.Layout;
 using OpenTracker.Models;
 using OpenTracker.Models.Connections;
+using OpenTracker.Models.Settings;
 using OpenTracker.ViewModels.MapArea.MapLocations;
 using ReactiveUI;
 using System;
@@ -15,10 +16,8 @@ namespace OpenTracker.ViewModels.MapArea
     /// </summary>
     public class MapAreaControlVM : ViewModelBase
     {
-        private readonly MainWindowVM _mainWindow;
-
-        public Orientation MapPanelOrientation => 
-            AppSettings.Instance.MapOrientation ?? _mainWindow.Orientation;
+        public Orientation Orientation => 
+            AppSettings.Instance.Layout.CurrentMapOrientation;
 
         public ObservableCollection<MapVM> Maps { get; }
         public ObservableCollection<MapConnectionVM> Connectors { get; } =
@@ -33,18 +32,20 @@ namespace OpenTracker.ViewModels.MapArea
         /// </param>
         public MapAreaControlVM(MainWindowVM mainWindow)
         {
-            _mainWindow = mainWindow ?? throw new ArgumentNullException(nameof(mainWindow));
-            Maps = MapAreaControlVMFactory.GetMapControlVMs(this);
-            MapLocations = MapAreaControlVMFactory.GetMapLocationControlVMs(
-                this, mainWindow.UIPanel.LocationsPanel.Locations);
+            if (mainWindow == null)
+            {
+                throw new ArgumentNullException(nameof(mainWindow));
+            }
 
-            AppSettings.Instance.PropertyChanged += OnAppSettingsChanged;
-            _mainWindow.PropertyChanged += OnMainWindowChanged;
+            Maps = MapAreaControlVMFactory.GetMapControlVMs();
+            MapLocations = MapAreaControlVMFactory.GetMapLocationControlVMs();
+
+            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
             ConnectionCollection.Instance.CollectionChanged += OnConnectionsChanged;
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the AppSettings class.
+        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -52,28 +53,11 @@ namespace OpenTracker.ViewModels.MapArea
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
+        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(AppSettings.MapOrientation))
+            if (e.PropertyName == nameof(LayoutSettings.CurrentMapOrientation))
             {
-                UpdateMapOrientation();
-            }
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the MainWindowVM class.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnMainWindowChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(MainWindowVM.Orientation))
-            {
-                UpdateMapOrientation();
+                this.RaisePropertyChanged(nameof(Orientation));
             }
         }
 
@@ -123,14 +107,6 @@ namespace OpenTracker.ViewModels.MapArea
                     Connectors.Add(new MapConnectionVM(connection, this));
                 }
             }
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the MapPanelOrientation property.
-        /// </summary>
-        private void UpdateMapOrientation()
-        {
-            this.RaisePropertyChanged(nameof(MapPanelOrientation));
         }
     }
 }

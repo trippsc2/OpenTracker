@@ -1,7 +1,7 @@
 ﻿using OpenTracker.Interfaces;
-using OpenTracker.Models;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
 using System;
@@ -45,7 +45,7 @@ namespace OpenTracker.ViewModels.UIPanels.ItemsPanel.SmallItems
 
                 if (_item.Current == _item.Maximum)
                 {
-                    return AppSettings.Instance.EmphasisFontColor;
+                    return AppSettings.Instance.Colors.EmphasisFontColor;
                 }
 
                 return "#ffffff";
@@ -63,13 +63,13 @@ namespace OpenTracker.ViewModels.UIPanels.ItemsPanel.SmallItems
             _item = item ?? throw new ArgumentNullException(nameof(item));
             _requirement = RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn];
 
-            AppSettings.Instance.PropertyChanged += OnAppSettingsChanged;
+            AppSettings.Instance.Colors.PropertyChanged += OnColorsChanged;
             _item.PropertyChanged += OnItemChanged;
             _requirement.PropertyChanged += OnRequirementChanged;
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the AppSettings class.
+        /// Subscribes to the PropertyChanged event on the ColorSettings class.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -77,9 +77,9 @@ namespace OpenTracker.ViewModels.UIPanels.ItemsPanel.SmallItems
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
+        private void OnColorsChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(AppSettings.EmphasisFontColor))
+            if (e.PropertyName == nameof(ColorSettings.EmphasisFontColor))
             {
                 UpdateTextColor();
             }

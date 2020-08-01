@@ -209,7 +209,7 @@
 
   </UserControl.Resources>
 
-  <Border Classes="ControlBorder" Margin="{Binding PanelMargin, Mode=OneWay}">
+  <Border Classes="ControlBorder" Margin="1">
     <StackPanel Orientation="Vertical">
 
       <Border Classes="UIPanelTitle ItemsPanelTitle">
@@ -226,7 +226,7 @@
         </LayoutTransformControl.LayoutTransform>
         
         <Border Classes="UIPanelBody ItemsPanelBody">
-          <StackPanel Orientation="{Binding ItemsPanelOrientation}">
+          <StackPanel Orientation="{Binding Orientation}">
 
             <ItemsControl Items="{Binding Items}">
               <ItemsControl.ItemsPanel>
@@ -241,13 +241,13 @@
             <ContentControl Name="DungeonItems">
               <i:Interaction.Behaviors>
 
-                <ia:DataTriggerBehavior Binding="{Binding Path=ItemsPanelHorizontalOrientation}"
+                <ia:DataTriggerBehavior Binding="{Binding HorizontalOrientation}"
                                         ComparisonCondition="Equal" Value="True">
                   <ia:ChangePropertyAction TargetObject="{Binding #DungeonItems}" PropertyName="Content"
                                            Value="{DynamicResource HorizontalDungeonLayout}"/>
                 </ia:DataTriggerBehavior>
 
-                <ia:DataTriggerBehavior Binding="{Binding Path=ItemsPanelHorizontalOrientation}"
+                <ia:DataTriggerBehavior Binding="{Binding HorizontalOrientation}"
                                         ComparisonCondition="NotEqual" Value="True">
                   <ia:ChangePropertyAction TargetObject="{Binding #DungeonItems}" PropertyName="Content"
                                            Value="{DynamicResource VerticalDungeonLayout}"/>

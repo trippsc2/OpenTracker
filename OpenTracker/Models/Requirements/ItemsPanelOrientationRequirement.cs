@@ -74,7 +74,7 @@ namespace OpenTracker.Models.Requirements
         /// </param>
         private void OnItemsPanelChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ItemsPanelControlVM.ItemsPanelOrientation))
+            if (e.PropertyName == nameof(ItemsPanelControlVM.Orientation))
             {
                 UpdateAccessibility();
             }
@@ -85,7 +85,7 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         private void UpdateAccessibility()
         {
-            Accessibility = _itemsPanel.ItemsPanelOrientation == _orientation ?
+            Accessibility = _itemsPanel.Orientation == _orientation ?
                 AccessibilityLevel.Normal : AccessibilityLevel.None;
         }
     }

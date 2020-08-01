@@ -197,39 +197,20 @@ namespace OpenTracker.ViewModels.MapArea.MapLocations
         /// <param name="mapLocation">
         /// The map location.
         /// </param>
-        /// <param name="mapArea">
-        /// The map area control ViewModel parent class.
-        /// </param>
-        /// <param name="pinnedLocations">
-        /// The observable collection of pinned locations.
-        /// </param>
-        /// <returns>
         /// A new entrance map location control ViewModel instance.
         /// </returns>
-        private static MapLocationVMBase GetEntranceMapLocationControlVM(
-            MapLocation mapLocation, MapAreaControlVM mapArea,
-            ObservableCollection<PinnedLocationVM> pinnedLocations)
+        private static MapLocationVMBase GetEntranceMapLocationControlVM(MapLocation mapLocation)
         {
             if (mapLocation == null)
             {
                 throw new ArgumentNullException(nameof(mapLocation));
             }
 
-            if (mapArea == null)
-            {
-                throw new ArgumentNullException(nameof(mapArea));
-            }
-
-            if (pinnedLocations == null)
-            {
-                throw new ArgumentNullException(nameof(pinnedLocations));
-            }
-
             IMarkableSection section = (IMarkableSection)mapLocation.Location.Sections[0];
             Dock markingDock = GetEntranceMarkingDock(mapLocation.Location.ID);
 
             return new EntranceMapLocationVM(
-                mapLocation, mapArea, pinnedLocations, GetMapLocationMarkingControlVM(section),
+                mapLocation, GetMapLocationMarkingControlVM(section),
                 markingDock, GetEntrancePoints(markingDock));
         }
 
@@ -249,29 +230,17 @@ namespace OpenTracker.ViewModels.MapArea.MapLocations
         /// <returns>
         /// A new markable map location control ViewModel instance.
         /// </returns>
-        private static MapLocationVMBase GetMarkableMapLocationControlVM(
-            MapLocation mapLocation, MapAreaControlVM mapArea,
-            ObservableCollection<PinnedLocationVM> pinnedLocations)
+        private static MapLocationVMBase GetMarkableMapLocationControlVM(MapLocation mapLocation)
         {
             if (mapLocation == null)
             {
                 throw new ArgumentNullException(nameof(mapLocation));
             }
 
-            if (mapArea == null)
-            {
-                throw new ArgumentNullException(nameof(mapArea));
-            }
-
-            if (pinnedLocations == null)
-            {
-                throw new ArgumentNullException(nameof(pinnedLocations));
-            }
-
             LocationID id = mapLocation.Location.ID;
 
             return new MarkableMapLocationVM(
-                mapLocation, mapArea, pinnedLocations,
+                mapLocation,
                 GetMapLocationMarkingControlVM((IMarkableSection)mapLocation.Location.Sections[0]),
                 GetMarkableEntranceMarkingDock(id), GetMarkableNonEntranceMarkingDock(id));
         }
@@ -291,42 +260,30 @@ namespace OpenTracker.ViewModels.MapArea.MapLocations
         /// <returns>
         /// A new map location control ViewModel instance.
         /// </returns>
-        public static MapLocationVMBase GetMapLocationControlVM(
-            MapLocation mapLocation, MapAreaControlVM mapArea,
-            ObservableCollection<PinnedLocationVM> pinnedLocations)
+        public static MapLocationVMBase GetMapLocationControlVM(MapLocation mapLocation)
         {
             if (mapLocation == null)
             {
                 throw new ArgumentNullException(nameof(mapLocation));
             }
 
-            if (mapArea == null)
-            {
-                throw new ArgumentNullException(nameof(mapArea));
-            }
-
-            if (pinnedLocations == null)
-            {
-                throw new ArgumentNullException(nameof(pinnedLocations));
-            }
-
             switch (mapLocation.Location.Sections[0])
             {
                 case IEntranceSection _:
                     {
-                        return GetEntranceMapLocationControlVM(mapLocation, mapArea, pinnedLocations);
+                        return GetEntranceMapLocationControlVM(mapLocation);
                     }
                 case ITakeAnySection _:
                     {
-                        return new TakeAnyMapLocationVM(mapLocation, mapArea, pinnedLocations);
+                        return new TakeAnyMapLocationVM(mapLocation);
                     }
                 case IMarkableSection _:
                     {
-                        return GetMarkableMapLocationControlVM(mapLocation, mapArea, pinnedLocations);
+                        return GetMarkableMapLocationControlVM(mapLocation);
                     }
                 default:
                     {
-                        return new MapLocationVM(mapLocation, mapArea, pinnedLocations);
+                        return new MapLocationVM(mapLocation);
                     }
             };
         }

@@ -2,8 +2,8 @@
 using Avalonia.Layout;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
+using OpenTracker.Models.Settings;
 using ReactiveUI;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels.MapArea
@@ -13,11 +13,10 @@ namespace OpenTracker.ViewModels.MapArea
     /// </summary>
     public class MapVM : ViewModelBase
     {
-        private readonly MapAreaControlVM _mapArea;
         private readonly MapID _id;
 
-        public Thickness MapMargin =>
-            _mapArea.MapPanelOrientation switch
+        public Thickness Margin =>
+            AppSettings.Instance.Layout.CurrentMapOrientation switch
             {
                 Orientation.Horizontal => new Thickness(10, 20),
                 _ => new Thickness(20, 10)
@@ -42,20 +41,16 @@ namespace OpenTracker.ViewModels.MapArea
         /// <param name="id">
         /// The map identity.
         /// </param>
-        /// <param name="mapArea">
-        /// The view-model of the main window.
-        /// </param>
-        public MapVM(MapID id, MapAreaControlVM mapArea)
+        public MapVM(MapID id)
         {
             _id = id;
-            _mapArea = mapArea ?? throw new ArgumentNullException(nameof(mapArea));
 
             Mode.Instance.PropertyChanged += OnModeChanged;
-            _mapArea.PropertyChanged += OnMapAreaChanged;
+            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the MapAreaControlVM class.
+        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -63,11 +58,11 @@ namespace OpenTracker.ViewModels.MapArea
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnMapAreaChanged(object sender, PropertyChangedEventArgs e)
+        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(MapAreaControlVM.MapPanelOrientation))
+            if (e.PropertyName == nameof(LayoutSettings.CurrentMapOrientation))
             {
-                this.RaisePropertyChanged(nameof(MapMargin));
+                this.RaisePropertyChanged(nameof(Margin));
             }
         }
 

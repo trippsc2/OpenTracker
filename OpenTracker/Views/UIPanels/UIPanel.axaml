@@ -4,9 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.UIPanels.UIPanel">
-  <DockPanel>
-    <ContentControl Content="{Binding ItemsPanel}" DockPanel.Dock="{Binding
-                    UIPanelOrientationDock, Mode=OneWay}" />
-    <ContentControl Content="{Binding LocationsPanel}" />
+  <DockPanel Margin="1">
+    <ContentControl Content="{Binding Items}" DockPanel.Dock="{Binding ItemsDock, Mode=OneWay}" />
+    <ContentControl Content="{Binding Locations}" />
   </DockPanel>
 </UserControl>

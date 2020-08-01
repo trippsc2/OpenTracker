@@ -14,7 +14,7 @@
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <StackPanel Orientation="{Binding
-                          $parent[view:MapAreaControl].DataContext.MapPanelOrientation,
+                          $parent[view:MapAreaControl].DataContext.Orientation,
                           Mode=OneWay}" />
             </ItemsPanelTemplate>
           </ItemsControl.ItemsPanel>

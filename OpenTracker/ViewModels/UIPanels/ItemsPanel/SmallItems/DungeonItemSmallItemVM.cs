@@ -1,7 +1,7 @@
 ﻿using OpenTracker.Interfaces;
-using OpenTracker.Models;
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Sections;
+using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
 using System;
@@ -19,7 +19,7 @@ namespace OpenTracker.ViewModels.UIPanels.ItemsPanel.SmallItems
 
         public string FontColor =>
             _section.Available == 0 ? "#ffffffff" :
-            AppSettings.Instance.AccessibilityColors[_section.Accessibility];
+            AppSettings.Instance.Colors.AccessibilityColors[_section.Accessibility];
         public string ImageSource
         {
             get
@@ -50,7 +50,7 @@ namespace OpenTracker.ViewModels.UIPanels.ItemsPanel.SmallItems
         {
             _section = section ?? throw new ArgumentNullException(nameof(section));
 
-            AppSettings.Instance.AccessibilityColors.PropertyChanged += OnColorChanged;
+            AppSettings.Instance.Colors.AccessibilityColors.PropertyChanged += OnColorChanged;
             _section.PropertyChanged += OnSectionChanged;
         }
 

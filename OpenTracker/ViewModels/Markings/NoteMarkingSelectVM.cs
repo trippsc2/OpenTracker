@@ -1,6 +1,6 @@
-﻿using OpenTracker.Models;
-using OpenTracker.Models.Locations;
+﻿using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
+using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
 using System;
@@ -19,7 +19,7 @@ namespace OpenTracker.ViewModels.Markings
         private readonly ILocation _location;
 
         public double Scale =>
-            AppSettings.Instance.UIScale;
+            AppSettings.Instance.Layout.UIScale;
 
         public ObservableCollection<MarkingSelectButtonVM> Buttons { get; }
 
@@ -55,11 +55,11 @@ namespace OpenTracker.ViewModels.Markings
             ChangeMarkingCommand = ReactiveCommand.Create<MarkType?>(ChangeMarking);
             RemoveNoteCommand = ReactiveCommand.Create(RemoveNote);
 
-            AppSettings.Instance.PropertyChanged += OnAppSettingsChanged;
+            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the AppSettings class.
+        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -67,9 +67,9 @@ namespace OpenTracker.ViewModels.Markings
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
+        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(AppSettings.UIScale))
+            if (e.PropertyName == nameof(LayoutSettings.UIScale))
             {
                 this.RaisePropertyChanged(nameof(Scale));
             }

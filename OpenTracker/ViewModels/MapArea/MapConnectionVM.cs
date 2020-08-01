@@ -1,10 +1,10 @@
 ﻿using Avalonia;
 using Avalonia.Layout;
 using OpenTracker.Interfaces;
-using OpenTracker.Models;
 using OpenTracker.Models.Connections;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
+using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
 using System;
@@ -32,7 +32,7 @@ namespace OpenTracker.ViewModels.MapArea
         public Connection Connection { get; }
 
         public Point Start =>
-            _mapArea.MapPanelOrientation switch
+            _mapArea.Orientation switch
             {
                 Orientation.Vertical => Connection.Location1.Map == MapID.DarkWorld ?
                     new Point(Connection.Location1.X + 23, Connection.Location1.Y + 2046) :
@@ -41,7 +41,7 @@ namespace OpenTracker.ViewModels.MapArea
                     new Point(Connection.Location1.X + 2046, Connection.Location1.Y + 23) :
                     new Point(Connection.Location1.X + 13, Connection.Location1.Y + 23)
             };
-        public Point End => _mapArea.MapPanelOrientation switch
+        public Point End => _mapArea.Orientation switch
         {
             Orientation.Vertical => Connection.Location2.Map == MapID.DarkWorld ?
                 new Point(Connection.Location2.X + 23, Connection.Location2.Y + 2046) :
@@ -51,7 +51,7 @@ namespace OpenTracker.ViewModels.MapArea
                 new Point(Connection.Location2.X + 13, Connection.Location2.Y + 23)
         };
         public string Color =>
-            Highlighted ? "#ffffffff" : AppSettings.Instance.ConnectorColor;
+            Highlighted ? "#ffffffff" : AppSettings.Instance.Colors.ConnectorColor;
 
         /// <summary>
         /// Constructor
@@ -70,7 +70,7 @@ namespace OpenTracker.ViewModels.MapArea
             PropertyChanged += OnPropertyChanged;
             _mapArea.PropertyChanged += OnMapAreaChanged;
             Mode.Instance.PropertyChanged += OnModeChanged;
-            AppSettings.Instance.PropertyChanged += OnAppSettingsChanged;
+            AppSettings.Instance.Colors.PropertyChanged += OnColorsChanged;
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace OpenTracker.ViewModels.MapArea
         /// </param>
         private void OnMapAreaChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(MapAreaControlVM.MapPanelOrientation))
+            if (e.PropertyName == nameof(MapAreaControlVM.Orientation))
             {
                 this.RaisePropertyChanged(nameof(Start));
                 this.RaisePropertyChanged(nameof(End));
@@ -126,7 +126,7 @@ namespace OpenTracker.ViewModels.MapArea
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the AppSettings class.
+        /// Subscribes to the PropertyChanged event on the ColorSettings class.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -134,9 +134,9 @@ namespace OpenTracker.ViewModels.MapArea
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
+        private void OnColorsChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(AppSettings.ConnectorColor))
+            if (e.PropertyName == nameof(ColorSettings.ConnectorColor))
             {
                 UpdateColor();
             }
