@@ -3,9 +3,9 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.Items
 {
-    public class ItemsPanelControl : UserControl
+    public class ItemsPanel : UserControl
     {
-        public ItemsPanelControl()
+        public ItemsPanel()
         {
             InitializeComponent();
         }

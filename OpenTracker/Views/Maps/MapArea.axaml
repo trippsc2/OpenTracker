@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:view="clr-namespace:OpenTracker.Views.Maps;assembly=OpenTracker"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OpenTracker.Views.Maps.MapAreaControl">
+             x:Class="OpenTracker.Views.Maps.MapArea">
   <Panel>
     <Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
       <Panel>
@@ -14,8 +14,7 @@
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <StackPanel Orientation="{Binding
-                          $parent[view:MapAreaControl].DataContext.Orientation,
-                          Mode=OneWay}" />
+                          $parent[view:MapArea].DataContext.Orientation, Mode=OneWay}" />
             </ItemsPanelTemplate>
           </ItemsControl.ItemsPanel>
 

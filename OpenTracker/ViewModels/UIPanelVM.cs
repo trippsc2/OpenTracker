@@ -4,7 +4,6 @@ using OpenTracker.Models.Settings;
 using OpenTracker.ViewModels.Items;
 using OpenTracker.ViewModels.PinnedLocations;
 using ReactiveUI;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels
@@ -21,23 +20,15 @@ namespace OpenTracker.ViewModels
                 _ => AppSettings.Instance.Layout.VerticalItemsPlacement
             };
 
-        public ItemsPanelControlVM Items { get; }
+        public ItemsPanelVM Items { get; }
         public LocationsPanelControlVM Locations { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="mainWindow">
-        /// The main window ViewModel parent class.
-        /// </param>
-        public UIPanelVM(MainWindowVM mainWindow)
+        public UIPanelVM()
         {
-            if (mainWindow == null)
-            {
-                throw new ArgumentNullException(nameof(mainWindow));
-            }
-
-            Items = new ItemsPanelControlVM();
+            Items = new ItemsPanelVM();
             Locations = new LocationsPanelControlVM();
 
             AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;

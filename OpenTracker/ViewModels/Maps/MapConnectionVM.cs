@@ -17,7 +17,7 @@ namespace OpenTracker.ViewModels.Maps
     /// </summary>
     public class MapConnectionVM : ViewModelBase, IClickHandler, IPointerOver
     {
-        private readonly MapAreaControlVM _mapArea;
+        private readonly MapAreaVM _mapArea;
 
         private bool _highlighted;
         public bool Highlighted
@@ -62,7 +62,7 @@ namespace OpenTracker.ViewModels.Maps
         /// <param name="mapArea">
         /// The map area ViewModel parent class.
         /// </param>
-        public MapConnectionVM(Connection connection, MapAreaControlVM mapArea)
+        public MapConnectionVM(Connection connection, MapAreaVM mapArea)
         {
             Connection = connection ?? throw new ArgumentNullException(nameof(connection));
             _mapArea = mapArea ?? throw new ArgumentNullException(nameof(mapArea));
@@ -101,7 +101,7 @@ namespace OpenTracker.ViewModels.Maps
         /// </param>
         private void OnMapAreaChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(MapAreaControlVM.Orientation))
+            if (e.PropertyName == nameof(MapAreaVM.Orientation))
             {
                 this.RaisePropertyChanged(nameof(Start));
                 this.RaisePropertyChanged(nameof(End));

@@ -73,7 +73,7 @@ namespace OpenTracker.ViewModels
 
         public TopMenuVM TopMenu { get; }
         public UIPanelVM UIPanel { get; }
-        public MapAreaControlVM MapArea { get; }
+        public MapAreaVM MapArea { get; }
 
         public ReactiveCommand<Unit, Unit> OpenResetDialogCommand { get; }
         public ReactiveCommand<Unit, Unit> UndoCommand { get; }
@@ -133,8 +133,8 @@ namespace OpenTracker.ViewModels
             ToggleDisplayAllLocationsCommand = ReactiveCommand.Create(ToggleDisplayAllLocations);
 
             TopMenu = new TopMenuVM(this);
-            UIPanel = new UIPanelVM(this);
-            MapArea = new MapAreaControlVM(this);
+            UIPanel = new UIPanelVM();
+            MapArea = new MapAreaVM();
 
             AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
             LoadSequenceBreaks();

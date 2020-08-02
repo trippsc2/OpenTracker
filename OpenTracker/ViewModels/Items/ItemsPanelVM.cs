@@ -13,7 +13,7 @@ namespace OpenTracker.ViewModels.Items
     /// <summary>
     /// This is the ViewModel class for the Items panel control.
     /// </summary>
-    public class ItemsPanelControlVM : ViewModelBase
+    public class ItemsPanelVM : ViewModelBase
     {
         public double Scale =>
             AppSettings.Instance.Layout.UIScale;
@@ -57,7 +57,7 @@ namespace OpenTracker.ViewModels.Items
         /// <summary>
         /// Constructor
         /// </summary>
-        public ItemsPanelControlVM()
+        public ItemsPanelVM()
         {
             ModeSettings = new ModeSettingsVM();
 

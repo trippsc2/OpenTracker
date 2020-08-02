@@ -4,6 +4,7 @@ using OpenTracker.Models.Settings;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.Reactive;
 
 namespace OpenTracker.ViewModels
@@ -296,7 +297,7 @@ namespace OpenTracker.ViewModels
         /// </param>
         private static void SetUIScale(string uiScaleValue)
         {
-            AppSettings.Instance.Layout.UIScale = double.Parse(uiScaleValue);
+            AppSettings.Instance.Layout.UIScale = double.Parse(uiScaleValue, CultureInfo.InvariantCulture);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace OpenTracker.ViewModels.Maps
     /// <summary>
     /// This is the ViewModel of the map area control.
     /// </summary>
-    public class MapAreaControlVM : ViewModelBase
+    public class MapAreaVM : ViewModelBase
     {
         public Orientation Orientation => 
             AppSettings.Instance.Layout.CurrentMapOrientation;
@@ -26,18 +26,10 @@ namespace OpenTracker.ViewModels.Maps
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="mainWindow">
-        /// The main window ViewModel parent class.
-        /// </param>
-        public MapAreaControlVM(MainWindowVM mainWindow)
+        public MapAreaVM()
         {
-            if (mainWindow == null)
-            {
-                throw new ArgumentNullException(nameof(mainWindow));
-            }
-
-            Maps = MapAreaControlVMFactory.GetMapControlVMs();
-            MapLocations = MapAreaControlVMFactory.GetMapLocationControlVMs();
+            Maps = MapAreaVMFactory.GetMapControlVMs();
+            MapLocations = MapAreaVMFactory.GetMapLocationControlVMs();
 
             AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
             ConnectionCollection.Instance.CollectionChanged += OnConnectionsChanged;

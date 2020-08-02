@@ -8,7 +8,7 @@ namespace OpenTracker.ViewModels.Maps
     /// <summary>
     /// This is the class for creating map area control ViewModel classes.
     /// </summary>
-    public static class MapAreaControlVMFactory
+    public static class MapAreaVMFactory
     {
         /// <summary>
         /// Returns an observable collection of map control ViewModel instances.
