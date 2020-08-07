@@ -73,6 +73,11 @@ namespace OpenTracker.UnitTests.Requirements
 				},
 				new object[]
 				{
+					SequenceBreakType.HelmasaurKingBasic,
+					RequirementType.SBHelmasaurKingBasic
+				},
+				new object[]
+				{
 					SequenceBreakType.ArrghusBasic,
 					RequirementType.SBArrghusBasic
 				},

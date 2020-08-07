@@ -137,6 +137,7 @@ namespace OpenTracker.Models.Sections
         /// </summary>
         public void Reset()
         {
+            Marking.Mark = null;
             _section.Reset();
         }
 

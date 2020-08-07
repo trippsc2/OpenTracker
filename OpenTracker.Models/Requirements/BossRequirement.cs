@@ -151,7 +151,7 @@ namespace OpenTracker.Models.Requirements
                     BossType.Armos => RequirementDictionary.Instance[RequirementType.Armos],
                     BossType.Lanmolas => RequirementDictionary.Instance[RequirementType.Lanmolas],
                     BossType.Moldorm => RequirementDictionary.Instance[RequirementType.Moldorm],
-                    BossType.HelmasaurKing => RequirementDictionary.Instance[RequirementType.NoRequirement],
+                    BossType.HelmasaurKing => RequirementDictionary.Instance[RequirementType.HelmasaurKing],
                     BossType.Arrghus => RequirementDictionary.Instance[RequirementType.Arrghus],
                     BossType.Mothula => RequirementDictionary.Instance[RequirementType.Mothula],
                     BossType.Blind => RequirementDictionary.Instance[RequirementType.Blind],

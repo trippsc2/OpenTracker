@@ -1,6 +1,5 @@
-﻿using OpenTracker.ViewModels.UIPanels.LocationsPanel;
+﻿using OpenTracker.ViewModels.PinnedLocations;
 using System;
-using System.Collections.ObjectModel;
 
 namespace OpenTracker.Models.UndoRedo
 {
@@ -10,24 +9,18 @@ namespace OpenTracker.Models.UndoRedo
     public class PinLocation : IUndoable
     {
         private readonly PinnedLocationVM _pinnedLocation;
-        private readonly ObservableCollection<PinnedLocationVM> _pinnedLocations;
         private int? _existingIndex;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="pinnedLocations">
-        /// The observable collection of pinned locations.
-        /// </param>
         /// <param name="pinnedLocation">
         /// The pinned location view-model to be added.
         /// </param>
-        public PinLocation(
-            PinnedLocationVM pinnedLocation,
-            ObservableCollection<PinnedLocationVM> pinnedLocations)
+        public PinLocation(PinnedLocationVM pinnedLocation)
         {
-            _pinnedLocation = pinnedLocation ?? throw new ArgumentNullException(nameof(pinnedLocation));
-            _pinnedLocations = pinnedLocations ?? throw new ArgumentNullException(nameof(pinnedLocations));
+            _pinnedLocation = pinnedLocation ??
+                throw new ArgumentNullException(nameof(pinnedLocation));
         }
 
         /// <summary>
@@ -38,12 +31,12 @@ namespace OpenTracker.Models.UndoRedo
         /// </returns>
         public bool CanExecute()
         {
-            if (!_pinnedLocations.Contains(_pinnedLocation))
+            if (!PinnedLocationCollection.Instance.Contains(_pinnedLocation))
             {
                 return true;
             }
 
-            if (_pinnedLocations.IndexOf(_pinnedLocation) == 0)
+            if (PinnedLocationCollection.Instance.IndexOf(_pinnedLocation) == 0)
             {
                 return false;
             }
@@ -56,13 +49,13 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Execute()
         {
-            if (_pinnedLocations.Contains(_pinnedLocation))
+            if (PinnedLocationCollection.Instance.Contains(_pinnedLocation))
             {
-                _existingIndex = _pinnedLocations.IndexOf(_pinnedLocation);
-                _pinnedLocations.Remove(_pinnedLocation);
+                _existingIndex = PinnedLocationCollection.Instance.IndexOf(_pinnedLocation);
+                PinnedLocationCollection.Instance.Remove(_pinnedLocation);
             }
             
-            _pinnedLocations.Insert(0, _pinnedLocation);
+            PinnedLocationCollection.Instance.Insert(0, _pinnedLocation);
         }
 
         /// <summary>
@@ -70,11 +63,11 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Undo()
         {
-            _pinnedLocations.Remove(_pinnedLocation);
+            PinnedLocationCollection.Instance.Remove(_pinnedLocation);
 
             if (_existingIndex.HasValue)
             {
-                _pinnedLocations.Insert(_existingIndex.Value, _pinnedLocation);
+                PinnedLocationCollection.Instance.Insert(_existingIndex.Value, _pinnedLocation);
             }
         }
     }

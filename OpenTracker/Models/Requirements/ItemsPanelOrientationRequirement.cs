@@ -1,7 +1,6 @@
 ﻿using Avalonia.Layout;
 using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.ViewModels.UIPanels.ItemsPanel;
-using System;
+using OpenTracker.Models.Settings;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
@@ -11,7 +10,6 @@ namespace OpenTracker.Models.Requirements
     /// </summary>
     public class ItemsPanelOrientationRequirement : IRequirement
     {
-        private readonly ItemsPanelControlVM _itemsPanel;
         private readonly Orientation _orientation;
 
         public bool Met =>
@@ -36,18 +34,14 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="itemsPanel">
-        /// The Items panel control ViewModel instance.
-        /// </param>
         /// <param name="orientation">
         /// The orientation requirement.
         /// </param>
-        public ItemsPanelOrientationRequirement(ItemsPanelControlVM itemsPanel, Orientation orientation)
+        public ItemsPanelOrientationRequirement(Orientation orientation)
         {
-            _itemsPanel = itemsPanel ?? throw new ArgumentNullException(nameof(itemsPanel));
             _orientation = orientation;
 
-            itemsPanel.PropertyChanged += OnItemsPanelChanged;
+            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
 
             UpdateAccessibility();
         }
@@ -64,7 +58,7 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the ItemsPanelControlVM class.
+        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -72,9 +66,9 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnItemsPanelChanged(object sender, PropertyChangedEventArgs e)
+        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ItemsPanelControlVM.ItemsPanelOrientation))
+            if (e.PropertyName == nameof(LayoutSettings.CurrentLayoutOrientation))
             {
                 UpdateAccessibility();
             }
@@ -85,7 +79,7 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         private void UpdateAccessibility()
         {
-            Accessibility = _itemsPanel.ItemsPanelOrientation == _orientation ?
+            Accessibility = AppSettings.Instance.Layout.CurrentLayoutOrientation == _orientation ?
                 AccessibilityLevel.Normal : AccessibilityLevel.None;
         }
     }

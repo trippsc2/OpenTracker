@@ -12,12 +12,6 @@
     <RuntimeIdentifiers>osx-x64;linux-x64;debian-x64;rhel-x64;win-x64;win-x86;win7-x64;win7-x86</RuntimeIdentifiers>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Update="**\*.xaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <AvaloniaResource Include="**\*.xaml">
-      <SubType>Designer</SubType>
-    </AvaloniaResource>
     <AvaloniaResource Include="Assets\**" />
     <AvaloniaResource Include="Assets\Images\*.png" />
   </ItemGroup>
@@ -29,43 +23,9 @@
     <None Remove="bin\**" />
   </ItemGroup>
   <ItemGroup>
-    <AvaloniaResource Remove="Views\AutoTrackerDialog.xaml" />
-    <AvaloniaResource Remove="Views\BossControl.xaml" />
-    <AvaloniaResource Remove="Views\ColorPickerControl.xaml" />
-    <AvaloniaResource Remove="Views\ColorSelectDialog.xaml" />
-    <AvaloniaResource Remove="Views\ConnectorControl.xaml" />
-    <AvaloniaResource Remove="Views\DungeonChestControl.xaml" />
-    <AvaloniaResource Remove="Views\MapEntranceControl.xaml" />
-    <AvaloniaResource Remove="Views\MarkingSelectButton.xaml" />
-    <AvaloniaResource Remove="Views\MessageBoxDialog.xaml" />
-    <AvaloniaResource Remove="Views\ModeSettings.xaml" />
-    <AvaloniaResource Remove="Views\PinnedLocationControl.xaml" />
-    <AvaloniaResource Remove="Views\PrizeControl.xaml" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="Views\AutoTrackerDialog.xaml" />
-    <None Remove="Views\BigKeyControl.xaml" />
-    <None Remove="Views\BossControl.xaml" />
-    <None Remove="Views\ColorPickerControl.xaml" />
-    <None Remove="Views\ColorSelectDialog.xaml" />
-    <None Remove="Views\ConnectorControl.xaml" />
-    <None Remove="Views\DungeonChestControl.xaml" />
-    <None Remove="Views\ItemsPanel.xaml" />
-    <None Remove="Views\MapEntranceControl.xaml" />
-    <None Remove="Views\MapLocationControl.xaml" />
-    <None Remove="Views\MarkingSelectButton.xaml" />
-    <None Remove="Views\MessageBoxDialog.xaml" />
-    <None Remove="Views\ModeSettings.xaml" />
-    <None Remove="Views\PinnedLocationControl.xaml" />
-    <None Remove="Views\PrizeControl.xaml" />
-    <None Remove="Views\SmallItemSpacerControl.xaml" />
-    <None Remove="Views\SmallKeyControl.xaml" />
-    <None Remove="Views\TopMenu.xaml" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.9.11" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.9.11" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.11" />
+    <PackageReference Include="Avalonia" Version="0.9.12" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.9.12" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.12" />
     <PackageReference Include="Avalonia.ThemeManager" Version="0.9.4" />
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.9.9" />
     <PackageReference Include="Dotnet.Bundle" Version="0.9.13" />
@@ -77,147 +37,7 @@
     <PackageReference Include="ThemeEditor.Controls.ColorPicker" Version="0.9.4" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Views\MapArea\Map.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Views\MapArea\MapLocations\MapLocation.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Views\UIPanels\LocationsPanel\PinnedLocation.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Views\Markings\MarkingSelectButton.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Views\UIPanels\ItemsPanel\SmallItems\PrizeSmallItem.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Views\UIPanels\ItemsPanel\SmallItems\BossSmallItem.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\OpenTracker.Models\OpenTracker.Models.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="Views\AutoTrackerDialog.xaml.cs">
-      <DependentUpon>AutoTrackerDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\ColorSelect\ColorPickerControl.xaml.cs">
-      <DependentUpon>ColorPickerControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\MapArea\Map.xaml.cs">
-      <DependentUpon>Map.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\MapArea\MapLocations\MapLocation.xaml.cs">
-      <DependentUpon>MapLocation.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\MapArea\MapLocations\MarkableMapLocation.axaml.cs">
-      <DependentUpon>MarkableMapLocation.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\MapArea\MapLocations\MarkingMapLocation.axaml.cs">
-      <DependentUpon>MarkingMapLocation.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\MapArea\MapLocations\TakeAnyMapLocation.axaml.cs">
-      <DependentUpon>TakeAnyMapLocation.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Markings\MarkingSelect.axaml.cs">
-      <DependentUpon>MarkingSelect.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\ModeSettings.xaml.cs">
-      <DependentUpon>ModeSettings.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UIPanels\LocationsPanel\PinnedLocationNoteArea.axaml.cs">
-      <DependentUpon>PinnedLocationNoteArea.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UIPanels\LocationsPanel\Section.axaml.cs">
-      <DependentUpon>Section.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UIPanels\ItemsPanel\ItemsPanelControl.xaml.cs">
-      <DependentUpon>ItemsPanelControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UIPanels\ItemsPanel\LargeItems\CrystalRequirementLargeItem.axaml.cs">
-      <DependentUpon>CrystalRequirementLargeItem.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UIPanels\ItemsPanel\LargeItems\LargeItem.axaml.cs">
-      <DependentUpon>LargeItem.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UIPanels\ItemsPanel\LargeItems\PairLargeItem.axaml.cs">
-      <DependentUpon>PairLargeItem.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UIPanels\ItemsPanel\LargeItems\PrizeLargeItem.axaml.cs">
-      <DependentUpon>PrizeLargeItem.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UIPanels\ItemsPanel\LargeItems\SmallKeyLargeItem.axaml.cs">
-      <DependentUpon>SmallKeyLargeItem.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UIPanels\ItemsPanel\LargeItems\SpacerLargeItem.axaml.cs">
-      <DependentUpon>SpacerLargeItem.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\MapArea\MapConnection.xaml.cs">
-      <DependentUpon>MapConnection.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\MapArea\MapLocations\EntranceMapLocation.xaml.cs">
-      <DependentUpon>EntranceMapLocation.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UIPanels\LocationsPanel\SectionIcons\BossSectionIcon.axaml.cs">
-      <DependentUpon>BossSectionIcon.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UIPanels\LocationsPanel\SectionIcons\EntranceSectionIcon.axaml.cs">
-      <DependentUpon>EntranceSectionIcon.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UIPanels\LocationsPanel\SectionIcons\ItemSectionIcon.axaml.cs">
-      <DependentUpon>ItemSectionIcon.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UIPanels\LocationsPanel\SectionIcons\MarkingSectionIcon.axaml.cs">
-      <DependentUpon>MarkingSectionIcon.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UIPanels\LocationsPanel\SectionIcons\PrizeSectionIcon.axaml.cs">
-      <DependentUpon>PrizeSectionIcon.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UIPanels\LocationsPanel\SectionIcons\TakeAnySectionIcon.axaml.cs">
-      <DependentUpon>TakeAnySectionIcon.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UIPanels\ItemsPanel\SmallItems\BigKeySmallItem.xaml.cs">
-      <DependentUpon>BigKeySmallItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UIPanels\ItemsPanel\SmallItems\BossSmallItem.xaml.cs">
-      <DependentUpon>BossSmallItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UIPanels\ItemsPanel\SmallItems\DungeonItemSmallItem.xaml.cs">
-      <DependentUpon>DungeonItemSmallItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UIPanels\ItemsPanel\SmallItems\PrizeSmallItem.xaml.cs">
-      <DependentUpon>PrizeSmallItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\MessageBoxDialog.xaml.cs">
-      <DependentUpon>MessageBoxDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UIPanels\LocationsPanel\PinnedLocation.xaml.cs">
-      <DependentUpon>PinnedLocation.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Markings\MarkingSelectButton.xaml.cs">
-      <DependentUpon>MarkingSelectButton.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UIPanels\ItemsPanel\SmallItems\SmallKeySmallItem.xaml.cs">
-      <DependentUpon>SmallKeySmallItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\UIPanels\ItemsPanel\SmallItems\SpacerSmallItem.xaml.cs">
-      <DependentUpon>SpacerSmallItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\TopMenu.xaml.cs">
-      <DependentUpon>TopMenu.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Update="Themes\Dark.xaml">
@@ -227,67 +47,5 @@
       <Generator></Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Views\ColorSelect\ColorPickerControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Views\MessageBoxDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Views\ColorSelect\ColorSelectDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Views\AutoTrackerDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Views\ModeSettings.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Views\MapArea\MapLocations\EntranceMapLocation.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Views\MapArea\MapConnection.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Views\UIPanels\ItemsPanel\SmallItems\DungeonItemSmallItem.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AvaloniaResource Update="Views\UIPanels\ItemsPanel\SmallItems\BigKeySmallItem.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </AvaloniaResource>
-    <AvaloniaResource Update="Views\UIPanels\ItemsPanel\ItemsPanelControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </AvaloniaResource>
-    <AvaloniaResource Update="Views\UIPanels\ItemsPanel\SmallItems\SpacerSmallItem.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </AvaloniaResource>
-    <AvaloniaResource Update="Views\UIPanels\ItemsPanel\SmallItems\SmallKeySmallItem.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </AvaloniaResource>
-    <AvaloniaResource Update="Views\TopMenu.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </AvaloniaResource>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
   </ItemGroup>
 </Project>

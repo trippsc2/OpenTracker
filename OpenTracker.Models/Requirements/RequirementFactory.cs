@@ -397,6 +397,266 @@ namespace OpenTracker.Models.Requirements
                     ItemDictionary.Instance[ItemType.TurtleRockTunnelAccess]),
                 RequirementType.TurtleRockSafetyDoorAccess => new ItemRequirement(
                     ItemDictionary.Instance[ItemType.TurtleRockSafetyDoorAccess]),
+                RequirementType.LightWorldTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.LightWorldTest]),
+                RequirementType.LumberjackTreeActiveTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.LumberjackTreeActiveTest]),
+                RequirementType.LumberjackCaveEntranceTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.LumberjackCaveEntranceTest]),
+                RequirementType.ForestHideoutTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.ForestHideoutTest]),
+                RequirementType.DeathMountainEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DeathMountainEntryTest]),
+                RequirementType.DeathMountainExitTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DeathMountainExitTest]),
+                RequirementType.LWKakarikoPortalTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.LWKakarikoPortalTest]),
+                RequirementType.GrassHouseTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GrassHouseTest]),
+                RequirementType.BombHutTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.BombHutTest]),
+                RequirementType.MagicBatLedgeTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MagicBatLedgeTest]),
+                RequirementType.RaceGameLedgeTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.RaceGameLedgeTest]),
+                RequirementType.SouthOfGroveLedgeTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SouthOfGroveLedgeTest]),
+                RequirementType.DesertLedgeTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DesertLedgeTest]),
+                RequirementType.DesertPalaceBackEntranceTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DesertPalaceBackEntranceTest]),
+                RequirementType.CheckerboardLedgeTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.CheckerboardLedgeTest]),
+                RequirementType.CheckerboardCaveTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.CheckerboardCaveTest]),
+                RequirementType.DesertPalaceFrontEntranceTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DesertPalaceFrontEntranceTest]),
+                RequirementType.BombosTabletLedgeTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.BombosTabletLedgeTest]),
+                RequirementType.RupeeCaveTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.RupeeCaveTest]),
+                RequirementType.LWMirePortalTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.LWMirePortalTest]),
+                RequirementType.NorthBonkRocksTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.NorthBonkRocksTest]),
+                RequirementType.LWGraveyardTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.LWGraveyardTest]),
+                RequirementType.EscapeGraveTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.EscapeGraveTest]),
+                RequirementType.LWGraveyardLedgeTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.LWGraveyardLedgeTest]),
+                RequirementType.LWKingsTombTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.LWKingsTombTest]),
+                RequirementType.KingsTombGraveTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.KingsTombGraveTest]),
+                RequirementType.HyruleCastleTopTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.HyruleCastleTopTest]),
+                RequirementType.AgahnimTowerEntranceTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.AgahnimTowerEntranceTest]),
+                RequirementType.GanonHoleTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GanonHoleTest]),
+                RequirementType.GanonHoleBackTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GanonHoleBackTest]),
+                RequirementType.CastleSecretFrontTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.CastleSecretFrontTest]),
+                RequirementType.CastleSecretBackTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.CastleSecretBackTest]),
+                RequirementType.CentralBonkRocksTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.CentralBonkRocksTest]),
+                RequirementType.LWSouthPortalTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.LWSouthPortalTest]),
+                RequirementType.HypeFairyCaveTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.HypeFairyCaveTest]),
+                RequirementType.MiniMoldormCaveTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MiniMoldormCaveTest]),
+                RequirementType.ZoraTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.ZoraTest]),
+                RequirementType.WaterfallFairyTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.WaterfallFairyTest]),
+                RequirementType.LWWitchAreaTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.LWWitchAreaTest]),
+                RequirementType.LWEastPortalTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.LWEastPortalTest]),
+                RequirementType.LWLakeHyliaTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.LWLakeHyliaTest]),
+                RequirementType.LWLakeHyliaWaterWalkTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.LWLakeHyliaWaterWalkTest]),
+                RequirementType.LakeHyliaIslandTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.LakeHyliaIslandTest]),
+                RequirementType.LakeHyliaFairyIslandTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.LakeHyliaFairyIslandTest]),
+                RequirementType.IceRodCaveTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IceRodCaveTest]),
+                RequirementType.IceFairyCaveTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IceFairyCaveTest]),
+                RequirementType.DeathMountainWestBottomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DeathMountainWestBottomTest]),
+                RequirementType.SpectacleRockTopTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SpectacleRockTopTest]),
+                RequirementType.DeathMountainWestTopTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DeathMountainWestTopTest]),
+                RequirementType.DeathMountainEastBottomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DeathMountainEastBottomTest]),
+                RequirementType.DeathMountainEastBottomConnectorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DeathMountainEastBottomConnectorTest]),
+                RequirementType.DeathMountainEastTopConnectorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DeathMountainEastTopConnectorTest]),
+                RequirementType.SpiralCaveTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SpiralCaveTest]),
+                RequirementType.MimicCaveTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MimicCaveTest]),
+                RequirementType.DeathMountainEastTopTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DeathMountainEastTopTest]),
+                RequirementType.LWFloatingIslandTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.LWFloatingIslandTest]),
+                RequirementType.LWTurtleRockTopTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.LWTurtleRockTopTest]),
+                RequirementType.DWKakarikoPortalTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DWKakarikoPortalTest]),
+                RequirementType.DarkWorldWestTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DarkWorldWestTest]),
+                RequirementType.SkullWoodsBackEntranceTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SkullWoodsBackEntranceTest]),
+                RequirementType.BumperCaveTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.BumperCaveTest]),
+                RequirementType.BumperCaveTopTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.BumperCaveTopTest]),
+                RequirementType.ThievesTownEntranceTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.ThievesTownEntranceTest]),
+                RequirementType.BombableShackTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.BombableShackTest]),
+                RequirementType.HammerHouseTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.HammerHouseTest]),
+                RequirementType.HammerPegsAreaTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.HammerPegsAreaTest]),
+                RequirementType.HammerPegsTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.HammerPegsTest]),
+                RequirementType.BlacksmithPrisonTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.BlacksmithPrisonTest]),
+                RequirementType.DarkWorldSouthTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DarkWorldSouthTest]),
+                RequirementType.DWCentralBonkRocksTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DWCentralBonkRocksTest]),
+                RequirementType.BuyBigBombTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.BuyBigBombTest]),
+                RequirementType.BigBombToLightWorldTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.BigBombToLightWorldTest]),
+                RequirementType.BigBombToDWLakeHyliaTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.BigBombToDWLakeHyliaTest]),
+                RequirementType.BigBombToWallTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.BigBombToWallTest]),
+                RequirementType.DWSouthPortalTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DWSouthPortalTest]),
+                RequirementType.HypeCaveTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.HypeCaveTest]),
+                RequirementType.MireAreaTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MireAreaTest]),
+                RequirementType.DWMirePortalTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DWMirePortalTest]),
+                RequirementType.MiseryMireEntranceTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MiseryMireEntranceTest]),
+                RequirementType.DWGraveyardTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DWGraveyardTest]),
+                RequirementType.DWGraveyardLedgeTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DWGraveyardLedgeTest]),
+                RequirementType.DWWitchAreaTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DWWitchAreaTest]),
+                RequirementType.CatfishTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.CatfishTest]),
+                RequirementType.DarkWorldEastTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DarkWorldEastTest]),
+                RequirementType.FatFairyTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.FatFairyTest]),
+                RequirementType.PalaceOfDarknessEntranceTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.PalaceOfDarknessEntranceTest]),
+                RequirementType.DWEastPortalTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DWEastPortalTest]),
+                RequirementType.DWLakeHyliaTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DWLakeHyliaTest]),
+                RequirementType.DWLakeHyliaWaterWalkTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DWLakeHyliaWaterWalkTest]),
+                RequirementType.IcePalaceEntranceTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IcePalaceEntranceTest]),
+                RequirementType.DarkWorldSouthEastTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DarkWorldSouthEastTest]),
+                RequirementType.DWIceRodCaveTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DWIceRodCaveTest]),
+                RequirementType.DWIceRodRockTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DWIceRodRockTest]),
+                RequirementType.DarkDeathMountainWestBottomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DarkDeathMountainWestBottomTest]),
+                RequirementType.DarkDeathMountainTopTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DarkDeathMountainTopTest]),
+                RequirementType.GanonsTowerEntranceTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GanonsTowerEntranceTest]),
+                RequirementType.DWFloatingIslandTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DWFloatingIslandTest]),
+                RequirementType.HookshotCaveTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.HookshotCaveTest]),
+                RequirementType.DWTurtleRockTopTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DWTurtleRockTopTest]),
+                RequirementType.TurtleRockFrontEntranceTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TurtleRockFrontEntranceTest]),
+                RequirementType.DarkDeathMountainEastBottomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DarkDeathMountainEastBottomTest]),
+                RequirementType.DarkDeathMountainEastBottomConnectorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DarkDeathMountainEastBottomConnectorTest]),
+                RequirementType.TurtleRockTunnelTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TurtleRockTunnelTest]),
+                RequirementType.TurtleRockSafetyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TurtleRockSafetyDoorTest]),
+                RequirementType.HCSanctuaryEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.HCSanctuaryEntryTest]),
+                RequirementType.HCFrontEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.HCFrontEntryTest]),
+                RequirementType.HCBackEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.HCBackEntryTest]),
+                RequirementType.ATEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.ATEntryTest]),
+                RequirementType.EPEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.EPEntryTest]),
+                RequirementType.DPFrontEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DPFrontEntryTest]),
+                RequirementType.DPLeftEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DPLeftEntryTest]),
+                RequirementType.DPBackEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DPBackEntryTest]),
+                RequirementType.ToHEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.ToHEntryTest]),
+                RequirementType.PoDEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.PoDEntryTest]),
+                RequirementType.SPEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SPEntryTest]),
+                RequirementType.SWFrontEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SWFrontEntryTest]),
+                RequirementType.SWFrontLeftDropEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SWFrontLeftDropEntryTest]),
+                RequirementType.SWPinballRoomEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SWPinballRoomEntryTest]),
+                RequirementType.SWFrontTopDropEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SWFrontTopDropEntryTest]),
+                RequirementType.SWFrontBackConnectorEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SWFrontBackConnectorEntryTest]),
+                RequirementType.SWBackEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SWBackEntryTest]),
+                RequirementType.TTEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TTEntryTest]),
+                RequirementType.IPEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPEntryTest]),
+                RequirementType.MMEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MMEntryTest]),
+                RequirementType.TRFrontEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRFrontEntryTest]),
+                RequirementType.TRFrontToKeyDoorsTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRFrontToKeyDoorsTest]),
+                RequirementType.TRKeyDoorsToMiddleExitTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRKeyDoorsToMiddleExitTest]),
+                RequirementType.TRMiddleEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRMiddleEntryTest]),
+                RequirementType.TRBackEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRBackEntryTest]),
+                RequirementType.GTEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GTEntryTest]),
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
@@ -425,6 +685,8 @@ namespace OpenTracker.Models.Requirements
                     SequenceBreakDictionary.Instance[SequenceBreakType.BumperCaveHookshot]),
                 RequirementType.SBTRLaserSkip => new SequenceBreakRequirement(
                     SequenceBreakDictionary.Instance[SequenceBreakType.TRLaserSkip]),
+                RequirementType.SBHelmasaurKingBasic => new SequenceBreakRequirement(
+                    SequenceBreakDictionary.Instance[SequenceBreakType.HelmasaurKingBasic]),
                 RequirementType.SBLanmolasBombs => new SequenceBreakRequirement(
                     SequenceBreakDictionary.Instance[SequenceBreakType.LanmolasBombs]),
                 RequirementType.SBArrghusBasic => new SequenceBreakRequirement(
@@ -737,6 +999,136 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.RedCrystal:
                 case RequirementType.Pendant:
                 case RequirementType.GreenPendant:
+                case RequirementType.LightWorldTest:
+                case RequirementType.LumberjackTreeActiveTest:
+                case RequirementType.LumberjackCaveEntranceTest:
+                case RequirementType.ForestHideoutTest:
+                case RequirementType.DeathMountainEntryTest:
+                case RequirementType.DeathMountainExitTest:
+                case RequirementType.LWKakarikoPortalTest:
+                case RequirementType.GrassHouseTest:
+                case RequirementType.BombHutTest:
+                case RequirementType.MagicBatLedgeTest:
+                case RequirementType.RaceGameLedgeTest:
+                case RequirementType.SouthOfGroveLedgeTest:
+                case RequirementType.DesertLedgeTest:
+                case RequirementType.DesertPalaceBackEntranceTest:
+                case RequirementType.CheckerboardLedgeTest:
+                case RequirementType.CheckerboardCaveTest:
+                case RequirementType.DesertPalaceFrontEntranceTest:
+                case RequirementType.BombosTabletLedgeTest:
+                case RequirementType.RupeeCaveTest:
+                case RequirementType.LWMirePortalTest:
+                case RequirementType.NorthBonkRocksTest:
+                case RequirementType.LWGraveyardTest:
+                case RequirementType.EscapeGraveTest:
+                case RequirementType.LWGraveyardLedgeTest:
+                case RequirementType.LWKingsTombTest:
+                case RequirementType.KingsTombGraveTest:
+                case RequirementType.HyruleCastleTopTest:
+                case RequirementType.AgahnimTowerEntranceTest:
+                case RequirementType.GanonHoleTest:
+                case RequirementType.GanonHoleBackTest:
+                case RequirementType.CastleSecretFrontTest:
+                case RequirementType.CastleSecretBackTest:
+                case RequirementType.CentralBonkRocksTest:
+                case RequirementType.LWSouthPortalTest:
+                case RequirementType.HypeFairyCaveTest:
+                case RequirementType.MiniMoldormCaveTest:
+                case RequirementType.ZoraTest:
+                case RequirementType.WaterfallFairyTest:
+                case RequirementType.LWWitchAreaTest:
+                case RequirementType.LWEastPortalTest:
+                case RequirementType.LWLakeHyliaTest:
+                case RequirementType.LWLakeHyliaWaterWalkTest:
+                case RequirementType.LakeHyliaIslandTest:
+                case RequirementType.LakeHyliaFairyIslandTest:
+                case RequirementType.IceRodCaveTest:
+                case RequirementType.IceFairyCaveTest:
+                case RequirementType.DeathMountainWestBottomTest:
+                case RequirementType.SpectacleRockTopTest:
+                case RequirementType.DeathMountainWestTopTest:
+                case RequirementType.DeathMountainEastBottomTest:
+                case RequirementType.DeathMountainEastBottomConnectorTest:
+                case RequirementType.DeathMountainEastTopConnectorTest:
+                case RequirementType.SpiralCaveTest:
+                case RequirementType.MimicCaveTest:
+                case RequirementType.DeathMountainEastTopTest:
+                case RequirementType.LWFloatingIslandTest:
+                case RequirementType.LWTurtleRockTopTest:
+                case RequirementType.DWKakarikoPortalTest:
+                case RequirementType.DarkWorldWestTest:
+                case RequirementType.SkullWoodsBackEntranceTest:
+                case RequirementType.BumperCaveTest:
+                case RequirementType.BumperCaveTopTest:
+                case RequirementType.ThievesTownEntranceTest:
+                case RequirementType.BombableShackTest:
+                case RequirementType.HammerHouseTest:
+                case RequirementType.HammerPegsAreaTest:
+                case RequirementType.HammerPegsTest:
+                case RequirementType.BlacksmithPrisonTest:
+                case RequirementType.DarkWorldSouthTest:
+                case RequirementType.DWCentralBonkRocksTest:
+                case RequirementType.BuyBigBombTest:
+                case RequirementType.BigBombToLightWorldTest:
+                case RequirementType.BigBombToDWLakeHyliaTest:
+                case RequirementType.BigBombToWallTest:
+                case RequirementType.DWSouthPortalTest:
+                case RequirementType.HypeCaveTest:
+                case RequirementType.MireAreaTest:
+                case RequirementType.DWMirePortalTest:
+                case RequirementType.MiseryMireEntranceTest:
+                case RequirementType.DWGraveyardTest:
+                case RequirementType.DWGraveyardLedgeTest:
+                case RequirementType.DWWitchAreaTest:
+                case RequirementType.CatfishTest:
+                case RequirementType.DarkWorldEastTest:
+                case RequirementType.FatFairyTest:
+                case RequirementType.PalaceOfDarknessEntranceTest:
+                case RequirementType.DWEastPortalTest:
+                case RequirementType.DWLakeHyliaTest:
+                case RequirementType.DWLakeHyliaWaterWalkTest:
+                case RequirementType.IcePalaceEntranceTest:
+                case RequirementType.DarkWorldSouthEastTest:
+                case RequirementType.DWIceRodCaveTest:
+                case RequirementType.DWIceRodRockTest:
+                case RequirementType.DarkDeathMountainWestBottomTest:
+                case RequirementType.DarkDeathMountainTopTest:
+                case RequirementType.GanonsTowerEntranceTest:
+                case RequirementType.DWFloatingIslandTest:
+                case RequirementType.HookshotCaveTest:
+                case RequirementType.DWTurtleRockTopTest:
+                case RequirementType.TurtleRockFrontEntranceTest:
+                case RequirementType.DarkDeathMountainEastBottomTest:
+                case RequirementType.DarkDeathMountainEastBottomConnectorTest:
+                case RequirementType.TurtleRockTunnelTest:
+                case RequirementType.TurtleRockSafetyDoorTest:
+                case RequirementType.HCSanctuaryEntryTest:
+                case RequirementType.HCFrontEntryTest:
+                case RequirementType.HCBackEntryTest:
+                case RequirementType.ATEntryTest:
+                case RequirementType.EPEntryTest:
+                case RequirementType.DPFrontEntryTest:
+                case RequirementType.DPLeftEntryTest:
+                case RequirementType.DPBackEntryTest:
+                case RequirementType.ToHEntryTest:
+                case RequirementType.PoDEntryTest:
+                case RequirementType.SPEntryTest:
+                case RequirementType.SWFrontEntryTest:
+                case RequirementType.SWFrontLeftDropEntryTest:
+                case RequirementType.SWPinballRoomEntryTest:
+                case RequirementType.SWFrontTopDropEntryTest:
+                case RequirementType.SWFrontBackConnectorEntryTest:
+                case RequirementType.SWBackEntryTest:
+                case RequirementType.TTEntryTest:
+                case RequirementType.IPEntryTest:
+                case RequirementType.MMEntryTest:
+                case RequirementType.TRFrontEntryTest:
+                case RequirementType.TRFrontToKeyDoorsTest:
+                case RequirementType.TRKeyDoorsToMiddleExitTest:
+                case RequirementType.TRMiddleEntryTest:
+                case RequirementType.TRBackEntryTest:
+                case RequirementType.GTEntryTest:
                     {
                         return GetItemRequirement(type);
                     }
@@ -798,6 +1190,7 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.SBBumperCaveHookshot:
                 case RequirementType.SBTRLaserSkip:
                 case RequirementType.SBLanmolasBombs:
+                case RequirementType.SBHelmasaurKingBasic:
                 case RequirementType.SBArrghusBasic:
                 case RequirementType.SBMothulaBasic:
                 case RequirementType.SBBlindBasic:
@@ -920,320 +1313,6 @@ namespace OpenTracker.Models.Requirements
                             RequirementDictionary.Instance[RequirementType.MoonPearl]
                         });
                     }
-                case RequirementType.Armos:
-                    {
-                        return new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.Sword1],
-                            RequirementDictionary.Instance[RequirementType.Hammer],
-                            RequirementDictionary.Instance[RequirementType.Bow],
-                            RequirementDictionary.Instance[RequirementType.Boomerang],
-                            RequirementDictionary.Instance[RequirementType.RedBoomerang],
-                            new AggregateRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.ExtendMagic2],
-                                new AlternativeRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.FireRod],
-                                    RequirementDictionary.Instance[RequirementType.IceRod]
-                                })
-                            }),
-                            new AggregateRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.ExtendMagic1],
-                                new AlternativeRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.CaneOfByrna],
-                                    RequirementDictionary.Instance[RequirementType.CaneOfSomaria]
-                                })
-                            })
-                        });
-                    }
-                case RequirementType.Lanmolas:
-                    {
-                        return new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.Sword1],
-                            RequirementDictionary.Instance[RequirementType.Hammer],
-                            RequirementDictionary.Instance[RequirementType.Bow],
-                            RequirementDictionary.Instance[RequirementType.FireRod],
-                            RequirementDictionary.Instance[RequirementType.IceRod],
-                            RequirementDictionary.Instance[RequirementType.CaneOfByrna],
-                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria],
-                            RequirementDictionary.Instance[RequirementType.SBLanmolasBombs]
-                        });
-                    }
-                case RequirementType.Moldorm:
-                    {
-                        return new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.Sword1],
-                            RequirementDictionary.Instance[RequirementType.Hammer]
-                        });
-                    }
-                case RequirementType.ArrghusSB:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.Hookshot],
-                            new AlternativeRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.Hammer],
-                                RequirementDictionary.Instance[RequirementType.Sword1],
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    new AlternativeRequirement(new List<IRequirement>
-                                    {
-                                        RequirementDictionary.Instance[RequirementType.ExtendMagic1],
-                                        RequirementDictionary.Instance[RequirementType.Bow]
-                                    }),
-                                    new AlternativeRequirement(new List<IRequirement>
-                                    {
-                                        RequirementDictionary.Instance[RequirementType.FireRod],
-                                        RequirementDictionary.Instance[RequirementType.IceRod]
-                                    })
-                                })
-                            }),
-                        });
-                    }
-                case RequirementType.Arrghus:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.ArrghusSB],
-                            new AlternativeRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.SBArrghusBasic],
-                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                                RequirementDictionary.Instance[RequirementType.Swordless],
-                                RequirementDictionary.Instance[RequirementType.Sword2]
-                            })
-                        });
-                    }
-                case RequirementType.MothulaSB:
-                    {
-                        return new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.Sword1],
-                            RequirementDictionary.Instance[RequirementType.Hammer],
-                            new AggregateRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.ExtendMagic1],
-                                RequirementDictionary.Instance[RequirementType.FireRod]
-                            }),
-                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria],
-                            RequirementDictionary.Instance[RequirementType.CaneOfByrna]
-                        });
-                    }
-                case RequirementType.Mothula:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.MothulaSB],
-                            new AlternativeRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.SBMothulaBasic],
-                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                                RequirementDictionary.Instance[RequirementType.Sword2],
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1],
-                                    RequirementDictionary.Instance[RequirementType.FireRod]
-                                })
-                            })
-                        });
-                    }
-                case RequirementType.BlindSB:
-                    {
-                        return new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.Sword1],
-                            RequirementDictionary.Instance[RequirementType.Hammer],
-                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria],
-                            RequirementDictionary.Instance[RequirementType.CaneOfByrna]
-                        });
-                    }
-                case RequirementType.Blind:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.BlindSB],
-                            new AlternativeRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.SBBlindBasic],
-                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                                RequirementDictionary.Instance[RequirementType.Swordless],
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.Sword1],
-                                    new AlternativeRequirement(new List<IRequirement>
-                                    {
-                                        RequirementDictionary.Instance[RequirementType.Cape],
-                                        RequirementDictionary.Instance[RequirementType.CaneOfByrna]
-                                    })
-                                })
-                            })
-                        });
-                    }
-                case RequirementType.KholdstareSB:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.MeltThings],
-                            new AlternativeRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.Hammer],
-                                RequirementDictionary.Instance[RequirementType.Sword1],
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.ExtendMagic2],
-                                    RequirementDictionary.Instance[RequirementType.FireRod]
-                                }),
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1],
-                                    RequirementDictionary.Instance[RequirementType.FireRod],
-                                    RequirementDictionary.Instance[RequirementType.Bombos],
-                                    RequirementDictionary.Instance[RequirementType.Swordless]
-                                })
-                            })
-                        });
-                    }
-                case RequirementType.Kholdstare:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.KholdstareSB],
-                            new AlternativeRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.SBKholdstareBasic],
-                                RequirementDictionary.Instance[RequirementType.Sword2],
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.ExtendMagic2],
-                                    RequirementDictionary.Instance[RequirementType.FireRod]
-                                }),
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.Bombos],
-                                    RequirementDictionary.Instance[RequirementType.UseMedallion],
-                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1],
-                                    RequirementDictionary.Instance[RequirementType.FireRod]
-                                })
-                            })
-                        });
-                    }
-                case RequirementType.VitreousSB:
-                    {
-                        return new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.Hammer],
-                            RequirementDictionary.Instance[RequirementType.Sword1],
-                            RequirementDictionary.Instance[RequirementType.Bow]
-                        });
-                    }
-                case RequirementType.Vitreous:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.VitreousSB],
-                            new AlternativeRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.SBVitreousBasic],
-                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                                RequirementDictionary.Instance[RequirementType.Sword2],
-                                RequirementDictionary.Instance[RequirementType.Bow]
-                            })
-                        });
-                    }
-                case RequirementType.TrinexxSB:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.FireRod],
-                            RequirementDictionary.Instance[RequirementType.IceRod],
-                            new AlternativeRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.Sword3],
-                                RequirementDictionary.Instance[RequirementType.Hammer],
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1],
-                                    RequirementDictionary.Instance[RequirementType.Sword2]
-                                }),
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.ExtendMagic2],
-                                    RequirementDictionary.Instance[RequirementType.Sword1]
-                                })
-                            })
-                        });
-                    }
-                case RequirementType.Trinexx:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.TrinexxSB],
-                            new AlternativeRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.SBTrinexxBasic],
-                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                                RequirementDictionary.Instance[RequirementType.Swordless],
-                                RequirementDictionary.Instance[RequirementType.Sword3],
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1],
-                                    RequirementDictionary.Instance[RequirementType.Sword2]
-                                })
-                            })
-                        });
-                    }
-                case RequirementType.AgaBoss:
-                    {
-                        return new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.Sword1],
-                            RequirementDictionary.Instance[RequirementType.Hammer],
-                            RequirementDictionary.Instance[RequirementType.Net]
-                        });
-                    }
-                case RequirementType.UnknownBoss:
-                    {
-                        return new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.SequenceBreak],
-                            new AggregateRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.Armos],
-                                RequirementDictionary.Instance[RequirementType.Lanmolas],
-                                RequirementDictionary.Instance[RequirementType.Moldorm],
-                                RequirementDictionary.Instance[RequirementType.Arrghus],
-                                RequirementDictionary.Instance[RequirementType.Mothula],
-                                RequirementDictionary.Instance[RequirementType.Blind],
-                                RequirementDictionary.Instance[RequirementType.Kholdstare],
-                                RequirementDictionary.Instance[RequirementType.Vitreous],
-                                RequirementDictionary.Instance[RequirementType.Trinexx]
-                            })
-                        });
-                    }
-                case RequirementType.ATBoss:
-                case RequirementType.EPBoss:
-                case RequirementType.DPBoss:
-                case RequirementType.ToHBoss:
-                case RequirementType.PoDBoss:
-                case RequirementType.SPBoss:
-                case RequirementType.SWBoss:
-                case RequirementType.TTBoss:
-                case RequirementType.IPBoss:
-                case RequirementType.MMBoss:
-                case RequirementType.TRBoss:
-                case RequirementType.GTBoss1:
-                case RequirementType.GTBoss2:
-                case RequirementType.GTBoss3:
-                case RequirementType.GTFinalBoss:
-                    {
-                        return GetBossRequirement(type);
-                    }
                 case RequirementType.ATBarrier:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
@@ -1266,9 +1345,10 @@ namespace OpenTracker.Models.Requirements
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
+                            RequirementDictionary.Instance[RequirementType.SBBombDuplicationMirror],
                             RequirementDictionary.Instance[RequirementType.NotBunnyDW],
                             RequirementDictionary.Instance[RequirementType.Flippers],
-                            RequirementDictionary.Instance[RequirementType.Mirror]
+                            RequirementDictionary.Instance[RequirementType.DWMirror]
                         });
                     }
                 case RequirementType.BombJumpPoDHammerJump:
@@ -1557,7 +1637,15 @@ namespace OpenTracker.Models.Requirements
                         return new AggregateRequirement(new List<IRequirement>
                         {
                             RequirementDictionary.Instance[RequirementType.SBToHHerapot],
-                            RequirementDictionary.Instance[RequirementType.Hookshot]
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                RequirementDictionary.Instance[RequirementType.Hookshot],
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.Boots],
+                                    RequirementDictionary.Instance[RequirementType.Sword1]
+                                })
+                            })
                         });
                     }
                 case RequirementType.IPIceBreaker:
@@ -1680,6 +1768,7 @@ namespace OpenTracker.Models.Requirements
                         {
                             RequirementDictionary.Instance[RequirementType.SBWaterWalkFromWaterfallCave],
                             RequirementDictionary.Instance[RequirementType.NoFlippers],
+                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
                             new AlternativeRequirement(new List<IRequirement>
                             {
                                 RequirementDictionary.Instance[RequirementType.MoonPearl],
@@ -1947,6 +2036,342 @@ namespace OpenTracker.Models.Requirements
                             RequirementDictionary.Instance[RequirementType.NotBunnyDW],
                             RequirementDictionary.Instance[RequirementType.WaterWalk]
                         });
+                    }
+                case RequirementType.Armos:
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.Sword1],
+                            RequirementDictionary.Instance[RequirementType.Hammer],
+                            RequirementDictionary.Instance[RequirementType.Bow],
+                            RequirementDictionary.Instance[RequirementType.Boomerang],
+                            RequirementDictionary.Instance[RequirementType.RedBoomerang],
+                            new AggregateRequirement(new List<IRequirement>
+                            {
+                                RequirementDictionary.Instance[RequirementType.ExtendMagic2],
+                                new AlternativeRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.FireRod],
+                                    RequirementDictionary.Instance[RequirementType.IceRod]
+                                })
+                            }),
+                            new AggregateRequirement(new List<IRequirement>
+                            {
+                                RequirementDictionary.Instance[RequirementType.ExtendMagic1],
+                                new AlternativeRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.CaneOfByrna],
+                                    RequirementDictionary.Instance[RequirementType.CaneOfSomaria]
+                                })
+                            })
+                        });
+                    }
+                case RequirementType.Lanmolas:
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.Sword1],
+                            RequirementDictionary.Instance[RequirementType.Hammer],
+                            RequirementDictionary.Instance[RequirementType.Bow],
+                            RequirementDictionary.Instance[RequirementType.FireRod],
+                            RequirementDictionary.Instance[RequirementType.IceRod],
+                            RequirementDictionary.Instance[RequirementType.CaneOfByrna],
+                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria],
+                            RequirementDictionary.Instance[RequirementType.SBLanmolasBombs]
+                        });
+                    }
+                case RequirementType.Moldorm:
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.Sword1],
+                            RequirementDictionary.Instance[RequirementType.Hammer]
+                        });
+                    }
+                case RequirementType.HelmasaurKingSB:
+                    {
+                        return RequirementDictionary.Instance[RequirementType.Sword1];
+                    }
+                case RequirementType.HelmasaurKing:
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            new AggregateRequirement(new List<IRequirement>
+                            {
+                                RequirementDictionary.Instance[RequirementType.HelmasaurKingSB],
+                                new AlternativeRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.SBHelmasaurKingBasic],
+                                    RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced]
+                                })
+                            }),
+                            RequirementDictionary.Instance[RequirementType.Bow],
+                            RequirementDictionary.Instance[RequirementType.Sword2]
+                        });
+                    }
+                case RequirementType.ArrghusSB:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.Hookshot],
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                RequirementDictionary.Instance[RequirementType.Hammer],
+                                RequirementDictionary.Instance[RequirementType.Sword1],
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    new AlternativeRequirement(new List<IRequirement>
+                                    {
+                                        RequirementDictionary.Instance[RequirementType.ExtendMagic1],
+                                        RequirementDictionary.Instance[RequirementType.Bow]
+                                    }),
+                                    new AlternativeRequirement(new List<IRequirement>
+                                    {
+                                        RequirementDictionary.Instance[RequirementType.FireRod],
+                                        RequirementDictionary.Instance[RequirementType.IceRod]
+                                    })
+                                })
+                            }),
+                        });
+                    }
+                case RequirementType.Arrghus:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.ArrghusSB],
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                RequirementDictionary.Instance[RequirementType.SBArrghusBasic],
+                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
+                                RequirementDictionary.Instance[RequirementType.Swordless],
+                                RequirementDictionary.Instance[RequirementType.Sword2]
+                            })
+                        });
+                    }
+                case RequirementType.MothulaSB:
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.Sword1],
+                            RequirementDictionary.Instance[RequirementType.Hammer],
+                            new AggregateRequirement(new List<IRequirement>
+                            {
+                                RequirementDictionary.Instance[RequirementType.ExtendMagic1],
+                                RequirementDictionary.Instance[RequirementType.FireRod]
+                            }),
+                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria],
+                            RequirementDictionary.Instance[RequirementType.CaneOfByrna]
+                        });
+                    }
+                case RequirementType.Mothula:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.MothulaSB],
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                RequirementDictionary.Instance[RequirementType.SBMothulaBasic],
+                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
+                                RequirementDictionary.Instance[RequirementType.Sword2],
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1],
+                                    RequirementDictionary.Instance[RequirementType.FireRod]
+                                })
+                            })
+                        });
+                    }
+                case RequirementType.BlindSB:
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.Sword1],
+                            RequirementDictionary.Instance[RequirementType.Hammer],
+                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria],
+                            RequirementDictionary.Instance[RequirementType.CaneOfByrna]
+                        });
+                    }
+                case RequirementType.Blind:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.BlindSB],
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                RequirementDictionary.Instance[RequirementType.SBBlindBasic],
+                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
+                                RequirementDictionary.Instance[RequirementType.Swordless],
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.Sword1],
+                                    new AlternativeRequirement(new List<IRequirement>
+                                    {
+                                        RequirementDictionary.Instance[RequirementType.Cape],
+                                        RequirementDictionary.Instance[RequirementType.CaneOfByrna]
+                                    })
+                                })
+                            })
+                        });
+                    }
+                case RequirementType.KholdstareSB:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.MeltThings],
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                RequirementDictionary.Instance[RequirementType.Hammer],
+                                RequirementDictionary.Instance[RequirementType.Sword1],
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.ExtendMagic2],
+                                    RequirementDictionary.Instance[RequirementType.FireRod]
+                                }),
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1],
+                                    RequirementDictionary.Instance[RequirementType.FireRod],
+                                    RequirementDictionary.Instance[RequirementType.Bombos],
+                                    RequirementDictionary.Instance[RequirementType.Swordless]
+                                })
+                            })
+                        });
+                    }
+                case RequirementType.Kholdstare:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KholdstareSB],
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                RequirementDictionary.Instance[RequirementType.SBKholdstareBasic],
+                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
+                                RequirementDictionary.Instance[RequirementType.Sword2],
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.ExtendMagic2],
+                                    RequirementDictionary.Instance[RequirementType.FireRod]
+                                }),
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.Bombos],
+                                    RequirementDictionary.Instance[RequirementType.UseMedallion],
+                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1],
+                                    RequirementDictionary.Instance[RequirementType.FireRod]
+                                })
+                            })
+                        });
+                    }
+                case RequirementType.VitreousSB:
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.Hammer],
+                            RequirementDictionary.Instance[RequirementType.Sword1],
+                            RequirementDictionary.Instance[RequirementType.Bow]
+                        });
+                    }
+                case RequirementType.Vitreous:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.VitreousSB],
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                RequirementDictionary.Instance[RequirementType.SBVitreousBasic],
+                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
+                                RequirementDictionary.Instance[RequirementType.Sword2],
+                                RequirementDictionary.Instance[RequirementType.Bow]
+                            })
+                        });
+                    }
+                case RequirementType.TrinexxSB:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.FireRod],
+                            RequirementDictionary.Instance[RequirementType.IceRod],
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                RequirementDictionary.Instance[RequirementType.Sword3],
+                                RequirementDictionary.Instance[RequirementType.Hammer],
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1],
+                                    RequirementDictionary.Instance[RequirementType.Sword2]
+                                }),
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.ExtendMagic2],
+                                    RequirementDictionary.Instance[RequirementType.Sword1]
+                                })
+                            })
+                        });
+                    }
+                case RequirementType.Trinexx:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.TrinexxSB],
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                RequirementDictionary.Instance[RequirementType.SBTrinexxBasic],
+                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
+                                RequirementDictionary.Instance[RequirementType.Swordless],
+                                RequirementDictionary.Instance[RequirementType.Sword3],
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1],
+                                    RequirementDictionary.Instance[RequirementType.Sword2]
+                                })
+                            })
+                        });
+                    }
+                case RequirementType.AgaBoss:
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.Sword1],
+                            RequirementDictionary.Instance[RequirementType.Hammer],
+                            RequirementDictionary.Instance[RequirementType.Net]
+                        });
+                    }
+                case RequirementType.UnknownBoss:
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.SequenceBreak],
+                            new AggregateRequirement(new List<IRequirement>
+                            {
+                                RequirementDictionary.Instance[RequirementType.Armos],
+                                RequirementDictionary.Instance[RequirementType.Lanmolas],
+                                RequirementDictionary.Instance[RequirementType.Moldorm],
+                                RequirementDictionary.Instance[RequirementType.Arrghus],
+                                RequirementDictionary.Instance[RequirementType.Mothula],
+                                RequirementDictionary.Instance[RequirementType.Blind],
+                                RequirementDictionary.Instance[RequirementType.Kholdstare],
+                                RequirementDictionary.Instance[RequirementType.Vitreous],
+                                RequirementDictionary.Instance[RequirementType.Trinexx]
+                            })
+                        });
+                    }
+                case RequirementType.ATBoss:
+                case RequirementType.EPBoss:
+                case RequirementType.DPBoss:
+                case RequirementType.ToHBoss:
+                case RequirementType.PoDBoss:
+                case RequirementType.SPBoss:
+                case RequirementType.SWBoss:
+                case RequirementType.TTBoss:
+                case RequirementType.IPBoss:
+                case RequirementType.MMBoss:
+                case RequirementType.TRBoss:
+                case RequirementType.GTBoss1:
+                case RequirementType.GTBoss2:
+                case RequirementType.GTBoss3:
+                case RequirementType.GTFinalBoss:
+                    {
+                        return GetBossRequirement(type);
                     }
             }
 
