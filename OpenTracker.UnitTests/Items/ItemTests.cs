@@ -9,12 +9,9 @@ namespace OpenTracker.UnitTests.Items
     public class ItemTests
     {
         [Theory]
-        [InlineData(0, 1, 0)]
-        [InlineData(1, 1, 1)]
-        [InlineData(2, 1, 0)]
-        [InlineData(1, 2, 1)]
-        [InlineData(2, 2, 2)]
-        public void Ctor_Tests(int starting, int maximum, int expected)
+        [MemberData(nameof(Ctor_Data))]
+        [InlineData(2, 1)]
+        public void Ctor_CurrentTests(int starting, int maximum)
         {
             if (starting > maximum)
             {
@@ -26,10 +23,58 @@ namespace OpenTracker.UnitTests.Items
             else
             {
                 var item = new Item(ItemType.Sword, starting, maximum);
-                int actual = item.Current;
-                Assert.Equal(expected, actual);
+
+                Assert.Equal(starting, item.Current);
             }
         }
+
+        [Theory]
+        [MemberData(nameof(Ctor_Data))]
+        [InlineData(2, 1)]
+        public void Ctor_MaximumTests(int starting, int maximum)
+        {
+            if (starting > maximum)
+            {
+                Assert.Throws<ArgumentOutOfRangeException>(() =>
+                {
+                    new Item(ItemType.Sword, starting, maximum);
+                });
+            }
+            else
+            {
+                var item = new Item(ItemType.Sword, starting, maximum);
+
+                Assert.Equal(maximum, item.Maximum);
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(Ctor_Data))]
+        public void CanAdd_Tests(int starting, int maximum)
+        {
+            var item = new Item(ItemType.Sword, starting, maximum);
+
+            Assert.Equal(starting < maximum, item.CanAdd());
+        }
+
+        [Theory]
+        [MemberData(nameof(Ctor_Data))]
+        public void CanRemove_Tests(int starting, int maximum)
+        {
+            var item = new Item(ItemType.Sword, starting, maximum);
+
+            Assert.Equal(starting > 0, item.CanRemove());
+        }
+
+        public static IEnumerable<object[]> Ctor_Data =>
+            new List<object[]>
+            {
+                new object[] { 0, 1 },
+                new object[] { 1, 1 },
+                new object[] { 0, 2 },
+                new object[] { 1, 2 },
+                new object[] { 2, 2 }
+            };
 
         [Theory]
         [MemberData(nameof(Item_Data))]

@@ -94,6 +94,7 @@
         PalaceOfDarknessEntrance,
         DWEastPortal,
         DWLakeHylia,
+        DWLakeHyliaWaterWalk,
         IcePalaceEntrance,
         DarkWorldSouthEast,
         DWIceRodCave,

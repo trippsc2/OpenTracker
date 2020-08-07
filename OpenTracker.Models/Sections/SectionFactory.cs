@@ -398,6 +398,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.WaterfallFairy:
                 case LocationID.ParadoxCave when index == 0:
                 case LocationID.SuperBunnyCave:
+                case LocationID.MireShack:
                     {
                         return 2;
                     }

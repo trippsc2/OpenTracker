@@ -30,6 +30,7 @@ namespace OpenTracker.Models.RequirementNodes
                         RequirementNodeID.Start,
                         new AlternativeRequirement(new List<IRequirement>
                         {
+                            RequirementDictionary.Instance[RequirementType.LightWorldTest],
                             RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
                             RequirementDictionary.Instance[RequirementType.LightWorldAccess]
                         })),
@@ -55,7 +56,7 @@ namespace OpenTracker.Models.RequirementNodes
                     new RequirementNodeConnection(RequirementNodeID.BombosTabletLedge),
                     new RequirementNodeConnection(RequirementNodeID.LWMirePortal),
                     new RequirementNodeConnection(
-                        RequirementNodeID.LWGraveyardLedge,
+                        RequirementNodeID.LWGraveyard,
                         RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
                     new RequirementNodeConnection(RequirementNodeID.HyruleCastleTop),
                     new RequirementNodeConnection(
@@ -79,17 +80,26 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.LumberjackTreeActive => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.LumberjackTreeActiveTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.Aga1]),
                 },
                 RequirementNodeID.LumberjackCaveEntrance => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.LumberjackCaveEntranceTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.LumberjackTreeActive,
                         RequirementDictionary.Instance[RequirementType.LWDash]),
                 },
                 RequirementNodeID.ForestHideout => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.ForestHideoutTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
@@ -98,7 +108,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DeathMountainEntryAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.DeathMountainEntryTest],
+                            RequirementDictionary.Instance[RequirementType.DeathMountainEntryAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.LWLift1]),
@@ -118,7 +132,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DeathMountainExitAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.DeathMountainExitTest],
+                            RequirementDictionary.Instance[RequirementType.DeathMountainExitAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.DeathMountainEntry,
                         new AggregateRequirement(new List<IRequirement>
@@ -142,6 +160,9 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.LWKakarikoPortal => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.LWKakarikoPortalTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         new AlternativeRequirement(new List<IRequirement>
                         {
@@ -160,7 +181,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.GrassHouseAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.GrassHouseTest],
+                            RequirementDictionary.Instance[RequirementType.GrassHouseAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.NotBunnyLW])
@@ -169,13 +194,20 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.BombHutAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.BombHutTest],
+                            RequirementDictionary.Instance[RequirementType.BombHutAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.NotBunnyLW])
                 },
                 RequirementNodeID.MagicBatLedge => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.MagicBatLedgeTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.LWHammer]),
@@ -187,7 +219,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.RaceGameLedgeAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.RaceGameLedgeTest],
+                            RequirementDictionary.Instance[RequirementType.RaceGameLedgeAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         new AggregateRequirement(new List<IRequirement>
@@ -203,7 +239,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.SouthOfGroveLedgeAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.SouthOfGroveLedgeTest],
+                            RequirementDictionary.Instance[RequirementType.SouthOfGroveLedgeAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
@@ -215,7 +255,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DesertLedgeAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.DesertLedgeTest],
+                            RequirementDictionary.Instance[RequirementType.DesertLedgeAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.DesertPalaceBackEntrance,
                         RequirementDictionary.Instance[RequirementType.LWLift1]),
@@ -230,7 +274,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DesertPalaceBackEntranceAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.DesertPalaceBackEntranceTest],
+                            RequirementDictionary.Instance[RequirementType.DesertPalaceBackEntranceAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.DesertLedge,
                         RequirementDictionary.Instance[RequirementType.LWLift1]),
@@ -242,7 +290,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.CheckerboardLedgeAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.CheckerboardLedgeTest],
+                            RequirementDictionary.Instance[RequirementType.CheckerboardLedgeAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
@@ -253,11 +305,17 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.CheckerboardCave => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.CheckerboardCaveTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.CheckerboardLedge,
                         RequirementDictionary.Instance[RequirementType.LWLift1])
                 },
                 RequirementNodeID.DesertPalaceFrontEntrance => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.DesertPalaceFrontEntranceTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.Book]),
@@ -268,6 +326,9 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.BombosTabletLedge => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.BombosTabletLedgeTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
                     new RequirementNodeConnection(
@@ -277,11 +338,17 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.RupeeCave => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.RupeeCaveTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.LWLift1])
                 },
                 RequirementNodeID.LWMirePortal => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.LWMirePortalTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.LWFlute]),
@@ -296,11 +363,17 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.NorthBonkRocks => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.NorthBonkRocksTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.LWDash])
                 },
                 RequirementNodeID.LWGraveyard => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.LWGraveyardTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
@@ -318,6 +391,9 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.EscapeGrave => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.EscapeGraveTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.LWGraveyard,
                         RequirementDictionary.Instance[RequirementType.LWLift1])
                 },
@@ -325,7 +401,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.LWGraveyardLedgeAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.LWGraveyardLedgeTest],
+                            RequirementDictionary.Instance[RequirementType.LWGraveyardLedgeAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LWGraveyard,
                         RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
@@ -337,7 +417,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.LWKingsTombAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.LWKingsTombTest],
+                            RequirementDictionary.Instance[RequirementType.LWKingsTombAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LWGraveyard,
                         RequirementDictionary.Instance[RequirementType.LWLift2]),
@@ -348,6 +432,9 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.KingsTombGrave => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.KingsTombGraveTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.LWKingsTomb,
                         RequirementDictionary.Instance[RequirementType.LWDash])
                 },
@@ -355,7 +442,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.HyruleCastleTopAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.HyruleCastleTopTest],
+                            RequirementDictionary.Instance[RequirementType.HyruleCastleTopAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]),
@@ -365,6 +456,9 @@ namespace OpenTracker.Models.RequirementNodes
                 },
                 RequirementNodeID.AgahnimTowerEntrance => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.AgahnimTowerEntranceTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.HyruleCastleTop,
                         new AlternativeRequirement(new List<IRequirement>
@@ -384,6 +478,9 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.GanonHole => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.GanonHoleTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.HyruleCastleTop,
                         new AggregateRequirement(new List<IRequirement>
                         {
@@ -401,17 +498,26 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.GanonHoleBack => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.GanonHoleBackTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
                 },
                 RequirementNodeID.CastleSecretFront => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.CastleSecretFrontTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.NotBunnyLW])
                 },
                 RequirementNodeID.CastleSecretBack => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.CastleSecretBackTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
@@ -422,11 +528,17 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.CentralBonkRocks => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.CentralBonkRocksTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.LWDash])
                 },
                 RequirementNodeID.LWSouthPortal => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.LWSouthPortalTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.LWHammer]),
@@ -445,17 +557,26 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.HypeFairyCave => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.HypeFairyCaveTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.NotBunnyLW])
                 },
                 RequirementNodeID.MiniMoldormCave => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.MiniMoldormCaveTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.NotBunnyLW])
                 },
                 RequirementNodeID.Zora => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.ZoraTest]),
                     new RequirementNodeConnection(RequirementNodeID.WaterfallFairy),
                     new RequirementNodeConnection(RequirementNodeID.LWLakeHylia),
                     new RequirementNodeConnection(
@@ -469,7 +590,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.WaterfallFairyAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.WaterfallFairyTest],
+                            RequirementDictionary.Instance[RequirementType.WaterfallFairyAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.Zora,
                         RequirementDictionary.Instance[RequirementType.LWSwim]),
@@ -486,7 +611,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.LWWitchAreaAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.LWWitchAreaTest],
+                            RequirementDictionary.Instance[RequirementType.LWWitchAreaAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
@@ -500,6 +629,9 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.LWEastPortal => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.LWEastPortalTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.LWHammer]),
                     new RequirementNodeConnection(
@@ -509,13 +641,16 @@ namespace OpenTracker.Models.RequirementNodes
                             new AggregateRequirement(new List<IRequirement>
                             {
                                 RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                                RequirementDictionary.Instance[RequirementType.LWLift1]
+                                RequirementDictionary.Instance[RequirementType.DWLift1]
                             }),
                             RequirementDictionary.Instance[RequirementType.DWMirror]
                         })),
                 },
                 RequirementNodeID.LWLakeHylia => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.LWLakeHyliaTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         new AlternativeRequirement(new List<IRequirement>
@@ -532,6 +667,9 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.LWLakeHyliaWaterWalk => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.LWLakeHyliaWaterWalkTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.LWWaterWalk]),
                     new RequirementNodeConnection(
@@ -541,21 +679,34 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.LakeHyliaIsland => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.LakeHyliaIslandTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.LWLakeHylia,
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LWLakeHyliaWaterWalk,
                         RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
                     new RequirementNodeConnection(
                         RequirementNodeID.DWLakeHylia,
                         new AggregateRequirement(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.Flippers],
+                            RequirementDictionary.Instance[RequirementType.DWSwim],
                             RequirementDictionary.Instance[RequirementType.DWMirror]
-                        }))
+                        })),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DWLakeHyliaWaterWalk,
+                        RequirementDictionary.Instance[RequirementType.DWMirror])
                 },
                 RequirementNodeID.LakeHyliaFairyIsland => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.LakeHyliaFairyIslandAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.LakeHyliaFairyIslandTest],
+                            RequirementDictionary.Instance[RequirementType.LakeHyliaFairyIslandAccess]
+                        })),
                     new RequirementNodeConnection(RequirementNodeID.LWLakeHylia),
                     new RequirementNodeConnection(
                         RequirementNodeID.IcePalaceEntrance,
@@ -572,11 +723,17 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.IceRodCave => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.IceRodCaveTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.NotBunnyLW])
                 },
                 RequirementNodeID.IceFairyCave => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.IceFairyCaveTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.LWLift1])
@@ -585,7 +742,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DeathMountainWestBottomAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.DeathMountainWestBottomTest],
+                            RequirementDictionary.Instance[RequirementType.DeathMountainWestBottomAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.LWFlute]),
@@ -621,6 +782,9 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.SpectacleRockTop => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.SpectacleRockTopTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.DeathMountainWestTop,
                         RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
                     new RequirementNodeConnection(
@@ -631,7 +795,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DeathMountainWestTopAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.DeathMountainWestTopTest],
+                            RequirementDictionary.Instance[RequirementType.DeathMountainWestTopAccess]
+                        })),
                     new RequirementNodeConnection(RequirementNodeID.SpectacleRockTop),
                     new RequirementNodeConnection(
                         RequirementNodeID.DeathMountainEastTop,
@@ -644,7 +812,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DeathMountainEastBottomAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.DeathMountainEastBottomTest],
+                            RequirementDictionary.Instance[RequirementType.DeathMountainEastBottomAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.DeathMountainWestBottom,
                         RequirementDictionary.Instance[RequirementType.LWHookshot]),
@@ -663,7 +835,13 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DeathMountainEastBottomConnectorAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[
+                                RequirementType.DeathMountainEastBottomConnectorTest],
+                            RequirementDictionary.Instance[
+                                RequirementType.DeathMountainEastBottomConnectorAccess]
+                        })),
                     new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTopConnector),
                     new RequirementNodeConnection(
                         RequirementNodeID.DeathMountainEastBottom,
@@ -676,7 +854,13 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DeathMountainEastTopConnectorAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[
+                                RequirementType.DeathMountainEastTopConnectorTest],
+                            RequirementDictionary.Instance[
+                                RequirementType.DeathMountainEastTopConnectorAccess]
+                        })),
                     new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop),
                     new RequirementNodeConnection(
                         RequirementNodeID.TurtleRockSafetyDoor,
@@ -686,7 +870,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.SpiralCaveAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.SpiralCaveTest],
+                            RequirementDictionary.Instance[RequirementType.SpiralCaveAccess]
+                        })),
                     new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop),
                     new RequirementNodeConnection(
                         RequirementNodeID.TurtleRockTunnel,
@@ -696,7 +884,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.MimicCaveAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.MimicCaveTest],
+                            RequirementDictionary.Instance[RequirementType.MimicCaveAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.DeathMountainEastTop,
                         RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
@@ -711,7 +903,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DeathMountainEastTopAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.DeathMountainEastTopTest],
+                            RequirementDictionary.Instance[RequirementType.DeathMountainEastTopAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.DeathMountainWestTop,
                         RequirementDictionary.Instance[RequirementType.LWHammer]),
@@ -732,6 +928,9 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.LWFloatingIsland => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.LWFloatingIslandTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.DWFloatingIsland,
                         RequirementDictionary.Instance[RequirementType.DWMirror]),
                     new RequirementNodeConnection(
@@ -740,6 +939,9 @@ namespace OpenTracker.Models.RequirementNodes
                 },
                 RequirementNodeID.LWTurtleRockTop => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.LWTurtleRockTopTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.DeathMountainEastTop,
                         RequirementDictionary.Instance[RequirementType.LWLift2]),
@@ -757,6 +959,9 @@ namespace OpenTracker.Models.RequirementNodes
                 },
                 RequirementNodeID.DWKakarikoPortal => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.DWKakarikoPortalTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.LWKakarikoPortal,
                         new AlternativeRequirement(new List<IRequirement>
@@ -778,7 +983,9 @@ namespace OpenTracker.Models.RequirementNodes
                         RequirementNodeID.Start,
                         new AlternativeRequirement(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.WorldStateInvertedEntranceShuffleOff],
+                            RequirementDictionary.Instance[
+                                RequirementType.WorldStateInvertedEntranceShuffleOff],
+                            RequirementDictionary.Instance[RequirementType.DarkWorldWestTest],
                             RequirementDictionary.Instance[RequirementType.DarkWorldWestAccess]
                         })),
                     new RequirementNodeConnection(
@@ -796,6 +1003,9 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.SkullWoodsBackEntrance => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.SkullWoodsBackEntranceTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.DarkWorldWest,
                         RequirementDictionary.Instance[RequirementType.DWFireRod]),
                 },
@@ -803,7 +1013,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.BumperCaveAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.BumperCaveTest],
+                            RequirementDictionary.Instance[RequirementType.BumperCaveAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.DarkWorldWest,
                         RequirementDictionary.Instance[RequirementType.DWLift1]),
@@ -819,7 +1033,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.BumperCaveTopAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.BumperCaveTopTest],
+                            RequirementDictionary.Instance[RequirementType.BumperCaveTopAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.BumperCave,
                         new AggregateRequirement(new List<IRequirement>
@@ -834,11 +1052,17 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.ThievesTownEntrance => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.ThievesTownEntranceTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.DarkWorldWest,
                         RequirementDictionary.Instance[RequirementType.NotBunnyDW])
                 },
                 RequirementNodeID.BombableShack => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.BombableShackTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.DarkWorldWest,
                         RequirementDictionary.Instance[RequirementType.NotBunnyDW])
@@ -847,7 +1071,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.HammerHouseAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.HammerHouseTest],
+                            RequirementDictionary.Instance[RequirementType.HammerHouseAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.DarkWorldWest,
                         RequirementDictionary.Instance[RequirementType.DWHammer])
@@ -856,7 +1084,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.HammerPegsAreaAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.HammerPegsAreaTest],
+                            RequirementDictionary.Instance[RequirementType.HammerPegsAreaAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.LWMirror]),
@@ -867,11 +1099,17 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.HammerPegs => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.HammerPegsTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.HammerPegsArea,
                         RequirementDictionary.Instance[RequirementType.DWHammer])
                 },
                 RequirementNodeID.BlacksmithPrison => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.BlacksmithPrisonTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.DarkWorldWest,
                         RequirementDictionary.Instance[RequirementType.DWLift2]),
@@ -886,6 +1124,7 @@ namespace OpenTracker.Models.RequirementNodes
                         new AlternativeRequirement(new List<IRequirement>
                         {
                             RequirementDictionary.Instance[RequirementType.WorldStateInvertedEntranceShuffleOff],
+                            RequirementDictionary.Instance[RequirementType.DarkWorldSouthTest],
                             RequirementDictionary.Instance[RequirementType.DarkWorldSouthAccess]
                         })),
                     new RequirementNodeConnection(
@@ -899,11 +1138,17 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.DWCentralBonkRocks => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.DWCentralBonkRocksTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.DarkWorldSouth,
                         RequirementDictionary.Instance[RequirementType.DWDash])
                 },
                 RequirementNodeID.BuyBigBomb => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.BuyBigBombTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.DarkWorldSouth,
                         new AggregateRequirement(new List<IRequirement>
@@ -922,6 +1167,9 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.BigBombToLightWorld => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.BigBombToLightWorldTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.BuyBigBomb,
                         new AlternativeRequirement(new List<IRequirement>
                         {
@@ -931,6 +1179,9 @@ namespace OpenTracker.Models.RequirementNodes
                 },
                 RequirementNodeID.BigBombToDWLakeHylia => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.BigBombToDWLakeHyliaTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.BuyBigBomb,
                         new AggregateRequirement(new List<IRequirement>
@@ -945,6 +1196,9 @@ namespace OpenTracker.Models.RequirementNodes
                 },
                 RequirementNodeID.BigBombToWall => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.BigBombToWallTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.BuyBigBomb,
                         new AggregateRequirement(new List<IRequirement>
@@ -968,6 +1222,9 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.DWSouthPortal => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.DWSouthPortalTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.LWSouthPortal,
                         new AlternativeRequirement(new List<IRequirement>
                         {
@@ -976,7 +1233,7 @@ namespace OpenTracker.Models.RequirementNodes
                                 RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
                                 RequirementDictionary.Instance[RequirementType.LWLift1]
                             }),
-                            RequirementDictionary.Instance[RequirementType.DWMirror]
+                            RequirementDictionary.Instance[RequirementType.LWMirror]
                         })),
                     new RequirementNodeConnection(
                         RequirementNodeID.DarkWorldSouth,
@@ -985,6 +1242,9 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.HypeCave => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.HypeCaveTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.DarkWorldSouth,
                         RequirementDictionary.Instance[RequirementType.NotBunnyDW]),
                 },
@@ -992,7 +1252,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.MireAreaAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.MireAreaTest],
+                            RequirementDictionary.Instance[RequirementType.MireAreaAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.LWMirror]),
@@ -1000,6 +1264,9 @@ namespace OpenTracker.Models.RequirementNodes
                 },
                 RequirementNodeID.DWMirePortal => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.DWMirePortalTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.DWFlute]),
@@ -1018,11 +1285,17 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.MiseryMireEntrance => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.MiseryMireEntranceTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.MireArea,
                         RequirementDictionary.Instance[RequirementType.MMMedallion])
                 },
                 RequirementNodeID.DWGraveyard => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.DWGraveyardTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.LWGraveyard,
                         RequirementDictionary.Instance[RequirementType.LWMirror]),
@@ -1033,6 +1306,9 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.DWGraveyardLedge => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.DWGraveyardLedgeTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.LWGraveyardLedge,
                         RequirementDictionary.Instance[RequirementType.LWMirror]),
                     new RequirementNodeConnection(RequirementNodeID.DWGraveyard)
@@ -1041,7 +1317,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DWWitchAreaAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.DWWitchAreaTest],
+                            RequirementDictionary.Instance[RequirementType.DWWitchAreaAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LWWitchArea,
                         RequirementDictionary.Instance[RequirementType.LWMirror]),
@@ -1072,6 +1352,9 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.Catfish => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.CatfishTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.Zora,
                         RequirementDictionary.Instance[RequirementType.LWMirror]),
                     new RequirementNodeConnection(
@@ -1082,7 +1365,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DarkWorldEastAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.DarkWorldEastTest],
+                            RequirementDictionary.Instance[RequirementType.DarkWorldEastAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         new AlternativeRequirement(new List<IRequirement>
@@ -1111,22 +1398,32 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.DWHammer]
                         })),
                     new RequirementNodeConnection(RequirementNodeID.DWLakeHylia),
+                    new RequirementNodeConnection(RequirementNodeID.DWLakeHyliaWaterWalk),
                     new RequirementNodeConnection(
                         RequirementNodeID.DWEastPortal,
                         RequirementDictionary.Instance[RequirementType.DWHammer])
                 },
                 RequirementNodeID.FatFairy => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.FatFairyTest]),
                     new RequirementNodeConnection(RequirementNodeID.BigBombToWall)
                 },
                 RequirementNodeID.PalaceOfDarknessEntrance => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.PalaceOfDarknessEntranceTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.DarkWorldEast,
                         RequirementDictionary.Instance[RequirementType.NotBunnyDW])
                 },
                 RequirementNodeID.DWEastPortal => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.DWEastPortalTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.LWEastPortal,
                         new AggregateRequirement(new List<IRequirement>
@@ -1140,6 +1437,9 @@ namespace OpenTracker.Models.RequirementNodes
                 },
                 RequirementNodeID.DWLakeHylia => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.DWLakeHyliaTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.LWLakeHylia,
                         RequirementDictionary.Instance[RequirementType.LWMirror]),
@@ -1167,12 +1467,34 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.DWFakeFlippersFairyRevival],
                             RequirementDictionary.Instance[RequirementType.DWFakeFlippersSplashDeletion]
                         })),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DarkWorldWest,
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.DWSwim],
+                            RequirementDictionary.Instance[RequirementType.DWFakeFlippersFairyRevival],
+                            RequirementDictionary.Instance[RequirementType.DWFakeFlippersQirnJump],
+                            RequirementDictionary.Instance[RequirementType.DWFakeFlippersSplashDeletion]
+                        }))
+                },
+                RequirementNodeID.DWLakeHyliaWaterWalk => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.DWLakeHyliaWaterWalkTest]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DarkWorldWest,
+                        RequirementDictionary.Instance[RequirementType.DWWaterWalk])
                 },
                 RequirementNodeID.IcePalaceEntrance => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.IcePalaceAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.IcePalaceEntranceTest],
+                            RequirementDictionary.Instance[RequirementType.IcePalaceAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LakeHyliaFairyIsland,
                         new AlternativeRequirement(new List<IRequirement>
@@ -1192,20 +1514,31 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DarkWorldSouthEastAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.DarkWorldSouthEastTest],
+                            RequirementDictionary.Instance[RequirementType.DarkWorldSouthEastAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.LWMirror]),
-                    new RequirementNodeConnection(RequirementNodeID.DWLakeHylia)
+                    new RequirementNodeConnection(RequirementNodeID.DWLakeHylia),
+                    new RequirementNodeConnection(RequirementNodeID.DWLakeHyliaWaterWalk)
                 },
                 RequirementNodeID.DWIceRodCave => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.DWIceRodCaveTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.DarkWorldSouthEast,
                         RequirementDictionary.Instance[RequirementType.NotBunnyDW])
                 },
                 RequirementNodeID.DWIceRodRock => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.DWIceRodRockTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.DarkWorldSouthEast,
                         RequirementDictionary.Instance[RequirementType.DWLift1])
@@ -1214,7 +1547,13 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DarkDeathMountainWestBottomAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[
+                                RequirementType.DarkDeathMountainWestBottomTest],
+                            RequirementDictionary.Instance[
+                                RequirementType.DarkDeathMountainWestBottomAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.DWFlute]),
@@ -1239,7 +1578,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DarkDeathMountainTopAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.DarkDeathMountainTopTest],
+                            RequirementDictionary.Instance[RequirementType.DarkDeathMountainTopAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.DeathMountainWestTop,
                         RequirementDictionary.Instance[RequirementType.LWMirror]),
@@ -1258,6 +1601,9 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.GanonsTowerEntrance => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.GanonsTowerEntranceTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.DarkDeathMountainTop,
                         new AlternativeRequirement(new List<IRequirement>
                         {
@@ -1269,7 +1615,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DWFloatingIslandAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.DWFloatingIslandTest],
+                            RequirementDictionary.Instance[RequirementType.DWFloatingIslandAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LWFloatingIsland,
                         RequirementDictionary.Instance[RequirementType.LWMirror]),
@@ -1280,11 +1630,17 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.HookshotCave => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.HookshotCaveTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.DarkDeathMountainTop,
                         RequirementDictionary.Instance[RequirementType.DWLift1])
                 },
                 RequirementNodeID.DWTurtleRockTop => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.DWTurtleRockTopTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.LWTurtleRockTop,
                         new AlternativeRequirement(new List<IRequirement>
@@ -1303,6 +1659,9 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.TurtleRockFrontEntrance => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.TurtleRockFrontEntranceTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.DWTurtleRockTop,
                         RequirementDictionary.Instance[RequirementType.TRMedallion])
                 },
@@ -1310,7 +1669,13 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DarkDeathMountainEastBottomAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[
+                                RequirementType.DarkDeathMountainEastBottomTest],
+                            RequirementDictionary.Instance[
+                                RequirementType.DarkDeathMountainEastBottomAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.DeathMountainEastBottom,
                         new AlternativeRequirement(new List<IRequirement>
@@ -1330,6 +1695,10 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.DarkDeathMountainEastBottomConnector => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[
+                            RequirementType.DarkDeathMountainEastBottomConnectorTest]),
+                    new RequirementNodeConnection(
                         RequirementNodeID.DeathMountainEastBottomConnector,
                         RequirementDictionary.Instance[RequirementType.LWMirror]),
                     new RequirementNodeConnection(
@@ -1340,7 +1709,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.TurtleRockTunnelAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.TurtleRockTunnelTest],
+                            RequirementDictionary.Instance[RequirementType.TurtleRockTunnelAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.SpiralCave,
                         RequirementDictionary.Instance[RequirementType.LWMirror]),
@@ -1352,7 +1725,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.TurtleRockSafetyDoorAccess]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.TurtleRockSafetyDoorTest],
+                            RequirementDictionary.Instance[RequirementType.TurtleRockSafetyDoorAccess]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.DeathMountainEastTopConnector,
                         RequirementDictionary.Instance[RequirementType.LWMirror])
@@ -1363,6 +1740,7 @@ namespace OpenTracker.Models.RequirementNodes
                         RequirementNodeID.Start,
                         new AlternativeRequirement(new List<IRequirement>
                         {
+                            RequirementDictionary.Instance[RequirementType.HCSanctuaryEntryTest],
                             RequirementDictionary.Instance[RequirementType.EntranceShuffleOn],
                             RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]
                         })),
@@ -1378,7 +1756,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.HCFrontEntryTest],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         new AlternativeRequirement(new List<IRequirement>
@@ -1391,14 +1773,22 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.HCBackEntryTest],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                        })),
                     new RequirementNodeConnection(RequirementNodeID.EscapeGrave)
                 },
                 RequirementNodeID.ATEntry => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.ATEntryTest],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.AgahnimTowerEntrance,
                         RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]),
@@ -1410,20 +1800,28 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.EPEntryTest],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         new AlternativeRequirement(new List<IRequirement>
                         {
                             RequirementDictionary.Instance[RequirementType.NotBunnyLW],
                             RequirementDictionary.Instance[RequirementType.DungeonRevive]
-                        })),
+                        }))
                 },
                 RequirementNodeID.DPFrontEntry => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.DPFrontEntryTest],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.DesertPalaceFrontEntrance,
                         new AlternativeRequirement(new List<IRequirement>
@@ -1436,7 +1834,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.DPLeftEntryTest],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.DesertLedge,
                         new AlternativeRequirement(new List<IRequirement>
@@ -1449,7 +1851,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.DPBackEntryTest],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.DesertPalaceBackEntrance,
                         new AlternativeRequirement(new List<IRequirement>
@@ -1462,7 +1868,11 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.ToHEntryTest],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.DeathMountainWestTop,
                         new AlternativeRequirement(new List<IRequirement>
@@ -1475,14 +1885,22 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.PoDEntryTest],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                        })),
                     new RequirementNodeConnection(RequirementNodeID.PalaceOfDarknessEntrance)
                 },
                 RequirementNodeID.SPEntry => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.SPEntryTest],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.DarkWorldSouth,
                         new AggregateRequirement(new List<IRequirement>
@@ -1500,18 +1918,30 @@ namespace OpenTracker.Models.RequirementNodes
                 },
                 RequirementNodeID.SWFrontEntry => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.SWFrontEntryTest]),
                     new RequirementNodeConnection(RequirementNodeID.DarkWorldWest)
                 },
                 RequirementNodeID.SWFrontLeftDropEntry => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.SWFrontLeftDropEntryTest]),
                     new RequirementNodeConnection(RequirementNodeID.DarkWorldWest)
                 },
                 RequirementNodeID.SWPinballRoomEntry => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.SWPinballRoomEntryTest]),
                     new RequirementNodeConnection(RequirementNodeID.DarkWorldWest)
                 },
                 RequirementNodeID.SWFrontTopDropEntry => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.SWFrontTopDropEntryTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.DarkWorldWest,
                         new AlternativeRequirement(new List<IRequirement>
@@ -1522,45 +1952,71 @@ namespace OpenTracker.Models.RequirementNodes
                 },
                 RequirementNodeID.SWFrontBackConnectorEntry => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.SWFrontBackConnectorEntryTest]),
                     new RequirementNodeConnection(RequirementNodeID.DarkWorldWest)
                 },
                 RequirementNodeID.SWBackEntry => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.SWBackEntryTest],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                        })),
                     new RequirementNodeConnection(RequirementNodeID.SkullWoodsBackEntrance)
                 },
                 RequirementNodeID.TTEntry => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.TTEntryTest],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                        })),
                     new RequirementNodeConnection(RequirementNodeID.ThievesTownEntrance)
                 },
                 RequirementNodeID.IPEntry => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.IPEntryTest],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                        })),
                     new RequirementNodeConnection(RequirementNodeID.IcePalaceEntrance)
                 },
                 RequirementNodeID.MMEntry => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.MMEntryTest],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                        })),
                     new RequirementNodeConnection(RequirementNodeID.MiseryMireEntrance)
                 },
                 RequirementNodeID.TRFrontEntry => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.TRFrontEntryTest],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                        })),
                     new RequirementNodeConnection(RequirementNodeID.TurtleRockFrontEntrance)
                 },
                 RequirementNodeID.TRFrontToKeyDoors => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.TRFrontToKeyDoorsTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.TRFrontEntry,
                         new AggregateRequirement(new List<IRequirement>
@@ -1572,6 +2028,9 @@ namespace OpenTracker.Models.RequirementNodes
                 },
                 RequirementNodeID.TRKeyDoorsToMiddleExit => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.TRKeyDoorsToMiddleExitTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.TRFrontToKeyDoors,
                         new AggregateRequirement(new List<IRequirement>
@@ -1585,21 +2044,33 @@ namespace OpenTracker.Models.RequirementNodes
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.TRMiddleEntryTest],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                        })),
                     new RequirementNodeConnection(RequirementNodeID.TurtleRockTunnel)
                 },
                 RequirementNodeID.TRBackEntry => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.TRBackEntryTest],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                        })),
                     new RequirementNodeConnection(RequirementNodeID.TurtleRockSafetyDoor)
                 },
                 RequirementNodeID.GTEntry => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.GTEntryTest],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.GanonsTowerEntrance,
                         RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]),

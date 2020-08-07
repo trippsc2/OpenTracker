@@ -11,6 +11,7 @@
         SpikeCave,
         TRLaserSkip,
         LanmolasBombs,
+        HelmasaurKingBasic,
         ArrghusBasic,
         MothulaBasic,
         BlindBasic,
