@@ -262,7 +262,7 @@ namespace OpenTracker.UnitTests.Items
                     case ItemType.MireAreaAccess:
                     case ItemType.DWWitchAreaAccess:
                     case ItemType.DarkWorldEastAccess:
-                    case ItemType.IcePalaceAccess:
+                    case ItemType.IcePalaceEntranceAccess:
                     case ItemType.DarkWorldSouthEastAccess:
                     case ItemType.DarkDeathMountainWestBottomAccess:
                     case ItemType.DarkDeathMountainTopAccess:

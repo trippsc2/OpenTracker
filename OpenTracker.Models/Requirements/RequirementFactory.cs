@@ -381,8 +381,8 @@ namespace OpenTracker.Models.Requirements
                     ItemDictionary.Instance[ItemType.DWWitchAreaAccess]),
                 RequirementType.DarkWorldEastAccess => new ItemRequirement(
                     ItemDictionary.Instance[ItemType.DarkWorldEastAccess]),
-                RequirementType.IcePalaceAccess => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.IcePalaceAccess]),
+                RequirementType.IcePalaceEntranceAccess => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IcePalaceEntranceAccess]),
                 RequirementType.DarkWorldSouthEastAccess => new ItemRequirement(
                     ItemDictionary.Instance[ItemType.DarkWorldSouthEastAccess]),
                 RequirementType.DarkDeathMountainWestBottomAccess => new ItemRequirement(
@@ -1165,7 +1165,7 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.MireAreaAccess:
                 case RequirementType.DWWitchAreaAccess:
                 case RequirementType.DarkWorldEastAccess:
-                case RequirementType.IcePalaceAccess:
+                case RequirementType.IcePalaceEntranceAccess:
                 case RequirementType.DarkWorldSouthEastAccess:
                 case RequirementType.DarkDeathMountainWestBottomAccess:
                 case RequirementType.DarkDeathMountainTopAccess:

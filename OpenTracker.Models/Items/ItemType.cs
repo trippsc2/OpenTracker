@@ -109,7 +109,7 @@
         MireAreaAccess,
         DWWitchAreaAccess,
         DarkWorldEastAccess,
-        IcePalaceAccess,
+        IcePalaceEntranceAccess,
         DarkWorldSouthEastAccess,
         DarkDeathMountainWestBottomAccess,
         DarkDeathMountainTopAccess,

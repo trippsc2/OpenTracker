@@ -43,7 +43,7 @@ namespace OpenTracker.UnitTests.Requirements
         [InlineData(ItemType.MireAreaAccess, RequirementType.MireAreaAccess)]
         [InlineData(ItemType.DWWitchAreaAccess, RequirementType.DWWitchAreaAccess)]
         [InlineData(ItemType.DarkWorldEastAccess, RequirementType.DarkWorldEastAccess)]
-        [InlineData(ItemType.IcePalaceAccess, RequirementType.IcePalaceAccess)]
+        [InlineData(ItemType.IcePalaceEntranceAccess, RequirementType.IcePalaceEntranceAccess)]
         [InlineData(ItemType.DarkWorldSouthEastAccess, RequirementType.DarkWorldSouthEastAccess)]
         [InlineData(ItemType.DarkDeathMountainWestBottomAccess, RequirementType.DarkDeathMountainWestBottomAccess)]
         [InlineData(ItemType.DarkDeathMountainTopAccess, RequirementType.DarkDeathMountainTopAccess)]

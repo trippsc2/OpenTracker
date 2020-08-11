@@ -1493,7 +1493,7 @@ namespace OpenTracker.Models.RequirementNodes
                         new AlternativeRequirement(new List<IRequirement>
                         {
                             RequirementDictionary.Instance[RequirementType.IcePalaceEntranceTest],
-                            RequirementDictionary.Instance[RequirementType.IcePalaceAccess]
+                            RequirementDictionary.Instance[RequirementType.IcePalaceEntranceAccess]
                         })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LakeHyliaFairyIsland,
@@ -1942,13 +1942,7 @@ namespace OpenTracker.Models.RequirementNodes
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
                         RequirementDictionary.Instance[RequirementType.SWFrontTopDropEntryTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldWest,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn],
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW]
-                        }))
+                    new RequirementNodeConnection(RequirementNodeID.DarkWorldWest)
                 },
                 RequirementNodeID.SWFrontBackConnectorEntry => new List<RequirementNodeConnection>
                 {

@@ -3816,7 +3816,7 @@ namespace OpenTracker.Models.Sections
                     }
                 case LocationID.IcePalaceEntrance:
                     {
-                        return ItemDictionary.Instance[ItemType.IcePalaceAccess];
+                        return ItemDictionary.Instance[ItemType.IcePalaceEntranceAccess];
                     }
                 case LocationID.MiseryMireEntrance:
                 case LocationID.MireShackEntrance:
