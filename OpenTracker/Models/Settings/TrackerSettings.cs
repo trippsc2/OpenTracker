@@ -9,7 +9,7 @@ namespace OpenTracker.Models.Settings
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private bool _displayAllLocations = false;
+        private bool _displayAllLocations;
         public bool DisplayAllLocations
         {
             get => _displayAllLocations;

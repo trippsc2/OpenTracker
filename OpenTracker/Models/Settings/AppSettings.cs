@@ -1,9 +1,7 @@
 ﻿using Avalonia.Controls;
-using Avalonia.Layout;
 using Newtonsoft.Json;
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.SaveLoad;
-using OpenTracker.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +15,7 @@ namespace OpenTracker.Models.Settings
     public class AppSettings
     {
         private static readonly object _syncLock = new object();
-        private static volatile AppSettings _instance = null;
+        private static volatile AppSettings _instance;
 
         public static AppSettings Instance
         {
