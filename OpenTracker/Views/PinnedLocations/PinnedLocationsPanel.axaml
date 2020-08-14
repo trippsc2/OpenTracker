@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:view="clr-namespace:OpenTracker.Views.PinnedLocations;assembly=OpenTracker"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OpenTracker.Views.PinnedLocations.LocationsPanelControl">
+             x:Class="OpenTracker.Views.PinnedLocations.PinnedLocationsPanel">
   <Border Classes="ControlBorder" Margin="1">
     <Grid RowDefinitions="Auto, *" VerticalAlignment="Stretch">
 
@@ -17,7 +17,7 @@
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <WrapPanel Orientation="{Binding
-                         $parent[view:LocationsPanelControl].DataContext.Orientation,
+                         $parent[view:PinnedLocationsPanel].DataContext.Orientation,
                          Mode=OneWay}" />
             </ItemsPanelTemplate>
           </ItemsControl.ItemsPanel>

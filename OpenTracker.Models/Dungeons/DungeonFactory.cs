@@ -468,6 +468,7 @@ namespace OpenTracker.Models.Dungeons
                     DungeonNodeID.IPB5PastBigKeyDoor,
                     DungeonNodeID.IPB6,
                     DungeonNodeID.IPB6PastKeyDoor,
+                    DungeonNodeID.IPB6PreBossRoom,
                     DungeonNodeID.IPB6PastHammerBlocks,
                     DungeonNodeID.IPB6PastLiftBlock,
                     DungeonNodeID.IPBoss
@@ -950,7 +951,7 @@ namespace OpenTracker.Models.Dungeons
                         {
                             KeyDoorID.PoDFrontKeyDoor,
                             KeyDoorID.PoDBigKeyChestKeyDoor,
-                            KeyDoorID.PoDCollapsingStairwayKeyDoor,
+                            KeyDoorID.PoDCollapsingWalkwayKeyDoor,
                             KeyDoorID.PoDDarkMazeKeyDoor,
                             KeyDoorID.PoDHarmlessHellwayKeyDoor,
                             KeyDoorID.PoDBossAreaKeyDoor
@@ -976,7 +977,7 @@ namespace OpenTracker.Models.Dungeons
                             KeyDoorID.SWFrontRightKeyDoor,
                             KeyDoorID.SWWorthlessKeyDoor,
                             KeyDoorID.SWBackFirstKeyDoor,
-                            KeyDoorID.SWBackSeceondKeyDoor
+                            KeyDoorID.SWBackSecondKeyDoor
                         };
                     }
                 case LocationID.ThievesTown:

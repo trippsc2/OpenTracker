@@ -207,7 +207,7 @@ namespace OpenTracker.Models.KeyDoors
                             DungeonNodeID.PoDBigKeyChestArea
                         };
                     }
-                case KeyDoorID.PoDCollapsingStairwayKeyDoor:
+                case KeyDoorID.PoDCollapsingWalkwayKeyDoor:
                     {
                         return new List<DungeonNodeID>
                         {
@@ -343,7 +343,7 @@ namespace OpenTracker.Models.KeyDoors
                             DungeonNodeID.SWBackPastFirstKeyDoor
                         };
                     }
-                case KeyDoorID.SWBackSeceondKeyDoor:
+                case KeyDoorID.SWBackSecondKeyDoor:
                     {
                         return new List<DungeonNodeID>
                         {

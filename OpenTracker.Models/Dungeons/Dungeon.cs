@@ -396,16 +396,18 @@ namespace OpenTracker.Models.Dungeons
         /// </summary>
         private void UpdateSectionAccessibilitySerial()
         {
-            List<BlockingCollection<(List<KeyDoorID>, int, bool)>> keyDoorPermutationQueue =
-                new List<BlockingCollection<(List<KeyDoorID>, int, bool)>>();
-            BlockingCollection<(List<KeyDoorID>, int, bool)> finalKeyDoorPermutationQueue =
-                new BlockingCollection<(List<KeyDoorID>, int, bool)>();
-            BlockingCollection<(List<AccessibilityLevel>, AccessibilityLevel, int)> resultQueue =
-                new BlockingCollection<(List<AccessibilityLevel>, AccessibilityLevel, int)>();
+            var keyDoorPermutationQueue =
+                new List<BlockingCollection<(List<KeyDoorID>, int, bool, bool)>>();
+            var finalKeyDoorPermutationQueue =
+                new BlockingCollection<(List<KeyDoorID>, int, bool, bool)>();
+            var resultQueue =
+                new BlockingCollection<
+                    (List<AccessibilityLevel>, AccessibilityLevel, int, bool)>();
 
             for (int i = 0; i <= SmallKeyDoors.Count; i++)
             {
-                keyDoorPermutationQueue.Add(new BlockingCollection<(List<KeyDoorID>, int, bool)>());
+                keyDoorPermutationQueue.Add(
+                    new BlockingCollection<(List<KeyDoorID>, int, bool, bool)>());
             }
 
             List<int> smallKeyValues = GetSmallKeyValues();
@@ -415,7 +417,8 @@ namespace OpenTracker.Models.Dungeons
             {
                 foreach (bool bigKeyValue in bigKeyValues)
                 {
-                    keyDoorPermutationQueue[0].Add((new List<KeyDoorID>(), smallKeyValue, bigKeyValue));
+                    keyDoorPermutationQueue[0].Add(
+                        (new List<KeyDoorID>(), smallKeyValue, bigKeyValue, false));
                 }
             }
 
@@ -439,7 +442,7 @@ namespace OpenTracker.Models.Dungeons
                         continue;
                     }
                     
-                    List<KeyDoorID> accessibleKeyDoors = dungeonData.GetAccessibleKeyDoors();
+                    var accessibleKeyDoors = dungeonData.GetAccessibleKeyDoors();
                     
                     if (accessibleKeyDoors.Count == 0)
                     {
@@ -448,12 +451,18 @@ namespace OpenTracker.Models.Dungeons
                         continue;
                     }
                     
-                    foreach (KeyDoorID keyDoor in accessibleKeyDoors)
+                    foreach (var keyDoor in accessibleKeyDoors)
                     {
                         List<KeyDoorID> newPermutation = item.Item1.GetRange(0, item.Item1.Count);
-                        newPermutation.Add(keyDoor);
+
+                        if (!accessibleKeyDoors.Exists(x => !x.Item2))
+                        {
+                            finalKeyDoorPermutationQueue.Add(item);
+                        }
+
+                        newPermutation.Add(keyDoor.Item1);
                         keyDoorPermutationQueue[i + 1].Add((newPermutation, item.Item2,
-                            item.Item3));
+                            item.Item3, item.Item4 || keyDoor.Item2));
                     }
                     
                     DungeonDataQueue.Enqueue(dungeonData);
@@ -486,10 +495,11 @@ namespace OpenTracker.Models.Dungeons
 
                 List<AccessibilityLevel> bossAccessibility = dungeonData.GetBossAccessibility();
 
-                (AccessibilityLevel, int) accessibility =
-                    dungeonData.GetItemAccessibility(item.Item2, item.Item3);
+                var accessibility =
+                    dungeonData.GetItemAccessibility(item.Item2, item.Item3, item.Item4);
 
-                resultQueue.Add((bossAccessibility, accessibility.Item1, accessibility.Item2));
+                resultQueue.Add(
+                    (bossAccessibility, accessibility.Item1, accessibility.Item2, accessibility.Item3));
 
                 DungeonDataQueue.Enqueue(dungeonData);
             }
@@ -525,7 +535,7 @@ namespace OpenTracker.Models.Dungeons
                     }
                 }
 
-                if (item.Item2 < lowestAccessibility)
+                if (item.Item2 < lowestAccessibility && !item.Item4)
                 {
                     lowestAccessibility = item.Item2;
                 }
@@ -594,17 +604,19 @@ namespace OpenTracker.Models.Dungeons
         /// </summary>
         private void UpdateSectionAccessibilityParallel()
         {
-            List<BlockingCollection<(List<KeyDoorID>, int, bool)>> keyDoorPermutationQueue =
-                new List<BlockingCollection<(List<KeyDoorID>, int, bool)>>();
-            List<Task[]> keyDoorTasks = new List<Task[]>();
-            BlockingCollection<(List<KeyDoorID>, int, bool)> finalKeyDoorPermutationQueue =
-                new BlockingCollection<(List<KeyDoorID>, int, bool)>();
-            BlockingCollection<(List<AccessibilityLevel>, AccessibilityLevel, int)> resultQueue =
-                new BlockingCollection<(List<AccessibilityLevel>, AccessibilityLevel, int)>();
+            var keyDoorPermutationQueue =
+                new List<BlockingCollection<(List<KeyDoorID>, int, bool, bool)>>();
+            var keyDoorTasks = new List<Task[]>();
+            var finalKeyDoorPermutationQueue =
+                new BlockingCollection<(List<KeyDoorID>, int, bool, bool)>();
+            var resultQueue =
+                new BlockingCollection<
+                    (List<AccessibilityLevel>, AccessibilityLevel, int, bool)>();
 
             for (int i = 0; i <= SmallKeyDoors.Count; i++)
             {
-                keyDoorPermutationQueue.Add(new BlockingCollection<(List<KeyDoorID>, int, bool)>());
+                keyDoorPermutationQueue.Add(
+                    new BlockingCollection<(List<KeyDoorID>, int, bool, bool)>());
             }
 
             List<int> smallKeyValues = GetSmallKeyValues();
@@ -614,7 +626,8 @@ namespace OpenTracker.Models.Dungeons
             {
                 foreach (bool bigKeyValue in bigKeyValues)
                 {
-                    keyDoorPermutationQueue[0].Add((new List<KeyDoorID>(), smallKeyValue, bigKeyValue));
+                    keyDoorPermutationQueue[0].Add(
+                        (new List<KeyDoorID>(), smallKeyValue, bigKeyValue, false));
                 }
             }
 
@@ -643,7 +656,7 @@ namespace OpenTracker.Models.Dungeons
                                 continue;
                             }
 
-                            List<KeyDoorID> accessibleKeyDoors = dungeonData.GetAccessibleKeyDoors();
+                            var accessibleKeyDoors = dungeonData.GetAccessibleKeyDoors();
 
                             if (accessibleKeyDoors.Count == 0)
                             {
@@ -652,12 +665,12 @@ namespace OpenTracker.Models.Dungeons
                                 continue;
                             }
 
-                            foreach (KeyDoorID keyDoor in accessibleKeyDoors)
+                            foreach (var keyDoor in accessibleKeyDoors)
                             {
                                 List<KeyDoorID> newPermutation = item.Item1.GetRange(0, item.Item1.Count);
-                                newPermutation.Add(keyDoor);
-                                keyDoorPermutationQueue[currentIteration + 1].Add((newPermutation, item.Item2,
-                                    item.Item3));
+                                newPermutation.Add(keyDoor.Item1);
+                                keyDoorPermutationQueue[currentIteration + 1].Add(
+                                    (newPermutation, item.Item2, item.Item3, item.Item4 || keyDoor.Item2));
                             }
 
                             DungeonDataQueue.Enqueue(dungeonData);
@@ -699,10 +712,12 @@ namespace OpenTracker.Models.Dungeons
 
                         List<AccessibilityLevel> bossAccessibility = dungeonData.GetBossAccessibility();
 
-                        (AccessibilityLevel, int) accessibility =
-                            dungeonData.GetItemAccessibility(item.Item2, item.Item3);
+                        var accessibility =
+                            dungeonData.GetItemAccessibility(item.Item2, item.Item3, item.Item4);
 
-                        resultQueue.Add((bossAccessibility, accessibility.Item1, accessibility.Item2));
+                        resultQueue.Add(
+                            (bossAccessibility, accessibility.Item1, accessibility.Item2,
+                            accessibility.Item3));
 
                         DungeonDataQueue.Enqueue(dungeonData);
                     }
@@ -741,7 +756,7 @@ namespace OpenTracker.Models.Dungeons
                     }
                 }
 
-                if (item.Item2 < lowestAccessibility)
+                if (item.Item2 < lowestAccessibility && !item.Item4)
                 {
                     lowestAccessibility = item.Item2;
                 }

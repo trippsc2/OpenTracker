@@ -121,6 +121,7 @@
         IPB5PastBigKeyDoor,
         IPB6,
         IPB6PastKeyDoor,
+        IPB6PreBossRoom,
         IPB6PastHammerBlocks,
         IPB6PastLiftBlock,
         IPBoss,

@@ -37,9 +37,6 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Returns a world state requirement.
         /// </summary>
-        /// <param name="game">
-        /// The game data.
-        /// </param>
         /// <param name="type">
         /// The requirement type.
         /// </param>
@@ -63,9 +60,6 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Returns a item placement requirement.
         /// </summary>
-        /// <param name="game">
-        /// The game data.
-        /// </param>
         /// <param name="type">
         /// The requirement type.
         /// </param>
@@ -87,9 +81,6 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Returns a dungeon item shuffle requirement.
         /// </summary>
-        /// <param name="game">
-        /// The game data.
-        /// </param>
         /// <param name="type">
         /// The requirement type.
         /// </param>
@@ -134,9 +125,6 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Returns a enemy shuffle requirement.
         /// </summary>
-        /// <param name="game">
-        /// The game data.
-        /// </param>
         /// <param name="type">
         /// The requirement type.
         /// </param>
@@ -196,9 +184,6 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Returns an item exact amount requirement.
         /// </summary>
-        /// <param name="game">
-        /// The game data.
-        /// </param>
         /// <param name="type">
         /// The requirement type.
         /// </param>
@@ -228,9 +213,6 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Returns an item requirement.
         /// </summary>
-        /// <param name="game">
-        /// The game data.
-        /// </param>
         /// <param name="type">
         /// The requirement type.
         /// </param>
@@ -657,6 +639,392 @@ namespace OpenTracker.Models.Requirements
                     ItemDictionary.Instance[ItemType.TRBackEntryTest]),
                 RequirementType.GTEntryTest => new ItemRequirement(
                     ItemDictionary.Instance[ItemType.GTEntryTest]),
+                RequirementType.HCSanctuaryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.HCSanctuaryTest]),
+                RequirementType.HCFrontTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.HCFrontTest]),
+                RequirementType.HCPastEscapeFirstKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.HCPastEscapeFirstKeyDoorTest]),
+                RequirementType.HCPastEscapeSecondKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.HCPastEscapeSecondKeyDoorTest]),
+                RequirementType.HCDarkRoomFrontTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.HCDarkRoomFrontTest]),
+                RequirementType.HCPastDarkCrossKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.HCPastDarkCrossKeyDoorTest]),
+                RequirementType.HCPastSewerRatRoomKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.HCPastSewerRatRoomKeyDoorTest]),
+                RequirementType.HCDarkRoomBackTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.HCDarkRoomBackTest]),
+                RequirementType.HCBackTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.HCBackTest]),
+                RequirementType.ATTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.ATTest]),
+                RequirementType.ATDarkMazeTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.ATDarkMazeTest]),
+                RequirementType.ATPastFirstKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.ATPastFirstKeyDoorTest]),
+                RequirementType.ATPastSecondKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.ATPastSecondKeyDoorTest]),
+                RequirementType.ATPastThirdKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.ATPastThirdKeyDoorTest]),
+                RequirementType.ATPastFourthKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.ATPastFourthKeyDoorTest]),
+                RequirementType.ATBossRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.ATBossRoomTest]),
+                RequirementType.ATBossTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.ATBossTest]),
+                RequirementType.EPTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.EPTest]),
+                RequirementType.EPBigChestTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.EPBigChestTest]),
+                RequirementType.EPRightDarkRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.EPRightDarkRoomTest]),
+                RequirementType.EPPastRightKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.EPPastRightKeyDoorTest]),
+                RequirementType.EPPastBigKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.EPPastBigKeyDoorTest]),
+                RequirementType.EPBackDarkRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.EPBackDarkRoomTest]),
+                RequirementType.EPPastBackKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.EPPastBackKeyDoorTest]),
+                RequirementType.EPBossRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.EPBossRoomTest]),
+                RequirementType.EPBossTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.EPBossTest]),
+                RequirementType.DPFrontTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DPFrontTest]),
+                RequirementType.DPTorchItemTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DPTorchItemTest]),
+                RequirementType.DPBigChestTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DPBigChestTest]),
+                RequirementType.DPPastRightKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DPPastRightKeyDoorTest]),
+                RequirementType.DPBackTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DPBackTest]),
+                RequirementType.DP2FTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DP2FTest]),
+                RequirementType.DP2FPastFirstKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DP2FPastFirstKeyDoorTest]),
+                RequirementType.DP2FPastSecondKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DP2FPastSecondKeyDoorTest]),
+                RequirementType.DPPastFourTorchWallTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DPPastFourTorchWallTest]),
+                RequirementType.DPBossRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DPBossRoomTest]),
+                RequirementType.DPBossTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.DPBossTest]),
+                RequirementType.ToHTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.ToHTest]),
+                RequirementType.ToHPastKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.ToHPastKeyDoorTest]),
+                RequirementType.ToHBasementTorchRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.ToHBasementTorchRoomTest]),
+                RequirementType.ToHPastBigKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.ToHPastBigKeyDoorTest]),
+                RequirementType.ToHBigChestTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.ToHBigChestTest]),
+                RequirementType.ToHBossTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.ToHBossTest]),
+                RequirementType.PoDTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.PoDTest]),
+                RequirementType.PoDPastFirstRedGoriyaRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.PoDPastFirstRedGoriyaRoomTest]),
+                RequirementType.PoDLobbyArenaTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.PoDLobbyArenaTest]),
+                RequirementType.PoDBigKeyChestAreaTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.PoDBigKeyChestAreaTest]),
+                RequirementType.PoDPastCollapsingWalkwayKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.PoDPastCollapsingWalkwayKeyDoorTest]),
+                RequirementType.PoDDarkBasementTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.PoDDarkBasementTest]),
+                RequirementType.PoDHarmlessHellwayRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.PoDHarmlessHellwayRoomTest]),
+                RequirementType.PoDPastDarkMazeKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.PoDPastDarkMazeKeyDoorTest]),
+                RequirementType.PoDDarkMazeTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.PoDDarkMazeTest]),
+                RequirementType.PoDBigChestLedgeTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.PoDBigChestLedgeTest]),
+                RequirementType.PoDBigChestTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.PoDBigChestTest]),
+                RequirementType.PoDPastSecondRedGoriyaRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.PoDPastSecondRedGoriyaRoomTest]),
+                RequirementType.PoDPastBowStatueTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.PoDPastBowStatueTest]),
+                RequirementType.PoDBossAreaDarkRoomsTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.PoDBossAreaDarkRoomsTest]),
+                RequirementType.PoDPastHammerBlocksTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.PoDPastHammerBlocksTest]),
+                RequirementType.PoDPastBossAreaKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.PoDPastBossAreaKeyDoorTest]),
+                RequirementType.PoDBossRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.PoDBossRoomTest]),
+                RequirementType.PoDBossTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.PoDBossTest]),
+                RequirementType.SPTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SPTest]),
+                RequirementType.SPAfterRiverTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SPAfterRiverTest]),
+                RequirementType.SPB1Test => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SPB1Test]),
+                RequirementType.SPB1PastFirstRightKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SPB1PastFirstRightKeyDoorTest]),
+                RequirementType.SPB1PastSecondRightKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SPB1PastSecondRightKeyDoorTest]),
+                RequirementType.SPB1PastRightHammerBlocksTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SPB1PastRightHammerBlocksTest]),
+                RequirementType.SPB1KeyLedgeTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SPB1KeyLedgeTest]),
+                RequirementType.SPB1PastLeftKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SPB1PastLeftKeyDoorTest]),
+                RequirementType.SPBigChestTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SPBigChestTest]),
+                RequirementType.SPB1BackTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SPB1BackTest]),
+                RequirementType.SPB1PastBackFirstKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SPB1PastBackFirstKeyDoorTest]),
+                RequirementType.SPBossRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SPBossRoomTest]),
+                RequirementType.SPBossTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SPBossTest]),
+                RequirementType.SWBigChestAreaBottomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SWBigChestAreaBottomTest]),
+                RequirementType.SWBigChestAreaTopTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SWBigChestAreaTopTest]),
+                RequirementType.SWBigChestTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SWBigChestTest]),
+                RequirementType.SWFrontLeftSideTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SWFrontLeftSideTest]),
+                RequirementType.SWFrontRightSideTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SWFrontRightSideTest]),
+                RequirementType.SWFrontBackConnectorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SWFrontBackConnectorTest]),
+                RequirementType.SWPastTheWorthlessKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SWPastTheWorthlessKeyDoorTest]),
+                RequirementType.SWBackTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SWBackTest]),
+                RequirementType.SWBackPastFirstKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SWBackPastFirstKeyDoorTest]),
+                RequirementType.SWBackPastFourTorchRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SWBackPastFourTorchRoomTest]),
+                RequirementType.SWBackPastCurtainsTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SWBackPastCurtainsTest]),
+                RequirementType.SWBossRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SWBossRoomTest]),
+                RequirementType.SWBossTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.SWBossTest]),
+                RequirementType.TTTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TTTest]),
+                RequirementType.TTPastBigKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TTPastBigKeyDoorTest]),
+                RequirementType.TTPastFirstKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TTPastFirstKeyDoorTest]),
+                RequirementType.TTPastSecondKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TTPastSecondKeyDoorTest]),
+                RequirementType.TTPastBigChestRoomKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TTPastBigChestRoomKeyDoorTest]),
+                RequirementType.TTPastHammerBlocksTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TTPastHammerBlocksTest]),
+                RequirementType.TTBigChestTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TTBigChestTest]),
+                RequirementType.TTBossRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TTBossRoomTest]),
+                RequirementType.TTBossTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TTBossTest]),
+                RequirementType.IPTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPTest]),
+                RequirementType.IPPastEntranceFreezorRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPPastEntranceFreezorRoomTest]),
+                RequirementType.IPB1LeftSideTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPB1LeftSideTest]),
+                RequirementType.IPB1RightSideTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPB1RightSideTest]),
+                RequirementType.IPB2LeftSideTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPB2LeftSideTest]),
+                RequirementType.IPB2PastKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPB2PastKeyDoorTest]),
+                RequirementType.IPB2PastHammerBlocksTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPB2PastHammerBlocksTest]),
+                RequirementType.IPB2PastLiftBlockTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPB2PastLiftBlockTest]),
+                RequirementType.IPSpikeRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPSpikeRoomTest]),
+                RequirementType.IPB4RightSideTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPB4RightSideTest]),
+                RequirementType.IPB4IceRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPB4IceRoomTest]),
+                RequirementType.IPB4FreezorRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPB4FreezorRoomTest]),
+                RequirementType.IPFreezorChestTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPFreezorChestTest]),
+                RequirementType.IPB4PastKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPB4PastKeyDoorTest]),
+                RequirementType.IPBigChestAreaTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPBigChestAreaTest]),
+                RequirementType.IPBigChestTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPBigChestTest]),
+                RequirementType.IPB5Test => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPB5Test]),
+                RequirementType.IPB5PastBigKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPB5PastBigKeyDoorTest]),
+                RequirementType.IPB6Test => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPB6Test]),
+                RequirementType.IPB6PastKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPB6PastKeyDoorTest]),
+                RequirementType.IPB6PreBossRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPB6PreBossRoomTest]),
+                RequirementType.IPB6PastHammerBlocksTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPB6PastHammerBlocksTest]),
+                RequirementType.IPB6PastLiftBlockTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPB6PastLiftBlockTest]),
+                RequirementType.IPBossTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.IPBossTest]),
+                RequirementType.MMTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MMTest]),
+                RequirementType.MMPastEntranceGapTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MMPastEntranceGapTest]),
+                RequirementType.MMBigChestTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MMBigChestTest]),
+                RequirementType.MMB1TopSideTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MMB1TopSideTest]),
+                RequirementType.MMB1LobbyBeyondBlueBlocksTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MMB1LobbyBeyondBlueBlocksTest]),
+                RequirementType.MMB1RightSideBeyondBlueBlocksTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MMB1RightSideBeyondBlueBlocksTest]),
+                RequirementType.MMB1LeftSidePastFirstKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MMB1LeftSidePastFirstKeyDoorTest]),
+                RequirementType.MMB1LeftSidePastSecondKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MMB1LeftSidePastSecondKeyDoorTest]),
+                RequirementType.MMB1PastFourTorchRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MMB1PastFourTorchRoomTest]),
+                RequirementType.MMF1PastFourTorchRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MMF1PastFourTorchRoomTest]),
+                RequirementType.MMB1PastPortalBigKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MMB1PastPortalBigKeyDoorTest]),
+                RequirementType.MMB1PastBridgeBigKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MMB1PastBridgeBigKeyDoorTest]),
+                RequirementType.MMDarkRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MMDarkRoomTest]),
+                RequirementType.MMB2PastWorthlessKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MMB2PastWorthlessKeyDoorTest]),
+                RequirementType.MMB2PastCaneOfSomariaSwitchTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MMB2PastCaneOfSomariaSwitchTest]),
+                RequirementType.MMBossRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MMBossRoomTest]),
+                RequirementType.MMBossTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.MMBossTest]),
+                RequirementType.TRFrontTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRFrontTest]),
+                RequirementType.TRF1CompassChestAreaTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRF1CompassChestAreaTest]),
+                RequirementType.TRF1FourTorchRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRF1FourTorchRoomTest]),
+                RequirementType.TRF1RollerRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRF1RollerRoomTest]),
+                RequirementType.TRF1FirstKeyDoorAreaTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRF1FirstKeyDoorAreaTest]),
+                RequirementType.TRF1PastFirstKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRF1PastFirstKeyDoorTest]),
+                RequirementType.TRF1PastSecondKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRF1PastSecondKeyDoorTest]),
+                RequirementType.TRB1Test => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRB1Test]),
+                RequirementType.TRB1PastBigKeyChestKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRB1PastBigKeyChestKeyDoorTest]),
+                RequirementType.TRB1MiddleRightEntranceAreaTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRB1MiddleRightEntranceAreaTest]),
+                RequirementType.TRB1BigChestAreaTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRB1BigChestAreaTest]),
+                RequirementType.TRBigChestTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRBigChestTest]),
+                RequirementType.TRB1RightSideTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRB1RightSideTest]),
+                RequirementType.TRPastB1toB2KeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRPastB1toB2KeyDoorTest]),
+                RequirementType.TRB2DarkRoomTopTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRB2DarkRoomTopTest]),
+                RequirementType.TRB2DarkRoomBottomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRB2DarkRoomBottomTest]),
+                RequirementType.TRB2PastDarkMazeTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRB2PastDarkMazeTest]),
+                RequirementType.TRLaserBridgeChestsTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRLaserBridgeChestsTest]),
+                RequirementType.TRB2PastKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRB2PastKeyDoorTest]),
+                RequirementType.TRB3Test => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRB3Test]),
+                RequirementType.TRB3BossRoomEntryTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRB3BossRoomEntryTest]),
+                RequirementType.TRBossRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRBossRoomTest]),
+                RequirementType.TRBossTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.TRBossTest]),
+                RequirementType.GTTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GTTest]),
+                RequirementType.GTBobsTorchTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GTBobsTorchTest]),
+                RequirementType.GT1FLeftTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT1FLeftTest]),
+                RequirementType.GT1FLeftPastHammerBlocksTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT1FLeftPastHammerBlocksTest]),
+                RequirementType.GT1FLeftDMsRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT1FLeftDMsRoomTest]),
+                RequirementType.GT1FLeftPastBonkableGapsTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT1FLeftPastBonkableGapsTest]),
+                RequirementType.GT1FLeftMapChestRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT1FLeftMapChestRoomTest]),
+                RequirementType.GT1FLeftSpikeTrapPortalRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT1FLeftSpikeTrapPortalRoomTest]),
+                RequirementType.GT1FLeftFiresnakeRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT1FLeftFiresnakeRoomTest]),
+                RequirementType.GT1FLeftPastFiresnakeRoomGapTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT1FLeftPastFiresnakeRoomGapTest]),
+                RequirementType.GT1FLeftPastFiresnakeRoomKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT1FLeftPastFiresnakeRoomKeyDoorTest]),
+                RequirementType.GT1FLeftRandomizerRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT1FLeftRandomizerRoomTest]),
+                RequirementType.GT1FRightTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT1FRightTest]),
+                RequirementType.GT1FRightTileRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT1FRightTileRoomTest]),
+                RequirementType.GT1FRightFourTorchRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT1FRightFourTorchRoomTest]),
+                RequirementType.GT1FRightCompassRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT1FRightCompassRoomTest]),
+                RequirementType.GT1FRightPastCompassRoomPortalTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT1FRightPastCompassRoomPortalTest]),
+                RequirementType.GT1FRightCollapsingWalkwayTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT1FRightCollapsingWalkwayTest]),
+                RequirementType.GT1FBottomRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT1FBottomRoomTest]),
+                RequirementType.GTBoss1Test => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GTBoss1Test]),
+                RequirementType.GTB1BossChestsTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GTB1BossChestsTest]),
+                RequirementType.GTBigChestTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GTBigChestTest]),
+                RequirementType.GT3FPastRedGoriyaRoomsTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT3FPastRedGoriyaRoomsTest]),
+                RequirementType.GT3FPastBigKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT3FPastBigKeyDoorTest]),
+                RequirementType.GTBoss2Test => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GTBoss2Test]),
+                RequirementType.GT3FPastBoss2Test => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT3FPastBoss2Test]),
+                RequirementType.GT5FPastFourTorchRoomsTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT5FPastFourTorchRoomsTest]),
+                RequirementType.GT6FPastFirstKeyDoorTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT6FPastFirstKeyDoorTest]),
+                RequirementType.GT6FBossRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT6FBossRoomTest]),
+                RequirementType.GTBoss3Test => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GTBoss3Test]),
+                RequirementType.GT6FPastBossRoomGapTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GT6FPastBossRoomGapTest]),
+                RequirementType.GTFinalBossRoomTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GTFinalBossRoomTest]),
+                RequirementType.GTFinalBossTest => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.GTFinalBossTest]),
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
@@ -1129,6 +1497,199 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.TRMiddleEntryTest:
                 case RequirementType.TRBackEntryTest:
                 case RequirementType.GTEntryTest:
+                case RequirementType.HCSanctuaryTest:
+                case RequirementType.HCFrontTest:
+                case RequirementType.HCPastEscapeFirstKeyDoorTest:
+                case RequirementType.HCPastEscapeSecondKeyDoorTest:
+                case RequirementType.HCDarkRoomFrontTest:
+                case RequirementType.HCPastDarkCrossKeyDoorTest:
+                case RequirementType.HCPastSewerRatRoomKeyDoorTest:
+                case RequirementType.HCDarkRoomBackTest:
+                case RequirementType.HCBackTest:
+                case RequirementType.ATTest:
+                case RequirementType.ATDarkMazeTest:
+                case RequirementType.ATPastFirstKeyDoorTest:
+                case RequirementType.ATPastSecondKeyDoorTest:
+                case RequirementType.ATPastThirdKeyDoorTest:
+                case RequirementType.ATPastFourthKeyDoorTest:
+                case RequirementType.ATBossRoomTest:
+                case RequirementType.ATBossTest:
+                case RequirementType.EPTest:
+                case RequirementType.EPBigChestTest:
+                case RequirementType.EPRightDarkRoomTest:
+                case RequirementType.EPPastRightKeyDoorTest:
+                case RequirementType.EPPastBigKeyDoorTest:
+                case RequirementType.EPBackDarkRoomTest:
+                case RequirementType.EPPastBackKeyDoorTest:
+                case RequirementType.EPBossRoomTest:
+                case RequirementType.EPBossTest:
+                case RequirementType.DPFrontTest:
+                case RequirementType.DPTorchItemTest:
+                case RequirementType.DPBigChestTest:
+                case RequirementType.DPPastRightKeyDoorTest:
+                case RequirementType.DPBackTest:
+                case RequirementType.DP2FTest:
+                case RequirementType.DP2FPastFirstKeyDoorTest:
+                case RequirementType.DP2FPastSecondKeyDoorTest:
+                case RequirementType.DPPastFourTorchWallTest:
+                case RequirementType.DPBossRoomTest:
+                case RequirementType.DPBossTest:
+                case RequirementType.ToHTest:
+                case RequirementType.ToHPastKeyDoorTest:
+                case RequirementType.ToHBasementTorchRoomTest:
+                case RequirementType.ToHPastBigKeyDoorTest:
+                case RequirementType.ToHBigChestTest:
+                case RequirementType.ToHBossTest:
+                case RequirementType.PoDTest:
+                case RequirementType.PoDPastFirstRedGoriyaRoomTest:
+                case RequirementType.PoDLobbyArenaTest:
+                case RequirementType.PoDBigKeyChestAreaTest:
+                case RequirementType.PoDPastCollapsingWalkwayKeyDoorTest:
+                case RequirementType.PoDDarkBasementTest:
+                case RequirementType.PoDHarmlessHellwayRoomTest:
+                case RequirementType.PoDPastDarkMazeKeyDoorTest:
+                case RequirementType.PoDDarkMazeTest:
+                case RequirementType.PoDBigChestLedgeTest:
+                case RequirementType.PoDBigChestTest:
+                case RequirementType.PoDPastSecondRedGoriyaRoomTest:
+                case RequirementType.PoDPastBowStatueTest:
+                case RequirementType.PoDBossAreaDarkRoomsTest:
+                case RequirementType.PoDPastHammerBlocksTest:
+                case RequirementType.PoDPastBossAreaKeyDoorTest:
+                case RequirementType.PoDBossRoomTest:
+                case RequirementType.PoDBossTest:
+                case RequirementType.SPTest:
+                case RequirementType.SPAfterRiverTest:
+                case RequirementType.SPB1Test:
+                case RequirementType.SPB1PastFirstRightKeyDoorTest:
+                case RequirementType.SPB1PastSecondRightKeyDoorTest:
+                case RequirementType.SPB1PastRightHammerBlocksTest:
+                case RequirementType.SPB1KeyLedgeTest:
+                case RequirementType.SPB1PastLeftKeyDoorTest:
+                case RequirementType.SPBigChestTest:
+                case RequirementType.SPB1BackTest:
+                case RequirementType.SPB1PastBackFirstKeyDoorTest:
+                case RequirementType.SPBossRoomTest:
+                case RequirementType.SPBossTest:
+                case RequirementType.SWBigChestAreaBottomTest:
+                case RequirementType.SWBigChestAreaTopTest:
+                case RequirementType.SWBigChestTest:
+                case RequirementType.SWFrontLeftSideTest:
+                case RequirementType.SWFrontRightSideTest:
+                case RequirementType.SWFrontBackConnectorTest:
+                case RequirementType.SWPastTheWorthlessKeyDoorTest:
+                case RequirementType.SWBackTest:
+                case RequirementType.SWBackPastFirstKeyDoorTest:
+                case RequirementType.SWBackPastFourTorchRoomTest:
+                case RequirementType.SWBackPastCurtainsTest:
+                case RequirementType.SWBossRoomTest:
+                case RequirementType.SWBossTest:
+                case RequirementType.TTTest:
+                case RequirementType.TTPastBigKeyDoorTest:
+                case RequirementType.TTPastFirstKeyDoorTest:
+                case RequirementType.TTPastSecondKeyDoorTest:
+                case RequirementType.TTPastBigChestRoomKeyDoorTest:
+                case RequirementType.TTPastHammerBlocksTest:
+                case RequirementType.TTBigChestTest:
+                case RequirementType.TTBossRoomTest:
+                case RequirementType.TTBossTest:
+                case RequirementType.IPTest:
+                case RequirementType.IPPastEntranceFreezorRoomTest:
+                case RequirementType.IPB1LeftSideTest:
+                case RequirementType.IPB1RightSideTest:
+                case RequirementType.IPB2LeftSideTest:
+                case RequirementType.IPB2PastKeyDoorTest:
+                case RequirementType.IPB2PastHammerBlocksTest:
+                case RequirementType.IPB2PastLiftBlockTest:
+                case RequirementType.IPSpikeRoomTest:
+                case RequirementType.IPB4RightSideTest:
+                case RequirementType.IPB4IceRoomTest:
+                case RequirementType.IPB4FreezorRoomTest:
+                case RequirementType.IPFreezorChestTest:
+                case RequirementType.IPB4PastKeyDoorTest:
+                case RequirementType.IPBigChestAreaTest:
+                case RequirementType.IPBigChestTest:
+                case RequirementType.IPB5Test:
+                case RequirementType.IPB5PastBigKeyDoorTest:
+                case RequirementType.IPB6Test:
+                case RequirementType.IPB6PastKeyDoorTest:
+                case RequirementType.IPB6PreBossRoomTest:
+                case RequirementType.IPB6PastHammerBlocksTest:
+                case RequirementType.IPB6PastLiftBlockTest:
+                case RequirementType.IPBossTest:
+                case RequirementType.MMTest:
+                case RequirementType.MMPastEntranceGapTest:
+                case RequirementType.MMBigChestTest:
+                case RequirementType.MMB1TopSideTest:
+                case RequirementType.MMB1LobbyBeyondBlueBlocksTest:
+                case RequirementType.MMB1RightSideBeyondBlueBlocksTest:
+                case RequirementType.MMB1LeftSidePastFirstKeyDoorTest:
+                case RequirementType.MMB1LeftSidePastSecondKeyDoorTest:
+                case RequirementType.MMB1PastFourTorchRoomTest:
+                case RequirementType.MMF1PastFourTorchRoomTest:
+                case RequirementType.MMB1PastPortalBigKeyDoorTest:
+                case RequirementType.MMB1PastBridgeBigKeyDoorTest:
+                case RequirementType.MMDarkRoomTest:
+                case RequirementType.MMB2PastWorthlessKeyDoorTest:
+                case RequirementType.MMB2PastCaneOfSomariaSwitchTest:
+                case RequirementType.MMBossRoomTest:
+                case RequirementType.MMBossTest:
+                case RequirementType.TRFrontTest:
+                case RequirementType.TRF1CompassChestAreaTest:
+                case RequirementType.TRF1FourTorchRoomTest:
+                case RequirementType.TRF1RollerRoomTest:
+                case RequirementType.TRF1FirstKeyDoorAreaTest:
+                case RequirementType.TRF1PastFirstKeyDoorTest:
+                case RequirementType.TRF1PastSecondKeyDoorTest:
+                case RequirementType.TRB1Test:
+                case RequirementType.TRB1PastBigKeyChestKeyDoorTest:
+                case RequirementType.TRB1MiddleRightEntranceAreaTest:
+                case RequirementType.TRB1BigChestAreaTest:
+                case RequirementType.TRBigChestTest:
+                case RequirementType.TRB1RightSideTest:
+                case RequirementType.TRPastB1toB2KeyDoorTest:
+                case RequirementType.TRB2DarkRoomTopTest:
+                case RequirementType.TRB2DarkRoomBottomTest:
+                case RequirementType.TRB2PastDarkMazeTest:
+                case RequirementType.TRLaserBridgeChestsTest:
+                case RequirementType.TRB2PastKeyDoorTest:
+                case RequirementType.TRB3Test:
+                case RequirementType.TRB3BossRoomEntryTest:
+                case RequirementType.TRBossRoomTest:
+                case RequirementType.TRBossTest:
+                case RequirementType.GTTest:
+                case RequirementType.GTBobsTorchTest:
+                case RequirementType.GT1FLeftTest:
+                case RequirementType.GT1FLeftPastHammerBlocksTest:
+                case RequirementType.GT1FLeftDMsRoomTest:
+                case RequirementType.GT1FLeftPastBonkableGapsTest:
+                case RequirementType.GT1FLeftMapChestRoomTest:
+                case RequirementType.GT1FLeftSpikeTrapPortalRoomTest:
+                case RequirementType.GT1FLeftFiresnakeRoomTest:
+                case RequirementType.GT1FLeftPastFiresnakeRoomGapTest:
+                case RequirementType.GT1FLeftPastFiresnakeRoomKeyDoorTest:
+                case RequirementType.GT1FLeftRandomizerRoomTest:
+                case RequirementType.GT1FRightTest:
+                case RequirementType.GT1FRightTileRoomTest:
+                case RequirementType.GT1FRightFourTorchRoomTest:
+                case RequirementType.GT1FRightCompassRoomTest:
+                case RequirementType.GT1FRightPastCompassRoomPortalTest:
+                case RequirementType.GT1FRightCollapsingWalkwayTest:
+                case RequirementType.GT1FBottomRoomTest:
+                case RequirementType.GTBoss1Test:
+                case RequirementType.GTB1BossChestsTest:
+                case RequirementType.GTBigChestTest:
+                case RequirementType.GT3FPastRedGoriyaRoomsTest:
+                case RequirementType.GT3FPastBigKeyDoorTest:
+                case RequirementType.GTBoss2Test:
+                case RequirementType.GT3FPastBoss2Test:
+                case RequirementType.GT5FPastFourTorchRoomsTest:
+                case RequirementType.GT6FPastFirstKeyDoorTest:
+                case RequirementType.GT6FBossRoomTest:
+                case RequirementType.GTBoss3Test:
+                case RequirementType.GT6FPastBossRoomGapTest:
+                case RequirementType.GTFinalBossRoomTest:
+                case RequirementType.GTFinalBossTest:
                     {
                         return GetItemRequirement(type);
                     }

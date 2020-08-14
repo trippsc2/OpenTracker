@@ -2280,9 +2280,13 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IcePalaceEntranceTest, 0)
+                        (ItemType.IcePalaceEntranceTest, 0),
+                        (ItemType.MoonPearl, 0)
                     },
-                    new (SequenceBreakType, bool)[0],
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DungeonRevive, true)
+                    },
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2295,9 +2299,165 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IcePalaceEntranceTest, 1)
+                        (ItemType.IcePalaceEntranceTest, 1),
+                        (ItemType.MoonPearl, 0)
                     },
-                    new (SequenceBreakType, bool)[0],
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DungeonRevive, false)
+                    },
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementNodeID.IPEntry,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Retro,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.IcePalaceEntranceTest, 0),
+                        (ItemType.MoonPearl, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DungeonRevive, true)
+                    },
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementNodeID.IPEntry,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Retro,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.IcePalaceEntranceTest, 1),
+                        (ItemType.MoonPearl, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DungeonRevive, false)
+                    },
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementNodeID.IPEntry,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.IcePalaceEntranceTest, 1),
+                        (ItemType.MoonPearl, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DungeonRevive, true)
+                    },
+                    AccessibilityLevel.SequenceBreak
+                },
+                new object[]
+                {
+                    RequirementNodeID.IPEntry,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Retro,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.IcePalaceEntranceTest, 1),
+                        (ItemType.MoonPearl, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DungeonRevive, true)
+                    },
+                    AccessibilityLevel.SequenceBreak
+                },
+                new object[]
+                {
+                    RequirementNodeID.IPEntry,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.IcePalaceEntranceTest, 0),
+                        (ItemType.MoonPearl, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DungeonRevive, true)
+                    },
+                    AccessibilityLevel.SequenceBreak
+                },
+                new object[]
+                {
+                    RequirementNodeID.IPEntry,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.IcePalaceEntranceTest, 1),
+                        (ItemType.MoonPearl, 1)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DungeonRevive, true)
+                    },
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    RequirementNodeID.IPEntry,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Retro,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.IcePalaceEntranceTest, 1),
+                        (ItemType.MoonPearl, 1)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DungeonRevive, true)
+                    },
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    RequirementNodeID.IPEntry,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.IcePalaceEntranceTest, 1),
+                        (ItemType.MoonPearl, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DungeonRevive, true)
+                    },
                     AccessibilityLevel.Normal
                 }
             };

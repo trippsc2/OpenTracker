@@ -10,7 +10,7 @@ namespace OpenTracker.ViewModels.PinnedLocations
     /// <summary>
     /// This is the ViewModel for the Locations panel control.
     /// </summary>
-    public class LocationsPanelControlVM : ViewModelBase
+    public class PinnedLocationsPanelVM : ViewModelBase
     {
         public Orientation Orientation =>
             AppSettings.Instance.Layout.CurrentLayoutOrientation;
@@ -21,7 +21,7 @@ namespace OpenTracker.ViewModels.PinnedLocations
         /// <summary>
         /// Constructor
         /// </summary>
-        public LocationsPanelControlVM()
+        public PinnedLocationsPanelVM()
         {
             AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
         }

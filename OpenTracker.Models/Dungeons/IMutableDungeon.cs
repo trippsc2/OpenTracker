@@ -19,10 +19,11 @@ namespace OpenTracker.Models.Dungeons
         DungeonItemDictionary ItemDictionary { get; }
         KeyDoorDictionary KeyDoorDictionary { get; }
 
-        List<KeyDoorID> GetAccessibleKeyDoors();
+        List<(KeyDoorID, bool)> GetAccessibleKeyDoors();
         List<AccessibilityLevel> GetBossAccessibility();
         int GetFreeKeys();
-        (AccessibilityLevel, int) GetItemAccessibility(int smallKeyValue, bool bigKeyValue);
+        (AccessibilityLevel, int, bool) GetItemAccessibility(
+            int smallKeyValue, bool bigKeyValue, bool sequenceBroken);
         void SetBigKeyDoorState(bool unlocked);
         void SetSmallKeyDoorState(List<KeyDoorID> unlockedDoors);
         bool ValidateKeyLayout(int keysCollected, bool bigKeyCollected);

@@ -7,6 +7,7 @@ using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.SequenceBreaks;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace OpenTracker.UnitTests.DungeonNodes
@@ -15,37 +16,47 @@ namespace OpenTracker.UnitTests.DungeonNodes
     public class HCNodeTests
     {
         [Theory]
-        [MemberData(nameof(Sanctuary_AccessibilityData))]
-        [MemberData(nameof(Front_AccessibilityData))]
-        [MemberData(nameof(PastEscapeFirstKeyDoor_AccessibilityData))]
-        [MemberData(nameof(PastEscapeSecondKeyDoor_AccessibilityData))]
-        [MemberData(nameof(DarkRoomFront_AccessibilityData))]
-        [MemberData(nameof(PastDarkCrossKeyDoor_AccessibilityData))]
-        [MemberData(nameof(PastSewerRatRoomKeyDoor_AccessibilityData))]
-        [MemberData(nameof(DarkRoomBack_AccessibilityData))]
-        [MemberData(nameof(Back_AccessibilityData))]
+        [MemberData(nameof(Entry_To_Sanctuary))]
+        [MemberData(nameof(Back_To_Sanctuary))]
+        [MemberData(nameof(Entry_To_Front))]
+        [MemberData(nameof(PastEscapeFirstKeyDoor_To_Front))]
+        [MemberData(nameof(DarkRoomFront_To_Front))]
+        [MemberData(nameof(Front_To_PastEscapeFirstKeyDoor))]
+        [MemberData(nameof(PastEscapeSecondKeyDoor_To_PastEscapeFirstKeyDoor))]
+        [MemberData(nameof(PastEscapeFirstKeyDoor_To_PastEscapeSecondKeyDoor))]
+        [MemberData(nameof(Front_To_DarkRoomFront))]
+        [MemberData(nameof(PastDarkCrossKeyDoor_To_DarkRoomFront))]
+        [MemberData(nameof(DarkRoomFront_To_PastDarkCrossKeyDoor))]
+        [MemberData(nameof(PastSewerRatRoomKeyDoor_To_PastDarkCrossKeyDoor))]
+        [MemberData(nameof(PastDarkCrossKeyDoor_To_PastSewerRatRoomKeyDoor))]
+        [MemberData(nameof(DarkRoomBack_To_PastSewerRatRoomKeyDoor))]
+        [MemberData(nameof(Back_To_DarkRoomBack))]
+        [MemberData(nameof(Entry_To_Back))]
+        [MemberData(nameof(DarkRoomBack_To_Back))]
         public void AccessibilityTests(
-            DungeonNodeID id, WorldState worldState, DungeonItemShuffle dungeonItemShuffle,
-            ItemPlacement itemPlacement, bool entranceShuffle, (ItemType, int)[] items,
-            SequenceBreakType[] sequenceBreaksDisabled, List<KeyDoorID> keyDoors,
+            DungeonNodeID id, ItemPlacement itemPlacement,
+            DungeonItemShuffle dungeonItemShuffle, WorldState worldState,
+            bool entranceShuffle, bool enemyShuffle, (ItemType, int)[] items,
+            (SequenceBreakType, bool)[] sequenceBreaks, KeyDoorID[] keyDoors,
             AccessibilityLevel expected)
         {
+            Mode.Instance.ItemPlacement = itemPlacement;
+            Mode.Instance.DungeonItemShuffle = dungeonItemShuffle;
+            Mode.Instance.WorldState = worldState;
+            Mode.Instance.EntranceShuffle = entranceShuffle;
+            Mode.Instance.EnemyShuffle = enemyShuffle;
             ItemDictionary.Instance.Reset();
             SequenceBreakDictionary.Instance.Reset();
-
-            Mode.Instance.WorldState = worldState;
-            Mode.Instance.DungeonItemShuffle = dungeonItemShuffle;
-            Mode.Instance.ItemPlacement = itemPlacement;
-            Mode.Instance.EntranceShuffle = entranceShuffle;
 
             foreach (var item in items)
             {
                 ItemDictionary.Instance[item.Item1].Current = item.Item2;
             }
 
-            foreach (var sequenceBreak in sequenceBreaksDisabled)
+            foreach (var sequenceBreak in sequenceBreaks)
             {
-                SequenceBreakDictionary.Instance[sequenceBreak].Enabled = false;
+                SequenceBreakDictionary.Instance[sequenceBreak.Item1].Enabled =
+                    sequenceBreak.Item2;
             }
 
             ((IDungeon)LocationDictionary.Instance[LocationID.HyruleCastle]).DungeonDataQueue
@@ -64,369 +75,326 @@ namespace OpenTracker.UnitTests.DungeonNodes
             Assert.Equal(expected, dungeonData.RequirementNodes[id].Accessibility);
         }
 
-        public static IEnumerable<object[]> Sanctuary_AccessibilityData =>
+        public static IEnumerable<object[]> Entry_To_Sanctuary =>
             new List<object[]>
             {
                 new object[]
                 {
                     DungeonNodeID.HCSanctuary,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCSanctuaryEntryTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCSanctuary,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
                     false,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCSanctuaryEntryTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
                     DungeonNodeID.HCSanctuary,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
                     true,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCSanctuaryEntryTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
                     DungeonNodeID.HCSanctuary,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Keysanity,
                     WorldState.Retro,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
                     false,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCSanctuaryEntryTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
                     DungeonNodeID.HCSanctuary,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Keysanity,
                     WorldState.Retro,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
                     true,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCSanctuaryEntryTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
                     DungeonNodeID.HCSanctuary,
-                    WorldState.Inverted,
-                    DungeonItemShuffle.Standard,
                     ItemPlacement.Advanced,
-                    false,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCSanctuary,
+                    DungeonItemShuffle.Keysanity,
                     WorldState.Inverted,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
+                    true,
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.Aga1, 1)
+                        (ItemType.HCSanctuaryEntryTest, 0)
                     },
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCSanctuary,
-                    WorldState.Inverted,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Aga1, 1),
-                        (ItemType.Mirror, 1)
-                    },
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCSanctuary,
-                    WorldState.Inverted,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Aga1, 1),
-                        (ItemType.Mirror, 1)
-                    },
-                    new SequenceBreakType[]
-                    {
-                        SequenceBreakType.SuperBunnyMirror
-                    },
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCSanctuary,
-                    WorldState.Inverted,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Aga1, 1),
-                        (ItemType.Mirror, 1)
-                    },
-                    new SequenceBreakType[]
-                    {
-                        SequenceBreakType.SuperBunnyMirror
-                    },
-                    new List<KeyDoorID>
-                    {
-                        KeyDoorID.HCDarkCrossRoomKeyDoor
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCSanctuary,
-                    WorldState.Inverted,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Aga1, 1),
-                        (ItemType.Mirror, 1)
-                    },
-                    new SequenceBreakType[]
-                    {
-                        SequenceBreakType.SuperBunnyMirror
-                    },
-                    new List<KeyDoorID>
-                    {
-                        KeyDoorID.HCDarkCrossRoomKeyDoor,
-                        KeyDoorID.HCSewerRatRoomKeyDoor
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCSanctuary,
-                    WorldState.Inverted,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Aga1, 1),
-                        (ItemType.Mirror, 1)
-                    },
-                    new SequenceBreakType[]
-                    {
-                        SequenceBreakType.SuperBunnyMirror,
-                        SequenceBreakType.DarkRoomHC
-                    },
-                    new List<KeyDoorID>
-                    {
-                        KeyDoorID.HCDarkCrossRoomKeyDoor,
-                        KeyDoorID.HCSewerRatRoomKeyDoor
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCSanctuary,
-                    WorldState.Inverted,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Aga1, 1),
-                        (ItemType.MoonPearl, 1)
-                    },
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
                     DungeonNodeID.HCSanctuary,
-                    WorldState.Inverted,
-                    DungeonItemShuffle.Standard,
                     ItemPlacement.Advanced,
-                    true,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
+                    DungeonItemShuffle.Keysanity,
+                    WorldState.Inverted,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCSanctuaryEntryTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Front_AccessibilityData =>
+        public static IEnumerable<object[]> Back_To_Sanctuary =>
             new List<object[]>
             {
                 new object[]
                 {
-                    DungeonNodeID.HCFront,
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
+                    DungeonNodeID.HCSanctuary,
                     ItemPlacement.Advanced,
-                    false,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCFront,
-                    WorldState.StandardOpen,
                     DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    true,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCFront,
-                    WorldState.Retro,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    false,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCFront,
-                    WorldState.Retro,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    true,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCFront,
                     WorldState.Inverted,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
                     false,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCBackTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    DungeonNodeID.HCFront,
-                    WorldState.Inverted,
-                    DungeonItemShuffle.Standard,
+                    DungeonNodeID.HCSanctuary,
                     ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    false,
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.Aga1, 1)
+                        (ItemType.HCBackTest, 1)
                     },
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCFront,
-                    WorldState.Inverted,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Aga1, 1)
-                    },
-                    new SequenceBreakType[]
-                    {
-                        SequenceBreakType.DungeonRevive
-                    },
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCFront,
-                    WorldState.Inverted,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Aga1, 1),
-                        (ItemType.MoonPearl, 1)
-                    },
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCFront,
-                    WorldState.Inverted,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    true,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> PastEscapeFirstKeyDoor_AccessibilityData =>
+        public static IEnumerable<object[]> Entry_To_Front =>
             new List<object[]>
             {
                 new object[]
                 {
-                    DungeonNodeID.HCPastEscapeFirstKeyDoor,
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
+                    DungeonNodeID.HCFront,
                     ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
                     false,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCFrontEntryTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    DungeonNodeID.HCPastEscapeFirstKeyDoor,
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
+                    DungeonNodeID.HCFront,
                     ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
                     false,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID>
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCFrontEntryTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCFront,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    true,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCFrontEntryTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCFront,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Keysanity,
+                    WorldState.Retro,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCFrontEntryTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCFront,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Keysanity,
+                    WorldState.Retro,
+                    true,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCFrontEntryTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCFront,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Keysanity,
+                    WorldState.Inverted,
+                    true,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCFrontEntryTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCFront,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Keysanity,
+                    WorldState.Inverted,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCFrontEntryTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> PastEscapeFirstKeyDoor_To_Front =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.HCFront,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCPastEscapeFirstKeyDoorTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCFront,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCPastEscapeFirstKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCFront,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCPastEscapeFirstKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
                     {
                         KeyDoorID.HCEscapeFirstKeyDoor
                     },
@@ -434,178 +402,587 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> PastEscapeSecondKeyDoor_AccessibilityData =>
+        public static IEnumerable<object[]> DarkRoomFront_To_Front =>
             new List<object[]>
             {
                 new object[]
                 {
-                    DungeonNodeID.HCPastEscapeSecondKeyDoor,
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
+                    DungeonNodeID.HCFront,
                     ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
                     false,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID>
+                    false,
+                    new (ItemType, int)[]
                     {
-                        KeyDoorID.HCEscapeFirstKeyDoor
+                        (ItemType.HCDarkRoomFrontTest, 0)
                     },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    DungeonNodeID.HCPastEscapeSecondKeyDoor,
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
+                    DungeonNodeID.HCFront,
                     ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
                     false,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID>
+                    false,
+                    new (ItemType, int)[]
                     {
-                        KeyDoorID.HCEscapeFirstKeyDoor,
+                        (ItemType.HCDarkRoomFrontTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> Front_To_PastEscapeFirstKeyDoor =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.HCPastEscapeFirstKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCFrontTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCPastEscapeFirstKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCFrontTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCPastEscapeFirstKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCFrontTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.HCEscapeFirstKeyDoor
+                    },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> PastEscapeSecondKeyDoor_To_PastEscapeFirstKeyDoor =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.HCPastEscapeFirstKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCPastEscapeSecondKeyDoorTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCPastEscapeFirstKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCPastEscapeSecondKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCPastEscapeFirstKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCPastEscapeSecondKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
                         KeyDoorID.HCEscapeSecondKeyDoor
                     },
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> DarkRoomFront_AccessibilityData =>
+        public static IEnumerable<object[]> PastEscapeFirstKeyDoor_To_PastEscapeSecondKeyDoor =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.HCPastEscapeSecondKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCPastEscapeFirstKeyDoorTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCPastEscapeSecondKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCPastEscapeFirstKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCPastEscapeSecondKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCPastEscapeFirstKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.HCEscapeSecondKeyDoor
+                    },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> Front_To_DarkRoomFront =>
             new List<object[]>
             {
                 new object[]
                 {
                     DungeonNodeID.HCDarkRoomFront,
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
                     ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
                     false,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCFrontTest, 0),
+                        (ItemType.Lamp, 0),
+                        (ItemType.FireRod, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DarkRoomHC, false)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCDarkRoomFront,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCFrontTest, 1),
+                        (ItemType.Lamp, 0),
+                        (ItemType.FireRod, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DarkRoomHC, false)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCDarkRoomFront,
+                    ItemPlacement.Basic,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCFrontTest, 0),
+                        (ItemType.Lamp, 0),
+                        (ItemType.FireRod, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DarkRoomHC, false)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCDarkRoomFront,
+                    ItemPlacement.Basic,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCFrontTest, 1),
+                        (ItemType.Lamp, 0),
+                        (ItemType.FireRod, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DarkRoomHC, false)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCDarkRoomFront,
+                    ItemPlacement.Basic,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCFrontTest, 1),
+                        (ItemType.Lamp, 0),
+                        (ItemType.FireRod, 1)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DarkRoomHC, false)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCDarkRoomFront,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCFrontTest, 1),
+                        (ItemType.Lamp, 0),
+                        (ItemType.FireRod, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DarkRoomHC, true)
+                    },
+                    new KeyDoorID[0],
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
                 {
                     DungeonNodeID.HCDarkRoomFront,
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    false,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[]
-                    {
-                        SequenceBreakType.DarkRoomHC
-                    },
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCDarkRoomFront,
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.FireRod, 1)
-                    },
-                    new SequenceBreakType[]
-                    {
-                        SequenceBreakType.DarkRoomHC
-                    },
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCDarkRoomFront,
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
                     ItemPlacement.Basic,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
                     false,
                     new (ItemType, int)[]
                     {
+                        (ItemType.HCFrontTest, 1),
+                        (ItemType.Lamp, 0),
+                        (ItemType.FireRod, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DarkRoomHC, true)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.SequenceBreak
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCDarkRoomFront,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCFrontTest, 1),
+                        (ItemType.Lamp, 1),
+                        (ItemType.FireRod, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DarkRoomHC, true)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCDarkRoomFront,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCFrontTest, 1),
+                        (ItemType.Lamp, 0),
                         (ItemType.FireRod, 1)
                     },
-                    new SequenceBreakType[]
+                    new (SequenceBreakType, bool)[]
                     {
-                        SequenceBreakType.DarkRoomHC
+                        (SequenceBreakType.DarkRoomHC, true)
                     },
-                    new List<KeyDoorID> { },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCDarkRoomFront,
+                    ItemPlacement.Basic,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCFrontTest, 1),
+                        (ItemType.Lamp, 1),
+                        (ItemType.FireRod, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DarkRoomHC, true)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> PastDarkCrossKeyDoor_To_DarkRoomFront =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.HCDarkRoomFront,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCPastDarkCrossKeyDoorTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
                     DungeonNodeID.HCDarkRoomFront,
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
                     ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    false,
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.Lamp, 1)
+                        (ItemType.HCPastDarkCrossKeyDoorTest, 1)
                     },
-                    new SequenceBreakType[]
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCDarkRoomFront,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    false,
+                    false,
+                    new (ItemType, int)[]
                     {
-                        SequenceBreakType.DarkRoomHC
+                        (ItemType.HCPastDarkCrossKeyDoorTest, 1)
                     },
-                    new List<KeyDoorID> { },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.HCDarkCrossRoomKeyDoor
+                    },
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> PastDarkCrossKeyDoor_AccessibilityData =>
+        public static IEnumerable<object[]> DarkRoomFront_To_PastDarkCrossKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     DungeonNodeID.HCPastDarkCrossKeyDoor,
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
                     ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    false,
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.Lamp, 1)
+                        (ItemType.HCDarkRoomFrontTest, 0)
                     },
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
                     DungeonNodeID.HCPastDarkCrossKeyDoor,
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
                     ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    false,
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.Lamp, 1)
+                        (ItemType.HCDarkRoomFrontTest, 1)
                     },
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID>
-                    {
-                        KeyDoorID.HCDarkCrossRoomKeyDoor
-                    },
-                    AccessibilityLevel.Normal
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
                 },
                 new object[]
                 {
                     DungeonNodeID.HCPastDarkCrossKeyDoor,
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
                     ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    false,
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.Gloves, 1),
-                        (ItemType.Lamp, 1)
+                        (ItemType.HCDarkRoomFrontTest, 1)
                     },
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID>
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.HCDarkCrossRoomKeyDoor
+                    },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> PastSewerRatRoomKeyDoor_To_PastDarkCrossKeyDoor =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.HCPastDarkCrossKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCPastSewerRatRoomKeyDoorTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCPastDarkCrossKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCPastSewerRatRoomKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCPastDarkCrossKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCPastSewerRatRoomKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
                     {
                         KeyDoorID.HCSewerRatRoomKeyDoor
                     },
@@ -613,404 +990,384 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> PastSewerRatRoomKeyDoor_AccessibilityData =>
+        public static IEnumerable<object[]> PastDarkCrossKeyDoor_To_PastSewerRatRoomKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
                     DungeonNodeID.HCPastSewerRatRoomKeyDoor,
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
                     ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    false,
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.Lamp, 1)
+                        (ItemType.HCPastDarkCrossKeyDoorTest, 0)
                     },
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID>
-                    {
-                        KeyDoorID.HCDarkCrossRoomKeyDoor
-                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
                     DungeonNodeID.HCPastSewerRatRoomKeyDoor,
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
                     ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    false,
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.Lamp, 1)
+                        (ItemType.HCPastDarkCrossKeyDoorTest, 1)
                     },
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID>
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCPastSewerRatRoomKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    false,
+                    false,
+                    new (ItemType, int)[]
                     {
-                        KeyDoorID.HCDarkCrossRoomKeyDoor,
+                        (ItemType.HCPastDarkCrossKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
                         KeyDoorID.HCSewerRatRoomKeyDoor
                     },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCPastSewerRatRoomKeyDoor,
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Gloves, 1),
-                        (ItemType.Lamp, 1)
-                    },
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCPastSewerRatRoomKeyDoor,
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Gloves, 1),
-                        (ItemType.Lamp, 1)
-                    },
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> DarkRoomBack_AccessibilityData =>
+        public static IEnumerable<object[]> DarkRoomBack_To_PastSewerRatRoomKeyDoor =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.HCPastSewerRatRoomKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCDarkRoomBackTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCPastSewerRatRoomKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCDarkRoomBackTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> Back_To_DarkRoomBack =>
             new List<object[]>
             {
                 new object[]
                 {
                     DungeonNodeID.HCDarkRoomBack,
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
                     ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.Lamp, 1)
+                        (ItemType.HCBackTest, 0),
+                        (ItemType.Lamp, 0),
+                        (ItemType.FireRod, 0)
                     },
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID>
+                    new (SequenceBreakType, bool)[]
                     {
-                        KeyDoorID.HCDarkCrossRoomKeyDoor,
-                        KeyDoorID.HCSewerRatRoomKeyDoor
+                        (SequenceBreakType.DarkRoomHC, true)
                     },
-                    AccessibilityLevel.Normal
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
                 },
                 new object[]
                 {
                     DungeonNodeID.HCDarkRoomBack,
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
                     ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.Gloves, 1)
+                        (ItemType.HCBackTest, 1),
+                        (ItemType.Lamp, 0),
+                        (ItemType.FireRod, 0)
                     },
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DarkRoomHC, false)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCDarkRoomBack,
+                    ItemPlacement.Basic,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCBackTest, 0),
+                        (ItemType.Lamp, 0),
+                        (ItemType.FireRod, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DarkRoomHC, true)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCDarkRoomBack,
+                    ItemPlacement.Basic,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCBackTest, 1),
+                        (ItemType.Lamp, 0),
+                        (ItemType.FireRod, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DarkRoomHC, false)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCDarkRoomBack,
+                    ItemPlacement.Basic,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCBackTest, 1),
+                        (ItemType.Lamp, 0),
+                        (ItemType.FireRod, 1)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DarkRoomHC, false)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.HCDarkRoomBack,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCBackTest, 1),
+                        (ItemType.Lamp, 0),
+                        (ItemType.FireRod, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.DarkRoomHC, true)
+                    },
+                    new KeyDoorID[0],
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
                 {
                     DungeonNodeID.HCDarkRoomBack,
-                    WorldState.StandardOpen,
+                    ItemPlacement.Basic,
                     DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
+                    WorldState.StandardOpen,
+                    false,
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.Gloves, 1)
+                        (ItemType.HCBackTest, 1),
+                        (ItemType.Lamp, 0),
+                        (ItemType.FireRod, 0)
                     },
-                    new SequenceBreakType[]
+                    new (SequenceBreakType, bool)[]
                     {
-                        SequenceBreakType.DarkRoomHC
+                        (SequenceBreakType.DarkRoomHC, true)
                     },
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.None
+                    new KeyDoorID[0],
+                    AccessibilityLevel.SequenceBreak
                 },
                 new object[]
                 {
                     DungeonNodeID.HCDarkRoomBack,
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
                     ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.Gloves, 1),
-                        (ItemType.FireRod, 1)
+                        (ItemType.HCBackTest, 1),
+                        (ItemType.Lamp, 1),
+                        (ItemType.FireRod, 0)
                     },
-                    new SequenceBreakType[]
+                    new (SequenceBreakType, bool)[]
                     {
-                        SequenceBreakType.DarkRoomHC
+                        (SequenceBreakType.DarkRoomHC, true)
                     },
-                    new List<KeyDoorID> { },
+                    new KeyDoorID[0],
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
                     DungeonNodeID.HCDarkRoomBack,
-                    WorldState.StandardOpen,
+                    ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
-                    ItemPlacement.Basic,
+                    WorldState.StandardOpen,
+                    false,
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.Gloves, 1),
+                        (ItemType.HCBackTest, 1),
+                        (ItemType.Lamp, 0),
                         (ItemType.FireRod, 1)
                     },
-                    new SequenceBreakType[]
+                    new (SequenceBreakType, bool)[]
                     {
-                        SequenceBreakType.DarkRoomHC
+                        (SequenceBreakType.DarkRoomHC, true)
                     },
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.None
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
                 },
                 new object[]
                 {
                     DungeonNodeID.HCDarkRoomBack,
-                    WorldState.StandardOpen,
+                    ItemPlacement.Basic,
                     DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
+                    WorldState.StandardOpen,
+                    false,
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.Gloves, 1),
-                        (ItemType.Lamp, 1)
+                        (ItemType.HCBackTest, 1),
+                        (ItemType.Lamp, 1),
+                        (ItemType.FireRod, 0)
                     },
-                    new SequenceBreakType[]
+                    new (SequenceBreakType, bool)[]
                     {
-                        SequenceBreakType.DarkRoomHC
+                        (SequenceBreakType.DarkRoomHC, true)
                     },
-                    new List<KeyDoorID> { },
+                    new KeyDoorID[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Back_AccessibilityData =>
+        public static IEnumerable<object[]> Entry_To_Back =>
             new List<object[]>
             {
                 new object[]
                 {
                     DungeonNodeID.HCBack,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
                     false,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.HCBackEntryTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
                     DungeonNodeID.HCBack,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
+                    false,
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.Lamp, 1)
+                        (ItemType.HCBackEntryTest, 1)
                     },
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID>
-                    {
-                        KeyDoorID.HCDarkCrossRoomKeyDoor,
-                        KeyDoorID.HCSewerRatRoomKeyDoor
-                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
                     AccessibilityLevel.Normal
-                },
+                }
+            };
+
+        public static IEnumerable<object[]> DarkRoomBack_To_Back =>
+            new List<object[]>
+            {
                 new object[]
                 {
                     DungeonNodeID.HCBack,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
+                    false,
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.Gloves, 1)
+                        (ItemType.HCDarkRoomBackTest, 0)
                     },
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.Normal
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
                 },
                 new object[]
                 {
                     DungeonNodeID.HCBack,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    true,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCBack,
-                    WorldState.Retro,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
                     false,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCBack,
-                    WorldState.Retro,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.Lamp, 1)
+                        (ItemType.HCDarkRoomBackTest, 1)
                     },
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID>
-                    {
-                        KeyDoorID.HCDarkCrossRoomKeyDoor,
-                        KeyDoorID.HCSewerRatRoomKeyDoor
-                    },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCBack,
-                    WorldState.Retro,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Gloves, 1)
-                    },
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCFront,
-                    WorldState.Retro,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    true,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCBack,
-                    WorldState.Inverted,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    false,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCBack,
-                    WorldState.Inverted,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Aga1, 1)
-                    },
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCBack,
-                    WorldState.Inverted,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Aga1, 1),
-                        (ItemType.MoonPearl, 1)
-                    },
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCBack,
-                    WorldState.Inverted,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Aga1, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Gloves, 1)
-                    },
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCBack,
-                    WorldState.Inverted,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Aga1, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Lamp, 1)
-                    },
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID>
-                    {
-                        KeyDoorID.HCDarkCrossRoomKeyDoor,
-                        KeyDoorID.HCSewerRatRoomKeyDoor
-                    },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.HCBack,
-                    WorldState.Inverted,
-                    DungeonItemShuffle.Standard,
-                    ItemPlacement.Advanced,
-                    true,
-                    new (ItemType, int)[0],
-                    new SequenceBreakType[0],
-                    new List<KeyDoorID> { },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
                     AccessibilityLevel.Normal
                 }
             };

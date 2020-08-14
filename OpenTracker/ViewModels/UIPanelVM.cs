@@ -21,7 +21,7 @@ namespace OpenTracker.ViewModels
             };
 
         public ItemsPanelVM Items { get; }
-        public LocationsPanelControlVM Locations { get; }
+        public PinnedLocationsPanelVM Locations { get; }
 
         /// <summary>
         /// Constructor
@@ -29,7 +29,7 @@ namespace OpenTracker.ViewModels
         public UIPanelVM()
         {
             Items = new ItemsPanelVM();
-            Locations = new LocationsPanelControlVM();
+            Locations = new PinnedLocationsPanelVM();
 
             AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
         }

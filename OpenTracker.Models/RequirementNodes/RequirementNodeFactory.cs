@@ -1982,7 +1982,12 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.IPEntryTest],
                             RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
                         })),
-                    new RequirementNodeConnection(RequirementNodeID.IcePalaceEntrance)
+                    new RequirementNodeConnection(RequirementNodeID.IcePalaceEntrance,
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
+                            RequirementDictionary.Instance[RequirementType.DungeonRevive]
+                        }))
                 },
                 RequirementNodeID.MMEntry => new List<RequirementNodeConnection>
                 {

@@ -733,7 +733,8 @@ namespace OpenTracker.Models.KeyLayouts
                         return new List<IKeyLayout>
                         {
                             new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.DungeonItemShuffleKeysanity]),
+                                RequirementDictionary.Instance[
+                                    RequirementType.DungeonItemShuffleKeysanity]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -766,10 +767,14 @@ namespace OpenTracker.Models.KeyLayouts
                                         dungeon,
                                         new AggregateRequirement(new List<IRequirement>
                                         {
-                                            RequirementDictionary.Instance[RequirementType.ItemPlacementBasic],
+                                            new AlternativeRequirement(new List<IRequirement>
+                                            {
+                                                RequirementDictionary.Instance[RequirementType.ItemPlacementBasic],
+                                                RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn]
+                                            }),
                                             RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
                                         })),
-                                    new SmallKeyLayout(1,
+                                    new SmallKeyLayout(2,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.IPCompassChest,
@@ -778,52 +783,20 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.IPBigKeyChest,
                                             DungeonItemID.IPFreezorChest,
                                             DungeonItemID.IPBigChest,
-                                            DungeonItemID.IPIcedTRoom
+                                            DungeonItemID.IPIcedTRoom,
+                                            DungeonItemID.IPBoss
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(2,
-                                                new List<DungeonItemID>
-                                                {
-                                                    DungeonItemID.IPCompassChest,
-                                                    DungeonItemID.IPSpikeRoom,
-                                                    DungeonItemID.IPMapChest,
-                                                    DungeonItemID.IPBigKeyChest,
-                                                    DungeonItemID.IPFreezorChest,
-                                                    DungeonItemID.IPBigChest,
-                                                    DungeonItemID.IPIcedTRoom,
-                                                    DungeonItemID.IPBoss
-                                                }, true,
-                                                new List<IKeyLayout>
-                                                {
-                                                    new EndKeyLayout()
-                                                },
-                                                dungeon,
-                                                RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff]),
-                                            new SmallKeyLayout(2,
-                                                new List<DungeonItemID>
-                                                {
-                                                    DungeonItemID.IPCompassChest,
-                                                    DungeonItemID.IPSpikeRoom,
-                                                    DungeonItemID.IPMapChest,
-                                                    DungeonItemID.IPBigKeyChest,
-                                                    DungeonItemID.IPFreezorChest,
-                                                    DungeonItemID.IPBigChest,
-                                                    DungeonItemID.IPIcedTRoom
-                                                }, true,
-                                                new List<IKeyLayout>
-                                                {
-                                                    new EndKeyLayout()
-                                                },
-                                                dungeon,
-                                                RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn])
+                                            new EndKeyLayout()
                                         },
                                         dungeon,
                                         new AggregateRequirement(new List<IRequirement>
                                         {
                                             RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
+                                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
                                             RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
-                                        })),
+                                        }))
                                 })
                         };
                     }

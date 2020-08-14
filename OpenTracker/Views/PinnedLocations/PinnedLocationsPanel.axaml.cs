@@ -3,9 +3,9 @@ using Avalonia.Markup.Xaml;
 
 namespace OpenTracker.Views.PinnedLocations
 {
-    public class LocationsPanelControl : UserControl
+    public class PinnedLocationsPanel : UserControl
     {
-        public LocationsPanelControl()
+        public PinnedLocationsPanel()
         {
             InitializeComponent();
         }

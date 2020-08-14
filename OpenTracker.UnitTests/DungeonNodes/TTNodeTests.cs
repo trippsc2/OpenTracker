@@ -12,17 +12,22 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.DungeonNodes
 {
-    [Collection("Tests")]
-    public class ToHNodeTests
+    public class TTNodeTests
     {
         [Theory]
-        [MemberData(nameof(Entry_To_ToH))]
-        [MemberData(nameof(PastKeyDoor_To_ToH))]
-        [MemberData(nameof(PastKeyDoor_To_BasementTorchRoom))]
-        [MemberData(nameof(PastBigKeyDoor_To_ToH))]
-        [MemberData(nameof(ToH_To_PastKeyDoor))]
-        [MemberData(nameof(ToH_To_PastBigKeyDoor))]
-        [MemberData(nameof(PastBigKeyDoor_To_BigChest))]
+        [MemberData(nameof(Entry_To_TT))]
+        [MemberData(nameof(PastBigKeyDoor_To_TT))]
+        [MemberData(nameof(TT_To_PastBigKeyDoor))]
+        [MemberData(nameof(PastFirstKeyDoor_To_PastBigKeyDoor))]
+        [MemberData(nameof(PastBigKeyDoor_To_PastFirstKeyDoor))]
+        [MemberData(nameof(PastSecondKeyDoor_To_PastFirstKeyDoor))]
+        [MemberData(nameof(PastBigChestRoomKeyDoor_To_PastFirstKeyDoor))]
+        [MemberData(nameof(PastFirstKeyDoor_To_PastSecondKeyDoor))]
+        [MemberData(nameof(PastFirstKeyDoor_To_PastBigChestRoomKeyDoor))]
+        [MemberData(nameof(PastHammerBlocks_To_PastBigChestRoomKeyDoor))]
+        [MemberData(nameof(PastBigChestRoomKeyDoor_To_PastHammerBlocks))]
+        [MemberData(nameof(PastHammerBlocks_To_BigChest))]
+        [MemberData(nameof(PastSecondKeyDoor_To_BossRoom))]
         public void AccessibilityTests(
             DungeonNodeID id, ItemPlacement itemPlacement,
             DungeonItemShuffle dungeonItemShuffle, WorldState worldState,
@@ -49,7 +54,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     sequenceBreak.Item2;
             }
 
-            ((IDungeon)LocationDictionary.Instance[LocationID.TowerOfHera]).DungeonDataQueue
+            ((IDungeon)LocationDictionary.Instance[LocationID.ThievesTown]).DungeonDataQueue
                 .TryPeek(out IMutableDungeon dungeonData);
 
             foreach (var keyDoor in dungeonData.SmallKeyDoors.Values)
@@ -65,12 +70,12 @@ namespace OpenTracker.UnitTests.DungeonNodes
             Assert.Equal(expected, dungeonData.RequirementNodes[id].Accessibility);
         }
 
-        public static IEnumerable<object[]> Entry_To_ToH =>
+        public static IEnumerable<object[]> Entry_To_TT =>
             new List<object[]>
             {
                 new object[]
                 {
-                    DungeonNodeID.ToH,
+                    DungeonNodeID.TT,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -78,7 +83,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHEntryTest, 0)
+                        (ItemType.TTEntryTest, 0)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -86,7 +91,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.ToH,
+                    DungeonNodeID.TT,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.Retro,
@@ -94,7 +99,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHEntryTest, 0)
+                        (ItemType.TTEntryTest, 0)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -102,23 +107,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.ToH,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.ToHEntryTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.ToH,
+                    DungeonNodeID.TT,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -126,7 +115,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHEntryTest, 1)
+                        (ItemType.TTEntryTest, 1)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -134,7 +123,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.ToH,
+                    DungeonNodeID.TT,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -142,7 +131,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHEntryTest, 0)
+                        (ItemType.TTEntryTest, 0)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -150,7 +139,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.ToH,
+                    DungeonNodeID.TT,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.Retro,
@@ -158,7 +147,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHEntryTest, 1)
+                        (ItemType.TTEntryTest, 1)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -166,7 +155,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.ToH,
+                    DungeonNodeID.TT,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.Retro,
@@ -174,7 +163,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHEntryTest, 0)
+                        (ItemType.TTEntryTest, 0)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -182,7 +171,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.ToH,
+                    DungeonNodeID.TT,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.Inverted,
@@ -190,7 +179,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHEntryTest, 1)
+                        (ItemType.TTEntryTest, 0)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -198,7 +187,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.ToH,
+                    DungeonNodeID.TT,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.Inverted,
@@ -206,7 +195,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHEntryTest, 0)
+                        (ItemType.TTEntryTest, 0)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -214,12 +203,12 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> PastKeyDoor_To_ToH =>
+        public static IEnumerable<object[]> PastBigKeyDoor_To_TT =>
             new List<object[]>
             {
                 new object[]
                 {
-                    DungeonNodeID.ToH,
+                    DungeonNodeID.TT,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -227,7 +216,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHPastKeyDoorTest, 0)
+                        (ItemType.TTPastBigKeyDoorTest, 0)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -235,7 +224,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.ToH,
+                    DungeonNodeID.TT,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -243,7 +232,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHPastKeyDoorTest, 1)
+                        (ItemType.TTPastBigKeyDoorTest, 1)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -251,7 +240,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.ToH,
+                    DungeonNodeID.TT,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -259,23 +248,23 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHPastKeyDoorTest, 1)
+                        (ItemType.TTPastBigKeyDoorTest, 1)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[]
                     {
-                        KeyDoorID.ToHKeyDoor
+                        KeyDoorID.TTBigKeyDoor
                     },
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> PastKeyDoor_To_BasementTorchRoom =>
+        public static IEnumerable<object[]> TT_To_PastBigKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
-                    DungeonNodeID.ToHBasementTorchRoom,
+                    DungeonNodeID.TTPastBigKeyDoor,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -283,9 +272,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHPastKeyDoorTest, 0),
-                        (ItemType.Lamp, 0),
-                        (ItemType.FireRod, 0)
+                        (ItemType.TTTest, 0)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -293,7 +280,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.ToHBasementTorchRoom,
+                    DungeonNodeID.TTPastBigKeyDoor,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -301,9 +288,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHPastKeyDoorTest, 1),
-                        (ItemType.Lamp, 0),
-                        (ItemType.FireRod, 0)
+                        (ItemType.TTTest, 1)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -311,7 +296,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.ToHBasementTorchRoom,
+                    DungeonNodeID.TTPastBigKeyDoor,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -319,96 +304,23 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHPastKeyDoorTest, 1),
-                        (ItemType.Lamp, 1),
-                        (ItemType.FireRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.ToHBasementTorchRoom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.ToHPastKeyDoorTest, 1),
-                        (ItemType.Lamp, 0),
-                        (ItemType.FireRod, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> PastBigKeyDoor_To_ToH =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.ToH,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.ToHPastBigKeyDoorTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.ToH,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.ToHPastBigKeyDoorTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.ToH,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.ToHPastBigKeyDoorTest, 1)
+                        (ItemType.TTTest, 1)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[]
                     {
-                        KeyDoorID.ToHBigKeyDoor
+                        KeyDoorID.TTBigKeyDoor
                     },
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> ToH_To_PastKeyDoor =>
+        public static IEnumerable<object[]> PastFirstKeyDoor_To_PastBigKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
-                    DungeonNodeID.ToHPastKeyDoor,
+                    DungeonNodeID.TTPastBigKeyDoor,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -416,7 +328,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHTest, 0)
+                        (ItemType.TTPastFirstKeyDoorTest, 0)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -424,7 +336,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.ToHPastKeyDoor,
+                    DungeonNodeID.TTPastBigKeyDoor,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -432,7 +344,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHTest, 1)
+                        (ItemType.TTPastFirstKeyDoorTest, 1)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -440,7 +352,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.ToHPastKeyDoor,
+                    DungeonNodeID.TTPastBigKeyDoor,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -448,23 +360,23 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHTest, 1)
+                        (ItemType.TTPastFirstKeyDoorTest, 1)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[]
                     {
-                        KeyDoorID.ToHKeyDoor
+                        KeyDoorID.TTFirstKeyDoor
                     },
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> ToH_To_PastBigKeyDoor =>
+        public static IEnumerable<object[]> PastBigKeyDoor_To_PastFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
-                    DungeonNodeID.ToHPastBigKeyDoor,
+                    DungeonNodeID.TTPastFirstKeyDoor,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -472,19 +384,15 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHTest, 0),
-                        (ItemType.Hookshot, 0)
+                        (ItemType.TTPastBigKeyDoorTest, 0)
                     },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.ToHHerapot, true)
-                    },
+                    new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    DungeonNodeID.ToHPastBigKeyDoor,
+                    DungeonNodeID.TTPastFirstKeyDoor,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -492,19 +400,15 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHTest, 1),
-                        (ItemType.Hookshot, 0)
+                        (ItemType.TTPastBigKeyDoorTest, 1)
                     },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.ToHHerapot, true)
-                    },
+                    new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    DungeonNodeID.ToHPastBigKeyDoor,
+                    DungeonNodeID.TTPastFirstKeyDoor,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -512,67 +416,23 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHTest, 1),
-                        (ItemType.Hookshot, 1)
+                        (ItemType.TTPastBigKeyDoorTest, 1)
                     },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.ToHHerapot, false)
-                    },
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.ToHPastBigKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.ToHTest, 1),
-                        (ItemType.Hookshot, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.ToHHerapot, true)
-                    },
-                    new KeyDoorID[0],
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    DungeonNodeID.ToHPastBigKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.ToHTest, 1),
-                        (ItemType.Hookshot, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.ToHHerapot, true)
-                    },
+                    new (SequenceBreakType, bool)[0],
                     new KeyDoorID[]
                     {
-                        KeyDoorID.ToHBigKeyDoor
+                        KeyDoorID.TTFirstKeyDoor
                     },
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> PastBigKeyDoor_To_BigChest =>
+        public static IEnumerable<object[]> PastSecondKeyDoor_To_PastFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
                 {
-                    DungeonNodeID.ToHBigChest,
+                    DungeonNodeID.TTPastFirstKeyDoor,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -580,7 +440,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHPastBigKeyDoorTest, 0)
+                        (ItemType.TTPastSecondKeyDoorTest, 0)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -588,7 +448,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.ToHBigChest,
+                    DungeonNodeID.TTPastFirstKeyDoor,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -596,7 +456,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHPastBigKeyDoorTest, 1)
+                        (ItemType.TTPastSecondKeyDoorTest, 1)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -604,7 +464,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.ToHBigChest,
+                    DungeonNodeID.TTPastFirstKeyDoor,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -612,13 +472,386 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.ToHPastBigKeyDoorTest, 1)
+                        (ItemType.TTPastSecondKeyDoorTest, 1)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[]
                     {
-                        KeyDoorID.ToHBigChest
+                        KeyDoorID.TTSecondKeyDoor
                     },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> PastBigChestRoomKeyDoor_To_PastFirstKeyDoor =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.TTPastFirstKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.TTPastBigChestRoomKeyDoorTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.TTPastFirstKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.TTPastBigChestRoomKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.TTPastFirstKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.TTPastBigChestRoomKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.TTBigChestKeyDoor
+                    },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> PastFirstKeyDoor_To_PastSecondKeyDoor =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.TTPastSecondKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.TTPastFirstKeyDoorTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.TTPastSecondKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.TTPastFirstKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.TTPastSecondKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.TTPastFirstKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.TTSecondKeyDoor
+                    },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> PastFirstKeyDoor_To_PastBigChestRoomKeyDoor =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.TTPastBigChestRoomKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.TTPastFirstKeyDoorTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.TTPastBigChestRoomKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.TTPastFirstKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.TTPastBigChestRoomKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.TTPastFirstKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.TTBigChestKeyDoor
+                    },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> PastHammerBlocks_To_PastBigChestRoomKeyDoor =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.TTPastBigChestRoomKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.TTPastHammerBlocksTest, 0),
+                        (ItemType.Hammer, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.TTPastBigChestRoomKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.TTPastHammerBlocksTest, 1),
+                        (ItemType.Hammer, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.TTPastBigChestRoomKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.TTPastHammerBlocksTest, 1),
+                        (ItemType.Hammer, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> PastBigChestRoomKeyDoor_To_PastHammerBlocks =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.TTPastHammerBlocks,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.TTPastBigChestRoomKeyDoorTest, 0),
+                        (ItemType.Hammer, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.TTPastHammerBlocks,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.TTPastBigChestRoomKeyDoorTest, 1),
+                        (ItemType.Hammer, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.TTPastHammerBlocks,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.TTPastBigChestRoomKeyDoorTest, 1),
+                        (ItemType.Hammer, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> PastHammerBlocks_To_BigChest =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.TTBigChest,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.TTPastHammerBlocksTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.TTBigChest,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.TTPastHammerBlocksTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.TTBigChest,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.TTPastHammerBlocksTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.TTBigChest
+                    },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> PastSecondKeyDoor_To_BossRoom =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.TTBossRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.TTPastSecondKeyDoorTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.TTBossRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.TTPastSecondKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
                     AccessibilityLevel.Normal
                 }
             };

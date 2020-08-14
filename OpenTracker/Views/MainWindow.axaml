@@ -3,11 +3,6 @@
         xmlns:vm="clr-namespace:OpenTracker.ViewModels;assembly=OpenTracker"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-        xmlns:ia="clr-namespace:Avalonia.Xaml.Interactions.Core;assembly=Avalonia.Xaml.Interactions"
-        xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
-        xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
-        xmlns:manager="clr-namespace:Avalonia.ThemeManager;assembly=Avalonia.ThemeManager"
         mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="960"
         x:Class="OpenTracker.Views.MainWindow" Closing="OnClose"
         Background="{DynamicResource ThemeBackgroundBrush}" UseLayoutRounding="True"
@@ -28,9 +23,9 @@
 	</Window.KeyBindings>
 
 	<DockPanel>
-    <ContentControl Content="{Binding TopMenu}" DockPanel.Dock="Top" />
+		<ContentControl Content="{Binding TopMenu}" DockPanel.Dock="Top" />
 		<ContentControl Content="{Binding UIPanel}" DockPanel.Dock="{Binding UIDock, Mode=OneWay}" />
-    <ContentControl Content="{Binding MapArea}" />
+		<ContentControl Content="{Binding MapArea}" />
 	</DockPanel>
 
 </Window>
