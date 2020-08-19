@@ -32,14 +32,17 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="imageSourceBase">
+        /// A string representing the image source base.
+        /// </param>
         /// <param name="item">
         /// An item that is to be represented by this control.
         /// </param>
-        public SmallKeyLargeItemVM(IItem item)
+        public SmallKeyLargeItemVM(string imageSourceBase, IItem item)
         {
             _item = item ?? throw new ArgumentNullException(nameof(item));
-            _imageSourceBase = "avares://OpenTracker/Assets/Images/Items/" +
-                _item.Type.ToString().ToLowerInvariant();
+            _imageSourceBase = imageSourceBase ??
+                throw new ArgumentNullException(nameof(imageSourceBase));
             _requirement = RequirementDictionary.Instance[RequirementType.WorldStateRetro];
 
             _item.PropertyChanged += OnItemChanged;

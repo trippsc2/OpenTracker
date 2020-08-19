@@ -1,5 +1,6 @@
 ﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:OpenTracker.ViewModels;assembly=OpenTracker"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
@@ -7,60 +8,72 @@
         x:Class="OpenTracker.Views.AutoTrackerDialog"
         Icon="avares://OpenTracker/Assets/triforce.png"
         Title="OpenTracker - AutoTracker" Width="420" Height="600" Padding="5">
-  <DockPanel>
-    <StackPanel DockPanel.Dock="Top" Orientation="Vertical">
-      
-      <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
-        <TextBlock Classes="AutoTrackerLabel" Foreground="#FFFFFF">USB2SNES URI:</TextBlock>
-        <TextBox Classes="AutoTrackerURI" Text="{Binding Path=UriString, Mode=TwoWay}" />
-      </StackPanel>
 
-      <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
-        <Button Classes="AutoTrackerSmall" Command="{Binding Path=GetDevicesCommand}">Get Devices</Button>
-        <Button Classes="AutoTrackerSmall" Command="{Binding Path=StopCommand}">Stop</Button>
-      </StackPanel>
+	<Design.DataContext>
+		<vm:AutoTrackerDialogVM />
+	</Design.DataContext>
 
-      <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
-        <TextBlock Classes="AutoTrackerLabel" Foreground="#FFFFFF">Device:</TextBlock>
-        <ComboBox Classes="AutoTrackerDevices" Items="{Binding Devices, Mode=OneWay}"
-                  SelectedItem="{Binding Device, Mode=TwoWay}" />
-      </StackPanel>
-      
-      <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
-        <Button Classes="AutoTrackerBig" Command="{Binding Path=StartCommand}">Start Autotracking</Button>
-      </StackPanel>
-      
-      <StackPanel Margin="10" HorizontalAlignment="Center" Orientation="Horizontal">
-        <TextBlock Classes="AutoTrackerLabel" Foreground="#FFFFFF">AutoTracking Status is:</TextBlock>
-        <TextBlock Classes="AutoTrackerStatus" Foreground="{Binding Path=StatusTextColor,
-                   Mode=OneWay}" Text="{Binding Path=StatusText}" />
-      </StackPanel>
-      
-      <StackPanel Margin="10" HorizontalAlignment="Center" Orientation="Horizontal">
-        <TextBlock Classes="AutoTrackerLabel" Foreground="#FFFFFF">Logging Level:</TextBlock>
-        <ComboBox Classes="AutoTrackerLogLevel" Items="{Binding Path=LogLevelOptions,
-                  Mode=OneWay}" SelectedItem="{Binding Path=LogLevel, Mode=TwoWay}" />
-      </StackPanel>
-      
-      <ToggleButton Classes="AutoTracker" IsChecked="{Binding Path=VisibleLog,
-                    Mode=TwoWay}">Show Log</ToggleButton>
-    
-    </StackPanel>
-    
-    <StackPanel DockPanel.Dock="Bottom" Margin="10" Orientation="Horizontal" HorizontalAlignment="Center"
-                IsVisible="{Binding Path=VisibleLog}" IsHitTestVisible="{Binding Path=VisibleLog}">
-      <Button Classes="AutoTracker" Command="{Binding Path=ResetLogCommand}">Reset Log</Button>
-      <Button Classes="AutoTracker" Command="{Binding RelativeSource={RelativeSource
-              AncestorType=view:AutoTrackerDialog}, Path=Save}">Save Log</Button>
-    </StackPanel>
-    
-    <Border Classes="AutoTrackerLog" IsVisible="{Binding Path=VisibleLog}"
-            IsHitTestVisible="{Binding Path=VisibleLog}">
-      <ScrollViewer>
-        <TextBlock Classes="AutoTrackerLog" Foreground="#FFFFFF" Margin="5,0"
-                   Text="{Binding LogText.Text}" />
-      </ScrollViewer>
-    </Border>
-    
-  </DockPanel>
+	<DockPanel>
+		<StackPanel DockPanel.Dock="Top" Orientation="Vertical">
+			<StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
+				<TextBlock Classes="AutoTrackerLabel" Foreground="#FFFFFF">
+					USB2SNES URI:
+				</TextBlock>
+				<TextBox Classes="AutoTrackerURI" Text="{Binding UriString, Mode=TwoWay}" />
+			</StackPanel>
+
+			<StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
+				<Button Classes="AutoTrackerSmall" Command="{Binding
+						GetDevicesCommand}">Get Devices</Button>
+				<Button Classes="AutoTrackerSmall" Command="{Binding StopCommand}">Stop</Button>
+			</StackPanel>
+
+			<StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
+				<TextBlock Classes="AutoTrackerLabel" Foreground="#FFFFFF">Device:</TextBlock>
+				<ComboBox Classes="AutoTrackerDevices" Items="{Binding Devices, Mode=OneWay}"
+						  SelectedItem="{Binding Device, Mode=TwoWay}" />
+			</StackPanel>
+
+			<StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
+				<Button Classes="AutoTrackerBig" Command="{Binding
+						StartCommand}">Start Autotracking</Button>
+			</StackPanel>
+
+			<StackPanel Margin="10" HorizontalAlignment="Center" Orientation="Horizontal">
+				<TextBlock Classes="AutoTrackerLabel"
+						   Foreground="#FFFFFF">AutoTracking Status is:</TextBlock>
+				<TextBlock Classes="AutoTrackerStatus" Foreground="{Binding StatusTextColor,
+						   Mode=OneWay}" Text="{Binding StatusText}" />
+			</StackPanel>
+
+			<StackPanel Margin="10" HorizontalAlignment="Center" Orientation="Horizontal">
+				<TextBlock Classes="AutoTrackerLabel"
+						   Foreground="#FFFFFF">Logging Level:</TextBlock>
+				<ComboBox Classes="AutoTrackerLogLevel" Items="{Binding LogLevelOptions,
+						  Mode=OneWay}" SelectedItem="{Binding LogLevel, Mode=TwoWay}" />
+			</StackPanel>
+
+			<ToggleButton Classes="AutoTracker" IsChecked="{Binding VisibleLog,
+						  Mode=TwoWay}">Show Log</ToggleButton>
+
+		</StackPanel>
+
+		<StackPanel DockPanel.Dock="Bottom" Margin="10" Orientation="Horizontal"
+					HorizontalAlignment="Center" IsVisible="{Binding VisibleLog}"
+					IsHitTestVisible="{Binding VisibleLog}">
+			<Button Classes="AutoTrackerSmall" Command="{Binding
+					ResetLogCommand}">Reset Log</Button>
+			<Button Classes="AutoTrackerSmall" Command="{Binding
+					$parent[view:AutoTrackerDialog].Save}">Save Log</Button>
+		</StackPanel>
+
+		<Border Classes="AutoTrackerLog" IsVisible="{Binding VisibleLog}"
+				IsHitTestVisible="{Binding VisibleLog}">
+			<ScrollViewer>
+				<TextBlock Classes="AutoTrackerLog" Foreground="#FFFFFF" Margin="5,0"
+						   Text="{Binding LogText.Text}" />
+			</ScrollViewer>
+		</Border>
+
+	</DockPanel>
 </Window>

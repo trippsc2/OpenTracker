@@ -18,11 +18,8 @@
 		</Style>
 
 		<Style Selector="Border.UIPanelTitle">
-			<Setter Property="Padding" Value="10,5" />
-		</Style>
-
-		<Style Selector="Border.UIPanelTitle">
 			<Setter Property="Background" Value="{DynamicResource ThemeControlLowBrush}" />
+			<Setter Property="Padding" Value="10,5" />
 		</Style>
 
 		<Style Selector="Border.UIPanelBody">

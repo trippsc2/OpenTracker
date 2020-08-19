@@ -17,19 +17,23 @@ namespace OpenTracker.ViewModels.Items.Large
         private readonly string _imageSourceBase;
 
         public string ImageSource =>
-            _imageSourceBase +
-            ((_items[1].Current * (_items[0].Maximum + 1)) + _items[0].Current)
-            .ToString(CultureInfo.InvariantCulture) + ".png";
+            _imageSourceBase + _items[0].Current.ToString(CultureInfo.InvariantCulture) +
+            $"{_items[1].Current.ToString(CultureInfo.InvariantCulture)}.png";
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="imageSourceBase">
+        /// A string representing the image source base.
+        /// </param>
         /// <param name="items">
         /// An array of items that are to be represented by this control.
         /// </param>
-        public PairLargeItemVM(IItem[] items)
+        public PairLargeItemVM(string imageSourceBase, IItem[] items)
         {
             _items = items ?? throw new ArgumentNullException(nameof(items));
+            _imageSourceBase = imageSourceBase ??
+                throw new ArgumentNullException(nameof(imageSourceBase));
 
             if (_items.Length != 2)
             {
@@ -45,9 +49,6 @@ namespace OpenTracker.ViewModels.Items.Large
 
                 item.PropertyChanged += OnItemChanged;
             }
-
-            _imageSourceBase = "avares://OpenTracker/Assets/Images/Items/" +
-                _items[0].Type.ToString().ToLowerInvariant();
         }
 
         /// <summary>

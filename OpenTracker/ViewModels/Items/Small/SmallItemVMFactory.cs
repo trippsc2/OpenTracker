@@ -116,13 +116,10 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="smallItems">
         /// The observable collection of small item control ViewModel instances to be populated.
         /// </param>
-        internal static void GetSmallItemControlVMs(
-            LocationID location, ObservableCollection<SmallItemVMBase> smallItems)
+        internal static ObservableCollection<SmallItemVMBase> GetSmallItemControlVMs(
+            LocationID location)
         {
-            if (smallItems == null)
-            {
-                throw new ArgumentNullException(nameof(smallItems));
-            }
+            var smallItems = new ObservableCollection<SmallItemVMBase>();
 
             switch (location)
             {
@@ -256,6 +253,8 @@ namespace OpenTracker.ViewModels.Items.Small
                         throw new ArgumentOutOfRangeException(nameof(location));
                     }
             }
+
+            return smallItems;
         }
     }
 }

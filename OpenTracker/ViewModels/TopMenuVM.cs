@@ -1,11 +1,22 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Layout;
+using Avalonia.Threading;
+using OpenTracker.Models;
+using OpenTracker.Models.AutoTracking;
+using OpenTracker.Models.BossPlacements;
+using OpenTracker.Models.Connections;
+using OpenTracker.Models.Items;
+using OpenTracker.Models.Locations;
+using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Settings;
+using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
 using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.Reactive;
+using System.Reactive.Linq;
 
 namespace OpenTracker.ViewModels
 {
@@ -77,23 +88,37 @@ namespace OpenTracker.ViewModels
         public ReactiveCommand<string, Unit> SetVerticalItemsPlacementCommand { get; }
         public ReactiveCommand<string, Unit> SetUIScaleCommand { get; }
 
+        private readonly ObservableAsPropertyHelper<bool> _isOpeningResetDialog;
+        public bool IsOpeningResetDialog =>
+            _isOpeningResetDialog.Value;
+
+        private bool _canUndo;
+        public bool CanUndo
+        {
+            get => _canUndo;
+            private set => this.RaiseAndSetIfChanged(ref _canUndo, value);
+        }
+
+        private bool _canRedo;
+        public bool CanRedo
+        {
+            get => _canRedo;
+            private set => this.RaiseAndSetIfChanged(ref _canRedo, value);
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="mainWindow">
-        /// The ViewModel of the main window.
-        /// </param>
-        public TopMenuVM(MainWindowVM mainWindow)
+        public TopMenuVM()
         {
-            if (mainWindow == null)
-            {
-                throw new ArgumentNullException(nameof(mainWindow));
-            }
+            OpenResetDialogCommand = ReactiveCommand.CreateFromObservable(OpenResetDialogAsync);
+            OpenResetDialogCommand.IsExecuting.ToProperty(
+                this, x => x.IsOpeningResetDialog, out _isOpeningResetDialog);
 
-            OpenResetDialogCommand = mainWindow.OpenResetDialogCommand;
-            UndoCommand = mainWindow.UndoCommand;
-            RedoCommand = mainWindow.RedoCommand;
-            ToggleDisplayAllLocationsCommand = mainWindow.ToggleDisplayAllLocationsCommand;
+            UndoCommand = ReactiveCommand.Create(Undo, this.WhenAnyValue(x => x.CanUndo));
+            RedoCommand = ReactiveCommand.Create(Redo, this.WhenAnyValue(x => x.CanRedo));
+            ToggleDisplayAllLocationsCommand = ReactiveCommand.Create(ToggleDisplayAllLocations);
+
             ToggleShowItemCountsOnMapCommand = ReactiveCommand.Create(ToggleShowItemCountsOnMap);
             SetLayoutOrientationCommand = ReactiveCommand.Create<string>(SetLayoutOrientation);
             SetMapOrientationCommand = ReactiveCommand.Create<string>(SetMapOrientation);
@@ -103,8 +128,38 @@ namespace OpenTracker.ViewModels
             SetVerticalItemsPlacementCommand = ReactiveCommand.Create<string>(SetVerticalItemsPlacement);
             SetUIScaleCommand = ReactiveCommand.Create<string>(SetUIScale);
 
+            UndoRedoManager.Instance.UndoableActions.CollectionChanged += OnUndoChanged;
+            UndoRedoManager.Instance.RedoableActions.CollectionChanged += OnRedoChanged;
             AppSettings.Instance.Tracker.PropertyChanged += OnTrackerSettingsChanged;
             AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+        }
+
+        /// <summary>
+        /// Subscribes to the CollectionChanged event on the observable stack of undoable actions.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnUndoChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            UpdateCanUndo();
+        }
+
+        /// <summary>
+        /// Subscribes to the CollectionChanged event on the observable stack of redoable actions.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnRedoChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            UpdateCanRedo();
         }
 
         /// <summary>
@@ -186,6 +241,40 @@ namespace OpenTracker.ViewModels
                 this.RaisePropertyChanged(nameof(SeventyFivePercentUIScale));
                 this.RaisePropertyChanged(nameof(OneHundredPercentUIScale));
             }
+        }
+
+        /// <summary>
+        /// Updates the CanUndo property with a value representing whether there are objects in the
+        /// Undoable stack.
+        /// </summary>
+        private void UpdateCanUndo()
+        {
+            CanUndo = UndoRedoManager.Instance.CanUndo();
+        }
+
+        /// <summary>
+        /// Undoes the last action.
+        /// </summary>
+        private void Undo()
+        {
+            UndoRedoManager.Instance.Undo();
+        }
+
+        /// <summary>
+        /// Updates the CanRedo property with a value representing whether there are objects in the
+        /// Redoable stack.
+        /// </summary>
+        private void UpdateCanRedo()
+        {
+            CanRedo = UndoRedoManager.Instance.CanRedo();
+        }
+
+        /// <summary>
+        /// Redoes the last action.
+        /// </summary>
+        private void Redo()
+        {
+            UndoRedoManager.Instance.Redo();
         }
 
         /// <summary>
@@ -298,6 +387,64 @@ namespace OpenTracker.ViewModels
         private static void SetUIScale(string uiScaleValue)
         {
             AppSettings.Instance.Layout.UIScale = double.Parse(uiScaleValue, CultureInfo.InvariantCulture);
+        }
+
+        /// <summary>
+        /// Toggles whether to display all locations on the map.
+        /// </summary>
+        private void ToggleDisplayAllLocations()
+        {
+            AppSettings.Instance.Tracker.DisplayAllLocations =
+                !AppSettings.Instance.Tracker.DisplayAllLocations;
+        }
+
+        /// <summary>
+        /// Resets the undo/redo manager, pinned locations, and game data to their starting values.
+        /// </summary>
+        private void Reset()
+        {
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                UndoRedoManager.Instance.Reset();
+                PinnedLocationCollection.Instance.Clear();
+                AutoTracker.Instance.Stop();
+                BossPlacementDictionary.Instance.Reset();
+                LocationDictionary.Instance.Reset();
+                PrizePlacementDictionary.Instance.Reset();
+                ItemDictionary.Instance.Reset();
+                ConnectionCollection.Instance.Clear();
+            });
+        }
+
+        /// <summary>
+        /// Opens a reset dialog window.
+        /// </summary>
+        private void OpenResetDialog()
+        {
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                bool? result = await App.DialogService.ShowDialog(
+                    new MessageBoxDialogVM("Warning",
+                    "Resetting the tracker will set all items and locations back to their " +
+                    "starting values. This cannot be undone.\n\nDo you wish to proceed?"))
+                    .ConfigureAwait(false);
+
+                if (result.HasValue && result.Value)
+                {
+                    Reset();
+                }
+            });
+        }
+
+        /// <summary>
+        /// Returns the observable result of the OpenResetDialog method.
+        /// </summary>
+        /// <returns>
+        /// The observable result of the OpenResetDialog method.
+        /// </returns>
+        private IObservable<Unit> OpenResetDialogAsync()
+        {
+            return Observable.Start(() => { OpenResetDialog(); });
         }
     }
 }

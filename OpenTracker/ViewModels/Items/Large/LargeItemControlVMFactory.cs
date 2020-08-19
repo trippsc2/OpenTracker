@@ -24,7 +24,9 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </returns>
         private static LargeItemVMBase GetLargeItemControlVM(ItemType type)
         {
-            return new LargeItemVM(ItemDictionary.Instance[type]);
+            return new LargeItemVM(
+                $"avares://OpenTracker/Assets/Images/Items/{type.ToString().ToLowerInvariant()}",
+                ItemDictionary.Instance[Enum.Parse<ItemType>(type.ToString())]);
         }
 
         /// <summary>
@@ -41,14 +43,18 @@ namespace OpenTracker.ViewModels.Items.Large
         {
             IPrizeSection section = type switch
             {
-                ItemType.Aga1 => ((IDungeon)LocationDictionary.Instance[LocationID.AgahnimTower])
-                    .GetPrizeSection(),
-                ItemType.Aga2 => ((IDungeon)LocationDictionary.Instance[LocationID.GanonsTower])
-                    .GetPrizeSection(),
+                ItemType.Aga1 =>
+                    ((IDungeon)LocationDictionary.Instance[LocationID.AgahnimTower])
+                        .GetPrizeSection(),
+                ItemType.Aga2 =>
+                    ((IDungeon)LocationDictionary.Instance[LocationID.GanonsTower])
+                        .GetPrizeSection(),
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
 
-            return new PrizeLargeItemVM(section);
+            return new PrizeLargeItemVM(
+                $"avares://OpenTracker/Assets/Images/Prizes/{type.ToString().ToLowerInvariant()}",
+                section);
         }
 
         /// <summary>
@@ -61,9 +67,11 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <returns>
         /// A new crystal requirement large item control ViewModel instance.
         /// </returns>
-        private static LargeItemVMBase GetCrystalRequirementLargeItemControlVM(ItemType type)
+        private static LargeItemVMBase GetCrystalRequirementLargeItemVM(ItemType type)
         {
-            return new CrystalRequirementLargeItemVM(ItemDictionary.Instance[type]);
+            return new CrystalRequirementLargeItemVM(
+                $"avares://OpenTracker/Assets/Images/Items/{type.ToString().ToLowerInvariant()}.png",
+                ItemDictionary.Instance[Enum.Parse<ItemType>(type.ToString())]);
         }
 
         /// <summary>
@@ -76,9 +84,11 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <returns>
         /// A new small key large item control ViewModel instance.
         /// </returns>
-        private static LargeItemVMBase GetSmallKeyLargeItemControlVM(ItemType type)
+        private static LargeItemVMBase GetSmallKeyLargeItemVM(ItemType type)
         {
-            return new SmallKeyLargeItemVM(ItemDictionary.Instance[type]);
+            return new SmallKeyLargeItemVM(
+                $"avares://OpenTracker/Assets/Images/Items/{type.ToString().ToLowerInvariant()}",
+                ItemDictionary.Instance[Enum.Parse<ItemType>(type.ToString())]);
         }
 
         /// <summary>
@@ -91,9 +101,10 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <returns>
         /// A new pair large item control ViewModel instance.
         /// </returns>
-        private static LargeItemVMBase GetPairLargeItemControlVM(ItemType type)
+        private static LargeItemVMBase GetPairLargeItemVM(ItemType type)
         {
             return new PairLargeItemVM(
+                $"avares://OpenTracker/Assets/Images/Items/{type.ToString().ToLowerInvariant()}",
                 new IItem[]
                 {
                     ItemDictionary.Instance[type],
@@ -102,17 +113,14 @@ namespace OpenTracker.ViewModels.Items.Large
         }
 
         /// <summary>
-        /// Populates the observable collection of large item control ViewModels.
+        /// Returns an observable collection of large item control ViewModel instances.
         /// </summary>
-        /// <param name="largeItems">
-        /// The observable collection of large item control ViewModels to be populated.
-        /// </param>
-        internal static void GetLargeItemControlVMs(ObservableCollection<LargeItemVMBase> largeItems)
+        /// <returns>
+        /// An observable collection of large item control ViewModel instances.
+        /// </returns>
+        internal static ObservableCollection<LargeItemVMBase> GetLargeItemControlVMs()
         {
-            if (largeItems == null)
-            {
-                throw new ArgumentNullException(nameof(largeItems));
-            }
+            var largeItems = new ObservableCollection<LargeItemVMBase>();
 
             for (int i = 0; i < Enum.GetValues(typeof(ItemType)).Length; i++)
             {
@@ -153,12 +161,12 @@ namespace OpenTracker.ViewModels.Items.Large
                     case ItemType.TowerCrystals:
                     case ItemType.GanonCrystals:
                         {
-                            largeItems.Add(GetCrystalRequirementLargeItemControlVM((ItemType)i));
+                            largeItems.Add(GetCrystalRequirementLargeItemVM((ItemType)i));
                         }
                         break;
                     case ItemType.SmallKey:
                         {
-                            largeItems.Add(GetSmallKeyLargeItemControlVM((ItemType)i));
+                            largeItems.Add(GetSmallKeyLargeItemVM((ItemType)i));
                         }
                         break;
                     case ItemType.Bow:
@@ -170,11 +178,13 @@ namespace OpenTracker.ViewModels.Items.Large
                     case ItemType.Quake:
                     case ItemType.Flute:
                         {
-                            largeItems.Add(GetPairLargeItemControlVM((ItemType)i));
+                            largeItems.Add(GetPairLargeItemVM((ItemType)i));
                         }
                         break;
                 }
             }
+
+            return largeItems;
         }
     }
 }

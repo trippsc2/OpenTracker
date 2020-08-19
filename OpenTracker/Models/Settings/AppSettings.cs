@@ -114,7 +114,6 @@ namespace OpenTracker.Models.Settings
                 throw new ArgumentNullException(nameof(saveData));
             }
 
-
             Bounds.Maximized = saveData.Maximized;
             Bounds.X = saveData.X;
             Bounds.Y = saveData.Y;
@@ -160,7 +159,7 @@ namespace OpenTracker.Models.Settings
                 Layout.VerticalItemsPlacement = saveData.VerticalItemsPlacement;
             }
 
-            Layout.UIScale = saveData.UIScale;
+            Layout.UIScale = saveData.UIScale == 0.0 ? 1.0 : saveData.UIScale;
             Colors.EmphasisFontColor = saveData.EmphasisFontColor;
             Colors.ConnectorColor = saveData.ConnectorColor;
 

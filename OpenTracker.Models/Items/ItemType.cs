@@ -432,7 +432,7 @@
         GT3FPastRedGoriyaRoomsTest,
         GT3FPastBigKeyDoorTest,
         GTBoss2Test,
-        GT3FPastBoss2Test,
+        GT4FPastBoss2Test,
         GT5FPastFourTorchRoomsTest,
         GT6FPastFirstKeyDoorTest,
         GT6FBossRoomTest,

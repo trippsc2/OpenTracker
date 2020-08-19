@@ -5,117 +5,124 @@
         xmlns:view="clr-namespace:OpenTracker.Views.ColorSelect;assembly=OpenTracker"
         mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="462"
         Width="420" Height="554" Padding="5"
-        CanResize="True" 
+        CanResize="True"
         WindowStartupLocation="CenterOwner"
         x:Class="OpenTracker.Views.ColorSelect.ColorSelectDialog"
         Icon="avares://OpenTracker/Assets/triforce.png"
         Title="OpenTracker - Color Select">
-  <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-    <Grid ColumnDefinitions="Auto,*,Auto"
-          RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
-      
-      <TextBlock Classes="ColorSelectTitle" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0"
-                 Text="Font Colors" />
-      <ToggleButton Classes="ColorSelect" IsChecked="{Binding
+	<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+		<Grid ColumnDefinitions="Auto,*,Auto"
+			  RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+
+			<TextBlock Classes="ColorSelectTitle" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0"
+					   Text="Font Colors" />
+			<ToggleButton Classes="ColorSelect" IsChecked="{Binding
                     $parent[view:ColorSelectDialog].EmphasisFontColorPickerOpen, Mode=TwoWay}"
-                    Background="{Binding EmphasisFontColor}" Grid.Column="0" Grid.Row="1" />
-      <TextBlock Classes="ColorSelectLabel" Grid.Column="2" Grid.Row="1" Text="Emphasis" />
-      
-      <Border Classes="ColorPicker" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2" 
-              IsHitTestVisible="{Binding
-              $parent[view:ColorSelectDialog].EmphasisFontColorPickerOpen, Mode=OneWay}"
-              IsVisible="{Binding $parent[view:ColorSelectDialog].EmphasisFontColorPickerOpen,
-              Mode=OneWay}">
-        <view:ColorPickerControl DataContext="{Binding EmphasisFontColor}" />
-      </Border>
-      
-      <TextBlock Classes="ColorSelectTitle" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3"
-                 Text="Location Availability" />
-      <ToggleButton Classes="ColorSelect" IsChecked="{Binding
-                    $parent[view:ColorSelectDialog].AccessibilityNoneColorPickerOpen, Mode=TwoWay}"
-                    Background="{Binding AccessibilityNoneColor}" Grid.Column="0" Grid.Row="4" />
-      <TextBlock Classes="ColorSelectLabel" Grid.Column="2" Grid.Row="4" FontSize="11"  Text="Unavailable" />
-      
-      <Border Classes="ColorPicker" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="5" 
-              IsHitTestVisible="{Binding
-              $parent[view:ColorSelectDialog].AccessibilityNoneColorPickerOpen, Mode=OneWay}"
-              IsVisible="{Binding $parent[view:ColorSelectDialog].AccessibilityNoneColorPickerOpen,
-              Mode=OneWay}">
-        <view:ColorPickerControl DataContext="{Binding AccessibilityNoneColor}" />
-      </Border>
-      
-      <ToggleButton Classes="ColorSelect" IsChecked="{Binding
-                    $parent[view:ColorSelectDialog].AccessibilityPartialColorPickerOpen,
-                    Mode=TwoWay}" Background="{Binding AccessibilityPartialColor}" Grid.Column="0"
-                    Grid.Row="6" />
-      <TextBlock Classes="ColorSelectLabel" Grid.Column="2" Grid.Row="6" Text="Partial" />
-      
-      <Border Classes="ColorPicker" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="7"
-              IsHitTestVisible="{Binding
-              $parent[view:ColorSelectDialog].AccessibilityPartialColorPickerOpen, Mode=OneWay}"
-              IsVisible="{Binding
-              $parent[view:ColorSelectDialog].AccessibilityPartialColorPickerOpen, Mode=OneWay}">
-        <view:ColorPickerControl DataContext="{Binding AccessibilityPartialColor}" />
-      </Border>
-      
-      <ToggleButton Classes="ColorSelect" IsChecked="{Binding
-                    $parent[view:ColorSelectDialog].AccessibilityInspectColorPickerOpen,
-                    Mode=TwoWay}" Background="{Binding AccessibilityInspectColor}" Grid.Column="0"
-                    Grid.Row="8" />
-      <TextBlock Classes="ColorSelectLabel" Grid.Column="2" Grid.Row="8" Text="Visible" />
-      
-      <Border Classes="ColorPicker" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="9"
-              IsHitTestVisible="{Binding
-              $parent[view:ColorSelectDialog].AccessibilityInspectColorPickerOpen, Mode=OneWay}"
-              IsVisible="{Binding
-              $parent[view:ColorSelectDialog].AccessibilityInspectColorPickerOpen, Mode=OneWay}">
-        <view:ColorPickerControl DataContext="{Binding AccessibilityInspectColor}" />
-      </Border>
-      
-      <ToggleButton Classes="ColorSelect" IsChecked="{Binding
-                    $parent[view:ColorSelectDialog].AccessibilitySequenceBreakColorPickerOpen,
-                    Mode=TwoWay}" Background="{Binding AccessibilitySequenceBreakColor}"
-                    Grid.Column="0" Grid.Row="10" />
-      <TextBlock Classes="ColorSelectLabel" Grid.Column="2" Grid.Row="10"
-                 Text="Sequence Break/Possibly Available" />
-      
-      <Border Classes="ColorPicker" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="11" 
-              IsHitTestVisible="{Binding
-              $parent[view:ColorSelectDialog].AccessibilitySequenceBreakColorPickerOpen,
-              Mode=OneWay}" IsVisible="{Binding
-              $parent[view:ColorSelectDialog].AccessibilitySequenceBreakColorPickerOpen,
-              Mode=OneWay}">
-        <view:ColorPickerControl DataContext="{Binding AccessibilitySequenceBreakColor}" />
-      </Border>
-      
-      <ToggleButton Classes="ColorSelect" IsChecked="{Binding
-                    $parent[view:ColorSelectDialog].AccessibilityNormalColorPickerOpen,
-                    Mode=TwoWay}" Background="{Binding AccessibilityNormalColor}" Grid.Column="0"
-                    Grid.Row="12" />
-      <TextBlock Classes="ColorSelectLabel" Grid.Column="2" Grid.Row="12" Text="Available" />
-      
-      <Border Classes="ColorPicker" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="13"
-              IsHitTestVisible="{Binding
-              $parent[view:ColorSelectDialog].AccessibilityNormalColorPickerOpen, Mode=OneWay}"
-              IsVisible="{Binding
-              $parent[view:ColorSelectDialog].AccessibilityNormalColorPickerOpen, Mode=OneWay}">
-        <view:ColorPickerControl DataContext="{Binding AccessibilityNormalColor}" />
-      </Border>
+						  Background="{Binding EmphasisFontColor}" Grid.Column="0" Grid.Row="1" />
+			<TextBlock Classes="ColorSelectLabel" Grid.Column="2" Grid.Row="1" Text="Emphasis" />
 
-      <TextBlock Classes="ColorSelectTitle" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="14"
-                 Text="Connector Colors" />
-      <ToggleButton Classes="ColorSelect" IsChecked="{Binding
-                    $parent[view:ColorSelectDialog].ConnectorColorPickerOpen, Mode=TwoWay}"
-                    Background="{Binding ConnectorColor}" Grid.Column="0" Grid.Row="15" />
-      <TextBlock Classes="ColorSelectLabel" Grid.Column="2" Grid.Row="15" Text="Emphasis" />
+			<Border Classes="ColorPicker" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="2"
+					IsHitTestVisible="{Binding
+					$parent[view:ColorSelectDialog].EmphasisFontColorPickerOpen, Mode=OneWay}"
+					IsVisible="{Binding
+					$parent[view:ColorSelectDialog].EmphasisFontColorPickerOpen, Mode=OneWay}">
+				<view:ColorPickerControl DataContext="{Binding EmphasisFontColor}" />
+			</Border>
 
-      <Border Classes="ColorPicker" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="16"
-              IsHitTestVisible="{Binding $parent[view:ColorSelectDialog].ConnectorColorPickerOpen,
-              Mode=OneWay}" IsVisible="{Binding
-              $parent[view:ColorSelectDialog].ConnectorColorPickerOpen, Mode=OneWay}">
-        <view:ColorPickerControl DataContext="{Binding ConnectorColor}" />
-      </Border>
+			<TextBlock Classes="ColorSelectTitle" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3"
+					   Text="Location Availability" />
+			<ToggleButton Classes="ColorSelect" IsChecked="{Binding
+						  $parent[view:ColorSelectDialog].AccessibilityNoneColorPickerOpen,
+						  Mode=TwoWay}" Background="{Binding AccessibilityNoneColor}"
+						  Grid.Column="0" Grid.Row="4" />
+			<TextBlock Classes="ColorSelectLabel" Grid.Column="2" Grid.Row="4" FontSize="11"
+					   Text="Unavailable" />
 
-    </Grid>
-  </ScrollViewer>
+			<Border Classes="ColorPicker" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="5"
+					IsHitTestVisible="{Binding
+					$parent[view:ColorSelectDialog].AccessibilityNoneColorPickerOpen, Mode=OneWay}"
+					IsVisible="{Binding
+					$parent[view:ColorSelectDialog].AccessibilityNoneColorPickerOpen,
+					Mode=OneWay}">
+				<view:ColorPickerControl DataContext="{Binding AccessibilityNoneColor}" />
+			</Border>
+
+			<ToggleButton Classes="ColorSelect" IsChecked="{Binding
+						  $parent[view:ColorSelectDialog].AccessibilityPartialColorPickerOpen,
+						  Mode=TwoWay}" Background="{Binding AccessibilityPartialColor}"
+						  Grid.Column="0" Grid.Row="6" />
+			<TextBlock Classes="ColorSelectLabel" Grid.Column="2" Grid.Row="6" Text="Partial" />
+
+			<Border Classes="ColorPicker" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="7"
+					IsHitTestVisible="{Binding
+					$parent[view:ColorSelectDialog].AccessibilityPartialColorPickerOpen,
+					Mode=OneWay}" IsVisible="{Binding
+					$parent[view:ColorSelectDialog].AccessibilityPartialColorPickerOpen,
+					Mode=OneWay}">
+				<view:ColorPickerControl DataContext="{Binding AccessibilityPartialColor}" />
+			</Border>
+
+			<ToggleButton Classes="ColorSelect" IsChecked="{Binding
+						  $parent[view:ColorSelectDialog].AccessibilityInspectColorPickerOpen,
+						  Mode=TwoWay}" Background="{Binding AccessibilityInspectColor}"
+						  Grid.Column="0" Grid.Row="8" />
+			<TextBlock Classes="ColorSelectLabel" Grid.Column="2" Grid.Row="8" Text="Visible" />
+
+			<Border Classes="ColorPicker" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="9"
+					IsHitTestVisible="{Binding
+					$parent[view:ColorSelectDialog].AccessibilityInspectColorPickerOpen,
+					Mode=OneWay}" IsVisible="{Binding
+					$parent[view:ColorSelectDialog].AccessibilityInspectColorPickerOpen,
+					Mode=OneWay}">
+				<view:ColorPickerControl DataContext="{Binding AccessibilityInspectColor}" />
+			</Border>
+
+			<ToggleButton Classes="ColorSelect" IsChecked="{Binding
+						  $parent[view:ColorSelectDialog].AccessibilitySequenceBreakColorPickerOpen,
+						  Mode=TwoWay}" Background="{Binding AccessibilitySequenceBreakColor}"
+						  Grid.Column="0" Grid.Row="10" />
+			<TextBlock Classes="ColorSelectLabel" Grid.Column="2" Grid.Row="10"
+					   Text="Sequence Break/Possibly Available" />
+
+			<Border Classes="ColorPicker" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="11"
+					IsHitTestVisible="{Binding
+					$parent[view:ColorSelectDialog].AccessibilitySequenceBreakColorPickerOpen,
+					Mode=OneWay}" IsVisible="{Binding
+					$parent[view:ColorSelectDialog].AccessibilitySequenceBreakColorPickerOpen,
+					Mode=OneWay}">
+				<view:ColorPickerControl DataContext="{Binding AccessibilitySequenceBreakColor}" />
+			</Border>
+
+			<ToggleButton Classes="ColorSelect" IsChecked="{Binding
+						  $parent[view:ColorSelectDialog].AccessibilityNormalColorPickerOpen,
+						  Mode=TwoWay}" Background="{Binding AccessibilityNormalColor}"
+						  Grid.Column="0" Grid.Row="12" />
+			<TextBlock Classes="ColorSelectLabel" Grid.Column="2" Grid.Row="12" Text="Available" />
+
+			<Border Classes="ColorPicker" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="13"
+					IsHitTestVisible="{Binding
+					$parent[view:ColorSelectDialog].AccessibilityNormalColorPickerOpen,
+					Mode=OneWay}" IsVisible="{Binding
+					$parent[view:ColorSelectDialog].AccessibilityNormalColorPickerOpen,
+					Mode=OneWay}">
+				<view:ColorPickerControl DataContext="{Binding AccessibilityNormalColor}" />
+			</Border>
+
+			<TextBlock Classes="ColorSelectTitle" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="14"
+					   Text="Connector Colors" />
+			<ToggleButton Classes="ColorSelect" IsChecked="{Binding
+						  $parent[view:ColorSelectDialog].ConnectorColorPickerOpen, Mode=TwoWay}"
+						  Background="{Binding ConnectorColor}" Grid.Column="0" Grid.Row="15" />
+			<TextBlock Classes="ColorSelectLabel" Grid.Column="2" Grid.Row="15" Text="Emphasis" />
+
+			<Border Classes="ColorPicker" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="16"
+					IsHitTestVisible="{Binding
+					$parent[view:ColorSelectDialog].ConnectorColorPickerOpen,
+					Mode=OneWay}" IsVisible="{Binding
+					$parent[view:ColorSelectDialog].ConnectorColorPickerOpen, Mode=OneWay}">
+				<view:ColorPickerControl DataContext="{Binding ConnectorColor}" />
+			</Border>
+
+		</Grid>
+	</ScrollViewer>
 </Window>

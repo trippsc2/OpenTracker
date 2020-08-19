@@ -1,11 +1,8 @@
 ﻿using Avalonia.Layout;
-using OpenTracker.Models.Locations;
-using OpenTracker.Models.Modes;
 using OpenTracker.Models.Settings;
 using OpenTracker.ViewModels.Items.Large;
 using OpenTracker.ViewModels.Items.Small;
 using ReactiveUI;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels.Items
@@ -15,69 +12,39 @@ namespace OpenTracker.ViewModels.Items
     /// </summary>
     public class ItemsPanelVM : ViewModelBase
     {
+        private readonly HorizontalSmallItemPanelVM _horizontalSmallItemPanel =
+            new HorizontalSmallItemPanelVM();
+        private readonly VerticalSmallItemPanelVM _verticalSmallItemPanel =
+            new VerticalSmallItemPanelVM();
+
         public double Scale =>
             AppSettings.Instance.Layout.UIScale;
-        public bool ATItemsVisible =>
-            Mode.Instance.SmallKeyShuffle;
         public Orientation Orientation =>
             AppSettings.Instance.Layout.CurrentLayoutOrientation;
-        public bool HorizontalOrientation =>
-            Orientation == Orientation.Horizontal;
-        public ModeSettingsVM ModeSettings { get; }
 
-        public ObservableCollection<LargeItemVMBase> Items { get; } =
-            new ObservableCollection<LargeItemVMBase>();
-        public ObservableCollection<SmallItemVMBase> HCItems { get; } =
-            new ObservableCollection<SmallItemVMBase>();
-        public ObservableCollection<SmallItemVMBase> ATItems { get; } =
-            new ObservableCollection<SmallItemVMBase>();
-        public ObservableCollection<SmallItemVMBase> EPItems { get; } =
-            new ObservableCollection<SmallItemVMBase>();
-        public ObservableCollection<SmallItemVMBase> DPItems { get; } =
-            new ObservableCollection<SmallItemVMBase>();
-        public ObservableCollection<SmallItemVMBase> ToHItems { get; } =
-            new ObservableCollection<SmallItemVMBase>();
-        public ObservableCollection<SmallItemVMBase> PoDItems { get; } =
-            new ObservableCollection<SmallItemVMBase>();
-        public ObservableCollection<SmallItemVMBase> SPItems { get; } =
-            new ObservableCollection<SmallItemVMBase>();
-        public ObservableCollection<SmallItemVMBase> SWItems { get; } =
-            new ObservableCollection<SmallItemVMBase>();
-        public ObservableCollection<SmallItemVMBase> TTItems { get; } =
-            new ObservableCollection<SmallItemVMBase>();
-        public ObservableCollection<SmallItemVMBase> IPItems { get; } =
-            new ObservableCollection<SmallItemVMBase>();
-        public ObservableCollection<SmallItemVMBase> MMItems { get; } =
-            new ObservableCollection<SmallItemVMBase>();
-        public ObservableCollection<SmallItemVMBase> TRItems { get; } =
-            new ObservableCollection<SmallItemVMBase>();
-        public ObservableCollection<SmallItemVMBase> GTItems { get; } =
-            new ObservableCollection<SmallItemVMBase>();
+        public ModeSettingsVM ModeSettings { get; } =
+            new ModeSettingsVM();
+        public LargeItemPanelVM LargeItems { get; } =
+            new LargeItemPanelVM();
+        public SmallItemPanelVM SmallItems
+        {
+            get
+            {
+                if (Orientation == Orientation.Horizontal)
+                {
+                    return _horizontalSmallItemPanel;
+                }
+
+                return _verticalSmallItemPanel;
+            }
+        }
 
         /// <summary>
         /// Constructor
         /// </summary>
         public ItemsPanelVM()
         {
-            ModeSettings = new ModeSettingsVM();
-
-            LargeItemControlVMFactory.GetLargeItemControlVMs(Items);
-            SmallItemVMFactory.GetSmallItemControlVMs(LocationID.HyruleCastle, HCItems);
-            SmallItemVMFactory.GetSmallItemControlVMs(LocationID.AgahnimTower, ATItems);
-            SmallItemVMFactory.GetSmallItemControlVMs(LocationID.EasternPalace, EPItems);
-            SmallItemVMFactory.GetSmallItemControlVMs(LocationID.DesertPalace, DPItems);
-            SmallItemVMFactory.GetSmallItemControlVMs(LocationID.TowerOfHera, ToHItems);
-            SmallItemVMFactory.GetSmallItemControlVMs(LocationID.PalaceOfDarkness, PoDItems);
-            SmallItemVMFactory.GetSmallItemControlVMs(LocationID.SwampPalace, SPItems);
-            SmallItemVMFactory.GetSmallItemControlVMs(LocationID.SkullWoods, SWItems);
-            SmallItemVMFactory.GetSmallItemControlVMs(LocationID.ThievesTown, TTItems);
-            SmallItemVMFactory.GetSmallItemControlVMs(LocationID.IcePalace, IPItems);
-            SmallItemVMFactory.GetSmallItemControlVMs(LocationID.MiseryMire, MMItems);
-            SmallItemVMFactory.GetSmallItemControlVMs(LocationID.TurtleRock, TRItems);
-            SmallItemVMFactory.GetSmallItemControlVMs(LocationID.GanonsTower, GTItems);
-
             PropertyChanged += OnPropertyChanged;
-            Mode.Instance.PropertyChanged += OnModeChanged;
             AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
         }
 
@@ -94,25 +61,7 @@ namespace OpenTracker.ViewModels.Items
         {
             if (e.PropertyName == nameof(Orientation))
             {
-                this.RaisePropertyChanged(nameof(HorizontalOrientation));
-            }
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the Mode class.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(Mode.WorldState) ||
-                e.PropertyName == nameof(Mode.DungeonItemShuffle))
-            {
-                this.RaisePropertyChanged(nameof(ATItemsVisible));
+                this.RaisePropertyChanged(nameof(SmallItems));
             }
         }
 

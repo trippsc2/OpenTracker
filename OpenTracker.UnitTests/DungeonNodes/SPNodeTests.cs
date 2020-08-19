@@ -19,24 +19,24 @@ namespace OpenTracker.UnitTests.DungeonNodes
         [MemberData(nameof(Entry_To_SP))]
         [MemberData(nameof(AfterRiver_To_SP))]
         [MemberData(nameof(SP_To_AfterRiver))]
-        [MemberData(nameof(SPB1_To_AfterRiver))]
-        [MemberData(nameof(AfterRiver_To_SPB1))]
-        [MemberData(nameof(SPB1PastFirstRightKeyDoor_To_SPB1))]
-        [MemberData(nameof(SPB1_To_SPB1PastFirstRightKeyDoor))]
-        [MemberData(nameof(SPB1PastSecondRightKeyDoor_To_SPB1PastFirstRightKeyDoor))]
-        [MemberData(nameof(SPB1PastFirstRightKeyDoor_To_SPB1PastSecondRightKeyDoor))]
-        [MemberData(nameof(SPB1PastRightHammerBlocks_To_SPB1PastSecondRightKeyDoor))]
-        [MemberData(nameof(SPB1PastSecondRightKeyDoor_To_SPB1PastRightHammerBlocks))]
-        [MemberData(nameof(SPB1KeyLedge_To_SPB1PastRightHammerBlocks))]
-        [MemberData(nameof(SPB1PastLeftKeyDoor_To_SPB1PastRightHammerBlocks))]
-        [MemberData(nameof(SPB1PastRightHammerBlocks_To_SPB1KeyLedge))]
-        [MemberData(nameof(SPB1PastRightHammerBlocks_To_SPB1PastLeftKeyDoor))]
-        [MemberData(nameof(SPB1PastRightHammerBlocks_To_BigChest))]
-        [MemberData(nameof(SPB1PastRightHammerBlocks_To_SPB1Back))]
-        [MemberData(nameof(SPB1PastBackFirstKeyDoor_To_SPB1Back))]
-        [MemberData(nameof(SPB1Back_To_SPB1PastBackFirstKeyDoor))]
-        [MemberData(nameof(BossRoom_To_SPB1PastBackFirstKeyDoor))]
-        [MemberData(nameof(SPB1PastBackFirstKeyDoor_To_BossRoom))]
+        [MemberData(nameof(B1_To_AfterRiver))]
+        [MemberData(nameof(AfterRiver_To_B1))]
+        [MemberData(nameof(B1PastFirstRightKeyDoor_To_B1))]
+        [MemberData(nameof(B1_To_B1PastFirstRightKeyDoor))]
+        [MemberData(nameof(B1PastSecondRightKeyDoor_To_B1PastFirstRightKeyDoor))]
+        [MemberData(nameof(B1PastFirstRightKeyDoor_To_B1PastSecondRightKeyDoor))]
+        [MemberData(nameof(B1PastRightHammerBlocks_To_B1PastSecondRightKeyDoor))]
+        [MemberData(nameof(B1PastSecondRightKeyDoor_To_B1PastRightHammerBlocks))]
+        [MemberData(nameof(B1KeyLedge_To_B1PastRightHammerBlocks))]
+        [MemberData(nameof(B1PastLeftKeyDoor_To_B1PastRightHammerBlocks))]
+        [MemberData(nameof(B1PastRightHammerBlocks_To_B1KeyLedge))]
+        [MemberData(nameof(B1PastRightHammerBlocks_To_B1PastLeftKeyDoor))]
+        [MemberData(nameof(B1PastRightHammerBlocks_To_BigChest))]
+        [MemberData(nameof(B1PastRightHammerBlocks_To_B1Back))]
+        [MemberData(nameof(B1PastBackFirstKeyDoor_To_B1Back))]
+        [MemberData(nameof(B1Back_To_B1PastBackFirstKeyDoor))]
+        [MemberData(nameof(BossRoom_To_B1PastBackFirstKeyDoor))]
+        [MemberData(nameof(B1PastBackFirstKeyDoor_To_BossRoom))]
         public void AccessibilityTests(
             DungeonNodeID id, ItemPlacement itemPlacement,
             DungeonItemShuffle dungeonItemShuffle, WorldState worldState,
@@ -340,7 +340,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> SPB1_To_AfterRiver =>
+        public static IEnumerable<object[]> B1_To_AfterRiver =>
             new List<object[]>
             {
                 new object[]
@@ -396,7 +396,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> AfterRiver_To_SPB1 =>
+        public static IEnumerable<object[]> AfterRiver_To_B1 =>
             new List<object[]>
             {
                 new object[]
@@ -452,7 +452,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> SPB1PastFirstRightKeyDoor_To_SPB1 =>
+        public static IEnumerable<object[]> B1PastFirstRightKeyDoor_To_B1 =>
             new List<object[]>
             {
                 new object[]
@@ -508,7 +508,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> SPB1_To_SPB1PastFirstRightKeyDoor =>
+        public static IEnumerable<object[]> B1_To_B1PastFirstRightKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -564,7 +564,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> SPB1PastSecondRightKeyDoor_To_SPB1PastFirstRightKeyDoor =>
+        public static IEnumerable<object[]> B1PastSecondRightKeyDoor_To_B1PastFirstRightKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -620,7 +620,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> SPB1PastFirstRightKeyDoor_To_SPB1PastSecondRightKeyDoor =>
+        public static IEnumerable<object[]> B1PastFirstRightKeyDoor_To_B1PastSecondRightKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -676,7 +676,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> SPB1PastRightHammerBlocks_To_SPB1PastSecondRightKeyDoor =>
+        public static IEnumerable<object[]> B1PastRightHammerBlocks_To_B1PastSecondRightKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -713,7 +713,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> SPB1PastSecondRightKeyDoor_To_SPB1PastRightHammerBlocks =>
+        public static IEnumerable<object[]> B1PastSecondRightKeyDoor_To_B1PastRightHammerBlocks =>
             new List<object[]>
             {
                 new object[]
@@ -769,7 +769,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> SPB1KeyLedge_To_SPB1PastRightHammerBlocks =>
+        public static IEnumerable<object[]> B1KeyLedge_To_B1PastRightHammerBlocks =>
             new List<object[]>
             {
                 new object[]
@@ -806,7 +806,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> SPB1PastLeftKeyDoor_To_SPB1PastRightHammerBlocks =>
+        public static IEnumerable<object[]> B1PastLeftKeyDoor_To_B1PastRightHammerBlocks =>
             new List<object[]>
             {
                 new object[]
@@ -862,7 +862,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> SPB1PastRightHammerBlocks_To_SPB1KeyLedge =>
+        public static IEnumerable<object[]> B1PastRightHammerBlocks_To_B1KeyLedge =>
             new List<object[]>
             {
                 new object[]
@@ -918,7 +918,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> SPB1PastRightHammerBlocks_To_SPB1PastLeftKeyDoor =>
+        public static IEnumerable<object[]> B1PastRightHammerBlocks_To_B1PastLeftKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -974,7 +974,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> SPB1PastRightHammerBlocks_To_BigChest =>
+        public static IEnumerable<object[]> B1PastRightHammerBlocks_To_BigChest =>
             new List<object[]>
             {
                 new object[]
@@ -1030,7 +1030,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> SPB1PastRightHammerBlocks_To_SPB1Back =>
+        public static IEnumerable<object[]> B1PastRightHammerBlocks_To_B1Back =>
             new List<object[]>
             {
                 new object[]
@@ -1086,7 +1086,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> SPB1PastBackFirstKeyDoor_To_SPB1Back =>
+        public static IEnumerable<object[]> B1PastBackFirstKeyDoor_To_B1Back =>
             new List<object[]>
             {
                 new object[]
@@ -1142,7 +1142,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> SPB1Back_To_SPB1PastBackFirstKeyDoor =>
+        public static IEnumerable<object[]> B1Back_To_B1PastBackFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -1198,7 +1198,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> BossRoom_To_SPB1PastBackFirstKeyDoor =>
+        public static IEnumerable<object[]> BossRoom_To_B1PastBackFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -1254,7 +1254,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> SPB1PastBackFirstKeyDoor_To_BossRoom =>
+        public static IEnumerable<object[]> B1PastBackFirstKeyDoor_To_BossRoom =>
             new List<object[]>
             {
                 new object[]

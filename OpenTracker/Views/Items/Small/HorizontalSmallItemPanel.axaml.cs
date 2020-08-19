@@ -1,15 +1,11 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Avalonia.ThemeManager;
 
-namespace OpenTracker.Views
+namespace OpenTracker.Views.Items.Small
 {
-    public class TopMenu : UserControl
+    public class HorizontalSmallItemPanel : UserControl
     {
-        public static IThemeSelector Selector =>
-            App.Selector;
-
-        public TopMenu()
+        public HorizontalSmallItemPanel()
         {
             InitializeComponent();
         }

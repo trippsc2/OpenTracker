@@ -5,5 +5,5 @@
              xmlns:cp="clr-namespace:ThemeEditor.Controls.ColorPicker;assembly=ThemeEditor.Controls.ColorPicker"
              mc:Ignorable="d" d:DesignWidth="500" d:DesignHeight="350"
              x:Class="OpenTracker.Views.ColorSelect.ColorPickerControl">
-	<cp:ColorPicker Color="{Binding Path=Color, Mode=TwoWay}"/>
+	<cp:ColorPicker Color="{Binding Path=Color, Mode=TwoWay}" />
 </UserControl>

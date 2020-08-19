@@ -4,27 +4,27 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.BossSelect.BossSelectPopup">
-  <Popup IsOpen="{Binding PopupOpen, Mode=TwoWay}" StaysOpen="False" PlacementMode="Pointer">
-    <LayoutTransformControl>
+	<Popup IsOpen="{Binding PopupOpen, Mode=TwoWay}" StaysOpen="False" PlacementMode="Pointer">
+		<LayoutTransformControl>
 
-      <LayoutTransformControl.LayoutTransform>
-        <ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}" />
-      </LayoutTransformControl.LayoutTransform>
+			<LayoutTransformControl.LayoutTransform>
+				<ScaleTransform ScaleX="{Binding Scale}" ScaleY="{Binding Scale}" />
+			</LayoutTransformControl.LayoutTransform>
 
-      <Border Classes="Popup">
-        <StackPanel Orientation="Vertical">
-          <ItemsControl Items="{Binding Buttons}">
-            <ItemsControl.ItemsPanel>
-              <ItemsPanelTemplate>
-                <WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="136" MaxHeight="120"
-                           Margin="0" Orientation="Horizontal" HorizontalAlignment="Left"
-                           VerticalAlignment="Top" />
-              </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-          </ItemsControl>
-        </StackPanel>
-      </Border>
-      
-    </LayoutTransformControl>
-  </Popup>
+			<Border Classes="Popup">
+				<StackPanel Orientation="Vertical">
+					<ItemsControl Items="{Binding Buttons}">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<WrapPanel ItemWidth="34" ItemHeight="40" MaxWidth="136"
+										   MaxHeight="120" Margin="0" Orientation="Horizontal"
+										   HorizontalAlignment="Left" VerticalAlignment="Top" />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+					</ItemsControl>
+				</StackPanel>
+			</Border>
+
+		</LayoutTransformControl>
+	</Popup>
 </UserControl>

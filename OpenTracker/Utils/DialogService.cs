@@ -11,15 +11,16 @@ namespace OpenTracker.Utils
     /// </summary>
     public class DialogService : IDialogService
     {
-        public Window Owner { get; set; }
-        public IDictionary<Type, Type> Mappings { get; }
+        public Window Owner { get; }
+        public IDictionary<Type, Type> Mappings { get; } =
+            new Dictionary<Type, Type>();
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public DialogService()
+        public DialogService(Window owner)
         {
-            Mappings = new Dictionary<Type, Type>();
+            Owner = owner ?? throw new ArgumentNullException(nameof(owner));
         }
 
         /// <summary>
@@ -36,7 +37,10 @@ namespace OpenTracker.Utils
             where TView : IDialog
         {
             if (Mappings.ContainsKey(typeof(TViewModel)))
-                throw new ArgumentException($"Type {typeof(TViewModel)} is already mapped to type {typeof(TView)}");
+            {
+                throw new ArgumentException(
+                    $"Type {typeof(TViewModel)} is already mapped to type {typeof(TView)}");
+            }
 
             Mappings.Add(typeof(TViewModel), typeof(TView));
         }
@@ -65,9 +69,13 @@ namespace OpenTracker.Utils
                 viewModel.CloseRequested -= handler;
 
                 if (e.DialogResult.HasValue)
+                {
                     dialog.Close(e.DialogResult);
+                }
                 else
+                {
                     dialog.Close(null);
+                }
             }
 
             viewModel.CloseRequested += handler;

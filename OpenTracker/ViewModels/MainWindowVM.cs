@@ -1,41 +1,29 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
-using Avalonia.Threading;
 using Newtonsoft.Json;
 using OpenTracker.Interfaces;
-using OpenTracker.Models;
-using OpenTracker.Models.AutoTracking;
-using OpenTracker.Models.BossPlacements;
-using OpenTracker.Models.Connections;
-using OpenTracker.Models.Items;
-using OpenTracker.Models.Locations;
-using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.SequenceBreaks;
 using OpenTracker.Models.Settings;
-using OpenTracker.Models.UndoRedo;
 using OpenTracker.ViewModels.ColorSelect;
 using OpenTracker.ViewModels.Maps;
 using OpenTracker.ViewModels.SequenceBreaks;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Reactive;
-using System.Reactive.Linq;
 
 namespace OpenTracker.ViewModels
 {
     /// <summary>
     /// This is the ViewModel for the main window.
     /// </summary>
-    public class MainWindowVM : ViewModelBase, IAutoTrackerAccess, IColorSelectAccess,
-        IDynamicLayout, IOpen, ISave, ICloseHandler, IBounds, ISequenceBreakAccess
+    public class MainWindowVM : ViewModelBase, IAutoTrackerAccess, IBoundsData, ICloseHandler,
+        IColorSelectAccess, IDynamicLayout, IOpenData, ISaveData, ISequenceBreakAccess
     {
-        private readonly IDialogService _dialogService;
         private AutoTrackerDialogVM _autoTrackerDialog;
 
         public bool? Maximized
@@ -71,101 +59,29 @@ namespace OpenTracker.ViewModels
                 _ => AppSettings.Instance.Layout.VerticalUIPanelPlacement
             };
 
-        public TopMenuVM TopMenu { get; }
-        public UIPanelVM UIPanel { get; }
-        public MapAreaVM MapArea { get; }
+        public TopMenuVM TopMenu { get; } =
+            new TopMenuVM();
+        public UIPanelVM UIPanel { get; } =
+            new UIPanelVM();
+        public MapAreaVM MapArea { get; } =
+            new MapAreaVM();
 
-        public ReactiveCommand<Unit, Unit> OpenResetDialogCommand { get; }
-        public ReactiveCommand<Unit, Unit> UndoCommand { get; }
-        public ReactiveCommand<Unit, Unit> RedoCommand { get; }
-        public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocationsCommand { get; }
-        public ReactiveCommand<Unit, Unit> ToggleShowItemCountsOnMapCommand { get; }
-        public ReactiveCommand<string, Unit> SetLayoutOrientationCommand { get; }
-        public ReactiveCommand<string, Unit> SetMapOrientationCommand { get; }
-        public ReactiveCommand<string, Unit> SetHorizontalUIPanelPlacementCommand { get; }
-        public ReactiveCommand<string, Unit> SetVerticalUIPanelPlacementCommand { get; }
-        public ReactiveCommand<string, Unit> SetHorizontalItemsPlacementCommand { get; }
-        public ReactiveCommand<string, Unit> SetVerticalItemsPlacementCommand { get; }
-
-        private readonly ObservableAsPropertyHelper<bool> _isOpeningResetDialog;
-        public bool IsOpeningResetDialog =>
-            _isOpeningResetDialog.Value;
-
-        private bool _canUndo;
-        public bool CanUndo
-        {
-            get => _canUndo;
-            private set => this.RaiseAndSetIfChanged(ref _canUndo, value);
-        }
-
-        private bool _canRedo;
-        public bool CanRedo
-        {
-            get => _canRedo;
-            private set => this.RaiseAndSetIfChanged(ref _canRedo, value);
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="dialogService">
-        /// The dialog service.
-        /// </param>
-        public MainWindowVM(IDialogService dialogService) : this()
-        {
-            _dialogService = dialogService;
-        }
+        public ReactiveCommand<Unit, Unit> OpenResetDialogCommand =>
+            TopMenu.OpenResetDialogCommand;
+        public ReactiveCommand<Unit, Unit> UndoCommand =>
+            TopMenu.UndoCommand;
+        public ReactiveCommand<Unit, Unit> RedoCommand =>
+            TopMenu.RedoCommand;
+        public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocationsCommand =>
+            TopMenu.ToggleDisplayAllLocationsCommand;
 
         /// <summary>
         /// Constructor
         /// </summary>
         public MainWindowVM()
         {
-            UndoRedoManager.Instance.UndoableActions.CollectionChanged += OnUndoChanged;
-            UndoRedoManager.Instance.RedoableActions.CollectionChanged += OnRedoChanged;
-
-            OpenResetDialogCommand = ReactiveCommand.CreateFromObservable(OpenResetDialogAsync);
-            OpenResetDialogCommand.IsExecuting.ToProperty(
-                this, x => x.IsOpeningResetDialog, out _isOpeningResetDialog);
-
-            UndoCommand = ReactiveCommand.Create(Undo, this.WhenAnyValue(x => x.CanUndo));
-            RedoCommand = ReactiveCommand.Create(Redo, this.WhenAnyValue(x => x.CanRedo));
-            ToggleDisplayAllLocationsCommand = ReactiveCommand.Create(ToggleDisplayAllLocations);
-
-            TopMenu = new TopMenuVM(this);
-            UIPanel = new UIPanelVM();
-            MapArea = new MapAreaVM();
-
             AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
             LoadSequenceBreaks();
-        }
-
-        /// <summary>
-        /// Subscribes to the CollectionChanged event on the observable stack of undoable actions.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnUndoChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            UpdateCanUndo();
-        }
-
-        /// <summary>
-        /// Subscribes to the CollectionChanged event on the observable stack of redoable actions.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnRedoChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            UpdateCanRedo();
         }
 
         /// <summary>
@@ -185,40 +101,6 @@ namespace OpenTracker.ViewModels
             {
                 this.RaisePropertyChanged(nameof(UIDock));
             }
-        }
-
-        /// <summary>
-        /// Updates the CanUndo property with a value representing whether there are objects in the
-        /// Undoable stack.
-        /// </summary>
-        private void UpdateCanUndo()
-        {
-            CanUndo = UndoRedoManager.Instance.CanUndo();
-        }
-
-        /// <summary>
-        /// Undoes the last action.
-        /// </summary>
-        private void Undo()
-        {
-            UndoRedoManager.Instance.Undo();
-        }
-
-        /// <summary>
-        /// Updates the CanRedo property with a value representing whether there are objects in the
-        /// Redoable stack.
-        /// </summary>
-        private void UpdateCanRedo()
-        {
-            CanRedo = UndoRedoManager.Instance.CanRedo();
-        }
-
-        /// <summary>
-        /// Redoes the last action.
-        /// </summary>
-        private void Redo()
-        {
-            UndoRedoManager.Instance.Redo();
         }
 
         /// <summary>
@@ -265,52 +147,6 @@ namespace OpenTracker.ViewModels
             string jsonContent = File.ReadAllText(path);
             SaveData saveData = JsonConvert.DeserializeObject<SaveData>(jsonContent);
             saveData.Load();
-        }
-
-        /// <summary>
-        /// Toggles whether to display all locations on the map.
-        /// </summary>
-        private void ToggleDisplayAllLocations()
-        {
-            AppSettings.Instance.Tracker.DisplayAllLocations =
-                !AppSettings.Instance.Tracker.DisplayAllLocations;
-        }
-
-        /// <summary>
-        /// Resets the undo/redo manager, pinned locations, and game data to their starting values.
-        /// </summary>
-        private void Reset()
-        {
-            Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                UndoRedoManager.Instance.Reset();
-                PinnedLocationCollection.Instance.Clear();
-                AutoTracker.Instance.Stop();
-                BossPlacementDictionary.Instance.Reset();
-                LocationDictionary.Instance.Reset();
-                PrizePlacementDictionary.Instance.Reset();
-                ItemDictionary.Instance.Reset();
-                ConnectionCollection.Instance.Clear();
-            });
-        }
-
-        /// <summary>
-        /// Opens a reset dialog window.
-        /// </summary>
-        private void OpenResetDialog()
-        {
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                bool? result = await _dialogService.ShowDialog(
-                    new MessageBoxDialogVM("Warning",
-                    "Resetting the tracker will set all items and locations back to their starting values." +
-                    "  This cannot be undone.\n\nDo you wish to proceed?")).ConfigureAwait(false);
-
-                if (result.HasValue && result.Value)
-                {
-                    Reset();
-                }
-            });
         }
 
         /// <summary>
@@ -380,17 +216,6 @@ namespace OpenTracker.ViewModels
 
                 SequenceBreakDictionary.Instance.Load(sequenceBreaks);
             }
-        }
-
-        /// <summary>
-        /// Returns the observable result of the OpenResetDialog method.
-        /// </summary>
-        /// <returns>
-        /// The observable result of the OpenResetDialog method.
-        /// </returns>
-        private IObservable<Unit> OpenResetDialogAsync()
-        {
-            return Observable.Start(() => { OpenResetDialog(); });
         }
 
         /// <summary>

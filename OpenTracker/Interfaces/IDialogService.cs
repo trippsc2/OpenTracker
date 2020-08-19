@@ -8,7 +8,7 @@ namespace OpenTracker.Interfaces
     /// </summary>
     public interface IDialogService
     {
-        Window Owner { get; set; }
+        Window Owner { get; }
 
         void Register<TViewModel, TView>()
             where TViewModel : IDialogRequestClose

@@ -1010,7 +1010,7 @@ namespace OpenTracker.Models.Requirements
                 RequirementType.GTBoss2Test => new ItemRequirement(
                     ItemDictionary.Instance[ItemType.GTBoss2Test]),
                 RequirementType.GT3FPastBoss2Test => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.GT3FPastBoss2Test]),
+                    ItemDictionary.Instance[ItemType.GT4FPastBoss2Test]),
                 RequirementType.GT5FPastFourTorchRoomsTest => new ItemRequirement(
                     ItemDictionary.Instance[ItemType.GT5FPastFourTorchRoomsTest]),
                 RequirementType.GT6FPastFirstKeyDoorTest => new ItemRequirement(

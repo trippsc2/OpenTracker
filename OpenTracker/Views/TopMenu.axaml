@@ -9,7 +9,7 @@
              x:Class="OpenTracker.Views.TopMenu">
 
   <UserControl.Resources>
-    <manager:ObjectEqualityMultiConverter x:Key="ObjectEqualityMultiConverter"/>
+    <manager:ObjectEqualityMultiConverter x:Key="ObjectEqualityMultiConverter" />
   </UserControl.Resources>
   
   <Border Classes="ControlBorder" BorderThickness="0,0,0,1">
@@ -44,7 +44,7 @@
           </MenuItem.Header>
         </MenuItem>
 
-        <MenuItem Classes="Menu InnerMenu" Command="{Binding Path=OpenResetDialogCommand}">
+        <MenuItem Classes="Menu InnerMenu" Command="{Binding OpenResetDialogCommand}">
           <MenuItem.Header>
             <Grid ColumnDefinitions="Auto,*,Auto">
               <TextBlock Text="Reset" />
@@ -67,7 +67,7 @@
 
       <MenuItem Classes="Menu" Header="Tracking">
 
-        <MenuItem Classes="Menu InnerMenu" Command="{Binding Path=UndoCommand}">
+        <MenuItem Classes="Menu InnerMenu" Command="{Binding UndoCommand}">
           <MenuItem.Header>
             <Grid ColumnDefinitions="Auto,*,Auto">
               <TextBlock Text="Undo" />
@@ -76,7 +76,7 @@
           </MenuItem.Header>
         </MenuItem>
 
-        <MenuItem Classes="Menu InnerMenu" Command="{Binding Path=RedoCommand}">
+        <MenuItem Classes="Menu InnerMenu" Command="{Binding RedoCommand}">
           <MenuItem.Header>
             <Grid ColumnDefinitions="Auto,*,Auto">
               <TextBlock Text="Redo" />
@@ -89,27 +89,28 @@
         <MenuItem Classes="Menu InnerMenu" Command="{Binding $parent[view:MainWindow].AutoTracker}"
               Header="AutoTracker..." />
         <Separator />
-        <MenuItem Classes="Menu InnerMenu" Command="{Binding $parent[view:MainWindow].SequenceBreak}"
-              Header="Sequence Breaks..." />
+        <MenuItem Classes="Menu InnerMenu" Command="{Binding
+				  $parent[view:MainWindow].SequenceBreak}" Header="Sequence Breaks..." />
 
       </MenuItem>
 
       <MenuItem Classes="Menu" Header="View">
 
         <MenuItem Classes="Menu InnerMenu" Header="Theme" DataContext="{Binding
-                  $parent[view:MainWindow].Selector}" Items="{Binding Path=Themes}">
+                  $parent[view:TopMenu].Selector}" Items="{Binding Themes}">
           <MenuItem.Styles>
             <Style Selector="MenuItem">
-              <Setter Property="Header" Value="{Binding Name}"/>
-              <Setter Property="Command" Value="{Binding ApplyTheme}"/>
-              <Setter Property="CommandParameter" Value="{Binding}"/>
+              <Setter Property="Header" Value="{Binding Name}" />
+              <Setter Property="Command" Value="{Binding ApplyTheme}" />
+              <Setter Property="CommandParameter" Value="{Binding}" />
               <Setter Property="Icon">
                 <Template>
                   <CheckBox Classes="Menu">
                     <CheckBox.IsChecked>
-                      <MultiBinding Mode="OneWay" Converter="{StaticResource ObjectEqualityMultiConverter}">
-                        <Binding Path="DataContext" RelativeSource="{RelativeSource Self}"/>
-                        <Binding Path="Selector.SelectedTheme"/>
+                      <MultiBinding Mode="OneWay" Converter="{StaticResource
+									ObjectEqualityMultiConverter}">
+                        <Binding Path="DataContext" RelativeSource="{RelativeSource Self}" />
+                        <Binding Path="Selector.SelectedTheme" />
                       </MultiBinding>
                     </CheckBox.IsChecked>
                   </CheckBox>
@@ -121,10 +122,10 @@
 
         <Separator />
 
-        <MenuItem Classes="Menu InnerMenu" Command="{Binding Path=ToggleDisplayAllLocationsCommand}">
+        <MenuItem Classes="Menu InnerMenu" Command="{Binding ToggleDisplayAllLocationsCommand}">
 
           <MenuItem.Icon>
-            <CheckBox Classes="Menu" IsChecked="{Binding Path=DisplayAllLocations}" />
+            <CheckBox Classes="Menu" IsChecked="{Binding DisplayAllLocations}" />
           </MenuItem.Icon>
 
           <MenuItem.Header>
@@ -136,43 +137,46 @@
 
         </MenuItem>
 
-        <MenuItem Classes="Menu InnerMenu" Command="{Binding Path=ToggleShowItemCountsOnMapCommand}"
-              Header="Show Item Counts on Map">
+        <MenuItem Classes="Menu InnerMenu" Command="{Binding ToggleShowItemCountsOnMapCommand}"
+				  Header="Show Item Counts on Map">
 
           <MenuItem.Icon>
-            <CheckBox Classes="Menu" IsChecked="{Binding Path=ShowItemCountsOnMap}" />
+            <CheckBox Classes="Menu" IsChecked="{Binding ShowItemCountsOnMap}" />
           </MenuItem.Icon>
 
         </MenuItem>
 
         <Separator />
         <MenuItem Classes="Menu InnerMenu" Command="{Binding $parent[view:MainWindow].ColorSelect}"
-              Header="Change Colors..." />
+				  Header="Change Colors..." />
         <Separator />
 
         <MenuItem Classes="Menu InnerMenu" Header="Layout Orientation">
 
           <MenuItem Classes="Menu InnerMenu" Header="Dynamic"
-                Command="{Binding Path=SetLayoutOrientationCommand}" CommandParameter="Dynamic">
+					Command="{Binding Path=SetLayoutOrientationCommand}" CommandParameter="Dynamic">
             <MenuItem.Icon>
-              <CheckBox Classes="Menu" IsChecked="{Binding Path=DynamicLayoutOrientation, Mode=OneWay}"
-                     Command="{Binding Path=SetLayoutOrientationCommand}" CommandParameter="Dynamic" />
+              <CheckBox Classes="Menu" IsChecked="{Binding Path=DynamicLayoutOrientation,
+						Mode=OneWay}" Command="{Binding SetLayoutOrientationCommand}"
+						CommandParameter="Dynamic" />
             </MenuItem.Icon>
           </MenuItem>
 
-          <MenuItem Classes="Menu InnerMenu" Header="Horizontal"
-                Command="{Binding Path=SetLayoutOrientationCommand}" CommandParameter="Horizontal">
+          <MenuItem Classes="Menu InnerMenu" Header="Horizontal" Command="{Binding
+					SetLayoutOrientationCommand}" CommandParameter="Horizontal">
             <MenuItem.Icon>
-              <CheckBox Classes="Menu" IsChecked="{Binding Path=HorizontalLayoutOrientation, Mode=OneWay}"
-                     Command="{Binding Path=SetLayoutOrientationCommand}" CommandParameter="Horizontal" />
+              <CheckBox Classes="Menu" IsChecked="{Binding HorizontalLayoutOrientation,
+						Mode=OneWay}" Command="{Binding SetLayoutOrientationCommand}"
+						CommandParameter="Horizontal" />
             </MenuItem.Icon>
           </MenuItem>
 
-          <MenuItem Classes="Menu InnerMenu" Header="Vertical"
-                Command="{Binding Path=SetLayoutOrientationCommand}" CommandParameter="Vertical">
+          <MenuItem Classes="Menu InnerMenu" Header="Vertical" Command="{Binding
+					SetLayoutOrientationCommand}" CommandParameter="Vertical">
             <MenuItem.Icon>
-              <CheckBox Classes="Menu" IsChecked="{Binding Path=VerticalLayoutOrientation, Mode=OneWay}"
-                     Command="{Binding Path=SetLayoutOrientationCommand}" CommandParameter="Vertical" />
+              <CheckBox Classes="Menu" IsChecked="{Binding VerticalLayoutOrientation, Mode=OneWay}"
+						Command="{Binding SetLayoutOrientationCommand}"
+						CommandParameter="Vertical" />
             </MenuItem.Icon>
           </MenuItem>
 
@@ -182,19 +186,21 @@
 
           <MenuItem Classes="Menu InnerMenu" Header="UI Panel Placement">
 
-            <MenuItem Classes="Menu InnerMenu" Header="Top"
-                  Command="{Binding Path=SetHorizontalUIPanelPlacementCommand}" CommandParameter="Top">
+            <MenuItem Classes="Menu InnerMenu" Header="Top" Command="{Binding
+					  SetHorizontalUIPanelPlacementCommand}" CommandParameter="Top">
               <MenuItem.Icon>
-                <CheckBox Classes="Menu" IsChecked="{Binding Path=TopHorizontalUIPanelPlacement, Mode=OneWay}"
-                       Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Left" />
+                <CheckBox Classes="Menu" IsChecked="{Binding TopHorizontalUIPanelPlacement,
+						  Mode=OneWay}" Command="{Binding SetHorizontalItemsPlacementCommand}"
+						  CommandParameter="Left" />
               </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Classes="Menu InnerMenu" Header="Bottom"
-                  Command="{Binding Path=SetHorizontalUIPanelPlacementCommand}" CommandParameter="Bottom">
+            <MenuItem Classes="Menu InnerMenu" Header="Bottom" Command="{Binding
+					  SetHorizontalUIPanelPlacementCommand}" CommandParameter="Bottom">
               <MenuItem.Icon>
-                <CheckBox Classes="Menu" IsChecked="{Binding Path=BottomHorizontalUIPanelPlacement, Mode=OneWay}"
-                       Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Right" />
+                <CheckBox Classes="Menu" IsChecked="{Binding BottomHorizontalUIPanelPlacement,
+						  Mode=OneWay}" Command="{Binding SetHorizontalItemsPlacementCommand}"
+						  CommandParameter="Right" />
               </MenuItem.Icon>
             </MenuItem>
 
@@ -202,19 +208,21 @@
 
           <MenuItem Classes="Menu InnerMenu" Header="Items Panel Placement">
 
-            <MenuItem Classes="Menu InnerMenu" Header="Left"
-                  Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Left">
+            <MenuItem Classes="Menu InnerMenu" Header="Left" Command="{Binding
+					  SetHorizontalItemsPlacementCommand}" CommandParameter="Left">
               <MenuItem.Icon>
-                <CheckBox Classes="Menu" IsChecked="{Binding Path=LeftHorizontalItemsPlacement, Mode=OneWay}"
-                       Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Left" />
+                <CheckBox Classes="Menu" IsChecked="{Binding LeftHorizontalItemsPlacement,
+						  Mode=OneWay}" Command="{Binding SetHorizontalItemsPlacementCommand}"
+						  CommandParameter="Left" />
               </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Classes="Menu InnerMenu" Header="Right"
-                  Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Right">
+            <MenuItem Classes="Menu InnerMenu" Header="Right" Command="{Binding
+					  SetHorizontalItemsPlacementCommand}" CommandParameter="Right">
               <MenuItem.Icon>
-                <CheckBox Classes="Menu" IsChecked="{Binding Path=RightHorizontalItemsPlacement, Mode=OneWay}"
-                       Command="{Binding Path=SetHorizontalItemsPlacementCommand}" CommandParameter="Right" />
+                <CheckBox Classes="Menu" IsChecked="{Binding RightHorizontalItemsPlacement,
+						  Mode=OneWay}" Command="{Binding SetHorizontalItemsPlacementCommand}"
+						  CommandParameter="Right" />
               </MenuItem.Icon>
             </MenuItem>
 
@@ -227,18 +235,20 @@
           <MenuItem Classes="Menu InnerMenu" Header="UI Panel Placement">
 
             <MenuItem Classes="Menu InnerMenu" Header="Left"
-                  Command="{Binding Path=SetVerticalUIPanelPlacementCommand}" CommandParameter="Left">
+                  Command="{Binding SetVerticalUIPanelPlacementCommand}" CommandParameter="Left">
               <MenuItem.Icon>
-                <CheckBox Classes="Menu" IsChecked="{Binding Path=LeftVerticalUIPanelPlacement, Mode=OneWay}"
-                       Command="{Binding Path=SetVerticalUIPanelPlacementCommand}" CommandParameter="Left" />
+                <CheckBox Classes="Menu" IsChecked="{Binding LeftVerticalUIPanelPlacement,
+						  Mode=OneWay}" Command="{Binding SetVerticalUIPanelPlacementCommand}"
+						  CommandParameter="Left" />
               </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Classes="Menu InnerMenu" Header="Right"
-                  Command="{Binding Path=SetVerticalUIPanelPlacementCommand}" CommandParameter="Right">
+            <MenuItem Classes="Menu InnerMenu" Header="Right" Command="{Binding
+					  SetVerticalUIPanelPlacementCommand}" CommandParameter="Right">
               <MenuItem.Icon>
-                <CheckBox Classes="Menu" IsChecked="{Binding Path=RightVerticalUIPanelPlacement, Mode=OneWay}"
-                       Command="{Binding Path=SetVerticalUIPanelPlacementCommand}" CommandParameter="Right" />
+                <CheckBox Classes="Menu" IsChecked="{Binding RightVerticalUIPanelPlacement,
+						  Mode=OneWay}" Command="{Binding SetVerticalUIPanelPlacementCommand}"
+						  CommandParameter="Right" />
               </MenuItem.Icon>
             </MenuItem>
 
@@ -247,18 +257,20 @@
           <MenuItem Classes="Menu InnerMenu" Header="Items Panel Placement">
 
             <MenuItem Classes="Menu InnerMenu" Header="Top"
-                  Command="{Binding Path=SetVerticalItemsPlacementCommand}" CommandParameter="Top">
+                  Command="{Binding SetVerticalItemsPlacementCommand}" CommandParameter="Top">
               <MenuItem.Icon>
-                <CheckBox Classes="Menu" IsChecked="{Binding Path=TopVerticalItemsPlacement, Mode=OneWay}"
-                       Command="{Binding Path=SetVerticalItemsPlacementCommand}" CommandParameter="Top" />
+                <CheckBox Classes="Menu" IsChecked="{Binding TopVerticalItemsPlacement,
+						  Mode=OneWay}" Command="{Binding SetVerticalItemsPlacementCommand}"
+						  CommandParameter="Top" />
               </MenuItem.Icon>
             </MenuItem>
 
-            <MenuItem Classes="Menu InnerMenu" Header="Bottom"
-                  Command="{Binding Path=SetVerticalItemsPlacementCommand}" CommandParameter="Bottom">
+            <MenuItem Classes="Menu InnerMenu" Header="Bottom" Command="{Binding
+					  SetVerticalItemsPlacementCommand}" CommandParameter="Bottom">
               <MenuItem.Icon>
-                <CheckBox Classes="Menu" IsChecked="{Binding Path=BottomVerticalItemsPlacement, Mode=OneWay}"
-                       Command="{Binding Path=SetVerticalItemsPlacementCommand}" CommandParameter="Bottom" />
+                <CheckBox Classes="Menu" IsChecked="{Binding BottomVerticalItemsPlacement,
+						  Mode=OneWay}" Command="{Binding SetVerticalItemsPlacementCommand}"
+						  CommandParameter="Bottom" />
               </MenuItem.Icon>
             </MenuItem>
 
@@ -268,27 +280,28 @@
 
         <MenuItem Classes="Menu InnerMenu" Header="Map Orientation">
 
-          <MenuItem Classes="Menu InnerMenu" Header="Dynamic"
-                Command="{Binding Path=SetMapOrientationCommand}" CommandParameter="Dynamic">
+          <MenuItem Classes="Menu InnerMenu" Header="Dynamic" Command="{Binding
+					SetMapOrientationCommand}" CommandParameter="Dynamic">
             <MenuItem.Icon>
-              <CheckBox Classes="Menu" IsChecked="{Binding Path=DynamicMapOrientation, Mode=OneWay}"
-                     Command="{Binding Path=SetMapOrientationCommand}" CommandParameter="Dynamic" />
+              <CheckBox Classes="Menu" IsChecked="{Binding DynamicMapOrientation, Mode=OneWay}"
+						Command="{Binding SetMapOrientationCommand}" CommandParameter="Dynamic" />
             </MenuItem.Icon>
           </MenuItem>
 
-          <MenuItem Classes="Menu InnerMenu" Header="Horizontal"
-                Command="{Binding Path=SetMapOrientationCommand}" CommandParameter="Horizontal">
+          <MenuItem Classes="Menu InnerMenu" Header="Horizontal" Command="{Binding
+					SetMapOrientationCommand}" CommandParameter="Horizontal">
             <MenuItem.Icon>
-              <CheckBox Classes="Menu" IsChecked="{Binding Path=HorizontalMapOrientation, Mode=OneWay}"
-                     Command="{Binding Path=SetMapOrientationCommand}" CommandParameter="Horizontal" />
+              <CheckBox Classes="Menu" IsChecked="{Binding HorizontalMapOrientation, Mode=OneWay}"
+						Command="{Binding SetMapOrientationCommand}"
+						CommandParameter="Horizontal" />
             </MenuItem.Icon>
           </MenuItem>
 
           <MenuItem Classes="Menu InnerMenu" Header="Vertical"
-                Command="{Binding Path=SetMapOrientationCommand}" CommandParameter="Vertical">
+                Command="{Binding SetMapOrientationCommand}" CommandParameter="Vertical">
             <MenuItem.Icon>
-              <CheckBox Classes="Menu" IsChecked="{Binding Path=VerticalMapOrientation, Mode=OneWay}"
-                     Command="{Binding Path=SetMapOrientationCommand}" CommandParameter="Vertical" />
+              <CheckBox Classes="Menu" IsChecked="{Binding VerticalMapOrientation, Mode=OneWay}"
+						Command="{Binding SetMapOrientationCommand}" CommandParameter="Vertical" />
             </MenuItem.Icon>
           </MenuItem>
 
@@ -296,43 +309,43 @@
 
         <MenuItem Classes="Menu InnerMenu" Header="UI Scale">
           
-          <MenuItem Classes="Menu InnerMenu" Header="None"
-                Command="{Binding SetUIScaleCommand}" CommandParameter="1.0">
+          <MenuItem Classes="Menu InnerMenu" Header="None" Command="{Binding SetUIScaleCommand}"
+					CommandParameter="1.0">
             <MenuItem.Icon>
               <CheckBox Classes="Menu" IsChecked="{Binding NoneUIScale, Mode=OneWay}"
-                     Command="{Binding SetUIScaleCommand}" CommandParameter="1.0" />
+						Command="{Binding SetUIScaleCommand}" CommandParameter="1.0" />
             </MenuItem.Icon>
           </MenuItem>
 
-          <MenuItem Classes="Menu InnerMenu" Header="25%"
-                Command="{Binding SetUIScaleCommand}" CommandParameter="1.25">
+          <MenuItem Classes="Menu InnerMenu" Header="25%" Command="{Binding SetUIScaleCommand}"
+					CommandParameter="1.25">
             <MenuItem.Icon>
               <CheckBox Classes="Menu" IsChecked="{Binding TwentyFivePercentUIScale, Mode=OneWay}"
-                     Command="{Binding SetUIScaleCommand}" CommandParameter="1.25" />
+						Command="{Binding SetUIScaleCommand}" CommandParameter="1.25" />
             </MenuItem.Icon>
           </MenuItem>
 
-          <MenuItem Classes="Menu InnerMenu" Header="50%"
-                Command="{Binding SetUIScaleCommand}" CommandParameter="1.5">
+          <MenuItem Classes="Menu InnerMenu" Header="50%" Command="{Binding SetUIScaleCommand}"
+					CommandParameter="1.5">
             <MenuItem.Icon>
               <CheckBox Classes="Menu" IsChecked="{Binding FiftyPercentUIScale, Mode=OneWay}"
-                     Command="{Binding SetUIScaleCommand}" CommandParameter="1.5" />
+						Command="{Binding SetUIScaleCommand}" CommandParameter="1.5" />
             </MenuItem.Icon>
           </MenuItem>
           
-          <MenuItem Classes="Menu InnerMenu" Header="75%"
-                Command="{Binding SetUIScaleCommand}" CommandParameter="1.75">
+          <MenuItem Classes="Menu InnerMenu" Header="75%" Command="{Binding SetUIScaleCommand}"
+					CommandParameter="1.75">
             <MenuItem.Icon>
               <CheckBox Classes="Menu" IsChecked="{Binding SeventyFivePercentUIScale, Mode=OneWay}"
-                     Command="{Binding SetUIScaleCommand}" CommandParameter="1.75" />
+						Command="{Binding SetUIScaleCommand}" CommandParameter="1.75" />
             </MenuItem.Icon>
           </MenuItem>
           
-          <MenuItem Classes="Menu InnerMenu" Header="100%"
-                Command="{Binding SetUIScaleCommand}" CommandParameter="2.0">
+          <MenuItem Classes="Menu InnerMenu" Header="100%" Command="{Binding SetUIScaleCommand}"
+					CommandParameter="2.0">
             <MenuItem.Icon>
               <CheckBox Classes="Menu" IsChecked="{Binding OneHundredPercentUIScale, Mode=OneWay}"
-                     Command="{Binding SetUIScaleCommand}" CommandParameter="2.0" />
+						Command="{Binding SetUIScaleCommand}" CommandParameter="2.0" />
             </MenuItem.Icon>
           </MenuItem>
 

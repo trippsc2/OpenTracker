@@ -3,7 +3,7 @@
     /// <summary>
     /// This is the interface providing access to the window bounds.
     /// </summary>
-    public interface IBounds
+    public interface IBoundsData
     {
         bool? Maximized { get; set; }
         double? X { get; set; }

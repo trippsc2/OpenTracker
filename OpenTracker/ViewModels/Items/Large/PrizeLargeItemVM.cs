@@ -15,6 +15,7 @@ namespace OpenTracker.ViewModels.Items.Large
     public class PrizeLargeItemVM : LargeItemVMBase, IClickHandler
     {
         private readonly IPrizeSection _section;
+        private readonly string _imageSourceBase;
 
         public string ImageSource
         {
@@ -41,12 +42,17 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="imageSourceBase">
+        /// A string representing the base image source.
+        /// </param>
         /// <param name="section">
         /// An item that is to be represented by this control.
         /// </param>
-        public PrizeLargeItemVM(IPrizeSection section)
+        public PrizeLargeItemVM(string imageSourceBase, IPrizeSection section)
         {
             _section = section ?? throw new ArgumentNullException(nameof(section));
+            _imageSourceBase = imageSourceBase ??
+                throw new ArgumentNullException(nameof(imageSourceBase));
 
             _section.PropertyChanged += OnSectionChanged;
             _section.PrizePlacement.PropertyChanged += OnPrizeChanged;

@@ -190,7 +190,7 @@
         GT3FPastRedGoriyaRooms,
         GT3FPastBigKeyDoor,
         GTBoss2,
-        GT3FPastBoss2,
+        GT4FPastBoss2,
         GT5FPastFourTorchRooms,
         GT6FPastFirstKeyDoor,
         GT6FBossRoom,

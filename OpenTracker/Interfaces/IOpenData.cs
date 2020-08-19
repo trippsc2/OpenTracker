@@ -3,7 +3,7 @@
     /// <summary>
     /// This is the interface for opening and loading a file.
     /// </summary>
-    public interface IOpen
+    public interface IOpenData
     {
         void Open(string path);
     }

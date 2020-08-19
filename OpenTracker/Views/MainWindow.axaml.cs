@@ -20,30 +20,22 @@ namespace OpenTracker.Views
         private ColorSelectDialog _colorSelectDialog;
         private SequenceBreakDialog _sequenceBreakDialog;
 
-        public IAutoTrackerAccess ViewModelAutoTrackerAccess =>
+        private IAutoTrackerAccess AutoTrackerAccess =>
             DataContext as IAutoTrackerAccess;
-        public IBounds ViewModelBounds =>
-            DataContext as IBounds;
-        public IColorSelectAccess ViewModelColorSelectAccess =>
-            DataContext as IColorSelectAccess;
-        public IDynamicLayout ViewModelDynamicLayout =>
-            DataContext as IDynamicLayout;
-        public IOpen ViewModelOpen =>
-            DataContext as IOpen;
-        public ISave ViewModelSave =>
-            DataContext as ISave;
-        public ICloseHandler ViewModelSaveAppSettings =>
+        private IBoundsData BoundsData =>
+            DataContext as IBoundsData;
+        private ICloseHandler CloseHandler =>
             DataContext as ICloseHandler;
-        public ISequenceBreakAccess ViewModelSequenceBreakAccess =>
+        private IColorSelectAccess ColorSelectAccess =>
+            DataContext as IColorSelectAccess;
+        private IDynamicLayout DynamicLayout =>
+            DataContext as IDynamicLayout;
+        private IOpenData OpenData =>
+            DataContext as IOpenData;
+        private ISaveData SaveData =>
+            DataContext as ISaveData;
+        private ISequenceBreakAccess SequenceBreakAccess =>
             DataContext as ISequenceBreakAccess;
-
-        public static AvaloniaProperty<IThemeSelector> SelectorProperty =
-            AvaloniaProperty.Register<MainWindow, IThemeSelector>(nameof(Selector));
-        public IThemeSelector Selector
-        {
-            get => GetValue(SelectorProperty);
-            set => SetValue(SelectorProperty, value);
-        }
 
         public static AvaloniaProperty<string> CurrentFilePathProperty =
             AvaloniaProperty.Register<MainWindow, string>(nameof(CurrentFilePath));
@@ -69,28 +61,48 @@ namespace OpenTracker.Views
             AvaloniaXamlLoader.Load(this);
         }
 
+        private void OnBoundsChanged(MainWindow window, AvaloniaPropertyChangedEventArgs e)
+        {
+            ChangeLayout(Bounds);
+        }
+
+        private void OnClose(object sender, CancelEventArgs e)
+        {
+            CloseHandler.Close(WindowState == WindowState.Maximized, base.Bounds);
+
+            if (_autoTrackerDialog != null && _autoTrackerDialog.IsVisible)
+            {
+                _autoTrackerDialog?.Close();
+            }
+
+            if (_colorSelectDialog != null && _colorSelectDialog.IsVisible)
+            {
+                _colorSelectDialog?.Close();
+            }
+
+            if (_sequenceBreakDialog != null && _sequenceBreakDialog.IsVisible)
+            {
+                _sequenceBreakDialog?.Close();
+            }
+        }
+
         private void OnDataContextChanged(object sender, EventArgs e)
         {
-            if (ViewModelBounds.Maximized.HasValue)
+            if (BoundsData.Maximized.HasValue)
             {
-                if (ViewModelBounds.Maximized.Value)
+                if (BoundsData.Maximized.Value)
                 {
                     WindowState = WindowState.Maximized;
                 }
             }
 
-            if (ViewModelBounds.X.HasValue && ViewModelBounds.Y.HasValue &&
-                ViewModelBounds.Width.HasValue && ViewModelBounds.Height.HasValue)
+            if (BoundsData.X.HasValue && BoundsData.Y.HasValue &&
+                BoundsData.Width.HasValue && BoundsData.Height.HasValue)
             {
-                Bounds = new Rect(ViewModelBounds.X.Value, ViewModelBounds.Y.Value,
-                    ViewModelBounds.Width.Value, ViewModelBounds.Height.Value);
+                Bounds = new Rect(BoundsData.X.Value, BoundsData.Y.Value,
+                    BoundsData.Width.Value, BoundsData.Height.Value);
             }
 
-            ChangeLayout(Bounds);
-        }
-
-        private void OnBoundsChanged(MainWindow window, AvaloniaPropertyChangedEventArgs e)
-        {
             ChangeLayout(Bounds);
         }
 
@@ -102,36 +114,7 @@ namespace OpenTracker.Views
             if (_orientation != orientation)
             {
                 _orientation = orientation;
-                ViewModelDynamicLayout.ChangeLayout(orientation);
-            }
-        }
-
-        public async Task Save()
-        {
-            if (CurrentFilePath != null)
-            {
-                ViewModelSave.Save(CurrentFilePath);
-            }
-            else
-            {
-                await SaveAs().ConfigureAwait(false);
-            }
-        }
-
-        public async Task SaveAs()
-        {
-            SaveFileDialog dialog = new SaveFileDialog();
-            dialog.Filters.Add(new FileDialogFilter() { Name = "JSON", Extensions = { "json" } });
-
-            string path = await dialog.ShowAsync(this).ConfigureAwait(false);
-
-            if (path != null)
-            {
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    CurrentFilePath = path;
-                    ViewModelSave.Save(CurrentFilePath);
-                }).ConfigureAwait(false);
+                DynamicLayout.ChangeLayout(orientation);
             }
         }
 
@@ -153,29 +136,37 @@ namespace OpenTracker.Views
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     CurrentFilePath = path[0];
-                    ViewModelOpen.Open(CurrentFilePath);
+                    OpenData.Open(CurrentFilePath);
                 })
                     .ConfigureAwait(false);
             }
         }
 
-        private void OnClose(object sender, CancelEventArgs e)
+        public async Task Save()
         {
-            ViewModelSaveAppSettings.Close(WindowState == WindowState.Maximized, Bounds);
-
-            if (_autoTrackerDialog != null && _autoTrackerDialog.IsVisible)
+            if (CurrentFilePath != null)
             {
-                _autoTrackerDialog?.Close();
+                SaveData.Save(CurrentFilePath);
             }
-
-            if (_colorSelectDialog != null && _colorSelectDialog.IsVisible)
+            else
             {
-                _colorSelectDialog?.Close();
+                await SaveAs().ConfigureAwait(false);
             }
+        }
 
-            if (_sequenceBreakDialog != null && _sequenceBreakDialog.IsVisible)
+        public async Task SaveAs()
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filters.Add(new FileDialogFilter() { Name = "JSON", Extensions = { "json" } });
+            string path = await dialog.ShowAsync(this).ConfigureAwait(false);
+
+            if (path != null)
             {
-                _sequenceBreakDialog?.Close();
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    CurrentFilePath = path;
+                    SaveData.Save(CurrentFilePath);
+                }).ConfigureAwait(false);
             }
         }
 
@@ -189,7 +180,7 @@ namespace OpenTracker.Views
             {
                 _autoTrackerDialog = new AutoTrackerDialog()
                 {
-                    DataContext = ViewModelAutoTrackerAccess.GetAutoTrackerViewModel()
+                    DataContext = AutoTrackerAccess.GetAutoTrackerViewModel()
                 };
                 _autoTrackerDialog.Show();
             }
@@ -205,7 +196,7 @@ namespace OpenTracker.Views
             {
                 _colorSelectDialog = new ColorSelectDialog()
                 {
-                    DataContext = ViewModelColorSelectAccess.GetColorSelectViewModel()
+                    DataContext = ColorSelectAccess.GetColorSelectViewModel()
                 };
                 _colorSelectDialog.Show();
             }
@@ -221,7 +212,7 @@ namespace OpenTracker.Views
             {
                 _sequenceBreakDialog = new SequenceBreakDialog()
                 {
-                    DataContext = ViewModelSequenceBreakAccess.GetSequenceBreakViewModel()
+                    DataContext = SequenceBreakAccess.GetSequenceBreakViewModel()
                 };
                 _sequenceBreakDialog.Show();
             }

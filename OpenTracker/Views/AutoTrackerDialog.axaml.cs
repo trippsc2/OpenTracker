@@ -8,7 +8,7 @@ namespace OpenTracker.Views
 {
     public class AutoTrackerDialog : Window
     {
-        private ISave ViewModelSave => DataContext as ISave;
+        private ISaveData ViewModelSave => DataContext as ISaveData;
 
         public AutoTrackerDialog()
         {

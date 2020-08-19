@@ -546,7 +546,7 @@ namespace OpenTracker.Models.Dungeons
                     DungeonNodeID.GT3FPastRedGoriyaRooms,
                     DungeonNodeID.GT3FPastBigKeyDoor,
                     DungeonNodeID.GTBoss2,
-                    DungeonNodeID.GT3FPastBoss2,
+                    DungeonNodeID.GT4FPastBoss2,
                     DungeonNodeID.GT5FPastFourTorchRooms,
                     DungeonNodeID.GT6FPastFirstKeyDoor,
                     DungeonNodeID.GT6FBossRoom,

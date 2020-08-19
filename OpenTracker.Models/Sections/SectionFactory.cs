@@ -943,10 +943,10 @@ namespace OpenTracker.Models.Sections
                         {
                             new RequirementNodeConnection(
                                 RequirementNodeID.DarkDeathMountainTop,
-                                RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
+                                RequirementDictionary.Instance[RequirementType.NotBunnyDW]),
                             new RequirementNodeConnection(
                                 RequirementNodeID.DarkDeathMountainEastBottom,
-                                RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
+                                RequirementDictionary.Instance[RequirementType.NotBunnyDW]),
                             new RequirementNodeConnection(
                                 RequirementNodeID.DarkDeathMountainTop,
                                 RequirementDictionary.Instance[RequirementType.SuperBunnyMirror]),

@@ -27,14 +27,16 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="imageSource">
+        /// A string representing the image source.
+        /// </param>
         /// <param name="item">
         /// An item that is to be represented by this control.
         /// </param>
-        public CrystalRequirementLargeItemVM(IItem item)
+        public CrystalRequirementLargeItemVM(string imageSource, IItem item)
         {
             _item = item ?? throw new ArgumentNullException(nameof(item));
-            ImageSource = "avares://OpenTracker/Assets/Images/Items/" +
-                $"{_item.Type.ToString().ToLowerInvariant()}.png";
+            ImageSource = imageSource ?? throw new ArgumentNullException(nameof(imageSource));
 
             _item.PropertyChanged += OnItemChanged;
             AppSettings.Instance.Colors.PropertyChanged += OnColorsChanged;

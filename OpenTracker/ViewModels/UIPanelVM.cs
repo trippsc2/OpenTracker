@@ -20,17 +20,16 @@ namespace OpenTracker.ViewModels
                 _ => AppSettings.Instance.Layout.VerticalItemsPlacement
             };
 
-        public ItemsPanelVM Items { get; }
-        public PinnedLocationsPanelVM Locations { get; }
+        public ItemsPanelVM Items { get; } =
+            new ItemsPanelVM();
+        public PinnedLocationsPanelVM Locations { get; } =
+            new PinnedLocationsPanelVM();
 
         /// <summary>
         /// Constructor
         /// </summary>
         public UIPanelVM()
         {
-            Items = new ItemsPanelVM();
-            Locations = new PinnedLocationsPanelVM();
-
             AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
         }
 

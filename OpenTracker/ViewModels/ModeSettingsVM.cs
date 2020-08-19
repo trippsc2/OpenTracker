@@ -62,8 +62,6 @@ namespace OpenTracker.ViewModels
         /// </summary>
         public ModeSettingsVM()
         {
-            Mode.Instance.PropertyChanged += OnModeChanged;
-
             ItemPlacementCommand = ReactiveCommand.Create<string>(
                 SetItemPlacement, this.WhenAnyValue(x => x.StandardOpenWorldState));
             DungeonItemShuffleCommand = ReactiveCommand.Create<string>(SetDungeonItemShuffle);
@@ -72,6 +70,8 @@ namespace OpenTracker.ViewModels
             BossShuffleCommand = ReactiveCommand.Create(ToggleBossShuffle);
             EnemyShuffleCommand = ReactiveCommand.Create(ToggleEnemyShuffle);
             GuaranteedBossItemsCommand = ReactiveCommand.Create(ToggleGuaranteedBossItems);
+
+            Mode.Instance.PropertyChanged += OnModeChanged;
         }
 
         /// <summary>

@@ -12,51 +12,60 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.DungeonNodes
 {
-    public class IPNodeTests
+    [Collection("Tests")]
+    public class GTNodeTests
     {
         [Theory]
-        [MemberData(nameof(Entry_To_IP))]
-        [MemberData(nameof(PastEntranceFreezorRoom_To_IP))]
-        [MemberData(nameof(IP_To_PastEntranceFreezorRoom))]
-        [MemberData(nameof(B1LeftSide_To_PastEntranceFreezorRoom))]
-        [MemberData(nameof(PastEntranceFreezorRoom_To_B1LeftSide))]
-        [MemberData(nameof(B1LeftSide_To_B1RightSide))]
-        [MemberData(nameof(B2PastLiftBlock_To_B1RightSide))]
-        [MemberData(nameof(B1LeftSide_To_B2LeftSide))]
-        [MemberData(nameof(B2PastKeyDoor_To_B2LeftSide))]
-        [MemberData(nameof(B2LeftSide_To_B2PastKeyDoor))]
-        [MemberData(nameof(SpikeRoom_To_B2PastKeyDoor))]
-        [MemberData(nameof(B4FreezorRoom_To_B2PastKeyDoor))]
-        [MemberData(nameof(SpikeRoom_To_B2PastHammerBlocks))]
-        [MemberData(nameof(B2PastLiftBlock_To_B2PastHammerBlocks))]
-        [MemberData(nameof(B2PastHammerBlocks_To_B2PastLiftBlock))]
-        [MemberData(nameof(B1RightSide_To_SpikeRoom))]
-        [MemberData(nameof(B2PastKeyDoor_To_SpikeRoom))]
-        [MemberData(nameof(B2PastHammerBlocks_To_SpikeRoom))]
-        [MemberData(nameof(B4RightSide_To_SpikeRoom))]
-        [MemberData(nameof(SpikeRoom_To_B4RightSide))]
-        [MemberData(nameof(B4IceRoom_To_B4RightSide))]
-        [MemberData(nameof(B2PastKeyDoor_To_B4IceRoom))]
-        [MemberData(nameof(B4PastKeyDoor_To_B4IceRoom))]
-        [MemberData(nameof(B2PastKeyDoor_To_B4FreezorRoom))]
-        [MemberData(nameof(B4FreezorRoom_To_FreezorChest))]
-        [MemberData(nameof(B4IceRoom_To_B4PastKeyDoor))]
-        [MemberData(nameof(B5_To_B4PastKeyDoor))]
-        [MemberData(nameof(B4FreezorRoom_To_BigChestArea))]
-        [MemberData(nameof(BigChestArea_To_BigChest))]
-        [MemberData(nameof(B4FreezorRoom_To_B5))]
-        [MemberData(nameof(B4PastKeyDoor_To_B5))]
-        [MemberData(nameof(B5PastBigKeyDoor_To_B5))]
-        [MemberData(nameof(B5_To_B5PastBigKeyDoor))]
-        [MemberData(nameof(B6_To_B5PastBigKeyDoor))]
-        [MemberData(nameof(B5_To_B6))]
-        [MemberData(nameof(B5PastBigKeyDoor_To_B6))]
-        [MemberData(nameof(B6PastKeyDoor_To_B6))]
-        [MemberData(nameof(B6_To_B6PastKeyDoor))]
-        [MemberData(nameof(B6_To_B6PreBossRoom))]
-        [MemberData(nameof(B6PastKeyDoor_To_B6PreBossRoom))]
-        [MemberData(nameof(B6PreBossRoom_To_B6PastHammerBlocks))]
-        [MemberData(nameof(B6PastHammerBlocks_To_B6PastLiftBlock))]
+        [MemberData(nameof(Entry_To_GT))]
+        [MemberData(nameof(F1Left_To_GT))]
+        [MemberData(nameof(F1Right_To_GT))]
+        [MemberData(nameof(F3PastRedGoriyaRooms_To_GT))]
+        [MemberData(nameof(F1Left_To_BobsTorch))]
+        [MemberData(nameof(GT_To_F1Left))]
+        [MemberData(nameof(F1LeftPastHammerBlocks_To_F1Left))]
+        [MemberData(nameof(F1BottomRoom_To_F1Left))]
+        [MemberData(nameof(F1Left_To_F1LeftPastHammerBlocks))]
+        [MemberData(nameof(F1LeftDMsRoom_To_F1LeftPastHammerBlocks))]
+        [MemberData(nameof(F1LeftPastBonkableGaps_To_F1LeftPastHammerBlocks))]
+        [MemberData(nameof(F1LeftPastHammerBlocks_To_F1LeftDMsRoom))]
+        [MemberData(nameof(F1LeftPastHammerBlocks_To_F1LeftPastBonkableGaps))]
+        [MemberData(nameof(F1LeftMapChestRoom_To_F1LeftPastBonkableGaps))]
+        [MemberData(nameof(F1LeftPastBonkableGaps_To_F1LeftMapChestRoom))]
+        [MemberData(nameof(F1LeftSpikeTrapPortalRoom_To_F1LeftPastBonkableGaps))]
+        [MemberData(nameof(F1LeftPastBonkableGaps_To_F1LeftSpikeTrapPortalRoom))]
+        [MemberData(nameof(F1LeftSpikeTrapPortalRoom_To_F1LeftFiresnakeRoom))]
+        [MemberData(nameof(F1LeftFiresnakeRoom_To_F1LeftPastFiresnakeRoomGap))]
+        [MemberData(nameof(F1LeftPastFiresnakeRoomKeyDoor_To_F1LeftPastFiresnakeRoomGap))]
+        [MemberData(nameof(F1LeftPastFiresnakeRoomGap_To_F1LeftPastFiresnakeRoomKeyDoor))]
+        [MemberData(nameof(F1LeftPastFiresnakeRoomKeyDoor_To_F1LeftRandomizerRoom))]
+        [MemberData(nameof(GT_To_F1Right))]
+        [MemberData(nameof(F1RightTileRoom_To_F1Right))]
+        [MemberData(nameof(F1Right_To_F1RightTileRoom))]
+        [MemberData(nameof(F1RightFourTorchRoom_To_F1RightTileRoom))]
+        [MemberData(nameof(F1RightTileRoom_To_F1RightFourTorchRoom))]
+        [MemberData(nameof(F1RightCompassRoom_To_F1RightFourTorchRoom))]
+        [MemberData(nameof(F1RightFourTorchRoom_To_F1RightCompassRoom))]
+        [MemberData(nameof(F1RightCompassRoom_To_F1RightPastCompassRoomPortal))]
+        [MemberData(nameof(F1RightCollapsingWalkway_To_F1RightPastCompassRoomPortal))]
+        [MemberData(nameof(F1RightPastCompassRoomPortal_To_F1RightCollapsingWalkway))]
+        [MemberData(nameof(F1LeftRandomizerRoom_To_F1BottomRoom))]
+        [MemberData(nameof(F1RightCollapsingWalkway_To_F1BottomRoom))]
+        [MemberData(nameof(Boss1_To_F1BottomRoom))]
+        [MemberData(nameof(Boss1_To_B1BossChests))]
+        [MemberData(nameof(F1BottomRoom_To_BigChest))]
+        [MemberData(nameof(GT_To_F3PastRedGoriyaRooms))]
+        [MemberData(nameof(F3PastBigKeyDoor_To_F3PastRedGoriyaRooms))]
+        [MemberData(nameof(F3PastRedGoriyaRooms_To_F3PastBigKeyDoor))]
+        [MemberData(nameof(Boss2_To_F3PastBigKeyDoor))]
+        [MemberData(nameof(Boss2_To_F4PastBoss2))]
+        [MemberData(nameof(F4PastBoss2_To_F5PastFourTorchRooms))]
+        [MemberData(nameof(F6PastFirstKeyDoor_To_F5PastFourTorchRooms))]
+        [MemberData(nameof(F5PastFourTorchRooms_To_F6PastFirstKeyDoor))]
+        [MemberData(nameof(F6BossRoom_To_F6PastFirstKeyDoor))]
+        [MemberData(nameof(F6PastFirstKeyDoor_To_F6BossRoom))]
+        [MemberData(nameof(F6BossRoom_To_F6PastBossRoomGap))]
+        [MemberData(nameof(Boss3_To_F6PastBossRoomGap))]
+        [MemberData(nameof(F6PastBossRoomGap_To_FinalBossRoom))]
         public void AccessibilityTests(
             DungeonNodeID id, ItemPlacement itemPlacement,
             DungeonItemShuffle dungeonItemShuffle, WorldState worldState,
@@ -83,7 +92,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     sequenceBreak.Item2;
             }
 
-            ((IDungeon)LocationDictionary.Instance[LocationID.IcePalace]).DungeonDataQueue
+            ((IDungeon)LocationDictionary.Instance[LocationID.GanonsTower]).DungeonDataQueue
                 .TryPeek(out IMutableDungeon dungeonData);
 
             foreach (var keyDoor in dungeonData.SmallKeyDoors.Values)
@@ -99,12 +108,12 @@ namespace OpenTracker.UnitTests.DungeonNodes
             Assert.Equal(expected, dungeonData.RequirementNodes[id].Accessibility);
         }
 
-        public static IEnumerable<object[]> Entry_To_IP =>
+        public static IEnumerable<object[]> Entry_To_GT =>
             new List<object[]>
             {
                 new object[]
                 {
-                    DungeonNodeID.IP,
+                    DungeonNodeID.GT,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -112,7 +121,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPEntryTest, 0)
+                        (ItemType.GTEntryTest, 0)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -120,7 +129,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.IP,
+                    DungeonNodeID.GT,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.Retro,
@@ -128,7 +137,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPEntryTest, 0)
+                        (ItemType.GTEntryTest, 0)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -136,7 +145,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.IP,
+                    DungeonNodeID.GT,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.Inverted,
@@ -144,15 +153,270 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPEntryTest, 0)
+                        (ItemType.GTEntryTest, 0)
                     },
                     new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTEntryTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    true,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTEntryTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Retro,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTEntryTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Retro,
+                    true,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTEntryTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTEntryTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.Inverted,
+                    true,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTEntryTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F1Left_To_GT =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F1Right_To_GT =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F3PastRedGoriyaRooms_To_GT =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT3FPastRedGoriyaRoomsTest, 0),
+                        (ItemType.Bow, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.MimicClip, true)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT3FPastRedGoriyaRoomsTest, 1),
+                        (ItemType.Bow, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.MimicClip, false)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT,
+                    ItemPlacement.Basic,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    true,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT3FPastRedGoriyaRoomsTest, 0),
+                        (ItemType.Bow, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.MimicClip, true)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT3FPastRedGoriyaRoomsTest, 1),
+                        (ItemType.Bow, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.MimicClip, true)
+                    },
                     new KeyDoorID[0],
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
                 {
-                    DungeonNodeID.IP,
+                    DungeonNodeID.GT,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -160,453 +424,44 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPEntryTest, 1)
+                        (ItemType.GT3FPastRedGoriyaRoomsTest, 1),
+                        (ItemType.Bow, 1)
                     },
-                    new (SequenceBreakType, bool)[0],
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.MimicClip, true)
+                    },
                     new KeyDoorID[0],
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
-                    DungeonNodeID.IP,
+                    DungeonNodeID.GT,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
+                    false,
                     true,
-                    false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPEntryTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.IP,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPEntryTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.IP,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPEntryTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.IP,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPEntryTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.IP,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPEntryTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> PastEntranceFreezorRoom_To_IP =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IP,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPPastEntranceFreezorRoomTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IP,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPPastEntranceFreezorRoomTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> IP_To_PastEntranceFreezorRoom =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPPastEntranceFreezorRoom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPTest, 0),
-                        (ItemType.FireRod, 0),
-                        (ItemType.Bombos, 0),
-                        (ItemType.Sword, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPPastEntranceFreezorRoom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPTest, 1),
-                        (ItemType.FireRod, 0),
-                        (ItemType.Bombos, 0),
-                        (ItemType.Sword, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPPastEntranceFreezorRoom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPTest, 1),
-                        (ItemType.FireRod, 0),
-                        (ItemType.Bombos, 1),
-                        (ItemType.Sword, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPPastEntranceFreezorRoom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPTest, 1),
-                        (ItemType.FireRod, 1),
-                        (ItemType.Bombos, 0),
-                        (ItemType.Sword, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPPastEntranceFreezorRoom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPTest, 1),
-                        (ItemType.FireRod, 0),
-                        (ItemType.Bombos, 1),
-                        (ItemType.Sword, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPPastEntranceFreezorRoom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPTest, 1),
-                        (ItemType.FireRod, 0),
-                        (ItemType.Bombos, 1),
-                        (ItemType.Sword, 2)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> B1LeftSide_To_PastEntranceFreezorRoom =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPPastEntranceFreezorRoom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB1LeftSideTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPPastEntranceFreezorRoom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB1LeftSideTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPPastEntranceFreezorRoom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB1LeftSideTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[]
-                    {
-                        KeyDoorID.IP1FKeyDoor
-                    },
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> PastEntranceFreezorRoom_To_B1LeftSide =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB1LeftSide,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPPastEntranceFreezorRoomTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB1LeftSide,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPPastEntranceFreezorRoomTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB1LeftSide,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPPastEntranceFreezorRoomTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[]
-                    {
-                        KeyDoorID.IP1FKeyDoor
-                    },
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> B1LeftSide_To_B1RightSide =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB1RightSide,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB1LeftSideTest, 0),
-                        (ItemType.CaneOfSomaria, 0)
+                        (ItemType.GT3FPastRedGoriyaRoomsTest, 1),
+                        (ItemType.Bow, 0)
                     },
                     new (SequenceBreakType, bool)[]
                     {
-                        (SequenceBreakType.IPIceBreaker, true)
+                        (SequenceBreakType.MimicClip, true)
                     },
                     new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB1RightSide,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB1LeftSideTest, 1),
-                        (ItemType.CaneOfSomaria, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.IPIceBreaker, true)
-                    },
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB1RightSide,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB1LeftSideTest, 1),
-                        (ItemType.CaneOfSomaria, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.IPIceBreaker, false)
-                    },
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB1RightSide,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB1LeftSideTest, 1),
-                        (ItemType.CaneOfSomaria, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.IPIceBreaker, true)
-                    },
-                    new KeyDoorID[0],
-                    AccessibilityLevel.SequenceBreak
+                    AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> B2PastLiftBlock_To_B1RightSide =>
+        public static IEnumerable<object[]> F1Left_To_BobsTorch =>
             new List<object[]>
             {
                 new object[]
                 {
-                    DungeonNodeID.IPB1RightSide,
+                    DungeonNodeID.GTBobsTorch,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -614,7 +469,8 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB2PastLiftBlockTest, 0)
+                        (ItemType.GT1FLeftTest, 0),
+                        (ItemType.Boots, 0)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -622,7 +478,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.IPB1RightSide,
+                    DungeonNodeID.GTBobsTorch,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -630,7 +486,25 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB2PastLiftBlockTest, 1)
+                        (ItemType.GT1FLeftTest, 1),
+                        (ItemType.Boots, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Inspect
+                },
+                new object[]
+                {
+                    DungeonNodeID.GTBobsTorch,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftTest, 1),
+                        (ItemType.Boots, 1)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -638,12 +512,12 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> B1LeftSide_To_B2LeftSide =>
+        public static IEnumerable<object[]> GT_To_F1Left =>
             new List<object[]>
             {
                 new object[]
                 {
-                    DungeonNodeID.IPB2LeftSide,
+                    DungeonNodeID.GT1FLeft,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -651,7 +525,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB1LeftSideTest, 0)
+                        (ItemType.GTTest, 0)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -659,7 +533,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.IPB2LeftSide,
+                    DungeonNodeID.GT1FLeft,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -667,7 +541,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB1LeftSideTest, 1)
+                        (ItemType.GTTest, 1)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -675,12 +549,12 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> B2PastKeyDoor_To_B2LeftSide =>
+        public static IEnumerable<object[]> F1LeftPastHammerBlocks_To_F1Left =>
             new List<object[]>
             {
                 new object[]
                 {
-                    DungeonNodeID.IPB2LeftSide,
+                    DungeonNodeID.GT1FLeft,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -688,7 +562,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB2PastKeyDoorTest, 0)
+                        (ItemType.GT1FLeftPastHammerBlocksTest, 0)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -696,7 +570,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.IPB2LeftSide,
+                    DungeonNodeID.GT1FLeft,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -704,175 +578,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB2PastKeyDoorTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB2LeftSide,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB2PastKeyDoorTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[]
-                    {
-                        KeyDoorID.IPB2KeyDoor
-                    },
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> B2LeftSide_To_B2PastKeyDoor =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB2PastKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB2LeftSideTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB2PastKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB2LeftSideTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB2PastKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB2LeftSideTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[]
-                    {
-                        KeyDoorID.IPB2KeyDoor
-                    },
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> SpikeRoom_To_B2PastKeyDoor =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB2PastKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPSpikeRoomTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB2PastKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPSpikeRoomTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB2PastKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPSpikeRoomTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[]
-                    {
-                        KeyDoorID.IPB3KeyDoor
-                    },
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> B4FreezorRoom_To_B2PastKeyDoor =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB2PastKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB4FreezorRoomTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB2PastKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB4FreezorRoomTest, 1)
+                        (ItemType.GT1FLeftPastHammerBlocksTest, 1)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -880,12 +586,12 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> SpikeRoom_To_B2PastHammerBlocks =>
+        public static IEnumerable<object[]> F1BottomRoom_To_F1Left =>
             new List<object[]>
             {
                 new object[]
                 {
-                    DungeonNodeID.IPB2PastHammerBlocks,
+                    DungeonNodeID.GT1FLeft,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -893,7 +599,44 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPSpikeRoomTest, 0),
+                        (ItemType.GT1FBottomRoomTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeft,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FBottomRoomTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F1Left_To_F1LeftPastHammerBlocks =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftPastHammerBlocks,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftTest, 0),
                         (ItemType.Hammer, 0)
                     },
                     new (SequenceBreakType, bool)[0],
@@ -902,7 +645,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.IPB2PastHammerBlocks,
+                    DungeonNodeID.GT1FLeftPastHammerBlocks,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -910,7 +653,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPSpikeRoomTest, 1),
+                        (ItemType.GT1FLeftTest, 1),
                         (ItemType.Hammer, 0)
                     },
                     new (SequenceBreakType, bool)[0],
@@ -919,7 +662,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.IPB2PastHammerBlocks,
+                    DungeonNodeID.GT1FLeftPastHammerBlocks,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -927,7 +670,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPSpikeRoomTest, 1),
+                        (ItemType.GT1FLeftTest, 1),
                         (ItemType.Hammer, 1)
                     },
                     new (SequenceBreakType, bool)[0],
@@ -936,12 +679,12 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> B2PastLiftBlock_To_B2PastHammerBlocks =>
+        public static IEnumerable<object[]> F1LeftDMsRoom_To_F1LeftPastHammerBlocks =>
             new List<object[]>
             {
                 new object[]
                 {
-                    DungeonNodeID.IPB2PastHammerBlocks,
+                    DungeonNodeID.GT1FLeftPastHammerBlocks,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -949,16 +692,20 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB2PastLiftBlockTest, 0),
-                        (ItemType.Gloves, 0)
+                        (ItemType.GT1FLeftDMsRoomTest, 0),
+                        (ItemType.Hookshot, 0),
+                        (ItemType.Boots, 0)
                     },
-                    new (SequenceBreakType, bool)[0],
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.Hover, true)
+                    },
                     new KeyDoorID[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    DungeonNodeID.IPB2PastHammerBlocks,
+                    DungeonNodeID.GT1FLeftPastHammerBlocks,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -966,16 +713,20 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB2PastLiftBlockTest, 1),
-                        (ItemType.Gloves, 0)
+                        (ItemType.GT1FLeftDMsRoomTest, 1),
+                        (ItemType.Hookshot, 0),
+                        (ItemType.Boots, 0)
                     },
-                    new (SequenceBreakType, bool)[0],
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.Hover, true)
+                    },
                     new KeyDoorID[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    DungeonNodeID.IPB2PastHammerBlocks,
+                    DungeonNodeID.GT1FLeftPastHammerBlocks,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -983,21 +734,67 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB2PastLiftBlockTest, 1),
-                        (ItemType.Gloves, 1)
+                        (ItemType.GT1FLeftDMsRoomTest, 1),
+                        (ItemType.Hookshot, 0),
+                        (ItemType.Boots, 1)
                     },
-                    new (SequenceBreakType, bool)[0],
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.Hover, false)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftPastHammerBlocks,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftDMsRoomTest, 1),
+                        (ItemType.Hookshot, 0),
+                        (ItemType.Boots, 1)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.Hover, true)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.SequenceBreak
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftPastHammerBlocks,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftDMsRoomTest, 1),
+                        (ItemType.Hookshot, 1),
+                        (ItemType.Boots, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.Hover, true)
+                    },
                     new KeyDoorID[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> B2PastHammerBlocks_To_B2PastLiftBlock =>
+        public static IEnumerable<object[]> F1LeftPastBonkableGaps_To_F1LeftPastHammerBlocks =>
             new List<object[]>
             {
                 new object[]
                 {
-                    DungeonNodeID.IPB2PastLiftBlock,
+                    DungeonNodeID.GT1FLeftPastHammerBlocks,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -1005,16 +802,20 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB2PastHammerBlocksTest, 0),
-                        (ItemType.Gloves, 0)
+                        (ItemType.GT1FLeftPastBonkableGapsTest, 0),
+                        (ItemType.Hookshot, 0),
+                        (ItemType.Boots, 0)
                     },
-                    new (SequenceBreakType, bool)[0],
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.Hover, true)
+                    },
                     new KeyDoorID[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    DungeonNodeID.IPB2PastLiftBlock,
+                    DungeonNodeID.GT1FLeftPastHammerBlocks,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -1022,16 +823,20 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB2PastHammerBlocksTest, 1),
-                        (ItemType.Gloves, 0)
+                        (ItemType.GT1FLeftPastBonkableGapsTest, 1),
+                        (ItemType.Hookshot, 0),
+                        (ItemType.Boots, 0)
                     },
-                    new (SequenceBreakType, bool)[0],
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.Hover, true)
+                    },
                     new KeyDoorID[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    DungeonNodeID.IPB2PastLiftBlock,
+                    DungeonNodeID.GT1FLeftPastHammerBlocks,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -1039,21 +844,67 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB2PastHammerBlocksTest, 1),
-                        (ItemType.Gloves, 1)
+                        (ItemType.GT1FLeftPastBonkableGapsTest, 1),
+                        (ItemType.Hookshot, 0),
+                        (ItemType.Boots, 1)
                     },
-                    new (SequenceBreakType, bool)[0],
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.Hover, false)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftPastHammerBlocks,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftPastBonkableGapsTest, 1),
+                        (ItemType.Hookshot, 0),
+                        (ItemType.Boots, 1)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.Hover, true)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.SequenceBreak
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftPastHammerBlocks,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftPastBonkableGapsTest, 1),
+                        (ItemType.Hookshot, 1),
+                        (ItemType.Boots, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.Hover, true)
+                    },
                     new KeyDoorID[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> B1RightSide_To_SpikeRoom =>
+        public static IEnumerable<object[]> F1LeftPastHammerBlocks_To_F1LeftDMsRoom =>
             new List<object[]>
             {
                 new object[]
                 {
-                    DungeonNodeID.IPSpikeRoom,
+                    DungeonNodeID.GT1FLeftDMsRoom,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -1061,15 +912,20 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB1RightSideTest, 0)
+                        (ItemType.GT1FLeftPastHammerBlocksTest, 0),
+                        (ItemType.Hookshot, 0),
+                        (ItemType.Boots, 0)
                     },
-                    new (SequenceBreakType, bool)[0],
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.Hover, true)
+                    },
                     new KeyDoorID[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    DungeonNodeID.IPSpikeRoom,
+                    DungeonNodeID.GT1FLeftDMsRoom,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -1077,20 +933,88 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB1RightSideTest, 1)
+                        (ItemType.GT1FLeftPastHammerBlocksTest, 1),
+                        (ItemType.Hookshot, 0),
+                        (ItemType.Boots, 0)
                     },
-                    new (SequenceBreakType, bool)[0],
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.Hover, true)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftDMsRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftPastHammerBlocksTest, 1),
+                        (ItemType.Hookshot, 0),
+                        (ItemType.Boots, 1)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.Hover, false)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftDMsRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftPastHammerBlocksTest, 1),
+                        (ItemType.Hookshot, 0),
+                        (ItemType.Boots, 1)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.Hover, true)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.SequenceBreak
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftDMsRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftPastHammerBlocksTest, 1),
+                        (ItemType.Hookshot, 1),
+                        (ItemType.Boots, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.Hover, true)
+                    },
                     new KeyDoorID[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> B2PastKeyDoor_To_SpikeRoom =>
+        public static IEnumerable<object[]> F1LeftPastHammerBlocks_To_F1LeftPastBonkableGaps =>
             new List<object[]>
             {
                 new object[]
                 {
-                    DungeonNodeID.IPSpikeRoom,
+                    DungeonNodeID.GT1FLeftPastBonkableGaps,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -1098,7 +1022,9 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB2PastKeyDoorTest, 0)
+                        (ItemType.GT1FLeftPastHammerBlocksTest, 0),
+                        (ItemType.Hookshot, 0),
+                        (ItemType.Boots, 0)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -1106,7 +1032,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.IPSpikeRoom,
+                    DungeonNodeID.GT1FLeftPastBonkableGaps,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -1114,7 +1040,63 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB2PastKeyDoorTest, 1)
+                        (ItemType.GT1FLeftPastHammerBlocksTest, 1),
+                        (ItemType.Hookshot, 0),
+                        (ItemType.Boots, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftPastBonkableGaps,
+                    ItemPlacement.Basic,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftPastHammerBlocksTest, 0),
+                        (ItemType.Hookshot, 0),
+                        (ItemType.Boots, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftPastBonkableGaps,
+                    ItemPlacement.Basic,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftPastHammerBlocksTest, 1),
+                        (ItemType.Hookshot, 0),
+                        (ItemType.Boots, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftPastBonkableGaps,
+                    ItemPlacement.Basic,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftPastHammerBlocksTest, 1),
+                        (ItemType.Hookshot, 0),
+                        (ItemType.Boots, 1)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -1122,7 +1104,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.IPSpikeRoom,
+                    DungeonNodeID.GT1FLeftPastBonkableGaps,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -1130,23 +1112,114 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB2PastKeyDoorTest, 1)
+                        (ItemType.GT1FLeftPastHammerBlocksTest, 1),
+                        (ItemType.Hookshot, 1),
+                        (ItemType.Boots, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftPastBonkableGaps,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftPastHammerBlocksTest, 1),
+                        (ItemType.Hookshot, 0),
+                        (ItemType.Boots, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftPastBonkableGaps,
+                    ItemPlacement.Basic,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftPastHammerBlocksTest, 1),
+                        (ItemType.Hookshot, 1),
+                        (ItemType.Boots, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F1LeftMapChestRoom_To_F1LeftPastBonkableGaps =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftPastBonkableGaps,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftMapChestRoomTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftPastBonkableGaps,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftMapChestRoomTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftPastBonkableGaps,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftMapChestRoomTest, 1)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[]
                     {
-                        KeyDoorID.IPB3KeyDoor
+                        KeyDoorID.GT1FMapChestRoomKeyDoor
                     },
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> B2PastHammerBlocks_To_SpikeRoom =>
+        public static IEnumerable<object[]> F1LeftSpikeTrapPortalRoom_To_F1LeftPastBonkableGaps =>
             new List<object[]>
             {
                 new object[]
                 {
-                    DungeonNodeID.IPSpikeRoom,
+                    DungeonNodeID.GT1FLeftPastBonkableGaps,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -1154,8 +1227,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB2PastHammerBlocksTest, 0),
-                        (ItemType.Hammer, 0)
+                        (ItemType.GT1FLeftSpikeTrapPortalRoomTest, 0)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -1163,7 +1235,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.IPSpikeRoom,
+                    DungeonNodeID.GT1FLeftPastBonkableGaps,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -1171,8 +1243,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB2PastHammerBlocksTest, 1),
-                        (ItemType.Hammer, 0)
+                        (ItemType.GT1FLeftSpikeTrapPortalRoomTest, 1)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -1180,7 +1251,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.IPSpikeRoom,
+                    DungeonNodeID.GT1FLeftPastBonkableGaps,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -1188,21 +1259,23 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB2PastHammerBlocksTest, 1),
-                        (ItemType.Hammer, 1)
+                        (ItemType.GT1FLeftSpikeTrapPortalRoomTest, 1)
                     },
                     new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.GT1FSpikeTrapPortalRoomKeyDoor
+                    },
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> B4RightSide_To_SpikeRoom =>
+        public static IEnumerable<object[]> F1LeftPastBonkableGaps_To_F1LeftMapChestRoom =>
             new List<object[]>
             {
                 new object[]
                 {
-                    DungeonNodeID.IPSpikeRoom,
+                    DungeonNodeID.GT1FLeftMapChestRoom,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -1210,7 +1283,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB4RightSideTest, 0)
+                        (ItemType.GT1FLeftPastBonkableGapsTest, 0)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -1218,7 +1291,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.IPSpikeRoom,
+                    DungeonNodeID.GT1FLeftMapChestRoom,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -1226,28 +1299,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB4RightSideTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> SpikeRoom_To_B4RightSide =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB4RightSide,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPSpikeRoomTest, 0)
+                        (ItemType.GT1FLeftPastBonkableGapsTest, 1)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -1255,7 +1307,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.IPB4RightSide,
+                    DungeonNodeID.GT1FLeftMapChestRoom,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -1263,7 +1315,103 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPSpikeRoomTest, 1)
+                        (ItemType.GT1FLeftPastBonkableGapsTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.GT1FMapChestRoomKeyDoor
+                    },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F1LeftPastBonkableGaps_To_F1LeftSpikeTrapPortalRoom =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftSpikeTrapPortalRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftPastBonkableGapsTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftSpikeTrapPortalRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftPastBonkableGapsTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftSpikeTrapPortalRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftPastBonkableGapsTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.GT1FSpikeTrapPortalRoomKeyDoor
+                    },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F1LeftSpikeTrapPortalRoom_To_F1LeftFiresnakeRoom =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftFiresnakeRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftSpikeTrapPortalRoomTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftFiresnakeRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftSpikeTrapPortalRoomTest, 1)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -1271,12 +1419,12 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> B4IceRoom_To_B4RightSide =>
+        public static IEnumerable<object[]> F1LeftFiresnakeRoom_To_F1LeftPastFiresnakeRoomGap =>
             new List<object[]>
             {
                 new object[]
                 {
-                    DungeonNodeID.IPB4RightSide,
+                    DungeonNodeID.GT1FLeftPastFiresnakeRoomGap,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -1284,19 +1432,20 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB4IceRoomTest, 0),
-                        (ItemType.Hookshot, 0)
+                        (ItemType.GT1FLeftFiresnakeRoomTest, 0),
+                        (ItemType.Hookshot, 0),
+                        (ItemType.Boots, 0)
                     },
                     new (SequenceBreakType, bool)[]
                     {
-                        (SequenceBreakType.BombJumpIPHookshotGap, true)
+                        (SequenceBreakType.Hover, true)
                     },
                     new KeyDoorID[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    DungeonNodeID.IPB4RightSide,
+                    DungeonNodeID.GT1FLeftPastFiresnakeRoomGap,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -1304,19 +1453,20 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB4IceRoomTest, 1),
-                        (ItemType.Hookshot, 0)
+                        (ItemType.GT1FLeftFiresnakeRoomTest, 1),
+                        (ItemType.Hookshot, 0),
+                        (ItemType.Boots, 0)
                     },
                     new (SequenceBreakType, bool)[]
                     {
-                        (SequenceBreakType.BombJumpIPHookshotGap, false)
+                        (SequenceBreakType.Hover, true)
                     },
                     new KeyDoorID[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    DungeonNodeID.IPB4RightSide,
+                    DungeonNodeID.GT1FLeftPastFiresnakeRoomGap,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -1324,19 +1474,41 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB4IceRoomTest, 1),
-                        (ItemType.Hookshot, 0)
+                        (ItemType.GT1FLeftFiresnakeRoomTest, 1),
+                        (ItemType.Hookshot, 0),
+                        (ItemType.Boots, 1)
                     },
                     new (SequenceBreakType, bool)[]
                     {
-                        (SequenceBreakType.BombJumpIPHookshotGap, true)
+                        (SequenceBreakType.Hover, false)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftPastFiresnakeRoomGap,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftFiresnakeRoomTest, 1),
+                        (ItemType.Hookshot, 0),
+                        (ItemType.Boots, 1)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.Hover, true)
                     },
                     new KeyDoorID[0],
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
                 {
-                    DungeonNodeID.IPB4RightSide,
+                    DungeonNodeID.GT1FLeftPastFiresnakeRoomGap,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -1344,61 +1516,1615 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB4IceRoomTest, 1),
+                        (ItemType.GT1FLeftFiresnakeRoomTest, 1),
+                        (ItemType.Hookshot, 1),
+                        (ItemType.Boots, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.Hover, true)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F1LeftPastFiresnakeRoomKeyDoor_To_F1LeftPastFiresnakeRoomGap =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftPastFiresnakeRoomGap,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftPastFiresnakeRoomKeyDoorTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftPastFiresnakeRoomGap,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftPastFiresnakeRoomKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftPastFiresnakeRoomGap,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftPastFiresnakeRoomKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.GT1FFiresnakeRoomKeyDoor
+                    },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F1LeftPastFiresnakeRoomGap_To_F1LeftPastFiresnakeRoomKeyDoor =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftPastFiresnakeRoomKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftPastFiresnakeRoomGapTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftPastFiresnakeRoomKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftPastFiresnakeRoomGapTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftPastFiresnakeRoomKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftPastFiresnakeRoomGapTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.GT1FFiresnakeRoomKeyDoor
+                    },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F1LeftPastFiresnakeRoomKeyDoor_To_F1LeftRandomizerRoom =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftRandomizerRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftPastFiresnakeRoomKeyDoorTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FLeftRandomizerRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftPastFiresnakeRoomKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+           };
+
+        public static IEnumerable<object[]> GT_To_F1Right =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT1FRight,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FRight,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F1RightTileRoom_To_F1Right =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT1FRight,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightTileRoomTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FRight,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightTileRoomTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F1Right_To_F1RightTileRoom =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT1FRightTileRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightTest, 0),
+                        (ItemType.CaneOfSomaria, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FRightTileRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightTest, 1),
+                        (ItemType.CaneOfSomaria, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FRightTileRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightTest, 1),
+                        (ItemType.CaneOfSomaria, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F1RightFourTorchRoom_To_F1RightTileRoom =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT1FRightTileRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightFourTorchRoomTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FRightTileRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightFourTorchRoomTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FRightTileRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightFourTorchRoomTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.GT1FTileRoomKeyDoor
+                    },
+                    AccessibilityLevel.Normal
+                },
+            };
+
+        public static IEnumerable<object[]> F1RightTileRoom_To_F1RightFourTorchRoom =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT1FRightFourTorchRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightTileRoomTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FRightFourTorchRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightTileRoomTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FRightFourTorchRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightTileRoomTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.GT1FTileRoomKeyDoor
+                    },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F1RightCompassRoom_To_F1RightFourTorchRoom =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT1FRightFourTorchRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightCompassRoomTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FRightFourTorchRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightCompassRoomTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F1RightFourTorchRoom_To_F1RightCompassRoom =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT1FRightCompassRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightFourTorchRoomTest, 0),
+                        (ItemType.FireRod, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FRightCompassRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightFourTorchRoomTest, 1),
+                        (ItemType.FireRod, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FRightCompassRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightFourTorchRoomTest, 1),
+                        (ItemType.FireRod, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F1RightCompassRoom_To_F1RightPastCompassRoomPortal =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT1FRightPastCompassRoomPortal,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightCompassRoomTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FRightPastCompassRoomPortal,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightCompassRoomTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F1RightCollapsingWalkway_To_F1RightPastCompassRoomPortal =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT1FRightPastCompassRoomPortal,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightCollapsingWalkwayTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FRightPastCompassRoomPortal,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightCollapsingWalkwayTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FRightPastCompassRoomPortal,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightCollapsingWalkwayTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.GT1FCollapsingWalkwayKeyDoor
+                    },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F1RightPastCompassRoomPortal_To_F1RightCollapsingWalkway =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT1FRightCollapsingWalkway,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightPastCompassRoomPortalTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FRightCollapsingWalkway,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightPastCompassRoomPortalTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FRightCollapsingWalkway,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightPastCompassRoomPortalTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.GT1FCollapsingWalkwayKeyDoor
+                    },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F1LeftRandomizerRoom_To_F1BottomRoom =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT1FBottomRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftRandomizerRoomTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FBottomRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FLeftRandomizerRoomTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F1RightCollapsingWalkway_To_F1BottomRoom =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT1FBottomRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightCollapsingWalkwayTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FBottomRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FRightCollapsingWalkwayTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> Boss1_To_F1BottomRoom =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT1FBottomRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTBoss1Test, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT1FBottomRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTBoss1Test, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> Boss1_To_B1BossChests =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GTB1BossChests,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTBoss1Test, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GTB1BossChests,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTBoss1Test, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F1BottomRoom_To_BigChest =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GTBigChest,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FBottomRoomTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GTBigChest,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FBottomRoomTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GTBigChest,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT1FBottomRoomTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.GTBigChest
+                    },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> GT_To_F3PastRedGoriyaRooms =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT3FPastRedGoriyaRooms,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTTest, 0),
+                        (ItemType.Bow, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.MimicClip, true)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT3FPastRedGoriyaRooms,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTTest, 1),
+                        (ItemType.Bow, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.MimicClip, false)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT3FPastRedGoriyaRooms,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    true,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTTest, 0),
+                        (ItemType.Bow, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.MimicClip, true)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT3FPastRedGoriyaRooms,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTTest, 1),
+                        (ItemType.Bow, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.MimicClip, true)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.SequenceBreak
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT3FPastRedGoriyaRooms,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTTest, 1),
+                        (ItemType.Bow, 1)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.MimicClip, true)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT3FPastRedGoriyaRooms,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    true,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTTest, 1),
+                        (ItemType.Bow, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.MimicClip, true)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F3PastBigKeyDoor_To_F3PastRedGoriyaRooms =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT3FPastRedGoriyaRooms,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT3FPastBigKeyDoorTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT3FPastRedGoriyaRooms,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT3FPastBigKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT3FPastRedGoriyaRooms,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT3FPastBigKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.GT3FBigKeyDoor
+                    },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F3PastRedGoriyaRooms_To_F3PastBigKeyDoor =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT3FPastBigKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT3FPastRedGoriyaRoomsTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT3FPastBigKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT3FPastRedGoriyaRoomsTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT3FPastBigKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT3FPastRedGoriyaRoomsTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.GT3FBigKeyDoor
+                    },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> Boss2_To_F3PastBigKeyDoor =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT3FPastBigKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTBoss2Test, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT3FPastBigKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTBoss2Test, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> Boss2_To_F4PastBoss2 =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT4FPastBoss2,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTBoss2Test, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT4FPastBoss2,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTBoss2Test, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F4PastBoss2_To_F5PastFourTorchRooms =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT5FPastFourTorchRooms,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT4FPastBoss2Test, 0),
+                        (ItemType.Lamp, 0),
+                        (ItemType.FireRod, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT5FPastFourTorchRooms,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT4FPastBoss2Test, 1),
+                        (ItemType.Lamp, 0),
+                        (ItemType.FireRod, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT5FPastFourTorchRooms,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT4FPastBoss2Test, 1),
+                        (ItemType.Lamp, 1),
+                        (ItemType.FireRod, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT5FPastFourTorchRooms,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT4FPastBoss2Test, 1),
+                        (ItemType.Lamp, 0),
+                        (ItemType.FireRod, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F6PastFirstKeyDoor_To_F5PastFourTorchRooms =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT5FPastFourTorchRooms,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT6FPastFirstKeyDoorTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT5FPastFourTorchRooms,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT6FPastFirstKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT5FPastFourTorchRooms,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT6FPastFirstKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.GT6FFirstKeyDoor
+                    },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F5PastFourTorchRooms_To_F6PastFirstKeyDoor =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT6FPastFirstKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT5FPastFourTorchRoomsTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT6FPastFirstKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT5FPastFourTorchRoomsTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT6FPastFirstKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT5FPastFourTorchRoomsTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.GT6FFirstKeyDoor
+                    },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F6BossRoom_To_F6PastFirstKeyDoor =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT6FPastFirstKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT6FBossRoomTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT6FPastFirstKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT6FBossRoomTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT6FPastFirstKeyDoor,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT6FBossRoomTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.GT6FSecondKeyDoor
+                    },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F6PastFirstKeyDoor_To_F6BossRoom =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT6FBossRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT6FPastFirstKeyDoorTest, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT6FBossRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT6FPastFirstKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT6FBossRoom,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT6FPastFirstKeyDoorTest, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[]
+                    {
+                        KeyDoorID.GT6FSecondKeyDoor
+                    },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> F6BossRoom_To_F6PastBossRoomGap =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT6FPastBossRoomGap,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT6FBossRoomTest, 0),
+                        (ItemType.Boots, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.Hover, true)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT6FPastBossRoomGap,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT6FBossRoomTest, 1),
+                        (ItemType.Boots, 0)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.Hover, true)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT6FPastBossRoomGap,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT6FBossRoomTest, 1),
+                        (ItemType.Boots, 1)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.Hover, false)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT6FPastBossRoomGap,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GT6FBossRoomTest, 1),
+                        (ItemType.Boots, 1)
+                    },
+                    new (SequenceBreakType, bool)[]
+                    {
+                        (SequenceBreakType.Hover, true)
+                    },
+                    new KeyDoorID[0],
+                    AccessibilityLevel.SequenceBreak
+                }
+            };
+
+        public static IEnumerable<object[]> Boss3_To_F6PastBossRoomGap =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    DungeonNodeID.GT6FPastBossRoomGap,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTBoss3Test, 0),
+                        (ItemType.Hookshot, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT6FPastBossRoomGap,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTBoss3Test, 1),
+                        (ItemType.Hookshot, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new KeyDoorID[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    DungeonNodeID.GT6FPastBossRoomGap,
+                    ItemPlacement.Advanced,
+                    DungeonItemShuffle.Standard,
+                    WorldState.StandardOpen,
+                    false,
+                    false,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.GTBoss3Test, 1),
                         (ItemType.Hookshot, 1)
                     },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.BombJumpIPHookshotGap, true)
-                    },
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> B2PastKeyDoor_To_B4IceRoom =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB4IceRoom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB2PastKeyDoorTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB4IceRoom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB2PastKeyDoorTest, 1)
-                    },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> B4PastKeyDoor_To_B4IceRoom =>
+        public static IEnumerable<object[]> F6PastBossRoomGap_To_FinalBossRoom =>
             new List<object[]>
             {
                 new object[]
                 {
-                    DungeonNodeID.IPB4IceRoom,
+                    DungeonNodeID.GTFinalBossRoom,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -1406,7 +3132,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB4PastKeyDoorTest, 0)
+                        (ItemType.GT6FPastBossRoomGapTest, 0)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -1414,7 +3140,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.IPB4IceRoom,
+                    DungeonNodeID.GTFinalBossRoom,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -1422,7 +3148,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB4PastKeyDoorTest, 1)
+                        (ItemType.GT6FPastBossRoomGapTest, 1)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[0],
@@ -1430,7 +3156,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 },
                 new object[]
                 {
-                    DungeonNodeID.IPB4IceRoom,
+                    DungeonNodeID.GTFinalBossRoom,
                     ItemPlacement.Advanced,
                     DungeonItemShuffle.Standard,
                     WorldState.StandardOpen,
@@ -1438,1109 +3164,13 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.IPB4PastKeyDoorTest, 1)
+                        (ItemType.GT6FPastBossRoomGapTest, 1)
                     },
                     new (SequenceBreakType, bool)[0],
                     new KeyDoorID[]
                     {
-                        KeyDoorID.IPB4KeyDoor
+                        KeyDoorID.GT7FBigKeyDoor
                     },
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> B2PastKeyDoor_To_B4FreezorRoom =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB4FreezorRoom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB2PastKeyDoorTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB4FreezorRoom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB2PastKeyDoorTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> B4FreezorRoom_To_FreezorChest =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPFreezorChest,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB4FreezorRoomTest, 0),
-                        (ItemType.FireRod, 0),
-                        (ItemType.Bombos, 0),
-                        (ItemType.Sword, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPFreezorChest,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB4FreezorRoomTest, 1),
-                        (ItemType.FireRod, 0),
-                        (ItemType.Bombos, 0),
-                        (ItemType.Sword, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPFreezorChest,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB4FreezorRoomTest, 1),
-                        (ItemType.FireRod, 0),
-                        (ItemType.Bombos, 1),
-                        (ItemType.Sword, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPFreezorChest,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB4FreezorRoomTest, 1),
-                        (ItemType.FireRod, 1),
-                        (ItemType.Bombos, 0),
-                        (ItemType.Sword, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPFreezorChest,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB4FreezorRoomTest, 1),
-                        (ItemType.FireRod, 0),
-                        (ItemType.Bombos, 1),
-                        (ItemType.Sword, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPFreezorChest,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB4FreezorRoomTest, 1),
-                        (ItemType.FireRod, 0),
-                        (ItemType.Bombos, 1),
-                        (ItemType.Sword, 2)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> B4IceRoom_To_B4PastKeyDoor =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB4PastKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB4IceRoomTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB4PastKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB4IceRoomTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB4PastKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB4IceRoomTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[]
-                    {
-                        KeyDoorID.IPB4KeyDoor
-                    },
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> B5_To_B4PastKeyDoor =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB4PastKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB5Test, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB4PastKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB5Test, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> B4FreezorRoom_To_BigChestArea =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPBigChestArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB4FreezorRoomTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPBigChestArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB4FreezorRoomTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> BigChestArea_To_BigChest =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPBigChest,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPBigChestAreaTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPBigChest,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPBigChestAreaTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPBigChest,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPBigChestAreaTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[]
-                    {
-                        KeyDoorID.IPBigChest
-                    },
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> B4FreezorRoom_To_B5 =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB5,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB4FreezorRoomTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB5,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB4FreezorRoomTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> B4PastKeyDoor_To_B5 =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB5,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB4PastKeyDoorTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB5,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB4PastKeyDoorTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> B5PastBigKeyDoor_To_B5 =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB5,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB5PastBigKeyDoorTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB5,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB5PastBigKeyDoorTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB5,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB5PastBigKeyDoorTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[]
-                    {
-                        KeyDoorID.IPBigKeyDoor
-                    },
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> B5_To_B5PastBigKeyDoor =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB5PastBigKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB5Test, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB5PastBigKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB5Test, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB5PastBigKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB5Test, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[]
-                    {
-                        KeyDoorID.IPBigKeyDoor
-                    },
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> B6_To_B5PastBigKeyDoor =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB5PastBigKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB6Test, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB5PastBigKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB6Test, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB5PastBigKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB6Test, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[]
-                    {
-                        KeyDoorID.IPB5KeyDoor
-                    },
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> B5_To_B6 =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB6,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB5Test, 0),
-                        (ItemType.CaneOfSomaria, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.IPIceBreaker, true),
-                        (SequenceBreakType.BombJumpIPBJ, true)
-                    },
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB6,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB5Test, 1),
-                        (ItemType.CaneOfSomaria, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.IPIceBreaker, true),
-                        (SequenceBreakType.BombJumpIPBJ, false)
-                    },
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB6,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB5Test, 1),
-                        (ItemType.CaneOfSomaria, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.IPIceBreaker, false),
-                        (SequenceBreakType.BombJumpIPBJ, false)
-                    },
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB6,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB5Test, 1),
-                        (ItemType.CaneOfSomaria, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.IPIceBreaker, true),
-                        (SequenceBreakType.BombJumpIPBJ, true)
-                    },
-                    new KeyDoorID[0],
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB6,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB5Test, 1),
-                        (ItemType.CaneOfSomaria, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.IPIceBreaker, true),
-                        (SequenceBreakType.BombJumpIPBJ, false)
-                    },
-                    new KeyDoorID[0],
-                    AccessibilityLevel.SequenceBreak
-                }
-            };
-
-        public static IEnumerable<object[]> B5PastBigKeyDoor_To_B6 =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB6,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB5PastBigKeyDoorTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB6,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB5PastBigKeyDoorTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB6,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB5PastBigKeyDoorTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[]
-                    {
-                        KeyDoorID.IPB5KeyDoor
-                    },
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> B6PastKeyDoor_To_B6 =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB6,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB6PastKeyDoorTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB6,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB6PastKeyDoorTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB6,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB6PastKeyDoorTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[]
-                    {
-                        KeyDoorID.IPB6KeyDoor
-                    },
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> B6_To_B6PastKeyDoor =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB6PastKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB6Test, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB6PastKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB6Test, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB6PastKeyDoor,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB6Test, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[]
-                    {
-                        KeyDoorID.IPB6KeyDoor
-                    },
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> B6_To_B6PreBossRoom =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB6PreBossRoom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB6Test, 0),
-                        (ItemType.CaneOfSomaria, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.BombJumpIPBJ, true)
-                    },
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB6PreBossRoom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB6Test, 1),
-                        (ItemType.CaneOfSomaria, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.BombJumpIPBJ, false)
-                    },
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB6PreBossRoom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB6Test, 1),
-                        (ItemType.CaneOfSomaria, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.BombJumpIPBJ, true)
-                    },
-                    new KeyDoorID[0],
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB6PreBossRoom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB6Test, 1),
-                        (ItemType.CaneOfSomaria, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.BombJumpIPBJ, true)
-                    },
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> B6PastKeyDoor_To_B6PreBossRoom =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB6PreBossRoom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB6PastKeyDoorTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB6PreBossRoom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB6PastKeyDoorTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> B6PreBossRoom_To_B6PastHammerBlocks =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB6PastHammerBlocks,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB6PreBossRoomTest, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB6PastHammerBlocks,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB6PreBossRoomTest, 1),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB6PastHammerBlocks,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB6PreBossRoomTest, 1),
-                        (ItemType.Hammer, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> B6PastHammerBlocks_To_B6PastLiftBlock =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonNodeID.IPB6PastLiftBlock,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB6PastHammerBlocksTest, 0),
-                        (ItemType.Gloves, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB6PastLiftBlock,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB6PastHammerBlocksTest, 1),
-                        (ItemType.Gloves, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonNodeID.IPB6PastLiftBlock,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.IPB6PastHammerBlocksTest, 1),
-                        (ItemType.Gloves, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    new KeyDoorID[0],
                     AccessibilityLevel.Normal
                 }
             };

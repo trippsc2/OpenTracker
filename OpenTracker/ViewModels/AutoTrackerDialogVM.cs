@@ -18,7 +18,7 @@ namespace OpenTracker.ViewModels
     /// <summary>
     /// This is the ViewModel class for the autotracker dialog window.
     /// </summary>
-    public class AutoTrackerDialogVM : ViewModelBase, ISave
+    public class AutoTrackerDialogVM : ViewModelBase, ISaveData
     {
         private readonly DispatcherTimer _memoryCheckTimer;
         private int _tickCount;

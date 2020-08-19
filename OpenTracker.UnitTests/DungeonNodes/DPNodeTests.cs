@@ -22,13 +22,13 @@ namespace OpenTracker.UnitTests.DungeonNodes
         [MemberData(nameof(Front_To_BigChest))]
         [MemberData(nameof(Front_To_PastRightKeyDoor))]
         [MemberData(nameof(Entry_To_Back))]
-        [MemberData(nameof(DP2F_To_Back))]
-        [MemberData(nameof(Back_To_DP2F))]
-        [MemberData(nameof(DP2FPastFirstKeyDoor_To_DP2F))]
-        [MemberData(nameof(DP2F_To_DP2FPastFirstKeyDoor))]
-        [MemberData(nameof(DP2FPastSecondKeyDoor_To_DP2FPastFirstKeyDoor))]
-        [MemberData(nameof(DP2FPastFirstKeyDoor_To_DP2FPastSecondKeyDoor))]
-        [MemberData(nameof(DP2FPastSecondKeyDoor_To_PastFourTorchWall))]
+        [MemberData(nameof(F2_To_Back))]
+        [MemberData(nameof(Back_To_F2))]
+        [MemberData(nameof(F2PastFirstKeyDoor_To_F2))]
+        [MemberData(nameof(F2_To_F2PastFirstKeyDoor))]
+        [MemberData(nameof(F2PastSecondKeyDoor_To_F2PastFirstKeyDoor))]
+        [MemberData(nameof(F2PastFirstKeyDoor_To_F2PastSecondKeyDoor))]
+        [MemberData(nameof(F2PastSecondKeyDoor_To_PastFourTorchWall))]
         [MemberData(nameof(BossRoom_To_PastFourTorchWall))]
         [MemberData(nameof(PastFourTorchWall_To_BossRoom))]
         public void AccessibilityTests(
@@ -655,7 +655,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> DP2F_To_Back =>
+        public static IEnumerable<object[]> F2_To_Back =>
             new List<object[]>
             {
                 new object[]
@@ -711,7 +711,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> Back_To_DP2F =>
+        public static IEnumerable<object[]> Back_To_F2 =>
             new List<object[]>
             {
                 new object[]
@@ -767,7 +767,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> DP2FPastFirstKeyDoor_To_DP2F =>
+        public static IEnumerable<object[]> F2PastFirstKeyDoor_To_F2 =>
             new List<object[]>
             {
                 new object[]
@@ -823,7 +823,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> DP2F_To_DP2FPastFirstKeyDoor =>
+        public static IEnumerable<object[]> F2_To_F2PastFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -879,7 +879,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> DP2FPastSecondKeyDoor_To_DP2FPastFirstKeyDoor =>
+        public static IEnumerable<object[]> F2PastSecondKeyDoor_To_F2PastFirstKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -935,7 +935,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> DP2FPastFirstKeyDoor_To_DP2FPastSecondKeyDoor =>
+        public static IEnumerable<object[]> F2PastFirstKeyDoor_To_F2PastSecondKeyDoor =>
             new List<object[]>
             {
                 new object[]
@@ -991,7 +991,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
                 }
             };
 
-        public static IEnumerable<object[]> DP2FPastSecondKeyDoor_To_PastFourTorchWall =>
+        public static IEnumerable<object[]> F2PastSecondKeyDoor_To_PastFourTorchWall =>
             new List<object[]>
             {
                 new object[]
