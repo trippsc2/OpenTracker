@@ -4,6 +4,6 @@ namespace OpenTracker.Models.Markings
 {
     public interface IMarking : INotifyPropertyChanging, INotifyPropertyChanged
     {
-        MarkType? Mark { get; set; }
+        MarkType Mark { get; set; }
     }
 }

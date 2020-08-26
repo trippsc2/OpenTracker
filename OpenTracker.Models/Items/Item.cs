@@ -11,13 +11,10 @@ namespace OpenTracker.Models.Items
     {
         private readonly int _starting;
 
-        public ItemType Type { get; }
-        public int Maximum { get; }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         private int _current;
-        public int Current
+        public virtual int Current
         {
             get => _current;
             set
@@ -42,17 +39,10 @@ namespace OpenTracker.Models.Items
         /// <param name="maximum">
         /// A 32-bit signed integer representing the maximum value of the item.
         /// </param>
-        public Item(ItemType itemType, int starting = 0, int maximum = 1)
+        public Item(int starting = 0)
         {
-            if (starting > maximum)
-            {
-                throw new ArgumentOutOfRangeException(nameof(starting));
-            }
-
-            Type = itemType;
             _starting = starting;
-            Current = _starting;
-            Maximum = maximum;
+            _current = _starting;
         }
 
         /// <summary>
@@ -72,9 +62,9 @@ namespace OpenTracker.Models.Items
         /// <returns>
         /// A boolean representing whether an item can be added.
         /// </returns>
-        public bool CanAdd()
+        public virtual bool CanAdd()
         {
-            return Current < Maximum;
+            return true;
         }
 
         /// <summary>

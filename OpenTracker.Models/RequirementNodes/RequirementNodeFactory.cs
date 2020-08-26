@@ -23,26 +23,41 @@ namespace OpenTracker.Models.RequirementNodes
         {
             return id switch
             {
+                RequirementNodeID.Inaccessible => null,
                 RequirementNodeID.Start => null,
+                RequirementNodeID.EntranceShuffle => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn])
+                },
+                RequirementNodeID.NonEntrance => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Start,
+                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOff])
+                },
+                RequirementNodeID.NonEntranceInverted => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.NonEntrance,
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted])
+                },
                 RequirementNodeID.LightWorld => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
                         RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.LightWorldTest],
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
-                            RequirementDictionary.Instance[RequirementType.LightWorldAccess]
-                        })),
+                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]),
                     new RequirementNodeConnection(RequirementNodeID.DeathMountainEntry),
                     new RequirementNodeConnection(RequirementNodeID.DeathMountainExit),
                     new RequirementNodeConnection(
-                        RequirementNodeID.LWKakarikoPortal,
+                        RequirementNodeID.LWKakarikoPortalNotBunny,
                         new AlternativeRequirement(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.LWLift2],
-                            RequirementDictionary.Instance[RequirementType.LWHammer]
+                            RequirementDictionary.Instance[RequirementType.Hammer],
+                            RequirementDictionary.Instance[RequirementType.Gloves2]
                         })),
+                    new RequirementNodeConnection(RequirementNodeID.DesertLedge),
                     new RequirementNodeConnection(
                         RequirementNodeID.GrassHouse,
                         RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
@@ -51,1124 +66,1128 @@ namespace OpenTracker.Models.RequirementNodes
                         RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
                     new RequirementNodeConnection(RequirementNodeID.RaceGameLedge),
                     new RequirementNodeConnection(RequirementNodeID.SouthOfGroveLedge),
-                    new RequirementNodeConnection(RequirementNodeID.DesertLedge),
                     new RequirementNodeConnection(RequirementNodeID.CheckerboardLedge),
                     new RequirementNodeConnection(RequirementNodeID.BombosTabletLedge),
                     new RequirementNodeConnection(RequirementNodeID.LWMirePortal),
                     new RequirementNodeConnection(
-                        RequirementNodeID.LWGraveyard,
-                        RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
-                    new RequirementNodeConnection(RequirementNodeID.HyruleCastleTop),
+                        RequirementNodeID.LWSouthPortalNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Hammer]),
+                    new RequirementNodeConnection(RequirementNodeID.LWWitchAreaNotBunny),
+                    new RequirementNodeConnection(RequirementNodeID.LWEastPortalNotBunny),
+                    new RequirementNodeConnection(RequirementNodeID.DarkWorldWestMirror),
                     new RequirementNodeConnection(
-                        RequirementNodeID.LWSouthPortal,
-                        RequirementDictionary.Instance[RequirementType.LWHammer]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LWWitchArea,
-                        RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LWEastPortal,
-                        RequirementDictionary.Instance[RequirementType.LWHammer]),
-                    new RequirementNodeConnection(RequirementNodeID.LWLakeHylia),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldSouth,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.Aga1],
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]
-                        }))
-                },
-                RequirementNodeID.LumberjackTreeActive => new List<RequirementNodeConnection>
-                {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.LumberjackTreeActiveTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
+                        RequirementNodeID.DarkWorldSouthInverted,
                         RequirementDictionary.Instance[RequirementType.Aga1]),
+                    new RequirementNodeConnection(RequirementNodeID.DarkWorldSouthMirror),
+                    new RequirementNodeConnection(RequirementNodeID.DarkWorldEastMirror),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DarkWorldSouthEast,
+                        RequirementDictionary.Instance[RequirementType.DWMirror])
                 },
-                RequirementNodeID.LumberjackCaveEntrance => new List<RequirementNodeConnection>
+                RequirementNodeID.LightWorldInverted => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.LumberjackCaveEntranceTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LumberjackTreeActive,
-                        RequirementDictionary.Instance[RequirementType.LWDash]),
-                },
-                RequirementNodeID.ForestHideout => new List<RequirementNodeConnection>
-                {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.ForestHideoutTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted])
+                },
+                RequirementNodeID.LightWorldNonInverted => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LightWorld,
+                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted])
+                },
+                RequirementNodeID.LightWorldInspect => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LightWorld,
+                        RequirementDictionary.Instance[RequirementType.Inspect])
+                },
+                RequirementNodeID.LightWorldMirror => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LightWorld,
+                        RequirementDictionary.Instance[RequirementType.LWMirror])
+                },
+                RequirementNodeID.LightWorldNotBunny => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LightWorld,
+                        RequirementDictionary.Instance[RequirementType.NotBunnyLW])
+                },
+                RequirementNodeID.LightWorldNotBunnyOrDungeonRevive =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(RequirementNodeID.LightWorldNotBunny),
+                        new RequirementNodeConnection(
+                            RequirementNodeID.LightWorld,
+                            RequirementDictionary.Instance[RequirementType.DungeonRevive])
+                    },
+                RequirementNodeID.LightWorldNotBunnyOrSuperBunnyFallInHole =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(RequirementNodeID.LightWorldNotBunny),
+                        new RequirementNodeConnection(
+                            RequirementNodeID.LightWorld,
+                            RequirementDictionary.Instance[RequirementType.SuperBunnyFallInHole])
+                    },
+                RequirementNodeID.LightWorldNotBunnyOrSuperBunnyMirror =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(RequirementNodeID.LightWorldNotBunny),
+                        new RequirementNodeConnection(
+                            RequirementNodeID.LightWorld,
+                            RequirementDictionary.Instance[RequirementType.SuperBunnyMirror])
+                    },
+                RequirementNodeID.LightWorldDash => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LightWorldNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Boots])
+                },
+                RequirementNodeID.LightWorldHammer => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LightWorldNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Hammer])
+                },
+                RequirementNodeID.LightWorldLift1 => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LightWorldNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Gloves1])
+                },
+                RequirementNodeID.GroveDiggingSpot => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LightWorldNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Shovel])
+                },
+                RequirementNodeID.Flute => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LightWorldNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Flute])
+                },
+                RequirementNodeID.FluteInverted => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Flute,
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted])
+                },
+                RequirementNodeID.FluteNonInverted => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.Flute,
+                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted])
+                },
+                RequirementNodeID.Pedestal => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LightWorld,
+                        RequirementDictionary.Instance[RequirementType.Pedestal])
+                },
+                RequirementNodeID.LumberjackCaveHole => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LightWorldDash,
+                        RequirementDictionary.Instance[RequirementType.Aga1])
+                },
+                RequirementNodeID.LumberjackCave => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(RequirementNodeID.LumberjackCaveHole),
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldInspect)
                 },
                 RequirementNodeID.DeathMountainEntry => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldLift1),
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.DeathMountainEntryTest],
-                            RequirementDictionary.Instance[RequirementType.DeathMountainEntryAccess]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.LWLift1]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DeathMountainExit,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[
-                                RequirementType.WorldStateInvertedEntranceShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.BumperCave]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.BumperCave,
+                        RequirementNodeID.BumperCaveEntry,
                         RequirementDictionary.Instance[RequirementType.DWMirror])
                 },
+                RequirementNodeID.DeathMountainEntryNonEntrance =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DeathMountainEntry,
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff])
+                    },
+                RequirementNodeID.DeathMountainEntryCave => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DeathMountainEntryNonEntrance,
+                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DeathMountainWestBottomNonEntrance,
+                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.BumperCaveEntryNonEntrance,
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DarkDeathMountainWestBottomNonEntrance,
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted])
+                },
+                RequirementNodeID.DeathMountainEntryCaveDark => new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DeathMountainEntryCave,
+                            RequirementDictionary.Instance[
+                                RequirementType.DarkRoomDeathMountainEntry])
+                    },
                 RequirementNodeID.DeathMountainExit => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.DeathMountainExitTest],
-                            RequirementDictionary.Instance[RequirementType.DeathMountainExitAccess]
-                        })),
+                        RequirementNodeID.DeathMountainExitCaveDark,
+                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.DeathMountainEntry,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[
-                                RequirementType.WorldStateInvertedEntranceShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.BumperCave]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DeathMountainWestBottom,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[
-                                RequirementType.WorldStateNonInvertedEntranceShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.DarkRoomDeathMountainExit]
-                        })),
+                        RequirementNodeID.BumperCaveBack,
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
                     new RequirementNodeConnection(
                         RequirementNodeID.BumperCaveTop,
-                        RequirementDictionary.Instance[RequirementType.DWMirror]),
+                        RequirementDictionary.Instance[RequirementType.DWMirror])
+                },
+                RequirementNodeID.DeathMountainExitNonEntrance =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DeathMountainExit,
+                            RequirementDictionary.Instance[
+                                RequirementType.EntranceShuffleOff])
+                    },
+                RequirementNodeID.DeathMountainExitCave => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DeathMountainExitNonEntrance,
+                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DeathMountainWestBottomNonEntrance,
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted])
+                },
+                RequirementNodeID.DeathMountainExitCaveDark => new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DeathMountainExitCave,
+                            RequirementDictionary.Instance[
+                                RequirementType.DarkRoomDeathMountainExit])
+                    },
+                RequirementNodeID.ForestHideout => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldNotBunny),
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldInspect)
                 },
                 RequirementNodeID.LWKakarikoPortal => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.LWKakarikoPortalTest]),
+                        RequirementNodeID.LightWorldNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Gloves2]),
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldHammer),
+                    new RequirementNodeConnection(RequirementNodeID.DWKakarikoPortalInverted,
+                        RequirementDictionary.Instance[RequirementType.Gloves1])
+                },
+                RequirementNodeID.LWKakarikoPortalNonInverted =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.LWKakarikoPortal,
+                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted])
+                    },
+                RequirementNodeID.LWKakarikoPortalNotBunny => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LWKakarikoPortal,
+                        RequirementDictionary.Instance[RequirementType.NotBunnyLW])
+                },
+                RequirementNodeID.SickKid => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.LWLift2],
-                            RequirementDictionary.Instance[RequirementType.LWHammer]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldWest,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                            RequirementDictionary.Instance[RequirementType.DWLift1]
-                        })),
+                        RequirementDictionary.Instance[RequirementType.Bottle])
                 },
                 RequirementNodeID.GrassHouse => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.GrassHouseTest],
-                            RequirementDictionary.Instance[RequirementType.GrassHouseAccess]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.NotBunnyLW])
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldNotBunny)
                 },
                 RequirementNodeID.BombHut => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.BombHutTest],
-                            RequirementDictionary.Instance[RequirementType.BombHutAccess]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.NotBunnyLW])
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldNotBunny)
                 },
                 RequirementNodeID.MagicBatLedge => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.MagicBatLedgeTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.LWHammer]),
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldHammer),
                     new RequirementNodeConnection(
                         RequirementNodeID.HammerPegsArea,
                         RequirementDictionary.Instance[RequirementType.DWMirror])
                 },
+                RequirementNodeID.MagicBat => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.MagicBatLedge,
+                        RequirementDictionary.Instance[RequirementType.Powder])
+                },
+                RequirementNodeID.MagicBatEntrance => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(RequirementNodeID.MagicBatLedge),
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldInspect)
+                },
+                RequirementNodeID.Library => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldDash),
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldInspect)
+                },
                 RequirementNodeID.RaceGameLedge => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.RaceGameLedgeTest],
-                            RequirementDictionary.Instance[RequirementType.RaceGameLedgeAccess]
-                        })),
+                        RequirementNodeID.LightWorldNotBunny,
+                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]),
+                    new RequirementNodeConnection(RequirementNodeID.DarkWorldSouthMirror)
+                },
+                RequirementNodeID.RaceGame => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldSouth,
-                        RequirementDictionary.Instance[RequirementType.DWMirror]),
+                        RequirementNodeID.RaceGameLedge,
+                        RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldInspect)
                 },
                 RequirementNodeID.SouthOfGroveLedge => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldInverted),
+                    new RequirementNodeConnection(RequirementNodeID.DarkWorldSouthMirror)
+                },
+                RequirementNodeID.SouthOfGrove => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.SouthOfGroveLedgeTest],
-                            RequirementDictionary.Instance[RequirementType.SouthOfGroveLedgeAccess]
-                        })),
+                        RequirementNodeID.SouthOfGroveLedge,
+                        RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldSouth,
-                        RequirementDictionary.Instance[RequirementType.DWMirror]),
+                        RequirementNodeID.SouthOfGroveLedge,
+                        RequirementDictionary.Instance[RequirementType.SuperBunnyMirror])
                 },
                 RequirementNodeID.DesertLedge => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.DesertLedgeTest],
-                            RequirementDictionary.Instance[RequirementType.DesertLedgeAccess]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DesertPalaceBackEntrance,
-                        RequirementDictionary.Instance[RequirementType.LWLift1]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.MireArea,
-                        RequirementDictionary.Instance[RequirementType.DWMirror]),
+                        RequirementNodeID.DesertBackNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Gloves1]),
+                    new RequirementNodeConnection(RequirementNodeID.MireAreaMirror),
                     new RequirementNodeConnection(
                         RequirementNodeID.DPFrontEntry,
                         RequirementDictionary.Instance[RequirementType.EntranceShuffleOff])
                 },
-                RequirementNodeID.DesertPalaceBackEntrance => new List<RequirementNodeConnection>
+                RequirementNodeID.DesertLedgeItem => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldInspect),
+                    new RequirementNodeConnection(RequirementNodeID.DesertLedge)
+                },
+                RequirementNodeID.DesertLedgeNotBunny => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.DesertPalaceBackEntranceTest],
-                            RequirementDictionary.Instance[RequirementType.DesertPalaceBackEntranceAccess]
-                        })),
-                    new RequirementNodeConnection(
                         RequirementNodeID.DesertLedge,
-                        RequirementDictionary.Instance[RequirementType.LWLift1]),
+                        RequirementDictionary.Instance[RequirementType.NotBunnyLW])
+                },
+                RequirementNodeID.DesertBack => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.MireArea,
-                        RequirementDictionary.Instance[RequirementType.DWMirror])
+                        RequirementNodeID.DesertLedgeNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Gloves1]),
+                    new RequirementNodeConnection(RequirementNodeID.MireAreaMirror)
+                },
+                RequirementNodeID.DesertBackNotBunny => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DesertBack,
+                        RequirementDictionary.Instance[RequirementType.NotBunnyLW])
                 },
                 RequirementNodeID.CheckerboardLedge => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldInverted),
+                    new RequirementNodeConnection(RequirementNodeID.MireAreaMirror)
+                },
+                RequirementNodeID.CheckerboardLedgeNotBunny => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.CheckerboardLedgeTest],
-                            RequirementDictionary.Instance[RequirementType.CheckerboardLedgeAccess]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.MireArea,
-                        RequirementDictionary.Instance[RequirementType.DWMirror])
+                        RequirementNodeID.CheckerboardLedge,
+                        RequirementDictionary.Instance[RequirementType.NotBunnyLW])
                 },
                 RequirementNodeID.CheckerboardCave => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.CheckerboardCaveTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.CheckerboardLedge,
-                        RequirementDictionary.Instance[RequirementType.LWLift1])
+                        RequirementNodeID.CheckerboardLedgeNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Gloves1])
                 },
                 RequirementNodeID.DesertPalaceFrontEntrance => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DesertPalaceFrontEntranceTest]),
-                    new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.Book]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.MireArea,
-                        RequirementDictionary.Instance[RequirementType.DWMirror])
+                    new RequirementNodeConnection(RequirementNodeID.MireAreaMirror)
                 },
                 RequirementNodeID.BombosTabletLedge => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.BombosTabletLedgeTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldSouth,
-                        RequirementDictionary.Instance[RequirementType.DWMirror])
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldInverted),
+                    new RequirementNodeConnection(RequirementNodeID.DarkWorldSouthMirror)
                 },
-                RequirementNodeID.RupeeCave => new List<RequirementNodeConnection>
+                RequirementNodeID.BombosTablet => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.RupeeCaveTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.LWLift1])
+                        RequirementNodeID.BombosTabletLedge,
+                        RequirementDictionary.Instance[RequirementType.Tablet])
                 },
                 RequirementNodeID.LWMirePortal => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(RequirementNodeID.FluteNonInverted),
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.LWMirePortalTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.LWFlute]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DWMirePortal,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                            RequirementDictionary.Instance[RequirementType.DWLift2]
-                        })),
+                        RequirementNodeID.DWMirePortalInverted,
+                        RequirementDictionary.Instance[RequirementType.Gloves2])
                 },
-                RequirementNodeID.NorthBonkRocks => new List<RequirementNodeConnection>
+                RequirementNodeID.LWMirePortalNonInverted => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.NorthBonkRocksTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.LWDash])
+                        RequirementNodeID.LWMirePortal,
+                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted])
                 },
                 RequirementNodeID.LWGraveyard => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.LWGraveyardTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldNotBunny),
                     new RequirementNodeConnection(RequirementNodeID.LWGraveyardLedge),
                     new RequirementNodeConnection(
-                        RequirementNodeID.LWKingsTomb,
-                        RequirementDictionary.Instance[RequirementType.LWLift2]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldWest,
-                        RequirementDictionary.Instance[RequirementType.DWMirror]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DWGraveyard,
-                        RequirementDictionary.Instance[RequirementType.DWMirror])
+                        RequirementNodeID.KingsTombNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Gloves2]),
+                    new RequirementNodeConnection(RequirementNodeID.DarkWorldWestMirror),
+                    new RequirementNodeConnection(RequirementNodeID.DWGraveyardMirror)
                 },
-                RequirementNodeID.EscapeGrave => new List<RequirementNodeConnection>
+                RequirementNodeID.LWGraveyardNotBunny => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.EscapeGraveTest]),
-                    new RequirementNodeConnection(
                         RequirementNodeID.LWGraveyard,
-                        RequirementDictionary.Instance[RequirementType.LWLift1])
+                        RequirementDictionary.Instance[RequirementType.NotBunnyLW])
                 },
                 RequirementNodeID.LWGraveyardLedge => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.LWGraveyardLedgeTest],
-                            RequirementDictionary.Instance[RequirementType.LWGraveyardLedgeAccess]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LWGraveyard,
+                        RequirementNodeID.LWGraveyardNotBunny,
                         RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
                     new RequirementNodeConnection(
                         RequirementNodeID.DWGraveyardLedge,
                         RequirementDictionary.Instance[RequirementType.DWMirror])
                 },
-                RequirementNodeID.LWKingsTomb => new List<RequirementNodeConnection>
+                RequirementNodeID.EscapeGrave => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.LWKingsTombTest],
-                            RequirementDictionary.Instance[RequirementType.LWKingsTombAccess]
-                        })),
+                        RequirementNodeID.LWGraveyardNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Gloves1])
+                },
+                RequirementNodeID.SanctuaryGraveEntrance => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(RequirementNodeID.EscapeGrave),
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldInspect)
+                },
+                RequirementNodeID.KingsTomb => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.LWGraveyard,
-                        RequirementDictionary.Instance[RequirementType.LWLift2]),
+                        RequirementNodeID.LWGraveyardNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Gloves2]),
+                    new RequirementNodeConnection(RequirementNodeID.DWGraveyardMirror)
+                },
+                RequirementNodeID.KingsTombNotBunny => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.DWGraveyard,
-                        RequirementDictionary.Instance[RequirementType.DWMirror])
+                        RequirementNodeID.KingsTomb,
+                        RequirementDictionary.Instance[RequirementType.NotBunnyLW])
                 },
                 RequirementNodeID.KingsTombGrave => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.KingsTombGraveTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LWKingsTomb,
-                        RequirementDictionary.Instance[RequirementType.LWDash])
+                        RequirementNodeID.KingsTombNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Boots])
+                },
+                RequirementNodeID.HoulihanHoleEntrance => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldNotBunny),
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldInspect)
                 },
                 RequirementNodeID.HyruleCastleTop => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.HyruleCastleTopTest],
-                            RequirementDictionary.Instance[RequirementType.HyruleCastleTopAccess]
-                        })),
-                    new RequirementNodeConnection(
                         RequirementNodeID.LightWorld,
                         RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]),
+                    new RequirementNodeConnection(RequirementNodeID.DarkWorldEastMirror)
+                },
+                RequirementNodeID.HyruleCastleTopInverted => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldEast,
-                        RequirementDictionary.Instance[RequirementType.DWMirror])
+                        RequirementNodeID.HyruleCastleTop,
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted])
+                },
+                RequirementNodeID.HyruleCastleTopNonInverted => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.HyruleCastleTop,
+                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted])
                 },
                 RequirementNodeID.AgahnimTowerEntrance => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.AgahnimTowerEntranceTest]),
+                        RequirementNodeID.HyruleCastleTopInverted,
+                        RequirementDictionary.Instance[RequirementType.GTCrystal]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.HyruleCastleTop,
+                        RequirementNodeID.HyruleCastleTopNonInverted,
                         new AlternativeRequirement(new List<IRequirement>
                         {
-                            new AggregateRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
-                                RequirementDictionary.Instance[RequirementType.ATBarrier]
-                            }),
-                            new AggregateRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                                RequirementDictionary.Instance[RequirementType.GTCrystal]
-                            })
+                            RequirementDictionary.Instance[RequirementType.Cape],
+                            RequirementDictionary.Instance[RequirementType.Sword2]
                         }))
                 },
                 RequirementNodeID.GanonHole => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.GanonHoleTest]),
+                        RequirementNodeID.HyruleCastleTopInverted,
+                        RequirementDictionary.Instance[RequirementType.Aga2]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.HyruleCastleTop,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                            RequirementDictionary.Instance[RequirementType.Aga2]
-                        })),
+                        RequirementNodeID.DarkWorldEastNonInverted,
+                        RequirementDictionary.Instance[RequirementType.Aga2]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldEast,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
-                            RequirementDictionary.Instance[RequirementType.Aga2]
-                        }))
-                },
-                RequirementNodeID.GanonHoleBack => new List<RequirementNodeConnection>
-                {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.GanonHoleBackTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
-                },
-                RequirementNodeID.CastleSecretFront => new List<RequirementNodeConnection>
-                {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.CastleSecretFrontTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.NotBunnyLW])
-                },
-                RequirementNodeID.CastleSecretBack => new List<RequirementNodeConnection>
-                {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.CastleSecretBackTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldEast,
-                        RequirementDictionary.Instance[RequirementType.DWMirror])
-                },
-                RequirementNodeID.CentralBonkRocks => new List<RequirementNodeConnection>
-                {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.CentralBonkRocksTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.LWDash])
+                        RequirementNodeID.LightWorldInspect,
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted])
                 },
                 RequirementNodeID.LWSouthPortal => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldHammer),
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.LWSouthPortalTest]),
+                        RequirementNodeID.DWSouthPortalInverted,
+                        RequirementDictionary.Instance[RequirementType.Gloves1])
+                },
+                RequirementNodeID.LWSouthPortalNonInverted => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.LWHammer]),
+                        RequirementNodeID.LWSouthPortal,
+                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted])
+                },
+                RequirementNodeID.LWSouthPortalNotBunny=> new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.DWSouthPortal,
+                        RequirementNodeID.LWSouthPortal,
+                        RequirementDictionary.Instance[RequirementType.NotBunnyLW])
+                },
+                RequirementNodeID.ZoraArea => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(RequirementNodeID.LWLakeHyliaFlippers),
+                    new RequirementNodeConnection(RequirementNodeID.LWLakeHyliaFakeFlippers),
+                    new RequirementNodeConnection(RequirementNodeID.LWLakeHyliaWaterWalk),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LWWitchAreaNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Gloves1]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.CatfishArea,
+                        RequirementDictionary.Instance[RequirementType.DWMirror])
+                },
+                RequirementNodeID.ZoraLedge => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.ZoraArea,
                         new AlternativeRequirement(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.DWMirror],
-                            new AggregateRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                                RequirementDictionary.Instance[RequirementType.DWLift1]
-                            })
+                            RequirementDictionary.Instance[RequirementType.Flippers],
+                            RequirementDictionary.Instance[RequirementType.FakeFlippersSplashDeletion],
+                            RequirementDictionary.Instance[RequirementType.WaterWalk],
+                            RequirementDictionary.Instance[RequirementType.Inspect]
                         }))
-                },
-                RequirementNodeID.HypeFairyCave => new List<RequirementNodeConnection>
-                {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.HypeFairyCaveTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.NotBunnyLW])
-                },
-                RequirementNodeID.MiniMoldormCave => new List<RequirementNodeConnection>
-                {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.MiniMoldormCaveTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.NotBunnyLW])
-                },
-                RequirementNodeID.Zora => new List<RequirementNodeConnection>
-                {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.ZoraTest]),
-                    new RequirementNodeConnection(RequirementNodeID.WaterfallFairy),
-                    new RequirementNodeConnection(RequirementNodeID.LWLakeHylia),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LWWitchArea,
-                        RequirementDictionary.Instance[RequirementType.LWLift1]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Catfish,
-                        RequirementDictionary.Instance[RequirementType.DWMirror])
                 },
                 RequirementNodeID.WaterfallFairy => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(RequirementNodeID.LWLakeHyliaFlippers),
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.WaterfallFairyTest],
-                            RequirementDictionary.Instance[RequirementType.WaterfallFairyAccess]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Zora,
-                        RequirementDictionary.Instance[RequirementType.LWSwim]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LWLakeHylia,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.LWSwim],
-                            RequirementDictionary.Instance[RequirementType.WaterWalkFromWaterfallCave]
-                        })),
+                        RequirementNodeID.LWLakeHyliaFakeFlippers,
+                        RequirementDictionary.Instance[RequirementType.MoonPearl]),
                     new RequirementNodeConnection(RequirementNodeID.LWLakeHyliaWaterWalk)
+                },
+                RequirementNodeID.WaterfallFairyNotBunny => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.WaterfallFairy,
+                        RequirementDictionary.Instance[RequirementType.NotBunnyLW])
                 },
                 RequirementNodeID.LWWitchArea => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldNotBunny),
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.LWWitchAreaTest],
-                            RequirementDictionary.Instance[RequirementType.LWWitchAreaAccess]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Zora,
-                        RequirementDictionary.Instance[RequirementType.LWLift1]),
+                        RequirementNodeID.ZoraArea,
+                        RequirementDictionary.Instance[RequirementType.Gloves1]),
                     new RequirementNodeConnection(
                         RequirementNodeID.DWWitchArea,
                         RequirementDictionary.Instance[RequirementType.DWMirror])
                 },
+                RequirementNodeID.LWWitchAreaNotBunny => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LWWitchArea,
+                        RequirementDictionary.Instance[RequirementType.NotBunnyLW])
+                },
+                RequirementNodeID.WitchsHut => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LWWitchArea,
+                        RequirementDictionary.Instance[RequirementType.Mushroom])
+                },
+                RequirementNodeID.Sahasrahla => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LightWorld,
+                        RequirementDictionary.Instance[RequirementType.GreenPendant])
+                },
                 RequirementNodeID.LWEastPortal => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldHammer),
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.LWEastPortalTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.LWHammer]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DWEastPortal,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            new AggregateRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                                RequirementDictionary.Instance[RequirementType.DWLift1]
-                            }),
-                            RequirementDictionary.Instance[RequirementType.DWMirror]
-                        })),
+                        RequirementNodeID.DWEastPortalInverted,
+                        RequirementDictionary.Instance[RequirementType.Gloves1])
                 },
-                RequirementNodeID.LWLakeHylia => new List<RequirementNodeConnection>
+                RequirementNodeID.LWEastPortalNonInverted => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.LWLakeHyliaTest]),
+                        RequirementNodeID.LWEastPortal,
+                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted])
+                },
+                RequirementNodeID.LWEastPortalNotBunny => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
+                        RequirementNodeID.LWEastPortal,
+                        RequirementDictionary.Instance[RequirementType.NotBunnyLW])
+                },
+                RequirementNodeID.LWLakeHyliaFakeFlippers => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LightWorldNotBunny,
                         new AlternativeRequirement(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.LWSwim],
-                            RequirementDictionary.Instance[RequirementType.LWFakeFlippersFairyRevival],
-                            RequirementDictionary.Instance[RequirementType.LWFakeFlippersScreenTransition],
-                            RequirementDictionary.Instance[RequirementType.LWFakeFlippersSplashDeletion]
-                        })),
+                            RequirementDictionary.Instance[
+                                RequirementType.FakeFlippersFairyRevival],
+                            RequirementDictionary.Instance[
+                                RequirementType.FakeFlippersScreenTransition],
+                            RequirementDictionary.Instance[
+                                RequirementType.FakeFlippersSplashDeletion]
+                        }))
+                },
+                RequirementNodeID.LWLakeHyliaFlippers => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.DWLakeHylia,
-                        RequirementDictionary.Instance[RequirementType.DWMirror])
+                        RequirementNodeID.LightWorldNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Flippers]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.WaterfallFairyNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Flippers])
                 },
                 RequirementNodeID.LWLakeHyliaWaterWalk => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.LWLakeHyliaWaterWalkTest]),
+                        RequirementNodeID.LightWorldNotBunny,
+                        RequirementDictionary.Instance[RequirementType.WaterWalk]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.LWWaterWalk]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.WaterfallFairy,
+                        RequirementNodeID.WaterfallFairyNotBunny,
                         RequirementDictionary.Instance[RequirementType.WaterWalkFromWaterfallCave])
+                },
+                RequirementNodeID.Hobo => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(RequirementNodeID.LWLakeHyliaFlippers),
+                    new RequirementNodeConnection(RequirementNodeID.LWLakeHyliaFakeFlippers),
+                    new RequirementNodeConnection(RequirementNodeID.LWLakeHyliaWaterWalk)
                 },
                 RequirementNodeID.LakeHyliaIsland => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.LakeHyliaIslandTest]),
+                        RequirementNodeID.LWLakeHyliaFlippers,
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.LWLakeHylia,
+                        RequirementNodeID.LWLakeHyliaFakeFlippers,
                         RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
                     new RequirementNodeConnection(
                         RequirementNodeID.LWLakeHyliaWaterWalk,
                         RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.DWLakeHylia,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.DWSwim],
-                            RequirementDictionary.Instance[RequirementType.DWMirror]
-                        })),
+                        RequirementNodeID.DWLakeHyliaFlippers,
+                        RequirementDictionary.Instance[RequirementType.DWMirror]),
                     new RequirementNodeConnection(
                         RequirementNodeID.DWLakeHyliaWaterWalk,
                         RequirementDictionary.Instance[RequirementType.DWMirror])
                 },
+                RequirementNodeID.LakeHyliaIslandItem => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(RequirementNodeID.LakeHyliaIsland),
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldInspect)
+                },
                 RequirementNodeID.LakeHyliaFairyIsland => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(RequirementNodeID.LWLakeHyliaFlippers),
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.LakeHyliaFairyIslandTest],
-                            RequirementDictionary.Instance[RequirementType.LakeHyliaFairyIslandAccess]
-                        })),
-                    new RequirementNodeConnection(RequirementNodeID.LWLakeHylia),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.IcePalaceEntrance,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.DWMirror],
-                            new AggregateRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                                RequirementDictionary.Instance[RequirementType.DWLift2]
-                            })
-                        }))
+                        RequirementNodeID.IcePalaceIsland,
+                        RequirementDictionary.Instance[RequirementType.DWMirror]),
+                    new RequirementNodeConnection(RequirementNodeID.LWLakeHyliaFakeFlippers),
+                    new RequirementNodeConnection(RequirementNodeID.LWLakeHyliaWaterWalk)
                 },
-                RequirementNodeID.IceRodCave => new List<RequirementNodeConnection>
-                {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.IceRodCaveTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.NotBunnyLW])
-                },
-                RequirementNodeID.IceFairyCave => new List<RequirementNodeConnection>
-                {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.IceFairyCaveTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.LWLift1])
-                },
+                RequirementNodeID.LakeHyliaFairyIslandNonInverted =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.LakeHyliaFairyIsland,
+                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted])
+                    },
                 RequirementNodeID.DeathMountainWestBottom => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(RequirementNodeID.FluteNonInverted),
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.DeathMountainWestBottomTest],
-                            RequirementDictionary.Instance[RequirementType.DeathMountainWestBottomAccess]
-                        })),
+                        RequirementNodeID.DeathMountainEntryCaveDark,
+                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.LWFlute]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DeathMountainEntry,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[
-                                RequirementType.WorldStateNonInvertedEntranceShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.DarkRoomDeathMountainEntry]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DeathMountainExit,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[
-                                RequirementType.WorldStateNonInvertedEntranceShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.DarkRoomDeathMountainExit]
-                        })),
-                    new RequirementNodeConnection(RequirementNodeID.SpectacleRockTop),
+                        RequirementNodeID.DeathMountainExitCaveDark,
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
                     new RequirementNodeConnection(RequirementNodeID.DeathMountainWestTop),
                     new RequirementNodeConnection(
-                        RequirementNodeID.DeathMountainEastBottom,
-                        RequirementDictionary.Instance[RequirementType.LWHookshot]),
+                        RequirementNodeID.DeathMountainEastBottomNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Hookshot]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.DarkDeathMountainWestBottom,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                            RequirementDictionary.Instance[RequirementType.DWMirror]
-                        }))
+                        RequirementNodeID.DarkDeathMountainWestBottomInverted)
                 },
+                RequirementNodeID.DeathMountainWestBottomNonEntrance =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DeathMountainWestBottom,
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff])
+                    },
+                RequirementNodeID.DeathMountainWestBottomNotBunny =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DeathMountainWestBottom,
+                            RequirementDictionary.Instance[RequirementType.NotBunnyLW])
+                    },
                 RequirementNodeID.SpectacleRockTop => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.SpectacleRockTopTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.DeathMountainWestTop,
                         RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.DarkDeathMountainWestBottom,
-                        RequirementDictionary.Instance[RequirementType.DWMirror])
+                        RequirementNodeID.DarkDeathMountainWestBottomMirror)
+                },
+                RequirementNodeID.SpectacleRockTopItem => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(RequirementNodeID.SpectacleRockTop),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DeathMountainWestBottom,
+                        RequirementDictionary.Instance[RequirementType.Inspect])
                 },
                 RequirementNodeID.DeathMountainWestTop => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.DeathMountainWestTopTest],
-                            RequirementDictionary.Instance[RequirementType.DeathMountainWestTopAccess]
-                        })),
                     new RequirementNodeConnection(RequirementNodeID.SpectacleRockTop),
                     new RequirementNodeConnection(
-                        RequirementNodeID.DeathMountainEastTop,
-                        RequirementDictionary.Instance[RequirementType.LWHammer]),
+                        RequirementNodeID.DeathMountainEastTopNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Hammer]),
+                    new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainTopMirror)
+                },
+                RequirementNodeID.DeathMountainWestTopNotBunny =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DeathMountainWestTop,
+                            RequirementDictionary.Instance[RequirementType.NotBunnyLW])
+                    },
+                RequirementNodeID.EtherTablet => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.DarkDeathMountainTop,
-                        RequirementDictionary.Instance[RequirementType.DWMirror])
+                        RequirementNodeID.DeathMountainWestTop,
+                        RequirementDictionary.Instance[RequirementType.Tablet])
                 },
                 RequirementNodeID.DeathMountainEastBottom => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.DeathMountainEastBottomTest],
-                            RequirementDictionary.Instance[RequirementType.DeathMountainEastBottomAccess]
-                        })),
+                        RequirementNodeID.DeathMountainWestBottomNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Hookshot]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.DeathMountainWestBottom,
-                        RequirementDictionary.Instance[RequirementType.LWHookshot]),
-                    new RequirementNodeConnection(RequirementNodeID.DeathMountainEastBottomConnector),
-                    new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTopConnector),
-                    new RequirementNodeConnection(RequirementNodeID.SpiralCave),
+                        RequirementNodeID.DeathMountainEastBottomConnector),
                     new RequirementNodeConnection(
-                        RequirementNodeID.MimicCave,
-                        RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
+                        RequirementNodeID.ParadoxCave,
+                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]),
                     new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop),
+                    new RequirementNodeConnection(RequirementNodeID.SpiralCaveLedge),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.MimicCaveLedge,
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
                     new RequirementNodeConnection(
                         RequirementNodeID.DarkDeathMountainEastBottom,
-                        RequirementDictionary.Instance[RequirementType.DWMirror])
-                },
-                RequirementNodeID.DeathMountainEastBottomConnector => new List<RequirementNodeConnection>
-                {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[
-                                RequirementType.DeathMountainEastBottomConnectorTest],
-                            RequirementDictionary.Instance[
-                                RequirementType.DeathMountainEastBottomConnectorAccess]
-                        })),
-                    new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTopConnector),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DeathMountainEastBottom,
-                        RequirementDictionary.Instance[RequirementType.LWLift2]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkDeathMountainEastBottomConnector,
-                        RequirementDictionary.Instance[RequirementType.DWMirror])
-                },
-                RequirementNodeID.DeathMountainEastTopConnector => new List<RequirementNodeConnection>
-                {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[
-                                RequirementType.DeathMountainEastTopConnectorTest],
-                            RequirementDictionary.Instance[
-                                RequirementType.DeathMountainEastTopConnectorAccess]
-                        })),
-                    new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.TurtleRockSafetyDoor,
-                        RequirementDictionary.Instance[RequirementType.DWMirror])
-                },
-                RequirementNodeID.SpiralCave => new List<RequirementNodeConnection>
-                {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.SpiralCaveTest],
-                            RequirementDictionary.Instance[RequirementType.SpiralCaveAccess]
-                        })),
-                    new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.TurtleRockTunnel,
-                        RequirementDictionary.Instance[RequirementType.DWMirror])
-                },
-                RequirementNodeID.MimicCave => new List<RequirementNodeConnection>
-                {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.MimicCaveTest],
-                            RequirementDictionary.Instance[RequirementType.MimicCaveAccess]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DeathMountainEastTop,
-                        RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.TurtleRockTunnel,
                         RequirementDictionary.Instance[RequirementType.DWMirror]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.TRKeyDoorsToMiddleExit,
-                        RequirementDictionary.Instance[RequirementType.DWMirror])
+                        RequirementNodeID.DarkDeathMountainEastBottomInverted,
+                        RequirementDictionary.Instance[RequirementType.Gloves2])
                 },
-                RequirementNodeID.DeathMountainEastTop => new List<RequirementNodeConnection>
+                RequirementNodeID.DeathMountainEastBottomNotBunny =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DeathMountainEastBottom,
+                            RequirementDictionary.Instance[RequirementType.NotBunnyLW])
+                    },
+                RequirementNodeID.DeathMountainEastBottomLift2 =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DeathMountainEastBottomNotBunny,
+                            RequirementDictionary.Instance[RequirementType.Gloves2])
+                    },
+                RequirementNodeID.DeathMountainEastBottomConnector =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DeathMountainEastBottomNotBunny,
+                            RequirementDictionary.Instance[RequirementType.Gloves2]),
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DeathMountainEastTopConnector),
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DarkDeathMountainEastBottomConnector,
+                            RequirementDictionary.Instance[RequirementType.DWMirror])
+                    },
+                RequirementNodeID.ParadoxCave => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.DeathMountainEastTopTest],
-                            RequirementDictionary.Instance[RequirementType.DeathMountainEastTopAccess]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DeathMountainWestTop,
-                        RequirementDictionary.Instance[RequirementType.LWHammer]),
                     new RequirementNodeConnection(
                         RequirementNodeID.DeathMountainEastBottom,
                         RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.LWFloatingIsland,
-                        RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
+                        RequirementNodeID.DeathMountainEastTop,
+                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOff])
+                },
+                RequirementNodeID.ParadoxCaveNotBunny => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.LWTurtleRockTop,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
-                            RequirementDictionary.Instance[RequirementType.LWHammer]
-                        }))
+                        RequirementNodeID.ParadoxCave,
+                        RequirementDictionary.Instance[RequirementType.NotBunnyLW])
+                },
+                RequirementNodeID.DeathMountainEastTop => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DeathMountainWestTopNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Hammer]),
+                    new RequirementNodeConnection(RequirementNodeID.ParadoxCave),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LWTurtleRockTopInvertedNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Hammer]),
+                    new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainTopMirror)
+                },
+                RequirementNodeID.DeathMountainEastTopInverted =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DeathMountainEastTop,
+                            RequirementDictionary.Instance[RequirementType.WorldStateInverted])
+                    },
+                RequirementNodeID.DeathMountainEastTopNotBunny =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DeathMountainEastTop,
+                            RequirementDictionary.Instance[RequirementType.NotBunnyLW])
+                    },
+                RequirementNodeID.DeathMountainEastTopConnector =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop),
+                        new RequirementNodeConnection(
+                            RequirementNodeID.TurtleRockSafetyDoor,
+                            RequirementDictionary.Instance[RequirementType.DWMirror])
+                    },
+                RequirementNodeID.SpiralCaveLedge => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTop),
+                    new RequirementNodeConnection(RequirementNodeID.TurtleRockTunnelMirror)
+                },
+                RequirementNodeID.SpiralCave => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.SpiralCaveLedge,
+                        RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.SpiralCaveLedge,
+                        RequirementDictionary.Instance[RequirementType.SuperBunnyFallInHole])
+                },
+                RequirementNodeID.MimicCaveLedge => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTopInverted),
+                    new RequirementNodeConnection(RequirementNodeID.TurtleRockTunnelMirror)
+                },
+                RequirementNodeID.MimicCaveLedgeNotBunny => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.MimicCaveLedge,
+                        RequirementDictionary.Instance[RequirementType.NotBunnyLW])
+                },
+                RequirementNodeID.MimicCave => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.MimicCaveLedgeNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Hammer])
                 },
                 RequirementNodeID.LWFloatingIsland => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.LWFloatingIslandTest]),
+                    new RequirementNodeConnection(RequirementNodeID.DeathMountainEastTopInverted),
                     new RequirementNodeConnection(
                         RequirementNodeID.DWFloatingIsland,
-                        RequirementDictionary.Instance[RequirementType.DWMirror]),
+                        RequirementDictionary.Instance[RequirementType.DWMirror])
+                },
+                RequirementNodeID.FloatingIsland => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
                         RequirementNodeID.DeathMountainEastTop,
-                        RequirementDictionary.Instance[RequirementType.WorldStateInverted])
+                        RequirementDictionary.Instance[RequirementType.Inspect]),
+                    new RequirementNodeConnection(RequirementNodeID.LWFloatingIsland)
                 },
                 RequirementNodeID.LWTurtleRockTop => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.LWTurtleRockTopTest]),
+                        RequirementNodeID.DeathMountainEastTopNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Gloves2]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.DeathMountainEastTop,
-                        RequirementDictionary.Instance[RequirementType.LWLift2]),
+                        RequirementNodeID.DWTurtleRockTopNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Gloves2])
+                },
+                RequirementNodeID.LWTurtleRockTopInverted => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.DWTurtleRockTop,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            new AggregateRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                                RequirementDictionary.Instance[RequirementType.DWLift2]
-                            }),
-                            RequirementDictionary.Instance[RequirementType.DWMirror]
-                        }))
+                        RequirementNodeID.LWTurtleRockTop,
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted])
+                },
+                RequirementNodeID.LWTurtleRockTopInvertedNotBunny =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.LWTurtleRockTopInverted,
+                            RequirementDictionary.Instance[RequirementType.NotBunnyLW])
+                    },
+                RequirementNodeID.LWTurtleRockTopNonInverted => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LWTurtleRockTop,
+                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted])
                 },
                 RequirementNodeID.DWKakarikoPortal => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DWKakarikoPortalTest]),
+                        RequirementNodeID.LWKakarikoPortalNonInverted,
+                        RequirementDictionary.Instance[RequirementType.Gloves1]),
+                    new RequirementNodeConnection(RequirementNodeID.DarkWorldWestNotBunny)
+                },
+                RequirementNodeID.DWKakarikoPortalInverted => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.LWKakarikoPortal,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            new AggregateRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
-                                RequirementDictionary.Instance[RequirementType.LWLift1]
-                            }),
-                            RequirementDictionary.Instance[RequirementType.LWMirror]
-                        })),
+                        RequirementNodeID.DWKakarikoPortal,
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted])
+                },
+                RequirementNodeID.DarkWorldWest => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(RequirementNodeID.NonEntranceInverted),
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldMirror),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DWKakarikoPortal,
+                        RequirementDictionary.Instance[RequirementType.NotBunnyDW]),
+                    new RequirementNodeConnection(RequirementNodeID.BumperCaveEntry),
+                    new RequirementNodeConnection(RequirementNodeID.BumperCaveTop),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.HammerHouseNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Hammer]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DarkWorldSouthNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Gloves2]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DWWitchAreaNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Hookshot])
+                },
+                RequirementNodeID.DarkWorldWestMirror => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DarkWorldWest,
+                        RequirementDictionary.Instance[RequirementType.DWMirror])
+                },
+                RequirementNodeID.DarkWorldWestNotBunny => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
                         RequirementNodeID.DarkWorldWest,
                         RequirementDictionary.Instance[RequirementType.NotBunnyDW])
                 },
-                RequirementNodeID.DarkWorldWest => new List<RequirementNodeConnection>
+                RequirementNodeID.DarkWorldWestNotBunnyOrSuperBunnyMirror =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(RequirementNodeID.DarkWorldWestNotBunny),
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DarkWorldWest,
+                            RequirementDictionary.Instance[RequirementType.SuperBunnyMirror])
+                    },
+                RequirementNodeID.DarkWorldWestLift2 => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[
-                                RequirementType.WorldStateInvertedEntranceShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.DarkWorldWestTest],
-                            RequirementDictionary.Instance[RequirementType.DarkWorldWestAccess]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.LWMirror]),
-                    new RequirementNodeConnection(RequirementNodeID.BumperCaveTop),
-                    new RequirementNodeConnection(RequirementNodeID.BumperCave),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DWKakarikoPortal,
-                        RequirementDictionary.Instance[RequirementType.NotBunnyDW]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DWWitchArea,
-                        RequirementDictionary.Instance[RequirementType.DWHookshot])
+                        RequirementNodeID.DarkWorldWestNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Gloves2])
                 },
-                RequirementNodeID.SkullWoodsBackEntrance => new List<RequirementNodeConnection>
+                RequirementNodeID.SkullWoodsBack => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.SkullWoodsBackEntranceTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldWest,
-                        RequirementDictionary.Instance[RequirementType.DWFireRod]),
+                        RequirementNodeID.DarkWorldWestNotBunny,
+                        RequirementDictionary.Instance[RequirementType.FireRod])
                 },
-                RequirementNodeID.BumperCave => new List<RequirementNodeConnection>
+                RequirementNodeID.BumperCaveEntry => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.BumperCaveTest],
-                            RequirementDictionary.Instance[RequirementType.BumperCaveAccess]
-                        })),
+                        RequirementNodeID.DarkWorldWestNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Gloves1]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldWest,
-                        RequirementDictionary.Instance[RequirementType.DWLift1]),
+                        RequirementNodeID.DeathMountainEntry,
+                        RequirementDictionary.Instance[RequirementType.LWMirror])
+                },
+                RequirementNodeID.BumperCaveEntryNonEntrance => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.BumperCaveTop,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.BumperCave],
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInvertedEntranceShuffleOff]
-                        }))
+                        RequirementNodeID.BumperCaveEntry,
+                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOff])
+                },
+                RequirementNodeID.BumperCaveFront => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DeathMountainEntryNonEntrance,
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.BumperCaveEntryNonEntrance,
+                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted])
+                },
+                RequirementNodeID.BumperCaveNotBunny => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.BumperCaveFront,
+                        RequirementDictionary.Instance[RequirementType.MoonPearl])
+                },
+                RequirementNodeID.BumperCavePastGap => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.BumperCaveNotBunny,
+                        RequirementDictionary.Instance[RequirementType.BumperCave])
+                },
+                RequirementNodeID.BumperCaveBack => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.BumperCavePastGap,
+                        RequirementDictionary.Instance[RequirementType.Cape])
                 },
                 RequirementNodeID.BumperCaveTop => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.BumperCaveTopTest],
-                            RequirementDictionary.Instance[RequirementType.BumperCaveTopAccess]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.BumperCave,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.BumperCave],
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInvertedEntranceShuffleOff]
-                        })),
-                    new RequirementNodeConnection(
                         RequirementNodeID.DeathMountainExit,
-                        RequirementDictionary.Instance[RequirementType.LWMirror])
-                },
-                RequirementNodeID.ThievesTownEntrance => new List<RequirementNodeConnection>
-                {
+                        RequirementDictionary.Instance[RequirementType.LWMirror]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.ThievesTownEntranceTest]),
+                        RequirementNodeID.BumperCaveBack,
+                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted])
+                },
+                RequirementNodeID.BumperCaveItem => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(RequirementNodeID.BumperCaveTop),
                     new RequirementNodeConnection(
                         RequirementNodeID.DarkWorldWest,
-                        RequirementDictionary.Instance[RequirementType.NotBunnyDW])
-                },
-                RequirementNodeID.BombableShack => new List<RequirementNodeConnection>
-                {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.BombableShackTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldWest,
-                        RequirementDictionary.Instance[RequirementType.NotBunnyDW])
+                        RequirementDictionary.Instance[RequirementType.Inspect])
                 },
                 RequirementNodeID.HammerHouse => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.HammerHouseTest],
-                            RequirementDictionary.Instance[RequirementType.HammerHouseAccess]
-                        })),
+                        RequirementNodeID.DarkWorldWestNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Hammer])
+                },
+                RequirementNodeID.HammerHouseNotBunny => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldWest,
-                        RequirementDictionary.Instance[RequirementType.DWHammer])
+                        RequirementNodeID.HammerHouse,
+                        RequirementDictionary.Instance[RequirementType.NotBunnyDW])
                 },
                 RequirementNodeID.HammerPegsArea => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.HammerPegsAreaTest],
-                            RequirementDictionary.Instance[RequirementType.HammerPegsAreaAccess]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.LWMirror]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldWest,
-                        RequirementDictionary.Instance[RequirementType.DWLift2])
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldMirror),
+                    new RequirementNodeConnection(RequirementNodeID.DarkWorldWestLift2)
                 },
                 RequirementNodeID.HammerPegs => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.HammerPegsTest]),
+                        RequirementNodeID.HammerPegsArea,
+                        RequirementDictionary.Instance[RequirementType.Hammer])
+                },
+                RequirementNodeID.PurpleChest => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
                         RequirementNodeID.HammerPegsArea,
-                        RequirementDictionary.Instance[RequirementType.DWHammer])
+                        RequirementDictionary.Instance[RequirementType.LightWorld])
                 },
                 RequirementNodeID.BlacksmithPrison => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldMirror),
+                    new RequirementNodeConnection(RequirementNodeID.DarkWorldWestLift2)
+                },
+                RequirementNodeID.Blacksmith => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.BlacksmithPrisonTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldWest,
-                        RequirementDictionary.Instance[RequirementType.DWLift2]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.LWMirror])
+                        RequirementNodeID.BlacksmithPrison,
+                        RequirementDictionary.Instance[RequirementType.LightWorld])
                 },
                 RequirementNodeID.DarkWorldSouth => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(RequirementNodeID.NonEntranceInverted),
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldMirror),
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.WorldStateInvertedEntranceShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.DarkWorldSouthTest],
-                            RequirementDictionary.Instance[RequirementType.DarkWorldSouthAccess]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DWSouthPortal,
-                        RequirementDictionary.Instance[RequirementType.DWHammer]),
+                        RequirementNodeID.DWSouthPortalNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Hammer]),
                     new RequirementNodeConnection(RequirementNodeID.DarkWorldWest),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldEast,
-                        RequirementDictionary.Instance[RequirementType.DWHammer])
+                    new RequirementNodeConnection(RequirementNodeID.DarkWorldEastHammer)
                 },
-                RequirementNodeID.DWCentralBonkRocks => new List<RequirementNodeConnection>
+                RequirementNodeID.DarkWorldSouthInverted => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DWCentralBonkRocksTest]),
+                        RequirementNodeID.DarkWorldSouth,
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted])
+                },
+                RequirementNodeID.DarkWorldSouthNonInverted => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
                         RequirementNodeID.DarkWorldSouth,
-                        RequirementDictionary.Instance[RequirementType.DWDash])
+                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted])
+                },
+                RequirementNodeID.DarkWorldSouthMirror => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DarkWorldSouth,
+                        RequirementDictionary.Instance[RequirementType.DWMirror])
+                },
+                RequirementNodeID.DarkWorldSouthNotBunny => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DarkWorldSouth,
+                        RequirementDictionary.Instance[RequirementType.NotBunnyDW])
+                },
+                RequirementNodeID.DarkWorldSouthDash => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DarkWorldSouthNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Boots])
+                },
+                RequirementNodeID.DarkWorldSouthHammer => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DarkWorldSouthNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Hammer])
                 },
                 RequirementNodeID.BuyBigBomb => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.BuyBigBombTest]),
+                        RequirementNodeID.LightWorldInverted,
+                        RequirementDictionary.Instance[RequirementType.RedCrystal]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldSouth,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
-                            RequirementDictionary.Instance[RequirementType.RedCrystal]
-                        })),
+                        RequirementNodeID.DarkWorldSouthNonInverted,
+                        RequirementDictionary.Instance[RequirementType.RedCrystal])
+                },
+                RequirementNodeID.BuyBigBombNonInverted => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                            RequirementDictionary.Instance[RequirementType.RedCrystal]
-                        }))
+                        RequirementNodeID.BuyBigBomb,
+                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted])
                 },
                 RequirementNodeID.BigBombToLightWorld => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.BigBombToLightWorldTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.BuyBigBomb,
                         new AlternativeRequirement(new List<IRequirement>
@@ -1177,137 +1196,117 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.WorldStateInverted]
                         }))
                 },
+                RequirementNodeID.BigBombToLightWorldNonInverted =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.BigBombToLightWorld,
+                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted])
+                    },
                 RequirementNodeID.BigBombToDWLakeHylia => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.BigBombToDWLakeHyliaTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.BuyBigBomb,
-                        new AggregateRequirement(new List<IRequirement>
+                        RequirementNodeID.BuyBigBombNonInverted,
+                        new AlternativeRequirement(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
-                            new AlternativeRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.BombDuplicationAncillaOverload],
-                                RequirementDictionary.Instance[RequirementType.BombDuplicationMirror]
-                            })
+                            RequirementDictionary.Instance[RequirementType.BombDuplicationAncillaOverload],
+                            RequirementDictionary.Instance[RequirementType.BombDuplicationMirror]
                         }))
                 },
                 RequirementNodeID.BigBombToWall => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.BigBombToWallTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.BuyBigBomb,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
-                            RequirementDictionary.Instance[RequirementType.DWHammer]
-                        })),
-                    new RequirementNodeConnection(RequirementNodeID.BigBombToDWLakeHylia),
+                        RequirementNodeID.BuyBigBombNonInverted,
+                        RequirementDictionary.Instance[RequirementType.Hammer]),
                     new RequirementNodeConnection(
                         RequirementNodeID.BigBombToLightWorld,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            new AggregateRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
-                                RequirementDictionary.Instance[RequirementType.Aga1]
-                            }),
-                            RequirementDictionary.Instance[RequirementType.LWMirror]
-                        }))
+                        RequirementDictionary.Instance[RequirementType.LWMirror]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.BigBombToLightWorldNonInverted,
+                        RequirementDictionary.Instance[RequirementType.Aga1]),
+                    new RequirementNodeConnection(RequirementNodeID.BigBombToDWLakeHylia)
                 },
                 RequirementNodeID.DWSouthPortal => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DWSouthPortalTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LWSouthPortal,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            new AggregateRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
-                                RequirementDictionary.Instance[RequirementType.LWLift1]
-                            }),
-                            RequirementDictionary.Instance[RequirementType.LWMirror]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldSouth,
-                        RequirementDictionary.Instance[RequirementType.DWHammer])
+                        RequirementNodeID.LWSouthPortalNonInverted,
+                        RequirementDictionary.Instance[RequirementType.Gloves1]),
+                    new RequirementNodeConnection(RequirementNodeID.DarkWorldSouthHammer)
                 },
-                RequirementNodeID.HypeCave => new List<RequirementNodeConnection>
+                RequirementNodeID.DWSouthPortalInverted => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.HypeCaveTest]),
+                        RequirementNodeID.DWSouthPortal,
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted])
+                },
+                RequirementNodeID.DWSouthPortalNotBunny => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldSouth,
-                        RequirementDictionary.Instance[RequirementType.NotBunnyDW]),
+                        RequirementNodeID.DWSouthPortal,
+                        RequirementDictionary.Instance[RequirementType.NotBunnyDW])
                 },
                 RequirementNodeID.MireArea => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.MireAreaTest],
-                            RequirementDictionary.Instance[RequirementType.MireAreaAccess]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.LWMirror]),
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldMirror),
                     new RequirementNodeConnection(RequirementNodeID.DWMirePortal)
                 },
-                RequirementNodeID.DWMirePortal => new List<RequirementNodeConnection>
+                RequirementNodeID.MireAreaMirror => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DWMirePortalTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.DWFlute]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LWMirePortal,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.LWMirror],
-                            new AggregateRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
-                                RequirementDictionary.Instance[RequirementType.LWLift2]
-                            })
-                        })),
+                        RequirementNodeID.MireArea,
+                        RequirementDictionary.Instance[RequirementType.DWMirror])
                 },
+                RequirementNodeID.MireAreaNotBunny => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.MireArea,
+                        RequirementDictionary.Instance[RequirementType.NotBunnyDW])
+                },
+                RequirementNodeID.MireAreaNotBunnyOrSuperBunnyMirror =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(RequirementNodeID.MireAreaNotBunny),
+                        new RequirementNodeConnection(
+                            RequirementNodeID.MireArea,
+                            RequirementDictionary.Instance[RequirementType.SuperBunnyMirror])
+                    },
                 RequirementNodeID.MiseryMireEntrance => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.MiseryMireEntranceTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.MireArea,
+                        RequirementNodeID.MireAreaNotBunny,
                         RequirementDictionary.Instance[RequirementType.MMMedallion])
+                },
+                RequirementNodeID.DWMirePortal => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(RequirementNodeID.FluteInverted),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LWMirePortal,
+                        RequirementDictionary.Instance[RequirementType.LWMirror]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.LWMirePortalNonInverted,
+                        RequirementDictionary.Instance[RequirementType.Gloves2])
+                },
+                RequirementNodeID.DWMirePortalInverted => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DWMirePortal,
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted])
                 },
                 RequirementNodeID.DWGraveyard => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DWGraveyardTest]),
-                    new RequirementNodeConnection(
                         RequirementNodeID.LWGraveyard,
                         RequirementDictionary.Instance[RequirementType.LWMirror]),
+                    new RequirementNodeConnection(RequirementNodeID.DarkWorldWestNotBunny)
+                },
+                RequirementNodeID.DWGraveyardMirror => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldWest,
-                        RequirementDictionary.Instance[RequirementType.NotBunnyDW])
+                        RequirementNodeID.DWGraveyard,
+                        RequirementDictionary.Instance[RequirementType.DWMirror])
                 },
                 RequirementNodeID.DWGraveyardLedge => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DWGraveyardLedgeTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.LWGraveyardLedge,
                         RequirementDictionary.Instance[RequirementType.LWMirror]),
@@ -1316,479 +1315,481 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.DWWitchArea => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.DWWitchAreaTest],
-                            RequirementDictionary.Instance[RequirementType.DWWitchAreaAccess]
-                        })),
-                    new RequirementNodeConnection(
                         RequirementNodeID.LWWitchArea,
                         RequirementDictionary.Instance[RequirementType.LWMirror]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldWest,
+                        RequirementNodeID.DarkWorldEastNotBunny,
                         new AlternativeRequirement(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.DWSwim],
-                            RequirementDictionary.Instance[RequirementType.DWFakeFlippersFairyRevival],
-                            RequirementDictionary.Instance[RequirementType.DWFakeFlippersQirnJump],
-                            RequirementDictionary.Instance[RequirementType.DWFakeFlippersSplashDeletion],
-                            RequirementDictionary.Instance[RequirementType.DWWaterWalk]
+                            RequirementDictionary.Instance[RequirementType.Hammer],
+                            RequirementDictionary.Instance[RequirementType.Gloves1]
                         })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldEast,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.DWHammer],
-                            RequirementDictionary.Instance[RequirementType.DWLift1],
-                            RequirementDictionary.Instance[RequirementType.DWSwim],
-                            RequirementDictionary.Instance[RequirementType.DWFakeFlippersFairyRevival],
-                            RequirementDictionary.Instance[RequirementType.DWFakeFlippersSplashDeletion]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Catfish,
-                        RequirementDictionary.Instance[RequirementType.DWLift1])
+                    new RequirementNodeConnection(RequirementNodeID.DWLakeHyliaFlippers),
+                    new RequirementNodeConnection(RequirementNodeID.DWLakeHyliaFakeFlippers),
+                    new RequirementNodeConnection(RequirementNodeID.DWLakeHyliaWaterWalk)
                 },
-                RequirementNodeID.Catfish => new List<RequirementNodeConnection>
+                RequirementNodeID.DWWitchAreaNotBunny => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.CatfishTest]),
+                        RequirementNodeID.DWWitchArea,
+                        RequirementDictionary.Instance[RequirementType.NotBunnyDW])
+                },
+                RequirementNodeID.CatfishArea => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Zora,
+                        RequirementNodeID.ZoraArea,
                         RequirementDictionary.Instance[RequirementType.LWMirror]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.DWWitchArea,
-                        RequirementDictionary.Instance[RequirementType.DWLift1])
+                        RequirementNodeID.DWWitchAreaNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Gloves1])
                 },
                 RequirementNodeID.DarkWorldEast => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.DarkWorldEastTest],
-                            RequirementDictionary.Instance[RequirementType.DarkWorldEastAccess]
-                        })),
+                        RequirementNodeID.LightWorldNonInverted,
+                        RequirementDictionary.Instance[RequirementType.Aga1]),
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldMirror),
                     new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
+                        RequirementNodeID.DWWitchAreaNotBunny,
                         new AlternativeRequirement(new List<IRequirement>
                         {
-                            new AggregateRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
-                                RequirementDictionary.Instance[RequirementType.Aga1]
-                            }),
-                            RequirementDictionary.Instance[RequirementType.LWMirror]
+                            RequirementDictionary.Instance[RequirementType.Gloves1],
+                            RequirementDictionary.Instance[RequirementType.Hammer]
                         })),
+                    new RequirementNodeConnection(RequirementNodeID.DarkWorldSouthHammer),
                     new RequirementNodeConnection(
-                        RequirementNodeID.DWWitchArea,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.DWLift1],
-                            RequirementDictionary.Instance[RequirementType.DWHammer]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldSouth,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.DWSwim],
-                            RequirementDictionary.Instance[RequirementType.DWFakeFlippersFairyRevival],
-                            RequirementDictionary.Instance[RequirementType.DWFakeFlippersSplashDeletion],
-                            RequirementDictionary.Instance[RequirementType.DWHammer]
-                        })),
-                    new RequirementNodeConnection(RequirementNodeID.DWLakeHylia),
+                        RequirementNodeID.DWEastPortalNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Hammer]),
+                    new RequirementNodeConnection(RequirementNodeID.DWLakeHyliaFlippers),
+                    new RequirementNodeConnection(RequirementNodeID.DWLakeHyliaFakeFlippers),
                     new RequirementNodeConnection(RequirementNodeID.DWLakeHyliaWaterWalk),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DWEastPortal,
-                        RequirementDictionary.Instance[RequirementType.DWHammer])
                 },
-                RequirementNodeID.FatFairy => new List<RequirementNodeConnection>
+                RequirementNodeID.DarkWorldEastNonInverted => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.FatFairyTest]),
-                    new RequirementNodeConnection(RequirementNodeID.BigBombToWall)
+                        RequirementNodeID.DarkWorldEast,
+                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted])
                 },
-                RequirementNodeID.PalaceOfDarknessEntrance => new List<RequirementNodeConnection>
+                RequirementNodeID.DarkWorldEastMirror => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.PalaceOfDarknessEntranceTest]),
+                        RequirementNodeID.DarkWorldEast,
+                        RequirementDictionary.Instance[RequirementType.DWMirror])
+                },
+                RequirementNodeID.DarkWorldEastNotBunny => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
                         RequirementNodeID.DarkWorldEast,
                         RequirementDictionary.Instance[RequirementType.NotBunnyDW])
                 },
+                RequirementNodeID.DarkWorldEastHammer => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DarkWorldEastNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Hammer])
+                },
                 RequirementNodeID.DWEastPortal => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DWEastPortalTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LWEastPortal,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
-                            RequirementDictionary.Instance[RequirementType.LWLift1]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldEast,
-                        RequirementDictionary.Instance[RequirementType.DWHammer])
+                        RequirementNodeID.LWEastPortalNonInverted,
+                        RequirementDictionary.Instance[RequirementType.Gloves1]),
+                    new RequirementNodeConnection(RequirementNodeID.DarkWorldEastHammer)
                 },
-                RequirementNodeID.DWLakeHylia => new List<RequirementNodeConnection>
+                RequirementNodeID.DWEastPortalInverted => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DWLakeHyliaTest]),
+                        RequirementNodeID.DWEastPortal,
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted])
+                },
+                RequirementNodeID.DWEastPortalNotBunny => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.LWLakeHylia,
-                        RequirementDictionary.Instance[RequirementType.LWMirror]),
+                        RequirementNodeID.DWEastPortal,
+                        RequirementDictionary.Instance[RequirementType.NotBunnyDW])
+                },
+                RequirementNodeID.DWLakeHyliaFlippers => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldSouth,
+                        RequirementNodeID.DarkWorldWestNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Flippers]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DarkWorldSouthNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Flippers]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DWWitchAreaNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Flippers]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DarkWorldEastNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Flippers]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DarkWorldSouthEastNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Flippers]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.IcePalaceIslandInverted,
+                        RequirementDictionary.Instance[RequirementType.Flippers])
+                },
+                RequirementNodeID.DWLakeHyliaFakeFlippers => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DarkWorldWestNotBunny,
                         new AlternativeRequirement(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.DWSwim],
-                            RequirementDictionary.Instance[RequirementType.DWFakeFlippersFairyRevival],
-                            RequirementDictionary.Instance[RequirementType.DWFakeFlippersSplashDeletion]
+                            RequirementDictionary.Instance[RequirementType.FakeFlippersFairyRevival],
+                            RequirementDictionary.Instance[RequirementType.FakeFlippersQirnJump],
+                            RequirementDictionary.Instance[RequirementType.FakeFlippersSplashDeletion]
                         })),
                     new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldEast,
+                        RequirementNodeID.DarkWorldSouthNotBunny,
                         new AlternativeRequirement(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.DWSwim],
-                            RequirementDictionary.Instance[RequirementType.DWFakeFlippersFairyRevival],
-                            RequirementDictionary.Instance[RequirementType.DWFakeFlippersSplashDeletion]
+                            RequirementDictionary.Instance[RequirementType.FakeFlippersFairyRevival],
+                            RequirementDictionary.Instance[RequirementType.FakeFlippersSplashDeletion]
                         })),
                     new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldSouthEast,
+                        RequirementNodeID.DWWitchAreaNotBunny,
                         new AlternativeRequirement(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.DWSwim],
-                            RequirementDictionary.Instance[RequirementType.DWFakeFlippersFairyRevival],
-                            RequirementDictionary.Instance[RequirementType.DWFakeFlippersSplashDeletion]
+                            RequirementDictionary.Instance[RequirementType.FakeFlippersFairyRevival],
+                            RequirementDictionary.Instance[RequirementType.FakeFlippersSplashDeletion]
                         })),
                     new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldWest,
+                        RequirementNodeID.DarkWorldEastNotBunny,
                         new AlternativeRequirement(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.DWSwim],
-                            RequirementDictionary.Instance[RequirementType.DWFakeFlippersFairyRevival],
-                            RequirementDictionary.Instance[RequirementType.DWFakeFlippersQirnJump],
-                            RequirementDictionary.Instance[RequirementType.DWFakeFlippersSplashDeletion]
+                            RequirementDictionary.Instance[RequirementType.FakeFlippersFairyRevival],
+                            RequirementDictionary.Instance[RequirementType.FakeFlippersSplashDeletion]
+                        })),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DarkWorldSouthEastNotBunny,
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.FakeFlippersFairyRevival],
+                            RequirementDictionary.Instance[RequirementType.FakeFlippersSplashDeletion]
+                        })),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.IcePalaceIslandInverted,
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.FakeFlippersFairyRevival],
+                            RequirementDictionary.Instance[RequirementType.FakeFlippersSplashDeletion]
                         }))
                 },
                 RequirementNodeID.DWLakeHyliaWaterWalk => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DWLakeHyliaWaterWalkTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldWest,
-                        RequirementDictionary.Instance[RequirementType.DWWaterWalk])
+                        RequirementNodeID.DarkWorldWestNotBunny,
+                        RequirementDictionary.Instance[RequirementType.WaterWalk])
                 },
-                RequirementNodeID.IcePalaceEntrance => new List<RequirementNodeConnection>
+                RequirementNodeID.IcePalaceIsland => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.IcePalaceEntranceTest],
-                            RequirementDictionary.Instance[RequirementType.IcePalaceEntranceAccess]
-                        })),
-                    new RequirementNodeConnection(
                         RequirementNodeID.LakeHyliaFairyIsland,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.LWMirror],
-                            new AggregateRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
-                                RequirementDictionary.Instance[RequirementType.LWLift2]
-                            })
-                        })),
+                        RequirementDictionary.Instance[RequirementType.LWMirror]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.DWLakeHylia,
+                        RequirementNodeID.LakeHyliaFairyIslandNonInverted,
+                        RequirementDictionary.Instance[RequirementType.Gloves2]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DWLakeHyliaFlippers,
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DWLakeHyliaFakeFlippers,
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.DWLakeHyliaWaterWalk,
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted])
+                },
+                RequirementNodeID.IcePalaceIslandInverted => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.IcePalaceIsland,
                         RequirementDictionary.Instance[RequirementType.WorldStateInverted])
                 },
                 RequirementNodeID.DarkWorldSouthEast => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.DarkWorldSouthEastTest],
-                            RequirementDictionary.Instance[RequirementType.DarkWorldSouthEastAccess]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.LWMirror]),
-                    new RequirementNodeConnection(RequirementNodeID.DWLakeHylia),
+                    new RequirementNodeConnection(RequirementNodeID.LightWorldMirror),
+                    new RequirementNodeConnection(RequirementNodeID.DWLakeHyliaFlippers),
+                    new RequirementNodeConnection(RequirementNodeID.DWLakeHyliaFakeFlippers),
                     new RequirementNodeConnection(RequirementNodeID.DWLakeHyliaWaterWalk)
                 },
-                RequirementNodeID.DWIceRodCave => new List<RequirementNodeConnection>
+                RequirementNodeID.DarkWorldSouthEastNotBunny => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DWIceRodCaveTest]),
                     new RequirementNodeConnection(
                         RequirementNodeID.DarkWorldSouthEast,
                         RequirementDictionary.Instance[RequirementType.NotBunnyDW])
                 },
-                RequirementNodeID.DWIceRodRock => new List<RequirementNodeConnection>
+                RequirementNodeID.DarkWorldSouthEastLift1 => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DWIceRodRockTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldSouthEast,
-                        RequirementDictionary.Instance[RequirementType.DWLift1])
+                        RequirementNodeID.DarkWorldSouthEastNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Gloves1])
                 },
-                RequirementNodeID.DarkDeathMountainWestBottom => new List<RequirementNodeConnection>
+                RequirementNodeID.DarkDeathMountainWestBottom =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(RequirementNodeID.FluteInverted),
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DeathMountainEntryCaveDark,
+                            RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DeathMountainWestBottom,
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
+                                RequirementDictionary.Instance[RequirementType.LWMirror]
+                            })),
+                        new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainTop)
+                    },
+                RequirementNodeID.DarkDeathMountainWestBottomInverted =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DarkDeathMountainWestBottom,
+                            RequirementDictionary.Instance[RequirementType.WorldStateInverted])
+                    },
+                RequirementNodeID.DarkDeathMountainWestBottomNonEntrance =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DarkDeathMountainWestBottom,
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff])
+                    },
+                RequirementNodeID.DarkDeathMountainWestBottomMirror =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DarkDeathMountainWestBottom,
+                            RequirementDictionary.Instance[RequirementType.DWMirror])
+                    },
+                RequirementNodeID.DarkDeathMountainWestBottomNotBunny =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DarkDeathMountainWestBottom,
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW])
+                    },
+                RequirementNodeID.SpikeCavePastHammerBlocks => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[
-                                RequirementType.DarkDeathMountainWestBottomTest],
-                            RequirementDictionary.Instance[
-                                RequirementType.DarkDeathMountainWestBottomAccess]
-                        })),
+                        RequirementNodeID.DarkDeathMountainWestBottomNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Hammer])
+                },
+                RequirementNodeID.SpikeCavePastSpikes => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        RequirementDictionary.Instance[RequirementType.DWFlute]),
+                        RequirementNodeID.SpikeCavePastHammerBlocks,
+                        RequirementDictionary.Instance[RequirementType.SpikeCave])
+                },
+                RequirementNodeID.SpikeCaveChest => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.DeathMountainWestBottom,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
-                            RequirementDictionary.Instance[RequirementType.LWMirror]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.BumperCave,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[
-                                RequirementType.WorldStateInvertedEntranceShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.DarkRoomDeathMountainEntry]
-                        })),
-                    new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainTop)
+                        RequirementNodeID.SpikeCavePastSpikes,
+                        RequirementDictionary.Instance[RequirementType.Gloves1])
                 },
                 RequirementNodeID.DarkDeathMountainTop => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.DarkDeathMountainTopTest],
-                            RequirementDictionary.Instance[RequirementType.DarkDeathMountainTopAccess]
-                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.DeathMountainWestTop,
                         RequirementDictionary.Instance[RequirementType.LWMirror]),
                     new RequirementNodeConnection(
                         RequirementNodeID.DeathMountainEastTop,
                         RequirementDictionary.Instance[RequirementType.LWMirror]),
+                    new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainTopInverted),
+                    new RequirementNodeConnection(RequirementNodeID.SuperBunnyCave),
                     new RequirementNodeConnection(RequirementNodeID.DWFloatingIsland),
-                    new RequirementNodeConnection(RequirementNodeID.DWTurtleRockTop),
+                    new RequirementNodeConnection(RequirementNodeID.DWTurtleRockTop)
+                },
+                RequirementNodeID.DarkDeathMountainTopInverted =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DarkDeathMountainTop,
+                            RequirementDictionary.Instance[RequirementType.WorldStateInverted])
+                    },
+                RequirementNodeID.DarkDeathMountainTopNonInverted =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DarkDeathMountainTop,
+                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted])
+                    },
+                RequirementNodeID.DarkDeathMountainTopMirror =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DarkDeathMountainTop,
+                            RequirementDictionary.Instance[RequirementType.DWMirror])
+                    },
+                RequirementNodeID.DarkDeathMountainTopNotBunny =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DarkDeathMountainTop,
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW])
+                    },
+                RequirementNodeID.SuperBunnyCave => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.DarkDeathMountainWestBottom,
-                        RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
+                        RequirementNodeID.DarkDeathMountainTop,
+                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]),
                     new RequirementNodeConnection(
                         RequirementNodeID.DarkDeathMountainEastBottom,
                         RequirementDictionary.Instance[RequirementType.EntranceShuffleOff])
+                },
+                RequirementNodeID.SuperBunnyCaveChests => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.SuperBunnyCave,
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
+                            RequirementDictionary.Instance[RequirementType.SuperBunnyFallInHole]
+                        }))
                 },
                 RequirementNodeID.GanonsTowerEntrance => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.GanonsTowerEntranceTest]),
+                        RequirementNodeID.DarkDeathMountainTopInverted,
+                        RequirementDictionary.Instance[RequirementType.GTCrystal]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.DarkDeathMountainTop,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                            RequirementDictionary.Instance[RequirementType.GTCrystal]
-                        }))
+                        RequirementNodeID.DarkDeathMountainTopNonInverted)
                 },
+                RequirementNodeID.GanonsTowerEntranceNonInverted =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.GanonsTowerEntrance,
+                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted])
+                    },
                 RequirementNodeID.DWFloatingIsland => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.DWFloatingIslandTest],
-                            RequirementDictionary.Instance[RequirementType.DWFloatingIslandAccess]
-                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.LWFloatingIsland,
                         RequirementDictionary.Instance[RequirementType.LWMirror]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.HookshotCave,
+                        RequirementNodeID.HookshotCaveEntrance,
                         RequirementDictionary.Instance[RequirementType.EntranceShuffleOff])
                 },
-                RequirementNodeID.HookshotCave => new List<RequirementNodeConnection>
+                RequirementNodeID.HookshotCaveEntrance => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.HookshotCaveTest]),
+                        RequirementNodeID.DarkDeathMountainTopNotBunny,
+                        RequirementDictionary.Instance[RequirementType.Gloves1])
+                },
+                RequirementNodeID.HookshotCaveEntranceHookshot =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.HookshotCaveEntrance,
+                            RequirementDictionary.Instance[RequirementType.Hookshot])
+                    },
+                RequirementNodeID.HookshotCaveEntranceHover => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.DarkDeathMountainTop,
-                        RequirementDictionary.Instance[RequirementType.DWLift1])
+                        RequirementNodeID.HookshotCaveEntrance,
+                        RequirementDictionary.Instance[RequirementType.Hover])
+                },
+                RequirementNodeID.HookshotCaveBonkableChest => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.HookshotCaveEntrance,
+                        RequirementDictionary.Instance[RequirementType.BonkOverLedge]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.HookshotCaveEntranceHookshot),
+                    new RequirementNodeConnection(RequirementNodeID.HookshotCaveEntranceHover)
+                },
+                RequirementNodeID.HookshotCaveBack => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(RequirementNodeID.HookshotCaveEntranceHookshot),
+                    new RequirementNodeConnection(RequirementNodeID.HookshotCaveEntranceHover)
                 },
                 RequirementNodeID.DWTurtleRockTop => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.DWTurtleRockTopTest]),
+                        RequirementNodeID.LWTurtleRockTopNonInverted,
+                        RequirementDictionary.Instance[RequirementType.Hammer]),
+                    new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainTopInverted)
+                },
+                RequirementNodeID.DWTurtleRockTopNotBunny => new List<RequirementNodeConnection>
+                {
                     new RequirementNodeConnection(
-                        RequirementNodeID.LWTurtleRockTop,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            new AggregateRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
-                                RequirementDictionary.Instance[RequirementType.LWHammer]
-                            }),
-                            RequirementDictionary.Instance[RequirementType.LWMirror]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkDeathMountainTop,
-                        RequirementDictionary.Instance[RequirementType.WorldStateInverted])
+                        RequirementNodeID.DWTurtleRockTop,
+                        RequirementDictionary.Instance[RequirementType.NotBunnyDW])
                 },
                 RequirementNodeID.TurtleRockFrontEntrance => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.TurtleRockFrontEntranceTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DWTurtleRockTop,
+                        RequirementNodeID.DWTurtleRockTopNotBunny,
                         RequirementDictionary.Instance[RequirementType.TRMedallion])
                 },
-                RequirementNodeID.DarkDeathMountainEastBottom => new List<RequirementNodeConnection>
-                {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[
-                                RequirementType.DarkDeathMountainEastBottomTest],
-                            RequirementDictionary.Instance[
-                                RequirementType.DarkDeathMountainEastBottomAccess]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DeathMountainEastBottom,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            new AggregateRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
-                                RequirementDictionary.Instance[RequirementType.LWLift2]
-                            }),
-                            RequirementDictionary.Instance[RequirementType.LWMirror]
-                        })),
-                    new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainTop),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkDeathMountainEastBottomConnector,
-                        RequirementDictionary.Instance[RequirementType.NotBunnyDW])
-                },
-                RequirementNodeID.DarkDeathMountainEastBottomConnector => new List<RequirementNodeConnection>
-                {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[
-                            RequirementType.DarkDeathMountainEastBottomConnectorTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DeathMountainEastBottomConnector,
-                        RequirementDictionary.Instance[RequirementType.LWMirror]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DarkDeathMountainEastBottom,
-                        RequirementDictionary.Instance[RequirementType.NotBunnyDW])
-                },
+                RequirementNodeID.DarkDeathMountainEastBottom =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DeathMountainEastBottom,
+                            RequirementDictionary.Instance[RequirementType.LWMirror]),
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DeathMountainEastBottomLift2,
+                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]),
+                        new RequirementNodeConnection(RequirementNodeID.DarkDeathMountainTop)
+                    },
+                RequirementNodeID.DarkDeathMountainEastBottomInverted =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DarkDeathMountainEastBottom,
+                            RequirementDictionary.Instance[RequirementType.WorldStateInverted])
+                    },
+                RequirementNodeID.DarkDeathMountainEastBottomConnector =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.DarkDeathMountainEastBottom,
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW])
+                    },
                 RequirementNodeID.TurtleRockTunnel => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.TurtleRockTunnelTest],
-                            RequirementDictionary.Instance[RequirementType.TurtleRockTunnelAccess]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.SpiralCave,
+                        RequirementNodeID.SpiralCaveLedge,
                         RequirementDictionary.Instance[RequirementType.LWMirror]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.MimicCave,
+                        RequirementNodeID.MimicCaveLedge,
                         RequirementDictionary.Instance[RequirementType.LWMirror])
+                },
+                RequirementNodeID.TurtleRockTunnelMirror => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.TurtleRockTunnel,
+                        RequirementDictionary.Instance[RequirementType.DWMirror]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.TRKeyDoorsToMiddleExit,
+                        RequirementDictionary.Instance[RequirementType.DWMirror])
                 },
                 RequirementNodeID.TurtleRockSafetyDoor => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.TurtleRockSafetyDoorTest],
-                            RequirementDictionary.Instance[RequirementType.TurtleRockSafetyDoorAccess]
-                        })),
                     new RequirementNodeConnection(
                         RequirementNodeID.DeathMountainEastTopConnector,
                         RequirementDictionary.Instance[RequirementType.LWMirror])
                 },
                 RequirementNodeID.HCSanctuaryEntry => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(RequirementNodeID.EntranceShuffle),
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.HCSanctuaryEntryTest],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn],
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
-                            RequirementDictionary.Instance[RequirementType.SuperBunnyMirror]
-                        }))
+                        RequirementNodeID.LightWorldNotBunnyOrSuperBunnyMirror)
                 },
                 RequirementNodeID.HCFrontEntry => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(RequirementNodeID.EntranceShuffle),
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.HCFrontEntryTest],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
-                            RequirementDictionary.Instance[RequirementType.DungeonRevive]
-                        }))
+                        RequirementNodeID.LightWorldNotBunnyOrDungeonRevive)
                 },
                 RequirementNodeID.HCBackEntry => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.HCBackEntryTest],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
-                        })),
+                    new RequirementNodeConnection(RequirementNodeID.EntranceShuffle),
                     new RequirementNodeConnection(RequirementNodeID.EscapeGrave)
                 },
                 RequirementNodeID.ATEntry => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.ATEntryTest],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
-                        })),
+                    new RequirementNodeConnection(RequirementNodeID.EntranceShuffle),
                     new RequirementNodeConnection(
                         RequirementNodeID.AgahnimTowerEntrance,
                         RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]),
@@ -1798,30 +1799,13 @@ namespace OpenTracker.Models.RequirementNodes
                 },
                 RequirementNodeID.EPEntry => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(RequirementNodeID.EntranceShuffle),
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.EPEntryTest],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
-                            RequirementDictionary.Instance[RequirementType.DungeonRevive]
-                        }))
+                        RequirementNodeID.LightWorldNotBunnyOrDungeonRevive)
                 },
                 RequirementNodeID.DPFrontEntry => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.DPFrontEntryTest],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
-                        })),
+                    new RequirementNodeConnection(RequirementNodeID.EntranceShuffle),
                     new RequirementNodeConnection(
                         RequirementNodeID.DesertPalaceFrontEntrance,
                         new AlternativeRequirement(new List<IRequirement>
@@ -1832,157 +1816,58 @@ namespace OpenTracker.Models.RequirementNodes
                 },
                 RequirementNodeID.DPLeftEntry => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.DPLeftEntryTest],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DesertLedge,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
-                            RequirementDictionary.Instance[RequirementType.DungeonRevive]
-                        }))
+                    new RequirementNodeConnection(RequirementNodeID.EntranceShuffle),
+                    new RequirementNodeConnection(RequirementNodeID.DesertLedge)
                 },
                 RequirementNodeID.DPBackEntry => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.DPBackEntryTest],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.DesertPalaceBackEntrance,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
-                            RequirementDictionary.Instance[RequirementType.DungeonRevive]
-                        }))
+                    new RequirementNodeConnection(RequirementNodeID.EntranceShuffle),
+                    new RequirementNodeConnection(RequirementNodeID.DesertBack)
                 },
                 RequirementNodeID.ToHEntry => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.ToHEntryTest],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
-                        })),
+                    new RequirementNodeConnection(RequirementNodeID.EntranceShuffle),
                     new RequirementNodeConnection(
                         RequirementNodeID.DeathMountainWestTop,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
-                            RequirementDictionary.Instance[RequirementType.DungeonRevive]
-                        }))
+                        RequirementDictionary.Instance[RequirementType.DungeonRevive]),
+                    new RequirementNodeConnection(RequirementNodeID.DeathMountainWestTopNotBunny)
                 },
                 RequirementNodeID.PoDEntry => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.PoDEntryTest],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
-                        })),
-                    new RequirementNodeConnection(RequirementNodeID.PalaceOfDarknessEntrance)
+                    new RequirementNodeConnection(RequirementNodeID.EntranceShuffle),
+                    new RequirementNodeConnection(RequirementNodeID.DarkWorldEastNotBunny)
                 },
                 RequirementNodeID.SPEntry => new List<RequirementNodeConnection>
                 {
+                    new RequirementNodeConnection(RequirementNodeID.EntranceShuffle),
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.SPEntryTest],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
-                        })),
+                        RequirementNodeID.LightWorldInverted,
+                        RequirementDictionary.Instance[RequirementType.SPEntry]),
                     new RequirementNodeConnection(
-                        RequirementNodeID.DarkWorldSouth,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
-                            RequirementDictionary.Instance[RequirementType.SPEntry]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.LightWorld,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                            RequirementDictionary.Instance[RequirementType.SPEntry]
-                        }))
+                        RequirementNodeID.DarkWorldSouthNonInverted,
+                        RequirementDictionary.Instance[RequirementType.SPEntry])
                 },
                 RequirementNodeID.SWFrontEntry => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.SWFrontEntryTest]),
-                    new RequirementNodeConnection(RequirementNodeID.DarkWorldWest)
-                },
-                RequirementNodeID.SWFrontLeftDropEntry => new List<RequirementNodeConnection>
-                {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.SWFrontLeftDropEntryTest]),
-                    new RequirementNodeConnection(RequirementNodeID.DarkWorldWest)
-                },
-                RequirementNodeID.SWPinballRoomEntry => new List<RequirementNodeConnection>
-                {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.SWPinballRoomEntryTest]),
-                    new RequirementNodeConnection(RequirementNodeID.DarkWorldWest)
-                },
-                RequirementNodeID.SWFrontTopDropEntry => new List<RequirementNodeConnection>
-                {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.SWFrontTopDropEntryTest]),
-                    new RequirementNodeConnection(RequirementNodeID.DarkWorldWest)
-                },
-                RequirementNodeID.SWFrontBackConnectorEntry => new List<RequirementNodeConnection>
-                {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.SWFrontBackConnectorEntryTest]),
-                    new RequirementNodeConnection(RequirementNodeID.DarkWorldWest)
+                        RequirementNodeID.DarkWorldWest,
+                        RequirementDictionary.Instance[RequirementType.DungeonRevive]),
+                    new RequirementNodeConnection(RequirementNodeID.DarkWorldWestNotBunny)
                 },
                 RequirementNodeID.SWBackEntry => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.SWBackEntryTest],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
-                        })),
-                    new RequirementNodeConnection(RequirementNodeID.SkullWoodsBackEntrance)
+                    new RequirementNodeConnection(RequirementNodeID.EntranceShuffle),
+                    new RequirementNodeConnection(RequirementNodeID.SkullWoodsBack)
                 },
                 RequirementNodeID.TTEntry => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.TTEntryTest],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
-                        })),
-                    new RequirementNodeConnection(RequirementNodeID.ThievesTownEntrance)
+                    new RequirementNodeConnection(RequirementNodeID.EntranceShuffle),
+                    new RequirementNodeConnection(RequirementNodeID.DarkWorldWestNotBunny)
                 },
                 RequirementNodeID.IPEntry => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.IPEntryTest],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
-                        })),
-                    new RequirementNodeConnection(RequirementNodeID.IcePalaceEntrance,
+                    new RequirementNodeConnection(RequirementNodeID.EntranceShuffle),
+                    new RequirementNodeConnection(RequirementNodeID.IcePalaceIsland,
                         new AlternativeRequirement(new List<IRequirement>
                         {
                             RequirementDictionary.Instance[RequirementType.NotBunnyDW],
@@ -1991,91 +1876,62 @@ namespace OpenTracker.Models.RequirementNodes
                 },
                 RequirementNodeID.MMEntry => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.MMEntryTest],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
-                        })),
+                    new RequirementNodeConnection(RequirementNodeID.EntranceShuffle),
                     new RequirementNodeConnection(RequirementNodeID.MiseryMireEntrance)
                 },
                 RequirementNodeID.TRFrontEntry => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.TRFrontEntryTest],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
-                        })),
+                    new RequirementNodeConnection(RequirementNodeID.EntranceShuffle),
                     new RequirementNodeConnection(RequirementNodeID.TurtleRockFrontEntrance)
                 },
+                RequirementNodeID.TRFrontEntryNonInverted => new List<RequirementNodeConnection>
+                {
+                    new RequirementNodeConnection(
+                        RequirementNodeID.TRFrontEntry,
+                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted])
+                },
+                RequirementNodeID.TRFrontEntryNonInvertedNonEntrance =>
+                    new List<RequirementNodeConnection>
+                    {
+                        new RequirementNodeConnection(
+                            RequirementNodeID.TRFrontEntryNonInverted,
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff])
+                    },
                 RequirementNodeID.TRFrontToKeyDoors => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.TRFrontToKeyDoorsTest]),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.TRFrontEntry,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[
-                                RequirementType.WorldStateNonInvertedEntranceShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria]
-                        }))
+                        RequirementNodeID.TRFrontEntryNonInvertedNonEntrance,
+                        RequirementDictionary.Instance[RequirementType.CaneOfSomaria])
                 },
                 RequirementNodeID.TRKeyDoorsToMiddleExit => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        RequirementDictionary.Instance[RequirementType.TRKeyDoorsToMiddleExitTest]),
-                    new RequirementNodeConnection(
                         RequirementNodeID.TRFrontToKeyDoors,
-                        new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[
-                                RequirementType.WorldStateNonInvertedEntranceShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.TRKeyDoorsToMiddleExit]
-                        }))
+                        RequirementDictionary.Instance[RequirementType.TRKeyDoorsToMiddleExit])
                 },
                 RequirementNodeID.TRMiddleEntry => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.TRMiddleEntryTest],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
-                        })),
+                    new RequirementNodeConnection(RequirementNodeID.EntranceShuffle),
                     new RequirementNodeConnection(RequirementNodeID.TurtleRockTunnel)
                 },
                 RequirementNodeID.TRBackEntry => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.TRBackEntryTest],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
-                        })),
+                    new RequirementNodeConnection(RequirementNodeID.EntranceShuffle),
                     new RequirementNodeConnection(RequirementNodeID.TurtleRockSafetyDoor)
                 },
                 RequirementNodeID.GTEntry => new List<RequirementNodeConnection>
                 {
-                    new RequirementNodeConnection(
-                        RequirementNodeID.Start,
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.GTEntryTest],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
-                        })),
-                    new RequirementNodeConnection(
-                        RequirementNodeID.GanonsTowerEntrance,
-                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]),
+                    new RequirementNodeConnection(RequirementNodeID.EntranceShuffle),
                     new RequirementNodeConnection(
                         RequirementNodeID.AgahnimTowerEntrance,
-                        RequirementDictionary.Instance[RequirementType.WorldStateInverted])
+                        RequirementDictionary.Instance[RequirementType.WorldStateInverted]),
+                    new RequirementNodeConnection(
+                        RequirementNodeID.GanonsTowerEntranceNonInverted,
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
+                            RequirementDictionary.Instance[RequirementType.DungeonRevive]
+                        }))
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(id))
             };

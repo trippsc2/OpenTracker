@@ -69,7 +69,7 @@ namespace OpenTracker.Models.Sections
             {
                 if (!IsAvailable())
                 {
-                    Marking.Mark = null;
+                    Marking.Mark = MarkType.Unknown;
                 }
             }
         }
@@ -88,7 +88,7 @@ namespace OpenTracker.Models.Sections
             }
 
             return IsAvailable() && Accessibility == AccessibilityLevel.Inspect &&
-                !Marking.Mark.HasValue;
+                Marking.Mark != MarkType.Unknown;
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace OpenTracker.Models.Sections
         public void Reset()
         {
             _section.Reset();
-            Marking.Mark = null;
+            Marking.Mark = MarkType.Unknown;
         }
 
         /// <summary>
@@ -161,7 +161,11 @@ namespace OpenTracker.Models.Sections
 
             Available = saveData.Available;
             UserManipulated = saveData.UserManipulated;
-            Marking.Mark = saveData.Marking;
+
+            if (saveData.Marking.HasValue)
+            {
+                Marking.Mark = saveData.Marking.Value;
+            }
         }
     }
 }

@@ -29,7 +29,5 @@ namespace OpenTracker.Models.Dungeons
         ConcurrentQueue<IMutableDungeon> DungeonDataQueue { get; }
 
         event EventHandler<IMutableDungeon> DungeonDataCreated;
-
-        IPrizeSection GetPrizeSection();
     }
 }

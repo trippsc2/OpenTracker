@@ -62,6 +62,17 @@ namespace OpenTracker.Models.RequirementNodes
             NodeCreated?.Invoke(this, key);
         }
 
+        /// <summary>
+        /// Resets all nodes' AlwaysAccessible property for testing purposes.
+        /// </summary>
+        public void Reset()
+        {
+            foreach (var node in Values)
+            {
+                node.Reset();
+            }
+        }
+
         public void Add(RequirementNodeID key, IRequirementNode value)
         {
             ((IDictionary<RequirementNodeID, IRequirementNode>)_dictionary).Add(key, value);

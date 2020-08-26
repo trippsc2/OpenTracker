@@ -1,11 +1,9 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.Items;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Sections
@@ -15,8 +13,8 @@ namespace OpenTracker.Models.Sections
     /// </summary>
     public class EntranceSection : IEntranceSection
     {
-        private readonly IItem _itemProvided;
-        private readonly List<RequirementNodeConnection> _connections;
+        private readonly IRequirementNode _node;
+        private readonly IRequirementNode _exitProvided;
 
         public string Name { get; }
         public IRequirement Requirement { get; }
@@ -26,19 +24,8 @@ namespace OpenTracker.Models.Sections
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
+        public AccessibilityLevel Accessibility =>
+            _node.Accessibility;
 
         private int _available;
         public int Available
@@ -60,27 +47,27 @@ namespace OpenTracker.Models.Sections
         /// <param name="name">
         /// A string representing the name of the section.
         /// </param>
-        /// <param name="itemProvided">
-        /// The item provided by this exit.
+        /// <param name="exitProvided">
+        /// The exit provided.
         /// </param>
-        /// <param name="connections">
+        /// <param name="node">
         /// The list of connections to this section.
         /// </param>
         /// <param name="requirement">
         /// The requirement for this section to be visible.
         /// </param>
         public EntranceSection(
-            string name, IItem itemProvided, List<RequirementNodeConnection> connections,
+            string name, IRequirementNode exitProvided, IRequirementNode node,
             IRequirement requirement = null)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Available = 1;
-            _itemProvided = itemProvided;
-            _connections = connections ?? throw new ArgumentNullException(nameof(connections));
-            Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.NoRequirement];
+            _exitProvided = exitProvided;
+            _node = node ?? throw new ArgumentNullException(nameof(node));
+            Requirement = requirement ??
+                RequirementDictionary.Instance[RequirementType.NoRequirement];
 
-            SubscribeToConnections();
-            UpdateAccessibility();
+            _node.PropertyChanged += OnNodeChanged;
         }
 
         /// <summary>
@@ -97,26 +84,23 @@ namespace OpenTracker.Models.Sections
             {
                 if (IsAvailable())
                 {
-                    if (_itemProvided != null)
+                    if (_exitProvided != null)
                     {
-                        _itemProvided.Current--;
+                        _exitProvided.ExitsAccessible--;
                     }
                 }
                 else
                 {
-                    if (_itemProvided != null)
+                    if (_exitProvided != null)
                     {
-                        _itemProvided.Current++;
+                        _exitProvided.ExitsAccessible++;
                     }
-
-                    Marking.Mark = null;
                 }
             }
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the Requirement and RequirementNode
-        /// classes that are requirements for dungeon items.
+        /// Subscribes to the PropertyChanged event on the IRequirementNode interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -124,75 +108,12 @@ namespace OpenTracker.Models.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private void OnNodeChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateAccessibility();
-        }
-
-        /// <summary>
-        /// Creates subscription to the PropertyChanged event on the RequirementNode and
-        /// Requirement classes.
-        /// </summary>
-        private void SubscribeToConnections()
-        {
-            foreach (RequirementNodeConnection connection in _connections)
+            if (e.PropertyName == nameof(IRequirementNode.Accessibility))
             {
-                List<RequirementNodeID> nodeSubscriptions = new List<RequirementNodeID>();
-                List<IRequirement> requirementSubscriptions = new List<IRequirement>();
-
-                if (!nodeSubscriptions.Contains(connection.FromNode))
-                {
-                    RequirementNodeDictionary.Instance[connection.FromNode].PropertyChanged +=
-                        OnRequirementChanged;
-                    nodeSubscriptions.Add(connection.FromNode);
-                }
-
-                if (!requirementSubscriptions.Contains(connection.Requirement))
-                {
-                    connection.Requirement.PropertyChanged += OnRequirementChanged;
-                    requirementSubscriptions.Add(connection.Requirement);
-                }
+                OnPropertyChanged(nameof(Accessibility));
             }
-        }
-
-        /// <summary>
-        /// Updates the accessibility of the entrance.
-        /// </summary>
-        private void UpdateAccessibility()
-        {
-            AccessibilityLevel finalAccessibility = AccessibilityLevel.None;
-
-            foreach (RequirementNodeConnection connection in _connections)
-            {
-                AccessibilityLevel nodeAccessibility = AccessibilityLevel.Normal;
-                
-                nodeAccessibility = (AccessibilityLevel)Math.Min((byte)nodeAccessibility,
-                    (byte)RequirementNodeDictionary.Instance[connection.FromNode].Accessibility);
-
-                if (nodeAccessibility < AccessibilityLevel.SequenceBreak)
-                {
-                    continue;
-                }
-
-                AccessibilityLevel requirementAccessibility = connection.Requirement.Accessibility;
-
-                AccessibilityLevel finalConnectionAccessibility =
-                    (AccessibilityLevel)Math.Min((byte)nodeAccessibility,
-                    (byte)requirementAccessibility);
-
-                if (finalConnectionAccessibility == AccessibilityLevel.Normal)
-                {
-                    finalAccessibility = AccessibilityLevel.Normal;
-                    break;
-                }
-
-                if (finalConnectionAccessibility > finalAccessibility)
-                {
-                    finalAccessibility = finalConnectionAccessibility;
-                }
-            }
-
-            Accessibility = finalAccessibility;
         }
 
         /// <summary>
@@ -244,7 +165,7 @@ namespace OpenTracker.Models.Sections
         /// </summary>
         public void Reset()
         {
-            Marking.Mark = null;
+            Marking.Mark = MarkType.Unknown;
             Available = 1;
         }
 
@@ -276,7 +197,11 @@ namespace OpenTracker.Models.Sections
 
             Available = saveData.Available;
             UserManipulated = saveData.UserManipulated;
-            Marking.Mark = saveData.Marking;
+
+            if (saveData.Marking.HasValue)
+            {
+                Marking.Mark = saveData.Marking.Value;
+            }
         }
     }
 }

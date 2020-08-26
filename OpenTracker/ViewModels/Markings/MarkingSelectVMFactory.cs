@@ -79,7 +79,7 @@ namespace OpenTracker.ViewModels.Markings
         /// </summary>
         private static void PopulateEntranceMarkingSelect()
         {
-            for (int i = 0; i < Enum.GetValues(typeof(MarkType)).Length; i++)
+            for (int i = 1; i < Enum.GetValues(typeof(MarkType)).Length; i++)
             {
                 EntranceMarkingSelect.Add(new MarkingSelectButtonVM((MarkType)i));
             }

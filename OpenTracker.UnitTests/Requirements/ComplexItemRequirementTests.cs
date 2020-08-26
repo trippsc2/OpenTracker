@@ -1,39 +1,66 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Items;
+using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
+using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.SequenceBreaks;
 using System.Collections.Generic;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Requirements
 {
+    [Collection("Tests")]
     public class ComplexItemRequirementTests
     {
         [Theory]
         [MemberData(nameof(ComplexItem_Data))]
         public void AccessibilityTests(
-            RequirementType type, ItemPlacement itemPlacement,
-            DungeonItemShuffle dungeonItemShuffle, WorldState worldState,
-            bool enemyShuffle, (ItemType, int)[] items, (SequenceBreakType, bool)[] sequenceBreaks,
-            AccessibilityLevel expected)
+            RequirementType type, ModeSaveData mode, (ItemType, int)[] items,
+            (PrizeType, int)[] prizes, (SequenceBreakType, bool)[] sequenceBreaks,
+            (LocationID, int)[] smallKeys, (LocationID, int)[] bigKeys,
+            RequirementNodeID[] accessibleNodes, AccessibilityLevel expected)
         {
-            Mode.Instance.ItemPlacement = itemPlacement;
-            Mode.Instance.DungeonItemShuffle = dungeonItemShuffle;
-            Mode.Instance.WorldState = worldState;
-            Mode.Instance.EnemyShuffle = enemyShuffle;
+            Mode.Instance.Load(mode);
             ItemDictionary.Instance.Reset();
+            LocationDictionary.Instance.Reset();
+            PrizeDictionary.Instance.Reset();
             SequenceBreakDictionary.Instance.Reset();
+            RequirementNodeDictionary.Instance.Reset();
 
             foreach (var item in items)
             {
                 ItemDictionary.Instance[item.Item1].Current = item.Item2;
             }
 
+            foreach (var prize in prizes)
+            {
+                PrizeDictionary.Instance[prize.Item1].Current = prize.Item2;
+            }
+
             foreach (var sequenceBreak in sequenceBreaks)
             {
                 SequenceBreakDictionary.Instance[sequenceBreak.Item1].Enabled =
                     sequenceBreak.Item2;
+            }
+
+            foreach (var smallKey in smallKeys)
+            {
+                ((IDungeon)LocationDictionary.Instance[smallKey.Item1]).SmallKeyItem.Current =
+                    smallKey.Item2;
+            }
+
+            foreach (var bigKey in bigKeys)
+            {
+                ((IDungeon)LocationDictionary.Instance[bigKey.Item1]).BigKeyItem.Current =
+                    bigKey.Item2;
+            }
+
+            foreach (var accessibleNode in accessibleNodes)
+            {
+                RequirementNodeDictionary.Instance[accessibleNode].AlwaysAccessible = true;
             }
 
             Assert.Equal(expected, RequirementDictionary.Instance[type].Accessibility);
@@ -50,140 +77,137 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Bombos, 0),
                                     (ItemType.Ether, 0),
                                     (ItemType.Quake, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Bombos, 1),
                                     (ItemType.Ether, 0),
                                     (ItemType.Quake, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Bombos, 0),
                                     (ItemType.Ether, 1),
                                     (ItemType.Quake, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Bombos, 0),
                                     (ItemType.Ether, 0),
                                     (ItemType.Quake, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Bombos, 1),
                                     (ItemType.Ether, 1),
                                     (ItemType.Quake, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Bombos, 1),
                                     (ItemType.Ether, 0),
                                     (ItemType.Quake, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Bombos, 0),
                                     (ItemType.Ether, 1),
                                     (ItemType.Quake, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Bombos, 1),
                                     (ItemType.Ether, 1),
                                     (ItemType.Quake, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -195,72 +219,65 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
+                                new ModeSaveData(),
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Bottle, 0),
+                                    (ItemType.HalfMagic, 0)
+                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.HalfMagic, 0),
-                                    (ItemType.Bottle, 0)
+                                    (ItemType.Bottle, 1),
+                                    (ItemType.HalfMagic, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.HalfMagic, 1),
-                                    (ItemType.Bottle, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.HalfMagic, 0),
-                                    (ItemType.Bottle, 1)
+                                    (ItemType.Bottle, 0),
+                                    (ItemType.HalfMagic, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.HalfMagic, 1),
-                                    (ItemType.Bottle, 1)
+                                    (ItemType.Bottle, 1),
+                                    (ItemType.HalfMagic, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -272,72 +289,65 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
+                                new ModeSaveData(),
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Bottle, 0),
+                                    (ItemType.HalfMagic, 0)
+                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.HalfMagic, 0),
-                                    (ItemType.Bottle, 0)
+                                    (ItemType.Bottle, 1),
+                                    (ItemType.HalfMagic, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.HalfMagic, 1),
-                                    (ItemType.Bottle, 0)
+                                    (ItemType.Bottle, 0),
+                                    (ItemType.HalfMagic, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.HalfMagic, 0),
-                                    (ItemType.Bottle, 1)
+                                    (ItemType.Bottle, 1),
+                                    (ItemType.HalfMagic, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.HalfMagic, 1),
-                                    (ItemType.Bottle, 1)
-                                },
-                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -349,69 +359,56 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.FireRod, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.FireRod, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.FireRod, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.FireRod, 1)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
                             }
                         };
                     }
@@ -422,54 +419,46 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Sword, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Sword, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Sword, 2)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -481,156 +470,86 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.FireRod, 0),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.Sword, 1)
+                                    (ItemType.Sword, 1),
+                                    (ItemType.Bombos, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.FireRod, 0),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.Sword, 1)
+                                    (ItemType.Sword, 1),
+                                    (ItemType.Bombos, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.FireRod, 0),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.Sword, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.FireRod, 0),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.Sword, 2)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.FireRod, 1),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.Sword, 1)
+                                    (ItemType.Sword, 1),
+                                    (ItemType.Bombos, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.FireRod, 0),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.Sword, 0)
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.FireRod, 0),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.Sword, 2)
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.FireRod, 1),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.Sword, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.FireRod, 1),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.Sword, 2)
-                                },
-                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -642,118 +561,73 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -765,118 +639,91 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
+                                new ModeSaveData()
                                 {
-                                    (ItemType.MoonPearl, 1)
+                                    WorldState = WorldState.Retro
                                 },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
-                                new (ItemType, int)[0],
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1)
+                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1)
-                                },
-                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -888,220 +735,103 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Cape, 0),
                                     (ItemType.Sword, 1),
-                                    (ItemType.Hammer, 0)
+                                    (ItemType.Hammer, 0),
+                                    (ItemType.Cape, 0),
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Cape, 0),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Hammer, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Cape, 0),
                                     (ItemType.Sword, 2),
-                                    (ItemType.Hammer, 0)
+                                    (ItemType.Hammer, 0),
+                                    (ItemType.Cape, 0),
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Cape, 0),
                                     (ItemType.Sword, 1),
-                                    (ItemType.Hammer, 1)
+                                    (ItemType.Hammer, 1),
+                                    (ItemType.Cape, 0),
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Cape, 1),
+                                    (ItemType.Sword, 3),
+                                    (ItemType.Hammer, 0),
+                                    (ItemType.Cape, 0),
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData(),
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Hammer, 1),
+                                    (ItemType.Cape, 0),
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData(),
+                                new (ItemType, int)[]
+                                {
                                     (ItemType.Sword, 1),
-                                    (ItemType.Hammer, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Cape, 0),
-                                    (ItemType.Sword, 3),
-                                    (ItemType.Hammer, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
+                                    (ItemType.Hammer, 0),
                                     (ItemType.Cape, 1),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Hammer, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Cape, 1),
-                                    (ItemType.Sword, 3),
-                                    (ItemType.Hammer, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Cape, 1),
-                                    (ItemType.Sword, 1),
-                                    (ItemType.Hammer, 1)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Cape, 0),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Hammer, 1)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Cape, 0),
-                                    (ItemType.Sword, 3),
-                                    (ItemType.Hammer, 1)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Cape, 1),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Hammer, 1)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Cape, 1),
-                                    (ItemType.Sword, 3),
-                                    (ItemType.Hammer, 1)
-                                },
-                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -1113,21 +843,10 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -1136,135 +855,98 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Boomerang, 0),
                                     (ItemType.RedBoomerang, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BombDuplicationAncillaOverload, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
+                                new ModeSaveData()
                                 {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Bow, 1),
-                                    (ItemType.CaneOfSomaria, 1),
-                                    (ItemType.Boomerang, 1),
-                                    (ItemType.RedBoomerang, 0)
+                                    WorldState = WorldState.StandardOpen
                                 },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombDuplicationAncillaOverload, true)
-                                },
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Bow, 1),
-                                    (ItemType.CaneOfSomaria, 1),
-                                    (ItemType.Boomerang, 0),
-                                    (ItemType.RedBoomerang, 1)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombDuplicationAncillaOverload, true)
-                                },
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Bow, 1),
-                                    (ItemType.CaneOfSomaria, 1),
-                                    (ItemType.Boomerang, 1),
-                                    (ItemType.RedBoomerang, 1)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombDuplicationAncillaOverload, true)
-                                },
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Bow, 1),
-                                    (ItemType.CaneOfSomaria, 1),
-                                    (ItemType.Boomerang, 1),
-                                    (ItemType.RedBoomerang, 0)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombDuplicationAncillaOverload, false)
-                                },
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
                                     (ItemType.Bow, 1),
                                     (ItemType.CaneOfSomaria, 1),
                                     (ItemType.Boomerang, 0),
+                                    (ItemType.RedBoomerang, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BombDuplicationAncillaOverload, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Bow, 1),
+                                    (ItemType.CaneOfSomaria, 1),
+                                    (ItemType.Boomerang, 1),
                                     (ItemType.RedBoomerang, 1)
                                 },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BombDuplicationAncillaOverload, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Bow, 1),
+                                    (ItemType.CaneOfSomaria, 1),
+                                    (ItemType.Boomerang, 1),
+                                    (ItemType.RedBoomerang, 1)
+                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BombDuplicationAncillaOverload, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -1273,61 +955,48 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Boomerang, 0),
                                     (ItemType.RedBoomerang, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BombDuplicationAncillaOverload, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Bow, 1),
-                                    (ItemType.CaneOfSomaria, 1),
-                                    (ItemType.Boomerang, 1),
-                                    (ItemType.RedBoomerang, 0)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombDuplicationAncillaOverload, true)
-                                },
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Bow, 1),
                                     (ItemType.CaneOfSomaria, 1),
                                     (ItemType.Boomerang, 0),
-                                    (ItemType.RedBoomerang, 1)
+                                    (ItemType.RedBoomerang, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BombDuplicationAncillaOverload, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -1336,135 +1005,48 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Boomerang, 1),
                                     (ItemType.RedBoomerang, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BombDuplicationAncillaOverload, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
                                     (ItemType.Bow, 1),
                                     (ItemType.CaneOfSomaria, 1),
                                     (ItemType.Boomerang, 1),
-                                    (ItemType.RedBoomerang, 0)
+                                    (ItemType.RedBoomerang, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BombDuplicationAncillaOverload, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
+                                new ModeSaveData()
                                 {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Bow, 1),
-                                    (ItemType.CaneOfSomaria, 1),
-                                    (ItemType.Boomerang, 0),
-                                    (ItemType.RedBoomerang, 1)
+                                    WorldState = WorldState.StandardOpen
                                 },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombDuplicationAncillaOverload, false)
-                                },
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Bow, 0),
-                                    (ItemType.CaneOfSomaria, 0),
-                                    (ItemType.Boomerang, 0),
-                                    (ItemType.RedBoomerang, 0)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombDuplicationAncillaOverload, true)
-                                },
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Bow, 1),
-                                    (ItemType.CaneOfSomaria, 1),
-                                    (ItemType.Boomerang, 1),
-                                    (ItemType.RedBoomerang, 0)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombDuplicationAncillaOverload, false)
-                                },
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Bow, 1),
-                                    (ItemType.CaneOfSomaria, 1),
-                                    (ItemType.Boomerang, 0),
-                                    (ItemType.RedBoomerang, 1)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombDuplicationAncillaOverload, false)
-                                },
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
@@ -1473,19 +1055,23 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Boomerang, 1),
                                     (ItemType.RedBoomerang, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
-                                    (SequenceBreakType.BombDuplicationAncillaOverload, false)
+                                    (SequenceBreakType.BombDuplicationAncillaOverload, true)
                                 },
-                                AccessibilityLevel.None
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
@@ -1494,19 +1080,23 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Boomerang, 0),
                                     (ItemType.RedBoomerang, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
-                                    (SequenceBreakType.BombDuplicationAncillaOverload, false)
+                                    (SequenceBreakType.BombDuplicationAncillaOverload, true)
                                 },
-                                AccessibilityLevel.None
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
@@ -1515,19 +1105,23 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Boomerang, 1),
                                     (ItemType.RedBoomerang, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BombDuplicationAncillaOverload, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
@@ -1536,136 +1130,14 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Boomerang, 0),
                                     (ItemType.RedBoomerang, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BombDuplicationAncillaOverload, true)
                                 },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Bow, 1),
-                                    (ItemType.CaneOfSomaria, 1),
-                                    (ItemType.Boomerang, 1),
-                                    (ItemType.RedBoomerang, 0)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombDuplicationAncillaOverload, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Bow, 1),
-                                    (ItemType.CaneOfSomaria, 1),
-                                    (ItemType.Boomerang, 0),
-                                    (ItemType.RedBoomerang, 1)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombDuplicationAncillaOverload, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Bow, 1),
-                                    (ItemType.CaneOfSomaria, 1),
-                                    (ItemType.Boomerang, 1),
-                                    (ItemType.RedBoomerang, 0)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombDuplicationAncillaOverload, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Bow, 1),
-                                    (ItemType.CaneOfSomaria, 1),
-                                    (ItemType.Boomerang, 0),
-                                    (ItemType.RedBoomerang, 1)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombDuplicationAncillaOverload, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Bow, 1),
-                                    (ItemType.CaneOfSomaria, 1),
-                                    (ItemType.Boomerang, 1),
-                                    (ItemType.RedBoomerang, 0)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombDuplicationAncillaOverload, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Bow, 1),
-                                    (ItemType.CaneOfSomaria, 1),
-                                    (ItemType.Boomerang, 0),
-                                    (ItemType.RedBoomerang, 1)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombDuplicationAncillaOverload, true)
-                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.SequenceBreak
                             }
                         };
@@ -1677,281 +1149,231 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
                                     (ItemType.Flippers, 0),
                                     (ItemType.Mirror, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BombDuplicationMirror, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
                                     (ItemType.Flippers, 1),
                                     (ItemType.Mirror, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BombDuplicationMirror, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Flippers, 1),
+                                    (ItemType.Mirror, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BombDuplicationMirror, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
                                     (ItemType.Flippers, 1),
                                     (ItemType.Mirror, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BombDuplicationMirror, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
                                     (ItemType.Flippers, 0),
                                     (ItemType.Mirror, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BombDuplicationMirror, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
                                     (ItemType.Flippers, 1),
                                     (ItemType.Mirror, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BombDuplicationMirror, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
                                     (ItemType.Flippers, 1),
-                                    (ItemType.Mirror, 1)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombDuplicationMirror, false)
-                                },
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Flippers, 0),
                                     (ItemType.Mirror, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BombDuplicationMirror, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Flippers, 1),
                                     (ItemType.Mirror, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BombDuplicationMirror, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
                                     (ItemType.Flippers, 1),
                                     (ItemType.Mirror, 1)
                                 },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombDuplicationMirror, false)
-                                },
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Flippers, 1),
-                                    (ItemType.Mirror, 1)
-                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BombDuplicationMirror, true)
                                 },
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Flippers, 1),
-                                    (ItemType.Mirror, 1)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombDuplicationMirror, true)
-                                },
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Flippers, 1),
-                                    (ItemType.Mirror, 1)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombDuplicationMirror, true)
-                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
                                     (ItemType.Flippers, 1),
                                     (ItemType.Mirror, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BombDuplicationMirror, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.SequenceBreak
                             }
                         };
@@ -1963,41 +1385,32 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombJumpPoDHammerJump, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BombJumpPoDHammerJump, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData(),
+                                new (ItemType, int)[0],
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BombJumpPoDHammerJump, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             }
                         };
                     }
@@ -2008,41 +1421,32 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombJumpSWBigChest, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BombJumpSWBigChest, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData(),
+                                new (ItemType, int)[0],
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BombJumpSWBigChest, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             }
                         };
                     }
@@ -2053,41 +1457,32 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombJumpIPBJ, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BombJumpIPBJ, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData(),
+                                new (ItemType, int)[0],
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BombJumpIPBJ, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             }
                         };
                     }
@@ -2098,41 +1493,32 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombJumpIPHookshotGap, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BombJumpIPHookshotGap, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData(),
+                                new (ItemType, int)[0],
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BombJumpIPHookshotGap, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             }
                         };
                     }
@@ -2143,41 +1529,32 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BombJumpIPFreezorRoomGap, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BombJumpIPFreezorRoomGap, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData(),
+                                new (ItemType, int)[0],
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BombJumpIPFreezorRoomGap, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             }
                         };
                     }
@@ -2188,108 +1565,106 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Boots, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BonkOverLedge, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Boots, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BonkOverLedge, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Boots, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BonkOverLedge, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Boots, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BonkOverLedge, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Boots, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BonkOverLedge, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -2301,213 +1676,185 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Cape, 0),
                                     (ItemType.MoonPearl, 0),
-                                    (ItemType.Hookshot, 0)
+                                    (ItemType.Hookshot, 0),
+                                    (ItemType.Cape, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BumperCaveHookshot, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Cape, 0),
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Hookshot, 0)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BumperCaveHookshot, true)
-                                },
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Cape, 1),
                                     (ItemType.MoonPearl, 1),
-                                    (ItemType.Hookshot, 0)
+                                    (ItemType.Hookshot, 0),
+                                    (ItemType.Cape, 0)
                                 },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BumperCaveHookshot, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Hookshot, 0),
+                                    (ItemType.Cape, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BumperCaveHookshot, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Hookshot, 0),
+                                    (ItemType.Cape, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BumperCaveHookshot, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Hookshot, 0),
+                                    (ItemType.Cape, 1)
+                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BumperCaveHookshot, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Cape, 1),
                                     (ItemType.MoonPearl, 1),
-                                    (ItemType.Hookshot, 0)
+                                    (ItemType.Hookshot, 0),
+                                    (ItemType.Cape, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BumperCaveHookshot, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Cape, 1),
                                     (ItemType.MoonPearl, 1),
-                                    (ItemType.Hookshot, 0)
+                                    (ItemType.Hookshot, 0),
+                                    (ItemType.Cape, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BumperCaveHookshot, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Cape, 1),
                                     (ItemType.MoonPearl, 1),
-                                    (ItemType.Hookshot, 1)
+                                    (ItemType.Hookshot, 1),
+                                    (ItemType.Cape, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BumperCaveHookshot, true)
                                 },
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Cape, 1),
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Hookshot, 0)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BumperCaveHookshot, false)
-                                },
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Cape, 1),
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Hookshot, 1)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BumperCaveHookshot, false)
-                                },
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Cape, 1),
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Hookshot, 1)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BumperCaveHookshot, true)
-                                },
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Cape, 1),
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Hookshot, 1)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.BumperCaveHookshot, false)
-                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -2519,65 +1866,57 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Bottle, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.CameraUnlock, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Bottle, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.CameraUnlock, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Bottle, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.CameraUnlock, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.SequenceBreak
-                            },
+                            }
                         };
                     }
                 case RequirementType.Curtains:
@@ -2587,54 +1926,46 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Sword, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Sword, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Sword, 2)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -2646,80 +1977,55 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0)
                                 },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.DarkRoomDeathMountainEntry, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Lamp, 0)
-                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomDeathMountainEntry, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Lamp, 1)
+                                    (ItemType.Lamp, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomDeathMountainEntry, true)
                                 },
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
-                                    (SequenceBreakType.DarkRoomDeathMountainEntry, false)
+                                    (SequenceBreakType.DarkRoomDeathMountainEntry, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -2731,80 +2037,55 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0)
                                 },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.DarkRoomDeathMountainExit, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Lamp, 0)
-                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomDeathMountainExit, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Lamp, 1)
+                                    (ItemType.Lamp, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomDeathMountainExit, true)
                                 },
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
-                                    (SequenceBreakType.DarkRoomDeathMountainExit, false)
+                                    (SequenceBreakType.DarkRoomDeathMountainExit, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -2816,239 +2097,199 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0),
                                     (ItemType.FireRod, 0)
                                 },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.DarkRoomHC, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Lamp, 0),
-                                    (ItemType.FireRod, 0)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.DarkRoomHC, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Lamp, 0),
-                                    (ItemType.FireRod, 1)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.DarkRoomHC, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Lamp, 0),
-                                    (ItemType.FireRod, 0)
-                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomHC, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0),
                                     (ItemType.FireRod, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomHC, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0),
                                     (ItemType.FireRod, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomHC, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Lamp, 1),
+                                    (ItemType.Lamp, 0),
                                     (ItemType.FireRod, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomHC, true)
                                 },
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Lamp, 0),
+                                    (ItemType.FireRod, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.DarkRoomHC, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0),
                                     (ItemType.FireRod, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomHC, true)
                                 },
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 1),
                                     (ItemType.FireRod, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
-                                    (SequenceBreakType.DarkRoomHC, false)
+                                    (SequenceBreakType.DarkRoomHC, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0),
                                     (ItemType.FireRod, 1)
                                 },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.DarkRoomHC, false)
-                                },
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Lamp, 1),
-                                    (ItemType.FireRod, 0)
-                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomHC, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 1),
                                     (ItemType.FireRod, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
-                                    (SequenceBreakType.DarkRoomHC, false)
+                                    (SequenceBreakType.DarkRoomHC, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -3060,80 +2301,55 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0)
                                 },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.DarkRoomAT, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Lamp, 0)
-                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomAT, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Lamp, 1)
+                                    (ItemType.Lamp, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomAT, true)
                                 },
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
-                                    (SequenceBreakType.DarkRoomAT, false)
+                                    (SequenceBreakType.DarkRoomAT, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -3145,80 +2361,55 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0)
                                 },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.DarkRoomEPRight, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Lamp, 0)
-                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomEPRight, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Lamp, 1)
+                                    (ItemType.Lamp, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomEPRight, true)
                                 },
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
-                                    (SequenceBreakType.DarkRoomEPRight, false)
+                                    (SequenceBreakType.DarkRoomEPRight, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -3230,239 +2421,199 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0),
                                     (ItemType.FireRod, 0)
                                 },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.DarkRoomEPBack, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Lamp, 0),
-                                    (ItemType.FireRod, 0)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.DarkRoomEPBack, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Lamp, 0),
-                                    (ItemType.FireRod, 1)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.DarkRoomEPBack, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Lamp, 0),
-                                    (ItemType.FireRod, 0)
-                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomEPBack, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0),
                                     (ItemType.FireRod, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomEPBack, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0),
                                     (ItemType.FireRod, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomEPBack, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Lamp, 1),
+                                    (ItemType.Lamp, 0),
                                     (ItemType.FireRod, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomEPBack, true)
                                 },
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Lamp, 0),
+                                    (ItemType.FireRod, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.DarkRoomEPBack, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0),
                                     (ItemType.FireRod, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomEPBack, true)
                                 },
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 1),
                                     (ItemType.FireRod, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
-                                    (SequenceBreakType.DarkRoomEPBack, false)
+                                    (SequenceBreakType.DarkRoomEPBack, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0),
                                     (ItemType.FireRod, 1)
                                 },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.DarkRoomEPBack, false)
-                                },
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Lamp, 1),
-                                    (ItemType.FireRod, 0)
-                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomEPBack, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 1),
                                     (ItemType.FireRod, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
-                                    (SequenceBreakType.DarkRoomEPBack, false)
+                                    (SequenceBreakType.DarkRoomEPBack, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -3474,239 +2625,199 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0),
                                     (ItemType.FireRod, 0)
                                 },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.DarkRoomPoDDarkBasement, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Lamp, 0),
-                                    (ItemType.FireRod, 0)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.DarkRoomPoDDarkBasement, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Lamp, 0),
-                                    (ItemType.FireRod, 1)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.DarkRoomPoDDarkBasement, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Lamp, 0),
-                                    (ItemType.FireRod, 0)
-                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomPoDDarkBasement, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0),
                                     (ItemType.FireRod, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomPoDDarkBasement, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0),
                                     (ItemType.FireRod, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomPoDDarkBasement, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Lamp, 1),
+                                    (ItemType.Lamp, 0),
                                     (ItemType.FireRod, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomPoDDarkBasement, true)
                                 },
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Lamp, 0),
+                                    (ItemType.FireRod, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.DarkRoomPoDDarkBasement, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0),
                                     (ItemType.FireRod, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomPoDDarkBasement, true)
                                 },
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 1),
                                     (ItemType.FireRod, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
-                                    (SequenceBreakType.DarkRoomPoDDarkBasement, false)
+                                    (SequenceBreakType.DarkRoomPoDDarkBasement, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0),
                                     (ItemType.FireRod, 1)
                                 },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.DarkRoomPoDDarkBasement, false)
-                                },
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Lamp, 1),
-                                    (ItemType.FireRod, 0)
-                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomPoDDarkBasement, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 1),
                                     (ItemType.FireRod, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
-                                    (SequenceBreakType.DarkRoomPoDDarkBasement, false)
+                                    (SequenceBreakType.DarkRoomPoDDarkBasement, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -3718,80 +2829,55 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0)
                                 },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.DarkRoomPoDDarkMaze, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Lamp, 0)
-                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomPoDDarkMaze, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Lamp, 1)
+                                    (ItemType.Lamp, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomPoDDarkMaze, true)
                                 },
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
-                                    (SequenceBreakType.DarkRoomPoDDarkMaze, false)
+                                    (SequenceBreakType.DarkRoomPoDDarkMaze, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -3803,80 +2889,55 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0)
                                 },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.DarkRoomPoDBossArea, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Lamp, 0)
-                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomPoDBossArea, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Lamp, 1)
+                                    (ItemType.Lamp, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomPoDBossArea, true)
                                 },
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
-                                    (SequenceBreakType.DarkRoomPoDBossArea, false)
+                                    (SequenceBreakType.DarkRoomPoDBossArea, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -3888,80 +2949,55 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0)
                                 },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.DarkRoomMM, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Lamp, 0)
-                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomMM, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Lamp, 1)
+                                    (ItemType.Lamp, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomMM, true)
                                 },
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
-                                    (SequenceBreakType.DarkRoomMM, false)
+                                    (SequenceBreakType.DarkRoomMM, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -3973,80 +3009,55 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0)
                                 },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.DarkRoomTR, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Lamp, 0)
-                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomTR, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Lamp, 1)
+                                    (ItemType.Lamp, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DarkRoomTR, true)
                                 },
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
-                                    (SequenceBreakType.DarkRoomTR, false)
+                                    (SequenceBreakType.DarkRoomTR, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -4058,41 +3069,32 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.DungeonRevive, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.DungeonRevive, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData(),
+                                new (ItemType, int)[0],
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.DungeonRevive, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             }
                         };
                     }
@@ -4103,63 +3105,55 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Bottle, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.FakeFlippersFairyRevival, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Bottle, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.FakeFlippersFairyRevival, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Bottle, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.FakeFlippersFairyRevival, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.SequenceBreak
                             }
                         };
@@ -4171,21 +3165,7 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Bow, 0),
@@ -4193,19 +3173,41 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.CaneOfSomaria, 0),
                                     (ItemType.IceRod, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.FakeFlippersSplashDeletion, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Bow, 1),
+                                    (ItemType.RedBoomerang, 1),
+                                    (ItemType.CaneOfSomaria, 1),
+                                    (ItemType.IceRod, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.FakeFlippersSplashDeletion, false)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Bow, 1),
@@ -4213,19 +3215,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.CaneOfSomaria, 0),
                                     (ItemType.IceRod, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
-                                    (SequenceBreakType.FakeFlippersSplashDeletion, false)
+                                    (SequenceBreakType.FakeFlippersSplashDeletion, true)
                                 },
-                                AccessibilityLevel.None
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Bow, 0),
@@ -4233,19 +3236,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.CaneOfSomaria, 0),
                                     (ItemType.IceRod, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
-                                    (SequenceBreakType.FakeFlippersSplashDeletion, false)
+                                    (SequenceBreakType.FakeFlippersSplashDeletion, true)
                                 },
-                                AccessibilityLevel.None
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Bow, 0),
@@ -4253,19 +3257,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.CaneOfSomaria, 1),
                                     (ItemType.IceRod, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
-                                    (SequenceBreakType.FakeFlippersSplashDeletion, false)
+                                    (SequenceBreakType.FakeFlippersSplashDeletion, true)
                                 },
-                                AccessibilityLevel.None
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Bow, 0),
@@ -4273,90 +3278,14 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.CaneOfSomaria, 0),
                                     (ItemType.IceRod, 1)
                                 },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                                },
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Bow, 1),
-                                    (ItemType.RedBoomerang, 0),
-                                    (ItemType.CaneOfSomaria, 0),
-                                    (ItemType.IceRod, 0)
-                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.FakeFlippersSplashDeletion, true)
                                 },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Bow, 0),
-                                    (ItemType.RedBoomerang, 1),
-                                    (ItemType.CaneOfSomaria, 0),
-                                    (ItemType.IceRod, 0)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Bow, 0),
-                                    (ItemType.RedBoomerang, 0),
-                                    (ItemType.CaneOfSomaria, 1),
-                                    (ItemType.IceRod, 0)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Bow, 0),
-                                    (ItemType.RedBoomerang, 0),
-                                    (ItemType.CaneOfSomaria, 0),
-                                    (ItemType.IceRod, 1)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.SequenceBreak
                             }
                         };
@@ -4368,57 +3297,49 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0),
                                     (ItemType.FireRod, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 1),
                                     (ItemType.FireRod, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Lamp, 0),
                                     (ItemType.FireRod, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -4430,65 +3351,57 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Boots, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.Hover, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Boots, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.Hover, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Boots, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.Hover, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.SequenceBreak
-                            },
+                            }
                         };
                     }
                 case RequirementType.LaserBridge:
@@ -4498,184 +3411,232 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Cape, 0),
                                     (ItemType.CaneOfByrna, 0),
                                     (ItemType.Shield, 0)
                                 },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.TRLaserSkip, true)
-                                },
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Cape, 1),
-                                    (ItemType.CaneOfByrna, 0),
-                                    (ItemType.Shield, 0)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.TRLaserSkip, true)
-                                },
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Cape, 0),
-                                    (ItemType.CaneOfByrna, 1),
-                                    (ItemType.Shield, 0)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.TRLaserSkip, true)
-                                },
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Cape, 0),
-                                    (ItemType.CaneOfByrna, 0),
-                                    (ItemType.Shield, 3)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.TRLaserSkip, true)
-                                },
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Cape, 1),
-                                    (ItemType.CaneOfByrna, 0),
-                                    (ItemType.Shield, 0)
-                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.TRLaserSkip, false)
                                 },
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Cape, 0),
-                                    (ItemType.CaneOfByrna, 1),
-                                    (ItemType.Shield, 0)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.TRLaserSkip, false)
-                                },
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Cape, 0),
-                                    (ItemType.CaneOfByrna, 0),
-                                    (ItemType.Shield, 3)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.TRLaserSkip, false)
-                                },
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Cape, 0),
-                                    (ItemType.CaneOfByrna, 0),
-                                    (ItemType.Shield, 0)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.TRLaserSkip, false)
-                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Cape, 0),
+                                    (ItemType.CaneOfByrna, 0),
+                                    (ItemType.Shield, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.TRLaserSkip, false)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Cape, 0),
+                                    (ItemType.CaneOfByrna, 0),
+                                    (ItemType.Shield, 2)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.TRLaserSkip, false)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Cape, 0),
                                     (ItemType.CaneOfByrna, 0),
                                     (ItemType.Shield, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.TRLaserSkip, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.SequenceBreak
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Cape, 0),
+                                    (ItemType.CaneOfByrna, 0),
+                                    (ItemType.Shield, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.TRLaserSkip, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Cape, 0),
+                                    (ItemType.CaneOfByrna, 0),
+                                    (ItemType.Shield, 2)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.TRLaserSkip, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Cape, 0),
+                                    (ItemType.CaneOfByrna, 0),
+                                    (ItemType.Shield, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.TRLaserSkip, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Cape, 1),
+                                    (ItemType.CaneOfByrna, 0),
+                                    (ItemType.Shield, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.TRLaserSkip, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Cape, 0),
+                                    (ItemType.CaneOfByrna, 1),
+                                    (ItemType.Shield, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.TRLaserSkip, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Cape, 0),
+                                    (ItemType.CaneOfByrna, 0),
+                                    (ItemType.Shield, 3)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.TRLaserSkip, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
                             }
                         };
                     }
@@ -4686,221 +3647,676 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced,
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Book, 0),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 0),
+                                    (PrizeType.GreenPendant, 0)
+                                },
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BlindPedestal, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced,
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Pendant, 0),
-                                    (ItemType.GreenPendant, 0),
-                                    (ItemType.Book, 0)
+                                    (ItemType.Book, 0),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 1),
+                                    (PrizeType.GreenPendant, 1)
                                 },
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BlindPedestal, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic,
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Pendant, 2),
-                                    (ItemType.GreenPendant, 1),
-                                    (ItemType.Book, 0)
+                                    (ItemType.Book, 0),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 0),
+                                    (PrizeType.GreenPendant, 0)
                                 },
                                 new (SequenceBreakType, bool)[]
                                 {
-                                    (SequenceBreakType.BlindPedestal, false)
+                                    (SequenceBreakType.BlindPedestal, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic,
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Pendant, 0),
-                                    (ItemType.GreenPendant, 0),
-                                    (ItemType.Book, 1)
+                                    (ItemType.Book, 0),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 1),
+                                    (PrizeType.GreenPendant, 1)
                                 },
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BlindPedestal, true)
                                 },
-                                AccessibilityLevel.Inspect
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic,
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Pendant, 0),
-                                    (ItemType.GreenPendant, 0),
-                                    (ItemType.Book, 1)
+                                    (ItemType.Book, 0),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 2),
+                                    (PrizeType.GreenPendant, 1)
                                 },
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BlindPedestal, false)
                                 },
-                                AccessibilityLevel.Inspect
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced,
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Pendant, 0),
-                                    (ItemType.GreenPendant, 0),
-                                    (ItemType.Book, 1)
+                                    (ItemType.Book, 0),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 0),
+                                    (PrizeType.GreenPendant, 0)
                                 },
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BlindPedestal, true)
                                 },
-                                AccessibilityLevel.Inspect
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced,
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Pendant, 0),
-                                    (ItemType.GreenPendant, 0),
-                                    (ItemType.Book, 1)
+                                    (ItemType.Book, 0),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 1),
+                                    (PrizeType.GreenPendant, 1)
+                                },
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BlindPedestal, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Book, 0),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 0),
+                                    (PrizeType.GreenPendant, 0)
+                                },
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BlindPedestal, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Book, 0),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 1),
+                                    (PrizeType.GreenPendant, 1)
+                                },
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BlindPedestal, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Book, 0),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 2),
+                                    (PrizeType.GreenPendant, 1)
                                 },
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BlindPedestal, false)
                                 },
-                                AccessibilityLevel.Inspect
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced,
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Pendant, 2),
-                                    (ItemType.GreenPendant, 1),
-                                    (ItemType.Book, 0)
+                                    (ItemType.Book, 0),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 0),
+                                    (PrizeType.GreenPendant, 0)
                                 },
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BlindPedestal, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced,
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Book, 0),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 2),
+                                    (PrizeType.GreenPendant, 1)
+                                },
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BlindPedestal, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced,
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Book, 0),
+                                    (ItemType.MoonPearl, 1)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 1),
+                                    (PrizeType.GreenPendant, 1)
+                                },
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BlindPedestal, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced,
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Book, 1),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 0),
+                                    (PrizeType.GreenPendant, 0)
+                                },
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BlindPedestal, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Inspect
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic,
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Book, 1),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 0),
+                                    (PrizeType.GreenPendant, 0)
+                                },
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BlindPedestal, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Inspect
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Book, 1),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 0),
+                                    (PrizeType.GreenPendant, 0)
+                                },
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BlindPedestal, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Inspect
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Book, 1),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 0),
+                                    (PrizeType.GreenPendant, 0)
+                                },
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BlindPedestal, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Inspect
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced,
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Book, 1),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 0),
+                                    (PrizeType.GreenPendant, 0)
+                                },
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BlindPedestal, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Inspect
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic,
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Book, 0),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 2),
+                                    (PrizeType.GreenPendant, 1)
+                                },
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BlindPedestal, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic,
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Pendant, 2),
-                                    (ItemType.GreenPendant, 1),
-                                    (ItemType.Book, 0)
+                                    (ItemType.Book, 0),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 2),
+                                    (PrizeType.GreenPendant, 1)
                                 },
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BlindPedestal, true)
                                 },
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced,
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Pendant, 2),
-                                    (ItemType.GreenPendant, 1),
-                                    (ItemType.Book, 0)
+                                    (ItemType.Book, 0),
+                                    (ItemType.MoonPearl, 0)
                                 },
-                                new (SequenceBreakType, bool)[]
+                                new (PrizeType, int)[]
                                 {
-                                    (SequenceBreakType.BlindPedestal, false)
-                                },
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Pendant, 2),
-                                    (ItemType.GreenPendant, 1),
-                                    (ItemType.Book, 1)
+                                    (PrizeType.Pendant, 2),
+                                    (PrizeType.GreenPendant, 1)
                                 },
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.BlindPedestal, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Basic,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic,
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Pendant, 2),
-                                    (ItemType.GreenPendant, 1),
-                                    (ItemType.Book, 1)
+                                    (ItemType.Book, 1),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 2),
+                                    (PrizeType.GreenPendant, 1)
                                 },
                                 new (SequenceBreakType, bool)[]
                                 {
-                                    (SequenceBreakType.BlindPedestal, false)
+                                    (SequenceBreakType.BlindPedestal, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Book, 0),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 2),
+                                    (PrizeType.GreenPendant, 1)
+                                },
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BlindPedestal, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Basic,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Book, 1),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 2),
+                                    (PrizeType.GreenPendant, 1)
+                                },
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BlindPedestal, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    ItemPlacement = ItemPlacement.Advanced,
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Book, 0),
+                                    (ItemType.MoonPearl, 1)
+                                },
+                                new (PrizeType, int)[]
+                                {
+                                    (PrizeType.Pendant, 2),
+                                    (PrizeType.GreenPendant, 1)
+                                },
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.BlindPedestal, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -4912,54 +4328,55 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    EnemyShuffle = false
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Bow, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    EnemyShuffle = false
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Bow, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                true,
+                                new ModeSaveData()
+                                {
+                                    EnemyShuffle = true
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Bow, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -4971,42 +4388,65 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
                                     (ItemType.Mirror, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Mirror, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData(),
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Mirror, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
                                     (ItemType.Mirror, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -5018,41 +4458,32 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.SuperBunnyFallInHole, true)
-                                },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.SuperBunnyFallInHole, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData(),
+                                new (ItemType, int)[0],
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.SuperBunnyFallInHole, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             }
                         };
                     }
@@ -5063,63 +4494,55 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Mirror, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.SuperBunnyMirror, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Mirror, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.SuperBunnyMirror, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Mirror, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.SuperBunnyMirror, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.SequenceBreak
                             }
                         };
@@ -5131,92 +4554,154 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Book, 0),
                                     (ItemType.Sword, 1),
-                                    (ItemType.Hammer, 0),
+                                    (ItemType.Hammer, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Book, 0),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Hammer, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData(),
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Book, 0),
+                                    (ItemType.Sword, 3),
+                                    (ItemType.Hammer, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Book, 1),
                                     (ItemType.Sword, 1),
-                                    (ItemType.Hammer, 0),
+                                    (ItemType.Hammer, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Inspect
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Book, 1),
                                     (ItemType.Sword, 1),
-                                    (ItemType.Hammer, 1),
+                                    (ItemType.Hammer, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Inspect
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Book, 1),
                                     (ItemType.Sword, 0),
-                                    (ItemType.Hammer, 1),
+                                    (ItemType.Hammer, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Inspect
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData(),
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Book, 1),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Hammer, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Inspect
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData(),
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Book, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Hammer, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Book, 1),
                                     (ItemType.Sword, 3),
-                                    (ItemType.Hammer, 0),
+                                    (ItemType.Hammer, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -5228,40 +4713,31 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Inspect
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Boots, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Inspect
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Boots, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -5273,107 +4749,55 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Hookshot, 0),
-                                    (ItemType.Boots, 0),
-                                    (ItemType.Sword, 1)
+                                    (ItemType.Hookshot, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.ToHHerapot, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Hookshot, 1),
-                                    (ItemType.Boots, 0),
-                                    (ItemType.Sword, 1)
+                                    (ItemType.Hookshot, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.ToHHerapot, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.Hookshot, 0),
-                                    (ItemType.Boots, 1),
-                                    (ItemType.Sword, 2)
+                                    (ItemType.Hookshot, 1)
                                 },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.ToHHerapot, false)
-                                },
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Hookshot, 1),
-                                    (ItemType.Boots, 0),
-                                    (ItemType.Sword, 1)
-                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.ToHHerapot, true)
                                 },
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.Hookshot, 0),
-                                    (ItemType.Boots, 1),
-                                    (ItemType.Sword, 2)
-                                },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.ToHHerapot, true)
-                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.SequenceBreak
                             }
                         };
@@ -5385,63 +4809,55 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.CaneOfSomaria, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.IPIceBreaker, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.CaneOfSomaria, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.IPIceBreaker, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.CaneOfSomaria, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.IPIceBreaker, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.SequenceBreak
                             }
                         };
@@ -5453,21 +4869,10 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -5479,321 +4884,345 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
+                                new ModeSaveData()
                                 {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 1),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
+                                    WorldState = WorldState.StandardOpen
                                 },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 0),
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 1),
                                     (ItemType.Bombos, 1),
                                     (ItemType.BombosDungeons, 3),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 1),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
                                     (ItemType.Ether, 1),
                                     (ItemType.EtherDungeons, 3),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 1)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 3)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 0),
                                     (ItemType.Bombos, 1),
                                     (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
+                                    (ItemType.Ether, 0),
                                     (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
+                                    (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 2),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 2),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 2)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 2),
                                     (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 1),
+                                    (ItemType.BombosDungeons, 0),
                                     (ItemType.Ether, 0),
                                     (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 2),
                                     (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 3),
+                                    (ItemType.BombosDungeons, 2),
                                     (ItemType.Ether, 0),
                                     (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 2),
                                     (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
                                     (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 1),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 3),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 0),
                                     (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 1)
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 2),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 2),
                                     (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
                                     (ItemType.Ether, 0),
                                     (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 3)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[0],
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 2)
+                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -5805,321 +5234,345 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
+                                new ModeSaveData()
                                 {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 1),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
+                                    WorldState = WorldState.Retro
                                 },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 0),
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 1),
                                     (ItemType.Bombos, 1),
                                     (ItemType.BombosDungeons, 3),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 1),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
                                     (ItemType.Ether, 1),
                                     (ItemType.EtherDungeons, 3),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 1)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 3)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 0),
                                     (ItemType.Bombos, 1),
                                     (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
+                                    (ItemType.Ether, 0),
                                     (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
+                                    (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 2),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 2),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 2)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 2),
                                     (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 1),
+                                    (ItemType.BombosDungeons, 0),
                                     (ItemType.Ether, 0),
                                     (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 2),
                                     (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 3),
+                                    (ItemType.BombosDungeons, 2),
                                     (ItemType.Ether, 0),
                                     (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 2),
                                     (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
                                     (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 1),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 3),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 0),
                                     (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 1)
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 2),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 2),
                                     (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
                                     (ItemType.Ether, 0),
                                     (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 3)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
-                                new (ItemType, int)[0],
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 2)
+                                },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -6131,352 +5584,95 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
+                                new ModeSaveData()
                                 {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 1),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
+                                    WorldState = WorldState.Inverted
                                 },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 0),
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 1),
                                     (ItemType.Bombos, 1),
                                     (ItemType.BombosDungeons, 3),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 1),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
                                     (ItemType.Ether, 1),
                                     (ItemType.EtherDungeons, 3),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 1)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 3)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 0),
                                     (ItemType.Bombos, 1),
                                     (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 1),
                                     (ItemType.Ether, 0),
                                     (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
+                                new ModeSaveData()
                                 {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 3),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
+                                    WorldState = WorldState.Inverted
                                 },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 1),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 3),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 1)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 3)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 0),
                                     (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 1),
+                                    (ItemType.BombosDungeons, 2),
                                     (ItemType.Ether, 0),
                                     (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
+                                new ModeSaveData()
                                 {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 3),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
+                                    WorldState = WorldState.Inverted
                                 },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
@@ -6484,20 +5680,24 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
                                     (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 1),
+                                    (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
@@ -6505,20 +5705,24 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
                                     (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 3),
+                                    (ItemType.EtherDungeons, 2),
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
@@ -6528,18 +5732,22 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Ether, 0),
                                     (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 1)
+                                    (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
@@ -6549,81 +5757,72 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Ether, 0),
                                     (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 3)
+                                    (ItemType.QuakeDungeons, 2)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 0),
+                                    (ItemType.Sword, 2),
                                     (ItemType.Bombos, 1),
                                     (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 1),
                                     (ItemType.Ether, 0),
                                     (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 2),
                                     (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 3),
+                                    (ItemType.BombosDungeons, 2),
                                     (ItemType.Ether, 0),
                                     (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
@@ -6631,20 +5830,24 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
                                     (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 1),
+                                    (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
@@ -6652,41 +5855,24 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
                                     (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 3),
+                                    (ItemType.EtherDungeons, 2),
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
+                                new ModeSaveData()
                                 {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 1)
+                                    WorldState = WorldState.Inverted
                                 },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
@@ -6696,39 +5882,47 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Ether, 0),
                                     (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 3)
+                                    (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 1),
+                                    (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
+                                    (ItemType.Ether, 0),
                                     (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 0)
+                                    (ItemType.QuakeDungeons, 2)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -6740,16 +5934,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -6761,16 +5959,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -6782,16 +5984,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -6803,16 +6009,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -6824,16 +6034,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -6845,16 +6059,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 3)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -6866,16 +6084,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -6887,16 +6109,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -6908,16 +6134,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -6929,16 +6159,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -6950,16 +6184,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -6971,16 +6209,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -6992,16 +6234,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 3)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -7013,7 +6259,711 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 1),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 3),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 1),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 3),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 3)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 1),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 3),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 1),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 3),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 3)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 1),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 3),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 1),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 3),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 3)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 1),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 3),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 1),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 3),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 3)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -7025,21 +6975,10 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -7051,19 +6990,73 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 1),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 3),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 3),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 3)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 0),
                                     (ItemType.Bombos, 1),
                                     (ItemType.BombosDungeons, 2),
@@ -7072,40 +7065,48 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 3),
-                                    (ItemType.Ether, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
                                     (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 0),
                                     (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
@@ -7114,40 +7115,48 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 0),
                                     (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 3),
-                                    (ItemType.Quake, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 0),
                                     (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
@@ -7156,61 +7165,48 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 2)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 0),
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 1),
                                     (ItemType.BombosDungeons, 0),
                                     (ItemType.Ether, 0),
                                     (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 3)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
+                                    (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 2),
                                     (ItemType.Bombos, 1),
                                     (ItemType.BombosDungeons, 2),
@@ -7219,40 +7215,48 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 3),
-                                    (ItemType.Ether, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
                                     (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 2),
                                     (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
@@ -7261,40 +7265,48 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 2),
                                     (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 3),
-                                    (ItemType.Quake, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 2),
                                     (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
@@ -7303,69 +7315,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 2)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
+                                new ModeSaveData()
                                 {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 3)
+                                    WorldState = WorldState.Retro
                                 },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -7377,19 +7340,73 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 1),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 3),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 3),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 3)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 0),
                                     (ItemType.Bombos, 1),
                                     (ItemType.BombosDungeons, 2),
@@ -7398,40 +7415,48 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 3),
-                                    (ItemType.Ether, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
                                     (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 0),
                                     (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
@@ -7440,40 +7465,48 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 0),
                                     (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 3),
-                                    (ItemType.Quake, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 0),
                                     (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
@@ -7482,61 +7515,48 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 2)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 0),
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 1),
                                     (ItemType.BombosDungeons, 0),
                                     (ItemType.Ether, 0),
                                     (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 3)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
+                                    (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 2),
                                     (ItemType.Bombos, 1),
                                     (ItemType.BombosDungeons, 2),
@@ -7545,40 +7565,48 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 3),
-                                    (ItemType.Ether, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
                                     (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 2),
                                     (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
@@ -7587,40 +7615,48 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 2),
                                     (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 3),
-                                    (ItemType.Quake, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
-                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 2),
                                     (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
@@ -7629,69 +7665,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 2)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
+                                new ModeSaveData()
                                 {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 3)
+                                    WorldState = WorldState.Inverted
                                 },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -7703,16 +7690,70 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 1),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 3),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 3),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 3)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
@@ -7724,37 +7765,45 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 3),
-                                    (ItemType.Ether, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
                                     (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
@@ -7766,37 +7815,45 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 0),
                                     (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 3),
-                                    (ItemType.Quake, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
@@ -7808,58 +7865,45 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 2)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 0),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 1),
                                     (ItemType.BombosDungeons, 0),
                                     (ItemType.Ether, 0),
                                     (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 3)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
+                                    (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
@@ -7871,37 +7915,45 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 3),
-                                    (ItemType.Ether, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
                                     (ItemType.EtherDungeons, 0),
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
@@ -7913,37 +7965,45 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
                                     (ItemType.Sword, 2),
                                     (ItemType.Bombos, 0),
                                     (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 3),
-                                    (ItemType.Quake, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
@@ -7955,352 +8015,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 2)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
+                                new ModeSaveData()
                                 {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 3)
+                                    WorldState = WorldState.StandardOpen
                                 },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 2),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 3),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 2),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 3),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 2)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 3)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 0),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 2),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 3),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 2),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 3),
-                                    (ItemType.Quake, 0),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 2)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 0),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 0),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 3)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.Sword, 2),
-                                    (ItemType.Bombos, 1),
-                                    (ItemType.BombosDungeons, 0),
-                                    (ItemType.Ether, 1),
-                                    (ItemType.EtherDungeons, 0),
-                                    (ItemType.Quake, 1),
-                                    (ItemType.QuakeDungeons, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -8312,16 +8040,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -8333,16 +8065,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -8354,16 +8090,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -8375,16 +8115,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -8396,16 +8140,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 2)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -8417,16 +8165,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 3)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -8438,16 +8190,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -8459,16 +8215,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -8480,16 +8240,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -8501,16 +8265,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -8522,16 +8290,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 0),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -8543,16 +8315,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 2)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -8564,16 +8340,20 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 3)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
@@ -8585,7 +8365,711 @@ namespace OpenTracker.UnitTests.Requirements
                                     (ItemType.Quake, 1),
                                     (ItemType.QuakeDungeons, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 2),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 3),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 2),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 3),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 2)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 3)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 2),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 3),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 2),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 3),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 2)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 3)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 0),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 2),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 3),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 2),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 3),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 2)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 3)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 0),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 2),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 3),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 2),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 3),
+                                    (ItemType.Quake, 0),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 2)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 0),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 0),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 3)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.MoonPearl, 1),
+                                    (ItemType.Sword, 2),
+                                    (ItemType.Bombos, 1),
+                                    (ItemType.BombosDungeons, 0),
+                                    (ItemType.Ether, 1),
+                                    (ItemType.EtherDungeons, 0),
+                                    (ItemType.Quake, 1),
+                                    (ItemType.QuakeDungeons, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -8597,456 +9081,1289 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys,
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.FireRod, 0),
-                                    (ItemType.TRSmallKey, 0),
                                     (ItemType.SmallKey, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
+                                new (LocationID, int)[]
                                 {
-                                    (ItemType.FireRod, 0),
-                                    (ItemType.TRSmallKey, 2),
-                                    (ItemType.SmallKey, 0)
+                                    (LocationID.TurtleRock, 0)
                                 },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.FireRod, 0),
-                                    (ItemType.TRSmallKey, 1),
-                                    (ItemType.SmallKey, 1)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.FireRod, 0),
-                                    (ItemType.TRSmallKey, 0),
-                                    (ItemType.SmallKey, 2)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.MapsCompasses,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.MapsCompasses,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.FireRod, 0),
-                                    (ItemType.TRSmallKey, 0),
-                                    (ItemType.SmallKey, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.MapsCompasses,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.FireRod, 0),
-                                    (ItemType.TRSmallKey, 2),
-                                    (ItemType.SmallKey, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.MapsCompasses,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.FireRod, 0),
-                                    (ItemType.TRSmallKey, 1),
-                                    (ItemType.SmallKey, 1)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.MapsCompasses,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.FireRod, 0),
-                                    (ItemType.TRSmallKey, 0),
-                                    (ItemType.SmallKey, 2)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.SequenceBreak
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.MapsCompassesSmallKeys,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.MapsCompassesSmallKeys,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
+                                new ModeSaveData()
                                 {
-                                    (ItemType.FireRod, 0),
-                                    (ItemType.TRSmallKey, 0),
-                                    (ItemType.SmallKey, 0)
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys,
+                                    WorldState = WorldState.StandardOpen
                                 },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.MapsCompassesSmallKeys,
-                                WorldState.StandardOpen,
-                                false,
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.FireRod, 1),
-                                    (ItemType.TRSmallKey, 0),
                                     (ItemType.SmallKey, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Keysanity,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Keysanity,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys,
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.FireRod, 0),
-                                    (ItemType.TRSmallKey, 0),
-                                    (ItemType.SmallKey, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Keysanity,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.FireRod, 1),
-                                    (ItemType.TRSmallKey, 0),
-                                    (ItemType.SmallKey, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.FireRod, 0),
-                                    (ItemType.TRSmallKey, 0),
-                                    (ItemType.SmallKey, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.FireRod, 1),
-                                    (ItemType.TRSmallKey, 0),
-                                    (ItemType.SmallKey, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.FireRod, 1),
-                                    (ItemType.TRSmallKey, 0),
-                                    (ItemType.SmallKey, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.MapsCompasses,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.FireRod, 1),
-                                    (ItemType.TRSmallKey, 0),
-                                    (ItemType.SmallKey, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.MapsCompassesSmallKeys,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.FireRod, 0),
-                                    (ItemType.TRSmallKey, 2),
-                                    (ItemType.SmallKey, 0)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.MapsCompassesSmallKeys,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.FireRod, 0),
-                                    (ItemType.TRSmallKey, 1),
-                                    (ItemType.SmallKey, 1)
-                                },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.MapsCompassesSmallKeys,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
-                                {
-                                    (ItemType.FireRod, 0),
-                                    (ItemType.TRSmallKey, 0),
                                     (ItemType.SmallKey, 2)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Keysanity,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys,
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.FireRod, 0),
-                                    (ItemType.TRSmallKey, 2),
                                     (ItemType.SmallKey, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Keysanity,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
+                                new (LocationID, int)[]
                                 {
-                                    (ItemType.FireRod, 0),
-                                    (ItemType.TRSmallKey, 1),
-                                    (ItemType.SmallKey, 1)
+                                    (LocationID.TurtleRock, 1)
                                 },
-                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Keysanity,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
+                                new ModeSaveData()
                                 {
-                                    (ItemType.FireRod, 0),
-                                    (ItemType.TRSmallKey, 0),
-                                    (ItemType.SmallKey, 2)
+                                    DungeonItemShuffle = DungeonItemShuffle.Keysanity,
+                                    WorldState = WorldState.StandardOpen
                                 },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.FireRod, 0),
-                                    (ItemType.TRSmallKey, 2),
                                     (ItemType.SmallKey, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
-                                new (ItemType, int)[]
+                                new (LocationID, int)[]
                                 {
-                                    (ItemType.FireRod, 0),
-                                    (ItemType.TRSmallKey, 1),
-                                    (ItemType.SmallKey, 1)
+                                    (LocationID.TurtleRock, 0)
                                 },
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.Normal
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Keysanity,
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.FireRod, 0),
-                                    (ItemType.TRSmallKey, 0),
                                     (ItemType.SmallKey, 2)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Keysanity,
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 1)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Keysanity,
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 1),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Standard,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Standard,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 1),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Standard,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 1)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompasses,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompasses,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 1),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompasses,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 1)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 1),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 1)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Keysanity,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Keysanity,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 1),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Keysanity,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 1)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys,
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys,
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 1),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys,
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 2)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys,
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 1)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Keysanity,
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Keysanity,
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 1),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Keysanity,
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 2)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Keysanity,
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 1)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Standard,
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Standard,
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 2)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompasses,
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompasses,
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 2)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Standard,
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Standard,
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 2)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompasses,
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompasses,
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 2)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Standard,
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 1),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompasses,
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 1),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys,
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 2)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Keysanity,
+                                    WorldState = WorldState.StandardOpen
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 2)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Standard,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 2)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Standard,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 1)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Standard,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 2)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompasses,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 2)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompasses,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 1)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompasses,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 2)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 2)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 1)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 2)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Keysanity,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 2)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Keysanity,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 1)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Keysanity,
+                                    WorldState = WorldState.Retro
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 2)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Standard,
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 1),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompasses,
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 1),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 0)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.MapsCompassesSmallKeys,
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 2)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.Normal
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    DungeonItemShuffle = DungeonItemShuffle.Keysanity,
+                                    WorldState = WorldState.Inverted
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.FireRod, 0),
+                                    (ItemType.SmallKey, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[]
+                                {
+                                    (LocationID.TurtleRock, 2)
+                                },
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -9058,63 +10375,55 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Boots, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.WaterWalk, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Boots, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.WaterWalk, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData(),
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Boots, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.WaterWalk, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.SequenceBreak
                             }
                         };
@@ -9126,164 +10435,508 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen,
+                                    EntranceShuffle = false
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Flippers, 0),
                                     (ItemType.MoonPearl, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.WaterWalkFromWaterfallCave, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen,
+                                    EntranceShuffle = false
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Flippers, 0),
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.WaterfallFairyAccess, 1)
+                                    (ItemType.MoonPearl, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.WaterWalkFromWaterfallCave, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen,
+                                    EntranceShuffle = false
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Flippers, 1),
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.WaterfallFairyAccess, 0)
+                                    (ItemType.MoonPearl, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.WaterWalkFromWaterfallCave, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[]
+                                new ModeSaveData()
                                 {
-                                    (ItemType.Flippers, 1),
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.WaterfallFairyAccess, 0)
+                                    WorldState = WorldState.StandardOpen,
+                                    EntranceShuffle = true
                                 },
-                                new (SequenceBreakType, bool)[]
-                                {
-                                    (SequenceBreakType.WaterWalkFromWaterfallCave, true)
-                                },
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                true,
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Flippers, 0),
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.WaterfallFairyAccess, 1)
+                                    (ItemType.MoonPearl, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.WaterWalkFromWaterfallCave, false)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                true,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen,
+                                    EntranceShuffle = true
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Flippers, 1),
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.WaterfallFairyAccess, 1)
+                                    (ItemType.MoonPearl, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.WaterWalkFromWaterfallCave, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro,
+                                    EntranceShuffle = false
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Flippers, 0),
-                                    (ItemType.MoonPearl, 1),
-                                    (ItemType.WaterfallFairyAccess, 0)
+                                    (ItemType.MoonPearl, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.WaterWalkFromWaterfallCave, true)
                                 },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro,
+                                    EntranceShuffle = false
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Flippers, 0),
+                                    (ItemType.MoonPearl, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.WaterWalkFromWaterfallCave, false)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro,
+                                    EntranceShuffle = false
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Flippers, 1),
+                                    (ItemType.MoonPearl, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.WaterWalkFromWaterfallCave, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro,
+                                    EntranceShuffle = true
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Flippers, 0),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.WaterWalkFromWaterfallCave, false)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro,
+                                    EntranceShuffle = true
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Flippers, 1),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.WaterWalkFromWaterfallCave, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted,
+                                    EntranceShuffle = false
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Flippers, 0),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.WaterWalkFromWaterfallCave, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted,
+                                    EntranceShuffle = false
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Flippers, 0),
+                                    (ItemType.MoonPearl, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.WaterWalkFromWaterfallCave, false)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted,
+                                    EntranceShuffle = false
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Flippers, 1),
+                                    (ItemType.MoonPearl, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.WaterWalkFromWaterfallCave, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted,
+                                    EntranceShuffle = true
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Flippers, 0),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.WaterWalkFromWaterfallCave, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted,
+                                    EntranceShuffle = true
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Flippers, 0),
+                                    (ItemType.MoonPearl, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.WaterWalkFromWaterfallCave, false)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted,
+                                    EntranceShuffle = true
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Flippers, 1),
+                                    (ItemType.MoonPearl, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.WaterWalkFromWaterfallCave, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.None
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen,
+                                    EntranceShuffle = false
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Flippers, 0),
+                                    (ItemType.MoonPearl, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.WaterWalkFromWaterfallCave, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.SequenceBreak
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen,
+                                    EntranceShuffle = true
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.Flippers, 0),
-                                    (ItemType.MoonPearl, 0),
-                                    (ItemType.WaterfallFairyAccess, 1)
+                                    (ItemType.MoonPearl, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[]
                                 {
                                     (SequenceBreakType.WaterWalkFromWaterfallCave, true)
                                 },
-                                AccessibilityLevel.None
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro,
+                                    EntranceShuffle = false
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Flippers, 0),
+                                    (ItemType.MoonPearl, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.WaterWalkFromWaterfallCave, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro,
+                                    EntranceShuffle = true
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Flippers, 0),
+                                    (ItemType.MoonPearl, 0)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.WaterWalkFromWaterfallCave, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted,
+                                    EntranceShuffle = false
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Flippers, 0),
+                                    (ItemType.MoonPearl, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.WaterWalkFromWaterfallCave, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
+                            },
+                            new object[]
+                            {
+                                type,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted,
+                                    EntranceShuffle = true
+                                },
+                                new (ItemType, int)[]
+                                {
+                                    (ItemType.Flippers, 0),
+                                    (ItemType.MoonPearl, 1)
+                                },
+                                new (PrizeType, int)[0],
+                                new (SequenceBreakType, bool)[]
+                                {
+                                    (SequenceBreakType.WaterWalkFromWaterfallCave, true)
+                                },
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
+                                AccessibilityLevel.SequenceBreak
                             }
                         };
                     }
@@ -9294,117 +10947,134 @@ namespace OpenTracker.UnitTests.Requirements
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
-                                new (ItemType, int)[0],
-                                new (SequenceBreakType, bool)[0],
-                                AccessibilityLevel.None
-                            },
-                            new object[]
-                            {
-                                type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
                                     (ItemType.Boots, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
                                     (ItemType.Boots, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
                                     (ItemType.Boots, 0)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
                                     (ItemType.Boots, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.None
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.StandardOpen,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.StandardOpen
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
                                     (ItemType.Boots, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Retro,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Retro
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 0),
                                     (ItemType.Boots, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             },
                             new object[]
                             {
                                 type,
-                                ItemPlacement.Advanced,
-                                DungeonItemShuffle.Standard,
-                                WorldState.Inverted,
-                                false,
+                                new ModeSaveData()
+                                {
+                                    WorldState = WorldState.Inverted
+                                },
                                 new (ItemType, int)[]
                                 {
                                     (ItemType.MoonPearl, 1),
                                     (ItemType.Boots, 1)
                                 },
+                                new (PrizeType, int)[0],
                                 new (SequenceBreakType, bool)[0],
+                                new (LocationID, int)[0],
+                                new (LocationID, int)[0],
+                                new RequirementNodeID[0],
                                 AccessibilityLevel.Normal
                             }
                         };
@@ -9628,7 +11298,7 @@ namespace OpenTracker.UnitTests.Requirements
                             }
                         };
                     }
-                case RequirementType.LWFakeFlippersScreenTransition:
+                case RequirementType.FakeFlippersScreenTransition:
                     {
                         return new List<object[]>
                         {
@@ -13059,7 +14729,7 @@ namespace OpenTracker.UnitTests.Requirements
                             }
                         };
                     }
-                case RequirementType.DWFakeFlippersQirnJump:
+                case RequirementType.FakeFlippersQirnJump:
                     {
                         return new List<object[]>
                         {
@@ -15326,7 +16996,7 @@ namespace OpenTracker.UnitTests.Requirements
                             }
                         };
                     }
-                case RequirementType.DWSpikeCave:
+                case RequirementType.SpikeCave:
                     {
                         return new List<object[]>
                         {

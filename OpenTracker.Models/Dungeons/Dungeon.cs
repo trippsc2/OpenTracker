@@ -818,21 +818,5 @@ namespace OpenTracker.Models.Dungeons
                 (Sections[i + 1] as IBossSection).Accessibility = highestBossAccessibilities[i];
             }
         }
-
-        /// <summary>
-        /// Returns the prize section of the dungeon.
-        /// </summary>
-        /// <returns>
-        /// The prize section.
-        /// </returns>
-        public IPrizeSection GetPrizeSection()
-        {
-            if (ID == LocationID.GanonsTower)
-            {
-                return (IPrizeSection)Sections[4];
-            }
-
-            return (IPrizeSection)Sections[1];
-        }
     }
 }

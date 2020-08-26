@@ -62,7 +62,7 @@ namespace OpenTracker.Models.Modes
             }
         }
 
-        private bool _entranceShuffle = false;
+        private bool _entranceShuffle;
         public bool EntranceShuffle
         {
             get => _entranceShuffle;
@@ -76,7 +76,7 @@ namespace OpenTracker.Models.Modes
             }
         }
 
-        private bool _bossShuffle = false;
+        private bool _bossShuffle;
         public bool BossShuffle
         {
             get => _bossShuffle;
@@ -90,7 +90,7 @@ namespace OpenTracker.Models.Modes
             }
         }
 
-        private bool _enemyShuffle = false;
+        private bool _enemyShuffle;
         public bool EnemyShuffle
         {
             get => _enemyShuffle;
@@ -104,7 +104,7 @@ namespace OpenTracker.Models.Modes
             }
         }
 
-        private bool _guaranteedBossItems = false;
+        private bool _guaranteedBossItems;
         public bool GuaranteedBossItems
         {
             get => _guaranteedBossItems;

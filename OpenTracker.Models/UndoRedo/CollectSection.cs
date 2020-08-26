@@ -65,7 +65,7 @@ namespace OpenTracker.Models.UndoRedo
 
             if (_previousMarking.HasValue)
             {
-                (_section as IMarkableSection).Marking.Mark = _previousMarking;
+                (_section as IMarkableSection).Marking.Mark = _previousMarking.Value;
             }
 
             _section.UserManipulated = _previousUserManipulated;

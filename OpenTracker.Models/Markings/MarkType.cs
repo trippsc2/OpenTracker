@@ -5,6 +5,7 @@
     /// </summary>
     public enum MarkType
     {
+        Unknown,
         HCFront,
         HCLeft,
         HCRight,

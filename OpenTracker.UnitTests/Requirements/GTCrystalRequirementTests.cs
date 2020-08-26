@@ -14,9 +14,10 @@ namespace OpenTracker.UnitTests.Requirements
         public void AccessibilityTests(int towerCrystals, int crystals, int redCrystals)
         {
             ItemDictionary.Instance.Reset();
+            PrizeDictionary.Instance.Reset();
             ItemDictionary.Instance[ItemType.TowerCrystals].Current = towerCrystals;
-            ItemDictionary.Instance[ItemType.Crystal].Current = crystals;
-            ItemDictionary.Instance[ItemType.RedCrystal].Current = redCrystals;
+            PrizeDictionary.Instance[PrizeType.Crystal].Current = crystals;
+            PrizeDictionary.Instance[PrizeType.RedCrystal].Current = redCrystals;
 
             AccessibilityLevel expected = towerCrystals + crystals + redCrystals >= 7 ?
                 AccessibilityLevel.Normal : AccessibilityLevel.None;
@@ -31,9 +32,9 @@ namespace OpenTracker.UnitTests.Requirements
 
             for (int i = 0; i < 8; i++)
             {
-                for (int j = 0; j < 8; j++)
+                for (int j = 0; j < 6; j++)
                 {
-                    for (int k = 0; k < 8; k++)
+                    for (int k = 0; k < 3; k++)
                     {
                         result.Add(new object[] { i, j, k });
                     }

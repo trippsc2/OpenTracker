@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.AutoTracking;
+using OpenTracker.Models.Locations;
 using System;
 using System.Collections.Generic;
 
@@ -32,12 +33,11 @@ namespace OpenTracker.Models.Items
         /// <returns>
         /// A 32-bit integer representing the maximum amount of the item.
         /// </returns>
-        private static int GetItemMaximum(ItemType type)
+        private static int? GetItemMaximum(ItemType type)
         {
             switch (type)
             {
                 case ItemType.Sword:
-                case ItemType.Crystal:
                     {
                         return 5;
                     }
@@ -54,8 +54,6 @@ namespace OpenTracker.Models.Items
                 case ItemType.Arrows:
                 case ItemType.Mushroom:
                 case ItemType.Gloves:
-                case ItemType.RedCrystal:
-                case ItemType.Pendant:
                 case ItemType.ATSmallKey:
                 case ItemType.IPSmallKey:
                     {
@@ -91,7 +89,6 @@ namespace OpenTracker.Models.Items
                 case ItemType.HalfMagic:
                 case ItemType.MoonPearl:
                 case ItemType.Aga2:
-                case ItemType.GreenPendant:
                 case ItemType.HCSmallKey:
                 case ItemType.DPSmallKey:
                 case ItemType.ToHSmallKey:
@@ -132,7 +129,7 @@ namespace OpenTracker.Models.Items
                     }
             }
 
-            return 0;
+            return null;
         }
 
         /// <summary>
@@ -144,7 +141,14 @@ namespace OpenTracker.Models.Items
         /// <returns></returns>
         private static IItem GetBaseItem(ItemType type)
         {
-            return new Item(type, GetItemStarting(type), GetItemMaximum(type));
+            int? maximum = GetItemMaximum(type);
+
+            if (maximum.HasValue)
+            {
+                return new CappedItem(GetItemStarting(type), maximum.Value);
+            }
+
+            return new Item(GetItemStarting(type));
         }
 
         /// <summary>
@@ -304,50 +308,6 @@ namespace OpenTracker.Models.Items
                 ItemType.MoonPearl => new List<(MemorySegmentType, int)>
                 {
                     (MemorySegmentType.Item, 23)
-                },
-                ItemType.EPBigKey => new List<(MemorySegmentType, int)>
-                {
-                    (MemorySegmentType.Item, 39)
-                },
-                ItemType.DPBigKey => new List<(MemorySegmentType, int)>
-                {
-                    (MemorySegmentType.Item, 39)
-                },
-                ItemType.ToHBigKey => new List<(MemorySegmentType, int)>
-                {
-                    (MemorySegmentType.Item, 38)
-                },
-                ItemType.PoDBigKey => new List<(MemorySegmentType, int)>
-                {
-                    (MemorySegmentType.Item, 39)
-                },
-                ItemType.SPBigKey => new List<(MemorySegmentType, int)>
-                {
-                    (MemorySegmentType.Item, 39)
-                },
-                ItemType.SWBigKey => new List<(MemorySegmentType, int)>
-                {
-                    (MemorySegmentType.Item, 38)
-                },
-                ItemType.TTBigKey => new List<(MemorySegmentType, int)>
-                {
-                    (MemorySegmentType.Item, 38)
-                },
-                ItemType.IPBigKey => new List<(MemorySegmentType, int)>
-                {
-                    (MemorySegmentType.Item, 38)
-                },
-                ItemType.MMBigKey => new List<(MemorySegmentType, int)>
-                {
-                    (MemorySegmentType.Item, 39)
-                },
-                ItemType.TRBigKey => new List<(MemorySegmentType, int)>
-                {
-                    (MemorySegmentType.Item, 38)
-                },
-                ItemType.GTBigKey => new List<(MemorySegmentType, int)>
-                {
-                    (MemorySegmentType.Item, 38)
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
@@ -801,7 +761,85 @@ namespace OpenTracker.Models.Items
 
                     return null;
                 },
-                ItemType.EPBigKey => (current) =>
+                _ => throw new ArgumentOutOfRangeException(nameof(type))
+            };
+        }
+
+        /// <summary>
+        /// Returns a list of memory addresses to which to subscribe.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID.
+        /// </param>
+        /// <returns>
+        /// A list of memory addresses to which to subscribe.
+        /// </returns>
+        private static List<(MemorySegmentType, int)> GetMemoryAddresses(LocationID id)
+        {
+            return id switch
+            {
+                LocationID.EasternPalace => new List<(MemorySegmentType, int)>
+                {
+                    (MemorySegmentType.Item, 39)
+                },
+                LocationID.DesertPalace => new List<(MemorySegmentType, int)>
+                {
+                    (MemorySegmentType.Item, 39)
+                },
+                LocationID.TowerOfHera => new List<(MemorySegmentType, int)>
+                {
+                    (MemorySegmentType.Item, 38)
+                },
+                LocationID.PalaceOfDarkness => new List<(MemorySegmentType, int)>
+                {
+                    (MemorySegmentType.Item, 39)
+                },
+                LocationID.SwampPalace => new List<(MemorySegmentType, int)>
+                {
+                    (MemorySegmentType.Item, 39)
+                },
+                LocationID.SkullWoods => new List<(MemorySegmentType, int)>
+                {
+                    (MemorySegmentType.Item, 38)
+                },
+                LocationID.ThievesTown => new List<(MemorySegmentType, int)>
+                {
+                    (MemorySegmentType.Item, 38)
+                },
+                LocationID.IcePalace => new List<(MemorySegmentType, int)>
+                {
+                    (MemorySegmentType.Item, 38)
+                },
+                LocationID.MiseryMire => new List<(MemorySegmentType, int)>
+                {
+                    (MemorySegmentType.Item, 39)
+                },
+                LocationID.TurtleRock => new List<(MemorySegmentType, int)>
+                {
+                    (MemorySegmentType.Item, 38)
+                },
+                LocationID.GanonsTower => new List<(MemorySegmentType, int)>
+                {
+                    (MemorySegmentType.Item, 38)
+                },
+                _ => throw new ArgumentOutOfRangeException(nameof(id))
+            };
+        }
+
+        /// <summary>
+        /// Returns the function for autotracking the specified item.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID.
+        /// </param>
+        /// <returns>
+        /// A function for autotracking the specified item.
+        /// </returns>
+        private static Func<int, int?> GetAutoTrackFunction(LocationID id)
+        {
+            return id switch
+            {
+                LocationID.EasternPalace => (current) =>
                 {
                     bool? result = AutoTracker.Instance
                         .CheckMemoryFlag(MemorySegmentType.Item, 39, 32);
@@ -813,7 +851,7 @@ namespace OpenTracker.Models.Items
 
                     return null;
                 },
-                ItemType.DPBigKey => (current) =>
+                LocationID.DesertPalace => (current) =>
                 {
                     bool? result = AutoTracker.Instance
                         .CheckMemoryFlag(MemorySegmentType.Item, 39, 16);
@@ -825,7 +863,7 @@ namespace OpenTracker.Models.Items
 
                     return null;
                 },
-                ItemType.ToHBigKey => (current) =>
+                LocationID.TowerOfHera => (current) =>
                 {
                     bool? result = AutoTracker.Instance
                         .CheckMemoryFlag(MemorySegmentType.Item, 38, 32);
@@ -837,7 +875,7 @@ namespace OpenTracker.Models.Items
 
                     return null;
                 },
-                ItemType.PoDBigKey => (current) =>
+                LocationID.PalaceOfDarkness => (current) =>
                 {
                     bool? result = AutoTracker.Instance
                         .CheckMemoryFlag(MemorySegmentType.Item, 39, 2);
@@ -849,7 +887,7 @@ namespace OpenTracker.Models.Items
 
                     return null;
                 },
-                ItemType.SPBigKey => (current) =>
+                LocationID.SwampPalace => (current) =>
                 {
                     bool? result = AutoTracker.Instance
                         .CheckMemoryFlag(MemorySegmentType.Item, 39, 4);
@@ -861,7 +899,7 @@ namespace OpenTracker.Models.Items
 
                     return null;
                 },
-                ItemType.SWBigKey => (current) =>
+                LocationID.SkullWoods => (current) =>
                 {
                     bool? result = AutoTracker.Instance
                         .CheckMemoryFlag(MemorySegmentType.Item, 38, 128);
@@ -873,7 +911,7 @@ namespace OpenTracker.Models.Items
 
                     return null;
                 },
-                ItemType.TTBigKey => (current) =>
+                LocationID.ThievesTown => (current) =>
                 {
                     bool? result = AutoTracker.Instance
                         .CheckMemoryFlag(MemorySegmentType.Item, 38, 16);
@@ -885,7 +923,7 @@ namespace OpenTracker.Models.Items
 
                     return null;
                 },
-                ItemType.IPBigKey => (current) =>
+                LocationID.IcePalace => (current) =>
                 {
                     bool? result = AutoTracker.Instance
                         .CheckMemoryFlag(MemorySegmentType.Item, 38, 64);
@@ -897,7 +935,7 @@ namespace OpenTracker.Models.Items
 
                     return null;
                 },
-                ItemType.MMBigKey => (current) =>
+                LocationID.MiseryMire => (current) =>
                 {
                     bool? result = AutoTracker.Instance
                         .CheckMemoryFlag(MemorySegmentType.Item, 39, 1);
@@ -909,7 +947,7 @@ namespace OpenTracker.Models.Items
 
                     return null;
                 },
-                ItemType.TRBigKey => (current) =>
+                LocationID.TurtleRock => (current) =>
                 {
                     bool? result = AutoTracker.Instance
                         .CheckMemoryFlag(MemorySegmentType.Item, 38, 8);
@@ -921,7 +959,7 @@ namespace OpenTracker.Models.Items
 
                     return null;
                 },
-                ItemType.GTBigKey => (current) =>
+                LocationID.GanonsTower => (current) =>
                 {
                     bool? result = AutoTracker.Instance
                         .CheckMemoryFlag(MemorySegmentType.Item, 38, 4);
@@ -933,7 +971,7 @@ namespace OpenTracker.Models.Items
 
                     return null;
                 },
-                _ => throw new ArgumentOutOfRangeException(nameof(type))
+                _ => throw new ArgumentOutOfRangeException(nameof(id))
             };
         }
 
@@ -985,17 +1023,6 @@ namespace OpenTracker.Models.Items
                 case ItemType.Mirror:
                 case ItemType.HalfMagic:
                 case ItemType.MoonPearl:
-                case ItemType.EPBigKey:
-                case ItemType.DPBigKey:
-                case ItemType.ToHBigKey:
-                case ItemType.PoDBigKey:
-                case ItemType.SPBigKey:
-                case ItemType.SWBigKey:
-                case ItemType.TTBigKey:
-                case ItemType.IPBigKey:
-                case ItemType.MMBigKey:
-                case ItemType.TRBigKey:
-                case ItemType.GTBigKey:
                     {
                         return new AutoTrackedItem(
                             GetBaseItem(type), GetAutoTrackFunction(type),
@@ -1006,6 +1033,12 @@ namespace OpenTracker.Models.Items
                         return GetBaseItem(type);
                     }
             }
-    }
+        }
+
+        public static IItem GetBigKeyItem(LocationID id)
+        {
+            return new AutoTrackedItem(
+                new CappedItem(0, 1), GetAutoTrackFunction(id), GetMemoryAddresses(id));
+        }
     }
 }

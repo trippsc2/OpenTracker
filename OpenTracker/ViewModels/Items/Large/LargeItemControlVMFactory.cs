@@ -1,5 +1,4 @@
-﻿using OpenTracker.Models.Dungeons;
-using OpenTracker.Models.Items;
+﻿using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Sections;
 using System;
@@ -43,12 +42,10 @@ namespace OpenTracker.ViewModels.Items.Large
         {
             IPrizeSection section = type switch
             {
-                ItemType.Aga1 =>
-                    ((IDungeon)LocationDictionary.Instance[LocationID.AgahnimTower])
-                        .GetPrizeSection(),
-                ItemType.Aga2 =>
-                    ((IDungeon)LocationDictionary.Instance[LocationID.GanonsTower])
-                        .GetPrizeSection(),
+                ItemType.Aga1 => (IPrizeSection)LocationDictionary
+                    .Instance[LocationID.AgahnimTower].Sections[1],
+                ItemType.Aga2 => (IPrizeSection)LocationDictionary
+                    .Instance[LocationID.GanonsTower].Sections[4],
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
 

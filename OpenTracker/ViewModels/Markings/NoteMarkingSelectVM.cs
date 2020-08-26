@@ -97,7 +97,7 @@ namespace OpenTracker.ViewModels.Markings
                 return;
             }
 
-            UndoRedoManager.Instance.Execute(new SetMarking(_marking, marking));
+            UndoRedoManager.Instance.Execute(new SetMarking(_marking, marking.Value));
             PopupOpen = false;
         }
     }

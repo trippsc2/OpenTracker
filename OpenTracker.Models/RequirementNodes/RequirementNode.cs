@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,39 @@ namespace OpenTracker.Models.RequirementNodes
     /// </summary>
     public class RequirementNode : IRequirementNode
     {
+        private readonly bool _start;
         private readonly RequirementNodeID _id;
         private readonly List<RequirementNodeConnection> _connections;
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private bool _alwaysAccessible;
+        public bool AlwaysAccessible
+        {
+            get => _alwaysAccessible;
+            set
+            {
+                if (_alwaysAccessible != value)
+                {
+                    _alwaysAccessible = value;
+                    UpdateAccessibility();
+                }
+            }
+        }
+
+        private int _exitsAccessible;
+        public int ExitsAccessible
+        {
+            get => _exitsAccessible;
+            set
+            {
+                if (_exitsAccessible != value)
+                {
+                    _exitsAccessible = value;
+                    UpdateAccessibility();
+                }
+            }
+        }
 
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
@@ -44,6 +74,8 @@ namespace OpenTracker.Models.RequirementNodes
         {
             _id = id;
             _connections = connections ?? new List<RequirementNodeConnection>(0);
+            _start = _id == RequirementNodeID.Start;
+            AlwaysAccessible = _start;
 
             RequirementNodeDictionary.Instance.NodeCreated += OnNodeCreated;
         }
@@ -137,14 +169,15 @@ namespace OpenTracker.Models.RequirementNodes
         /// </returns>
         public AccessibilityLevel GetNodeAccessibility(List<RequirementNodeID> excludedNodes)
         {
-            if (_id == RequirementNodeID.Start)
-            {
-                return AccessibilityLevel.Normal;
-            }
-
             if (excludedNodes == null)
             {
                 throw new ArgumentNullException(nameof(excludedNodes));
+            }
+
+            if (AlwaysAccessible ||
+                ExitsAccessible > 0 && Mode.Instance.EntranceShuffle)
+            {
+                return AccessibilityLevel.Normal;
             }
 
             List<RequirementNodeID> newExcludedNodes =
@@ -168,7 +201,7 @@ namespace OpenTracker.Models.RequirementNodes
                     RequirementNodeDictionary.Instance[connection.FromNode]
                     .GetNodeAccessibility(newExcludedNodes);
 
-                if (nodeAccessibility < AccessibilityLevel.SequenceBreak)
+                if (nodeAccessibility < AccessibilityLevel.Inspect)
                 {
                     continue;
                 }
@@ -191,6 +224,14 @@ namespace OpenTracker.Models.RequirementNodes
             }
 
             return finalAccessibility;
+        }
+
+        /// <summary>
+        /// Resets AlwaysAccessible property for testing purposes.
+        /// </summary>
+        public void Reset()
+        {
+            AlwaysAccessible = _start;
         }
     }
 }

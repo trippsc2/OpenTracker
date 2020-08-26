@@ -401,7 +401,7 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Resets the undo/redo manager, pinned locations, and game data to their starting values.
         /// </summary>
-        private void Reset()
+        private static void Reset()
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -419,7 +419,7 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Opens a reset dialog window.
         /// </summary>
-        private void OpenResetDialog()
+        private static void OpenResetDialog()
         {
             Dispatcher.UIThread.InvokeAsync(async () =>
             {

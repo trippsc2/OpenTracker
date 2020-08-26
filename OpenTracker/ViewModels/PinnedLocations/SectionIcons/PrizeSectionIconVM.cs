@@ -1,10 +1,12 @@
 ﻿using OpenTracker.Interfaces;
+using OpenTracker.Models.Items;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 
 namespace OpenTracker.ViewModels.PinnedLocations.SectionIcons
@@ -29,7 +31,10 @@ namespace OpenTracker.ViewModels.PinnedLocations.SectionIcons
                 }
                 else
                 {
-                    sb.Append(_section.PrizePlacement.Prize.Type.ToString().ToLowerInvariant());
+                    sb.Append(
+                        PrizeDictionary.Instance.FirstOrDefault(
+                            x => x.Value == _section.PrizePlacement.Prize).Key.ToString()
+                                .ToLowerInvariant());
                 }
 
                 sb.Append(_section.IsAvailable() ? "0.png" : "1.png");

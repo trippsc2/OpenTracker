@@ -1,10 +1,12 @@
 ﻿using OpenTracker.Models.AutoTracking;
 using OpenTracker.Models.BossPlacements;
+using OpenTracker.Models.Items;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Requirements;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace OpenTracker.Models.Sections
 {
@@ -13,6 +15,8 @@ namespace OpenTracker.Models.Sections
     /// </summary>
     public class PrizeSection : BossSection, IPrizeSection
     {
+        private readonly bool _alwaysClearable;
+
         private Func<int?> AutoTrackFunction { get; }
         public IPrizePlacement PrizePlacement { get; }
 
@@ -40,12 +44,14 @@ namespace OpenTracker.Models.Sections
         public PrizeSection(
             string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement,
             Func<int?> autoTrackFunction, List<(MemorySegmentType, int)> memoryAddresses,
-            IRequirement requirement = null) : base(name, bossPlacement, requirement)
+            bool alwaysClearable = false, IRequirement requirement = null) : base(name, bossPlacement, requirement)
         {
             if (memoryAddresses == null)
             {
                 throw new ArgumentNullException(nameof(memoryAddresses));
             }
+
+            _alwaysClearable = alwaysClearable;
 
             AutoTrackFunction = autoTrackFunction ??
                 throw new ArgumentNullException(nameof(autoTrackFunction));
@@ -199,8 +205,7 @@ namespace OpenTracker.Models.Sections
         /// </returns>
         public override bool CanBeCleared(bool force)
         {
-            if (IsAvailable() && PrizePlacement.Prize != null &&
-                PrizePlacement.Prize.Type == Items.ItemType.Aga2)
+            if (IsAvailable() && _alwaysClearable)
             {
                 return true;
             }

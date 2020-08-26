@@ -10,1710 +10,1524 @@ namespace OpenTracker.UnitTests.Requirements
     public class ItemRequirementTests
     {
         [Theory]
-        [MemberData(nameof(Sword_Data))]
-        [MemberData(nameof(Aga1_Data))]
-        [MemberData(nameof(Bow_Data))]
-        [MemberData(nameof(Boomerang_Data))]
-        [MemberData(nameof(RedBoomerang_Data))]
-        [MemberData(nameof(Hookshot_Data))]
-        [MemberData(nameof(Powder_Data))]
-        [MemberData(nameof(Mushroom_Data))]
-        [MemberData(nameof(Boots_Data))]
-        [MemberData(nameof(FireRod_Data))]
-        [MemberData(nameof(IceRod_Data))]
-        [MemberData(nameof(Bombos_Data))]
-        [MemberData(nameof(BombosDungeon_Data))]
-        [MemberData(nameof(Ether_Data))]
-        [MemberData(nameof(EtherDungeon_Data))]
-        [MemberData(nameof(Quake_Data))]
-        [MemberData(nameof(QuakeDungeon_Data))]
-        [MemberData(nameof(Gloves_Data))]
-        [MemberData(nameof(Lamp_Data))]
-        [MemberData(nameof(Hammer_Data))]
-        [MemberData(nameof(Flute_Data))]
-        [MemberData(nameof(Net_Data))]
-        [MemberData(nameof(Book_Data))]
-        [MemberData(nameof(Shovel_Data))]
-        [MemberData(nameof(Flippers_Data))]
-        [MemberData(nameof(Bottle_Data))]
-        [MemberData(nameof(CaneOfSomaria_Data))]
-        [MemberData(nameof(CaneOfByrna_Data))]
-        [MemberData(nameof(Cape_Data))]
-        [MemberData(nameof(Mirror_Data))]
-        [MemberData(nameof(HalfMagic_Data))]
-        [MemberData(nameof(MoonPearl_Data))]
-        [MemberData(nameof(Aga2_Data))]
-        [MemberData(nameof(RedCrystal_Data))]
-        [MemberData(nameof(Pendant_Data))]
-        [MemberData(nameof(GreenPendant_Data))]
+        [MemberData(nameof(Swordless))]
+        [MemberData(nameof(Sword1))]
+        [MemberData(nameof(Sword2))]
+        [MemberData(nameof(Sword3))]
+        [MemberData(nameof(Bow))]
+        [MemberData(nameof(Boomerang))]
+        [MemberData(nameof(RedBoomerang))]
+        [MemberData(nameof(Hookshot))]
+        [MemberData(nameof(Powder))]
+        [MemberData(nameof(Mushroom))]
+        [MemberData(nameof(Boots))]
+        [MemberData(nameof(FireRod))]
+        [MemberData(nameof(IceRod))]
+        [MemberData(nameof(Bombos))]
+        [MemberData(nameof(BombosMM))]
+        [MemberData(nameof(BombosTR))]
+        [MemberData(nameof(BombosBoth))]
+        [MemberData(nameof(Ether))]
+        [MemberData(nameof(EtherMM))]
+        [MemberData(nameof(EtherTR))]
+        [MemberData(nameof(EtherBoth))]
+        [MemberData(nameof(Quake))]
+        [MemberData(nameof(QuakeMM))]
+        [MemberData(nameof(QuakeTR))]
+        [MemberData(nameof(QuakeBoth))]
+        [MemberData(nameof(Gloves1))]
+        [MemberData(nameof(Gloves2))]
+        [MemberData(nameof(Lamp))]
+        [MemberData(nameof(Hammer))]
+        [MemberData(nameof(Flute))]
+        [MemberData(nameof(Net))]
+        [MemberData(nameof(Book))]
+        [MemberData(nameof(Shovel))]
+        [MemberData(nameof(NoFlippers))]
+        [MemberData(nameof(Flippers))]
+        [MemberData(nameof(Bottle))]
+        [MemberData(nameof(CaneOfSomaria))]
+        [MemberData(nameof(CaneOfByrna))]
+        [MemberData(nameof(Cape))]
+        [MemberData(nameof(Mirror))]
+        [MemberData(nameof(HalfMagic))]
+        [MemberData(nameof(MoonPearl))]
+        [MemberData(nameof(Aga1))]
+        [MemberData(nameof(Aga2))]
+        [MemberData(nameof(RedCrystal))]
+        [MemberData(nameof(Pendant))]
+        [MemberData(nameof(GreenPendant))]
         public void AccessibilityTests(
-            (ItemType, int)[] items, RequirementType type, AccessibilityLevel expected)
+            RequirementType type, (ItemType, int)[] items, (PrizeType, int)[] prizes,
+            AccessibilityLevel expected)
         {
             ItemDictionary.Instance.Reset();
+            PrizeDictionary.Instance.Reset();
 
             foreach (var item in items)
             {
                 ItemDictionary.Instance[item.Item1].Current = item.Item2;
             }
 
+            foreach (var prize in prizes)
+            {
+                PrizeDictionary.Instance[prize.Item1].Current = prize.Item2;
+            }
+
             Assert.Equal(expected, RequirementDictionary.Instance[type].Accessibility);
         }
 
-        public static IEnumerable<object[]> Sword_Data =>
+        public static IEnumerable<object[]> Swordless =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.Swordless,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Sword, 0)
-                    },
-                    RequirementType.Swordless,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Sword, 1)
                     },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
                     RequirementType.Swordless,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Sword, 2)
-                    },
-                    RequirementType.Swordless,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Sword, 3)
-                    },
-                    RequirementType.Swordless,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Sword, 4)
-                    },
-                    RequirementType.Swordless,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Sword, 5)
-                    },
-                    RequirementType.Swordless,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[0],
-                    RequirementType.Sword1,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Sword, 0)
                     },
-                    RequirementType.Sword1,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Sword, 1)
-                    },
-                    RequirementType.Sword1,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Sword, 2)
-                    },
-                    RequirementType.Sword1,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Sword, 3)
-                    },
-                    RequirementType.Sword1,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Sword, 4)
-                    },
-                    RequirementType.Sword1,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Sword, 5)
-                    },
-                    RequirementType.Sword1,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    new (ItemType, int)[0],
-                    RequirementType.Sword2,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Sword, 0)
-                    },
-                    RequirementType.Sword2,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Sword, 1)
-                    },
-                    RequirementType.Sword2,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Sword, 2)
-                    },
-                    RequirementType.Sword2,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Sword, 3)
-                    },
-                    RequirementType.Sword2,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Sword, 4)
-                    },
-                    RequirementType.Sword2,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Sword, 5)
-                    },
-                    RequirementType.Sword2,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    new (ItemType, int)[0],
-                    RequirementType.Sword3,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Sword, 0)
-                    },
-                    RequirementType.Sword3,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Sword, 1)
-                    },
-                    RequirementType.Sword3,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Sword, 2)
-                    },
-                    RequirementType.Sword3,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Sword, 3)
-                    },
-                    RequirementType.Sword3,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Sword, 4)
-                    },
-                    RequirementType.Sword3,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Sword, 5)
-                    },
-                    RequirementType.Sword3,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Aga1_Data =>
+        public static IEnumerable<object[]> Sword1 =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
-                    RequirementType.Aga1,
+                    RequirementType.Sword1,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Sword, 1)
+                    },
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.Sword1,
                     new (ItemType, int)[]
                     {
-                        (ItemType.Aga1, 0)
+                        (ItemType.Sword, 0)
                     },
-                    RequirementType.Aga1,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.Sword1,
                     new (ItemType, int)[]
                     {
-                        (ItemType.Aga1, 1)
+                        (ItemType.Sword, 2)
                     },
-                    RequirementType.Aga1,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Bow_Data =>
+        public static IEnumerable<object[]> Sword2 =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
+                    RequirementType.Sword2,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Sword, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.Sword2,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Sword, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.Sword2,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Sword, 2)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.Sword2,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Sword, 3)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> Sword3 =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    RequirementType.Sword3,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Sword, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.Sword3,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Sword, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.Sword3,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Sword, 2)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.Sword3,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Sword, 3)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.Sword3,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Sword, 4)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> Bow =>
+            new List<object[]>
+            {
+                new object[]
+                {
                     RequirementType.Bow,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Bow, 0)
                     },
-                    RequirementType.Bow,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.Bow,
                     new (ItemType, int)[]
                     {
                         (ItemType.Bow, 1)
                     },
-                    RequirementType.Bow,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Boomerang_Data =>
+        public static IEnumerable<object[]> Boomerang =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.Boomerang,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Boomerang, 0)
                     },
-                    RequirementType.Boomerang,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.Boomerang,
                     new (ItemType, int)[]
                     {
                         (ItemType.Boomerang, 1)
                     },
-                    RequirementType.Boomerang,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> RedBoomerang_Data =>
+        public static IEnumerable<object[]> RedBoomerang =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.RedBoomerang,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.RedBoomerang, 0)
                     },
-                    RequirementType.RedBoomerang,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.RedBoomerang,
                     new (ItemType, int)[]
                     {
                         (ItemType.RedBoomerang, 1)
                     },
-                    RequirementType.RedBoomerang,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Hookshot_Data =>
+        public static IEnumerable<object[]> Hookshot =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.Hookshot,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Hookshot, 0)
                     },
-                    RequirementType.Hookshot,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.Hookshot,
                     new (ItemType, int)[]
                     {
                         (ItemType.Hookshot, 1)
                     },
-                    RequirementType.Hookshot,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Powder_Data =>
+        public static IEnumerable<object[]> Powder =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.Powder,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Powder, 0)
                     },
-                    RequirementType.Powder,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.Powder,
                     new (ItemType, int)[]
                     {
                         (ItemType.Powder, 1)
                     },
-                    RequirementType.Powder,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Mushroom_Data =>
+        public static IEnumerable<object[]> Mushroom =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.Mushroom,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Mushroom, 0)
                     },
-                    RequirementType.Mushroom,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Mushroom, 1)
-                    },
                     RequirementType.Mushroom,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Mushroom, 2)
                     },
-                    RequirementType.Mushroom,
-                    AccessibilityLevel.None
-                }
-            };
-
-        public static IEnumerable<object[]> Boots_Data =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new (ItemType, int)[0],
-                    RequirementType.Boots,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.Mushroom,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Mushroom, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> Boots =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    RequirementType.Boots,
                     new (ItemType, int)[]
                     {
                         (ItemType.Boots, 0)
                     },
-                    RequirementType.Boots,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.Boots,
                     new (ItemType, int)[]
                     {
                         (ItemType.Boots, 1)
                     },
-                    RequirementType.Boots,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> FireRod_Data =>
+        public static IEnumerable<object[]> FireRod =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.FireRod,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.FireRod, 0)
                     },
-                    RequirementType.FireRod,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.FireRod,
                     new (ItemType, int)[]
                     {
                         (ItemType.FireRod, 1)
                     },
-                    RequirementType.FireRod,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> IceRod_Data =>
+        public static IEnumerable<object[]> IceRod =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.IceRod,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.IceRod, 0)
                     },
-                    RequirementType.IceRod,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.IceRod,
                     new (ItemType, int)[]
                     {
                         (ItemType.IceRod, 1)
                     },
-                    RequirementType.IceRod,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Bombos_Data =>
+        public static IEnumerable<object[]> Bombos =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.Bombos,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Bombos, 0)
                     },
-                    RequirementType.Bombos,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.Bombos,
                     new (ItemType, int)[]
                     {
                         (ItemType.Bombos, 1)
                     },
-                    RequirementType.Bombos,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> BombosDungeon_Data =>
+        public static IEnumerable<object[]> BombosMM =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.BombosMM,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.BombosDungeons, 0)
                     },
-                    RequirementType.BombosMM,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.BombosDungeons, 1)
-                    },
                     RequirementType.BombosMM,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.BombosDungeons, 2)
                     },
-                    RequirementType.BombosMM,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.BombosMM,
                     new (ItemType, int)[]
                     {
                         (ItemType.BombosDungeons, 3)
                     },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
                     RequirementType.BombosMM,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[0],
-                    RequirementType.BombosTR,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.BombosDungeons, 0)
-                    },
-                    RequirementType.BombosTR,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.BombosDungeons, 1)
                     },
-                    RequirementType.BombosTR,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.BombosDungeons, 2)
-                    },
-                    RequirementType.BombosTR,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.BombosDungeons, 3)
-                    },
-                    RequirementType.BombosTR,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[0],
-                    RequirementType.BombosBoth,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.BombosDungeons, 0)
-                    },
-                    RequirementType.BombosBoth,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.BombosDungeons, 1)
-                    },
-                    RequirementType.BombosBoth,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.BombosDungeons, 2)
-                    },
-                    RequirementType.BombosBoth,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.BombosDungeons, 3)
-                    },
-                    RequirementType.BombosBoth,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Ether_Data =>
+        public static IEnumerable<object[]> BombosTR =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
+                    RequirementType.BombosTR,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.BombosDungeons, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.BombosTR,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.BombosDungeons, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.BombosTR,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.BombosDungeons, 3)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.BombosTR,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.BombosDungeons, 2)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> BombosBoth =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    RequirementType.BombosBoth,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.BombosDungeons, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.BombosBoth,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.BombosDungeons, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.BombosBoth,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.BombosDungeons, 2)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.BombosBoth,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.BombosDungeons, 3)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> Ether =>
+            new List<object[]>
+            {
+                new object[]
+                {
                     RequirementType.Ether,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Ether, 0)
                     },
-                    RequirementType.Ether,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.Ether,
                     new (ItemType, int)[]
                     {
                         (ItemType.Ether, 1)
                     },
-                    RequirementType.Ether,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> EtherDungeon_Data =>
+        public static IEnumerable<object[]> EtherMM =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.EtherMM,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.EtherDungeons, 0)
                     },
-                    RequirementType.EtherMM,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.EtherDungeons, 1)
-                    },
                     RequirementType.EtherMM,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.EtherDungeons, 2)
                     },
-                    RequirementType.EtherMM,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.EtherMM,
                     new (ItemType, int)[]
                     {
                         (ItemType.EtherDungeons, 3)
                     },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
                     RequirementType.EtherMM,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[0],
-                    RequirementType.EtherTR,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.EtherDungeons, 0)
-                    },
-                    RequirementType.EtherTR,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.EtherDungeons, 1)
                     },
-                    RequirementType.EtherTR,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.EtherDungeons, 2)
-                    },
-                    RequirementType.EtherTR,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.EtherDungeons, 3)
-                    },
-                    RequirementType.EtherTR,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[0],
-                    RequirementType.EtherBoth,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.EtherDungeons, 0)
-                    },
-                    RequirementType.EtherBoth,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.EtherDungeons, 1)
-                    },
-                    RequirementType.EtherBoth,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.EtherDungeons, 2)
-                    },
-                    RequirementType.EtherBoth,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.EtherDungeons, 3)
-                    },
-                    RequirementType.EtherBoth,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Quake_Data =>
+        public static IEnumerable<object[]> EtherTR =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
+                    RequirementType.EtherTR,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.EtherDungeons, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.EtherTR,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.EtherDungeons, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.EtherTR,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.EtherDungeons, 3)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.EtherTR,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.EtherDungeons, 2)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> EtherBoth =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    RequirementType.EtherBoth,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.EtherDungeons, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.EtherBoth,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.EtherDungeons, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.EtherBoth,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.EtherDungeons, 2)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.EtherBoth,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.EtherDungeons, 3)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> Quake =>
+            new List<object[]>
+            {
+                new object[]
+                {
                     RequirementType.Quake,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Quake, 0)
                     },
-                    RequirementType.Quake,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.Quake,
                     new (ItemType, int)[]
                     {
                         (ItemType.Quake, 1)
                     },
-                    RequirementType.Quake,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> QuakeDungeon_Data =>
+        public static IEnumerable<object[]> QuakeMM =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.QuakeMM,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.QuakeDungeons, 0)
                     },
-                    RequirementType.QuakeMM,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.QuakeDungeons, 1)
-                    },
                     RequirementType.QuakeMM,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.QuakeDungeons, 2)
                     },
-                    RequirementType.QuakeMM,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.QuakeMM,
                     new (ItemType, int)[]
                     {
                         (ItemType.QuakeDungeons, 3)
                     },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
                     RequirementType.QuakeMM,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[0],
-                    RequirementType.QuakeTR,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.QuakeDungeons, 0)
-                    },
-                    RequirementType.QuakeTR,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.QuakeDungeons, 1)
                     },
-                    RequirementType.QuakeTR,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.QuakeDungeons, 2)
-                    },
-                    RequirementType.QuakeTR,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.QuakeDungeons, 3)
-                    },
-                    RequirementType.QuakeTR,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[0],
-                    RequirementType.QuakeBoth,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.QuakeDungeons, 0)
-                    },
-                    RequirementType.QuakeBoth,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.QuakeDungeons, 1)
-                    },
-                    RequirementType.QuakeBoth,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.QuakeDungeons, 2)
-                    },
-                    RequirementType.QuakeBoth,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.QuakeDungeons, 3)
-                    },
-                    RequirementType.QuakeBoth,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Gloves_Data =>
+        public static IEnumerable<object[]> QuakeTR =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
+                    RequirementType.QuakeTR,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.QuakeDungeons, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.QuakeTR,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.QuakeDungeons, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.QuakeTR,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.QuakeDungeons, 3)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.QuakeTR,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.QuakeDungeons, 2)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> QuakeBoth =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    RequirementType.QuakeBoth,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.QuakeDungeons, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.QuakeBoth,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.QuakeDungeons, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.QuakeBoth,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.QuakeDungeons, 2)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.QuakeBoth,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.QuakeDungeons, 3)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> Gloves1 =>
+            new List<object[]>
+            {
+                new object[]
+                {
                     RequirementType.Gloves1,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Gloves, 0)
                     },
-                    RequirementType.Gloves1,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.Gloves1,
                     new (ItemType, int)[]
                     {
                         (ItemType.Gloves, 1)
                     },
-                    RequirementType.Gloves1,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Gloves, 2)
-                    },
-                    RequirementType.Gloves1,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    new (ItemType, int)[0],
-                    RequirementType.Gloves2,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Gloves, 0)
-                    },
-                    RequirementType.Gloves2,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Gloves, 1)
-                    },
-                    RequirementType.Gloves2,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Gloves, 2)
-                    },
-                    RequirementType.Gloves2,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Lamp_Data =>
+        public static IEnumerable<object[]> Gloves2 =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
+                    RequirementType.Gloves2,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Gloves, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.Gloves2,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Gloves, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.Gloves2,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Gloves, 2)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> Lamp =>
+            new List<object[]>
+            {
+                new object[]
+                {
                     RequirementType.Lamp,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Lamp, 0)
                     },
-                    RequirementType.Lamp,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.Lamp,
                     new (ItemType, int)[]
                     {
                         (ItemType.Lamp, 1)
                     },
-                    RequirementType.Lamp,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Hammer_Data =>
+        public static IEnumerable<object[]> Hammer =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.Hammer,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Hammer, 0)
                     },
-                    RequirementType.Hammer,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.Hammer,
                     new (ItemType, int)[]
                     {
                         (ItemType.Hammer, 1)
                     },
-                    RequirementType.Hammer,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Flute_Data =>
+        public static IEnumerable<object[]> Flute =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.Flute,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Flute, 0)
                     },
-                    RequirementType.Flute,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.Flute,
                     new (ItemType, int)[]
                     {
                         (ItemType.Flute, 1)
                     },
-                    RequirementType.Flute,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Net_Data =>
+        public static IEnumerable<object[]> Net =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.Net,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Net, 0)
                     },
-                    RequirementType.Net,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.Net,
                     new (ItemType, int)[]
                     {
                         (ItemType.Net, 1)
                     },
-                    RequirementType.Net,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Book_Data =>
+        public static IEnumerable<object[]> Book =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.Book,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Book, 0)
                     },
-                    RequirementType.Book,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.Book,
                     new (ItemType, int)[]
                     {
                         (ItemType.Book, 1)
                     },
-                    RequirementType.Book,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Shovel_Data =>
+        public static IEnumerable<object[]> Shovel =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.Shovel,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Shovel, 0)
                     },
-                    RequirementType.Shovel,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.Shovel,
                     new (ItemType, int)[]
                     {
                         (ItemType.Shovel, 1)
                     },
-                    RequirementType.Shovel,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Flippers_Data =>
+        public static IEnumerable<object[]> NoFlippers =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.NoFlippers,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Flippers, 0)
-                    },
-                    RequirementType.NoFlippers,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Flippers, 1)
                     },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
                     RequirementType.NoFlippers,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[0],
-                    RequirementType.Flippers,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Flippers, 0)
                     },
-                    RequirementType.Flippers,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Flippers, 1)
-                    },
-                    RequirementType.Flippers,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Bottle_Data =>
+        public static IEnumerable<object[]> Flippers =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
+                    RequirementType.Flippers,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Flippers, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.Flippers,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Flippers, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> Bottle =>
+            new List<object[]>
+            {
+                new object[]
+                {
                     RequirementType.Bottle,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Bottle, 0)
                     },
-                    RequirementType.Bottle,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.Bottle,
                     new (ItemType, int)[]
                     {
                         (ItemType.Bottle, 1)
                     },
-                    RequirementType.Bottle,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> CaneOfSomaria_Data =>
+        public static IEnumerable<object[]> CaneOfSomaria =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.CaneOfSomaria,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.CaneOfSomaria, 0)
                     },
-                    RequirementType.CaneOfSomaria,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.CaneOfSomaria,
                     new (ItemType, int)[]
                     {
                         (ItemType.CaneOfSomaria, 1)
                     },
-                    RequirementType.CaneOfSomaria,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> CaneOfByrna_Data =>
+        public static IEnumerable<object[]> CaneOfByrna =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.CaneOfByrna,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.CaneOfByrna, 0)
                     },
-                    RequirementType.CaneOfByrna,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.CaneOfByrna,
                     new (ItemType, int)[]
                     {
                         (ItemType.CaneOfByrna, 1)
                     },
-                    RequirementType.CaneOfByrna,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Cape_Data =>
+        public static IEnumerable<object[]> Cape =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.Cape,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Cape, 0)
                     },
-                    RequirementType.Cape,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.Cape,
                     new (ItemType, int)[]
                     {
                         (ItemType.Cape, 1)
                     },
-                    RequirementType.Cape,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Mirror_Data =>
+        public static IEnumerable<object[]> Mirror =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.Mirror,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.Mirror, 0)
                     },
-                    RequirementType.Mirror,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.Mirror,
                     new (ItemType, int)[]
                     {
                         (ItemType.Mirror, 1)
                     },
-                    RequirementType.Mirror,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> HalfMagic_Data =>
+        public static IEnumerable<object[]> HalfMagic =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.HalfMagic,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.HalfMagic, 0)
                     },
-                    RequirementType.HalfMagic,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.HalfMagic,
                     new (ItemType, int)[]
                     {
                         (ItemType.HalfMagic, 1)
                     },
-                    RequirementType.HalfMagic,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> MoonPearl_Data =>
+        public static IEnumerable<object[]> MoonPearl =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new (ItemType, int)[0],
                     RequirementType.MoonPearl,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     new (ItemType, int)[]
                     {
                         (ItemType.MoonPearl, 0)
                     },
-                    RequirementType.MoonPearl,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    RequirementType.MoonPearl,
                     new (ItemType, int)[]
                     {
                         (ItemType.MoonPearl, 1)
                     },
-                    RequirementType.MoonPearl,
+                    new (PrizeType, int)[0],
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Aga2_Data =>
+        public static IEnumerable<object[]> Aga1 =>
             new List<object[]>
             {
                 new object[]
                 {
+                    RequirementType.Aga1,
                     new (ItemType, int)[0],
-                    RequirementType.Aga2,
+                    new (PrizeType, int)[]
+                    {
+                        (PrizeType.Aga1, 0)
+                    },
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    new (ItemType, int)[]
+                    RequirementType.Aga1,
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[]
                     {
-                        (ItemType.Aga2, 0)
+                        (PrizeType.Aga1, 1)
                     },
-                    RequirementType.Aga2,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Aga2, 1)
-                    },
-                    RequirementType.Aga2,
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> RedCrystal_Data =>
+        public static IEnumerable<object[]> Aga2 =>
             new List<object[]>
             {
                 new object[]
                 {
+                    RequirementType.Aga2,
                     new (ItemType, int)[0],
-                    RequirementType.RedCrystal,
+                    new (PrizeType, int)[]
+                    {
+                        (PrizeType.Aga2, 0)
+                    },
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    new (ItemType, int)[]
+                    RequirementType.Aga2,
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[]
                     {
-                        (ItemType.RedCrystal, 0)
+                        (PrizeType.Aga2, 1)
                     },
-                    RequirementType.RedCrystal,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.RedCrystal, 1)
-                    },
-                    RequirementType.RedCrystal,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.RedCrystal, 2)
-                    },
-                    RequirementType.RedCrystal,
                     AccessibilityLevel.Normal
-                },
+                }
             };
 
-        public static IEnumerable<object[]> Pendant_Data =>
+        public static IEnumerable<object[]> RedCrystal =>
             new List<object[]>
             {
                 new object[]
                 {
+                    RequirementType.RedCrystal,
                     new (ItemType, int)[0],
-                    RequirementType.Pendant,
+                    new (PrizeType, int)[]
+                    {
+                        (PrizeType.RedCrystal, 0)
+                    },
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    new (ItemType, int)[]
+                    RequirementType.RedCrystal,
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[]
                     {
-                        (ItemType.Pendant, 0)
+                        (PrizeType.RedCrystal, 1)
                     },
-                    RequirementType.Pendant,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    new (ItemType, int)[]
+                    RequirementType.RedCrystal,
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[]
                     {
-                        (ItemType.Pendant, 1)
+                        (PrizeType.RedCrystal, 2)
                     },
-                    RequirementType.Pendant,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.Pendant, 2)
-                    },
-                    RequirementType.Pendant,
                     AccessibilityLevel.Normal
-                },
+                }
             };
 
-        public static IEnumerable<object[]> GreenPendant_Data =>
+        public static IEnumerable<object[]> Pendant =>
             new List<object[]>
             {
                 new object[]
                 {
+                    RequirementType.Pendant,
                     new (ItemType, int)[0],
-                    RequirementType.GreenPendant,
+                    new (PrizeType, int)[]
+                    {
+                        (PrizeType.Pendant, 0)
+                    },
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    new (ItemType, int)[]
+                    RequirementType.Pendant,
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[]
                     {
-                        (ItemType.GreenPendant, 0)
+                        (PrizeType.Pendant, 1)
                     },
-                    RequirementType.GreenPendant,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    new (ItemType, int)[]
+                    RequirementType.Pendant,
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[]
                     {
-                        (ItemType.GreenPendant, 1)
+                        (PrizeType.Pendant, 2)
                     },
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> GreenPendant =>
+            new List<object[]>
+            {
+                new object[]
+                {
                     RequirementType.GreenPendant,
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[]
+                    {
+                        (PrizeType.GreenPendant, 0)
+                    },
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.GreenPendant,
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[]
+                    {
+                        (PrizeType.GreenPendant, 1)
+                    },
                     AccessibilityLevel.Normal
                 }
             };

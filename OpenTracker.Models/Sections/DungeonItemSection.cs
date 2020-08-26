@@ -1,19 +1,11 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Dungeons;
-using OpenTracker.Models.Items;
-using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
-using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace OpenTracker.Models.Sections
 {

@@ -15,10 +15,6 @@ namespace OpenTracker.Models.Items
 
         private Func<int, int?> AutoTrackFunction { get; }
 
-        public ItemType Type =>
-            _item.Type;
-        public int Maximum =>
-            _item.Maximum;
         public int Current
         {
             get => _item.Current;
@@ -89,7 +85,7 @@ namespace OpenTracker.Models.Items
 
             if (result.HasValue)
             {
-                Current = Math.Min(Maximum, result.Value);
+                Current = result.Value;
             }
         }
 

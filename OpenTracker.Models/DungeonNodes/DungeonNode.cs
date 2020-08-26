@@ -25,6 +25,20 @@ namespace OpenTracker.Models.DungeonNodes
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private bool _alwaysAccessible;
+        public bool AlwaysAccessible
+        {
+            get => _alwaysAccessible;
+            set
+            {
+                if (_alwaysAccessible != value)
+                {
+                    _alwaysAccessible = value;
+                    UpdateAccessibility();
+                }
+            }
+        }
+
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
         {
@@ -306,9 +320,13 @@ namespace OpenTracker.Models.DungeonNodes
         /// <returns>
         /// The accessibility of the node.
         /// </returns>
-        public AccessibilityLevel GetNodeAccessibility(
-            List<DungeonNodeID> excludedNodes)
+        public AccessibilityLevel GetNodeAccessibility(List<DungeonNodeID> excludedNodes)
         {
+            if (AlwaysAccessible)
+            {
+                return AccessibilityLevel.Normal;
+            }
+
             if (excludedNodes == null)
             {
                 throw new ArgumentNullException(nameof(excludedNodes));
