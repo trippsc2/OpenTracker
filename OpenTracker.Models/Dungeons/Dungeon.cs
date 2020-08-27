@@ -26,7 +26,6 @@ namespace OpenTracker.Models.Dungeons
     {
         private readonly List<IRequirement> _subscribedRequirements =
             new List<IRequirement>();
-        private readonly List<DungeonNodeID> _nodes;
 
         public event EventHandler<IMutableDungeon> DungeonDataCreated;
 
@@ -43,6 +42,7 @@ namespace OpenTracker.Models.Dungeons
         public List<KeyDoorID> SmallKeyDoors { get; }
         public List<KeyDoorID> BigKeyDoors { get; }
         public List<IKeyLayout> KeyLayouts { get; }
+        public List<DungeonNodeID> Nodes { get; }
         public ConcurrentQueue<IMutableDungeon> DungeonDataQueue { get; } =
             new ConcurrentQueue<IMutableDungeon>();
 
@@ -104,7 +104,7 @@ namespace OpenTracker.Models.Dungeons
             BigKey = bigKey;
             SmallKeyItem = smallKeyItem;
             BigKeyItem = bigKeyItem;
-            _nodes = nodes ?? throw new ArgumentNullException(nameof(nodes));
+            Nodes = nodes ?? throw new ArgumentNullException(nameof(nodes));
             Items = items ?? throw new ArgumentNullException(nameof(items));
             Bosses = bosses ?? throw new ArgumentNullException(nameof(bosses));
             SmallKeyDoors = smallKeyDoors ?? throw new ArgumentNullException(nameof(smallKeyDoors));
@@ -249,7 +249,7 @@ namespace OpenTracker.Models.Dungeons
         {
             var subscribedNodes = new List<IRequirementNode>();
 
-            foreach (var node in _nodes)
+            foreach (var node in Nodes)
             {
                 foreach (var connection in DungeonNodeFactory.GetDungeonEntryConnections(node))
                 {
@@ -276,7 +276,7 @@ namespace OpenTracker.Models.Dungeons
         /// </summary>
         private void SubscribeToConnectionRequirements()
         {
-            foreach (var node in _nodes)
+            foreach (var node in Nodes)
             {
                 foreach (var connection in DungeonNodeFactory.GetDungeonConnections(node))
                 {

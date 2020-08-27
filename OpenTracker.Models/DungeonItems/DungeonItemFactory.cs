@@ -212,9 +212,6 @@ namespace OpenTracker.Models.DungeonItems
                         return dungeonData.RequirementNodes[DungeonNodeID.SWBigChest];
                     }
                 case DungeonItemID.SWPotPrison:
-                    {
-                        return dungeonData.RequirementNodes[DungeonNodeID.SWFrontLeftSide];
-                    }
                 case DungeonItemID.SWCompassChest:
                     {
                         return dungeonData.RequirementNodes[DungeonNodeID.SWFrontLeftSide];
@@ -418,7 +415,7 @@ namespace OpenTracker.Models.DungeonItems
                     }
                 case DungeonItemID.GTMoldormChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.GT6FPastBossRoomGap];
+                        return dungeonData.RequirementNodes[DungeonNodeID.GTBoss3Item];
                     }
                 case DungeonItemID.GTBoss1:
                     {
