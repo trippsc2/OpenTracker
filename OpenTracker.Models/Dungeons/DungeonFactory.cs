@@ -496,6 +496,7 @@ namespace OpenTracker.Models.Dungeons
                 LocationID.TurtleRock => new List<DungeonNodeID>
                 {
                     DungeonNodeID.TRFront,
+                    DungeonNodeID.TRF1SomariaTrack,
                     DungeonNodeID.TRF1CompassChestArea,
                     DungeonNodeID.TRF1FourTorchRoom,
                     DungeonNodeID.TRF1RollerRoom,
@@ -551,6 +552,7 @@ namespace OpenTracker.Models.Dungeons
                     DungeonNodeID.GT6FPastFirstKeyDoor,
                     DungeonNodeID.GT6FBossRoom,
                     DungeonNodeID.GTBoss3,
+                    DungeonNodeID.GTBoss3Item,
                     DungeonNodeID.GT6FPastBossRoomGap,
                     DungeonNodeID.GTFinalBossRoom,
                     DungeonNodeID.GTFinalBoss

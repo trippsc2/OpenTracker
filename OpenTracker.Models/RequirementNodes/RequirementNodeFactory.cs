@@ -1648,10 +1648,10 @@ namespace OpenTracker.Models.RequirementNodes
                 RequirementNodeID.GanonsTowerEntrance => new List<RequirementNodeConnection>
                 {
                     new RequirementNodeConnection(
-                        RequirementNodeID.DarkDeathMountainTopInverted,
-                        RequirementDictionary.Instance[RequirementType.GTCrystal]),
+                        RequirementNodeID.DarkDeathMountainTopInverted),
                     new RequirementNodeConnection(
-                        RequirementNodeID.DarkDeathMountainTopNonInverted)
+                        RequirementNodeID.DarkDeathMountainTopNonInverted,
+                        RequirementDictionary.Instance[RequirementType.GTCrystal])
                 },
                 RequirementNodeID.GanonsTowerEntranceNonInverted =>
                     new List<RequirementNodeConnection>

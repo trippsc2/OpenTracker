@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.DungeonItems;
+using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.KeyLayouts;
@@ -27,6 +28,7 @@ namespace OpenTracker.Models.Dungeons
         List<KeyDoorID> SmallKeyDoors { get; }
         List<KeyDoorID> BigKeyDoors { get; }
         ConcurrentQueue<IMutableDungeon> DungeonDataQueue { get; }
+        List<DungeonNodeID> Nodes { get; }
 
         event EventHandler<IMutableDungeon> DungeonDataCreated;
     }

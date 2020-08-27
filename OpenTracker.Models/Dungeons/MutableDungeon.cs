@@ -76,6 +76,11 @@ namespace OpenTracker.Models.Dungeons
                     BossItems.Add(ItemDictionary[boss]);
                 }
 
+                foreach (DungeonNodeID node in _dungeon.Nodes)
+                {
+                    _ = RequirementNodes[node];
+                }
+
                 _dungeon.DungeonDataCreated -= OnDungeonDataCreated;
             }
         }

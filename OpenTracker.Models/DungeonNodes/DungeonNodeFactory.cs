@@ -477,15 +477,7 @@ namespace OpenTracker.Models.DungeonNodes
 						{
 							new DungeonNodeConnection(
 								DungeonNodeID.PoDPastFirstRedGoriyaRoom,
-								RequirementDictionary.Instance[RequirementType.Hammer]),
-							new DungeonNodeConnection(DungeonNodeID.PoDBigKeyChestArea),
-							new DungeonNodeConnection(DungeonNodeID.PoDHarmlessHellwayRoom),
-							new DungeonNodeConnection(
-								DungeonNodeID.PoDPastSecondRedGoriyaRoom,
-								RequirementDictionary.Instance[RequirementType.RedEyegoreGoriya]),
-							new DungeonNodeConnection(
-								DungeonNodeID.PoDPastSecondRedGoriyaRoom,
-								RequirementDictionary.Instance[RequirementType.SBMimicClip])
+								RequirementDictionary.Instance[RequirementType.Hammer])
 						};
 					}
 				case DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor:
@@ -542,10 +534,7 @@ namespace OpenTracker.Models.DungeonNodes
 								RequirementDictionary.Instance[RequirementType.RedEyegoreGoriya]),
 							new DungeonNodeConnection(
 								DungeonNodeID.PoDLobbyArena,
-								RequirementDictionary.Instance[RequirementType.SBMimicClip]),
-							new DungeonNodeConnection(
-								DungeonNodeID.PoDPastBowStatue,
-								RequirementDictionary.Instance[RequirementType.Bow])
+								RequirementDictionary.Instance[RequirementType.SBMimicClip])
 						};
 					}
 				case DungeonNodeID.PoDPastBowStatue:
@@ -554,8 +543,7 @@ namespace OpenTracker.Models.DungeonNodes
 						{
 							new DungeonNodeConnection(
 								DungeonNodeID.PoDPastSecondRedGoriyaRoom,
-								RequirementDictionary.Instance[RequirementType.Bow]),
-							new DungeonNodeConnection(DungeonNodeID.PoDBossAreaDarkRooms)
+								RequirementDictionary.Instance[RequirementType.Bow])
 						};
 					}
 				case DungeonNodeID.PoDBossAreaDarkRooms:
@@ -564,10 +552,7 @@ namespace OpenTracker.Models.DungeonNodes
 						{
 							new DungeonNodeConnection(
 								DungeonNodeID.PoDPastBowStatue,
-								RequirementDictionary.Instance[RequirementType.DarkRoomPoDBossArea]),
-							new DungeonNodeConnection(
-								DungeonNodeID.PoDPastHammerBlocks,
-								RequirementDictionary.Instance[RequirementType.Hammer])
+								RequirementDictionary.Instance[RequirementType.DarkRoomPoDBossArea])
 						};
 					}
 				case DungeonNodeID.PoDPastHammerBlocks:
@@ -588,15 +573,6 @@ namespace OpenTracker.Models.DungeonNodes
 								RequirementDictionary.Instance[RequirementType.PoDBoss])
 						};
 					}
-				case DungeonNodeID.SP:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.SPAfterRiver,
-								RequirementDictionary.Instance[RequirementType.Flippers])
-						};
-					}
 				case DungeonNodeID.SPAfterRiver:
 					{
 						return new List<DungeonNodeConnection>
@@ -606,21 +582,13 @@ namespace OpenTracker.Models.DungeonNodes
 								RequirementDictionary.Instance[RequirementType.Flippers])
 						};
 					}
-				case DungeonNodeID.SPB1PastSecondRightKeyDoor:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.SPB1PastRightHammerBlocks)
-						};
-					}
 				case DungeonNodeID.SPB1PastRightHammerBlocks:
 					{
 						return new List<DungeonNodeConnection>
 						{
 							new DungeonNodeConnection(
 								DungeonNodeID.SPB1PastSecondRightKeyDoor,
-								RequirementDictionary.Instance[RequirementType.Hammer]),
-							new DungeonNodeConnection(DungeonNodeID.SPB1KeyLedge)
+								RequirementDictionary.Instance[RequirementType.Hammer])
 						};
 					}
 				case DungeonNodeID.SPB1KeyLedge:
@@ -676,21 +644,13 @@ namespace OpenTracker.Models.DungeonNodes
                             new DungeonNodeConnection(DungeonNodeID.SWFrontLeftSide)
                         };
                     }
-				case DungeonNodeID.SWBackPastFirstKeyDoor:
-                    {
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.SWBackPastFourTorchRoom)
-						};
-                    }
 				case DungeonNodeID.SWBackPastFourTorchRoom:
 					{
 						return new List<DungeonNodeConnection>
 						{
 							new DungeonNodeConnection(
 								DungeonNodeID.SWBackPastFirstKeyDoor,
-								RequirementDictionary.Instance[RequirementType.FireRod]),
-							new DungeonNodeConnection(DungeonNodeID.SWBackPastCurtains)
+								RequirementDictionary.Instance[RequirementType.FireRod])
 						};
 					}
 				case DungeonNodeID.SWBackPastCurtains:
@@ -709,15 +669,6 @@ namespace OpenTracker.Models.DungeonNodes
 							new DungeonNodeConnection(
 								DungeonNodeID.SWBossRoom,
 								RequirementDictionary.Instance[RequirementType.SWBoss])
-						};
-					}
-				case DungeonNodeID.TTPastBigChestRoomKeyDoor:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.TTPastHammerBlocks,
-								RequirementDictionary.Instance[RequirementType.Hammer])
 						};
 					}
 				case DungeonNodeID.TTPastHammerBlocks:
@@ -746,13 +697,6 @@ namespace OpenTracker.Models.DungeonNodes
 						return new List<DungeonNodeConnection>
 						{
 							new DungeonNodeConnection(DungeonNodeID.TTBossRoom)
-						};
-					}
-				case DungeonNodeID.IP:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.IPPastEntranceFreezorRoom)
 						};
 					}
 				case DungeonNodeID.IPPastEntranceFreezorRoom:
@@ -827,10 +771,12 @@ namespace OpenTracker.Models.DungeonNodes
 							new DungeonNodeConnection(DungeonNodeID.IPSpikeRoom),
 							new DungeonNodeConnection(
 								DungeonNodeID.IPB4IceRoom,
-								RequirementDictionary.Instance[RequirementType.Hookshot]),
-							new DungeonNodeConnection(
-								DungeonNodeID.IPB4IceRoom,
-								RequirementDictionary.Instance[RequirementType.BombJumpIPHookshotGap])
+								new AlternativeRequirement(new List<IRequirement>
+								{
+									RequirementDictionary.Instance[RequirementType.Hookshot],
+									RequirementDictionary.Instance[RequirementType.BombJumpIPHookshotGap],
+									RequirementDictionary.Instance[RequirementType.Hover]
+								}))
 						};
 					}
 				case DungeonNodeID.IPB4IceRoom:
@@ -839,7 +785,11 @@ namespace OpenTracker.Models.DungeonNodes
 						{
 							new DungeonNodeConnection(
 								DungeonNodeID.IPB4FreezorRoom,
-								RequirementDictionary.Instance[RequirementType.BombJumpIPFreezorRoomGap]),
+								new AlternativeRequirement(new List<IRequirement>
+								{
+									RequirementDictionary.Instance[RequirementType.BombJumpIPFreezorRoomGap],
+									RequirementDictionary.Instance[RequirementType.Hover]
+								})),
 							new DungeonNodeConnection(DungeonNodeID.IPB2PastKeyDoor)
 						};
 					}
@@ -938,19 +888,6 @@ namespace OpenTracker.Models.DungeonNodes
 								RequirementDictionary.Instance[RequirementType.IPBoss])
 						};
 					}
-				case DungeonNodeID.MM:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.MMPastEntranceGap,
-								new AlternativeRequirement(new List<IRequirement>
-                                {
-									RequirementDictionary.Instance[RequirementType.Hookshot],
-									RequirementDictionary.Instance[RequirementType.BonkOverLedge]
-								}))
-						};
-					}
 				case DungeonNodeID.MMPastEntranceGap:
 					{
 						return new List<DungeonNodeConnection>
@@ -961,8 +898,7 @@ namespace OpenTracker.Models.DungeonNodes
 								{
 									RequirementDictionary.Instance[RequirementType.Hookshot],
 									RequirementDictionary.Instance[RequirementType.BonkOverLedge]
-								})),
-							new DungeonNodeConnection(DungeonNodeID.MMB1PastFourTorchRoom)
+								}))
 						};
 					}
 				case DungeonNodeID.MMB1TopSide:
@@ -986,13 +922,6 @@ namespace OpenTracker.Models.DungeonNodes
 						{
 							new DungeonNodeConnection(DungeonNodeID.MMB1TopSide),
 							new DungeonNodeConnection(DungeonNodeID.MMB1LeftSidePastFirstKeyDoor)
-						};
-					}
-				case DungeonNodeID.MMB1LeftSidePastSecondKeyDoor:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.MMB1PastFourTorchRoom)
 						};
 					}
 				case DungeonNodeID.MMB1PastFourTorchRoom:
@@ -1041,36 +970,16 @@ namespace OpenTracker.Models.DungeonNodes
 						};
 					}
 				case DungeonNodeID.TRFront:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.TRF1CompassChestArea,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria]),
-							new DungeonNodeConnection(
-								DungeonNodeID.TRF1FourTorchRoom,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria]),
-							new DungeonNodeConnection(
-								DungeonNodeID.TRF1FirstKeyDoorArea,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria])
-						};
-					}
 				case DungeonNodeID.TRF1CompassChestArea:
+				case DungeonNodeID.TRF1FourTorchRoom:
+				case DungeonNodeID.TRF1FirstKeyDoorArea:
 					{
 						return new List<DungeonNodeConnection>
 						{
-							new DungeonNodeConnection(
-								DungeonNodeID.TRFront,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria]),
-							new DungeonNodeConnection(
-								DungeonNodeID.TRF1FourTorchRoom,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria]),
-							new DungeonNodeConnection(
-								DungeonNodeID.TRF1FirstKeyDoorArea,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria])
+							new DungeonNodeConnection(DungeonNodeID.TRF1SomariaTrack)
 						};
 					}
-				case DungeonNodeID.TRF1FourTorchRoom:
+				case DungeonNodeID.TRF1SomariaTrack:
 					{
 						return new List<DungeonNodeConnection>
 						{
@@ -1080,7 +989,9 @@ namespace OpenTracker.Models.DungeonNodes
 							new DungeonNodeConnection(
 								DungeonNodeID.TRF1CompassChestArea,
 								RequirementDictionary.Instance[RequirementType.CaneOfSomaria]),
-							new DungeonNodeConnection(DungeonNodeID.TRF1RollerRoom),
+							new DungeonNodeConnection(
+								DungeonNodeID.TRF1FourTorchRoom,
+								RequirementDictionary.Instance[RequirementType.CaneOfSomaria]),
 							new DungeonNodeConnection(
 								DungeonNodeID.TRF1FirstKeyDoorArea,
 								RequirementDictionary.Instance[RequirementType.CaneOfSomaria])
@@ -1093,21 +1004,6 @@ namespace OpenTracker.Models.DungeonNodes
 							new DungeonNodeConnection(
 								DungeonNodeID.TRF1FourTorchRoom,
 								RequirementDictionary.Instance[RequirementType.FireRod])
-						};
-					}
-				case DungeonNodeID.TRF1FirstKeyDoorArea:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.TRFront,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria]),
-							new DungeonNodeConnection(
-								DungeonNodeID.TRF1CompassChestArea,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria]),
-							new DungeonNodeConnection(
-								DungeonNodeID.TRF1FourTorchRoom,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria])
 						};
 					}
 				case DungeonNodeID.TRF1PastSecondKeyDoor:
@@ -1137,10 +1033,12 @@ namespace OpenTracker.Models.DungeonNodes
 						{
 							new DungeonNodeConnection(
 								DungeonNodeID.TRB1MiddleRightEntranceArea,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria]),
-							new DungeonNodeConnection(
-								DungeonNodeID.TRB1MiddleRightEntranceArea,
-								RequirementDictionary.Instance[RequirementType.Hookshot])
+								new AlternativeRequirement(new List<IRequirement>
+								{
+									RequirementDictionary.Instance[RequirementType.CaneOfSomaria],
+									RequirementDictionary.Instance[RequirementType.Hookshot],
+									RequirementDictionary.Instance[RequirementType.Hover]
+								})),
 						};
 					}
 				case DungeonNodeID.TRB1RightSide:
@@ -1197,21 +1095,11 @@ namespace OpenTracker.Models.DungeonNodes
 								RequirementDictionary.Instance[RequirementType.LaserBridge])
 						};
 					}
-				case DungeonNodeID.TRB2PastKeyDoor:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.TRB3)
-						};
-					}
 				case DungeonNodeID.TRB3:
 					{
 						return new List<DungeonNodeConnection>
 						{
-							new DungeonNodeConnection(DungeonNodeID.TRB2PastKeyDoor),
-							new DungeonNodeConnection(
-								DungeonNodeID.TRB3BossRoomEntry,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria])
+							new DungeonNodeConnection(DungeonNodeID.TRB2PastKeyDoor)
 						};
 					}
 				case DungeonNodeID.TRB3BossRoomEntry:
@@ -1232,21 +1120,6 @@ namespace OpenTracker.Models.DungeonNodes
 								RequirementDictionary.Instance[RequirementType.TRBoss])
 						};
 					}
-				case DungeonNodeID.GT:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.GT1FLeft),
-							new DungeonNodeConnection(DungeonNodeID.GT1FRight),
-							new DungeonNodeConnection(
-								DungeonNodeID.GT3FPastRedGoriyaRooms,
-								new AlternativeRequirement(new List<IRequirement>
-								{
-									RequirementDictionary.Instance[RequirementType.RedEyegoreGoriya],
-									RequirementDictionary.Instance[RequirementType.SBMimicClip]
-								}))
-						};
-					}
 				case DungeonNodeID.GTBobsTorch:
                     {
 						return new List<DungeonNodeConnection>
@@ -1260,9 +1133,7 @@ namespace OpenTracker.Models.DungeonNodes
 					{
 						return new List<DungeonNodeConnection>
 						{
-							new DungeonNodeConnection(DungeonNodeID.GT),
-							new DungeonNodeConnection(DungeonNodeID.GT1FLeftPastHammerBlocks),
-							new DungeonNodeConnection(DungeonNodeID.GT1FBottomRoom)
+							new DungeonNodeConnection(DungeonNodeID.GT)
 						};
 					}
 				case DungeonNodeID.GT1FLeftPastHammerBlocks:
@@ -1271,21 +1142,7 @@ namespace OpenTracker.Models.DungeonNodes
 						{
 							new DungeonNodeConnection(
 								DungeonNodeID.GT1FLeft,
-								RequirementDictionary.Instance[RequirementType.Hammer]),
-							new DungeonNodeConnection(
-								DungeonNodeID.GT1FLeftDMsRoom,
-								new AlternativeRequirement(new List<IRequirement>
-								{
-									RequirementDictionary.Instance[RequirementType.Hookshot],
-									RequirementDictionary.Instance[RequirementType.Hover]
-								})),
-							new DungeonNodeConnection(
-								DungeonNodeID.GT1FLeftPastBonkableGaps,
-								new AlternativeRequirement(new List<IRequirement>
-								{
-									RequirementDictionary.Instance[RequirementType.Hookshot],
-									RequirementDictionary.Instance[RequirementType.Hover]
-								}))
+								RequirementDictionary.Instance[RequirementType.Hammer])
 						};
 					}
 				case DungeonNodeID.GT1FLeftDMsRoom:
@@ -1346,8 +1203,7 @@ namespace OpenTracker.Models.DungeonNodes
 					{
 						return new List<DungeonNodeConnection>
 						{
-							new DungeonNodeConnection(DungeonNodeID.GT),
-							new DungeonNodeConnection(DungeonNodeID.GT1FRightTileRoom)
+							new DungeonNodeConnection(DungeonNodeID.GT)
 						};
 					}
 				case DungeonNodeID.GT1FRightTileRoom:
@@ -1357,13 +1213,6 @@ namespace OpenTracker.Models.DungeonNodes
 							new DungeonNodeConnection(
 								DungeonNodeID.GT1FRight,
 								RequirementDictionary.Instance[RequirementType.CaneOfSomaria])
-						};
-					}
-				case DungeonNodeID.GT1FRightFourTorchRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.GT1FRightCompassRoom)
 						};
 					}
 				case DungeonNodeID.GT1FRightCompassRoom:
@@ -1387,8 +1236,7 @@ namespace OpenTracker.Models.DungeonNodes
 						return new List<DungeonNodeConnection>
 						{
 							new DungeonNodeConnection(DungeonNodeID.GT1FLeftRandomizerRoom),
-							new DungeonNodeConnection(DungeonNodeID.GT1FRightCollapsingWalkway),
-							new DungeonNodeConnection(DungeonNodeID.GTBoss1)
+							new DungeonNodeConnection(DungeonNodeID.GT1FRightCollapsingWalkway)
 						};
 					}
 				case DungeonNodeID.GTBoss1:
@@ -1420,13 +1268,6 @@ namespace OpenTracker.Models.DungeonNodes
 								}))
 						};
 					}
-				case DungeonNodeID.GT3FPastBigKeyDoor:
-                    {
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.GTBoss2)
-						};
-                    }
 				case DungeonNodeID.GTBoss2:
 					{
 						return new List<DungeonNodeConnection>
@@ -1461,13 +1302,24 @@ namespace OpenTracker.Models.DungeonNodes
 								RequirementDictionary.Instance[RequirementType.GTBoss3])
 						};
 					}
-				case DungeonNodeID.GT6FPastBossRoomGap:
-					{
+				case DungeonNodeID.GTBoss3Item:
+                    {
 						return new List<DungeonNodeConnection>
 						{
 							new DungeonNodeConnection(
 								DungeonNodeID.GTBoss3,
-								RequirementDictionary.Instance[RequirementType.Hookshot]),
+								new AlternativeRequirement(new List<IRequirement>
+								{
+									RequirementDictionary.Instance[RequirementType.Hookshot],
+									RequirementDictionary.Instance[RequirementType.Hover]
+								}))
+						};
+					}
+				case DungeonNodeID.GT6FPastBossRoomGap:
+					{
+						return new List<DungeonNodeConnection>
+						{
+							new DungeonNodeConnection(DungeonNodeID.GTBoss3Item),
 							new DungeonNodeConnection(
 								DungeonNodeID.GT6FBossRoom,
 								RequirementDictionary.Instance[RequirementType.Hover])

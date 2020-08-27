@@ -143,6 +143,7 @@
         MMBossRoom,
         MMBoss,
         TRFront,
+        TRF1SomariaTrack,
         TRF1CompassChestArea,
         TRF1FourTorchRoom,
         TRF1RollerRoom,
@@ -195,6 +196,7 @@
         GT6FPastFirstKeyDoor,
         GT6FBossRoom,
         GTBoss3,
+        GTBoss3Item,
         GT6FPastBossRoomGap,
         GTFinalBossRoom,
         GTFinalBoss
