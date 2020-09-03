@@ -1,6 +1,7 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Dungeons;
+using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Requirements;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,9 +14,9 @@ namespace OpenTracker.Models.KeyDoors
     public class KeyDoor : IKeyDoor
     {
         private readonly IMutableDungeon _dungeonData;
-        private readonly List<IDungeonNode> _connectedNodes;
+        private IRequirementNode _node;
 
-        public KeyDoorID ID { get; }
+        public IRequirement Requirement { get; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -33,17 +34,16 @@ namespace OpenTracker.Models.KeyDoors
             }
         }
 
-        private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
         {
-            get => _accessibility;
-            private set
+            get
             {
-                if (_accessibility != value)
+                if (_node == null)
                 {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
+                    return AccessibilityLevel.None;
                 }
+
+                return _node.Accessibility;
             }
         }
 
@@ -56,11 +56,10 @@ namespace OpenTracker.Models.KeyDoors
         /// <param name="id">
         /// The key door identity.
         /// </param>
-        public KeyDoor(KeyDoorID id, IMutableDungeon dungeonData, List<IDungeonNode> connectedNodes)
+        public KeyDoor(IMutableDungeon dungeonData)
         {
-            ID = id;
             _dungeonData = dungeonData ?? throw new ArgumentNullException(nameof(dungeonData));
-            _connectedNodes = connectedNodes ?? throw new ArgumentNullException(nameof(connectedNodes));
+            Requirement = new KeyDoorRequirement(this);
 
             _dungeonData.KeyDoorDictionary.DoorCreated += OnDoorCreated;
         }
@@ -85,20 +84,22 @@ namespace OpenTracker.Models.KeyDoors
         /// <param name="sender">
         /// The sending object of the event.
         /// </param>
-        /// <param name="id">
+        /// <param name="e">
         /// The arguments of the DoorCreated event.
         /// </param>
-        private void OnDoorCreated(object sender, KeyDoorID id)
+        private void OnDoorCreated(object sender, KeyValuePair<KeyDoorID, IKeyDoor> e)
         {
-            if (id == ID)
+            if (e.Value == this)
             {
-                foreach (DungeonNode node in _connectedNodes)
+                _dungeonData.KeyDoorDictionary.DoorCreated -= OnDoorCreated;
+                _node = KeyDoorFactory.GetKeyDoorNode(e.Key, _dungeonData);
+
+                if (_node != null)
                 {
-                    node.PropertyChanged += OnRequirementChanged;
+                    _node.PropertyChanged += OnNodeChanged;
                 }
 
                 UpdateAccessibility();
-                _dungeonData.KeyDoorDictionary.DoorCreated -= OnDoorCreated;
             }
         }
 
@@ -112,9 +113,12 @@ namespace OpenTracker.Models.KeyDoors
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private void OnNodeChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateAccessibility();
+            if (e.PropertyName == nameof(IRequirementNode.Accessibility))
+            {
+                UpdateAccessibility();
+            }
         }
 
         /// <summary>
@@ -122,45 +126,7 @@ namespace OpenTracker.Models.KeyDoors
         /// </summary>
         private void UpdateAccessibility()
         {
-            Accessibility = GetDoorAccessibility(new List<DungeonNodeID>(0));
-        }
-
-        /// <summary>
-        /// Returns the current accessibility of the key door.
-        /// </summary>
-        /// <param name="excludedNodes">
-        /// The list of requirement node IDs from which accessibility should not be checked.</param>
-        /// <returns>
-        /// The accessibility level of the key door.
-        /// </returns>
-        public AccessibilityLevel GetDoorAccessibility(List<DungeonNodeID> excludedNodes)
-        {
-            if (excludedNodes == null)
-            {
-                throw new ArgumentNullException(nameof(excludedNodes));
-            }
-
-            AccessibilityLevel accessibility = AccessibilityLevel.None;
-
-            foreach (DungeonNode node in _connectedNodes)
-            {
-                if (excludedNodes.Contains(node.ID))
-                {
-                    continue;
-                }
-
-                if (node.Accessibility > accessibility)
-                {
-                    accessibility = node.GetNodeAccessibility(excludedNodes);
-                }
-
-                if (accessibility == AccessibilityLevel.Normal)
-                {
-                    break;
-                }
-            }
-
-            return accessibility;
+            OnPropertyChanged(nameof(Accessibility));
         }
     }
 }

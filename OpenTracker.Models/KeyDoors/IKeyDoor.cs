@@ -1,6 +1,5 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.DungeonNodes;
-using System.Collections.Generic;
+using OpenTracker.Models.Requirements;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.KeyDoors
@@ -11,9 +10,7 @@ namespace OpenTracker.Models.KeyDoors
     public interface IKeyDoor : INotifyPropertyChanged
     {
         AccessibilityLevel Accessibility { get; }
-        KeyDoorID ID { get; }
         bool Unlocked { get; set; }
-
-        AccessibilityLevel GetDoorAccessibility(List<DungeonNodeID> excludedNodes);
+        IRequirement Requirement { get; }
     }
 }

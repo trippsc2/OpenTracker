@@ -1,29 +1,11 @@
-﻿using System;
+﻿using OpenTracker.Models.AutoTracking.AutotrackValues;
+using System;
 
 namespace OpenTracker.Models.Items
 {
     public class CappedItem : Item
     {
         private readonly int _maximum;
-
-        public override int Current
-        {
-            get => base.Current;
-            set
-            {
-                if (value > _maximum)
-                {
-                    value = 0;
-                }
-
-                if (value < 0)
-                {
-                    value = _maximum;
-                }
-
-                base.Current = value;
-            }
-        }
 
         /// <summary>
         /// Constructor
@@ -34,7 +16,8 @@ namespace OpenTracker.Models.Items
         /// <param name="maximum">
         /// A 32-bit signed integer representing the maximum value of the item.
         /// </param>
-        public CappedItem(int starting, int maximum) : base(starting)
+        public CappedItem(int starting, int maximum, IAutoTrackValue autoTrackValue)
+            : base(starting, autoTrackValue)
         {
             if (starting > maximum)
             {
@@ -53,6 +36,36 @@ namespace OpenTracker.Models.Items
         public override bool CanAdd()
         {
             return Current < _maximum;
+        }
+
+        /// <summary>
+        /// Adds an item.
+        /// </summary>
+        public override void Add()
+        {
+            if (Current < _maximum)
+            {
+                base.Add();
+            }
+            else
+            {
+                Current = 0;
+            }
+        }
+
+        /// <summary>
+        /// Removes an item.
+        /// </summary>
+        public override void Remove()
+        {
+            if (Current > 0)
+            {
+                base.Remove();
+            }
+            else
+            {
+                Current = _maximum;
+            }
         }
     }
 }

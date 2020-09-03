@@ -10,8 +10,10 @@ namespace OpenTracker.Models.Items
     {
         int Current { get; set; }
 
+        void Add();
         bool CanAdd();
         bool CanRemove();
+        void Remove();
         void Reset();
     }
 }

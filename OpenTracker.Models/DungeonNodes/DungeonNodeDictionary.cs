@@ -36,7 +36,7 @@ namespace OpenTracker.Models.DungeonNodes
             set => ((IDictionary<DungeonNodeID, IDungeonNode>)_dictionary)[key] = value;
         }
 
-        public event EventHandler<DungeonNodeID> NodeCreated;
+        public event EventHandler<KeyValuePair<DungeonNodeID, IDungeonNode>> NodeCreated;
 
         /// <summary>
         /// Constructor
@@ -60,7 +60,8 @@ namespace OpenTracker.Models.DungeonNodes
         private void Create(DungeonNodeID key)
         {
             Add(key, DungeonNodeFactory.GetDungeonNode(key, _dungeonData, _dungeon));
-            NodeCreated?.Invoke(this, key);
+            NodeCreated?.Invoke(
+                this, new KeyValuePair<DungeonNodeID, IDungeonNode>(key, this[key]));
         }
 
         public void Add(DungeonNodeID key, IDungeonNode value)

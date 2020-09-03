@@ -1,10 +1,9 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.AutoTracking;
+using OpenTracker.Models.AutoTracking.AutotrackValues;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Sections
@@ -15,8 +14,8 @@ namespace OpenTracker.Models.Sections
     public class ItemSection : IItemSection
     {
         private readonly IRequirementNode _node;
+        private readonly IAutoTrackValue _autoTrackValue;
 
-        private Func<int?> AutoTrackFunction { get; }
         public string Name { get; }
         public int Total { get; }
         public IRequirement Requirement { get; }
@@ -74,30 +73,24 @@ namespace OpenTracker.Models.Sections
         /// The list of memory addresses to subscribe to for autotracking.
         /// </param>
         public ItemSection(
-            string name, int total, IRequirementNode node, Func<int?> autoTrackFunction,
-            List<(MemorySegmentType, int)> memoryAddresses, IRequirement requirement = null)
+            string name, int total, IRequirementNode node, IAutoTrackValue autoTrackValue,
+            IRequirement requirement = null)
         {
-            if (memoryAddresses == null)
-            {
-                throw new ArgumentNullException(nameof(memoryAddresses));
-            }
-
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Total = total;
             _node = node ?? throw new ArgumentNullException(nameof(node));
-            AutoTrackFunction = autoTrackFunction ??
-                throw new ArgumentNullException(nameof(autoTrackFunction));
+            _autoTrackValue = autoTrackValue;
             Requirement = requirement ??
                 RequirementDictionary.Instance[RequirementType.NoRequirement];
             Available = Total;
 
-            foreach ((MemorySegmentType, int) address in memoryAddresses)
-            {
-                SubscribeToMemoryAddress(address.Item1, address.Item2);
-            }
-
             _node.PropertyChanged += OnNodeChanged;
             UpdateAccessible();
+
+            if (_autoTrackValue != null)
+            {
+                _autoTrackValue.PropertyChanged += OnAutoTrackChanged;
+            }
         }
 
         /// <summary>
@@ -134,64 +127,20 @@ namespace OpenTracker.Models.Sections
             }
         }
 
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the MemoryAddress class.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnMemoryChanged(object sender, PropertyChangedEventArgs e)
+        private void OnAutoTrackChanged(object sender, PropertyChangedEventArgs e)
         {
-            AutoTrack();
-        }
-
-        /// <summary>
-        /// Autotrack the item.
-        /// </summary>
-        private void AutoTrack()
-        {
-            if (UserManipulated)
+            if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
             {
-                return;
-            }
-
-            int? result = AutoTrackFunction();
-
-            if (result.HasValue)
-            {
-                Available = result.Value;
+                AutoTrackUpdate();
             }
         }
 
-        /// <summary>
-        /// Creates subscription to the PropertyChanged event on the MemoryAddress class.
-        /// </summary>
-        /// <param name="segment">
-        /// The memory segment to which to subscribe.
-        /// </param>
-        /// <param name="index">
-        /// The index within the memory address list to which to subscribe.
-        /// </param>
-        private void SubscribeToMemoryAddress(MemorySegmentType segment, int index)
+        private void AutoTrackUpdate()
         {
-            List<MemoryAddress> memory = segment switch
+            if (_autoTrackValue.CurrentValue.HasValue)
             {
-                MemorySegmentType.Room => AutoTracker.Instance.RoomMemory,
-                MemorySegmentType.OverworldEvent => AutoTracker.Instance.OverworldEventMemory,
-                MemorySegmentType.Item => AutoTracker.Instance.ItemMemory,
-                MemorySegmentType.NPCItem => AutoTracker.Instance.NPCItemMemory,
-                _ => throw new ArgumentOutOfRangeException(nameof(segment))
-            };
-
-            if (index >= memory.Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index));
+                Available = Total - _autoTrackValue.CurrentValue.Value;
             }
-
-            memory[index].PropertyChanged += OnMemoryChanged;
         }
 
         /// <summary>

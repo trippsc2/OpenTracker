@@ -48,7 +48,7 @@ namespace OpenTracker.Models.Items
         /// </param>
         private void Create(PrizeType key)
         {
-            Add(key, new Item());
+            Add(key, new Item(0, null));
             ItemCreated?.Invoke(this, key);
         }
 

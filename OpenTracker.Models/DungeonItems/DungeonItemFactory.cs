@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Dungeons;
+using OpenTracker.Models.RequirementNodes;
 using System;
 
 namespace OpenTracker.Models.DungeonItems
@@ -21,417 +22,417 @@ namespace OpenTracker.Models.DungeonItems
         /// <returns>
         /// A dungeon node.
         /// </returns>
-        private static IDungeonNode GetDungeonItemNode(
+        private static IRequirementNode GetDungeonItemNode(
             DungeonItemID id, IMutableDungeon dungeonData)
         {
             switch (id)
             {
                 case DungeonItemID.HCSanctuary:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.HCSanctuary];
+                        return dungeonData.Nodes[DungeonNodeID.HCSanctuary];
                     }
                 case DungeonItemID.HCMapChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.HCFront];
+                        return dungeonData.Nodes[DungeonNodeID.HCFront];
                     }
                 case DungeonItemID.HCBoomerangChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.HCPastEscapeFirstKeyDoor];
+                        return dungeonData.Nodes[DungeonNodeID.HCPastEscapeFirstKeyDoor];
                     }
                 case DungeonItemID.HCZeldasCell:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.HCPastEscapeSecondKeyDoor];
+                        return dungeonData.Nodes[DungeonNodeID.HCPastEscapeSecondKeyDoor];
                     }
                 case DungeonItemID.HCDarkCross:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.HCDarkRoomFront];
+                        return dungeonData.Nodes[DungeonNodeID.HCDarkRoomFront];
                     }
                 case DungeonItemID.HCSecretRoomLeft:
                 case DungeonItemID.HCSecretRoomMiddle:
                 case DungeonItemID.HCSecretRoomRight:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.HCBack];
+                        return dungeonData.Nodes[DungeonNodeID.HCBack];
                     }
                 case DungeonItemID.ATRoom03:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.AT];
+                        return dungeonData.Nodes[DungeonNodeID.AT];
                     }
                 case DungeonItemID.ATDarkMaze:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.ATPastFirstKeyDoor];
+                        return dungeonData.Nodes[DungeonNodeID.ATPastFirstKeyDoor];
                     }
                 case DungeonItemID.ATBoss:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.ATBoss];
+                        return dungeonData.Nodes[DungeonNodeID.ATBoss];
                     }
                 case DungeonItemID.EPCannonballChest:
                 case DungeonItemID.EPMapChest:
                 case DungeonItemID.EPCompassChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.EP];
+                        return dungeonData.Nodes[DungeonNodeID.EP];
                     }
                 case DungeonItemID.EPBigChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.EPBigChest];
+                        return dungeonData.Nodes[DungeonNodeID.EPBigChest];
                     }
                 case DungeonItemID.EPBigKeyChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.EPPastRightKeyDoor];
+                        return dungeonData.Nodes[DungeonNodeID.EPPastRightKeyDoor];
                     }
                 case DungeonItemID.EPBoss:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.EPBoss];
+                        return dungeonData.Nodes[DungeonNodeID.EPBoss];
                     }
                 case DungeonItemID.DPMapChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.DPFront];
+                        return dungeonData.Nodes[DungeonNodeID.DPFront];
                     }
                 case DungeonItemID.DPTorch:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.DPTorchItem];
+                        return dungeonData.Nodes[DungeonNodeID.DPTorchItem];
                     }
                 case DungeonItemID.DPBigChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.DPBigChest];
+                        return dungeonData.Nodes[DungeonNodeID.DPBigChest];
                     }
                 case DungeonItemID.DPCompassChest:
                 case DungeonItemID.DPBigKeyChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.DPPastRightKeyDoor];
+                        return dungeonData.Nodes[DungeonNodeID.DPPastRightKeyDoor];
                     }
                 case DungeonItemID.DPBoss:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.DPBoss];
+                        return dungeonData.Nodes[DungeonNodeID.DPBoss];
                     }
                 case DungeonItemID.ToHBasementCage:
                 case DungeonItemID.ToHMapChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.ToH];
+                        return dungeonData.Nodes[DungeonNodeID.ToH];
                     }
                 case DungeonItemID.ToHBigKeyChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.ToHBasementTorchRoom];
+                        return dungeonData.Nodes[DungeonNodeID.ToHBasementTorchRoom];
                     }
                 case DungeonItemID.ToHCompassChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.ToHPastBigKeyDoor];
+                        return dungeonData.Nodes[DungeonNodeID.ToHPastBigKeyDoor];
                     }
                 case DungeonItemID.ToHBigChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.ToHBigChest];
+                        return dungeonData.Nodes[DungeonNodeID.ToHBigChest];
                     }
                 case DungeonItemID.ToHBoss:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.ToHBoss];
+                        return dungeonData.Nodes[DungeonNodeID.ToHBoss];
                     }
                 case DungeonItemID.PoDShooterRoom:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.PoD];
+                        return dungeonData.Nodes[DungeonNodeID.PoD];
                     }
                 case DungeonItemID.PoDMapChest:
                 case DungeonItemID.PoDArenaLedge:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.PoDPastFirstRedGoriyaRoom];
+                        return dungeonData.Nodes[DungeonNodeID.PoDPastFirstRedGoriyaRoom];
                     }
                 case DungeonItemID.PoDBigKeyChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.PoDBigKeyChestArea];
+                        return dungeonData.Nodes[DungeonNodeID.PoDBigKeyChestArea];
                     }
                 case DungeonItemID.PoDStalfosBasement:
                 case DungeonItemID.PoDArenaBridge:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.PoDLobbyArena];
+                        return dungeonData.Nodes[DungeonNodeID.PoDLobbyArena];
                     }
                 case DungeonItemID.PoDCompassChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor];
+                        return dungeonData.Nodes[DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor];
                     }
                 case DungeonItemID.PoDDarkBasementLeft:
                 case DungeonItemID.PoDDarkBasementRight:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.PoDDarkBasement];
+                        return dungeonData.Nodes[DungeonNodeID.PoDDarkBasement];
                     }
                 case DungeonItemID.PoDHarmlessHellway:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.PoDHarmlessHellwayRoom];
+                        return dungeonData.Nodes[DungeonNodeID.PoDHarmlessHellwayRoom];
                     }
                 case DungeonItemID.PoDDarkMazeTop:
                 case DungeonItemID.PoDDarkMazeBottom:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.PoDDarkMaze];
+                        return dungeonData.Nodes[DungeonNodeID.PoDDarkMaze];
                     }
                 case DungeonItemID.PoDBigChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.PoDBigChest];
+                        return dungeonData.Nodes[DungeonNodeID.PoDBigChest];
                     }
                 case DungeonItemID.PoDBoss:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.PoDBoss];
+                        return dungeonData.Nodes[DungeonNodeID.PoDBoss];
                     }
                 case DungeonItemID.SPEntrance:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.SPAfterRiver];
+                        return dungeonData.Nodes[DungeonNodeID.SPAfterRiver];
                     }
                 case DungeonItemID.SPMapChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.SPB1];
+                        return dungeonData.Nodes[DungeonNodeID.SPB1];
                     }
                 case DungeonItemID.SPBigChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.SPBigChest];
+                        return dungeonData.Nodes[DungeonNodeID.SPBigChest];
                     }
                 case DungeonItemID.SPCompassChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.SPB1PastRightHammerBlocks];
+                        return dungeonData.Nodes[DungeonNodeID.SPB1PastRightHammerBlocks];
                     }
                 case DungeonItemID.SPWestChest:
                 case DungeonItemID.SPBigKeyChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.SPB1PastLeftKeyDoor];
+                        return dungeonData.Nodes[DungeonNodeID.SPB1PastLeftKeyDoor];
                     }
                 case DungeonItemID.SPFloodedRoomLeft:
                 case DungeonItemID.SPFloodedRoomRight:
                 case DungeonItemID.SPWaterfallRoom:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.SPB1PastBackFirstKeyDoor];
+                        return dungeonData.Nodes[DungeonNodeID.SPB1PastBackFirstKeyDoor];
                     }
                 case DungeonItemID.SPBoss:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.SPBoss];
+                        return dungeonData.Nodes[DungeonNodeID.SPBoss];
                     }
                 case DungeonItemID.SWBigKeyChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.SWFrontBackConnector];
+                        return dungeonData.Nodes[DungeonNodeID.SWFrontBackConnector];
                     }
                 case DungeonItemID.SWMapChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.SWBigChestAreaBottom];
+                        return dungeonData.Nodes[DungeonNodeID.SWBigChestAreaBottom];
                     }
                 case DungeonItemID.SWBigChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.SWBigChest];
+                        return dungeonData.Nodes[DungeonNodeID.SWBigChest];
                     }
                 case DungeonItemID.SWPotPrison:
                 case DungeonItemID.SWCompassChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.SWFrontLeftSide];
+                        return dungeonData.Nodes[DungeonNodeID.SWFrontLeftSide];
                     }
                 case DungeonItemID.SWPinballRoom:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.SWFrontRightSide];
+                        return dungeonData.Nodes[DungeonNodeID.SWFrontRightSide];
                     }
                 case DungeonItemID.SWBridgeRoom:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.SWBack];
+                        return dungeonData.Nodes[DungeonNodeID.SWBack];
                     }
                 case DungeonItemID.SWBoss:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.SWBoss];
+                        return dungeonData.Nodes[DungeonNodeID.SWBoss];
                     }
                 case DungeonItemID.TTMapChest:
                 case DungeonItemID.TTAmbushChest:
                 case DungeonItemID.TTCompassChest:
                 case DungeonItemID.TTBigKeyChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.TT];
+                        return dungeonData.Nodes[DungeonNodeID.TT];
                     }
                 case DungeonItemID.TTAttic:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.TTPastSecondKeyDoor];
+                        return dungeonData.Nodes[DungeonNodeID.TTPastSecondKeyDoor];
                     }
                 case DungeonItemID.TTBlindsCell:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.TTPastFirstKeyDoor];
+                        return dungeonData.Nodes[DungeonNodeID.TTPastFirstKeyDoor];
                     }
                 case DungeonItemID.TTBigChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.TTBigChest];
+                        return dungeonData.Nodes[DungeonNodeID.TTBigChest];
                     }
                 case DungeonItemID.TTBoss:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.TTBoss];
+                        return dungeonData.Nodes[DungeonNodeID.TTBoss];
                     }
                 case DungeonItemID.IPCompassChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.IPB1LeftSide];
+                        return dungeonData.Nodes[DungeonNodeID.IPB1LeftSide];
                     }
                 case DungeonItemID.IPSpikeRoom:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.IPSpikeRoom];
+                        return dungeonData.Nodes[DungeonNodeID.IPSpikeRoom];
                     }
                 case DungeonItemID.IPMapChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.IPB2PastLiftBlock];
+                        return dungeonData.Nodes[DungeonNodeID.IPB2PastLiftBlock];
                     }
                 case DungeonItemID.IPBigKeyChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.IPB1RightSide];
+                        return dungeonData.Nodes[DungeonNodeID.IPB1RightSide];
                     }
                 case DungeonItemID.IPFreezorChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.IPFreezorChest];
+                        return dungeonData.Nodes[DungeonNodeID.IPFreezorChest];
                     }
                 case DungeonItemID.IPBigChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.IPBigChest];
+                        return dungeonData.Nodes[DungeonNodeID.IPBigChest];
                     }
                 case DungeonItemID.IPIcedTRoom:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.IPB5];
+                        return dungeonData.Nodes[DungeonNodeID.IPB5];
                     }
                 case DungeonItemID.IPBoss:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.IPBoss];
+                        return dungeonData.Nodes[DungeonNodeID.IPBoss];
                     }
                 case DungeonItemID.MMBridgeChest:
                 case DungeonItemID.MMSpikeChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.MMPastEntranceGap];
+                        return dungeonData.Nodes[DungeonNodeID.MMPastEntranceGap];
                     }
                 case DungeonItemID.MMMainLobby:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.MMB1LobbyBeyondBlueBlocks];
+                        return dungeonData.Nodes[DungeonNodeID.MMB1LobbyBeyondBlueBlocks];
                     }
                 case DungeonItemID.MMCompassChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.MMB1PastFourTorchRoom];
+                        return dungeonData.Nodes[DungeonNodeID.MMB1PastFourTorchRoom];
                     }
                 case DungeonItemID.MMBigKeyChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.MMF1PastFourTorchRoom];
+                        return dungeonData.Nodes[DungeonNodeID.MMF1PastFourTorchRoom];
                     }
                 case DungeonItemID.MMBigChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.MMBigChest];
+                        return dungeonData.Nodes[DungeonNodeID.MMBigChest];
                     }
                 case DungeonItemID.MMMapChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.MMB1RightSideBeyondBlueBlocks];
+                        return dungeonData.Nodes[DungeonNodeID.MMB1RightSideBeyondBlueBlocks];
                     }
                 case DungeonItemID.MMBoss:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.MMBoss];
+                        return dungeonData.Nodes[DungeonNodeID.MMBoss];
                     }
                 case DungeonItemID.TRCompassChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.TRF1CompassChestArea];
+                        return dungeonData.Nodes[DungeonNodeID.TRF1CompassChestArea];
                     }
                 case DungeonItemID.TRRollerRoomLeft:
                 case DungeonItemID.TRRollerRoomRight:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.TRF1RollerRoom];
+                        return dungeonData.Nodes[DungeonNodeID.TRF1RollerRoom];
                     }
                 case DungeonItemID.TRChainChomps:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.TRF1PastSecondKeyDoor];
+                        return dungeonData.Nodes[DungeonNodeID.TRF1PastSecondKeyDoor];
                     }
                 case DungeonItemID.TRBigKeyChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.TRB1PastBigKeyChestKeyDoor];
+                        return dungeonData.Nodes[DungeonNodeID.TRB1PastBigKeyChestKeyDoor];
                     }
                 case DungeonItemID.TRBigChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.TRBigChest];
+                        return dungeonData.Nodes[DungeonNodeID.TRBigChest];
                     }
                 case DungeonItemID.TRCrystarollerRoom:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.TRB1RightSide];
+                        return dungeonData.Nodes[DungeonNodeID.TRB1RightSide];
                     }
                 case DungeonItemID.TRLaserBridgeTopLeft:
                 case DungeonItemID.TRLaserBridgeTopRight:
                 case DungeonItemID.TRLaserBridgeBottomLeft:
                 case DungeonItemID.TRLaserBrdigeBottomRight:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.TRLaserBridgeChests];
+                        return dungeonData.Nodes[DungeonNodeID.TRLaserBridgeChests];
                     }
                 case DungeonItemID.TRBoss:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.TRBoss];
+                        return dungeonData.Nodes[DungeonNodeID.TRBoss];
                     }
                 case DungeonItemID.GTHopeRoomLeft:
                 case DungeonItemID.GTHopeRoomRight:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.GT1FRight];
+                        return dungeonData.Nodes[DungeonNodeID.GT1FRight];
                     }
                 case DungeonItemID.GTBobsTorch:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.GTBobsTorch];
+                        return dungeonData.Nodes[DungeonNodeID.GTBobsTorch];
                     }
                 case DungeonItemID.GTDMsRoomTopLeft:
                 case DungeonItemID.GTDMsRoomTopRight:
                 case DungeonItemID.GTDMsRoomBottomLeft:
                 case DungeonItemID.GTDMsRoomBottomRight:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.GT1FLeftDMsRoom];
+                        return dungeonData.Nodes[DungeonNodeID.GT1FLeftDMsRoom];
                     }
                 case DungeonItemID.GTMapChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.GT1FLeftMapChestRoom];
+                        return dungeonData.Nodes[DungeonNodeID.GT1FLeftMapChestRoom];
                     }
                 case DungeonItemID.GTFiresnakeRoom:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.GT1FLeftPastFiresnakeRoomGap];
+                        return dungeonData.Nodes[DungeonNodeID.GT1FLeftPastFiresnakeRoomGap];
                     }
                 case DungeonItemID.GTRandomizerRoomTopLeft:
                 case DungeonItemID.GTRandomizerRoomTopRight:
                 case DungeonItemID.GTRandomizerRoomBottomLeft:
                 case DungeonItemID.GTRandomizerRoomBottomRight:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.GT1FLeftRandomizerRoom];
+                        return dungeonData.Nodes[DungeonNodeID.GT1FLeftRandomizerRoom];
                     }
                 case DungeonItemID.GTTileRoom:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.GT1FRightTileRoom];
+                        return dungeonData.Nodes[DungeonNodeID.GT1FRightTileRoom];
                     }
                 case DungeonItemID.GTCompassRoomTopLeft:
                 case DungeonItemID.GTCompassRoomTopRight:
                 case DungeonItemID.GTCompassRoomBottomLeft:
                 case DungeonItemID.GTCompassRoomBottomRight:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.GT1FRightCompassRoom];
+                        return dungeonData.Nodes[DungeonNodeID.GT1FRightCompassRoom];
                     }
                 case DungeonItemID.GTBobsChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.GT1FBottomRoom];
+                        return dungeonData.Nodes[DungeonNodeID.GT1FBottomRoom];
                     }
                 case DungeonItemID.GTBigKeyRoomTopLeft:
                 case DungeonItemID.GTBigKeyRoomTopRight:
                 case DungeonItemID.GTBigKeyChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.GTB1BossChests];
+                        return dungeonData.Nodes[DungeonNodeID.GTB1BossChests];
                     }
                 case DungeonItemID.GTBigChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.GTBigChest];
+                        return dungeonData.Nodes[DungeonNodeID.GTBigChest];
                     }
                 case DungeonItemID.GTMiniHelmasaurRoomLeft:
                 case DungeonItemID.GTMiniHelmasaurRoomRight:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.GT5FPastFourTorchRooms];
+                        return dungeonData.Nodes[DungeonNodeID.GT5FPastFourTorchRooms];
                     }
                 case DungeonItemID.GTPreMoldormChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.GT6FPastFirstKeyDoor];
+                        return dungeonData.Nodes[DungeonNodeID.GT6FPastFirstKeyDoor];
                     }
                 case DungeonItemID.GTMoldormChest:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.GTBoss3Item];
+                        return dungeonData.Nodes[DungeonNodeID.GTBoss3Item];
                     }
                 case DungeonItemID.GTBoss1:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.GTBoss1];
+                        return dungeonData.Nodes[DungeonNodeID.GTBoss1];
                     }
                 case DungeonItemID.GTBoss2:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.GTBoss2];
+                        return dungeonData.Nodes[DungeonNodeID.GTBoss2];
                     }
                 case DungeonItemID.GTBoss3:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.GTBoss3];
+                        return dungeonData.Nodes[DungeonNodeID.GTBoss3];
                     }
                 case DungeonItemID.GTFinalBoss:
                     {
-                        return dungeonData.RequirementNodes[DungeonNodeID.GTFinalBoss];
+                        return dungeonData.Nodes[DungeonNodeID.GTFinalBoss];
                     }
             }
 

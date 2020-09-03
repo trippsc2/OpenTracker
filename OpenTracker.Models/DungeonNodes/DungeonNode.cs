@@ -1,8 +1,8 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.KeyDoors;
+using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.RequirementNodes;
-using OpenTracker.Models.Requirements;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,14 +14,12 @@ namespace OpenTracker.Models.DungeonNodes
     /// </summary>
     public class DungeonNode : IDungeonNode
     {
-        private readonly List<KeyDoorID> _pendingKeyDoors;
         private readonly IMutableDungeon _dungeonData;
-        private readonly List<RequirementNodeConnection> _entryConnections;
-        private readonly List<IKeyDoor> _keyDoorConnections = new List<IKeyDoor>();
-        private readonly List<DungeonNodeConnection> _dungeonConnections;
 
-        public DungeonNodeID ID { get; }
-        public int FreeKeysProvided { get; }
+        public int ExitsAccessible { get; set; }
+        public int KeysProvided { get; }
+        public List<INodeConnection> Connections { get; } =
+            new List<INodeConnection>();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -75,22 +73,12 @@ namespace OpenTracker.Models.DungeonNodes
         /// <param name="dungeonConnections">
         /// A list of non-key door connections to this node from within the dungeon.
         /// </param>
-        public DungeonNode(
-            DungeonNodeID id, IMutableDungeon dungeonData, int freeKeysProvided,
-            List<RequirementNodeConnection> entryConnections, List<KeyDoorID> keyDoorConnections,
-            List<DungeonNodeConnection> dungeonConnections)
+        public DungeonNode(IMutableDungeon dungeonData, int freeKeysProvided)
         {
-            ID = id;
             _dungeonData = dungeonData ?? throw new ArgumentNullException(nameof(dungeonData));
-            FreeKeysProvided = freeKeysProvided;
-            _entryConnections = entryConnections ??
-                throw new ArgumentNullException(nameof(entryConnections));
-            _pendingKeyDoors = keyDoorConnections ??
-                throw new ArgumentNullException(nameof(keyDoorConnections));
-            _dungeonConnections = dungeonConnections ??
-                throw new ArgumentNullException(nameof(dungeonConnections));
+            KeysProvided = freeKeysProvided;
 
-            _dungeonData.RequirementNodes.NodeCreated += OnNodeCreated;
+            _dungeonData.Nodes.NodeCreated += OnNodeCreated;
             _dungeonData.KeyDoorDictionary.DoorCreated += OnDoorCreated;
         }
 
@@ -114,13 +102,19 @@ namespace OpenTracker.Models.DungeonNodes
         /// <param name="e">
         /// The arguments of the NodeCreated event.
         /// </param>
-        private void OnNodeCreated(object sender, DungeonNodeID id)
+        private void OnNodeCreated(object sender, KeyValuePair<DungeonNodeID, IDungeonNode> e)
         {
-            if (id == ID)
+            if (e.Value == this)
             {
-                SubscribeToNodesAndRequirements();
+                _dungeonData.Nodes.NodeCreated -= OnNodeCreated;
+                DungeonNodeFactory.PopulateNodeConnections(
+                    e.Key, this, _dungeonData, Connections);
                 UpdateAccessibility();
-                _dungeonData.RequirementNodes.NodeCreated -= OnNodeCreated;
+
+                foreach (var connection in Connections)
+                {
+                    connection.PropertyChanged += OnConnectionChanged;
+                }
             }
         }
 
@@ -133,21 +127,8 @@ namespace OpenTracker.Models.DungeonNodes
         /// <param name="e">
         /// The arguments of the DoorCreated event.
         /// </param>
-        private void OnDoorCreated(object sender, KeyDoorID id)
+        private void OnDoorCreated(object sender, KeyValuePair<KeyDoorID, IKeyDoor> e)
         {
-            if (_pendingKeyDoors.Contains(id))
-            {
-                IKeyDoor keyDoor = _dungeonData.KeyDoorDictionary[id];
-                _keyDoorConnections.Add(keyDoor);
-                keyDoor.PropertyChanged += OnRequirementChanged;
-                _pendingKeyDoors.Remove(id);
-                UpdateAccessibility();
-            }
-
-            if (_pendingKeyDoors.Count == 0)
-            {
-                _dungeonData.KeyDoorDictionary.DoorCreated -= OnDoorCreated;
-            }
         }
 
         /// <summary>
@@ -160,55 +141,11 @@ namespace OpenTracker.Models.DungeonNodes
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private void OnConnectionChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateAccessibility();
-        }
-
-        /// <summary>
-        /// Subscribes to the key doors, nodes, and requirements.
-        /// </summary>
-        private void SubscribeToNodesAndRequirements()
-        {
-            List<RequirementNodeID> entryNodeSubscriptions = new List<RequirementNodeID>();
-            List<DungeonNodeID> dungeonNodeSubscriptions = new List<DungeonNodeID>();
-            List<IRequirement> requirementSubscriptions = new List<IRequirement>();
-
-            foreach (RequirementNodeConnection entryConnection in _entryConnections)
+            if (e.PropertyName == nameof(INodeConnection.Accessibility))
             {
-                if (!entryNodeSubscriptions.Contains(entryConnection.FromNode))
-                {
-                    RequirementNodeDictionary.Instance[entryConnection.FromNode].PropertyChanged +=
-                        OnRequirementChanged;
-                    entryNodeSubscriptions.Add(entryConnection.FromNode);
-                }
-
-                if (!requirementSubscriptions.Contains(entryConnection.Requirement))
-                {
-                    entryConnection.Requirement.PropertyChanged += OnRequirementChanged;
-                    requirementSubscriptions.Add(entryConnection.Requirement);
-                }
-            }
-
-            foreach (DungeonNodeConnection dungeonConnection in _dungeonConnections)
-            {
-                if (!dungeonNodeSubscriptions.Contains(dungeonConnection.FromNode))
-                {
-                    _dungeonData.RequirementNodes[dungeonConnection.FromNode].PropertyChanged +=
-                        OnRequirementChanged;
-                    dungeonNodeSubscriptions.Add(dungeonConnection.FromNode);
-                }
-
-                if (!requirementSubscriptions.Contains(dungeonConnection.Requirement))
-                {
-                    dungeonConnection.Requirement.PropertyChanged += OnRequirementChanged;
-                    requirementSubscriptions.Add(dungeonConnection.Requirement);
-                }
-            }
-
-            foreach (KeyDoor keyDoor in _keyDoorConnections)
-            {
-                keyDoor.PropertyChanged += OnRequirementChanged;
+                UpdateAccessibility();
             }
         }
 
@@ -217,98 +154,7 @@ namespace OpenTracker.Models.DungeonNodes
         /// </summary>
         private void UpdateAccessibility()
         {
-            Accessibility = GetNodeAccessibility(new List<DungeonNodeID>());
-        }
-
-        /// <summary>
-        /// Returns the accessibility of the provided entry connection.
-        /// </summary>
-        /// <param name="connection">
-        /// The entry connection to be evaluated.
-        /// </param>
-        /// <returns>
-        /// The accessibility level of the entry connection.
-        /// </returns>
-        private static AccessibilityLevel GetEntryConnectionAccessibility(
-            RequirementNodeConnection connection)
-        {
-            if (!connection.Requirement.Met)
-            {
-                return AccessibilityLevel.None;
-            }
-
-            return AccessibilityLevelMethods.Min(
-                RequirementNodeDictionary.Instance[connection.FromNode].Accessibility,
-                connection.Requirement.Accessibility);
-        }
-
-        /// <summary>
-        /// Returns the accessibility of the provided dungeon connection.
-        /// </summary>
-        /// <param name="connection">
-        /// The dungeon connection to be evaluated.
-        /// </param>
-        /// <param name="excludedNodes">
-        /// The list of excluded nodes to be passed to prevent loops.
-        /// </param>
-        /// <returns>
-        /// The accessibility level of the entry connection.
-        /// </returns>
-        private AccessibilityLevel GetDungeonConnectionAccessibility(
-            DungeonNodeConnection connection, List<DungeonNodeID> excludedNodes)
-        {
-            if (excludedNodes == null)
-            {
-                throw new ArgumentNullException(nameof(excludedNodes));
-            }
-
-            if (!connection.Requirement.Met)
-            {
-                return AccessibilityLevel.None;
-            }
-
-            if (excludedNodes.Contains(connection.FromNode))
-            {
-                return AccessibilityLevel.None;
-            }
-
-            return AccessibilityLevelMethods.Min(
-                _dungeonData.RequirementNodes[connection.FromNode]
-                .GetNodeAccessibility(excludedNodes),
-                connection.Requirement.Accessibility);
-        }
-
-        /// <summary>
-        /// Returns the accessibility of the provided entry connection.
-        /// </summary>
-        /// <param name="connection">
-        /// The entry connection to be evaluated.
-        /// </param>
-        /// <param name="excludedNodes">
-        /// The list of excluded nodes to be passed to prevent loops.
-        /// </param>
-        /// <returns>
-        /// The accessibility level of the entry connection.
-        /// </returns>
-        private static AccessibilityLevel GetKeyDoorAccessibility(
-            KeyDoor keyDoor, List<DungeonNodeID> excludedNodes)
-        {
-            if (excludedNodes == null)
-            {
-                throw new ArgumentNullException(nameof(excludedNodes));
-            }
-
-            if (keyDoor == null)
-            {
-                throw new ArgumentNullException(nameof(keyDoor));
-            }
-
-            if (!keyDoor.Unlocked)
-            {
-                return AccessibilityLevel.None;
-            }
-
-            return keyDoor.GetDoorAccessibility(excludedNodes);
+            Accessibility = GetNodeAccessibility(new List<IRequirementNode>());
         }
 
         /// <summary>
@@ -320,7 +166,7 @@ namespace OpenTracker.Models.DungeonNodes
         /// <returns>
         /// The accessibility of the node.
         /// </returns>
-        public AccessibilityLevel GetNodeAccessibility(List<DungeonNodeID> excludedNodes)
+        public AccessibilityLevel GetNodeAccessibility(List<IRequirementNode> excludedNodes)
         {
             if (AlwaysAccessible)
             {
@@ -332,48 +178,41 @@ namespace OpenTracker.Models.DungeonNodes
                 throw new ArgumentNullException(nameof(excludedNodes));
             }
 
-            List<DungeonNodeID> newExcludedNodes =
-                excludedNodes.GetRange(0, excludedNodes.Count);
-            newExcludedNodes.Add(ID);
+            AccessibilityLevel finalAccessibility = AccessibilityLevel.None;
 
-            AccessibilityLevel accessibility = AccessibilityLevel.None;
-
-            foreach (RequirementNodeConnection entryConnection in _entryConnections)
+            if (excludedNodes.Count == 0)
             {
-                accessibility = AccessibilityLevelMethods.Max(
-                    accessibility, GetEntryConnectionAccessibility(entryConnection));
-
-                if (accessibility == AccessibilityLevel.Normal)
+                foreach (var connection in Connections)
                 {
-                    return AccessibilityLevel.Normal;
+                    finalAccessibility = AccessibilityLevelMethods.Max(
+                        finalAccessibility, connection.Accessibility);
+
+                    if (finalAccessibility == AccessibilityLevel.Normal)
+                    {
+                        break;
+                    }
+                }
+
+                return finalAccessibility;
+            }
+
+            foreach (var connection in Connections)
+            {
+                finalAccessibility = AccessibilityLevelMethods.Max(
+                    finalAccessibility, connection.GetConnectionAccessibility(excludedNodes));
+
+                if (finalAccessibility == AccessibilityLevel.Normal)
+                {
+                    break;
                 }
             }
 
-            foreach (DungeonNodeConnection dungeonConnection in _dungeonConnections)
-            {
-                accessibility = AccessibilityLevelMethods.Max(
-                    accessibility, GetDungeonConnectionAccessibility(
-                        dungeonConnection, newExcludedNodes));
+            return finalAccessibility;
+        }
 
-                if (accessibility == AccessibilityLevel.Normal)
-                {
-                    return AccessibilityLevel.Normal;
-                }
-            }
-
-            foreach (KeyDoor keyDoor in _keyDoorConnections)
-            {
-                accessibility = AccessibilityLevelMethods.Max(
-                    accessibility, GetKeyDoorAccessibility(
-                        keyDoor, newExcludedNodes));
-
-                if (accessibility == AccessibilityLevel.Normal)
-                {
-                    return AccessibilityLevel.Normal;
-                }
-            }
-
-            return accessibility;
+        public void Reset()
+        {
+            AlwaysAccessible = false;
         }
     }
 }

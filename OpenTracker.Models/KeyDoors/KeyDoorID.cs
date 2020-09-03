@@ -7,7 +7,7 @@
     {
         HCEscapeFirstKeyDoor,
         HCEscapeSecondKeyDoor,
-        HCDarkCrossRoomKeyDoor,
+        HCDarkCrossKeyDoor,
         HCSewerRatRoomKeyDoor,
         ATFirstKeyDoor,
         ATSecondKeyDoor,

@@ -14,7 +14,7 @@ namespace OpenTracker.Models.Dungeons
         Dictionary<KeyDoorID, IKeyDoor> BigKeyDoors { get; }
         List<IDungeonItem> BossItems { get; }
         Dictionary<DungeonItemID, IDungeonItem> Items { get; }
-        DungeonNodeDictionary RequirementNodes { get; }
+        DungeonNodeDictionary Nodes { get; }
         Dictionary<KeyDoorID, IKeyDoor> SmallKeyDoors { get; }
         DungeonItemDictionary ItemDictionary { get; }
         KeyDoorDictionary KeyDoorDictionary { get; }

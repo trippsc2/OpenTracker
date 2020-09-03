@@ -4,6 +4,7 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Items
 {
+    [Collection("Tests")]
     public class CappedItemTests
     {
         [Theory]
@@ -13,7 +14,7 @@ namespace OpenTracker.UnitTests.Items
         {
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                var item = new CappedItem(starting, maximum);
+                var item = new CappedItem(starting, maximum, null);
             });
         }
     }

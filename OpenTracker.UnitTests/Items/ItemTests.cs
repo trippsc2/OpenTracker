@@ -3,6 +3,7 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Items
 {
+    [Collection("Tests")]
     public class ItemTests
     {
         [Theory]
@@ -11,7 +12,7 @@ namespace OpenTracker.UnitTests.Items
         [InlineData(2, 2)]
         public void Ctor_CurrentTests(int starting, int expected)
         {
-            var item = new Item(starting);
+            var item = new Item(starting, null);
 
             Assert.Equal(expected, item.Current);
         }
@@ -22,7 +23,7 @@ namespace OpenTracker.UnitTests.Items
         [InlineData(2, true)]
         public void CanAdd_Tests(int starting, bool expected)
         {
-            var item = new Item(starting);
+            var item = new Item(starting, null);
 
             Assert.Equal(expected, item.CanAdd());
         }
@@ -33,22 +34,19 @@ namespace OpenTracker.UnitTests.Items
         [InlineData(2, true)]
         public void CanRemove_Tests(int starting, bool expected)
         {
-            var item = new Item(starting);
+            var item = new Item(starting, null);
 
             Assert.Equal(expected, item.CanRemove());
         }
 
         [Theory]
-        [InlineData(0, 0, 0)]
-        [InlineData(0, 1, 0)]
-        [InlineData(1, 0, 1)]
-        [InlineData(2, 5, 2)]
-        public void Reset_Tests(int starting, int changed, int expected)
+        [InlineData(0, 0)]
+        [InlineData(1, 1)]
+        [InlineData(2, 2)]
+        public void Reset_Tests(int starting, int expected)
         {
-            var item = new Item(starting)
-            {
-                Current = changed
-            };
+            var item = new Item(starting, null);
+            item.Add();
             item.Reset();
 
             Assert.Equal(expected, item.Current);
@@ -57,9 +55,9 @@ namespace OpenTracker.UnitTests.Items
         [Fact]
         public void PropertyChanged_Tests()
         {
-            var item = new Item(0);
+            var item = new Item(0, null);
 
-            Assert.PropertyChanged(item, nameof(IItem.Current), () => { item.Current = 1; });
+            Assert.PropertyChanged(item, nameof(IItem.Current), () => { item.Add(); });
         }
     }
 }

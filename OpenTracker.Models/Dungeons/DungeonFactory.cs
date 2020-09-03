@@ -3,6 +3,7 @@ using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.Locations;
+using OpenTracker.Models.RequirementNodes;
 using System;
 using System.Collections.Generic;
 
@@ -11,7 +12,7 @@ namespace OpenTracker.Models.Dungeons
     /// <summary>
     /// This is the class for creating dungeons.
     /// </summary>
-    internal static class DungeonFactory
+    public static class DungeonFactory
     {
         /// <summary>
         /// Returns the number of maps in the specified dungeon.
@@ -908,7 +909,7 @@ namespace OpenTracker.Models.Dungeons
                         {
                             KeyDoorID.HCEscapeFirstKeyDoor,
                             KeyDoorID.HCEscapeSecondKeyDoor,
-                            KeyDoorID.HCDarkCrossRoomKeyDoor,
+                            KeyDoorID.HCDarkCrossKeyDoor,
                             KeyDoorID.HCSewerRatRoomKeyDoor
                         };
                     }
@@ -1159,6 +1160,73 @@ namespace OpenTracker.Models.Dungeons
             throw new ArgumentOutOfRangeException(nameof(id));
         }
 
+        private static List<IRequirementNode> GetDungeonEntryNodes(LocationID id)
+        {
+            return id switch
+            {
+                LocationID.HyruleCastle => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.HCSanctuaryEntry],
+                    RequirementNodeDictionary.Instance[RequirementNodeID.HCFrontEntry],
+                    RequirementNodeDictionary.Instance[RequirementNodeID.HCBackEntry]
+                },
+                LocationID.AgahnimTower => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.ATEntry]
+                },
+                LocationID.EasternPalace => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.EPEntry]
+                },
+                LocationID.DesertPalace => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.DPFrontEntry],
+                    RequirementNodeDictionary.Instance[RequirementNodeID.DPLeftEntry],
+                    RequirementNodeDictionary.Instance[RequirementNodeID.DPBackEntry]
+                },
+                LocationID.TowerOfHera => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.ToHEntry]
+                },
+                LocationID.PalaceOfDarkness => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.PoDEntry]
+                },
+                LocationID.SwampPalace => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.SPEntry]
+                },
+                LocationID.SkullWoods => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.SWFrontEntry],
+                    RequirementNodeDictionary.Instance[RequirementNodeID.SWBackEntry]
+                },
+                LocationID.ThievesTown => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.TTEntry]
+                },
+                LocationID.IcePalace => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.IPEntry]
+                },
+                LocationID.MiseryMire => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.MMEntry]
+                },
+                LocationID.TurtleRock => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.TRFrontEntry],
+                    RequirementNodeDictionary.Instance[RequirementNodeID.TRMiddleEntry],
+                    RequirementNodeDictionary.Instance[RequirementNodeID.TRBackEntry]
+                },
+                LocationID.GanonsTower => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.GTEntry]
+                },
+                _ => throw new ArgumentOutOfRangeException(nameof(id))
+            };
+        }
+
         /// <summary>
         /// Returns a new dungeon instance.
         /// </summary>
@@ -1168,14 +1236,14 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A new dungeon instance.
         /// </returns>
-        internal static IDungeon GetDungeon(LocationID id)
+        public static IDungeon GetDungeon(LocationID id)
         {
             return new Dungeon(
                 id, LocationFactory.GetLocationName(id), MapLocationFactory.GetMapLocations(id),
                 GetDungeonMapCount(id), GetDungeonCompassCount(id), GetDungeonSmallKeyCount(id),
                 GetDungeonBigKeyCount(id), GetDungeonSmallKeyItem(id), GetDungeonBigKeyItem(id),
                 GetDungeonNodes(id), GetDungeonItems(id), GetDungeonBosses(id),
-                GetDungeonSmallKeyDoors(id), GetDungeonBigKeyDoors(id));
+                GetDungeonSmallKeyDoors(id), GetDungeonBigKeyDoors(id), GetDungeonEntryNodes(id));
         }
     }
 }

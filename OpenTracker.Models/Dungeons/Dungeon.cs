@@ -6,6 +6,7 @@ using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.KeyLayouts;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
+using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Sections;
@@ -24,9 +25,6 @@ namespace OpenTracker.Models.Dungeons
     /// </summary>
     public class Dungeon : Location, IDungeon
     {
-        private readonly List<IRequirement> _subscribedRequirements =
-            new List<IRequirement>();
-
         public event EventHandler<IMutableDungeon> DungeonDataCreated;
 
         public int Map { get; }
@@ -43,6 +41,7 @@ namespace OpenTracker.Models.Dungeons
         public List<KeyDoorID> BigKeyDoors { get; }
         public List<IKeyLayout> KeyLayouts { get; }
         public List<DungeonNodeID> Nodes { get; }
+        public List<IRequirementNode> EntryNodes { get; }
         public ConcurrentQueue<IMutableDungeon> DungeonDataQueue { get; } =
             new ConcurrentQueue<IMutableDungeon>();
 
@@ -95,8 +94,8 @@ namespace OpenTracker.Models.Dungeons
             LocationID id, string name, List<MapLocation> mapLocations, int map, int compass,
             int smallKeys, int bigKey, IItem smallKeyItem, IItem bigKeyItem,
             List<DungeonNodeID> nodes, List<DungeonItemID> items, List<DungeonItemID> bosses,
-            List<KeyDoorID> smallKeyDoors, List<KeyDoorID> bigKeyDoors)
-            : base(id, name, mapLocations)
+            List<KeyDoorID> smallKeyDoors, List<KeyDoorID> bigKeyDoors,
+            List<IRequirementNode> entryNodes) : base(id, name, mapLocations)
         {
             Map = map;
             Compass = compass;
@@ -107,9 +106,11 @@ namespace OpenTracker.Models.Dungeons
             Nodes = nodes ?? throw new ArgumentNullException(nameof(nodes));
             Items = items ?? throw new ArgumentNullException(nameof(items));
             Bosses = bosses ?? throw new ArgumentNullException(nameof(bosses));
-            SmallKeyDoors = smallKeyDoors ?? throw new ArgumentNullException(nameof(smallKeyDoors));
+            SmallKeyDoors = smallKeyDoors ??
+                throw new ArgumentNullException(nameof(smallKeyDoors));
             BigKeyDoors = bigKeyDoors ?? throw new ArgumentNullException(nameof(bigKeyDoors));
             KeyLayouts = KeyLayoutFactory.GetDungeonKeyLayouts(this);
+            EntryNodes = entryNodes ?? throw new ArgumentNullException(nameof(entryNodes));
 
             for (int i = 0; i < Environment.ProcessorCount - 1; i++)
             {
@@ -121,9 +122,23 @@ namespace OpenTracker.Models.Dungeons
                 section.PropertyChanged += OnSectionChanged;
             }
 
+            foreach (var node in EntryNodes)
+            {
+                node.PropertyChanged += OnNodeChanged;
+            }
+
+            if (SmallKeyItem != null)
+            {
+                SmallKeyItem.PropertyChanged += OnItemChanged;
+                ItemDictionary.Instance[ItemType.SmallKey].PropertyChanged += OnItemChanged;
+            }
+
+            if (BigKeyItem != null)
+            {
+                BigKeyItem.PropertyChanged += OnItemChanged;
+            }
+
             Mode.Instance.PropertyChanged += OnModeChanged;
-            SubscribeToKeyItems();
-            SubscribeToEntryConnections();
             SubscribeToConnectionRequirements();
             UpdateSectionAccessibility();
         }
@@ -226,67 +241,27 @@ namespace OpenTracker.Models.Dungeons
         }
 
         /// <summary>
-        /// Subscribes to PropertyChanged event on each key item.
-        /// </summary>
-        private void SubscribeToKeyItems()
-        {
-            if (SmallKeyItem != null)
-            {
-                SmallKeyItem.PropertyChanged += OnItemChanged;
-                ItemDictionary.Instance[ItemType.SmallKey].PropertyChanged += OnItemChanged;
-            }
-
-            if (BigKeyItem != null)
-            {
-                BigKeyItem.PropertyChanged += OnItemChanged;
-            }
-        }
-
-        /// <summary>
-        /// Subscribes to PropertyChanged event on each entry connection node.
-        /// </summary>
-        private void SubscribeToEntryConnections()
-        {
-            var subscribedNodes = new List<IRequirementNode>();
-
-            foreach (var node in Nodes)
-            {
-                foreach (var connection in DungeonNodeFactory.GetDungeonEntryConnections(node))
-                {
-                    var fromNode = RequirementNodeDictionary.Instance[connection.FromNode];
-                    var requirement = connection.Requirement;
-
-                    if (!subscribedNodes.Contains(fromNode))
-                    {
-                        fromNode.PropertyChanged += OnNodeChanged;
-                        subscribedNodes.Add(fromNode);
-                    }
-
-                    if (!_subscribedRequirements.Contains(requirement))
-                    {
-                        requirement.PropertyChanged += OnRequirementChanged;
-                        _subscribedRequirements.Add(requirement);
-                    }
-                }    
-            }
-        }
-
-        /// <summary>
         /// Subscribes to PropertyChanged event on each requirement.
         /// </summary>
         private void SubscribeToConnectionRequirements()
         {
+            var requirmentSubscriptions = new List<IRequirement>();
+            DungeonDataQueue.TryPeek(out var dungeonData);
+
             foreach (var node in Nodes)
             {
-                foreach (var connection in DungeonNodeFactory.GetDungeonConnections(node))
+                foreach (var connection in dungeonData.Nodes[node].Connections)
                 {
                     var requirement = connection.Requirement;
 
-                    if (!_subscribedRequirements.Contains(requirement))
+                    if (requirement is KeyDoorRequirement ||
+                        requirmentSubscriptions.Contains(requirement))
                     {
-                        requirement.PropertyChanged += OnRequirementChanged;
-                        _subscribedRequirements.Add(requirement);
+                        continue;
                     }
+                    
+                    requirement.PropertyChanged += OnRequirementChanged;
+                    requirmentSubscriptions.Add(requirement);
                 }
             }
         }
