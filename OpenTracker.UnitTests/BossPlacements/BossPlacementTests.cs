@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Xunit;
 
-namespace OpenTracker.UnitTests
+namespace OpenTracker.UnitTests.BossPlacements
 {
     [Collection("Tests")]
     public class BossPlacementTests

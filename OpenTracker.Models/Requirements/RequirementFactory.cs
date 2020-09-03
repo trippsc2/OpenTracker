@@ -996,6 +996,20 @@ namespace OpenTracker.Models.Requirements
                             RequirementDictionary.Instance[RequirementType.Bottle]
                         });
                     }
+                case RequirementType.FakeFlippersQirnJump:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.SBFakeFlippersQirnJump]
+                        });
+                    }
+                case RequirementType.FakeFlippersScreenTransition:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.SBFakeFlippersScreenTransition]
+                        });
+                    }
                 case RequirementType.FakeFlippersSplashDeletion:
                     {
                         return new AggregateRequirement(new List<IRequirement>
@@ -1073,6 +1087,22 @@ namespace OpenTracker.Models.Requirements
                         {
                             RequirementDictionary.Instance[RequirementType.MoonPearl],
                             RequirementDictionary.Instance[RequirementType.Mirror]
+                        });
+                    }
+                case RequirementType.SpikeCave:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            new AlternativeRequirement(new List<IRequirement>
+                            {
+                                RequirementDictionary.Instance[RequirementType.SequenceBreak],
+                                RequirementDictionary.Instance[RequirementType.CaneOfByrna],
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.Cape],
+                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1]
+                                })
+                            })
                         });
                     }
                 case RequirementType.SuperBunnyFallInHole:
@@ -1256,78 +1286,6 @@ namespace OpenTracker.Models.Requirements
                             })
                         });
                     }
-                case RequirementType.LWDash:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
-                            RequirementDictionary.Instance[RequirementType.Boots]
-                        });
-                    }
-                case RequirementType.LWFakeFlippersFairyRevival:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
-                            RequirementDictionary.Instance[RequirementType.FakeFlippersFairyRevival]
-                        });
-                    }
-                case RequirementType.FakeFlippersScreenTransition:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.SBFakeFlippersScreenTransition],
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]
-                        });
-                    }
-                case RequirementType.LWFakeFlippersSplashDeletion:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
-                            RequirementDictionary.Instance[RequirementType.FakeFlippersSplashDeletion]
-                        });
-                    }
-                case RequirementType.LWFlute:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
-                            RequirementDictionary.Instance[RequirementType.Flute]
-                        });
-                    }
-                case RequirementType.LWHammer:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
-                            RequirementDictionary.Instance[RequirementType.Hammer]
-                        });
-                    }
-                case RequirementType.LWHookshot:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
-                            RequirementDictionary.Instance[RequirementType.Hookshot]
-                        });
-                    }
-                case RequirementType.LWLift1:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
-                            RequirementDictionary.Instance[RequirementType.Gloves1]
-                        });
-                    }
-                case RequirementType.LWLift2:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
-                            RequirementDictionary.Instance[RequirementType.Gloves2]
-                        });
-                    }
                 case RequirementType.LWMirror:
                     {
                         return new AggregateRequirement(new List<IRequirement>
@@ -1336,185 +1294,12 @@ namespace OpenTracker.Models.Requirements
                             RequirementDictionary.Instance[RequirementType.Mirror]
                         });
                     }
-                case RequirementType.LWPowder:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
-                            new AlternativeRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.Powder],
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.SBFakePowder],
-                                    RequirementDictionary.Instance[RequirementType.Mushroom],
-                                    RequirementDictionary.Instance[RequirementType.CaneOfSomaria]
-                                })
-                            })
-                        });
-                    }
-                case RequirementType.LWShovel:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
-                            RequirementDictionary.Instance[RequirementType.Shovel]
-                        });
-                    }
-                case RequirementType.LWSwim:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
-                            RequirementDictionary.Instance[RequirementType.Flippers]
-                        });
-                    }
-                case RequirementType.LWWaterWalk:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW],
-                            RequirementDictionary.Instance[RequirementType.WaterWalk]
-                        });
-                    }
-                case RequirementType.DWBonkOverLedge:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
-                            RequirementDictionary.Instance[RequirementType.BonkOverLedge]
-                        });
-                    }
-                case RequirementType.DWDash:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
-                            RequirementDictionary.Instance[RequirementType.Boots]
-                        });
-                    }
-                case RequirementType.DWFakeFlippersFairyRevival:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
-                            RequirementDictionary.Instance[RequirementType.FakeFlippersFairyRevival]
-                        });
-                    }
-                case RequirementType.FakeFlippersQirnJump:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
-                            RequirementDictionary.Instance[RequirementType.SBFakeFlippersQirnJump]
-                        });
-                    }
-                case RequirementType.DWFakeFlippersSplashDeletion:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
-                            RequirementDictionary.Instance[RequirementType.FakeFlippersSplashDeletion]
-                        });
-                    }
-                case RequirementType.DWFireRod:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
-                            RequirementDictionary.Instance[RequirementType.FireRod]
-                        });
-                    }
-                case RequirementType.DWFlute:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                            RequirementDictionary.Instance[RequirementType.MoonPearl],
-                            RequirementDictionary.Instance[RequirementType.Flute]
-                        });
-                    }
-                case RequirementType.DWHammer:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
-                            RequirementDictionary.Instance[RequirementType.Hammer]
-                        });
-                    }
-                case RequirementType.DWHookshot:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
-                            RequirementDictionary.Instance[RequirementType.Hookshot]
-                        });
-                    }
-                case RequirementType.DWHover:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
-                            RequirementDictionary.Instance[RequirementType.Hover]
-                        });
-                    }
-                case RequirementType.DWLift1:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
-                            RequirementDictionary.Instance[RequirementType.Gloves1]
-                        });
-                    }
-                case RequirementType.DWLift2:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
-                            RequirementDictionary.Instance[RequirementType.Gloves2]
-                        });
-                    }
                 case RequirementType.DWMirror:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
                             RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
                             RequirementDictionary.Instance[RequirementType.Mirror]
-                        });
-                    }
-                case RequirementType.SpikeCave:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
-                            RequirementDictionary.Instance[RequirementType.Gloves1],
-                            RequirementDictionary.Instance[RequirementType.Hammer],
-                            new AlternativeRequirement(new List<IRequirement>
-                            {
-                                RequirementDictionary.Instance[RequirementType.SequenceBreak],
-                                RequirementDictionary.Instance[RequirementType.CaneOfByrna],
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.Cape],
-                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1]
-                                })
-                            })
-                        });
-                    }
-                case RequirementType.DWSwim:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
-                            RequirementDictionary.Instance[RequirementType.Flippers]
-                        });
-                    }
-                case RequirementType.DWWaterWalk:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.NotBunnyDW],
-                            RequirementDictionary.Instance[RequirementType.WaterWalk]
                         });
                     }
                 case RequirementType.Armos:
