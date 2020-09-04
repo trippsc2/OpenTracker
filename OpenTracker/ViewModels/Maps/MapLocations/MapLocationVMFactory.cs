@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Sections;
 using System;
@@ -72,6 +73,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                 case LocationID.SpiralCaveBottom:
                 case LocationID.SpiralCaveTop:
                 case LocationID.HookshotCaveTop:
+                case LocationID.TRSafetyDoor:
                     {
                         return Dock.Left;
                     }
@@ -237,6 +239,14 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
 
             LocationID id = mapLocation.Location.ID;
 
+            if (mapLocation.Location is IDungeon)
+            {
+                return new MarkableDungeonMapLocationVM(
+                    mapLocation,
+                    GetMapLocationMarkingControlVM((IMarkableSection)mapLocation.Location.Sections[0]),
+                    GetMarkableEntranceMarkingDock(id), GetMarkableNonEntranceMarkingDock(id));
+            }
+
             return new MarkableMapLocationVM(
                 mapLocation,
                 GetMapLocationMarkingControlVM((IMarkableSection)mapLocation.Location.Sections[0]),
@@ -281,6 +291,11 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                     }
                 default:
                     {
+                        if (mapLocation.Location is IDungeon)
+                        {
+                            return new DungeonMapLocationVM(mapLocation);
+                        }
+
                         return new MapLocationVM(mapLocation);
                     }
             };

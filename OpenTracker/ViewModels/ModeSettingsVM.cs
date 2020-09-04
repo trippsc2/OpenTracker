@@ -15,7 +15,7 @@ namespace OpenTracker.ViewModels
         public ReactiveCommand<string, Unit> ItemPlacementCommand { get; }
         public ReactiveCommand<string, Unit> DungeonItemShuffleCommand { get; }
         public ReactiveCommand<string, Unit> WorldStateCommand { get; }
-        public ReactiveCommand<Unit, Unit> EntranceShuffleCommand { get; }
+        public ReactiveCommand<string, Unit> EntranceShuffleCommand { get; }
         public ReactiveCommand<Unit, Unit> BossShuffleCommand { get; }
         public ReactiveCommand<Unit, Unit> EnemyShuffleCommand { get; }
         public ReactiveCommand<Unit, Unit> GuaranteedBossItemsCommand { get; }
@@ -41,8 +41,13 @@ namespace OpenTracker.ViewModels
         public bool RetroWorldState =>
             Mode.Instance.WorldState == WorldState.Retro;
 
-        public bool EntranceShuffle =>
-            Mode.Instance.EntranceShuffle;
+        public bool EntranceShuffleNone =>
+            Mode.Instance.EntranceShuffle == Models.Modes.EntranceShuffle.None;
+        public bool EntranceShuffleDungeon =>
+            Mode.Instance.EntranceShuffle == Models.Modes.EntranceShuffle.Dungeon;
+        public bool EntranceShuffleAll =>
+            Mode.Instance.EntranceShuffle == Models.Modes.EntranceShuffle.All;
+
         public bool BossShuffle =>
             Mode.Instance.BossShuffle;
         public bool EnemyShuffle =>
@@ -66,7 +71,7 @@ namespace OpenTracker.ViewModels
                 SetItemPlacement, this.WhenAnyValue(x => x.StandardOpenWorldState));
             DungeonItemShuffleCommand = ReactiveCommand.Create<string>(SetDungeonItemShuffle);
             WorldStateCommand = ReactiveCommand.Create<string>(SetWorldState);
-            EntranceShuffleCommand = ReactiveCommand.Create(ToggleEntranceShuffle);
+            EntranceShuffleCommand = ReactiveCommand.Create<string>(SetEntranceShuffle);
             BossShuffleCommand = ReactiveCommand.Create(ToggleBossShuffle);
             EnemyShuffleCommand = ReactiveCommand.Create(ToggleEnemyShuffle);
             GuaranteedBossItemsCommand = ReactiveCommand.Create(ToggleGuaranteedBossItems);
@@ -108,7 +113,9 @@ namespace OpenTracker.ViewModels
 
             if (e.PropertyName == nameof(Mode.EntranceShuffle))
             {
-                this.RaisePropertyChanged(nameof(EntranceShuffle));
+                this.RaisePropertyChanged(nameof(EntranceShuffleNone));
+                this.RaisePropertyChanged(nameof(EntranceShuffleDungeon));
+                this.RaisePropertyChanged(nameof(EntranceShuffleAll));
             }
 
             if (e.PropertyName == nameof(Mode.BossShuffle))
@@ -172,9 +179,12 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Toggles the entrance shuffle setting.
         /// </summary>
-        private void ToggleEntranceShuffle()
+        private void SetEntranceShuffle(string entranceShuffleString)
         {
-            UndoRedoManager.Instance.Execute(new ChangeEntranceShuffle(!Mode.Instance.EntranceShuffle));
+            if (Enum.TryParse(entranceShuffleString, out EntranceShuffle entranceShuffle))
+            {
+                UndoRedoManager.Instance.Execute(new ChangeEntranceShuffle(entranceShuffle));
+            }
         }
 
         /// <summary>

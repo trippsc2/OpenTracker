@@ -97,7 +97,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         {
             get
             {
-                if (Mode.Instance.EntranceShuffle)
+                if (Mode.Instance.EntranceShuffle == EntranceShuffle.All)
                 {
                     return 40.0;
                 }
@@ -141,18 +141,20 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         public string Color =>
             AppSettings.Instance.Colors.AccessibilityColors[_mapLocation.Location.Accessibility];
         public Thickness BorderSize =>
-            Mode.Instance.EntranceShuffle ? new Thickness(5) : new Thickness(9);
+            Mode.Instance.EntranceShuffle == EntranceShuffle.All ? new Thickness(5) : new Thickness(9);
         public string BorderColor =>
             Highlighted ? "#ffffffff" : "#ff000000";
         public bool TextVisible =>
-            !Mode.Instance.EntranceShuffle && AppSettings.Instance.Tracker.ShowItemCountsOnMap &&
+            Mode.Instance.EntranceShuffle < EntranceShuffle.All &&
+            AppSettings.Instance.Tracker.ShowItemCountsOnMap &&
             _mapLocation.Location.Available != 0 && _mapLocation.Location.Total > 1;
 
         public string Text
         {
             get
             {
-                if (Mode.Instance.EntranceShuffle || !AppSettings.Instance.Tracker.ShowItemCountsOnMap ||
+                if (Mode.Instance.EntranceShuffle == EntranceShuffle.All ||
+                    !AppSettings.Instance.Tracker.ShowItemCountsOnMap ||
                     _mapLocation.Location.Available == 0 || _mapLocation.Location.Total <= 1)
                 {
                     return null;
@@ -376,7 +378,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         /// </summary>
         private void UpdateMarkingDock()
         {
-            if (Mode.Instance.EntranceShuffle)
+            if (Mode.Instance.EntranceShuffle == EntranceShuffle.All)
             {
                 MarkingDock = _entranceMarkingDock;
             }

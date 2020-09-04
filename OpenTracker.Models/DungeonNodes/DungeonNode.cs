@@ -14,9 +14,11 @@ namespace OpenTracker.Models.DungeonNodes
     /// </summary>
     public class DungeonNode : IDungeonNode
     {
+        private readonly DungeonNodeID _id;
         private readonly IMutableDungeon _dungeonData;
 
         public int ExitsAccessible { get; set; }
+        public int DungeonExitsAccessible { get; set; }
         public int KeysProvided { get; }
         public List<INodeConnection> Connections { get; } =
             new List<INodeConnection>();
@@ -73,8 +75,10 @@ namespace OpenTracker.Models.DungeonNodes
         /// <param name="dungeonConnections">
         /// A list of non-key door connections to this node from within the dungeon.
         /// </param>
-        public DungeonNode(IMutableDungeon dungeonData, int freeKeysProvided)
+        public DungeonNode(
+            DungeonNodeID id, IMutableDungeon dungeonData, int freeKeysProvided)
         {
+            _id = id;
             _dungeonData = dungeonData ?? throw new ArgumentNullException(nameof(dungeonData));
             KeysProvided = freeKeysProvided;
 
@@ -168,33 +172,17 @@ namespace OpenTracker.Models.DungeonNodes
         /// </returns>
         public AccessibilityLevel GetNodeAccessibility(List<IRequirementNode> excludedNodes)
         {
-            if (AlwaysAccessible)
-            {
-                return AccessibilityLevel.Normal;
-            }
-
             if (excludedNodes == null)
             {
                 throw new ArgumentNullException(nameof(excludedNodes));
             }
 
-            AccessibilityLevel finalAccessibility = AccessibilityLevel.None;
-
-            if (excludedNodes.Count == 0)
+            if (AlwaysAccessible)
             {
-                foreach (var connection in Connections)
-                {
-                    finalAccessibility = AccessibilityLevelMethods.Max(
-                        finalAccessibility, connection.Accessibility);
-
-                    if (finalAccessibility == AccessibilityLevel.Normal)
-                    {
-                        break;
-                    }
-                }
-
-                return finalAccessibility;
+                return AccessibilityLevel.Normal;
             }
+
+            AccessibilityLevel finalAccessibility = AccessibilityLevel.None;
 
             foreach (var connection in Connections)
             {

@@ -47,6 +47,20 @@ namespace OpenTracker.Models.RequirementNodes
             }
         }
 
+        private int _dungeonExitsAccessible;
+        public int DungeonExitsAccessible
+        {
+            get => _dungeonExitsAccessible;
+            set
+            {
+                if (_dungeonExitsAccessible != value)
+                {
+                    _dungeonExitsAccessible = value;
+                    OnPropertyChanged(nameof(DungeonExitsAccessible));
+                }
+            }
+        }
+
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
         {
@@ -77,6 +91,7 @@ namespace OpenTracker.Models.RequirementNodes
             AlwaysAccessible = _start;
 
             RequirementNodeDictionary.Instance.NodeCreated += OnNodeCreated;
+            Mode.Instance.PropertyChanged += OnModeChanged;
         }
 
         /// <summary>
@@ -88,6 +103,21 @@ namespace OpenTracker.Models.RequirementNodes
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+            if (propertyName == nameof(ExitsAccessible) ||
+                propertyName == nameof(DungeonExitsAccessible) ||
+                propertyName == nameof(AlwaysAccessible))
+            {
+                UpdateAccessibility();
+            }
+        }
+
+        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Mode.EntranceShuffle))
+            {
+                UpdateAccessibility();
+            }    
         }
 
         /// <summary>
@@ -156,7 +186,9 @@ namespace OpenTracker.Models.RequirementNodes
             }
 
             if (AlwaysAccessible ||
-                ExitsAccessible > 0 && Mode.Instance.EntranceShuffle)
+                (ExitsAccessible > 0 && Mode.Instance.EntranceShuffle == EntranceShuffle.All) ||
+                (DungeonExitsAccessible > 0 &&
+                Mode.Instance.EntranceShuffle > EntranceShuffle.None))
             {
                 return AccessibilityLevel.Normal;
             }

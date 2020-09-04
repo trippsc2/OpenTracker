@@ -27,7 +27,7 @@ namespace OpenTracker.ViewModels.Maps
         }
 
         public bool Visible =>
-            Mode.Instance.EntranceShuffle;
+            Mode.Instance.EntranceShuffle > EntranceShuffle.None;
 
         public Connection Connection { get; }
 

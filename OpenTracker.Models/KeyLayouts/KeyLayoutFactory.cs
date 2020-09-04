@@ -1004,7 +1004,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 new AggregateRequirement(new List<IRequirement>
                                 {
                                     RequirementDictionary.Instance[
-                                        RequirementType.WorldStateNonInvertedEntranceShuffleOff],
+                                        RequirementType.WorldStateNonInvertedEntranceShuffleNone],
                                     RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]
                                 })),
                             new BigKeyLayout(
@@ -1030,7 +1030,7 @@ namespace OpenTracker.Models.KeyLayouts
                                     new AlternativeRequirement(new List<IRequirement>
                                     {
                                         RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonOn]
                                     }),
                                     RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]
                                 })),
@@ -1095,7 +1095,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 new AggregateRequirement(new List<IRequirement>
                                 {
                                     RequirementDictionary.Instance[
-                                        RequirementType.WorldStateNonInvertedEntranceShuffleOff],
+                                        RequirementType.WorldStateNonInvertedEntranceShuffleNone],
                                     RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
                                 })),
                             new BigKeyLayout(
@@ -1154,7 +1154,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 new AggregateRequirement(new List<IRequirement>
                                 {
                                     RequirementDictionary.Instance[
-                                        RequirementType.WorldStateNonInvertedEntranceShuffleOff],
+                                        RequirementType.WorldStateNonInvertedEntranceShuffleNone],
                                     RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
                                 })),
                             new BigKeyLayout(
@@ -1198,7 +1198,7 @@ namespace OpenTracker.Models.KeyLayouts
                                     new AlternativeRequirement(new List<IRequirement>
                                     {
                                         RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonOn]
                                     }),
                                     RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
                                 })),
@@ -1233,7 +1233,7 @@ namespace OpenTracker.Models.KeyLayouts
                                     new AlternativeRequirement(new List<IRequirement>
                                     {
                                         RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                                        RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]
+                                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonOn]
                                     }),
                                     RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
                                 }))

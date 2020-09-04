@@ -13,7 +13,7 @@ namespace OpenTracker.Models.SaveLoad
             DungeonItemShuffle.Standard;
         public WorldState WorldState { get; set; } =
             WorldState.StandardOpen;
-        public bool EntranceShuffle { get; set; }
+        public EntranceShuffle EntranceShuffle { get; set; }
         public bool BossShuffle { get; set; }
         public bool EnemyShuffle { get; set; }
         public bool GuaranteedBossItems { get; set; }

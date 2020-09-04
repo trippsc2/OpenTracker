@@ -62,8 +62,8 @@ namespace OpenTracker.Models.Modes
             }
         }
 
-        private bool _entranceShuffle;
-        public bool EntranceShuffle
+        private EntranceShuffle _entranceShuffle;
+        public EntranceShuffle EntranceShuffle
         {
             get => _entranceShuffle;
             set
@@ -114,6 +114,20 @@ namespace OpenTracker.Models.Modes
                 {
                     _guaranteedBossItems = value;
                     OnPropertyChanged(nameof(GuaranteedBossItems));
+                }
+            }
+        }
+
+        private bool _genericKeys;
+        public bool GenericKeys
+        {
+            get => _genericKeys;
+            set
+            {
+                if (_genericKeys != value)
+                {
+                    _genericKeys = value;
+                    OnPropertyChanged(nameof(GenericKeys));
                 }
             }
         }

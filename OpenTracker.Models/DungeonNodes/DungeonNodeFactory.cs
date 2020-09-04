@@ -1807,7 +1807,7 @@ namespace OpenTracker.Models.DungeonNodes
 				throw new ArgumentNullException(nameof(dungeon));
             }
 
-			return new DungeonNode(dungeonData, GetDungeonNodeFreeKeys(id));
+			return new DungeonNode(id, dungeonData, GetDungeonNodeFreeKeys(id));
         }
     }
 }

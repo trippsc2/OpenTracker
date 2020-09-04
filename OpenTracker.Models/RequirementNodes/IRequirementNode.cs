@@ -12,6 +12,7 @@ namespace OpenTracker.Models.RequirementNodes
         AccessibilityLevel Accessibility { get; }
         bool AlwaysAccessible { get; set; }
         int ExitsAccessible { get; set; }
+        int DungeonExitsAccessible { get; set; }
 
         AccessibilityLevel GetNodeAccessibility(List<IRequirementNode> excludedNodes);
         void Reset();

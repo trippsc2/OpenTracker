@@ -38,14 +38,14 @@ namespace OpenTracker.Models.RequirementNodes
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.Start], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOn]));
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonOn]));
                     }
                     break;
                 case RequirementNodeID.NonEntrance:
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.Start], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]));
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll]));
                     }
                     break;
                 case RequirementNodeID.NonEntranceInverted:
@@ -255,7 +255,7 @@ namespace OpenTracker.Models.RequirementNodes
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEntry], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]));
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainEntryCave:
@@ -298,7 +298,7 @@ namespace OpenTracker.Models.RequirementNodes
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainExit], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]));
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainExitCave:
@@ -402,7 +402,7 @@ namespace OpenTracker.Models.RequirementNodes
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]));
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthMirror], node));
                     }
@@ -443,7 +443,7 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementNodeDictionary.Instance[RequirementNodeID.MireAreaMirror], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DPFrontEntry], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]));
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]));
                     }
                     break;
                 case RequirementNodeID.DesertLedgeItem:
@@ -621,7 +621,7 @@ namespace OpenTracker.Models.RequirementNodes
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]));
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEastMirror], node));
                     }
@@ -907,7 +907,7 @@ namespace OpenTracker.Models.RequirementNodes
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestBottom], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]));
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainWestBottomNotBunny:
@@ -969,7 +969,7 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastBottomConnector], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.ParadoxCave], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]));
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastTop], node));
                         connections.Add(new NodeConnection(
@@ -1015,10 +1015,10 @@ namespace OpenTracker.Models.RequirementNodes
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastBottom], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]));
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastTop], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]));
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll]));
                     }
                     break;
                 case RequirementNodeID.ParadoxCaveNotBunny:
@@ -1245,7 +1245,7 @@ namespace OpenTracker.Models.RequirementNodes
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.BumperCaveEntry], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]));
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll]));
                     }
                     break;
                 case RequirementNodeID.BumperCaveFront:
@@ -1835,7 +1835,7 @@ namespace OpenTracker.Models.RequirementNodes
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainWestBottom], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]));
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll]));
                     }
                     break;
                 case RequirementNodeID.DarkDeathMountainWestBottomMirror:
@@ -1923,10 +1923,10 @@ namespace OpenTracker.Models.RequirementNodes
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainTop], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]));
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainEastBottom], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]));
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll]));
                     }
                     break;
                 case RequirementNodeID.SuperBunnyCaveChests:
@@ -1962,7 +1962,7 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.LWMirror]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.HookshotCaveEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]));
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll]));
                     }
                     break;
                 case RequirementNodeID.HookshotCaveEntrance:
@@ -2255,7 +2255,7 @@ namespace OpenTracker.Models.RequirementNodes
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.TRFrontEntryNonInverted], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleOff]));
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]));
                     }
                     break;
                 case RequirementNodeID.TRFrontToKeyDoors:

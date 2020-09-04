@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace OpenTracker.Views.Maps.MapLocations
 {
-    public class MarkableMapLocation : UserControl
+    public class MarkableDungeonMapLocation : UserControl
     {
         private IClickHandler ClickHandler =>
             DataContext as IClickHandler;
@@ -17,7 +17,7 @@ namespace OpenTracker.Views.Maps.MapLocations
         private IPointerOver PointerOver =>
             DataContext as IPointerOver;
 
-        public MarkableMapLocation()
+        public MarkableDungeonMapLocation()
         {
             InitializeComponent();
         }

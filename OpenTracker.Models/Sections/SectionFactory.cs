@@ -1,8 +1,6 @@
-﻿using OpenTracker.Models.AutoTracking;
-using OpenTracker.Models.AutoTracking.AutotrackValues;
+﻿using OpenTracker.Models.AutoTracking.AutotrackValues;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons;
-using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.RequirementNodes;
@@ -15,7 +13,7 @@ namespace OpenTracker.Models.Sections
     /// <summary>
     /// This is the class for creating section classes.
     /// </summary>
-    internal static class SectionFactory
+    public static class SectionFactory
     {
         /// <summary>
         /// Returns the name of the specified section by location ID and section index.
@@ -1058,7 +1056,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.Dam when index == 0:
                 case LocationID.SpectacleRock when index == 1:
                     {
-                        return RequirementDictionary.Instance[RequirementType.EntranceShuffleOff];
+                        return RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll];
                     }
                 case LocationID.AgahnimTower when index == 0:
                     {
@@ -1645,6 +1643,22 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
+        /// Returns a new dungeon entrance section instance for the specified section.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID.
+        /// </param>
+        /// <returns>
+        /// A new dungeon entrance section instance.
+        /// </returns>
+        private static ISection GetDungeonEntranceSection(LocationID id)
+        {
+            return new DungeonEntranceSection(
+                GetSectionName(id), GetEntranceSectionExitProvided(id), GetSectionConnections(id),
+                GetSectionRequirement(id));
+        }
+
+        /// <summary>
         /// Returns a new take any section instance for the specified section.
         /// </summary>
         /// <param name="id">
@@ -1670,7 +1684,7 @@ namespace OpenTracker.Models.Sections
         /// <returns>
         /// A list of sections.
         /// </returns>
-        internal static List<ISection> GetSections(LocationID id, ILocation location)
+        public static List<ISection> GetSections(LocationID id, ILocation location)
         {
             switch (id)
             {
@@ -1842,10 +1856,6 @@ namespace OpenTracker.Models.Sections
                 case LocationID.ForestHideoutEntrance:
                 case LocationID.ForestChestGameEntrance:
                 case LocationID.CastleSecretEntrance:
-                case LocationID.CastleMainEntrance:
-                case LocationID.CastleLeftEntrance:
-                case LocationID.CastleRightEntrance:
-                case LocationID.CastleTowerEntrance:
                 case LocationID.DamEntrance:
                 case LocationID.CentralBonkRocksEntrance:
                 case LocationID.WitchsHutEntrance:
@@ -1853,21 +1863,14 @@ namespace OpenTracker.Models.Sections
                 case LocationID.SahasrahlasHutEntrance:
                 case LocationID.TreesFairyCaveEntrance:
                 case LocationID.PegsFairyCaveEntrance:
-                case LocationID.EasternPalaceEntrance:
                 case LocationID.HoulihanHole:
                 case LocationID.SanctuaryGrave:
                 case LocationID.NorthBonkRocks:
                 case LocationID.KingsTombEntrance:
                 case LocationID.GraveyardLedgeEntrance:
-                case LocationID.DesertLeftEntrance:
-                case LocationID.DesertBackEntrance:
-                case LocationID.DesertRightEntrance:
-                case LocationID.DesertFrontEntrance:
                 case LocationID.AginahsCaveEntrance:
                 case LocationID.ThiefCaveEntrance:
                 case LocationID.RupeeCaveEntrance:
-                case LocationID.SkullWoodsBack:
-                case LocationID.ThievesTownEntrance:
                 case LocationID.CShapedHouseEntrance:
                 case LocationID.HammerHouse:
                 case LocationID.DarkVillageFortuneTellerEntrance:
@@ -1880,7 +1883,6 @@ namespace OpenTracker.Models.Sections
                 case LocationID.BumperCaveExit:
                 case LocationID.BumperCaveEntrance:
                 case LocationID.HypeCaveEntrance:
-                case LocationID.SwampPalaceEntrance:
                 case LocationID.DarkCentralBonkRocksEntrance:
                 case LocationID.SouthOfGroveEntrance:
                 case LocationID.BombShop:
@@ -1888,7 +1890,6 @@ namespace OpenTracker.Models.Sections
                 case LocationID.DarkHyliaFortuneTeller:
                 case LocationID.DarkTreesFairyCaveEntrance:
                 case LocationID.DarkSahasrahlaEntrance:
-                case LocationID.PalaceOfDarknessEntrance:
                 case LocationID.DarkWitchsHut:
                 case LocationID.DarkFluteSpotFiveEntrance:
                 case LocationID.FatFairyEntrance:
@@ -1904,8 +1905,6 @@ namespace OpenTracker.Models.Sections
                 case LocationID.IceRodCaveEntrance:
                 case LocationID.IceBeeCaveEntrance:
                 case LocationID.IceFairyCaveEntrance:
-                case LocationID.IcePalaceEntrance:
-                case LocationID.MiseryMireEntrance:
                 case LocationID.MireShackEntrance:
                 case LocationID.MireRightShackEntrance:
                 case LocationID.MireCaveEntrance:
@@ -1919,7 +1918,6 @@ namespace OpenTracker.Models.Sections
                 case LocationID.SpectacleRockTop:
                 case LocationID.SpikeCaveEntrance:
                 case LocationID.DarkMountainFairyEntrance:
-                case LocationID.TowerOfHeraEntrance:
                 case LocationID.SpiralCaveBottom:
                 case LocationID.EDMFairyCaveEntrance:
                 case LocationID.ParadoxCaveMiddle:
@@ -1933,17 +1931,39 @@ namespace OpenTracker.Models.Sections
                 case LocationID.DeathMountainShop:
                 case LocationID.SuperBunnyCaveTop:
                 case LocationID.HookshotCaveEntrance:
-                case LocationID.TurtleRockEntrance:
-                case LocationID.GanonsTowerEntrance:
-                case LocationID.TRLedgeLeft:
-                case LocationID.TRLedgeRight:
-                case LocationID.TRSafetyDoor:
                 case LocationID.HookshotCaveTop:
                 case LocationID.LinksHouseEntrance:
                     {
                         return new List<ISection>
                         {
                             GetEntranceSection(id)
+                        };
+                    }
+                case LocationID.CastleMainEntrance:
+                case LocationID.CastleLeftEntrance:
+                case LocationID.CastleRightEntrance:
+                case LocationID.CastleTowerEntrance:
+                case LocationID.EasternPalaceEntrance:
+                case LocationID.DesertLeftEntrance:
+                case LocationID.DesertBackEntrance:
+                case LocationID.DesertRightEntrance:
+                case LocationID.DesertFrontEntrance:
+                case LocationID.SkullWoodsBack:
+                case LocationID.ThievesTownEntrance:
+                case LocationID.SwampPalaceEntrance:
+                case LocationID.PalaceOfDarknessEntrance:
+                case LocationID.IcePalaceEntrance:
+                case LocationID.MiseryMireEntrance:
+                case LocationID.TowerOfHeraEntrance:
+                case LocationID.TurtleRockEntrance:
+                case LocationID.GanonsTowerEntrance:
+                case LocationID.TRLedgeLeft:
+                case LocationID.TRLedgeRight:
+                case LocationID.TRSafetyDoor:
+                    {
+                        return new List<ISection>
+                        {
+                            GetDungeonEntranceSection(id)
                         };
                     }
                 case LocationID.TreesFairyCaveTakeAny:

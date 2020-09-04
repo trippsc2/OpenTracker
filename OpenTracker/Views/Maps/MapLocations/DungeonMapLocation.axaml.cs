@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace OpenTracker.Views.Maps.MapLocations
 {
-    public class MarkableMapLocation : UserControl
+    public class DungeonMapLocation : UserControl
     {
         private IClickHandler ClickHandler =>
             DataContext as IClickHandler;
@@ -17,7 +17,7 @@ namespace OpenTracker.Views.Maps.MapLocations
         private IPointerOver PointerOver =>
             DataContext as IPointerOver;
 
-        public MarkableMapLocation()
+        public DungeonMapLocation()
         {
             InitializeComponent();
         }
@@ -30,7 +30,8 @@ namespace OpenTracker.Views.Maps.MapLocations
         private void OnClick(object sender, PointerReleasedEventArgs e)
         {
             if (e.InitialPressMouseButton == MouseButton.Right &&
-                this.GetVisualsAt(e.GetPosition(this)).Any(x => this == x || this.IsVisualAncestorOf(x)))
+                this.GetVisualsAt(e.GetPosition(this)).Any(x => this == x ||
+                this.IsVisualAncestorOf(x)))
             {
                 ClickHandler.OnRightClick(e.KeyModifiers == KeyModifiers.Control);
             }

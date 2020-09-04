@@ -15,10 +15,7 @@ using System.Globalization;
 
 namespace OpenTracker.ViewModels.Maps.MapLocations
 {
-    /// <summary>
-    /// This is the ViewModel for the map location control representing a basic location.
-    /// </summary>
-    public class MapLocationVM : MapLocationVMBase, IClickHandler, IDoubleClickHandler,
+    public class DungeonMapLocationVM : MapLocationVMBase, IClickHandler, IDoubleClickHandler,
         IPointerOver
     {
         private readonly MapLocation _mapLocation;
@@ -75,16 +72,36 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         {
             get
             {
-                if (Mode.Instance.EntranceShuffle == EntranceShuffle.All)
+                if (Mode.Instance.EntranceShuffle > EntranceShuffle.None)
                 {
                     return 40.0;
                 }
 
                 if (_mapLocation.Location.Total > 1)
                 {
-                    return 90.0;
+                    switch (_mapLocation.Location.ID)
+                    {
+                        case LocationID.EasternPalace:
+                        case LocationID.DesertPalace:
+                        case LocationID.TowerOfHera:
+                        case LocationID.PalaceOfDarkness:
+                        case LocationID.SwampPalace:
+                        case LocationID.SkullWoods:
+                        case LocationID.ThievesTown:
+                        case LocationID.IcePalace:
+                        case LocationID.MiseryMire:
+                        case LocationID.TurtleRock:
+                        case LocationID.GanonsTower:
+                            {
+                                return 130.0;
+                            }
+                        default:
+                            {
+                                return 90.0;
+                            }
+                    }
                 }
-                
+
                 return 70.0;
             }
         }
@@ -97,11 +114,11 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         public string Color =>
             AppSettings.Instance.Colors.AccessibilityColors[_mapLocation.Location.Accessibility];
         public Thickness BorderSize =>
-            Mode.Instance.EntranceShuffle == EntranceShuffle.All ? new Thickness(5) : new Thickness(9);
+            Mode.Instance.EntranceShuffle > EntranceShuffle.None ? new Thickness(5) : new Thickness(9);
         public string BorderColor =>
             Highlighted ? "#ffffffff" : "#ff000000";
         public bool TextVisible =>
-            Mode.Instance.EntranceShuffle < EntranceShuffle.All &&
+            Mode.Instance.EntranceShuffle == EntranceShuffle.None &&
             AppSettings.Instance.Tracker.ShowItemCountsOnMap &&
             _mapLocation.Location.Available != 0 && _mapLocation.Location.Total > 1;
 
@@ -109,7 +126,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         {
             get
             {
-                if (Mode.Instance.EntranceShuffle == EntranceShuffle.All ||
+                if (Mode.Instance.EntranceShuffle > EntranceShuffle.None ||
                     !AppSettings.Instance.Tracker.ShowItemCountsOnMap ||
                     _mapLocation.Location.Available == 0 || _mapLocation.Location.Total <= 1)
                 {
@@ -120,12 +137,12 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                 {
                     return _mapLocation.Location.Available.ToString(CultureInfo.InvariantCulture);
                 }
-                
+
                 if (_mapLocation.Location.Accessible == 0)
                 {
                     return _mapLocation.Location.Available.ToString(CultureInfo.InvariantCulture);
                 }
-                
+
                 return $"{ _mapLocation.Location.Accessible.ToString(CultureInfo.InvariantCulture) }/" +
                     _mapLocation.Location.Available.ToString(CultureInfo.InvariantCulture);
             }
@@ -143,7 +160,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         /// <param name="pinnedLocations">
         /// The observable collection of pinned locations.
         /// </param>
-        public MapLocationVM(MapLocation mapLocation)
+        public DungeonMapLocationVM(MapLocation mapLocation)
         {
             _mapLocation = mapLocation ?? throw new ArgumentNullException(nameof(mapLocation));
 
@@ -347,7 +364,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                 _pinnedLocation = PinnedLocationVMFactory.GetLocationControlVM(
                     _mapLocation.Location);
             }
-            
+
             UndoRedoManager.Instance.Execute(new PinLocation(_pinnedLocation));
         }
 

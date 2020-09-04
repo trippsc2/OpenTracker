@@ -568,168 +568,168 @@ namespace OpenTracker.UnitTests.Requirements
                 {
                     WorldState.StandardOpen,
                     false,
-                    RequirementType.WorldStateNonInvertedEntranceShuffleOff,
+                    RequirementType.WorldStateNonInvertedEntranceShuffleNotAll,
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
                     WorldState.Inverted,
                     false,
-                    RequirementType.WorldStateNonInvertedEntranceShuffleOff,
+                    RequirementType.WorldStateNonInvertedEntranceShuffleNotAll,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
                     WorldState.Retro,
                     false,
-                    RequirementType.WorldStateNonInvertedEntranceShuffleOff,
+                    RequirementType.WorldStateNonInvertedEntranceShuffleNotAll,
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
                     WorldState.StandardOpen,
                     true,
-                    RequirementType.WorldStateNonInvertedEntranceShuffleOff,
+                    RequirementType.WorldStateNonInvertedEntranceShuffleNotAll,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
                     WorldState.Inverted,
                     true,
-                    RequirementType.WorldStateNonInvertedEntranceShuffleOff,
+                    RequirementType.WorldStateNonInvertedEntranceShuffleNotAll,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
                     WorldState.Retro,
                     true,
-                    RequirementType.WorldStateNonInvertedEntranceShuffleOff,
+                    RequirementType.WorldStateNonInvertedEntranceShuffleNotAll,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
                     WorldState.StandardOpen,
                     false,
-                    RequirementType.WorldStateInvertedEntranceShuffleOff,
+                    RequirementType.WorldStateInvertedEntranceShuffleNotAll,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
                     WorldState.Inverted,
                     false,
-                    RequirementType.WorldStateInvertedEntranceShuffleOff,
+                    RequirementType.WorldStateInvertedEntranceShuffleNotAll,
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
                     WorldState.Retro,
                     false,
-                    RequirementType.WorldStateInvertedEntranceShuffleOff,
+                    RequirementType.WorldStateInvertedEntranceShuffleNotAll,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
                     WorldState.StandardOpen,
                     true,
-                    RequirementType.WorldStateInvertedEntranceShuffleOff,
+                    RequirementType.WorldStateInvertedEntranceShuffleNotAll,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
                     WorldState.Inverted,
                     true,
-                    RequirementType.WorldStateInvertedEntranceShuffleOff,
+                    RequirementType.WorldStateInvertedEntranceShuffleNotAll,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
                     WorldState.Retro,
                     true,
-                    RequirementType.WorldStateInvertedEntranceShuffleOff,
+                    RequirementType.WorldStateInvertedEntranceShuffleNotAll,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
                     WorldState.StandardOpen,
                     false,
-                    RequirementType.WorldStateInvertedEntranceShuffleOn,
+                    RequirementType.WorldStateInvertedEntranceShuffleAll,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
                     WorldState.Inverted,
                     false,
-                    RequirementType.WorldStateInvertedEntranceShuffleOn,
+                    RequirementType.WorldStateInvertedEntranceShuffleAll,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
                     WorldState.Retro,
                     false,
-                    RequirementType.WorldStateInvertedEntranceShuffleOn,
+                    RequirementType.WorldStateInvertedEntranceShuffleAll,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
                     WorldState.StandardOpen,
                     true,
-                    RequirementType.WorldStateInvertedEntranceShuffleOn,
+                    RequirementType.WorldStateInvertedEntranceShuffleAll,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
                     WorldState.Inverted,
                     true,
-                    RequirementType.WorldStateInvertedEntranceShuffleOn,
+                    RequirementType.WorldStateInvertedEntranceShuffleAll,
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
                     WorldState.Retro,
                     true,
-                    RequirementType.WorldStateInvertedEntranceShuffleOn,
+                    RequirementType.WorldStateInvertedEntranceShuffleAll,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
                     WorldState.StandardOpen,
                     false,
-                    RequirementType.WorldStateRetroEntranceShuffleOff,
+                    RequirementType.WorldStateRetroEntranceShuffleNotAll,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
                     WorldState.Inverted,
                     false,
-                    RequirementType.WorldStateRetroEntranceShuffleOff,
+                    RequirementType.WorldStateRetroEntranceShuffleNotAll,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
                     WorldState.Retro,
                     false,
-                    RequirementType.WorldStateRetroEntranceShuffleOff,
+                    RequirementType.WorldStateRetroEntranceShuffleNotAll,
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
                     WorldState.StandardOpen,
                     true,
-                    RequirementType.WorldStateRetroEntranceShuffleOff,
+                    RequirementType.WorldStateRetroEntranceShuffleNotAll,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
                     WorldState.Inverted,
                     true,
-                    RequirementType.WorldStateRetroEntranceShuffleOff,
+                    RequirementType.WorldStateRetroEntranceShuffleNotAll,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
                     WorldState.Retro,
                     true,
-                    RequirementType.WorldStateRetroEntranceShuffleOff,
+                    RequirementType.WorldStateRetroEntranceShuffleNotAll,
                     AccessibilityLevel.None
                 }
             };
