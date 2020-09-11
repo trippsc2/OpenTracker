@@ -1,6 +1,7 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Models.SaveLoad;
 using System.Collections.Generic;
 using Xunit;
 
@@ -10,210 +11,23 @@ namespace OpenTracker.UnitTests.Requirements
     public class ModeRequirementTests
     {
         [Theory]
-        [MemberData(nameof(WorldState_Data))]
-        public void WorldState_AccessibilityTests(
-            WorldState worldState, RequirementType type, AccessibilityLevel expected)
-        {
-            Mode.Instance.WorldState = worldState;
-
-            Assert.Equal(expected, RequirementDictionary.Instance[type].Accessibility);
-        }
-
-        public static IEnumerable<object[]> WorldState_Data =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    WorldState.StandardOpen,
-                    RequirementType.WorldStateStandardOpen,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    WorldState.Inverted,
-                    RequirementType.WorldStateStandardOpen,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.Retro,
-                    RequirementType.WorldStateStandardOpen,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.StandardOpen,
-                    RequirementType.WorldStateInverted,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.Inverted,
-                    RequirementType.WorldStateInverted,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    WorldState.Retro,
-                    RequirementType.WorldStateInverted,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.StandardOpen,
-                    RequirementType.WorldStateRetro,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.Inverted,
-                    RequirementType.WorldStateRetro,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.Retro,
-                    RequirementType.WorldStateRetro,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    WorldState.StandardOpen,
-                    RequirementType.WorldStateNonInverted,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    WorldState.Inverted,
-                    RequirementType.WorldStateNonInverted,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.Retro,
-                    RequirementType.WorldStateNonInverted,
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        [Theory]
-        [MemberData(nameof(DungeonItemShuffle_Data))]
-        public void DungeonItemShuffle_AccessibilityTests(
-            DungeonItemShuffle dungeonItemShuffle, RequirementType type,
-            AccessibilityLevel expected)
-        {
-            Mode.Instance.DungeonItemShuffle = dungeonItemShuffle;
-
-            Assert.Equal(expected, RequirementDictionary.Instance[type].Accessibility);
-        }
-
-        public static IEnumerable<object[]> DungeonItemShuffle_Data =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    DungeonItemShuffle.Standard,
-                    RequirementType.DungeonItemShuffleStandard,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonItemShuffle.MapsCompasses,
-                    RequirementType.DungeonItemShuffleStandard,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonItemShuffle.MapsCompassesSmallKeys,
-                    RequirementType.DungeonItemShuffleStandard,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonItemShuffle.Keysanity,
-                    RequirementType.DungeonItemShuffleStandard,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonItemShuffle.Standard,
-                    RequirementType.DungeonItemShuffleMapsCompasses,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonItemShuffle.MapsCompasses,
-                    RequirementType.DungeonItemShuffleMapsCompasses,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonItemShuffle.MapsCompassesSmallKeys,
-                    RequirementType.DungeonItemShuffleMapsCompasses,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonItemShuffle.Keysanity,
-                    RequirementType.DungeonItemShuffleMapsCompasses,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonItemShuffle.Standard,
-                    RequirementType.DungeonItemShuffleMapsCompassesSmallKeys,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonItemShuffle.MapsCompasses,
-                    RequirementType.DungeonItemShuffleMapsCompassesSmallKeys,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonItemShuffle.MapsCompassesSmallKeys,
-                    RequirementType.DungeonItemShuffleMapsCompassesSmallKeys,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    DungeonItemShuffle.Keysanity,
-                    RequirementType.DungeonItemShuffleMapsCompassesSmallKeys,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonItemShuffle.Standard,
-                    RequirementType.DungeonItemShuffleKeysanity,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonItemShuffle.MapsCompasses,
-                    RequirementType.DungeonItemShuffleKeysanity,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonItemShuffle.MapsCompassesSmallKeys,
-                    RequirementType.DungeonItemShuffleKeysanity,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    DungeonItemShuffle.Keysanity,
-                    RequirementType.DungeonItemShuffleKeysanity,
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        [Theory]
         [MemberData(nameof(ItemPlacement_Data))]
-        public void ItemPlacement_AccessibilityTests(
-            ItemPlacement itemPlacement, RequirementType type, AccessibilityLevel expected)
+        [MemberData(nameof(SmallKeyShuffle_Data))]
+        [MemberData(nameof(BigKeyShuffle_Data))]
+        [MemberData(nameof(WorldState_Data))]
+        [MemberData(nameof(EntranceShuffle_Data))]
+        [MemberData(nameof(BossShuffle_Data))]
+        [MemberData(nameof(EnemyShuffle_Data))]
+        [MemberData(nameof(GuaranteedBossItems_Data))]
+        [MemberData(nameof(GenericKeys_Data))]
+        [MemberData(nameof(TakeAnyLocations_Data))]
+        [MemberData(nameof(DungeonItemShuffle_Data))]
+        [MemberData(nameof(WorldState_Entrance_Data))]
+        [MemberData(nameof(TakeAny_Entrance_Data))]
+        public void AccessibiltyTests(
+            ModeSaveData mode, RequirementType type, AccessibilityLevel expected)
         {
-            Mode.Instance.ItemPlacement = itemPlacement;
+            Mode.Instance.Load(mode);
 
             Assert.Equal(expected, RequirementDictionary.Instance[type].Accessibility);
         }
@@ -223,513 +37,951 @@ namespace OpenTracker.UnitTests.Requirements
             {
                 new object[]
                 {
-                    ItemPlacement.Basic,
+                    new ModeSaveData()
+                    {
+                        ItemPlacement = ItemPlacement.Basic
+                    },
                     RequirementType.ItemPlacementBasic,
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
-                    ItemPlacement.Advanced,
+                    new ModeSaveData()
+                    {
+                        ItemPlacement = ItemPlacement.Advanced
+                    },
                     RequirementType.ItemPlacementBasic,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    ItemPlacement.Basic,
+                    new ModeSaveData()
+                    {
+                        ItemPlacement = ItemPlacement.Basic
+                    },
                     RequirementType.ItemPlacementAdvanced,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    ItemPlacement.Advanced,
+                    new ModeSaveData()
+                    {
+                        ItemPlacement = ItemPlacement.Advanced
+                    },
                     RequirementType.ItemPlacementAdvanced,
                     AccessibilityLevel.Normal
                 }
             };
-
-        [Theory]
-        [MemberData(nameof(BossShuffle_Data))]
-        public void BossShuffle_AccessibilityTests(
-            bool bossShuffle, RequirementType type, AccessibilityLevel expected)
-        {
-            Mode.Instance.BossShuffle = bossShuffle;
-
-            Assert.Equal(expected, RequirementDictionary.Instance[type].Accessibility);
-        }
-
-        public static IEnumerable<object[]> BossShuffle_Data =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    false,
-                    RequirementType.BossShuffleOff,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    true,
-                    RequirementType.BossShuffleOff,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    false,
-                    RequirementType.BossShuffleOn,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    true,
-                    RequirementType.BossShuffleOn,
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        [Theory]
-        [MemberData(nameof(EnemyShuffle_Data))]
-        public void EnemyShuffle_AccessibilityTests(
-            bool enemyShuffle, RequirementType type, AccessibilityLevel expected)
-        {
-            Mode.Instance.EnemyShuffle = enemyShuffle;
-
-            Assert.Equal(expected, RequirementDictionary.Instance[type].Accessibility);
-        }
-
-        public static IEnumerable<object[]> EnemyShuffle_Data =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    false,
-                    RequirementType.EnemyShuffleOff,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    true,
-                    RequirementType.EnemyShuffleOff,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    false,
-                    RequirementType.EnemyShuffleOn,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    true,
-                    RequirementType.EnemyShuffleOn,
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        [Theory]
-        [MemberData(nameof(GuaranteedBossItems_Data))]
-        public void GuaranteedBossItems_AccessibilityTests(
-            bool guaranteedBossItems, RequirementType type, AccessibilityLevel expected)
-        {
-            Mode.Instance.GuaranteedBossItems = guaranteedBossItems;
-
-            Assert.Equal(expected, RequirementDictionary.Instance[type].Accessibility);
-        }
-
-        public static IEnumerable<object[]> GuaranteedBossItems_Data =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    false,
-                    RequirementType.GuaranteedBossItemsOff,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    true,
-                    RequirementType.GuaranteedBossItemsOff,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    false,
-                    RequirementType.GuaranteedBossItemsOn,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    true,
-                    RequirementType.GuaranteedBossItemsOn,
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        [Theory]
-        [MemberData(nameof(SmallKeyShuffle_Data))]
-        public void SmallKeyShuffle_AccessibilityTests(
-            WorldState worldState, DungeonItemShuffle dungeonItemShuffle, RequirementType type,
-            AccessibilityLevel expected)
-        {
-            Mode.Instance.WorldState = worldState;
-            Mode.Instance.DungeonItemShuffle = dungeonItemShuffle;
-
-            Assert.Equal(expected, RequirementDictionary.Instance[type].Accessibility);
-        }
 
         public static IEnumerable<object[]> SmallKeyShuffle_Data =>
             new List<object[]>
             {
                 new object[]
                 {
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = false
+                    },
                     RequirementType.SmallKeyShuffleOff,
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
-                    WorldState.Inverted,
-                    DungeonItemShuffle.Standard,
-                    RequirementType.SmallKeyShuffleOff,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    WorldState.Retro,
-                    DungeonItemShuffle.Standard,
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = true
+                    },
                     RequirementType.SmallKeyShuffleOff,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.MapsCompasses,
-                    RequirementType.SmallKeyShuffleOff,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    WorldState.Inverted,
-                    DungeonItemShuffle.MapsCompasses,
-                    RequirementType.SmallKeyShuffleOff,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    WorldState.Retro,
-                    DungeonItemShuffle.MapsCompasses,
-                    RequirementType.SmallKeyShuffleOff,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.MapsCompassesSmallKeys,
-                    RequirementType.SmallKeyShuffleOff,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.Inverted,
-                    DungeonItemShuffle.MapsCompassesSmallKeys,
-                    RequirementType.SmallKeyShuffleOff,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.Retro,
-                    DungeonItemShuffle.MapsCompassesSmallKeys,
-                    RequirementType.SmallKeyShuffleOff,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Keysanity,
-                    RequirementType.SmallKeyShuffleOff,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.Inverted,
-                    DungeonItemShuffle.Keysanity,
-                    RequirementType.SmallKeyShuffleOff,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.Retro,
-                    DungeonItemShuffle.Keysanity,
-                    RequirementType.SmallKeyShuffleOff,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Standard,
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = false
+                    },
                     RequirementType.SmallKeyShuffleOn,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    WorldState.Inverted,
-                    DungeonItemShuffle.Standard,
-                    RequirementType.SmallKeyShuffleOn,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.Retro,
-                    DungeonItemShuffle.Standard,
-                    RequirementType.SmallKeyShuffleOn,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.MapsCompasses,
-                    RequirementType.SmallKeyShuffleOn,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.Inverted,
-                    DungeonItemShuffle.MapsCompasses,
-                    RequirementType.SmallKeyShuffleOn,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.Retro,
-                    DungeonItemShuffle.MapsCompasses,
-                    RequirementType.SmallKeyShuffleOn,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.MapsCompassesSmallKeys,
-                    RequirementType.SmallKeyShuffleOn,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    WorldState.Inverted,
-                    DungeonItemShuffle.MapsCompassesSmallKeys,
-                    RequirementType.SmallKeyShuffleOn,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    WorldState.Retro,
-                    DungeonItemShuffle.MapsCompassesSmallKeys,
-                    RequirementType.SmallKeyShuffleOn,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    WorldState.StandardOpen,
-                    DungeonItemShuffle.Keysanity,
-                    RequirementType.SmallKeyShuffleOn,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    WorldState.Inverted,
-                    DungeonItemShuffle.Keysanity,
-                    RequirementType.SmallKeyShuffleOn,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    WorldState.Retro,
-                    DungeonItemShuffle.Keysanity,
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = true
+                    },
                     RequirementType.SmallKeyShuffleOn,
                     AccessibilityLevel.Normal
                 }
             };
 
-        [Theory]
-        [MemberData(nameof(WorldStateEntranceShuffle_Data))]
-        public void WorldStateEntranceShuffle_AccessibilityTests(
-            WorldState worldState, bool entranceShuffle, RequirementType type,
-            AccessibilityLevel expected)
-        {
-            Mode.Instance.WorldState = worldState;
-            Mode.Instance.EntranceShuffle = entranceShuffle;
-
-            Assert.Equal(expected, RequirementDictionary.Instance[type].Accessibility);
-        }
-
-        public static IEnumerable<object[]> WorldStateEntranceShuffle_Data =>
+        public static IEnumerable<object[]> BigKeyShuffle_Data =>
             new List<object[]>
             {
                 new object[]
                 {
-                    WorldState.StandardOpen,
-                    false,
-                    RequirementType.WorldStateNonInvertedEntranceShuffleOff,
+                    new ModeSaveData()
+                    {
+                        BigKeyShuffle = false
+                    },
+                    RequirementType.BigKeyShuffleOff,
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
-                    WorldState.Inverted,
-                    false,
-                    RequirementType.WorldStateNonInvertedEntranceShuffleOff,
+                    new ModeSaveData()
+                    {
+                        BigKeyShuffle = true
+                    },
+                    RequirementType.BigKeyShuffleOff,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    WorldState.Retro,
-                    false,
-                    RequirementType.WorldStateNonInvertedEntranceShuffleOff,
+                    new ModeSaveData()
+                    {
+                        BigKeyShuffle = false
+                    },
+                    RequirementType.BigKeyShuffleOn,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        BigKeyShuffle = true
+                    },
+                    RequirementType.BigKeyShuffleOn,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> WorldState_Data =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
+                    RequirementType.WorldStateStandardOpen,
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
-                    WorldState.StandardOpen,
-                    true,
-                    RequirementType.WorldStateNonInvertedEntranceShuffleOff,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
+                    RequirementType.WorldStateStandardOpen,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    WorldState.Inverted,
-                    true,
-                    RequirementType.WorldStateNonInvertedEntranceShuffleOff,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
+                    RequirementType.WorldStateInverted,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    WorldState.Retro,
-                    true,
-                    RequirementType.WorldStateNonInvertedEntranceShuffleOff,
-                    AccessibilityLevel.None
-                },
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
+                    RequirementType.WorldStateInverted,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> EntranceShuffle_Data =>
+            new List<object[]>
+            {
                 new object[]
                 {
-                    WorldState.StandardOpen,
-                    false,
-                    RequirementType.WorldStateInvertedEntranceShuffleOff,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.Inverted,
-                    false,
-                    RequirementType.WorldStateInvertedEntranceShuffleOff,
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.None
+                    },
+                    RequirementType.EntranceShuffleNone,
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
-                    WorldState.Retro,
-                    false,
-                    RequirementType.WorldStateInvertedEntranceShuffleOff,
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.Dungeon
+                    },
+                    RequirementType.EntranceShuffleNone,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    WorldState.StandardOpen,
-                    true,
-                    RequirementType.WorldStateInvertedEntranceShuffleOff,
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.All
+                    },
+                    RequirementType.EntranceShuffleNone,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    WorldState.Inverted,
-                    true,
-                    RequirementType.WorldStateInvertedEntranceShuffleOff,
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.None
+                    },
+                    RequirementType.EntranceShuffleDungeon,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    WorldState.Retro,
-                    true,
-                    RequirementType.WorldStateInvertedEntranceShuffleOff,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.StandardOpen,
-                    false,
-                    RequirementType.WorldStateInvertedEntranceShuffleOn,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.Inverted,
-                    false,
-                    RequirementType.WorldStateInvertedEntranceShuffleOn,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.Retro,
-                    false,
-                    RequirementType.WorldStateInvertedEntranceShuffleOn,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.StandardOpen,
-                    true,
-                    RequirementType.WorldStateInvertedEntranceShuffleOn,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    WorldState.Inverted,
-                    true,
-                    RequirementType.WorldStateInvertedEntranceShuffleOn,
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.Dungeon
+                    },
+                    RequirementType.EntranceShuffleDungeon,
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
-                    WorldState.Retro,
-                    true,
-                    RequirementType.WorldStateInvertedEntranceShuffleOn,
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.All
+                    },
+                    RequirementType.EntranceShuffleDungeon,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    WorldState.StandardOpen,
-                    false,
-                    RequirementType.WorldStateRetroEntranceShuffleOff,
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.None
+                    },
+                    RequirementType.EntranceShuffleAll,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    WorldState.Inverted,
-                    false,
-                    RequirementType.WorldStateRetroEntranceShuffleOff,
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.Dungeon
+                    },
+                    RequirementType.EntranceShuffleAll,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    WorldState.Retro,
-                    false,
-                    RequirementType.WorldStateRetroEntranceShuffleOff,
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.All
+                    },
+                    RequirementType.EntranceShuffleAll,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> BossShuffle_Data =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        BossShuffle = false
+                    },
+                    RequirementType.BossShuffleOff,
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
-                    WorldState.StandardOpen,
-                    true,
-                    RequirementType.WorldStateRetroEntranceShuffleOff,
+                    new ModeSaveData()
+                    {
+                        BossShuffle = true
+                    },
+                    RequirementType.BossShuffleOff,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    WorldState.Inverted,
-                    true,
-                    RequirementType.WorldStateRetroEntranceShuffleOff,
+                    new ModeSaveData()
+                    {
+                        BossShuffle = false
+                    },
+                    RequirementType.BossShuffleOn,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    WorldState.Retro,
-                    true,
-                    RequirementType.WorldStateRetroEntranceShuffleOff,
+                    new ModeSaveData()
+                    {
+                        BossShuffle = true
+                    },
+                    RequirementType.BossShuffleOn,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> EnemyShuffle_Data =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        EnemyShuffle = false
+                    },
+                    RequirementType.EnemyShuffleOff,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        EnemyShuffle = true
+                    },
+                    RequirementType.EnemyShuffleOff,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        EnemyShuffle = false
+                    },
+                    RequirementType.EnemyShuffleOn,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        EnemyShuffle = true
+                    },
+                    RequirementType.EnemyShuffleOn,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> GuaranteedBossItems_Data =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        GuaranteedBossItems = false
+                    },
+                    RequirementType.GuaranteedBossItemsOff,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        GuaranteedBossItems = true
+                    },
+                    RequirementType.GuaranteedBossItemsOff,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        GuaranteedBossItems = false
+                    },
+                    RequirementType.GuaranteedBossItemsOn,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        GuaranteedBossItems = true
+                    },
+                    RequirementType.GuaranteedBossItemsOn,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> GenericKeys_Data =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        GenericKeys = false
+                    },
+                    RequirementType.GenericKeys,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        GenericKeys = true
+                    },
+                    RequirementType.GenericKeys,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> TakeAnyLocations_Data =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        TakeAnyLocations = false
+                    },
+                    RequirementType.TakeAnyLocations,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        TakeAnyLocations = true
+                    },
+                    RequirementType.TakeAnyLocations,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> DungeonItemShuffle_Data =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = false,
+                        BigKeyShuffle = false
+                    },
+                    RequirementType.NoKeyShuffle,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = true,
+                        BigKeyShuffle = false
+                    },
+                    RequirementType.NoKeyShuffle,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = false,
+                        BigKeyShuffle = true
+                    },
+                    RequirementType.NoKeyShuffle,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = true,
+                        BigKeyShuffle = true
+                    },
+                    RequirementType.NoKeyShuffle,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = false,
+                        BigKeyShuffle = false
+                    },
+                    RequirementType.SmallKeyShuffleOnly,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = true,
+                        BigKeyShuffle = false
+                    },
+                    RequirementType.SmallKeyShuffleOnly,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = false,
+                        BigKeyShuffle = true
+                    },
+                    RequirementType.SmallKeyShuffleOnly,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = true,
+                        BigKeyShuffle = true
+                    },
+                    RequirementType.SmallKeyShuffleOnly,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = false,
+                        BigKeyShuffle = false
+                    },
+                    RequirementType.BigKeyShuffleOnly,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = true,
+                        BigKeyShuffle = false
+                    },
+                    RequirementType.BigKeyShuffleOnly,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = false,
+                        BigKeyShuffle = true
+                    },
+                    RequirementType.BigKeyShuffleOnly,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = true,
+                        BigKeyShuffle = true
+                    },
+                    RequirementType.BigKeyShuffleOnly,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = false,
+                        BigKeyShuffle = false
+                    },
+                    RequirementType.AllKeyShuffle,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = true,
+                        BigKeyShuffle = false
+                    },
+                    RequirementType.AllKeyShuffle,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = false,
+                        BigKeyShuffle = true
+                    },
+                    RequirementType.AllKeyShuffle,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = true,
+                        BigKeyShuffle = true
+                    },
+                    RequirementType.AllKeyShuffle,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> WorldState_Entrance_Data =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen,
+                        EntranceShuffle = EntranceShuffle.None
+                    },
+                    RequirementType.WorldStateStandardOpenEntranceShuffleNone,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted,
+                        EntranceShuffle = EntranceShuffle.None
+                    },
+                    RequirementType.WorldStateStandardOpenEntranceShuffleNone,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen,
+                        EntranceShuffle = EntranceShuffle.Dungeon
+                    },
+                    RequirementType.WorldStateStandardOpenEntranceShuffleNone,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted,
+                        EntranceShuffle = EntranceShuffle.Dungeon
+                    },
+                    RequirementType.WorldStateStandardOpenEntranceShuffleNone,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen,
+                        EntranceShuffle = EntranceShuffle.All
+                    },
+                    RequirementType.WorldStateStandardOpenEntranceShuffleNone,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted,
+                        EntranceShuffle = EntranceShuffle.All
+                    },
+                    RequirementType.WorldStateStandardOpenEntranceShuffleNone,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen,
+                        EntranceShuffle = EntranceShuffle.None
+                    },
+                    RequirementType.WorldStateStandardOpenEntranceShuffleNotAll,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted,
+                        EntranceShuffle = EntranceShuffle.None
+                    },
+                    RequirementType.WorldStateStandardOpenEntranceShuffleNotAll,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen,
+                        EntranceShuffle = EntranceShuffle.Dungeon
+                    },
+                    RequirementType.WorldStateStandardOpenEntranceShuffleNotAll,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted,
+                        EntranceShuffle = EntranceShuffle.Dungeon
+                    },
+                    RequirementType.WorldStateStandardOpenEntranceShuffleNotAll,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen,
+                        EntranceShuffle = EntranceShuffle.All
+                    },
+                    RequirementType.WorldStateStandardOpenEntranceShuffleNotAll,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted,
+                        EntranceShuffle = EntranceShuffle.All
+                    },
+                    RequirementType.WorldStateStandardOpenEntranceShuffleNotAll,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen,
+                        EntranceShuffle = EntranceShuffle.None
+                    },
+                    RequirementType.WorldStateInvertedEntranceShuffleNone,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted,
+                        EntranceShuffle = EntranceShuffle.None
+                    },
+                    RequirementType.WorldStateInvertedEntranceShuffleNone,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen,
+                        EntranceShuffle = EntranceShuffle.Dungeon
+                    },
+                    RequirementType.WorldStateInvertedEntranceShuffleNone,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted,
+                        EntranceShuffle = EntranceShuffle.Dungeon
+                    },
+                    RequirementType.WorldStateInvertedEntranceShuffleNone,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen,
+                        EntranceShuffle = EntranceShuffle.All
+                    },
+                    RequirementType.WorldStateInvertedEntranceShuffleNone,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted,
+                        EntranceShuffle = EntranceShuffle.All
+                    },
+                    RequirementType.WorldStateInvertedEntranceShuffleNone,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen,
+                        EntranceShuffle = EntranceShuffle.None
+                    },
+                    RequirementType.WorldStateInvertedEntranceShuffleNotAll,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted,
+                        EntranceShuffle = EntranceShuffle.None
+                    },
+                    RequirementType.WorldStateInvertedEntranceShuffleNotAll,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen,
+                        EntranceShuffle = EntranceShuffle.Dungeon
+                    },
+                    RequirementType.WorldStateInvertedEntranceShuffleNotAll,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted,
+                        EntranceShuffle = EntranceShuffle.Dungeon
+                    },
+                    RequirementType.WorldStateInvertedEntranceShuffleNotAll,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen,
+                        EntranceShuffle = EntranceShuffle.All
+                    },
+                    RequirementType.WorldStateInvertedEntranceShuffleNotAll,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted,
+                        EntranceShuffle = EntranceShuffle.All
+                    },
+                    RequirementType.WorldStateInvertedEntranceShuffleNotAll,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen,
+                        EntranceShuffle = EntranceShuffle.None
+                    },
+                    RequirementType.WorldStateInvertedEntranceShuffleAll,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted,
+                        EntranceShuffle = EntranceShuffle.None
+                    },
+                    RequirementType.WorldStateInvertedEntranceShuffleAll,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen,
+                        EntranceShuffle = EntranceShuffle.Dungeon
+                    },
+                    RequirementType.WorldStateInvertedEntranceShuffleAll,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted,
+                        EntranceShuffle = EntranceShuffle.Dungeon
+                    },
+                    RequirementType.WorldStateInvertedEntranceShuffleAll,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen,
+                        EntranceShuffle = EntranceShuffle.All
+                    },
+                    RequirementType.WorldStateInvertedEntranceShuffleAll,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted,
+                        EntranceShuffle = EntranceShuffle.All
+                    },
+                    RequirementType.WorldStateInvertedEntranceShuffleAll,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> TakeAny_Entrance_Data =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        TakeAnyLocations = false,
+                        EntranceShuffle = EntranceShuffle.None
+                    },
+                    RequirementType.TakeAnyLocationsEntranceShuffleNotAll,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        TakeAnyLocations = true,
+                        EntranceShuffle = EntranceShuffle.None
+                    },
+                    RequirementType.TakeAnyLocationsEntranceShuffleNotAll,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        TakeAnyLocations = false,
+                        EntranceShuffle = EntranceShuffle.Dungeon
+                    },
+                    RequirementType.TakeAnyLocationsEntranceShuffleNotAll,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        TakeAnyLocations = true,
+                        EntranceShuffle = EntranceShuffle.Dungeon
+                    },
+                    RequirementType.TakeAnyLocationsEntranceShuffleNotAll,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        TakeAnyLocations = false,
+                        EntranceShuffle = EntranceShuffle.All
+                    },
+                    RequirementType.TakeAnyLocationsEntranceShuffleNotAll,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        TakeAnyLocations = true,
+                        EntranceShuffle = EntranceShuffle.All
+                    },
+                    RequirementType.TakeAnyLocationsEntranceShuffleNotAll,
                     AccessibilityLevel.None
                 }
             };

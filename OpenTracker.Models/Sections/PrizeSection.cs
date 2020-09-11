@@ -1,9 +1,8 @@
-﻿using OpenTracker.Models.AutoTracking;
+﻿using OpenTracker.Models.AutoTracking.AutotrackValues;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Requirements;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Sections
@@ -13,7 +12,9 @@ namespace OpenTracker.Models.Sections
     /// </summary>
     public class PrizeSection : BossSection, IPrizeSection
     {
-        private Func<int?> AutoTrackFunction { get; }
+        private readonly bool _alwaysClearable;
+        private readonly IAutoTrackValue _autoTrackValue;
+
         public IPrizePlacement PrizePlacement { get; }
 
         /// <summary>
@@ -39,16 +40,11 @@ namespace OpenTracker.Models.Sections
         /// </param>
         public PrizeSection(
             string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement,
-            Func<int?> autoTrackFunction, List<(MemorySegmentType, int)> memoryAddresses,
+            IAutoTrackValue autoTrackValue, bool alwaysClearable = false,
             IRequirement requirement = null) : base(name, bossPlacement, requirement)
         {
-            if (memoryAddresses == null)
-            {
-                throw new ArgumentNullException(nameof(memoryAddresses));
-            }
-
-            AutoTrackFunction = autoTrackFunction ??
-                throw new ArgumentNullException(nameof(autoTrackFunction));
+            _alwaysClearable = alwaysClearable;
+            _autoTrackValue = autoTrackValue;
             PrizePlacement = prizePlacement ??
                 throw new ArgumentNullException(nameof(prizePlacement));
 
@@ -56,9 +52,9 @@ namespace OpenTracker.Models.Sections
             PrizePlacement.PropertyChanging += OnPrizeChanging;
             PrizePlacement.PropertyChanged += OnPrizeChanged;
 
-            foreach ((MemorySegmentType, int) address in memoryAddresses)
+            if (_autoTrackValue != null)
             {
-                SubscribeToMemoryAddress(address.Item1, address.Item2);
+                _autoTrackValue.PropertyChanged += OnAutoTrackChanged;
             }
         }
 
@@ -79,11 +75,11 @@ namespace OpenTracker.Models.Sections
                 {
                     if (IsAvailable())
                     {
-                        PrizePlacement.Prize.Current--;
+                        PrizePlacement.Prize.Remove();
                     }
                     else
                     {
-                        PrizePlacement.Prize.Current++;
+                        PrizePlacement.Prize.Add();
                     }
                 }
             }
@@ -105,7 +101,7 @@ namespace OpenTracker.Models.Sections
                 if (!IsAvailable() && PrizePlacement != null &&
                 PrizePlacement.Prize != null)
                 {
-                    PrizePlacement.Prize.Current--;
+                    PrizePlacement.Prize.Remove();
                 }
             }
         }
@@ -126,69 +122,25 @@ namespace OpenTracker.Models.Sections
                 if (!IsAvailable() && PrizePlacement != null &&
                 PrizePlacement.Prize != null)
                 {
-                    PrizePlacement.Prize.Current++;
+                    PrizePlacement.Prize.Add();
                 }
             }
         }
 
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the MemoryAddress class.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnMemoryChanged(object sender, PropertyChangedEventArgs e)
+        private void OnAutoTrackChanged(object sender, PropertyChangedEventArgs e)
         {
-            AutoTrack();
-        }
-
-        /// <summary>
-        /// Autotrack the item.
-        /// </summary>
-        private void AutoTrack()
-        {
-            if (UserManipulated)
+            if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
             {
-                return;
-            }
-
-            int? result = AutoTrackFunction();
-
-            if (result.HasValue)
-            {
-                Available = result.Value;
+                AutoTrackUpdate();
             }
         }
 
-        /// <summary>
-        /// Creates subscription to the PropertyChanged event on the MemoryAddress class.
-        /// </summary>
-        /// <param name="segment">
-        /// The memory segment to which to subscribe.
-        /// </param>
-        /// <param name="index">
-        /// The index within the memory address list to which to subscribe.
-        /// </param>
-        private void SubscribeToMemoryAddress(MemorySegmentType segment, int index)
+        private void AutoTrackUpdate()
         {
-            List<MemoryAddress> memory = segment switch
+            if (_autoTrackValue.CurrentValue.HasValue)
             {
-                MemorySegmentType.Room => AutoTracker.Instance.RoomMemory,
-                MemorySegmentType.OverworldEvent => AutoTracker.Instance.OverworldEventMemory,
-                MemorySegmentType.Item => AutoTracker.Instance.ItemMemory,
-                MemorySegmentType.NPCItem => AutoTracker.Instance.NPCItemMemory,
-                _ => throw new ArgumentOutOfRangeException(nameof(segment))
-            };
-
-            if (index >= memory.Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index));
+                Available = 1 - _autoTrackValue.CurrentValue.Value;
             }
-
-            memory[index].PropertyChanged += OnMemoryChanged;
         }
 
         /// <summary>
@@ -199,8 +151,7 @@ namespace OpenTracker.Models.Sections
         /// </returns>
         public override bool CanBeCleared(bool force)
         {
-            if (IsAvailable() && PrizePlacement.Prize != null &&
-                PrizePlacement.Prize.Type == Items.ItemType.Aga2)
+            if (IsAvailable() && _alwaysClearable)
             {
                 return true;
             }

@@ -5,6 +5,7 @@
     /// </summary>
     public enum MarkType
     {
+        Unknown,
         HCFront,
         HCLeft,
         HCRight,
@@ -42,6 +43,7 @@
         Bombos,
         Ether,
         Quake,
+        TriforcePiece,
         Aga,
         Powder,
         TRBack,

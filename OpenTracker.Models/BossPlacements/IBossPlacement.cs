@@ -6,14 +6,12 @@ namespace OpenTracker.Models.BossPlacements
     /// <summary>
     /// This is the interface for a boss placement.
     /// </summary>
-    public interface IBossPlacement : INotifyPropertyChanged
+    public interface IBossPlacement : INotifyPropertyChanged, ISaveable<BossPlacementSaveData>
     {
         BossType? Boss { get; set; }
         BossType DefaultBoss { get; }
 
         BossType? GetCurrentBoss();
-        void Load(BossPlacementSaveData saveData);
         void Reset();
-        BossPlacementSaveData Save();
     }
 }

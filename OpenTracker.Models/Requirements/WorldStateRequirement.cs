@@ -7,7 +7,7 @@ namespace OpenTracker.Models.Requirements
     /// <summary>
     /// This is the class for World State requirements.
     /// </summary>
-    internal class WorldStateRequirement : IRequirement
+    public class WorldStateRequirement : IRequirement
     {
         private readonly WorldState _worldState;
 

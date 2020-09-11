@@ -36,7 +36,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Execute()
         {
-            _item.Current--;
+            _item.Remove();
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Undo()
         {
-            _item.Current++;
+            _item.Add();
         }
     }
 }

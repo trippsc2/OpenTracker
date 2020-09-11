@@ -9,15 +9,6 @@ namespace OpenTracker.UnitTests.Requirements
 	[Collection("Tests")]
 	public class SequenceBreakRequirementTests
     {
-        [Theory]
-		[MemberData(nameof(SequenceBreak_Data))]
-        public void Default_AccessibilityTests(SequenceBreakType sequenceBreak, RequirementType type)
-        {
-            SequenceBreakDictionary.Instance.Reset();
-            Assert.Equal(
-                AccessibilityLevel.SequenceBreak, RequirementDictionary.Instance[type].Accessibility);
-        }
-
 		[Theory]
 		[MemberData(nameof(SequenceBreak_Data))]
 		public void Enabled_AccessibilityTests(SequenceBreakType sequenceBreak, RequirementType type)

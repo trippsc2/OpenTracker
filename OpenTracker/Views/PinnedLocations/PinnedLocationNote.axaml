@@ -11,8 +11,7 @@
   </UserControl.Resources>
 
   <Panel Name="MarkingPopupTarget" PointerReleased="OnClick">
-    <Image Classes="SectionIcon" Source="{Binding ImageSource, Converter={StaticResource
-           BitmapValueConverter}}" />
+    <ContentControl Content="{Binding Image}" Height="32" Width="32" />
     <ContentControl Content="{Binding MarkingSelect}" />
   </Panel>
 

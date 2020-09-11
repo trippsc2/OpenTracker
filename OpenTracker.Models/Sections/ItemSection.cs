@@ -1,10 +1,9 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.AutoTracking;
+using OpenTracker.Models.AutoTracking.AutotrackValues;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Sections
@@ -14,28 +13,18 @@ namespace OpenTracker.Models.Sections
     /// </summary>
     public class ItemSection : IItemSection
     {
-        private readonly List<RequirementNodeConnection> _connections;
+        private readonly IRequirementNode _node;
+        private readonly IAutoTrackValue _autoTrackValue;
 
-        private Func<int?> AutoTrackFunction { get; }
         public string Name { get; }
+        public int Total { get; }
         public IRequirement Requirement { get; }
         public bool UserManipulated { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
+        public AccessibilityLevel Accessibility =>
+            _node.Accessibility;
 
         private int _available;
         public int Available
@@ -65,8 +54,6 @@ namespace OpenTracker.Models.Sections
             }
         }
 
-        public int Total { get; }
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -76,8 +63,8 @@ namespace OpenTracker.Models.Sections
         /// <param name="total">
         /// A 32-bit signed integer representing the total number of items in the section.
         /// </param>
-        /// <param name="connections">
-        /// The list of connections to this section.
+        /// <param name="node">
+        /// The requirement node to which this section belongs.
         /// </param>
         /// <param name="autoTrackFunction">
         /// The autotracking function.
@@ -85,34 +72,25 @@ namespace OpenTracker.Models.Sections
         /// <param name="memoryAddresses">
         /// The list of memory addresses to subscribe to for autotracking.
         /// </param>
-        /// <param name="requirement">
-        /// The requirement for this section to be visible.
-        /// </param>
         public ItemSection(
-            string name, int total, List<RequirementNodeConnection> connections,
-            Func<int?> autoTrackFunction, List<(MemorySegmentType, int)> memoryAddresses,
+            string name, int total, IRequirementNode node, IAutoTrackValue autoTrackValue,
             IRequirement requirement = null)
         {
-            if (memoryAddresses == null)
-            {
-                throw new ArgumentNullException(nameof(memoryAddresses));
-            }
-
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Total = total;
-            _connections = connections ?? throw new ArgumentNullException(nameof(connections));
-            Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.NoRequirement];
-            AutoTrackFunction = autoTrackFunction ??
-                throw new ArgumentNullException(nameof(autoTrackFunction));
+            _node = node ?? throw new ArgumentNullException(nameof(node));
+            _autoTrackValue = autoTrackValue;
+            Requirement = requirement ??
+                RequirementDictionary.Instance[RequirementType.NoRequirement];
             Available = Total;
 
-            foreach ((MemorySegmentType, int) address in memoryAddresses)
-            {
-                SubscribeToMemoryAddress(address.Item1, address.Item2);
-            }
+            _node.PropertyChanged += OnNodeChanged;
+            UpdateAccessible();
 
-            SubscribeToConnections();
-            UpdateAccessibility();
+            if (_autoTrackValue != null)
+            {
+                _autoTrackValue.PropertyChanged += OnAutoTrackChanged;
+            }
         }
 
         /// <summary>
@@ -127,13 +105,12 @@ namespace OpenTracker.Models.Sections
 
             if (propertyName == nameof(Available))
             {
-                UpdateAccessibility();
+                UpdateAccessible();
             }
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IRequirement and RequirementNode
-        /// classes that are requirements for dungeon items.
+        /// Subscribes to the PropertyChanged event on the IRequirementNode interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -141,136 +118,36 @@ namespace OpenTracker.Models.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private void OnNodeChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateAccessibility();
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the MemoryAddress class.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnMemoryChanged(object sender, PropertyChangedEventArgs e)
-        {
-            AutoTrack();
-        }
-
-        /// <summary>
-        /// Autotrack the item.
-        /// </summary>
-        private void AutoTrack()
-        {
-            if (UserManipulated)
+            if (e.PropertyName == nameof(IRequirementNode.Accessibility))
             {
-                return;
+                OnPropertyChanged(nameof(Accessibility));
+                UpdateAccessible();
             }
+        }
 
-            int? result = AutoTrackFunction();
-
-            if (result.HasValue)
+        private void OnAutoTrackChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
             {
-                Available = result.Value;
+                AutoTrackUpdate();
+            }
+        }
+
+        private void AutoTrackUpdate()
+        {
+            if (_autoTrackValue.CurrentValue.HasValue)
+            {
+                Available = Total - _autoTrackValue.CurrentValue.Value;
             }
         }
 
         /// <summary>
-        /// Creates subscription to the PropertyChanged event on the MemoryAddress class.
+        /// Updates the number of accessible items.
         /// </summary>
-        /// <param name="segment">
-        /// The memory segment to which to subscribe.
-        /// </param>
-        /// <param name="index">
-        /// The index within the memory address list to which to subscribe.
-        /// </param>
-        private void SubscribeToMemoryAddress(MemorySegmentType segment, int index)
+        private void UpdateAccessible()
         {
-            List<MemoryAddress> memory = segment switch
-            {
-                MemorySegmentType.Room => AutoTracker.Instance.RoomMemory,
-                MemorySegmentType.OverworldEvent => AutoTracker.Instance.OverworldEventMemory,
-                MemorySegmentType.Item => AutoTracker.Instance.ItemMemory,
-                MemorySegmentType.NPCItem => AutoTracker.Instance.NPCItemMemory,
-                _ => throw new ArgumentOutOfRangeException(nameof(segment))
-            };
-
-            if (index >= memory.Count)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index));
-            }
-
-            memory[index].PropertyChanged += OnMemoryChanged;
-        }
-
-        /// <summary>
-        /// Creates subscription to the PropertyChanged event on the RequirementNode class and
-        /// IRequirement interface.
-        /// </summary>
-        private void SubscribeToConnections()
-        {
-            foreach (RequirementNodeConnection connection in _connections)
-            {
-                List<RequirementNodeID> nodeSubscriptions = new List<RequirementNodeID>();
-                List<IRequirement> requirementSubscriptions = new List<IRequirement>();
-
-                if (!nodeSubscriptions.Contains(connection.FromNode))
-                {
-                    RequirementNodeDictionary.Instance[connection.FromNode].PropertyChanged +=
-                        OnRequirementChanged;
-                    nodeSubscriptions.Add(connection.FromNode);
-                }
-
-                if (!requirementSubscriptions.Contains(connection.Requirement))
-                {
-                    connection.Requirement.PropertyChanged += OnRequirementChanged;
-                    requirementSubscriptions.Add(connection.Requirement);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Updates the accessibility and number of accessible items.
-        /// </summary>
-        private void UpdateAccessibility()
-        {
-            AccessibilityLevel finalAccessibility = AccessibilityLevel.None;
-
-            foreach (RequirementNodeConnection connection in _connections)
-            {
-                AccessibilityLevel nodeAccessibility = AccessibilityLevel.Normal;
-                
-                nodeAccessibility = (AccessibilityLevel)Math.Min((byte)nodeAccessibility,
-                    (byte)RequirementNodeDictionary.Instance[connection.FromNode].Accessibility);
-
-                if (nodeAccessibility < AccessibilityLevel.SequenceBreak)
-                {
-                    continue;
-                }
-
-                AccessibilityLevel requirementAccessibility = connection.Requirement.Accessibility;
-
-                AccessibilityLevel finalConnectionAccessibility =
-                    (AccessibilityLevel)Math.Min((byte)nodeAccessibility,
-                    (byte)requirementAccessibility);
-
-                if (finalConnectionAccessibility == AccessibilityLevel.Normal)
-                {
-                    finalAccessibility = AccessibilityLevel.Normal;
-                    break;
-                }
-
-                if (finalConnectionAccessibility > finalAccessibility)
-                {
-                    finalAccessibility = finalConnectionAccessibility;
-                }
-            }
-
-            Accessibility = finalAccessibility;
-
             if (Accessibility >= AccessibilityLevel.SequenceBreak)
             {
                 Accessible = Available;

@@ -104,7 +104,7 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         private void UpdateAccessibility()
         {
-            Accessibility = (_item.Current + (Mode.Instance.WorldState == WorldState.Retro ?
+            Accessibility = (_item.Current + (Mode.Instance.GenericKeys ?
                 ItemDictionary.Instance[ItemType.SmallKey].Current : 0)) >= _count ?
                 AccessibilityLevel.Normal : AccessibilityLevel.None;
         }

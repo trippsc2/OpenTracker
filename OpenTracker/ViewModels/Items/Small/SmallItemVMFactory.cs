@@ -1,5 +1,6 @@
 ﻿using Avalonia.Layout;
 using OpenTracker.Models.BossPlacements;
+using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Requirements;
@@ -24,10 +25,9 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <returns>
         /// A new small item control ViewModel instance.
         /// </returns>
-        private static SmallKeySmallItemVM GetSmallKeySmallItemControlVM(
-            ItemType type)
+        private static SmallKeySmallItemVM GetSmallKeySmallItemControlVM(IDungeon dungeon)
         {
-            return new SmallKeySmallItemVM(ItemDictionary.Instance[type]);
+            return new SmallKeySmallItemVM(dungeon);
         }
 
         /// <summary>
@@ -48,16 +48,16 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <summary>
         /// Returns a new small item control ViewModel instance representing dungeon items.
         /// </summary>
-        /// <param name="id">
+        /// <param name="section">
         /// The location ID.
         /// </param>
         /// <returns>
         /// A new small item control ViewModel instance.
         /// </returns>
         private static DungeonItemSmallItemVM GetDungeonItemSmallItemControlVM(
-            LocationID id)
+            ISection section)
         {
-            return new DungeonItemSmallItemVM(LocationDictionary.Instance[id].Sections[0]);
+            return new DungeonItemSmallItemVM(section);
         }
 
         /// <summary>
@@ -69,38 +69,37 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <returns>
         /// A new small item control ViewModel instance.
         /// </returns>
-        private static PrizeSmallItemVM GetPrizeSmallItemControlVM(LocationID id)
+        private static PrizeSmallItemVM GetPrizeSmallItemControlVM(IPrizeSection section)
         {
-            return new PrizeSmallItemVM(
-                (IPrizeSection)LocationDictionary.Instance[id].Sections[1]);
+            return new PrizeSmallItemVM(section);
         }
 
         /// <summary>
         /// Returns a new small item control ViewModel instance representing a big key.
         /// </summary>
-        /// <param name="type">
+        /// <param name="dungeon">
         /// The item type to be represented.
         /// </param>
         /// <returns>
         /// A new small item control ViewModel instance.
         /// </returns>
-        private static BigKeySmallItemVM GetBigKeySmallItemControlVM(ItemType type)
+        private static BigKeySmallItemVM GetBigKeySmallItemControlVM(IDungeon dungeon)
         {
-            return new BigKeySmallItemVM(ItemDictionary.Instance[type]);
+            return new BigKeySmallItemVM(dungeon.BigKeyItem);
         }
 
         /// <summary>
         /// Returns a new small item control ViewModel instance representing a boss.
         /// </summary>
-        /// <param name="id">
+        /// <param name="bossPlacement">
         /// The boss placement ID to be represented.
         /// </param>
         /// <returns>
         /// A new small item control ViewModel instance.
         /// </returns>
-        private static BossSmallItemVM GetBossSmallItemControlVM(BossPlacementID id)
+        private static BossSmallItemVM GetBossSmallItemControlVM(IBossPlacement bossPlacement)
         {
-            return new BossSmallItemVM(BossPlacementDictionary.Instance[id]);
+            return new BossSmallItemVM(bossPlacement);
         }
 
         /// <summary>
@@ -120,138 +119,51 @@ namespace OpenTracker.ViewModels.Items.Small
             LocationID location)
         {
             var smallItems = new ObservableCollection<SmallItemVMBase>();
+            var dungeon = (IDungeon)LocationDictionary.Instance[location];
 
-            switch (location)
+            if (dungeon.SmallKeyItem == null)
             {
-                case LocationID.HyruleCastle:
-                    {
-                        smallItems.Add(GetSmallKeySmallItemControlVM(ItemType.HCSmallKey));
-                        smallItems.Add(GetSpacerSmallItemControlVM(new AggregateRequirement(
-                            new List<IRequirement>
-                            {
-                                new ItemsPanelOrientationRequirement(Orientation.Vertical),
-                                RequirementDictionary.Instance[RequirementType.DungeonItemShuffleKeysanity]
-                            })));
-                        smallItems.Add(GetDungeonItemSmallItemControlVM(location));
-                    }
-                    break;
-                case LocationID.AgahnimTower:
-                    {
-                        smallItems.Add(GetSmallKeySmallItemControlVM(ItemType.ATSmallKey));
-                        smallItems.Add(GetSpacerSmallItemControlVM(new AggregateRequirement(
-                            new List<IRequirement>
-                            {
-                                new ItemsPanelOrientationRequirement(Orientation.Vertical),
-                                RequirementDictionary.Instance[RequirementType.DungeonItemShuffleKeysanity]
-                            })));
-                        smallItems.Add(GetDungeonItemSmallItemControlVM(location));
-                    }
-                    break;
-                case LocationID.EasternPalace:
-                    {
-                        smallItems.Add(GetSpacerSmallItemControlVM(
-                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]));
-                        smallItems.Add(GetBigKeySmallItemControlVM(ItemType.EPBigKey));
-                        smallItems.Add(GetDungeonItemSmallItemControlVM(location));
-                        smallItems.Add(GetPrizeSmallItemControlVM(location));
-                        smallItems.Add(GetBossSmallItemControlVM(BossPlacementID.EPBoss));
-                    }
-                    break;
-                case LocationID.DesertPalace:
-                    {
-                        smallItems.Add(GetSmallKeySmallItemControlVM(ItemType.DPSmallKey));
-                        smallItems.Add(GetBigKeySmallItemControlVM(ItemType.DPBigKey));
-                        smallItems.Add(GetDungeonItemSmallItemControlVM(location));
-                        smallItems.Add(GetPrizeSmallItemControlVM(location));
-                        smallItems.Add(GetBossSmallItemControlVM(BossPlacementID.DPBoss));
-                    }
-                    break;
-                case LocationID.TowerOfHera:
-                    {
-                        smallItems.Add(GetSmallKeySmallItemControlVM(ItemType.ToHSmallKey));
-                        smallItems.Add(GetBigKeySmallItemControlVM(ItemType.ToHBigKey));
-                        smallItems.Add(GetDungeonItemSmallItemControlVM(location));
-                        smallItems.Add(GetPrizeSmallItemControlVM(location));
-                        smallItems.Add(GetBossSmallItemControlVM(BossPlacementID.ToHBoss));
-                    }
-                    break;
-                case LocationID.PalaceOfDarkness:
-                    {
-                        smallItems.Add(GetSmallKeySmallItemControlVM(ItemType.PoDSmallKey));
-                        smallItems.Add(GetBigKeySmallItemControlVM(ItemType.PoDBigKey));
-                        smallItems.Add(GetDungeonItemSmallItemControlVM(location));
-                        smallItems.Add(GetPrizeSmallItemControlVM(location));
-                        smallItems.Add(GetBossSmallItemControlVM(BossPlacementID.PoDBoss));
-                    }
-                    break;
-                case LocationID.SwampPalace:
-                    {
-                        smallItems.Add(GetSmallKeySmallItemControlVM(ItemType.SPSmallKey));
-                        smallItems.Add(GetBigKeySmallItemControlVM(ItemType.SPBigKey));
-                        smallItems.Add(GetDungeonItemSmallItemControlVM(location));
-                        smallItems.Add(GetPrizeSmallItemControlVM(location));
-                        smallItems.Add(GetBossSmallItemControlVM(BossPlacementID.SPBoss));
-                    }
-                    break;
-                case LocationID.SkullWoods:
-                    {
-                        smallItems.Add(GetSmallKeySmallItemControlVM(ItemType.SWSmallKey));
-                        smallItems.Add(GetBigKeySmallItemControlVM(ItemType.SWBigKey));
-                        smallItems.Add(GetDungeonItemSmallItemControlVM(location));
-                        smallItems.Add(GetPrizeSmallItemControlVM(location));
-                        smallItems.Add(GetBossSmallItemControlVM(BossPlacementID.SWBoss));
-                    }
-                    break;
-                case LocationID.ThievesTown:
-                    {
-                        smallItems.Add(GetSmallKeySmallItemControlVM(ItemType.TTSmallKey));
-                        smallItems.Add(GetBigKeySmallItemControlVM(ItemType.TTBigKey));
-                        smallItems.Add(GetDungeonItemSmallItemControlVM(location));
-                        smallItems.Add(GetPrizeSmallItemControlVM(location));
-                        smallItems.Add(GetBossSmallItemControlVM(BossPlacementID.TTBoss));
-                    }
-                    break;
-                case LocationID.IcePalace:
-                    {
-                        smallItems.Add(GetSmallKeySmallItemControlVM(ItemType.IPSmallKey));
-                        smallItems.Add(GetBigKeySmallItemControlVM(ItemType.IPBigKey));
-                        smallItems.Add(GetDungeonItemSmallItemControlVM(location));
-                        smallItems.Add(GetPrizeSmallItemControlVM(location));
-                        smallItems.Add(GetBossSmallItemControlVM(BossPlacementID.IPBoss));
-                    }
-                    break;
-                case LocationID.MiseryMire:
-                    {
-                        smallItems.Add(GetSmallKeySmallItemControlVM(ItemType.MMSmallKey));
-                        smallItems.Add(GetBigKeySmallItemControlVM(ItemType.MMBigKey));
-                        smallItems.Add(GetDungeonItemSmallItemControlVM(location));
-                        smallItems.Add(GetPrizeSmallItemControlVM(location));
-                        smallItems.Add(GetBossSmallItemControlVM(BossPlacementID.MMBoss));
-                    }
-                    break;
-                case LocationID.TurtleRock:
-                    {
-                        smallItems.Add(GetSmallKeySmallItemControlVM(ItemType.TRSmallKey));
-                        smallItems.Add(GetBigKeySmallItemControlVM(ItemType.TRBigKey));
-                        smallItems.Add(GetDungeonItemSmallItemControlVM(location));
-                        smallItems.Add(GetPrizeSmallItemControlVM(location));
-                        smallItems.Add(GetBossSmallItemControlVM(BossPlacementID.TRBoss));
-                    }
-                    break;
-                case LocationID.GanonsTower:
-                    {
-                        smallItems.Add(GetSmallKeySmallItemControlVM(ItemType.GTSmallKey));
-                        smallItems.Add(GetBigKeySmallItemControlVM(ItemType.GTBigKey));
-                        smallItems.Add(GetDungeonItemSmallItemControlVM(location));
-                        smallItems.Add(GetBossSmallItemControlVM(BossPlacementID.GTBoss1));
-                        smallItems.Add(GetBossSmallItemControlVM(BossPlacementID.GTBoss2));
-                        smallItems.Add(GetBossSmallItemControlVM(BossPlacementID.GTBoss3));
-                    }
-                    break;
-                default:
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(location));
-                    }
+                smallItems.Add(GetSpacerSmallItemControlVM(
+                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]));
+            }
+            else
+            {
+                smallItems.Add(GetSmallKeySmallItemControlVM(dungeon));
+            }
+
+            if (dungeon.BigKeyItem == null)
+            {
+                smallItems.Add(GetSpacerSmallItemControlVM(
+                    new AggregateRequirement(
+                        new List<IRequirement>
+                        {
+                            new ItemsPanelOrientationRequirement(Orientation.Vertical),
+                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]
+                        })));
+            }
+            else
+            {
+                smallItems.Add(GetBigKeySmallItemControlVM(dungeon));
+            }
+
+            foreach (var section in dungeon.Sections)
+            {
+                if (section is IDungeonItemSection)
+                {
+                    smallItems.Add(GetDungeonItemSmallItemControlVM(section));
+                }
+
+                if (section is IPrizeSection prizeSection && location != LocationID.AgahnimTower &&
+                    location != LocationID.GanonsTower)
+                {
+                    smallItems.Add(GetPrizeSmallItemControlVM(prizeSection));
+                }
+
+                if (section is IBossSection bossSection &&
+                    bossSection.BossPlacement.Boss != BossType.Aga)
+                {
+                    smallItems.Add(GetBossSmallItemControlVM(bossSection.BossPlacement));
+                }
             }
 
             return smallItems;

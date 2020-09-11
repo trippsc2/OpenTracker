@@ -83,7 +83,7 @@ namespace OpenTracker.ViewModels.Markings
         /// </summary>
         private void ClearMarking()
         {
-            UndoRedoManager.Instance.Execute(new SetMarking(_marking, null));
+            UndoRedoManager.Instance.Execute(new SetMarking(_marking, MarkType.Unknown));
             PopupOpen = false;
         }
 
@@ -95,12 +95,12 @@ namespace OpenTracker.ViewModels.Markings
         /// </param>
         private void ChangeMarking(MarkType? marking)
         {
-            if (marking == null)
+            if (!marking.HasValue)
             {
                 return;
             }
 
-            UndoRedoManager.Instance.Execute(new SetMarking(_marking, marking));
+            UndoRedoManager.Instance.Execute(new SetMarking(_marking, marking.Value));
             PopupOpen = false;
         }
     }

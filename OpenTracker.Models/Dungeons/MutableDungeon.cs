@@ -21,7 +21,7 @@ namespace OpenTracker.Models.Dungeons
             new Dictionary<KeyDoorID, IKeyDoor>();
         public Dictionary<KeyDoorID, IKeyDoor> BigKeyDoors { get; } =
             new Dictionary<KeyDoorID, IKeyDoor>();
-        public DungeonNodeDictionary RequirementNodes { get; }
+        public DungeonNodeDictionary Nodes { get; }
         public Dictionary<DungeonItemID, IDungeonItem> Items { get; } =
             new Dictionary<DungeonItemID, IDungeonItem>();
         public List<IDungeonItem> BossItems { get; } =
@@ -37,7 +37,7 @@ namespace OpenTracker.Models.Dungeons
         {
             KeyDoorDictionary = new KeyDoorDictionary(this);
             ItemDictionary = new DungeonItemDictionary(this);
-            RequirementNodes = new DungeonNodeDictionary(this, dungeon);
+            Nodes = new DungeonNodeDictionary(this, dungeon);
             _dungeon = dungeon ?? throw new ArgumentNullException(nameof(dungeon));
 
             _dungeon.DungeonDataCreated += OnDungeonDataCreated;
@@ -76,6 +76,11 @@ namespace OpenTracker.Models.Dungeons
                     BossItems.Add(ItemDictionary[boss]);
                 }
 
+                foreach (DungeonNodeID node in _dungeon.Nodes)
+                {
+                    _ = Nodes[node];
+                }
+
                 _dungeon.DungeonDataCreated -= OnDungeonDataCreated;
             }
         }
@@ -93,15 +98,15 @@ namespace OpenTracker.Models.Dungeons
                 throw new ArgumentNullException(nameof(unlockedDoors));
             }
 
-            foreach (KeyDoor smallKeyDoor in SmallKeyDoors.Values)
+            foreach (var smallKeyDoor in SmallKeyDoors.Keys)
             {
-                if (unlockedDoors.Contains(smallKeyDoor.ID))
+                if (unlockedDoors.Contains(smallKeyDoor))
                 {
-                    smallKeyDoor.Unlocked = true;
+                    SmallKeyDoors[smallKeyDoor].Unlocked = true;
                 }
                 else
                 {
-                    smallKeyDoor.Unlocked = false;
+                    SmallKeyDoors[smallKeyDoor].Unlocked = false;
                 }
             }
         }
@@ -114,27 +119,52 @@ namespace OpenTracker.Models.Dungeons
         /// </param>
         public void SetBigKeyDoorState(bool unlocked)
         {
-            foreach (KeyDoor bigKeyDoor in BigKeyDoors.Values)
+            foreach (IKeyDoor bigKeyDoor in BigKeyDoors.Values)
             {
                 bigKeyDoor.Unlocked = unlocked;
             }
         }
 
         /// <summary>
-        /// Returns the number of keys that are available in all dungeon nodes for free.
+        /// Returns the number of keys that are available in all dungeon nodes for free without
+        /// sequence break.
         /// </summary>
         /// <returns>
-        /// A 32-bit integer representing the number of keys that can be collected for free.
+        /// A 32-bit integer representing the number of keys that can be collected for free
+        /// without sequence break.
         /// </returns>
         public int GetFreeKeys()
         {
             int freeKeys = 0;
 
-            foreach (DungeonNode node in RequirementNodes.Values)
+            foreach (DungeonNode node in Nodes.Values)
+            {
+                if (node.Accessibility == AccessibilityLevel.Normal)
+                {
+                    freeKeys += node.KeysProvided;
+                }
+            }
+
+            return freeKeys;
+        }
+
+        /// <summary>
+        /// Returns the number of keys that are available in all dungeon nodes for free with
+        /// sequence break.
+        /// </summary>
+        /// <returns>
+        /// A 32-bit integer representing the number of keys that can be collected for free with
+        /// sequence break.
+        /// </returns>
+        public int GetFreeKeysSequenceBreak()
+        {
+            int freeKeys = 0;
+
+            foreach (DungeonNode node in Nodes.Values)
             {
                 if (node.Accessibility >= AccessibilityLevel.SequenceBreak)
                 {
-                    freeKeys += node.FreeKeysProvided;
+                    freeKeys += node.KeysProvided;
                 }
             }
 
@@ -151,12 +181,13 @@ namespace OpenTracker.Models.Dungeons
         {
             var accessibleKeyDoors = new List<(KeyDoorID, bool)>();
 
-            foreach (KeyDoor keyDoor in SmallKeyDoors.Values)
+            foreach (var key in SmallKeyDoors.Keys)
             {
+                var keyDoor = SmallKeyDoors[key];
+
                 if (keyDoor.Accessibility >= AccessibilityLevel.SequenceBreak && !keyDoor.Unlocked)
                 {
-                    accessibleKeyDoors.Add((keyDoor.ID,
-                        keyDoor.Accessibility == AccessibilityLevel.SequenceBreak));
+                    accessibleKeyDoors.Add((key, keyDoor.Accessibility == AccessibilityLevel.SequenceBreak));
                 }
             }
 
@@ -301,15 +332,20 @@ namespace OpenTracker.Models.Dungeons
                     return (AccessibilityLevel.Normal, _dungeon.Sections[0].Available, sequenceBroken);
                 }
             }
-
-            if (!Mode.Instance.MapCompassShuffle)
-            {
-                inaccessibleItems -= _dungeon.Map + _dungeon.Compass;
-
-                if (Mode.Instance.GuaranteedBossItems)
+            
+            if (!Mode.Instance.MapShuffle)
                 {
-                    inaccessibleItems = Math.Max(inaccessibleItems, inaccessibleBosses);
+                    inaccessibleItems -= _dungeon.Map;
                 }
+            
+            if (!Mode.Instance.CompassShuffle)
+                {
+                    inaccessibleItems -= _dungeon.Compass;
+                }
+            
+            if (Mode.Instance.GuaranteedBossItems)
+            {
+                inaccessibleItems = Math.Max(inaccessibleItems, inaccessibleBosses);
             }
 
             if (inaccessibleItems <= 0)

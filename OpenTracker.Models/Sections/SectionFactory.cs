@@ -1,7 +1,6 @@
-﻿using OpenTracker.Models.AutoTracking;
+﻿using OpenTracker.Models.AutoTracking.AutotrackValues;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons;
-using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.RequirementNodes;
@@ -14,7 +13,7 @@ namespace OpenTracker.Models.Sections
     /// <summary>
     /// This is the class for creating section classes.
     /// </summary>
-    internal static class SectionFactory
+    public static class SectionFactory
     {
         /// <summary>
         /// Returns the name of the specified section by location ID and section index.
@@ -421,584 +420,53 @@ namespace OpenTracker.Models.Sections
         /// <returns>
         /// A list of connections to the section.
         /// </returns>
-        private static List<RequirementNodeConnection> GetSectionConnections(
-            LocationID id, int index = 0)
+        private static IRequirementNode GetSectionConnections(LocationID id, int index = 0)
         {
             switch (id)
             {
                 case LocationID.LinksHouse:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(RequirementNodeID.Start)
-                        };
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.Start];
                     }
                 case LocationID.Pedestal:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld,
-                                RequirementDictionary.Instance[RequirementType.Pedestal])
-                        };
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.Pedestal];
                     }
                 case LocationID.LumberjackCave:
+                case LocationID.LumberjackCaveEntrance:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(RequirementNodeID.LumberjackCaveEntrance),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld,
-                                RequirementDictionary.Instance[RequirementType.Inspect])
-                        };
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.LumberjackCave];
                     }
                 case LocationID.BlindsHouse when index == 0:
                 case LocationID.Tavern:
                 case LocationID.Dam when index == 0:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld,
-                                RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld,
-                                RequirementDictionary.Instance[RequirementType.SuperBunnyMirror])
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.LightWorldNotBunnyOrSuperBunnyMirror];
                     }
                 case LocationID.BlindsHouse when index == 1:
                 case LocationID.TheWell when index == 1:
                 case LocationID.ChickenHouse:
-                case LocationID.MushroomSpot:
                 case LocationID.SahasrahlasHut when index == 0:
                 case LocationID.AginahsCave:
                 case LocationID.Dam when index == 1:
+                case LocationID.MiniMoldormCave:
+                case LocationID.IceRodCave:
+                case LocationID.CastleSecretEntrance:
+                case LocationID.HypeFairyCaveEntrance:
+                case LocationID.MiniMoldormCaveEntrance:
+                case LocationID.IceRodCaveEntrance:
+                case LocationID.HypeFairyCaveTakeAny:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld,
-                                RequirementDictionary.Instance[RequirementType.NotBunnyLW])
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.LightWorldNotBunny];
                     }
                 case LocationID.TheWell when index == 0:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld,
-                                RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld,
-                                RequirementDictionary.Instance[RequirementType.SuperBunnyFallInHole])
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.LightWorldNotBunnyOrSuperBunnyFallInHole];
                     }
                 case LocationID.BottleVendor:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(RequirementNodeID.LightWorld)
-                        };
-                    }
-                case LocationID.SickKid:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld,
-                                RequirementDictionary.Instance[RequirementType.Bottle])
-                        };
-                    }
-                case LocationID.MagicBat:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.MagicBatLedge,
-                                RequirementDictionary.Instance[RequirementType.LWPowder])
-                        };
-                    }
-                case LocationID.RaceGame:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.RaceGameLedge,
-                                RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld,
-                                RequirementDictionary.Instance[RequirementType.Inspect])
-                        };
-                    }
-                case LocationID.Library:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld,
-                                RequirementDictionary.Instance[RequirementType.LWDash]),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld,
-                                RequirementDictionary.Instance[RequirementType.Inspect])
-                        };
-                    }
-                case LocationID.ForestHideout:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.ForestHideout),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld,
-                                RequirementDictionary.Instance[RequirementType.Inspect])
-                        };
-                    }
-                case LocationID.CastleSecret:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.CastleSecretFront),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.CastleSecretBack)
-                        };
-                    }
-                case LocationID.WitchsHut:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LWWitchArea,
-                                RequirementDictionary.Instance[RequirementType.Mushroom])
-                        };
-                    }
-                case LocationID.SahasrahlasHut when index == 1:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld,
-                                RequirementDictionary.Instance[RequirementType.GreenPendant])
-                        };
-                    }
-                case LocationID.BonkRocks:
-                case LocationID.NorthBonkRocks:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.NorthBonkRocks)
-                        };
-                    }
-                case LocationID.KingsTomb:
-                case LocationID.KingsTombEntrance:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.KingsTombGrave)
-                        };
-                    }
-                case LocationID.GroveDiggingSpot:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld,
-                                RequirementDictionary.Instance[RequirementType.LWShovel])
-                        };
-                    }
-                case LocationID.MiniMoldormCave:
-                case LocationID.MiniMoldormCaveEntrance:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.MiniMoldormCave)
-                        };
-                    }
-                case LocationID.IceRodCave:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.IceRodCave)
-                        };
-                    }
-                case LocationID.Hobo:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LWLakeHylia)
-                        };
-                    }
-                case LocationID.PyramidLedge:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DarkWorldEast)
-                        };
-                    }
-                case LocationID.FatFairy:
-                case LocationID.FatFairyEntrance:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.FatFairy)
-                        };
-                    }
-                case LocationID.HauntedGrove:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DarkWorldSouth)
-                        };
-                    }
-                case LocationID.HypeCave:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DarkWorldSouth,
-                                RequirementDictionary.Instance[RequirementType.NotBunnyDW])
-                        };
-                    }
-                case LocationID.BombosTablet:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.BombosTabletLedge,
-                                RequirementDictionary.Instance[RequirementType.Tablet])
-                        };
-                    }
-                case LocationID.SouthOfGrove:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.SouthOfGroveLedge,
-                                RequirementDictionary.Instance[RequirementType.NotBunnyLW])
-                        };
-                    }
-                case LocationID.DiggingGame:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DarkWorldSouth,
-                                RequirementDictionary.Instance[RequirementType.NotBunnyDW])
-                        };
-                    }
-                case LocationID.WaterfallFairy:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.WaterfallFairy)
-                        };
-                    }
-                case LocationID.ZoraArea when index == 0:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.Zora,
-                                RequirementDictionary.Instance[RequirementType.LWSwim]),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.Zora,
-                                RequirementDictionary.Instance[RequirementType.LWFakeFlippersSplashDeletion]),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.Zora,
-                                RequirementDictionary.Instance[RequirementType.LWWaterWalk]),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.Zora,
-                                RequirementDictionary.Instance[RequirementType.Inspect]),
-                        };
-                    }
-                case LocationID.ZoraArea when index == 1:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.Zora)
-                        };
-                    }
-                case LocationID.Catfish:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.Catfish,
-                                RequirementDictionary.Instance[RequirementType.NotBunnyDW])
-                        };
-                    }
-                case LocationID.GraveyardLedge:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LWGraveyardLedge,
-                                RequirementDictionary.Instance[RequirementType.NotBunnyLW])
-                        };
-                    }
-                case LocationID.DesertLedge:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DesertLedge),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld,
-                                RequirementDictionary.Instance[RequirementType.Inspect])
-                        };
-                    }
-                case LocationID.CShapedHouse:
-                case LocationID.TreasureGame:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DarkWorldWest,
-                                RequirementDictionary.Instance[RequirementType.NotBunnyDW]),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DarkWorldWest,
-                                RequirementDictionary.Instance[RequirementType.SuperBunnyMirror])
-                        };
-                    }
-                case LocationID.BombableShack:
-                case LocationID.BombableShackEntrance:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.BombableShack)
-                        };
-                    }
-                case LocationID.Blacksmith:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.BlacksmithPrison,
-                                RequirementDictionary.Instance[RequirementType.LightWorld])
-                        };
-                    }
-                case LocationID.PurpleChest:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.HammerPegsArea,
-                                RequirementDictionary.Instance[RequirementType.LightWorld])
-                        };
-                    }
-                case LocationID.HammerPegs:
-                case LocationID.HammerPegsEntrance:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.HammerPegs)
-                        };
-                    }
-                case LocationID.BumperCave:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.BumperCaveTop),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DarkWorldWest,
-                                RequirementDictionary.Instance[RequirementType.Inspect])
-                        };
-                    }
-                case LocationID.LakeHyliaIsland:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LakeHyliaIsland),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld,
-                                RequirementDictionary.Instance[RequirementType.Inspect])
-                        };
-                    }
-                case LocationID.MireShack:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.MireArea,
-                                RequirementDictionary.Instance[RequirementType.NotBunnyDW]),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.MireArea,
-                                RequirementDictionary.Instance[RequirementType.SuperBunnyMirror])
-                        };
-                    }
-                case LocationID.CheckerboardCave:
-                case LocationID.CheckerboardCaveEntrance:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.CheckerboardCave)
-                        };
-                    }
-                case LocationID.OldMan:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DeathMountainWestBottom,
-                                RequirementDictionary.Instance[RequirementType.DarkRoomDeathMountainEntry])
-                        };
-                    }
-                case LocationID.SpectacleRock when index == 0:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.SpectacleRockTop),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DeathMountainWestBottom,
-                                RequirementDictionary.Instance[RequirementType.Inspect])
-                        };
-                    }
-                case LocationID.SpectacleRock when index == 1:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DeathMountainWestBottom)
-                        };
-                    }
-                case LocationID.EtherTablet:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DeathMountainWestTop,
-                                RequirementDictionary.Instance[RequirementType.Tablet])
-                        };
-                    }
-                case LocationID.SpikeCave:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DarkDeathMountainWestBottom,
-                                RequirementDictionary.Instance[RequirementType.DWSpikeCave])
-                        };
-                    }
-                case LocationID.SpiralCave:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DeathMountainEastTop,
-                                RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DeathMountainEastTop,
-                                RequirementDictionary.Instance[RequirementType.SuperBunnyFallInHole])
-                        };
-                    }
-                case LocationID.ParadoxCave when index == 0:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DeathMountainEastTop,
-                                RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
-                             new RequirementNodeConnection(
-                                RequirementNodeID.DeathMountainEastBottom,
-                                RequirementDictionary.Instance[RequirementType.NotBunnyLW])
-                       };
-                    }
-                case LocationID.ParadoxCave when index == 1:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DeathMountainEastTop,
-                                RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DeathMountainEastBottom,
-                                RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DeathMountainEastTop,
-                                RequirementDictionary.Instance[RequirementType.SuperBunnyFallInHole]),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DeathMountainEastBottom,
-                                RequirementDictionary.Instance[RequirementType.SuperBunnyFallInHole])
-                        };
-                    }
-                case LocationID.SuperBunnyCave:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DarkDeathMountainTop,
-                                RequirementDictionary.Instance[RequirementType.NotBunnyDW]),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DarkDeathMountainEastBottom,
-                                RequirementDictionary.Instance[RequirementType.NotBunnyDW]),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DarkDeathMountainTop,
-                                RequirementDictionary.Instance[RequirementType.SuperBunnyMirror]),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DarkDeathMountainEastBottom,
-                                RequirementDictionary.Instance[RequirementType.SuperBunnyFallInHole])
-                        };
-                    }
-                case LocationID.HookshotCave when index == 0:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.HookshotCave,
-                                RequirementDictionary.Instance[RequirementType.DWHookshot]),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.HookshotCave,
-                                RequirementDictionary.Instance[RequirementType.DWBonkOverLedge])
-                        };
-                    }
-                case LocationID.HookshotCave when index == 1:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.HookshotCave,
-                                RequirementDictionary.Instance[RequirementType.DWHookshot]),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.HookshotCave,
-                                RequirementDictionary.Instance[RequirementType.DWHover])
-                        };
-                    }
-                case LocationID.FloatingIsland:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LWFloatingIsland),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DeathMountainEastTop,
-                                RequirementDictionary.Instance[RequirementType.Inspect])
-                        };
-                    }
-                case LocationID.MimicCave:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.MimicCave,
-                                RequirementDictionary.Instance[RequirementType.LWHammer])
-                        };
-                    }
                 case LocationID.LumberjackHouseEntrance:
                 case LocationID.KakarikoFortuneTellerEntrance:
                 case LocationID.WomanLeftDoor:
@@ -1040,222 +508,321 @@ namespace OpenTracker.Models.Sections
                 case LocationID.FortuneTellerTakeAny:
                 case LocationID.ChestGameTakeAny:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(RequirementNodeID.LightWorld)
-                        };
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld];
                     }
-                case LocationID.LumberjackCaveEntrance:
+                case LocationID.SickKid:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LumberjackCaveEntrance),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld,
-                                RequirementDictionary.Instance[RequirementType.Inspect])
-                        };
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.SickKid];
+                    }
+                case LocationID.MagicBat:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.MagicBat];
+                    }
+                case LocationID.RaceGame:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.RaceGame];
+                    }
+                case LocationID.Library:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.Library];
+                    }
+                case LocationID.MushroomSpot:
+                case LocationID.ForestHideout:
+                case LocationID.HoulihanHole:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunnyOrInspect];
+                    }
+                case LocationID.CastleSecret:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.LightWorldNotBunny];
+                    }
+                case LocationID.WitchsHut:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.WitchsHut];
+                    }
+                case LocationID.SahasrahlasHut when index == 1:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.Sahasrahla];
+                    }
+                case LocationID.BonkRocks:
+                case LocationID.CentralBonkRocksEntrance:
+                case LocationID.NorthBonkRocks:
+                case LocationID.CentralBonkRocksTakeAny:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.LightWorldDash];
+                    }
+                case LocationID.KingsTomb:
+                case LocationID.KingsTombEntrance:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.KingsTombGrave];
+                    }
+                case LocationID.GroveDiggingSpot:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.GroveDiggingSpot];
+                    }
+                case LocationID.Hobo:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.Hobo];
+                    }
+                case LocationID.PyramidLedge:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEast];
+                    }
+                case LocationID.FatFairy:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.BigBombToWall];
+                    }
+                case LocationID.HauntedGrove:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouth];
+                    }
+                case LocationID.HypeCave:
+                case LocationID.DiggingGame:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DarkWorldSouthNotBunny];
+                    }
+                case LocationID.BombosTablet:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.BombosTablet];
+                    }
+                case LocationID.SouthOfGrove:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.SouthOfGrove];
+                    }
+                case LocationID.WaterfallFairy:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.WaterfallFairy];
+                    }
+                case LocationID.ZoraArea when index == 0:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.ZoraLedge];
+                    }
+                case LocationID.ZoraArea when index == 1:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.ZoraArea];
+                    }
+                case LocationID.Catfish:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.CatfishArea];
+                    }
+                case LocationID.GraveyardLedge:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.LWGraveyardLedge];
+                    }
+                case LocationID.DesertLedge:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DesertLedgeItem];
+                    }
+                case LocationID.CShapedHouse:
+                case LocationID.TreasureGame:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DarkWorldWestNotBunnyOrSuperBunnyMirror];
+                    }
+                case LocationID.BombableShack:
+                case LocationID.BombableShackEntrance:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DarkWorldWestNotBunny];
+                    }
+                case LocationID.Blacksmith:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.Blacksmith];
+                    }
+                case LocationID.PurpleChest:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.PurpleChest];
+                    }
+                case LocationID.HammerPegs:
+                case LocationID.HammerPegsEntrance:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.HammerPegs];
+                    }
+                case LocationID.BumperCave:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.BumperCaveItem];
+                    }
+                case LocationID.LakeHyliaIsland:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.LakeHyliaIslandItem];
+                    }
+                case LocationID.MireShack:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.MireAreaNotBunnyOrSuperBunnyMirror];
+                    }
+                case LocationID.CheckerboardCave:
+                case LocationID.CheckerboardCaveEntrance:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.CheckerboardCave];
+                    }
+                case LocationID.OldMan:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DeathMountainEntryCaveDark];
+                    }
+                case LocationID.SpectacleRock when index == 0:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.SpectacleRockTopItem];
+                    }
+                case LocationID.SpectacleRock when index == 1:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DeathMountainWestBottom];
+                    }
+                case LocationID.EtherTablet:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.EtherTablet];
+                    }
+                case LocationID.SpikeCave:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.SpikeCaveChest];
+                    }
+                case LocationID.SpiralCave:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.SpiralCave];
+                    }
+                case LocationID.ParadoxCave when index == 0:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.ParadoxCaveNotBunny];
+                    }
+                case LocationID.ParadoxCave:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.ParadoxCaveTop];
+                    }
+                case LocationID.SuperBunnyCave:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.SuperBunnyCaveChests];
+                    }
+                case LocationID.HookshotCave when index == 0:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.HookshotCaveBonkableChest];
+                    }
+                case LocationID.HookshotCave when index == 1:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.HookshotCaveBack];
+                    }
+                case LocationID.FloatingIsland:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.FloatingIsland];
+                    }
+                case LocationID.MimicCave:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.MimicCave];
                     }
                 case LocationID.DeathMountainEntryCave:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DeathMountainEntry)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DeathMountainEntry];
                     }
                 case LocationID.DeathMountainExitCave:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DeathMountainExit)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DeathMountainExit];
                     }
                 case LocationID.GrassHouseEntrance:
                 case LocationID.GrassHouseTakeAny:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.GrassHouse)
-                        };
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.GrassHouse];
                     }
                 case LocationID.BombHutEntrance:
                 case LocationID.BombHutTakeAny:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.BombHut)
-                        };
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.BombHut];
                     }
                 case LocationID.MagicBatEntrance:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.MagicBatLedge),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld,
-                                RequirementDictionary.Instance[RequirementType.Inspect])
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.MagicBatEntrance];
                     }
                 case LocationID.RaceHouseLeft:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.RaceGameLedge)
-                        };
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.RaceGameLedge];
                     }
                 case LocationID.ForestHideoutEntrance:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.ForestHideout),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld,
-                                RequirementDictionary.Instance[RequirementType.Inspect])
-                        };
-                    }
-                case LocationID.CastleSecretEntrance:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.CastleSecretBack),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.CastleSecretFront,
-                                RequirementDictionary.Instance[RequirementType.Inspect])
-                        };
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunnyOrInspect];
                     }
                 case LocationID.CastleLeftEntrance:
                 case LocationID.CastleRightEntrance:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.HyruleCastleTop)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.HyruleCastleTop];
                     }
                 case LocationID.CastleTowerEntrance:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.AgahnimTowerEntrance)
-                        };
-                    }
-                case LocationID.CentralBonkRocksEntrance:
-                case LocationID.CentralBonkRocksTakeAny:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.CentralBonkRocks)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.AgahnimTowerEntrance];
                     }
                 case LocationID.WitchsHutEntrance:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LWWitchArea)
-                        };
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.LWWitchArea];
                     }
                 case LocationID.WaterfallFairyEntrance:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.WaterfallFairy)
-                        };
-                    }
-                case LocationID.HoulihanHole:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld,
-                                RequirementDictionary.Instance[RequirementType.NotBunnyLW]),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld,
-                                RequirementDictionary.Instance[RequirementType.Inspect])
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.WaterfallFairy];
                     }
                 case LocationID.SanctuaryGrave:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.EscapeGrave),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LightWorld,
-                                RequirementDictionary.Instance[RequirementType.Inspect])
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.SanctuaryGraveEntrance];
                     }
                 case LocationID.GraveyardLedgeEntrance:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LWGraveyardLedge)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.LWGraveyardLedge];
                     }
                 case LocationID.DesertLeftEntrance:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DesertLedge)
-                        };
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DesertLedge];
                     }
                 case LocationID.DesertBackEntrance:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DesertPalaceBackEntrance)
-                        };
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DesertBack];
                     }
                 case LocationID.DesertRightEntrance:
                     {
-                        return new List<RequirementNodeConnection>(0);
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.Inaccessible];
                     }
                 case LocationID.DesertFrontEntrance:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DesertPalaceFrontEntrance)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DesertPalaceFrontEntrance];
                     }
                 case LocationID.RupeeCaveEntrance:
+                case LocationID.IceFairyCaveEntrance:
+                case LocationID.IceFairyCaveTakeAny:
                 case LocationID.RupeeCaveTakeAny:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.RupeeCave)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.LightWorldLift1];
                     }
                 case LocationID.SkullWoodsBack:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.SkullWoodsBackEntrance)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.SkullWoodsBack];
                     }
                 case LocationID.ThievesTownEntrance:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.ThievesTownEntrance)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DarkWorldWestNotBunny];
                     }
                 case LocationID.CShapedHouseEntrance:
                 case LocationID.DarkVillageFortuneTellerEntrance:
@@ -1266,35 +833,20 @@ namespace OpenTracker.Models.Sections
                 case LocationID.DarkChapelTakeAny:
                 case LocationID.DarkVillageFortuneTellerTakeAny:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DarkWorldWest)
-                        };
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWest];
                     }
                 case LocationID.HammerHouse:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.HammerHouse)
-                        };
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.HammerHouse];
                     }
                 case LocationID.BumperCaveExit:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.BumperCaveTop)
-                        };
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.BumperCaveTop];
                     }
                 case LocationID.BumperCaveEntrance:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.BumperCave)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.BumperCaveEntry];
                     }
                 case LocationID.HypeCaveEntrance:
                 case LocationID.SwampPalaceEntrance:
@@ -1303,28 +855,18 @@ namespace OpenTracker.Models.Sections
                 case LocationID.DarkHyliaFortuneTeller:
                 case LocationID.ArrowGameTakeAny:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DarkWorldSouth)
-                        };
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouth];
                     }
                 case LocationID.DarkCentralBonkRocksEntrance:
                 case LocationID.DarkCentralBonkRocksTakeAny:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DWCentralBonkRocks)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DarkWorldSouthDash];
                     }
                 case LocationID.SouthOfGroveEntrance:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.SouthOfGroveLedge)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.SouthOfGroveLedge];
                     }
                 case LocationID.DarkTreesFairyCaveEntrance:
                 case LocationID.DarkSahasrahlaEntrance:
@@ -1333,115 +875,57 @@ namespace OpenTracker.Models.Sections
                 case LocationID.DarkSahasrahlaTakeAny:
                 case LocationID.DarkFluteSpotFiveTakeAny:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DarkWorldEast)
-                        };
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEast];
                     }
                 case LocationID.PalaceOfDarknessEntrance:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.PalaceOfDarknessEntrance)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DarkWorldEastNotBunny];
                     }
                 case LocationID.DarkWitchsHut:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DWWitchArea)
-                        };
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DWWitchArea];
+                    }
+                case LocationID.FatFairyEntrance:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.FatFairyEntrance];
                     }
                 case LocationID.GanonHole:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.GanonHole),
-                            new RequirementNodeConnection(
-                                RequirementNodeID.GanonHoleBack,
-                                RequirementDictionary.Instance[RequirementType.Inspect])
-                        };
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.GanonHole];
                     }
                 case LocationID.DarkIceRodCaveEntrance:
                 case LocationID.DarkIceRodCaveTakeAny:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DWIceRodCave)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DarkWorldSouthEastNotBunny];
                     }
                 case LocationID.DarkFakeIceRodCaveEntrance:
                 case LocationID.DarkFakeIceRodCaveTakeAny:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DarkWorldSouthEast)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DarkWorldSouthEast];
                     }
                 case LocationID.DarkIceRodRockEntrance:
                 case LocationID.DarkIceRodRockTakeAny:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DWIceRodRock)
-                        };
-                    }
-                case LocationID.HypeFairyCaveEntrance:
-                case LocationID.HypeFairyCaveTakeAny:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.HypeFairyCave)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DarkWorldSouthEastLift1];
                     }
                 case LocationID.UpgradeFairy:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.LakeHyliaFairyIsland)
-                        };
-                    }
-                case LocationID.IceRodCaveEntrance:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.IceRodCave)
-                        };
-                    }
-                case LocationID.IceFairyCaveEntrance:
-                case LocationID.IceFairyCaveTakeAny:
-                    {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.IceFairyCave)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.LakeHyliaFairyIsland];
                     }
                 case LocationID.IcePalaceEntrance:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.IcePalaceEntrance)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.IcePalaceIsland];
                     }
                 case LocationID.MiseryMireEntrance:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.MiseryMireEntrance)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.MiseryMireEntrance];
                     }
                 case LocationID.MireShackEntrance:
                 case LocationID.MireRightShackEntrance:
@@ -1449,11 +933,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.MireRightShackTakeAny:
                 case LocationID.MireCaveTakeAny:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.MireArea)
-                        };
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.MireArea];
                     }
                 case LocationID.DeathMountainEntranceBack:
                 case LocationID.OldManResidence:
@@ -1463,29 +943,20 @@ namespace OpenTracker.Models.Sections
                 case LocationID.SpectacleRockRight:
                 case LocationID.SpectacleRockTop:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DeathMountainWestBottom)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DeathMountainWestBottom];
                     }
                 case LocationID.SpikeCaveEntrance:
                 case LocationID.DarkMountainFairyEntrance:
                 case LocationID.DarkMountainFairyTakeAny:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DarkDeathMountainWestBottom)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DarkDeathMountainWestBottom];
                     }
                 case LocationID.TowerOfHeraEntrance:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DeathMountainWestTop)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DeathMountainWestTop];
                     }
                 case LocationID.SpiralCaveBottom:
                 case LocationID.EDMFairyCaveEntrance:
@@ -1493,1850 +964,77 @@ namespace OpenTracker.Models.Sections
                 case LocationID.ParadoxCaveBottom:
                 case LocationID.EDMFairyCaveTakeAny:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DeathMountainEastBottom)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DeathMountainEastBottom];
                     }
                 case LocationID.EDMConnectorBottom:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DeathMountainEastBottomConnector)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DeathMountainEastBottomConnector];
                     }
                 case LocationID.SpiralCaveTop:
                     {
-                        return new List<RequirementNodeConnection>
                         {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.SpiralCave)
-                        };
+                            return RequirementNodeDictionary.Instance[
+                                RequirementNodeID.SpiralCaveLedge];
+                        }
                     }
                 case LocationID.MimicCaveEntrance:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.MimicCave)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.MimicCaveLedge];
                     }
                 case LocationID.EDMConnectorTop:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DeathMountainEastTopConnector)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DeathMountainEastTopConnector];
                     }
                 case LocationID.ParadoxCaveTop:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DeathMountainEastTop)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DeathMountainEastTop];
                     }
                 case LocationID.SuperBunnyCaveBottom:
                 case LocationID.DeathMountainShop:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DarkDeathMountainEastBottom)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DarkDeathMountainEastBottom];
                     }
                 case LocationID.SuperBunnyCaveTop:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DarkDeathMountainTop)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DarkDeathMountainTop];
                     }
                 case LocationID.HookshotCaveEntrance:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.HookshotCave)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.HookshotCaveEntrance];
                     }
                 case LocationID.TurtleRockEntrance:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.TurtleRockFrontEntrance)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.TurtleRockFrontEntrance];
                     }
                 case LocationID.GanonsTowerEntrance:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.GanonsTowerEntrance)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.GanonsTowerEntrance];
                     }
                 case LocationID.TRLedgeLeft:
                 case LocationID.TRLedgeRight:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.TurtleRockTunnel)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.TurtleRockTunnel];
                     }
                 case LocationID.TRSafetyDoor:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.TurtleRockSafetyDoor)
-                        };
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.TurtleRockSafetyDoor];
                     }
                 case LocationID.HookshotCaveTop:
                     {
-                        return new List<RequirementNodeConnection>
-                        {
-                            new RequirementNodeConnection(
-                                RequirementNodeID.DWFloatingIsland)
-                        };
-                    }
-            }
-
-            throw new ArgumentOutOfRangeException(nameof(id));
-        }
-
-        /// <summary>
-        /// Returns the autotracking function of the section.
-        /// </summary>
-        /// <param name="id">
-        /// The location ID.
-        /// </param>
-        /// <param name="index">
-        /// The section index.
-        /// </param>
-        /// <returns>
-        /// The autotracking function of the section.
-        /// </returns>
-        private static Func<int?> GetSectionAutoTrackFunction(LocationID id, int index = 0)
-        {
-            switch (id)
-            {
-                case LocationID.LinksHouse:
-                    {
-                        return () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[2]
-                                {
-                                    (MemorySegmentType.Room, 1, 4),
-                                    (MemorySegmentType.Room, 520, 16)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                return result.Value > 0 ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.Pedestal:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.OverworldEvent, 128, 64);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.LumberjackCave:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 453, 2);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.BlindsHouse when index == 0:
-                    {
-                        return () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[4]
-                                {
-                                    (MemorySegmentType.Room, 570, 32),
-                                    (MemorySegmentType.Room, 570, 64),
-                                    (MemorySegmentType.Room, 570, 128),
-                                    (MemorySegmentType.Room, 571, 1)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                return 4 - result.Value;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.BlindsHouse when index == 1:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 570, 16);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.TheWell when index == 0:
-                    {
-                        return () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[4]
-                                {
-                                    (MemorySegmentType.Room, 94, 32),
-                                    (MemorySegmentType.Room, 94, 64),
-                                    (MemorySegmentType.Room, 94, 128),
-                                    (MemorySegmentType.Room, 95, 1)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                return 4 - result.Value;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.TheWell when index == 1:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 94, 16);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.BottleVendor:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Item, 137, 2);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.ChickenHouse:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 528, 16);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.Tavern:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 518, 16);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.SickKid:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.NPCItem, 0, 4);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.MagicBat:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.NPCItem, 1, 128);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.RaceGame:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.OverworldEvent, 40, 64);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.Library:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.NPCItem, 0, 128);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.MushroomSpot:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.NPCItem, 1, 16);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.ForestHideout:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 451, 2);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.CastleSecret when index == 0:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Item, 134, 1);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.CastleSecret when index == 1:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 170, 16);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.WitchsHut:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.NPCItem, 1, 32);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.SahasrahlasHut when index == 0:
-                    {
-                        return () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[3]
-                                {
-                                    (MemorySegmentType.Room, 522, 16),
-                                    (MemorySegmentType.Room, 522, 32),
-                                    (MemorySegmentType.Room, 522, 64)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                return 3 - result.Value;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.SahasrahlasHut when index == 1:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.NPCItem, 0, 16);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.BonkRocks:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 584, 16);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.KingsTomb:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 550, 16);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.AginahsCave:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 532, 16);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.GroveDiggingSpot:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.OverworldEvent, 42, 64);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.Dam when index == 0:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 534, 16);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.Dam when index == 1:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.OverworldEvent, 59, 64);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.MiniMoldormCave:
-                    {
-                        return () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[5]
-                                {
-                                    (MemorySegmentType.Room, 582, 16),
-                                    (MemorySegmentType.Room, 582, 32),
-                                    (MemorySegmentType.Room, 582, 64),
-                                    (MemorySegmentType.Room, 582, 128),
-                                    (MemorySegmentType.Room, 583, 4)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                return 5 - result.Value;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.IceRodCave:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 576, 16);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.Hobo:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Item, 137, 1);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.PyramidLedge:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.OverworldEvent, 91, 64);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.FatFairy:
-                    {
-                        return () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[2]
-                                {
-                                    (MemorySegmentType.Room, 556, 16),
-                                    (MemorySegmentType.Room, 556, 32)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                return 2 - result.Value;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.HauntedGrove:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.NPCItem, 0, 8);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.HypeCave:
-                    {
-                        return () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[5]
-                                {
-                                    (MemorySegmentType.Room, 572, 16),
-                                    (MemorySegmentType.Room, 572, 32),
-                                    (MemorySegmentType.Room, 572, 64),
-                                    (MemorySegmentType.Room, 572, 128),
-                                    (MemorySegmentType.Room, 573, 4)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                return 5 - result.Value;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.BombosTablet:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.NPCItem, 1, 2);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.SouthOfGrove:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 567, 4);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.DiggingGame:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.OverworldEvent, 104, 64);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.WaterfallFairy:
-                    {
-                        return () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[2]
-                                {
-                                    (MemorySegmentType.Room, 552, 16),
-                                    (MemorySegmentType.Room, 552, 32)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                return 2 - result.Value;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.ZoraArea when index == 0:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.OverworldEvent, 129, 64);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.ZoraArea when index == 1:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.NPCItem, 0, 2);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.Catfish:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.NPCItem, 0, 32);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.GraveyardLedge:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 567, 2);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.DesertLedge:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.OverworldEvent, 48, 64);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.CShapedHouse:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 568, 16);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.TreasureGame:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 525, 4);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.BombableShack:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 524, 16);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.Blacksmith:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.NPCItem, 1, 4);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.PurpleChest:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Item, 137, 16);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.HammerPegs:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 591, 4);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.BumperCave:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.OverworldEvent, 74, 64);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.LakeHyliaIsland:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.OverworldEvent, 53, 64);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.MireShack:
-                    {
-                        return () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[2]
-                                {
-                                    (MemorySegmentType.Room, 538, 16),
-                                    (MemorySegmentType.Room, 538, 32)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                return 2 - result.Value;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.CheckerboardCave:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 589, 2);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.OldMan:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.NPCItem, 0, 1);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.SpectacleRock when index == 0:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.OverworldEvent, 3, 64);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.SpectacleRock when index == 1:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 469, 4);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.EtherTablet:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.NPCItem, 1, 1);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.SpikeCave:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 558, 16);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.SpiralCave:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 508, 16);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.ParadoxCave when index == 0:
-                    {
-                        return () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[2]
-                                {
-                                    (MemorySegmentType.Room, 510, 16),
-                                    (MemorySegmentType.Room, 510, 32)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                return 2 - result.Value;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.ParadoxCave when index == 1:
-                    {
-                        return () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[5]
-                                {
-                                    (MemorySegmentType.Room, 478, 16),
-                                    (MemorySegmentType.Room, 478, 32),
-                                    (MemorySegmentType.Room, 478, 64),
-                                    (MemorySegmentType.Room, 478, 128),
-                                    (MemorySegmentType.Room, 479, 1)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                return 5 - result.Value;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.SuperBunnyCave:
-                    {
-                        return () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[2]
-                                {
-                                    (MemorySegmentType.Room, 496, 16),
-                                    (MemorySegmentType.Room, 496, 32)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                return 2 - result.Value;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.HookshotCave when index == 0:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 120, 128);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.HookshotCave when index == 1:
-                    {
-                        return () =>
-                        {
-                            int? result = AutoTracker.Instance.CheckMemoryFlagArray(
-                                new (MemorySegmentType, int, byte)[3]
-                                {
-                                    (MemorySegmentType.Room, 120, 16),
-                                    (MemorySegmentType.Room, 120, 32),
-                                    (MemorySegmentType.Room, 120, 64)
-                                });
-
-                            if (result.HasValue)
-                            {
-                                return 3 - result.Value;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.FloatingIsland:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.OverworldEvent, 5, 64);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.MimicCave:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 536, 16);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.AgahnimTower:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 133, 2);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.EasternPalace:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 401, 8);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.DesertPalace:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 103, 8);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.TowerOfHera:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 15, 8);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.PalaceOfDarkness:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 181, 8);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.SwampPalace:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 13, 8);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.SkullWoods:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 83, 8);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.ThievesTown:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 345, 8);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.IcePalace:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 445, 8);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.MiseryMire:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 289, 8);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.TurtleRock:
-                    {
-                        return () =>
-                        {
-                            bool? result = AutoTracker.Instance.CheckMemoryFlag(
-                                MemorySegmentType.Room, 329, 8);
-
-                            if (result.HasValue)
-                            {
-                                return result.Value ? 0 : 1;
-                            }
-
-                            return null;
-                        };
-                    }
-                case LocationID.GanonsTower:
-                    {
-                        return () => null;
-                    }
-            }
-
-            throw new ArgumentOutOfRangeException(nameof(id));
-        }
-
-        /// <summary>
-        /// Returns a list of memory addresses to subscribe to for the specified section.
-        /// </summary>
-        /// <param name="id">
-        /// The location ID.
-        /// </param>
-        /// <param name="index">
-        /// The section index.
-        /// </param>
-        /// <returns>
-        /// A list of memory addresses.
-        /// </returns>
-        private static List<(MemorySegmentType, int)> GetSectionMemoryAddresses(
-            LocationID id, int index = 0)
-        {
-            switch (id)
-            {
-                case LocationID.LinksHouse:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 1),
-                            (MemorySegmentType.Room, 520)
-                        };
-                    }
-                case LocationID.Pedestal:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.OverworldEvent, 128)
-                        };
-                    }
-                case LocationID.LumberjackCave:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 453)
-                        };
-                    }
-                case LocationID.BlindsHouse when index == 0:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 570),
-                            (MemorySegmentType.Room, 571)
-                        };
-                    }
-                case LocationID.BlindsHouse when index == 1:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 570)
-                        };
-                    }
-                case LocationID.TheWell when index == 0:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 94),
-                            (MemorySegmentType.Room, 95)
-                        };
-                    }
-                case LocationID.TheWell when index == 1:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 94)
-                        };
-                    }
-                case LocationID.BottleVendor:
-                case LocationID.Hobo:
-                case LocationID.PurpleChest:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Item, 137)
-                        };
-                    }
-                case LocationID.ChickenHouse:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 528)
-                        };
-                    }
-                case LocationID.Tavern:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 518)
-                        };
-                    }
-                case LocationID.SickKid:
-                case LocationID.Library:
-                case LocationID.SahasrahlasHut when index == 1:
-                case LocationID.HauntedGrove:
-                case LocationID.ZoraArea when index == 1:
-                case LocationID.Catfish:
-                case LocationID.OldMan:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.NPCItem, 0)
-                        };
-                    }
-                case LocationID.MagicBat:
-                case LocationID.MushroomSpot:
-                case LocationID.WitchsHut:
-                case LocationID.BombosTablet:
-                case LocationID.Blacksmith:
-                case LocationID.EtherTablet:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.NPCItem, 1)
-                        };
-                    }
-                case LocationID.RaceGame:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.OverworldEvent, 40)
-                        };
-                    }
-                case LocationID.ForestHideout:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 451)
-                        };
-                    }
-                case LocationID.CastleSecret when index == 0:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Item, 134)
-                        };
-                    }
-                case LocationID.CastleSecret when index == 1:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 170)
-                        };
-                    }
-                case LocationID.SahasrahlasHut when index == 0:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 522)
-                        };
-                    }
-                case LocationID.BonkRocks:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 584)
-                        };
-                    }
-                case LocationID.KingsTomb:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 550)
-                        };
-                    }
-                case LocationID.AginahsCave:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 532)
-                        };
-                    }
-                case LocationID.GroveDiggingSpot:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.OverworldEvent, 42)
-                        };
-                    }
-                case LocationID.Dam when index == 0:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 534)
-                        };
-                    }
-                case LocationID.Dam when index == 1:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.OverworldEvent, 59)
-                        };
-                    }
-                case LocationID.MiniMoldormCave:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 582),
-                            (MemorySegmentType.Room, 583)
-                        };
-                    }
-                case LocationID.IceRodCave:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 576)
-                        };
-                    }
-                case LocationID.PyramidLedge:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.OverworldEvent, 91)
-                        };
-                    }
-                case LocationID.FatFairy:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 556)
-                        };
-                    }
-                case LocationID.HypeCave:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 572),
-                            (MemorySegmentType.Room, 573)
-                        };
-                    }
-                case LocationID.SouthOfGrove:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 567)
-                        };
-                    }
-                case LocationID.DiggingGame:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.OverworldEvent, 104)
-                        };
-                    }
-                case LocationID.WaterfallFairy:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 552)
-                        };
-                    }
-                case LocationID.ZoraArea when index == 0:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.OverworldEvent, 129)
-                        };
-                    }
-                case LocationID.GraveyardLedge:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 567)
-                        };
-                    }
-                case LocationID.DesertLedge:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.OverworldEvent, 48)
-                        };
-                    }
-                case LocationID.CShapedHouse:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 568)
-                        };
-                    }
-                case LocationID.TreasureGame:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 525)
-                        };
-                    }
-                case LocationID.BombableShack:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 524)
-                        };
-                    }
-                case LocationID.HammerPegs:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 591)
-                        };
-                    }
-                case LocationID.BumperCave:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.OverworldEvent, 74)
-                        };
-                    }
-                case LocationID.LakeHyliaIsland:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.OverworldEvent, 53)
-                        };
-                    }
-                case LocationID.MireShack:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 538)
-                        };
-                    }
-                case LocationID.CheckerboardCave:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 589)
-                        };
-                    }
-                case LocationID.SpectacleRock when index == 0:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.OverworldEvent, 3)
-                        };
-                    }
-                case LocationID.SpectacleRock when index == 1:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 469)
-                        };
-                    }
-                case LocationID.SpikeCave:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 558)
-                        };
-                    }
-                case LocationID.SpiralCave:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 508)
-                        };
-                    }
-                case LocationID.ParadoxCave when index == 0:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 510)
-                        };
-                    }
-                case LocationID.ParadoxCave when index == 1:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 478),
-                            (MemorySegmentType.Room, 479)
-                        };
-                    }
-                case LocationID.SuperBunnyCave:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 496)
-                        };
-                    }
-                case LocationID.HookshotCave:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 120)
-                        };
-                    }
-                case LocationID.FloatingIsland:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.OverworldEvent, 5)
-                        };
-                    }
-                case LocationID.MimicCave:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 536)
-                        };
-                    }
-                case LocationID.AgahnimTower:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 133)
-                        };
-                    }
-                case LocationID.EasternPalace:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 401)
-                        };
-                    }
-                case LocationID.DesertPalace:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 103)
-                        };
-                    }
-                case LocationID.TowerOfHera:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 15)
-                        };
-                    }
-                case LocationID.PalaceOfDarkness:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 181)
-                        };
-                    }
-                case LocationID.SwampPalace:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 13)
-                        };
-                    }
-                case LocationID.SkullWoods:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 83)
-                        };
-                    }
-                case LocationID.ThievesTown:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 345)
-                        };
-                    }
-                case LocationID.IcePalace:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 445)
-                        };
-                    }
-                case LocationID.MiseryMire:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 289)
-                        };
-                    }
-                case LocationID.TurtleRock:
-                    {
-                        return new List<(MemorySegmentType, int)>
-                        {
-                            (MemorySegmentType.Room, 329)
-                        };
-                    }
-                case LocationID.GanonsTower:
-                    {
-                        return new List<(MemorySegmentType, int)>(0);
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DWFloatingIsland];
                     }
             }
 
@@ -3362,7 +1060,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.Dam when index == 0:
                 case LocationID.SpectacleRock when index == 1:
                     {
-                        return RequirementDictionary.Instance[RequirementType.EntranceShuffleOff];
+                        return RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll];
                     }
                 case LocationID.AgahnimTower when index == 0:
                     {
@@ -3395,8 +1093,9 @@ namespace OpenTracker.Models.Sections
         {
             return new ItemSection(
                 GetSectionName(id, index), GetItemSectionTotal(id, index),
-                GetSectionConnections(id, index), GetSectionAutoTrackFunction(id, index),
-                GetSectionMemoryAddresses(id, index), GetSectionRequirement(id, index));
+                GetSectionConnections(id, index),
+                AutoTrackValueFactory.GetSectionAutoTrackValue(id, index),
+                GetSectionRequirement(id, index));
         }
 
         /// <summary>
@@ -3624,6 +1323,23 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
+        /// Returns whether the prize section can always be cleared.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID.
+        /// </param>
+        /// <param name="index">
+        /// The section index.
+        /// </param>
+        /// <returns>
+        /// A boolean representing whether the prize section can always be cleared.
+        /// </returns>
+        private static bool GetPrizeSectionAlwaysClearable(LocationID id, int index)
+        {
+            return id == LocationID.GanonsTower && index == 4;
+        }
+
+        /// <summary>
         /// Returns a new prize section instance for the specified section.
         /// </summary>
         /// <param name="id">
@@ -3639,8 +1355,9 @@ namespace OpenTracker.Models.Sections
         {
             return new PrizeSection(
                 GetSectionName(id, index), GetSectionBossPlacement(id, index),
-                GetSectionPrizePlacement(id), GetSectionAutoTrackFunction(id, index),
-                GetSectionMemoryAddresses(id, index), GetSectionRequirement(id, index));
+                GetSectionPrizePlacement(id), 
+                AutoTrackValueFactory.GetSectionAutoTrackValue(id, index),
+                GetPrizeSectionAlwaysClearable(id, index), GetSectionRequirement(id, index));
         }
 
         /// <summary>
@@ -3652,32 +1369,27 @@ namespace OpenTracker.Models.Sections
         /// <returns>
         /// The item provided.
         /// </returns>
-        private static IItem GetEntranceSectionItemProvided(LocationID id)
+        private static IRequirementNode GetEntranceSectionExitProvided(LocationID id)
         {
             switch (id)
             {
                 case LocationID.LumberjackHouseEntrance:
-                case LocationID.LumberjackCaveEntrance:
                 case LocationID.KakarikoFortuneTellerEntrance:
                 case LocationID.WomanLeftDoor:
                 case LocationID.WomanRightDoor:
                 case LocationID.LeftSnitchHouseEntrance:
                 case LocationID.RightSnitchHouseEntrance:
                 case LocationID.BlindsHouseEntrance:
-                case LocationID.TheWellEntrance:
                 case LocationID.ChickenHouseEntrance:
                 case LocationID.GrassHouseEntrance:
                 case LocationID.TavernFront:
                 case LocationID.KakarikoShop:
                 case LocationID.SickKidEntrance:
                 case LocationID.BlacksmithHouse:
-                case LocationID.MagicBatEntrance:
                 case LocationID.ChestGameEntrance:
                 case LocationID.RaceHouseRight:
                 case LocationID.LibraryEntrance:
-                case LocationID.ForestHideoutEntrance:
                 case LocationID.ForestChestGameEntrance:
-                case LocationID.CastleSecretEntrance:
                 case LocationID.CastleMainEntrance:
                 case LocationID.DamEntrance:
                 case LocationID.CentralBonkRocksEntrance:
@@ -3685,8 +1397,6 @@ namespace OpenTracker.Models.Sections
                 case LocationID.TreesFairyCaveEntrance:
                 case LocationID.PegsFairyCaveEntrance:
                 case LocationID.EasternPalaceEntrance:
-                case LocationID.HoulihanHole:
-                case LocationID.SanctuaryGrave:
                 case LocationID.NorthBonkRocks:
                 case LocationID.DesertRightEntrance:
                 case LocationID.AginahsCaveEntrance:
@@ -3702,56 +1412,71 @@ namespace OpenTracker.Models.Sections
                 case LocationID.IceFairyCaveEntrance:
                 case LocationID.LinksHouseEntrance:
                     {
-                        return ItemDictionary.Instance[ItemType.LightWorldAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld];
+                    }
+                case LocationID.LumberjackCaveEntrance:
+                case LocationID.ForestHideoutEntrance:
+                case LocationID.TheWellEntrance:
+                case LocationID.MagicBatEntrance:
+                case LocationID.CastleSecretEntrance:
+                case LocationID.HoulihanHole:
+                case LocationID.SanctuaryGrave:
+                case LocationID.GanonHole:
+                    {
+                        return null;
                     }
                 case LocationID.DeathMountainEntryCave:
                     {
-                        return ItemDictionary.Instance[ItemType.DeathMountainEntryAccess];
+                        return RequirementNodeDictionary
+                            .Instance[RequirementNodeID.DeathMountainEntry];
                     }
                 case LocationID.DeathMountainExitCave:
                     {
-                        return ItemDictionary.Instance[ItemType.DeathMountainExitAccess];
+                        return RequirementNodeDictionary
+                            .Instance[RequirementNodeID.DeathMountainExit];
                     }
                 case LocationID.BombHutEntrance:
                     {
-                        return ItemDictionary.Instance[ItemType.BombHutAccess];
+                        return RequirementNodeDictionary
+                            .Instance[RequirementNodeID.BombHut];
                     }
                 case LocationID.RaceHouseLeft:
                     {
-                        return ItemDictionary.Instance[ItemType.RaceGameLedgeAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.RaceGameLedge];
                     }
                 case LocationID.CastleLeftEntrance:
                 case LocationID.CastleRightEntrance:
                 case LocationID.CastleTowerEntrance:
                     {
-                        return ItemDictionary.Instance[ItemType.HyruleCastleTopAccess];
+                        return RequirementNodeDictionary
+                            .Instance[RequirementNodeID.HyruleCastleTop];
                     }
                 case LocationID.WitchsHutEntrance:
                     {
-                        return ItemDictionary.Instance[ItemType.LWWitchAreaAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.LWWitchArea];
                     }
                 case LocationID.WaterfallFairyEntrance:
                     {
-                        return ItemDictionary.Instance[ItemType.WaterfallFairyAccess];
+                        return RequirementNodeDictionary
+                            .Instance[RequirementNodeID.WaterfallFairy];
                     }
                 case LocationID.KingsTombEntrance:
                     {
-                        return ItemDictionary.Instance[ItemType.LWKingsTombAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.KingsTomb];
                     }
                 case LocationID.GraveyardLedgeEntrance:
                     {
-                        return ItemDictionary.Instance[ItemType.LWGraveyardLedgeAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.LWGraveyardLedge];
                     }
                 case LocationID.DesertLeftEntrance:
                     {
-                        return ItemDictionary.Instance[ItemType.DesertLedgeAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DesertLedge];
                     }
                 case LocationID.DesertBackEntrance:
                     {
-                        return ItemDictionary.Instance[ItemType.DesertPalaceBackEntranceAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DesertBack];
                     }
                 case LocationID.DesertFrontEntrance:
-                case LocationID.GanonHole:
                     {
                         return null;
                     }
@@ -3765,23 +1490,23 @@ namespace OpenTracker.Models.Sections
                 case LocationID.TreasureGameEntrance:
                 case LocationID.BombableShackEntrance:
                     {
-                        return ItemDictionary.Instance[ItemType.DarkWorldWestAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWest];
                     }
                 case LocationID.HammerHouse:
                     {
-                        return ItemDictionary.Instance[ItemType.HammerHouseAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.HammerHouse];
                     }
                 case LocationID.HammerPegsEntrance:
                     {
-                        return ItemDictionary.Instance[ItemType.HammerPegsAreaAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.HammerPegsArea];
                     }
                 case LocationID.BumperCaveExit:
                     {
-                        return ItemDictionary.Instance[ItemType.BumperCaveTopAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.BumperCaveTop];
                     }
                 case LocationID.BumperCaveEntrance:
                     {
-                        return ItemDictionary.Instance[ItemType.BumperCaveAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.BumperCaveEntry];
                     }
                 case LocationID.HypeCaveEntrance:
                 case LocationID.SwampPalaceEntrance:
@@ -3790,7 +1515,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.ArrowGameEntrance:
                 case LocationID.DarkHyliaFortuneTeller:
                     {
-                        return ItemDictionary.Instance[ItemType.DarkWorldSouthAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouth];
                     }
                 case LocationID.DarkTreesFairyCaveEntrance:
                 case LocationID.DarkSahasrahlaEntrance:
@@ -3798,36 +1523,36 @@ namespace OpenTracker.Models.Sections
                 case LocationID.DarkFluteSpotFiveEntrance:
                 case LocationID.FatFairyEntrance:
                     {
-                        return ItemDictionary.Instance[ItemType.DarkWorldEastAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEast];
                     }
                 case LocationID.DarkWitchsHut:
                     {
-                        return ItemDictionary.Instance[ItemType.DWWitchAreaAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DWWitchArea];
                     }
                 case LocationID.DarkIceRodCaveEntrance:
                 case LocationID.DarkFakeIceRodCaveEntrance:
                 case LocationID.DarkIceRodRockEntrance:
                     {
-                        return ItemDictionary.Instance[ItemType.DarkWorldSouthEastAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthEast];
                     }
                 case LocationID.UpgradeFairy:
                     {
-                        return ItemDictionary.Instance[ItemType.LakeHyliaFairyIslandAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.LakeHyliaFairyIsland];
                     }
                 case LocationID.IcePalaceEntrance:
                     {
-                        return ItemDictionary.Instance[ItemType.IcePalaceEntranceAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.IcePalaceIsland];
                     }
                 case LocationID.MiseryMireEntrance:
                 case LocationID.MireShackEntrance:
                 case LocationID.MireRightShackEntrance:
                 case LocationID.MireCaveEntrance:
                     {
-                        return ItemDictionary.Instance[ItemType.MireAreaAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.MireArea];
                     }
                 case LocationID.CheckerboardCaveEntrance:
                     {
-                        return ItemDictionary.Instance[ItemType.CheckerboardLedgeAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.CheckerboardLedge];
                     }
                 case LocationID.DeathMountainEntranceBack:
                 case LocationID.OldManResidence:
@@ -3837,68 +1562,68 @@ namespace OpenTracker.Models.Sections
                 case LocationID.SpectacleRockRight:
                 case LocationID.SpectacleRockTop:
                     {
-                        return ItemDictionary.Instance[ItemType.DeathMountainWestBottomAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestBottom];
                     }
                 case LocationID.SpikeCaveEntrance:
                 case LocationID.DarkMountainFairyEntrance:
                     {
-                        return ItemDictionary.Instance[ItemType.DarkDeathMountainWestBottomAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainWestBottom];
                     }
                 case LocationID.TowerOfHeraEntrance:
                     {
-                        return ItemDictionary.Instance[ItemType.DeathMountainWestTopAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestTop];
                     }
                 case LocationID.SpiralCaveBottom:
                 case LocationID.EDMFairyCaveEntrance:
                 case LocationID.ParadoxCaveMiddle:
                 case LocationID.ParadoxCaveBottom:
                     {
-                        return ItemDictionary.Instance[ItemType.DeathMountainEastBottomAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastBottom];
                     }
                 case LocationID.EDMConnectorBottom:
                     {
-                        return ItemDictionary.Instance[ItemType.DeathMountainEastBottomConnectorAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastBottomConnector];
                     }
                 case LocationID.SpiralCaveTop:
                     {
-                        return ItemDictionary.Instance[ItemType.SpiralCaveAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.SpiralCaveLedge];
                     }
                 case LocationID.MimicCaveEntrance:
                     {
-                        return ItemDictionary.Instance[ItemType.MimicCaveAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.MimicCaveLedge];
                     }
                 case LocationID.EDMConnectorTop:
                     {
-                        return ItemDictionary.Instance[ItemType.DeathMountainEastTopConnectorAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastTopConnector];
                     }
                 case LocationID.ParadoxCaveTop:
                     {
-                        return ItemDictionary.Instance[ItemType.DeathMountainEastTopAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastTop];
                     }
                 case LocationID.SuperBunnyCaveBottom:
                 case LocationID.DeathMountainShop:
                     {
-                        return ItemDictionary.Instance[ItemType.DarkDeathMountainEastBottomAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainEastBottom];
                     }
                 case LocationID.SuperBunnyCaveTop:
                 case LocationID.HookshotCaveEntrance:
                 case LocationID.TurtleRockEntrance:
                 case LocationID.GanonsTowerEntrance:
                     {
-                        return ItemDictionary.Instance[ItemType.DarkDeathMountainTopAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainTop];
                     }
                 case LocationID.TRLedgeLeft:
                 case LocationID.TRLedgeRight:
                     {
-                        return ItemDictionary.Instance[ItemType.TurtleRockTunnelAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.TurtleRockTunnel];
                     }
                 case LocationID.TRSafetyDoor:
                     {
-                        return ItemDictionary.Instance[ItemType.TurtleRockSafetyDoorAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.TurtleRockSafetyDoor];
                     }
                 case LocationID.HookshotCaveTop:
                     {
-                        return ItemDictionary.Instance[ItemType.DWFloatingIslandAccess];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DWFloatingIsland];
                     }
             }
 
@@ -3917,7 +1642,23 @@ namespace OpenTracker.Models.Sections
         private static ISection GetEntranceSection(LocationID id)
         {
             return new EntranceSection(
-                GetSectionName(id), GetEntranceSectionItemProvided(id), GetSectionConnections(id),
+                GetSectionName(id), GetEntranceSectionExitProvided(id), GetSectionConnections(id),
+                GetSectionRequirement(id));
+        }
+
+        /// <summary>
+        /// Returns a new dungeon entrance section instance for the specified section.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID.
+        /// </param>
+        /// <returns>
+        /// A new dungeon entrance section instance.
+        /// </returns>
+        private static ISection GetDungeonEntranceSection(LocationID id)
+        {
+            return new DungeonEntranceSection(
+                GetSectionName(id), GetEntranceSectionExitProvided(id), GetSectionConnections(id),
                 GetSectionRequirement(id));
         }
 
@@ -3947,7 +1688,7 @@ namespace OpenTracker.Models.Sections
         /// <returns>
         /// A list of sections.
         /// </returns>
-        internal static List<ISection> GetSections(LocationID id, ILocation location)
+        public static List<ISection> GetSections(LocationID id, ILocation location)
         {
             switch (id)
             {
@@ -4119,10 +1860,6 @@ namespace OpenTracker.Models.Sections
                 case LocationID.ForestHideoutEntrance:
                 case LocationID.ForestChestGameEntrance:
                 case LocationID.CastleSecretEntrance:
-                case LocationID.CastleMainEntrance:
-                case LocationID.CastleLeftEntrance:
-                case LocationID.CastleRightEntrance:
-                case LocationID.CastleTowerEntrance:
                 case LocationID.DamEntrance:
                 case LocationID.CentralBonkRocksEntrance:
                 case LocationID.WitchsHutEntrance:
@@ -4130,21 +1867,14 @@ namespace OpenTracker.Models.Sections
                 case LocationID.SahasrahlasHutEntrance:
                 case LocationID.TreesFairyCaveEntrance:
                 case LocationID.PegsFairyCaveEntrance:
-                case LocationID.EasternPalaceEntrance:
                 case LocationID.HoulihanHole:
                 case LocationID.SanctuaryGrave:
                 case LocationID.NorthBonkRocks:
                 case LocationID.KingsTombEntrance:
                 case LocationID.GraveyardLedgeEntrance:
-                case LocationID.DesertLeftEntrance:
-                case LocationID.DesertBackEntrance:
-                case LocationID.DesertRightEntrance:
-                case LocationID.DesertFrontEntrance:
                 case LocationID.AginahsCaveEntrance:
                 case LocationID.ThiefCaveEntrance:
                 case LocationID.RupeeCaveEntrance:
-                case LocationID.SkullWoodsBack:
-                case LocationID.ThievesTownEntrance:
                 case LocationID.CShapedHouseEntrance:
                 case LocationID.HammerHouse:
                 case LocationID.DarkVillageFortuneTellerEntrance:
@@ -4157,7 +1887,6 @@ namespace OpenTracker.Models.Sections
                 case LocationID.BumperCaveExit:
                 case LocationID.BumperCaveEntrance:
                 case LocationID.HypeCaveEntrance:
-                case LocationID.SwampPalaceEntrance:
                 case LocationID.DarkCentralBonkRocksEntrance:
                 case LocationID.SouthOfGroveEntrance:
                 case LocationID.BombShop:
@@ -4165,7 +1894,6 @@ namespace OpenTracker.Models.Sections
                 case LocationID.DarkHyliaFortuneTeller:
                 case LocationID.DarkTreesFairyCaveEntrance:
                 case LocationID.DarkSahasrahlaEntrance:
-                case LocationID.PalaceOfDarknessEntrance:
                 case LocationID.DarkWitchsHut:
                 case LocationID.DarkFluteSpotFiveEntrance:
                 case LocationID.FatFairyEntrance:
@@ -4181,8 +1909,6 @@ namespace OpenTracker.Models.Sections
                 case LocationID.IceRodCaveEntrance:
                 case LocationID.IceBeeCaveEntrance:
                 case LocationID.IceFairyCaveEntrance:
-                case LocationID.IcePalaceEntrance:
-                case LocationID.MiseryMireEntrance:
                 case LocationID.MireShackEntrance:
                 case LocationID.MireRightShackEntrance:
                 case LocationID.MireCaveEntrance:
@@ -4196,7 +1922,6 @@ namespace OpenTracker.Models.Sections
                 case LocationID.SpectacleRockTop:
                 case LocationID.SpikeCaveEntrance:
                 case LocationID.DarkMountainFairyEntrance:
-                case LocationID.TowerOfHeraEntrance:
                 case LocationID.SpiralCaveBottom:
                 case LocationID.EDMFairyCaveEntrance:
                 case LocationID.ParadoxCaveMiddle:
@@ -4210,17 +1935,39 @@ namespace OpenTracker.Models.Sections
                 case LocationID.DeathMountainShop:
                 case LocationID.SuperBunnyCaveTop:
                 case LocationID.HookshotCaveEntrance:
-                case LocationID.TurtleRockEntrance:
-                case LocationID.GanonsTowerEntrance:
-                case LocationID.TRLedgeLeft:
-                case LocationID.TRLedgeRight:
-                case LocationID.TRSafetyDoor:
                 case LocationID.HookshotCaveTop:
                 case LocationID.LinksHouseEntrance:
                     {
                         return new List<ISection>
                         {
                             GetEntranceSection(id)
+                        };
+                    }
+                case LocationID.CastleMainEntrance:
+                case LocationID.CastleLeftEntrance:
+                case LocationID.CastleRightEntrance:
+                case LocationID.CastleTowerEntrance:
+                case LocationID.EasternPalaceEntrance:
+                case LocationID.DesertLeftEntrance:
+                case LocationID.DesertBackEntrance:
+                case LocationID.DesertRightEntrance:
+                case LocationID.DesertFrontEntrance:
+                case LocationID.SkullWoodsBack:
+                case LocationID.ThievesTownEntrance:
+                case LocationID.SwampPalaceEntrance:
+                case LocationID.PalaceOfDarknessEntrance:
+                case LocationID.IcePalaceEntrance:
+                case LocationID.MiseryMireEntrance:
+                case LocationID.TowerOfHeraEntrance:
+                case LocationID.TurtleRockEntrance:
+                case LocationID.GanonsTowerEntrance:
+                case LocationID.TRLedgeLeft:
+                case LocationID.TRLedgeRight:
+                case LocationID.TRSafetyDoor:
+                    {
+                        return new List<ISection>
+                        {
+                            GetDungeonEntranceSection(id)
                         };
                     }
                 case LocationID.TreesFairyCaveTakeAny:

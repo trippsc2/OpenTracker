@@ -7,9 +7,9 @@ namespace OpenTracker.Models.Requirements
     /// <summary>
     /// This is the class for entrance shuffle requirements.
     /// </summary>
-    internal class EntranceShuffleRequirement : IRequirement
+    public class EntranceShuffleRequirement : IRequirement
     {
-        private readonly bool _entranceShuffle;
+        private readonly EntranceShuffle _entranceShuffle;
 
         public bool Met =>
             Accessibility != AccessibilityLevel.None;
@@ -36,7 +36,7 @@ namespace OpenTracker.Models.Requirements
         /// <param name="entranceShuffle">
         /// The required entrance shuffle value.
         /// </param>
-        public EntranceShuffleRequirement(bool entranceShuffle)
+        public EntranceShuffleRequirement(EntranceShuffle entranceShuffle)
         {
             _entranceShuffle = entranceShuffle;
 

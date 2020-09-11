@@ -10,7 +10,8 @@ namespace OpenTracker.Models.Items
     /// <summary>
     /// This is the dictionary container for items, both tracked and untracked
     /// </summary>
-    public class ItemDictionary : Singleton<ItemDictionary>, IDictionary<ItemType, IItem>
+    public class ItemDictionary : Singleton<ItemDictionary>, IDictionary<ItemType, IItem>,
+        ISaveable<Dictionary<ItemType, ItemSaveData>>
     {
         private static readonly ConcurrentDictionary<ItemType, IItem> _dictionary =
             new ConcurrentDictionary<ItemType, IItem>();

@@ -7,7 +7,7 @@ namespace OpenTracker.Models.Requirements
     /// <summary>
     /// This is the class for enemy shuffle requirements.
     /// </summary>
-    internal class EnemyShuffleRequirement : IRequirement
+    public class EnemyShuffleRequirement : IRequirement
     {
         private readonly bool _enemyShuffle;
 

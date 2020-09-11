@@ -10,7 +10,11 @@ namespace OpenTracker.Models.RequirementNodes
     public interface IRequirementNode : INotifyPropertyChanged
     {
         AccessibilityLevel Accessibility { get; }
+        bool AlwaysAccessible { get; set; }
+        int ExitsAccessible { get; set; }
+        int DungeonExitsAccessible { get; set; }
 
-        AccessibilityLevel GetNodeAccessibility(List<RequirementNodeID> excludedNodes);
+        AccessibilityLevel GetNodeAccessibility(List<IRequirementNode> excludedNodes);
+        void Reset();
     }
 }

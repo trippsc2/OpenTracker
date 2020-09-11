@@ -25,9 +25,6 @@ namespace OpenTracker.ViewModels.Items.Large
             $"{_imageSourceBase}{(_item.Current > 0 ? "1" : "0")}.png";
         public string ImageCount =>
             _item.Current.ToString(CultureInfo.InvariantCulture);
-        public string TextColor =>
-            _item.Current == _item.Maximum ?
-            AppSettings.Instance.Colors.EmphasisFontColor : "#ffffffff";
 
         /// <summary>
         /// Constructor
@@ -43,10 +40,9 @@ namespace OpenTracker.ViewModels.Items.Large
             _item = item ?? throw new ArgumentNullException(nameof(item));
             _imageSourceBase = imageSourceBase ??
                 throw new ArgumentNullException(nameof(imageSourceBase));
-            _requirement = RequirementDictionary.Instance[RequirementType.WorldStateRetro];
+            _requirement = RequirementDictionary.Instance[RequirementType.GenericKeys];
 
             _item.PropertyChanged += OnItemChanged;
-            AppSettings.Instance.Colors.PropertyChanged += OnColorsChanged;
             _requirement.PropertyChanged += OnRequirementChanged;
         }
 
@@ -63,26 +59,8 @@ namespace OpenTracker.ViewModels.Items.Large
         {
             if (e.PropertyName == nameof(IItem.Current))
             {
-                UpdateTextColor();
                 this.RaisePropertyChanged(nameof(ImageSource));
                 this.RaisePropertyChanged(nameof(ImageCount));
-            }
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the ColorSettings class.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnColorsChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(ColorSettings.EmphasisFontColor))
-            {
-                UpdateTextColor();
             }
         }
 
@@ -98,14 +76,6 @@ namespace OpenTracker.ViewModels.Items.Large
         private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
             this.RaisePropertyChanged(nameof(Visible));
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the TextColor property.
-        /// </summary>
-        private void UpdateTextColor()
-        {
-            this.RaisePropertyChanged(nameof(TextColor));
         }
 
         /// <summary>

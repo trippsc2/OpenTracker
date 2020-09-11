@@ -13,8 +13,8 @@ namespace OpenTracker.Models.Utils
     /// </typeparam>
     public class ObservableStack<T> : Stack<T>, INotifyCollectionChanged, INotifyPropertyChanged
     {
-        public virtual event NotifyCollectionChangedEventHandler CollectionChanged;
-        protected virtual event PropertyChangedEventHandler PropertyChanged;
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
+        protected event PropertyChangedEventHandler PropertyChanged;
 
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged
         {

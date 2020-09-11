@@ -2,6 +2,7 @@
 using OpenTracker.Models.SaveLoad;
 using System;
 using System.ComponentModel;
+using System.Linq;
 
 namespace OpenTracker.Models.PrizePlacements
 {
@@ -65,6 +66,42 @@ namespace OpenTracker.Models.PrizePlacements
         }
 
         /// <summary>
+        /// Returns whether the prize can be cycled.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether the prize can be cycled.
+        /// </returns>
+        public bool CanCycle()
+        {
+            return _startingPrize == null;
+        }
+
+        /// <summary>
+        /// Cycles the prize.
+        /// </summary>
+        public void Cycle()
+        {
+            if (Prize == null)
+            {
+                Prize = PrizeDictionary.Instance[PrizeType.Crystal];
+            }
+            else
+            {
+                PrizeType type = PrizeDictionary.Instance.FirstOrDefault(
+                    x => x.Value == Prize).Key;
+
+                if (type == PrizeType.GreenPendant)
+                {
+                    Prize = null;
+                }
+                else
+                {
+                    Prize = PrizeDictionary.Instance[type + 1];
+                }
+            }
+        }
+
+        /// <summary>
         /// Resets the prize placement to its starting values.
         /// </summary>
         public void Reset()
@@ -80,7 +117,7 @@ namespace OpenTracker.Models.PrizePlacements
         /// </returns>
         public PrizePlacementSaveData Save()
         {
-            ItemType? prize;
+            PrizeType? prize;
 
             if (Prize == null)
             {
@@ -88,7 +125,7 @@ namespace OpenTracker.Models.PrizePlacements
             }
             else
             {
-                prize = Prize.Type;
+                prize = PrizeDictionary.Instance.FirstOrDefault(x => x.Value == Prize).Key;
             }
 
             return new PrizePlacementSaveData()
@@ -113,7 +150,7 @@ namespace OpenTracker.Models.PrizePlacements
             }
             else
             {
-                Prize = ItemDictionary.Instance[saveData.Prize.Value];
+                Prize = PrizeDictionary.Instance[saveData.Prize.Value];
             }
         }
     }

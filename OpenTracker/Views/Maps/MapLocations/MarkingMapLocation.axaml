@@ -14,9 +14,7 @@
   <Panel Width="56" Height="56" PointerReleased="OnClick">
     
     <Border Width="56" Height="56" Background="#99000000">
-      <Image HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Uniform"
-             Width="56" Height="56" Source="{Binding ImageSource, Converter={StaticResource
-             BitmapValueConverter}}" />
+      <ContentControl Content="{Binding Image}" Width="56" Height="56" />
     </Border>
 
     <ContentControl Content="{Binding MarkingSelect}" />

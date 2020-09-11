@@ -38,7 +38,7 @@ namespace OpenTracker.Models.RequirementNodes
             set => ((IDictionary<RequirementNodeID, IRequirementNode>)_dictionary)[key] = value;
         }
 
-        public event EventHandler<RequirementNodeID> NodeCreated;
+        public event EventHandler<KeyValuePair<RequirementNodeID, IRequirementNode>> NodeCreated;
 
         /// <summary>
         /// Constructor
@@ -59,7 +59,19 @@ namespace OpenTracker.Models.RequirementNodes
         private void Create(RequirementNodeID key)
         {
             Add(key, RequirementNodeFactory.GetRequirementNode(key));
-            NodeCreated?.Invoke(this, key);
+            NodeCreated?.Invoke(
+                this, new KeyValuePair<RequirementNodeID, IRequirementNode>(key, this[key]));
+        }
+
+        /// <summary>
+        /// Resets all nodes' AlwaysAccessible property for testing purposes.
+        /// </summary>
+        public void Reset()
+        {
+            foreach (var node in Values)
+            {
+                node.Reset();
+            }
         }
 
         public void Add(RequirementNodeID key, IRequirementNode value)

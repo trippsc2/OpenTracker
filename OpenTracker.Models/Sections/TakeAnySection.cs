@@ -3,7 +3,6 @@ using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Sections
@@ -13,7 +12,7 @@ namespace OpenTracker.Models.Sections
     /// </summary>
     public class TakeAnySection : ITakeAnySection
     {
-        private readonly List<RequirementNodeConnection> _connections;
+        private readonly IRequirementNode _node;
 
         public string Name =>
             "Take Any";
@@ -22,19 +21,8 @@ namespace OpenTracker.Models.Sections
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
+        public AccessibilityLevel Accessibility =>
+            _node.Accessibility;
 
         private int _available;
         public int Available
@@ -53,30 +41,20 @@ namespace OpenTracker.Models.Sections
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="connections">
+        /// <param name="node">
         /// The list of connections to this section.
         /// </param>
         /// <param name="requirement">
         /// The requirement for this section to be visible.
         /// </param>
-        public TakeAnySection(
-            List<RequirementNodeConnection> connections, IRequirement requirement = null)
+        public TakeAnySection(IRequirementNode node, IRequirement requirement = null)
         {
-            _connections = connections ?? throw new ArgumentNullException(nameof(connections));
-
-            if (requirement != null)
-            {
-                Requirement = requirement;
-            }
-            else
-            {
-                Requirement = RequirementDictionary.Instance[RequirementType.NoRequirement];
-            }
-
+            _node = node ?? throw new ArgumentNullException(nameof(node));
+            Requirement = requirement ??
+                RequirementDictionary.Instance[RequirementType.NoRequirement];
             Available = 1;
 
-            SubscribeToConnections();
-            UpdateAccessibility();
+            _node.PropertyChanged += OnRequirementChanged;
         }
 
         /// <summary>
@@ -91,8 +69,7 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IRequirement interface and
-        /// RequirementNode class.
+        /// Subscribes to the PropertyChanged event on the IRequirementNode interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -102,74 +79,10 @@ namespace OpenTracker.Models.Sections
         /// </param>
         private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateAccessibility();
-        }
-
-        /// <summary>
-        /// Creates subscription to the PropertyChanged event on the RequirementNode class and
-        /// IRequirement interface.
-        /// </summary>
-        private void SubscribeToConnections()
-        {
-            foreach (RequirementNodeConnection connection in _connections)
+            if (e.PropertyName == nameof(IRequirementNode.Accessibility))
             {
-                List<RequirementNodeID> nodeSubscriptions = new List<RequirementNodeID>();
-                List<IRequirement> requirementSubscriptions = new List<IRequirement>();
-
-                if (!nodeSubscriptions.Contains(connection.FromNode))
-                {
-                    RequirementNodeDictionary.Instance[connection.FromNode].PropertyChanged +=
-                        OnRequirementChanged;
-                    nodeSubscriptions.Add(connection.FromNode);
-                }
-
-                if (!requirementSubscriptions.Contains(connection.Requirement))
-                {
-                    connection.Requirement.PropertyChanged += OnRequirementChanged;
-                    requirementSubscriptions.Add(connection.Requirement);
-                }
+                OnPropertyChanged(nameof(Accessibility));
             }
-        }
-
-        /// <summary>
-        /// Updates the accessibility and number of accessible items.
-        /// </summary>
-        private void UpdateAccessibility()
-        {
-            AccessibilityLevel finalAccessibility = AccessibilityLevel.None;
-
-            foreach (RequirementNodeConnection connection in _connections)
-            {
-                AccessibilityLevel nodeAccessibility = AccessibilityLevel.Normal;
-                
-                nodeAccessibility = (AccessibilityLevel)Math.Min((byte)nodeAccessibility,
-                    (byte)RequirementNodeDictionary.Instance[connection.FromNode].Accessibility);
-
-                if (nodeAccessibility < AccessibilityLevel.SequenceBreak)
-                {
-                    continue;
-                }
-
-                AccessibilityLevel requirementAccessibility =
-                    connection.Requirement.Accessibility;
-
-                AccessibilityLevel finalConnectionAccessibility =
-                    (AccessibilityLevel)Math.Min((byte)nodeAccessibility,
-                    (byte)requirementAccessibility);
-
-                if (finalConnectionAccessibility == AccessibilityLevel.Normal)
-                {
-                    finalAccessibility = AccessibilityLevel.Normal;
-                    break;
-                }
-
-                if (finalConnectionAccessibility > finalAccessibility)
-                {
-                    finalAccessibility = finalConnectionAccessibility;
-                }
-            }
-
-            Accessibility = finalAccessibility;
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.Items;
 using OpenTracker.Models.PrizePlacements;
+using System.Linq;
 
 namespace OpenTracker.Models.UndoRedo
 {
@@ -33,7 +34,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </returns>
         public bool CanExecute()
         {
-            return true;
+            return _prizePlacement.CanCycle();
         }
 
         /// <summary>
@@ -42,19 +43,7 @@ namespace OpenTracker.Models.UndoRedo
         public void Execute()
         {
             _previousItem = _prizePlacement.Prize;
-
-            if (_prizePlacement.Prize == null)
-            {
-                _prizePlacement.Prize = ItemDictionary.Instance[ItemType.Crystal];
-            }
-            else if (_prizePlacement.Prize.Type == ItemType.GreenPendant)
-            {
-                _prizePlacement.Prize = null;
-            }
-            else
-            {
-                _prizePlacement.Prize = ItemDictionary.Instance[_prizePlacement.Prize.Type + 1];
-            }
+            _prizePlacement.Cycle();
         }
 
         /// <summary>

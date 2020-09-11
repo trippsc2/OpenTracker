@@ -10,11 +10,11 @@ namespace OpenTracker.Views.Maps.MapLocations
 {
     public class MarkableMapLocation : UserControl
     {
-        private IClickHandler ViewModelClickHandler =>
+        private IClickHandler ClickHandler =>
             DataContext as IClickHandler;
-        private IDoubleClickHandler ViewModelPinLocation =>
+        private IDoubleClickHandler DoubleClickHandler =>
             DataContext as IDoubleClickHandler;
-        private IPointerOver ViewModelPointerOver =>
+        private IPointerOver PointerOver =>
             DataContext as IPointerOver;
 
         public MarkableMapLocation()
@@ -32,23 +32,23 @@ namespace OpenTracker.Views.Maps.MapLocations
             if (e.InitialPressMouseButton == MouseButton.Right &&
                 this.GetVisualsAt(e.GetPosition(this)).Any(x => this == x || this.IsVisualAncestorOf(x)))
             {
-                ViewModelClickHandler.OnRightClick(e.KeyModifiers == KeyModifiers.Control);
+                ClickHandler.OnRightClick(e.KeyModifiers == KeyModifiers.Control);
             }
         }
 
         private void OnDoubleClick(object sender, RoutedEventArgs e)
         {
-            ViewModelPinLocation.OnDoubleClick();
+            DoubleClickHandler.OnDoubleClick();
         }
 
         private void OnPointerEnter(object sender, PointerEventArgs e)
         {
-            ViewModelPointerOver.OnPointerEnter();
+            PointerOver.OnPointerEnter();
         }
 
         private void OnPointerLeave(object sender, PointerEventArgs e)
         {
-            ViewModelPointerOver.OnPointerLeave();
+            PointerOver.OnPointerLeave();
         }
     }
 }

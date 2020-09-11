@@ -16,7 +16,7 @@
     <Image Source="{Binding ImageSource, Converter={StaticResource BitmapValueConverter}}" />
 
     <Border Classes="LargeItemCount">
-      <TextBlock Classes="LargeItemCount" Text="{Binding ImageCount}" Foreground="{Binding TextColor}" />
+      <TextBlock Classes="LargeItemCount" Text="{Binding ImageCount}" />
     </Border>
 
   </Panel>

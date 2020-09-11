@@ -3,6 +3,7 @@ using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.Locations;
+using OpenTracker.Models.RequirementNodes;
 using System;
 using System.Collections.Generic;
 
@@ -11,7 +12,7 @@ namespace OpenTracker.Models.Dungeons
     /// <summary>
     /// This is the class for creating dungeons.
     /// </summary>
-    internal static class DungeonFactory
+    public static class DungeonFactory
     {
         /// <summary>
         /// Returns the number of maps in the specified dungeon.
@@ -327,10 +328,14 @@ namespace OpenTracker.Models.Dungeons
                 {
                     DungeonNodeID.HCSanctuary,
                     DungeonNodeID.HCFront,
+                    DungeonNodeID.HCEscapeFirstKeyDoor,
                     DungeonNodeID.HCPastEscapeFirstKeyDoor,
+                    DungeonNodeID.HCEscapeSecondKeyDoor,
                     DungeonNodeID.HCPastEscapeSecondKeyDoor,
                     DungeonNodeID.HCDarkRoomFront,
+                    DungeonNodeID.HCDarkCrossKeyDoor,
                     DungeonNodeID.HCPastDarkCrossKeyDoor,
+                    DungeonNodeID.HCSewerRatRoomKeyDoor,
                     DungeonNodeID.HCPastSewerRatRoomKeyDoor,
                     DungeonNodeID.HCDarkRoomBack,
                     DungeonNodeID.HCBack
@@ -338,10 +343,12 @@ namespace OpenTracker.Models.Dungeons
                 LocationID.AgahnimTower => new List<DungeonNodeID>
                 {
                     DungeonNodeID.AT,
-                    DungeonNodeID.ATPastFirstKeyDoor,
                     DungeonNodeID.ATDarkMaze,
+                    DungeonNodeID.ATPastFirstKeyDoor,
+                    DungeonNodeID.ATSecondKeyDoor,
                     DungeonNodeID.ATPastSecondKeyDoor,
                     DungeonNodeID.ATPastThirdKeyDoor,
+                    DungeonNodeID.ATFourthKeyDoor,
                     DungeonNodeID.ATPastFourthKeyDoor,
                     DungeonNodeID.ATBossRoom,
                     DungeonNodeID.ATBoss
@@ -351,7 +358,9 @@ namespace OpenTracker.Models.Dungeons
                     DungeonNodeID.EP,
                     DungeonNodeID.EPBigChest,
                     DungeonNodeID.EPRightDarkRoom,
+                    DungeonNodeID.EPRightKeyDoor,
                     DungeonNodeID.EPPastRightKeyDoor,
+                    DungeonNodeID.EPBigKeyDoor,
                     DungeonNodeID.EPPastBigKeyDoor,
                     DungeonNodeID.EPBackDarkRoom,
                     DungeonNodeID.EPPastBackKeyDoor,
@@ -363,10 +372,13 @@ namespace OpenTracker.Models.Dungeons
                     DungeonNodeID.DPFront,
                     DungeonNodeID.DPTorchItem,
                     DungeonNodeID.DPBigChest,
+                    DungeonNodeID.DPRightKeyDoor,
                     DungeonNodeID.DPPastRightKeyDoor,
                     DungeonNodeID.DPBack,
                     DungeonNodeID.DP2F,
+                    DungeonNodeID.DP2FFirstKeyDoor,
                     DungeonNodeID.DP2FPastFirstKeyDoor,
+                    DungeonNodeID.DP2FSecondKeyDoor,
                     DungeonNodeID.DP2FPastSecondKeyDoor,
                     DungeonNodeID.DPPastFourTorchWall,
                     DungeonNodeID.DPBossRoom,
@@ -385,11 +397,15 @@ namespace OpenTracker.Models.Dungeons
                 {
                     DungeonNodeID.PoD,
                     DungeonNodeID.PoDPastFirstRedGoriyaRoom,
+                    DungeonNodeID.PoDFrontKeyDoor,
                     DungeonNodeID.PoDLobbyArena,
                     DungeonNodeID.PoDBigKeyChestArea,
+                    DungeonNodeID.PoDCollapsingWalkwayKeyDoor,
                     DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor,
                     DungeonNodeID.PoDDarkBasement,
+                    DungeonNodeID.PoDHarmlessHellwayKeyDoor,
                     DungeonNodeID.PoDHarmlessHellwayRoom,
+                    DungeonNodeID.PoDDarkMazeKeyDoor,
                     DungeonNodeID.PoDPastDarkMazeKeyDoor,
                     DungeonNodeID.PoDDarkMaze,
                     DungeonNodeID.PoDBigChestLedge,
@@ -398,6 +414,7 @@ namespace OpenTracker.Models.Dungeons
                     DungeonNodeID.PoDPastBowStatue,
                     DungeonNodeID.PoDBossAreaDarkRooms,
                     DungeonNodeID.PoDPastHammerBlocks,
+                    DungeonNodeID.PoDBossAreaKeyDoor,
                     DungeonNodeID.PoDPastBossAreaKeyDoor,
                     DungeonNodeID.PoDBossRoom,
                     DungeonNodeID.PoDBoss
@@ -496,6 +513,7 @@ namespace OpenTracker.Models.Dungeons
                 LocationID.TurtleRock => new List<DungeonNodeID>
                 {
                     DungeonNodeID.TRFront,
+                    DungeonNodeID.TRF1SomariaTrack,
                     DungeonNodeID.TRF1CompassChestArea,
                     DungeonNodeID.TRF1FourTorchRoom,
                     DungeonNodeID.TRF1RollerRoom,
@@ -551,6 +569,7 @@ namespace OpenTracker.Models.Dungeons
                     DungeonNodeID.GT6FPastFirstKeyDoor,
                     DungeonNodeID.GT6FBossRoom,
                     DungeonNodeID.GTBoss3,
+                    DungeonNodeID.GTBoss3Item,
                     DungeonNodeID.GT6FPastBossRoomGap,
                     DungeonNodeID.GTFinalBossRoom,
                     DungeonNodeID.GTFinalBoss
@@ -906,7 +925,7 @@ namespace OpenTracker.Models.Dungeons
                         {
                             KeyDoorID.HCEscapeFirstKeyDoor,
                             KeyDoorID.HCEscapeSecondKeyDoor,
-                            KeyDoorID.HCDarkCrossRoomKeyDoor,
+                            KeyDoorID.HCDarkCrossKeyDoor,
                             KeyDoorID.HCSewerRatRoomKeyDoor
                         };
                     }
@@ -1157,6 +1176,73 @@ namespace OpenTracker.Models.Dungeons
             throw new ArgumentOutOfRangeException(nameof(id));
         }
 
+        private static List<IRequirementNode> GetDungeonEntryNodes(LocationID id)
+        {
+            return id switch
+            {
+                LocationID.HyruleCastle => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.HCSanctuaryEntry],
+                    RequirementNodeDictionary.Instance[RequirementNodeID.HCFrontEntry],
+                    RequirementNodeDictionary.Instance[RequirementNodeID.HCBackEntry]
+                },
+                LocationID.AgahnimTower => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.ATEntry]
+                },
+                LocationID.EasternPalace => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.EPEntry]
+                },
+                LocationID.DesertPalace => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.DPFrontEntry],
+                    RequirementNodeDictionary.Instance[RequirementNodeID.DPLeftEntry],
+                    RequirementNodeDictionary.Instance[RequirementNodeID.DPBackEntry]
+                },
+                LocationID.TowerOfHera => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.ToHEntry]
+                },
+                LocationID.PalaceOfDarkness => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.PoDEntry]
+                },
+                LocationID.SwampPalace => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.SPEntry]
+                },
+                LocationID.SkullWoods => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.SWFrontEntry],
+                    RequirementNodeDictionary.Instance[RequirementNodeID.SWBackEntry]
+                },
+                LocationID.ThievesTown => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.TTEntry]
+                },
+                LocationID.IcePalace => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.IPEntry]
+                },
+                LocationID.MiseryMire => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.MMEntry]
+                },
+                LocationID.TurtleRock => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.TRFrontEntry],
+                    RequirementNodeDictionary.Instance[RequirementNodeID.TRMiddleEntry],
+                    RequirementNodeDictionary.Instance[RequirementNodeID.TRBackEntry]
+                },
+                LocationID.GanonsTower => new List<IRequirementNode>
+                {
+                    RequirementNodeDictionary.Instance[RequirementNodeID.GTEntry]
+                },
+                _ => throw new ArgumentOutOfRangeException(nameof(id))
+            };
+        }
+
         /// <summary>
         /// Returns a new dungeon instance.
         /// </summary>
@@ -1166,14 +1252,14 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A new dungeon instance.
         /// </returns>
-        internal static IDungeon GetDungeon(LocationID id)
+        public static IDungeon GetDungeon(LocationID id)
         {
             return new Dungeon(
                 id, LocationFactory.GetLocationName(id), MapLocationFactory.GetMapLocations(id),
                 GetDungeonMapCount(id), GetDungeonCompassCount(id), GetDungeonSmallKeyCount(id),
                 GetDungeonBigKeyCount(id), GetDungeonSmallKeyItem(id), GetDungeonBigKeyItem(id),
                 GetDungeonNodes(id), GetDungeonItems(id), GetDungeonBosses(id),
-                GetDungeonSmallKeyDoors(id), GetDungeonBigKeyDoors(id));
+                GetDungeonSmallKeyDoors(id), GetDungeonBigKeyDoors(id), GetDungeonEntryNodes(id));
         }
     }
 }

@@ -239,7 +239,7 @@ namespace OpenTracker.Models.Locations
                 LocationID.DarkSahasrahlaTakeAny => "Dark Saha",
                 LocationID.DarkFluteSpotFiveTakeAny => "Dark Flute Spot 5",
                 LocationID.ArrowGameTakeAny => "Arrow Game",
-                LocationID.DarkCentralBonkRocksTakeAny => "Bonk Rocks",
+                LocationID.DarkCentralBonkRocksTakeAny => "Dark Central Bonk Rocks",
                 LocationID.DarkIceRodCaveTakeAny => "Dark Ice Rod Cave",
                 LocationID.DarkFakeIceRodCaveTakeAny => "Dark Fake Ice Rod Cave",
                 LocationID.DarkIceRodRockTakeAny => "Dark Ice Rod Rock",

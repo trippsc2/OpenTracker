@@ -22,11 +22,11 @@ namespace OpenTracker.Models.PrizePlacements
             {
                 case PrizePlacementID.ATPrize:
                     {
-                        return new PrizePlacement(ItemDictionary.Instance[ItemType.Aga1]);
+                        return new PrizePlacement(PrizeDictionary.Instance[PrizeType.Aga1]);
                     }
                 case PrizePlacementID.GTPrize:
                     {
-                        return new PrizePlacement(ItemDictionary.Instance[ItemType.Aga2]);
+                        return new PrizePlacement(PrizeDictionary.Instance[PrizeType.Aga2]);
                     }
             }
 

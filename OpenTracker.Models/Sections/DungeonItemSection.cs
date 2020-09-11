@@ -1,19 +1,11 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Dungeons;
-using OpenTracker.Models.Items;
-using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
-using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace OpenTracker.Models.Sections
 {
@@ -146,7 +138,10 @@ namespace OpenTracker.Models.Sections
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Mode.WorldState) ||
-                e.PropertyName == nameof(Mode.DungeonItemShuffle))
+                e.PropertyName == nameof(Mode.MapShuffle) ||
+                e.PropertyName == nameof(Mode.CompassShuffle) ||
+                e.PropertyName == nameof(Mode.SmallKeyShuffle) ||
+                e.PropertyName == nameof(Mode.BigKeyShuffle))
             {
                 SetTotal();
             }
@@ -161,7 +156,8 @@ namespace OpenTracker.Models.Sections
         private void SetTotal()
         {
             int newTotal = _dungeon.Items.Count -
-                (Mode.Instance.MapCompassShuffle ? 0 : (_dungeon.Map + _dungeon.Compass)) -
+                (Mode.Instance.MapShuffle ? 0 : _dungeon.Map) -
+                (Mode.Instance.CompassShuffle ? 0 : _dungeon.Compass) -
                 (Mode.Instance.SmallKeyShuffle ? 0 : _dungeon.SmallKeys) -
                 (Mode.Instance.BigKeyShuffle ? 0 : _dungeon.BigKey);
 

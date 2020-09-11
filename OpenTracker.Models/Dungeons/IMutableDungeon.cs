@@ -14,7 +14,7 @@ namespace OpenTracker.Models.Dungeons
         Dictionary<KeyDoorID, IKeyDoor> BigKeyDoors { get; }
         List<IDungeonItem> BossItems { get; }
         Dictionary<DungeonItemID, IDungeonItem> Items { get; }
-        DungeonNodeDictionary RequirementNodes { get; }
+        DungeonNodeDictionary Nodes { get; }
         Dictionary<KeyDoorID, IKeyDoor> SmallKeyDoors { get; }
         DungeonItemDictionary ItemDictionary { get; }
         KeyDoorDictionary KeyDoorDictionary { get; }
@@ -22,6 +22,7 @@ namespace OpenTracker.Models.Dungeons
         List<(KeyDoorID, bool)> GetAccessibleKeyDoors();
         List<AccessibilityLevel> GetBossAccessibility();
         int GetFreeKeys();
+        int GetFreeKeysSequenceBreak();
         (AccessibilityLevel, int, bool) GetItemAccessibility(
             int smallKeyValue, bool bigKeyValue, bool sequenceBroken);
         void SetBigKeyDoorState(bool unlocked);

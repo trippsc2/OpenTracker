@@ -7,8 +7,8 @@ namespace OpenTracker.Models.UndoRedo
     /// </summary>
     public class ChangeEntranceShuffle : IUndoable
     {
-        private readonly bool _entranceShuffle;
-        private bool _previousEntranceShuffle;
+        private readonly EntranceShuffle _entranceShuffle;
+        private EntranceShuffle _previousEntranceShuffle;
 
         /// <summary>
         /// Constructor
@@ -16,7 +16,7 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="entranceShuffle">
         /// The new entrance shuffle setting.
         /// </param>
-        public ChangeEntranceShuffle(bool entranceShuffle)
+        public ChangeEntranceShuffle(EntranceShuffle entranceShuffle)
         {
             _entranceShuffle = entranceShuffle;
         }

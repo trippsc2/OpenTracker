@@ -38,8 +38,8 @@ namespace OpenTracker.Models.Requirements
         public CrystalRequirement()
         {
             _gtCrystal = ItemDictionary.Instance[ItemType.TowerCrystals];
-            _crystal = ItemDictionary.Instance[ItemType.Crystal];
-            _redCrystal = ItemDictionary.Instance[ItemType.RedCrystal];
+            _crystal = PrizeDictionary.Instance[PrizeType.Crystal];
+            _redCrystal = PrizeDictionary.Instance[PrizeType.RedCrystal];
 
             _gtCrystal.PropertyChanged += OnItemChanged;
             _crystal.PropertyChanged += OnItemChanged;

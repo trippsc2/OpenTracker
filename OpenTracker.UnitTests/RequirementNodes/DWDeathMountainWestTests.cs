@@ -2,45 +2,59 @@
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.SequenceBreaks;
 using System.Collections.Generic;
 using Xunit;
 
 namespace OpenTracker.UnitTests.RequirementNodes
 {
+    [Collection("Tests")]
     public class DWDeathMountainWestTests
     {
         [Theory]
-        [MemberData(nameof(Start_To_DarkDeathMountainWestBottom))]
-        [MemberData(nameof(LightWorld_To_DarkDeathMountainWestBottom))]
+        [MemberData(nameof(FluteInverted_To_DarkDeathMountainWestBottom))]
         [MemberData(nameof(DeathMountainWestBottom_To_DarkDeathMountainWestBottom))]
-        [MemberData(nameof(BumperCave_To_DarkDeathMountainWestBottom))]
         [MemberData(nameof(DarkDeathMountainTop_To_DarkDeathMountainWestBottom))]
-        [MemberData(nameof(Start_To_DarkDeathMountainTop))]
+        [MemberData(nameof(DarkDeathMountainWestBottom_To_DarkDeathMountainWestBottomInverted))]
+        [MemberData(nameof(DarkDeathMountainWestBottom_To_DarkDeathMountainWestBottomNonEntrance))]
+        [MemberData(nameof(DarkDeathMountainWestBottom_To_DarkDeathMountainWestBottomMirror))]
+        [MemberData(nameof(DarkDeathMountainWestBottom_To_DarkDeathMountainWestBottomNotBunny))]
+        [MemberData(nameof(DarkDeathMountainWestBottomNotBunny_To_SpikeCavePastHammerBlocks))]
+        [MemberData(nameof(SpikeCavePastHammerBlocks_To_SpikeCavePastSpikes))]
+        [MemberData(nameof(SpikeCavePastSpikes_To_SpikeCaveChest))]
         [MemberData(nameof(DeathMountainWestTop_To_DarkDeathMountainTop))]
         [MemberData(nameof(DeathMountainEastTop_To_DarkDeathMountainTop))]
+        [MemberData(nameof(DarkDeathMountainWestBottomInverted_To_DarkDeathMountainTop))]
+        [MemberData(nameof(SuperBunnyCave_To_DarkDeathMountainTop))]
         [MemberData(nameof(DWFloatingIsland_To_DarkDeathMountainTop))]
         [MemberData(nameof(DWTurtleRockTop_To_DarkDeathMountainTop))]
-        [MemberData(nameof(DarkDeathMountainWestBottom_To_DarkDeathMountainTop))]
-        [MemberData(nameof(DarkDeathMountainEastBottom_To_DarkDeathMountainTop))]
-        [MemberData(nameof(DarkDeathMountainTop_To_GanonsTowerEntrance))]
-        public void AccessibilityTests(
-            RequirementNodeID id, ItemPlacement itemPlacement,
-            DungeonItemShuffle dungeonItemShuffle, WorldState worldState,
-            bool entranceShuffle, bool enemyShuffle, (ItemType, int)[] items,
-            (SequenceBreakType, bool)[] sequenceBreaks, AccessibilityLevel expected)
+        [MemberData(nameof(DarkDeathMountainTop_To_DarkDeathMountainTopInverted))]
+        [MemberData(nameof(DarkDeathMountainTop_To_DarkDeathMountainTopStandardOpen))]
+        [MemberData(nameof(DarkDeathMountainTop_To_DarkDeathMountainTopMirror))]
+        [MemberData(nameof(DarkDeathMountainTop_To_DarkDeathMountainTopNotBunny))]
+        [MemberData(nameof(DarkDeathMountainTopInverted_To_GanonsTowerEntrance))]
+        [MemberData(nameof(DarkDeathMountainTopStandardOpen_To_GanonsTowerEntrance))]
+        [MemberData(nameof(GanonsTowerEntrance_To_GanonsTowerEntranceStandardOpen))]
+        public void Tests(
+            ModeSaveData mode, (ItemType, int)[] items, (PrizeType, int)[] prizes,
+            (SequenceBreakType, bool)[] sequenceBreaks, RequirementNodeID[] accessibleNodes,
+            RequirementNodeID id, AccessibilityLevel expected)
         {
-            Mode.Instance.ItemPlacement = itemPlacement;
-            Mode.Instance.DungeonItemShuffle = dungeonItemShuffle;
-            Mode.Instance.WorldState = worldState;
-            Mode.Instance.EntranceShuffle = entranceShuffle;
-            Mode.Instance.EnemyShuffle = enemyShuffle;
             ItemDictionary.Instance.Reset();
+            PrizeDictionary.Instance.Reset();
             SequenceBreakDictionary.Instance.Reset();
+            RequirementNodeDictionary.Instance.Reset();
+            Mode.Instance.Load(mode);
 
             foreach (var item in items)
             {
                 ItemDictionary.Instance[item.Item1].Current = item.Item2;
+            }
+
+            foreach (var prize in prizes)
+            {
+                PrizeDictionary.Instance[prize.Item1].Current = prize.Item2;
             }
 
             foreach (var sequenceBreak in sequenceBreaks)
@@ -49,128 +63,38 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     sequenceBreak.Item2;
             }
 
+            foreach (var node in accessibleNodes)
+            {
+                RequirementNodeDictionary.Instance[node].AlwaysAccessible = true;
+            }
+
             Assert.Equal(expected, RequirementNodeDictionary.Instance[id].Accessibility);
         }
 
-        public static IEnumerable<object[]> Start_To_DarkDeathMountainWestBottom =>
+        public static IEnumerable<object[]> FluteInverted_To_DarkDeathMountainWestBottom =>
             new List<object[]>
             {
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkDeathMountainWestBottomAccess, 1)
-                    },
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.DarkDeathMountainWestBottom,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkDeathMountainWestBottomAccess, 0)
-                    },
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    true,
-                    false,
-                    new (ItemType, int)[]
+                    new RequirementNodeID[]
                     {
-                        (ItemType.DarkDeathMountainWestBottomAccess, 1)
+                        RequirementNodeID.FluteInverted
                     },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> LightWorld_To_DarkDeathMountainWestBottom =>
-            new List<object[]>
-            {
-                new object[]
-                {
                     RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.LightWorldTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flute, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.LightWorldTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flute, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.LightWorldTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flute, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.LightWorldTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flute, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
                     AccessibilityLevel.Normal
                 }
             };
@@ -180,290 +104,59 @@ namespace OpenTracker.UnitTests.RequirementNodes
             {
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.DeathMountainWestBottomTest, 0),
                         (ItemType.Mirror, 0)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DeathMountainWestBottom
+                    },
+                    RequirementNodeID.DarkDeathMountainWestBottom,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.DeathMountainWestBottomTest, 0),
                         (ItemType.Mirror, 0)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new RequirementNodeID[]
                     {
-                        (ItemType.DeathMountainWestBottomTest, 0),
-                        (ItemType.Mirror, 0)
+                        RequirementNodeID.DeathMountainWestBottom
                     },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
                     RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DeathMountainWestBottomTest, 1),
-                        (ItemType.Mirror, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DeathMountainWestBottomTest, 1),
-                        (ItemType.Mirror, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new ModeSaveData()
                     {
-                        (ItemType.DeathMountainWestBottomTest, 1),
-                        (ItemType.Mirror, 0)
+                        WorldState = WorldState.Inverted
                     },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.DeathMountainWestBottomTest, 1),
                         (ItemType.Mirror, 1)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> BumperCave_To_DarkDeathMountainWestBottom =>
-            new List<object[]>
-            {
-                new object[]
-                {
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DeathMountainWestBottom
+                    },
                     RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.BumperCaveTest, 1),
-                        (ItemType.Lamp, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.DarkRoomDeathMountainEntry, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.BumperCaveTest, 1),
-                        (ItemType.Lamp, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.DarkRoomDeathMountainEntry, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.BumperCaveTest, 1),
-                        (ItemType.Lamp, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.DarkRoomDeathMountainEntry, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.BumperCaveTest, 1),
-                        (ItemType.Lamp, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.DarkRoomDeathMountainEntry, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.BumperCaveTest, 0),
-                        (ItemType.Lamp, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.DarkRoomDeathMountainEntry, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.BumperCaveTest, 1),
-                        (ItemType.Lamp, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.DarkRoomDeathMountainEntry, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.BumperCaveTest, 1),
-                        (ItemType.Lamp, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.DarkRoomDeathMountainEntry, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.BumperCaveTest, 1),
-                        (ItemType.Lamp, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.DarkRoomDeathMountainEntry, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.BumperCaveTest, 1),
-                        (ItemType.Lamp, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.DarkRoomDeathMountainEntry, true)
-                    },
                     AccessibilityLevel.Normal
                 }
             };
@@ -473,82 +166,426 @@ namespace OpenTracker.UnitTests.RequirementNodes
             {
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkDeathMountainTopTest, 0)
-                    },
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.DarkDeathMountainWestBottom,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainWestBottom,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkDeathMountainTopTest, 1)
-                    },
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainTop
+                    },
+                    RequirementNodeID.DarkDeathMountainWestBottom,
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Start_To_DarkDeathMountainTop =>
+        public static IEnumerable<object[]> DarkDeathMountainWestBottom_To_DarkDeathMountainWestBottomInverted =>
             new List<object[]>
             {
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new ModeSaveData()
                     {
-                        (ItemType.DarkDeathMountainTopAccess, 1)
+                        WorldState = WorldState.StandardOpen
                     },
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainWestBottom
+                    },
+                    RequirementNodeID.DarkDeathMountainWestBottomInverted,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    true,
-                    false,
-                    new (ItemType, int)[]
+                    new ModeSaveData()
                     {
-                        (ItemType.DarkDeathMountainTopAccess, 0)
+                        WorldState = WorldState.Inverted
                     },
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainWestBottom
+                    },
+                    RequirementNodeID.DarkDeathMountainWestBottomInverted,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> DarkDeathMountainWestBottom_To_DarkDeathMountainWestBottomNonEntrance =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.All
+                    },
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainWestBottom
+                    },
+                    RequirementNodeID.DarkDeathMountainWestBottomNonEntrance,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    true,
-                    false,
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.None
+                    },
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainWestBottom
+                    },
+                    RequirementNodeID.DarkDeathMountainWestBottomNonEntrance,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.Dungeon
+                    },
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainWestBottom
+                    },
+                    RequirementNodeID.DarkDeathMountainWestBottomNonEntrance,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> DarkDeathMountainWestBottom_To_DarkDeathMountainWestBottomMirror =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkDeathMountainTopAccess, 1)
+                        (ItemType.Mirror, 0)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainWestBottom
+                    },
+                    RequirementNodeID.DarkDeathMountainWestBottomMirror,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Mirror, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainWestBottom
+                    },
+                    RequirementNodeID.DarkDeathMountainWestBottomMirror,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Mirror, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainWestBottom
+                    },
+                    RequirementNodeID.DarkDeathMountainWestBottomMirror,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> DarkDeathMountainWestBottom_To_DarkDeathMountainWestBottomNotBunny =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.MoonPearl, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainWestBottom
+                    },
+                    RequirementNodeID.DarkDeathMountainWestBottomNotBunny,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.MoonPearl, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.DarkDeathMountainWestBottomNotBunny,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.MoonPearl, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainWestBottom
+                    },
+                    RequirementNodeID.DarkDeathMountainWestBottomNotBunny,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.MoonPearl, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainWestBottom
+                    },
+                    RequirementNodeID.DarkDeathMountainWestBottomNotBunny,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> DarkDeathMountainWestBottomNotBunny_To_SpikeCavePastHammerBlocks =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Hammer, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainWestBottomNotBunny
+                    },
+                    RequirementNodeID.SpikeCavePastHammerBlocks,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Hammer, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainWestBottomNotBunny
+                    },
+                    RequirementNodeID.SpikeCavePastHammerBlocks,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> SpikeCavePastHammerBlocks_To_SpikeCavePastSpikes =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.CaneOfByrna, 1),
+                        (ItemType.Cape, 1),
+                        (ItemType.Bottle, 1),
+                        (ItemType.HalfMagic, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.SpikeCavePastSpikes,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.CaneOfByrna, 0),
+                        (ItemType.Cape, 1),
+                        (ItemType.Bottle, 0),
+                        (ItemType.HalfMagic, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.SpikeCavePastHammerBlocks
+                    },
+                    RequirementNodeID.SpikeCavePastSpikes,
+                    AccessibilityLevel.SequenceBreak
+                },
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.CaneOfByrna, 1),
+                        (ItemType.Cape, 0),
+                        (ItemType.Bottle, 0),
+                        (ItemType.HalfMagic, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.SpikeCavePastHammerBlocks
+                    },
+                    RequirementNodeID.SpikeCavePastSpikes,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.CaneOfByrna, 0),
+                        (ItemType.Cape, 1),
+                        (ItemType.Bottle, 1),
+                        (ItemType.HalfMagic, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.SpikeCavePastHammerBlocks
+                    },
+                    RequirementNodeID.SpikeCavePastSpikes,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.CaneOfByrna, 0),
+                        (ItemType.Cape, 1),
+                        (ItemType.Bottle, 0),
+                        (ItemType.HalfMagic, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.SpikeCavePastHammerBlocks
+                    },
+                    RequirementNodeID.SpikeCavePastSpikes,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> SpikeCavePastSpikes_To_SpikeCaveChest =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Gloves, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.SpikeCavePastSpikes
+                    },
+                    RequirementNodeID.SpikeCaveChest,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Gloves, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.SpikeCavePastSpikes
+                    },
+                    RequirementNodeID.SpikeCaveChest,
                     AccessibilityLevel.Normal
                 }
             };
@@ -558,82 +595,59 @@ namespace OpenTracker.UnitTests.RequirementNodes
             {
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new ModeSaveData()
                     {
-                        (ItemType.DeathMountainWestTopTest, 1),
-                        (ItemType.Mirror, 1)
+                        WorldState = WorldState.StandardOpen
                     },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.DeathMountainWestTopTest, 1),
-                        (ItemType.Mirror, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DeathMountainWestTopTest, 0),
                         (ItemType.Mirror, 0)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DeathMountainWestTop
+                    },
+                    RequirementNodeID.DarkDeathMountainTop,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.DeathMountainWestTopTest, 1),
                         (ItemType.Mirror, 0)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DeathMountainWestTop
+                    },
+                    RequirementNodeID.DarkDeathMountainTop,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.DeathMountainWestTopTest, 1),
                         (ItemType.Mirror, 1)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DeathMountainWestTop
+                    },
+                    RequirementNodeID.DarkDeathMountainTop,
                     AccessibilityLevel.Normal
                 }
             };
@@ -643,82 +657,115 @@ namespace OpenTracker.UnitTests.RequirementNodes
             {
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.DeathMountainEastTopTest, 1),
                         (ItemType.Mirror, 1)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DeathMountainEastTop
+                    },
+                    RequirementNodeID.DarkDeathMountainTop,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new ModeSaveData()
                     {
-                        (ItemType.DeathMountainEastTopTest, 1),
-                        (ItemType.Mirror, 1)
+                        WorldState = WorldState.Inverted
                     },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.DeathMountainEastTopTest, 0),
                         (ItemType.Mirror, 0)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new RequirementNodeID[]
                     {
-                        (ItemType.DeathMountainEastTopTest, 1),
-                        (ItemType.Mirror, 0)
+                        RequirementNodeID.DeathMountainEastTop
                     },
-                    new (SequenceBreakType, bool)[0],
+                    RequirementNodeID.DarkDeathMountainTop,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.DeathMountainEastTopTest, 1),
                         (ItemType.Mirror, 1)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DeathMountainEastTop
+                    },
+                    RequirementNodeID.DarkDeathMountainTop,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> DarkDeathMountainWestBottomInverted_To_DarkDeathMountainTop =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.DarkDeathMountainTop,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainWestBottomInverted
+                    },
+                    RequirementNodeID.DarkDeathMountainTop,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> SuperBunnyCave_To_DarkDeathMountainTop =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.DarkDeathMountainTop,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.SuperBunnyCave
+                    },
+                    RequirementNodeID.DarkDeathMountainTop,
                     AccessibilityLevel.Normal
                 }
             };
@@ -728,32 +775,25 @@ namespace OpenTracker.UnitTests.RequirementNodes
             {
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWFloatingIslandTest, 0)
-                    },
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.DarkDeathMountainTop,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWFloatingIslandTest, 1)
-                    },
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DWFloatingIsland
+                    },
+                    RequirementNodeID.DarkDeathMountainTop,
                     AccessibilityLevel.Normal
                 }
             };
@@ -763,332 +803,341 @@ namespace OpenTracker.UnitTests.RequirementNodes
             {
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWTurtleRockTopTest, 0)
-                    },
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.DarkDeathMountainTop,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWTurtleRockTopTest, 1)
-                    },
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DWTurtleRockTop
+                    },
+                    RequirementNodeID.DarkDeathMountainTop,
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> DarkDeathMountainWestBottom_To_DarkDeathMountainTop =>
+        public static IEnumerable<object[]> DarkDeathMountainTop_To_DarkDeathMountainTopInverted =>
             new List<object[]>
             {
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new ModeSaveData()
                     {
-                        (ItemType.DarkDeathMountainWestBottomTest, 1)
+                        WorldState = WorldState.StandardOpen
                     },
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainTop
+                    },
+                    RequirementNodeID.DarkDeathMountainTopInverted,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new ModeSaveData()
                     {
-                        (ItemType.DarkDeathMountainWestBottomTest, 1)
+                        WorldState = WorldState.Inverted
                     },
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new RequirementNodeID[]
                     {
-                        (ItemType.DarkDeathMountainWestBottomTest, 0)
+                        RequirementNodeID.DarkDeathMountainTop
                     },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkDeathMountainWestBottomTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
+                    RequirementNodeID.DarkDeathMountainTopInverted,
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> DarkDeathMountainEastBottom_To_DarkDeathMountainTop =>
+        public static IEnumerable<object[]> DarkDeathMountainTop_To_DarkDeathMountainTopStandardOpen =>
             new List<object[]>
             {
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new ModeSaveData()
                     {
-                        (ItemType.DarkDeathMountainEastBottomTest, 0)
+                        WorldState = WorldState.Inverted
                     },
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainTop
+                    },
+                    RequirementNodeID.DarkDeathMountainTopStandardOpen,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    true,
-                    false,
-                    new (ItemType, int)[]
+                    new ModeSaveData()
                     {
-                        (ItemType.DarkDeathMountainEastBottomTest, 1)
+                        WorldState = WorldState.StandardOpen
                     },
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkDeathMountainTop,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new RequirementNodeID[]
                     {
-                        (ItemType.DarkDeathMountainEastBottomTest, 1)
+                        RequirementNodeID.DarkDeathMountainTop
                     },
-                    new (SequenceBreakType, bool)[0],
+                    RequirementNodeID.DarkDeathMountainTopStandardOpen,
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> DarkDeathMountainTop_To_GanonsTowerEntrance =>
+        public static IEnumerable<object[]> DarkDeathMountainTop_To_DarkDeathMountainTopMirror =>
             new List<object[]>
             {
                 new object[]
                 {
-                    RequirementNodeID.GanonsTowerEntrance,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkDeathMountainTopTest, 0),
-                        (ItemType.TowerCrystals, 0),
-                        (ItemType.RedCrystal, 0),
-                        (ItemType.Crystal, 0)
+                        (ItemType.Mirror, 0)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainTop
+                    },
+                    RequirementNodeID.DarkDeathMountainTopMirror,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.GanonsTowerEntrance,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkDeathMountainTopTest, 1),
-                        (ItemType.TowerCrystals, 0),
-                        (ItemType.RedCrystal, 0),
-                        (ItemType.Crystal, 0)
+                        (ItemType.Mirror, 1)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainTop
+                    },
+                    RequirementNodeID.DarkDeathMountainTopMirror,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.GanonsTowerEntrance,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkDeathMountainTopTest, 0),
-                        (ItemType.TowerCrystals, 0),
-                        (ItemType.RedCrystal, 0),
-                        (ItemType.Crystal, 0)
+                        (ItemType.Mirror, 1)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainTop
+                    },
+                    RequirementNodeID.DarkDeathMountainTopMirror,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> DarkDeathMountainTop_To_DarkDeathMountainTopNotBunny =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.MoonPearl, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainTop
+                    },
+                    RequirementNodeID.DarkDeathMountainTopNotBunny,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.GanonsTowerEntrance,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkDeathMountainTopTest, 1),
-                        (ItemType.TowerCrystals, 0),
-                        (ItemType.RedCrystal, 0),
-                        (ItemType.Crystal, 0)
+                        (ItemType.MoonPearl, 1)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.DarkDeathMountainTopNotBunny,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.GanonsTowerEntrance,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkDeathMountainTopTest, 0),
-                        (ItemType.TowerCrystals, 0),
-                        (ItemType.RedCrystal, 0),
-                        (ItemType.Crystal, 0)
+                        (ItemType.MoonPearl, 1)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.GanonsTowerEntrance,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new RequirementNodeID[]
                     {
-                        (ItemType.DarkDeathMountainTopTest, 1),
-                        (ItemType.TowerCrystals, 7),
-                        (ItemType.RedCrystal, 0),
-                        (ItemType.Crystal, 0)
+                        RequirementNodeID.DarkDeathMountainTop
                     },
-                    new (SequenceBreakType, bool)[0],
+                    RequirementNodeID.DarkDeathMountainTopNotBunny,
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
-                    RequirementNodeID.GanonsTowerEntrance,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkDeathMountainTopTest, 1),
-                        (ItemType.TowerCrystals, 0),
-                        (ItemType.RedCrystal, 2),
-                        (ItemType.Crystal, 5)
+                        (ItemType.MoonPearl, 0)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainTop
+                    },
+                    RequirementNodeID.DarkDeathMountainTopNotBunny,
                     AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> DarkDeathMountainTopInverted_To_GanonsTowerEntrance =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.GanonsTowerEntrance,
+                    AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainTopInverted
+                    },
                     RequirementNodeID.GanonsTowerEntrance,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> DarkDeathMountainTopStandardOpen_To_GanonsTowerEntrance =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData(),
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkDeathMountainTopTest, 1),
-                        (ItemType.TowerCrystals, 7),
-                        (ItemType.RedCrystal, 0),
-                        (ItemType.Crystal, 0)
+                        (ItemType.TowerCrystals, 6)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainTopStandardOpen
+                    },
+                    RequirementNodeID.GanonsTowerEntrance,
+                    AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.GanonsTowerEntrance,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
+                    new ModeSaveData(),
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkDeathMountainTopTest, 1),
-                        (ItemType.TowerCrystals, 0),
-                        (ItemType.RedCrystal, 2),
-                        (ItemType.Crystal, 5)
+                        (ItemType.TowerCrystals, 7)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkDeathMountainTopStandardOpen
+                    },
+                    RequirementNodeID.GanonsTowerEntrance,
                     AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> GanonsTowerEntrance_To_GanonsTowerEntranceStandardOpen =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.GanonsTowerEntrance
+                    },
+                    RequirementNodeID.GanonsTowerEntranceStandardOpen,
+                    AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.GanonsTowerEntrance,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new ModeSaveData()
                     {
-                        (ItemType.DarkDeathMountainTopTest, 1),
-                        (ItemType.TowerCrystals, 0),
-                        (ItemType.RedCrystal, 0),
-                        (ItemType.Crystal, 0)
+                        WorldState = WorldState.StandardOpen
                     },
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.GanonsTowerEntrance
+                    },
+                    RequirementNodeID.GanonsTowerEntranceStandardOpen,
                     AccessibilityLevel.Normal
                 }
             };

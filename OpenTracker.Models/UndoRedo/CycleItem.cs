@@ -36,14 +36,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Execute()
         {
-            if (_item.Current == _item.Maximum)
-            {
-                _item.Current = 0;
-            }
-            else
-            {
-                _item.Current++;
-            }
+            _item.Add();
         }
 
         /// <summary>
@@ -51,14 +44,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Undo()
         {
-            if (_item.Current == 0)
-            {
-                _item.Current = _item.Maximum;
-            }
-            else
-            {
-                _item.Current--;
-            }
+            _item.Remove();
         }
     }
 }

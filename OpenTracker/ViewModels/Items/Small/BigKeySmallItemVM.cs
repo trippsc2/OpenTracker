@@ -32,7 +32,7 @@ namespace OpenTracker.ViewModels.Items.Small
         public BigKeySmallItemVM(IItem item)
         {
             _item = item ?? throw new ArgumentNullException(nameof(item));
-            _requirement = RequirementDictionary.Instance[RequirementType.DungeonItemShuffleKeysanity];
+            _requirement = RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn];
             
             _item.PropertyChanged += OnItemChanged;
             _requirement.PropertyChanged += OnRequirementChanged;

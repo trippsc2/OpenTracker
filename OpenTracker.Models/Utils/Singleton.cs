@@ -9,7 +9,7 @@
     public class Singleton<T> where T : class, new()
     {
         private static readonly object _syncLock = new object();
-        private static volatile T _instance = null;
+        private static volatile T _instance;
 
         public static T Instance
         {

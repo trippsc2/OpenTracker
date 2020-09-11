@@ -7,12 +7,13 @@ namespace OpenTracker.Models.PrizePlacements
     /// <summary>
     /// This is the interface for prize placements.
     /// </summary>
-    public interface IPrizePlacement : INotifyPropertyChanging, INotifyPropertyChanged
+    public interface IPrizePlacement : INotifyPropertyChanging, INotifyPropertyChanged,
+        ISaveable<PrizePlacementSaveData>
     {
         IItem Prize { get; set; }
 
-        void Load(PrizePlacementSaveData saveData);
+        bool CanCycle();
+        void Cycle();
         void Reset();
-        PrizePlacementSaveData Save();
     }
 }

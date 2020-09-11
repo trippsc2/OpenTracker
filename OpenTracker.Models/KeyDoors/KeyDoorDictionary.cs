@@ -39,7 +39,7 @@ namespace OpenTracker.Models.KeyDoors
             set => ((IDictionary<KeyDoorID, IKeyDoor>)_dictionary)[key] = value;
         }
 
-        public event EventHandler<KeyDoorID> DoorCreated;
+        public event EventHandler<KeyValuePair<KeyDoorID, IKeyDoor>> DoorCreated;
 
         /// <summary>
         /// Constructor
@@ -61,7 +61,7 @@ namespace OpenTracker.Models.KeyDoors
         private void Create(KeyDoorID key)
         {
             Add(key, KeyDoorFactory.GetKeyDoor(key, _dungeonData));
-            DoorCreated?.Invoke(this, key);
+            DoorCreated?.Invoke(this, new KeyValuePair<KeyDoorID, IKeyDoor>(key, this[key]));
         }
 
         public void Add(KeyDoorID key, IKeyDoor value)

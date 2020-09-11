@@ -1,4 +1,5 @@
-﻿using OpenTracker.Models.SaveLoad;
+﻿using OpenTracker.Models.AutoTracking.AutotrackValues;
+using OpenTracker.Models.SaveLoad;
 using System;
 using System.ComponentModel;
 
@@ -10,9 +11,7 @@ namespace OpenTracker.Models.Items
     public class Item : IItem
     {
         private readonly int _starting;
-
-        public ItemType Type { get; }
-        public int Maximum { get; }
+        private readonly IAutoTrackValue _autoTrackValue;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -42,17 +41,16 @@ namespace OpenTracker.Models.Items
         /// <param name="maximum">
         /// A 32-bit signed integer representing the maximum value of the item.
         /// </param>
-        public Item(ItemType itemType, int starting = 0, int maximum = 1)
+        public Item(int starting, IAutoTrackValue autoTrackValue)
         {
-            if (starting > maximum)
-            {
-                throw new ArgumentOutOfRangeException(nameof(starting));
-            }
-
-            Type = itemType;
             _starting = starting;
+            _autoTrackValue = autoTrackValue;
             Current = _starting;
-            Maximum = maximum;
+
+            if (_autoTrackValue != null)
+            {
+                _autoTrackValue.PropertyChanged += OnAutoTrackChanged;
+            }
         }
 
         /// <summary>
@@ -66,15 +64,39 @@ namespace OpenTracker.Models.Items
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        private void OnAutoTrackChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
+            {
+                AutoTrackUpdate();
+            }
+        }
+
+        private void AutoTrackUpdate()
+        {
+            if (_autoTrackValue.CurrentValue.HasValue)
+            {
+                Current = _autoTrackValue.CurrentValue.Value;
+            }
+        }
+
         /// <summary>
         /// Returns whether an item can be added.
         /// </summary>
         /// <returns>
         /// A boolean representing whether an item can be added.
         /// </returns>
-        public bool CanAdd()
+        public virtual bool CanAdd()
         {
-            return Current < Maximum;
+            return true;
+        }
+
+        /// <summary>
+        /// Adds an item.
+        /// </summary>
+        public virtual void Add()
+        {
+            Current++;
         }
 
         /// <summary>
@@ -86,6 +108,19 @@ namespace OpenTracker.Models.Items
         public bool CanRemove()
         {
             return Current > 0;
+        }
+
+        /// <summary>
+        /// Removes an item.
+        /// </summary>
+        public virtual void Remove()
+        {
+            if (Current == 0)
+            {
+                throw new Exception("Cannot be remove from item.");
+            }
+
+            Current--;
         }
 
         /// <summary>

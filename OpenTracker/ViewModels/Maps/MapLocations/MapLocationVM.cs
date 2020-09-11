@@ -18,8 +18,8 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
     /// <summary>
     /// This is the ViewModel for the map location control representing a basic location.
     /// </summary>
-    public class MapLocationVM : MapLocationVMBase, IClickHandler,
-        IDoubleClickHandler, IPointerOver
+    public class MapLocationVM : MapLocationVMBase, IClickHandler, IDoubleClickHandler,
+        IPointerOver
     {
         private readonly MapLocation _mapLocation;
         private PinnedLocationVM _pinnedLocation;
@@ -75,34 +75,14 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         {
             get
             {
-                if (Mode.Instance.EntranceShuffle)
+                if (Mode.Instance.EntranceShuffle == EntranceShuffle.All)
                 {
                     return 40.0;
                 }
 
                 if (_mapLocation.Location.Total > 1)
                 {
-                    switch (_mapLocation.Location.ID)
-                    {
-                        case LocationID.EasternPalace:
-                        case LocationID.DesertPalace:
-                        case LocationID.TowerOfHera:
-                        case LocationID.PalaceOfDarkness:
-                        case LocationID.SwampPalace:
-                        case LocationID.SkullWoods:
-                        case LocationID.ThievesTown:
-                        case LocationID.IcePalace:
-                        case LocationID.MiseryMire:
-                        case LocationID.TurtleRock:
-                        case LocationID.GanonsTower:
-                            {
-                                return 130.0;
-                            }
-                        default:
-                            {
-                                return 90.0;
-                            }
-                    }
+                    return 90.0;
                 }
                 
                 return 70.0;
@@ -117,18 +97,20 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         public string Color =>
             AppSettings.Instance.Colors.AccessibilityColors[_mapLocation.Location.Accessibility];
         public Thickness BorderSize =>
-            Mode.Instance.EntranceShuffle ? new Thickness(5) : new Thickness(9);
+            Mode.Instance.EntranceShuffle == EntranceShuffle.All ? new Thickness(5) : new Thickness(9);
         public string BorderColor =>
             Highlighted ? "#ffffffff" : "#ff000000";
         public bool TextVisible =>
-            !Mode.Instance.EntranceShuffle && AppSettings.Instance.Tracker.ShowItemCountsOnMap &&
+            Mode.Instance.EntranceShuffle < EntranceShuffle.All &&
+            AppSettings.Instance.Tracker.ShowItemCountsOnMap &&
             _mapLocation.Location.Available != 0 && _mapLocation.Location.Total > 1;
 
         public string Text
         {
             get
             {
-                if (Mode.Instance.EntranceShuffle || !AppSettings.Instance.Tracker.ShowItemCountsOnMap ||
+                if (Mode.Instance.EntranceShuffle == EntranceShuffle.All ||
+                    !AppSettings.Instance.Tracker.ShowItemCountsOnMap ||
                     _mapLocation.Location.Available == 0 || _mapLocation.Location.Total <= 1)
                 {
                     return null;

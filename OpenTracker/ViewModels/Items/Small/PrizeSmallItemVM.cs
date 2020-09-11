@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Text;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Items;
+using System.Linq;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
@@ -30,7 +31,10 @@ namespace OpenTracker.ViewModels.Items.Small
                 }
                 else
                 {
-                    sb.Append(_section.PrizePlacement.Prize.Type.ToString().ToLowerInvariant());
+                    sb.Append(
+                        PrizeDictionary.Instance.FirstOrDefault(
+                            x => x.Value == _section.PrizePlacement.Prize).Key.ToString()
+                                .ToLowerInvariant());
                 }
 
                 sb.Append(_section.IsAvailable() ? "0" : "1");

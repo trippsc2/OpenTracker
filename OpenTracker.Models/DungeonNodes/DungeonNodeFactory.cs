@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.KeyDoors;
+using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 using System;
@@ -10,7 +11,7 @@ namespace OpenTracker.Models.DungeonNodes
 	/// <summary>
 	/// This is the class for creating dungeon nodes.
 	/// </summary>
-	internal static class DungeonNodeFactory
+	public static class DungeonNodeFactory
     {
 		/// <summary>
 		/// Returns the number of free keys provided by the specified node.
@@ -65,2868 +66,1735 @@ namespace OpenTracker.Models.DungeonNodes
             return 0;
         }
 
-		/// <summary>
-		/// Returns a list of connections from outside of the dungeon for the specified node.
-		/// </summary>
-		/// <param name="id">
-		/// The node ID.
-		/// </param>
-		/// <returns>
-		/// A list of connections from outside of the dungeon.
-		/// </returns>
-        internal static List<RequirementNodeConnection> GetDungeonEntryConnections(
-			DungeonNodeID id)
+		public static void PopulateNodeConnections(
+			DungeonNodeID id, IRequirementNode node, IMutableDungeon dungeonData,
+			List<INodeConnection> connections)
         {
-			switch (id)
+			if (node == null)
 			{
-				case DungeonNodeID.HCSanctuary:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.HCSanctuaryEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.HCSanctuaryTest])
-						};
-					}
-				case DungeonNodeID.HCFront:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.HCFrontEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.HCFrontTest])
-						};
-					}
-				case DungeonNodeID.HCBack:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.HCBackEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.HCBackTest])
-						};
-					}
-				case DungeonNodeID.AT:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.ATEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.ATTest])
-						};
-					}
-				case DungeonNodeID.EP:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.EPEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.EPTest])
-						};
-					}
-				case DungeonNodeID.DPFront:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.DPFrontEntry),
-							new RequirementNodeConnection(RequirementNodeID.DPLeftEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.DPFrontTest])
-						};
-					}
-				case DungeonNodeID.DPBack:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.DPBackEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.DPBackTest])
-						};
-					}
-				case DungeonNodeID.ToH:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.ToHEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.ToHTest])
-						};
-					}
-				case DungeonNodeID.PoD:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.PoDEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.PoDTest])
-						};
-					}
-				case DungeonNodeID.SP:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.SPEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SPTest])
-						};
-					}
-				case DungeonNodeID.SWBigChestAreaBottom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.SWFrontEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SWBigChestAreaBottomTest])
-						};
-					}
-				case DungeonNodeID.SWBigChestAreaTop:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.SWFrontTopDropEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SWBigChestAreaTopTest])
-						};
-					}
-				case DungeonNodeID.SWFrontLeftSide:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.SWFrontLeftDropEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SWFrontLeftSideTest])
-						};
-					}
-				case DungeonNodeID.SWFrontRightSide:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.SWPinballRoomEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SWFrontRightSideTest])
-						};
-					}
-				case DungeonNodeID.SWFrontBackConnector:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.SWFrontBackConnectorEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SWFrontBackConnectorTest])
-						};
-					}
-				case DungeonNodeID.SWBack:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.SWBackEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SWBackTest])
-						};
-					}
-				case DungeonNodeID.TT:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.TTEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TTTest])
-						};
-					}
-				case DungeonNodeID.IP:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.IPEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPTest])
-						};
-					}
-				case DungeonNodeID.MM:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.MMEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.MMTest])
-						};
-					}
-				case DungeonNodeID.TRFront:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.TRFrontEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRFrontTest])
-						};
-					}
-				case DungeonNodeID.TRB1:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.TRMiddleEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRB1Test])
-						};
-					}
-				case DungeonNodeID.TRB1MiddleRightEntranceArea:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.TRMiddleEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRB1MiddleRightEntranceAreaTest])
-						};
-					}
-				case DungeonNodeID.TRB2PastDarkMaze:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.TRBackEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRB2PastDarkMazeTest])
-						};
-					}
-				case DungeonNodeID.GT:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.GTEntry),
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GTTest])
-						};
-					}
-				case DungeonNodeID.HCPastEscapeFirstKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.HCPastEscapeFirstKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.HCPastEscapeSecondKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.HCPastEscapeSecondKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.HCDarkRoomFront:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.HCDarkRoomFrontTest])
-						};
-					}
-				case DungeonNodeID.HCPastDarkCrossKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.HCPastDarkCrossKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.HCPastSewerRatRoomKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.HCPastSewerRatRoomKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.HCDarkRoomBack:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.HCDarkRoomBackTest])
-						};
-					}
-				case DungeonNodeID.ATDarkMaze:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.ATDarkMazeTest])
-						};
-					}
-				case DungeonNodeID.ATPastFirstKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.ATPastFirstKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.ATPastSecondKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.ATPastSecondKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.ATPastThirdKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.ATPastThirdKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.ATPastFourthKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.ATPastFourthKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.ATBossRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.ATBossRoomTest])
-						};
-					}
-				case DungeonNodeID.ATBoss:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.ATBossTest])
-						};
-					}
-				case DungeonNodeID.EPBigChest:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.EPBigChestTest])
-						};
-					}
-				case DungeonNodeID.EPRightDarkRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.EPRightDarkRoomTest])
-						};
-					}
-				case DungeonNodeID.EPPastRightKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.EPPastRightKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.EPPastBigKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.EPPastBigKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.EPBackDarkRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.EPBackDarkRoomTest])
-						};
-					}
-				case DungeonNodeID.EPPastBackKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.EPPastBackKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.EPBossRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.EPBossRoomTest])
-						};
-					}
-				case DungeonNodeID.EPBoss:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.EPBossTest])
-						};
-					}
-				case DungeonNodeID.DPTorchItem:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.DPTorchItemTest])
-						};
-					}
-				case DungeonNodeID.DPBigChest:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.DPBigChestTest])
-						};
-					}
-				case DungeonNodeID.DPPastRightKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.DPPastRightKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.DP2F:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.DP2FTest])
-						};
-					}
-				case DungeonNodeID.DP2FPastFirstKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.DP2FPastFirstKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.DP2FPastSecondKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.DP2FPastSecondKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.DPPastFourTorchWall:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.DPPastFourTorchWallTest])
-						};
-					}
-				case DungeonNodeID.DPBossRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.DPBossRoomTest])
-						};
-					}
-				case DungeonNodeID.DPBoss:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.DPBossTest])
-						};
-					}
-				case DungeonNodeID.ToHPastKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.ToHPastKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.ToHBasementTorchRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.ToHBasementTorchRoomTest])
-						};
-					}
-				case DungeonNodeID.ToHPastBigKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.ToHPastBigKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.ToHBigChest:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.ToHBigChestTest])
-						};
-					}
-				case DungeonNodeID.ToHBoss:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.ToHBossTest])
-						};
-					}
-				case DungeonNodeID.PoDPastFirstRedGoriyaRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.PoDPastFirstRedGoriyaRoomTest])
-						};
-					}
-				case DungeonNodeID.PoDLobbyArena:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.PoDLobbyArenaTest])
-						};
-					}
-				case DungeonNodeID.PoDBigKeyChestArea:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.PoDBigKeyChestAreaTest])
-						};
-					}
-				case DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.PoDPastCollapsingWalkwayKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.PoDDarkBasement:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.PoDDarkBasementTest])
-						};
-					}
-				case DungeonNodeID.PoDHarmlessHellwayRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.PoDHarmlessHellwayRoomTest])
-						};
-					}
-				case DungeonNodeID.PoDPastDarkMazeKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.PoDPastDarkMazeKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.PoDDarkMaze:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.PoDDarkMazeTest])
-						};
-					}
-				case DungeonNodeID.PoDBigChestLedge:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.PoDBigChestLedgeTest])
-						};
-					}
-				case DungeonNodeID.PoDBigChest:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.PoDBigChestTest])
-						};
-					}
-				case DungeonNodeID.PoDPastSecondRedGoriyaRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.PoDPastSecondRedGoriyaRoomTest])
-						};
-					}
-				case DungeonNodeID.PoDPastBowStatue:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.PoDPastBowStatueTest])
-						};
-					}
-				case DungeonNodeID.PoDBossAreaDarkRooms:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.PoDBossAreaDarkRoomsTest])
-						};
-					}
-				case DungeonNodeID.PoDPastHammerBlocks:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.PoDPastHammerBlocksTest])
-						};
-					}
-				case DungeonNodeID.PoDPastBossAreaKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.PoDPastBossAreaKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.PoDBossRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.PoDBossRoomTest])
-						};
-					}
-				case DungeonNodeID.PoDBoss:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.PoDBossTest])
-						};
-					}
-				case DungeonNodeID.SPAfterRiver:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SPAfterRiverTest])
-						};
-					}
-				case DungeonNodeID.SPB1:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SPB1Test])
-						};
-					}
-				case DungeonNodeID.SPB1PastFirstRightKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SPB1PastFirstRightKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.SPB1PastSecondRightKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SPB1PastSecondRightKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.SPB1PastRightHammerBlocks:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SPB1PastRightHammerBlocksTest])
-						};
-					}
-				case DungeonNodeID.SPB1KeyLedge:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SPB1KeyLedgeTest])
-						};
-					}
-				case DungeonNodeID.SPB1PastLeftKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SPB1PastLeftKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.SPBigChest:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SPBigChestTest])
-						};
-					}
-				case DungeonNodeID.SPB1Back:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SPB1BackTest])
-						};
-					}
-				case DungeonNodeID.SPB1PastBackFirstKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SPB1PastBackFirstKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.SPBossRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SPBossRoomTest])
-						};
-					}
-				case DungeonNodeID.SPBoss:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SPBossTest])
-						};
-					}
-				case DungeonNodeID.SWBigChest:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SWBigChestTest])
-						};
-					}
-				case DungeonNodeID.SWPastTheWorthlessKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SWPastTheWorthlessKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.SWBackPastFirstKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SWBackPastFirstKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.SWBackPastFourTorchRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SWBackPastFourTorchRoomTest])
-						};
-					}
-				case DungeonNodeID.SWBackPastCurtains:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SWBackPastCurtainsTest])
-						};
-					}
-				case DungeonNodeID.SWBossRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SWBossRoomTest])
-						};
-					}
-				case DungeonNodeID.SWBoss:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.SWBossTest])
-						};
-					}
-				case DungeonNodeID.TTPastBigKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TTPastBigKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.TTPastFirstKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TTPastFirstKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.TTPastSecondKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TTPastSecondKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.TTPastBigChestRoomKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TTPastBigChestRoomKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.TTPastHammerBlocks:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TTPastHammerBlocksTest])
-						};
-					}
-				case DungeonNodeID.TTBigChest:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TTBigChestTest])
-						};
-					}
-				case DungeonNodeID.TTBossRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TTBossRoomTest])
-						};
-					}
-				case DungeonNodeID.TTBoss:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TTBossTest])
-						};
-					}
-				case DungeonNodeID.IPPastEntranceFreezorRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPPastEntranceFreezorRoomTest])
-						};
-					}
-				case DungeonNodeID.IPB1LeftSide:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPB1LeftSideTest])
-						};
-					}
-				case DungeonNodeID.IPB1RightSide:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPB1RightSideTest])
-						};
-					}
-				case DungeonNodeID.IPB2LeftSide:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPB2LeftSideTest])
-						};
-					}
-				case DungeonNodeID.IPB2PastKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPB2PastKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.IPB2PastHammerBlocks:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPB2PastHammerBlocksTest])
-						};
-					}
-				case DungeonNodeID.IPB2PastLiftBlock:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPB2PastLiftBlockTest])
-						};
-					}
-				case DungeonNodeID.IPSpikeRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPSpikeRoomTest])
-						};
-					}
-				case DungeonNodeID.IPB4RightSide:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPB4RightSideTest])
-						};
-					}
-				case DungeonNodeID.IPB4IceRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPB4IceRoomTest])
-						};
-					}
-				case DungeonNodeID.IPB4FreezorRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPB4FreezorRoomTest])
-						};
-					}
-				case DungeonNodeID.IPFreezorChest:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPFreezorChestTest])
-						};
-					}
-				case DungeonNodeID.IPB4PastKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPB4PastKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.IPBigChestArea:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPBigChestAreaTest])
-						};
-					}
-				case DungeonNodeID.IPBigChest:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPBigChestTest])
-						};
-					}
-				case DungeonNodeID.IPB5:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPB5Test])
-						};
-					}
-				case DungeonNodeID.IPB5PastBigKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPB5PastBigKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.IPB6:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPB6Test])
-						};
-					}
-				case DungeonNodeID.IPB6PastKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPB6PastKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.IPB6PreBossRoom:
-                    {
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPB6PreBossRoomTest])
-						};
-					}
-				case DungeonNodeID.IPB6PastHammerBlocks:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPB6PastHammerBlocksTest])
-						};
-					}
-				case DungeonNodeID.IPB6PastLiftBlock:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPB6PastLiftBlockTest])
-						};
-					}
-				case DungeonNodeID.IPBoss:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.IPBossTest])
-						};
-					}
-				case DungeonNodeID.MMPastEntranceGap:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.MMPastEntranceGapTest])
-						};
-					}
-				case DungeonNodeID.MMBigChest:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.MMBigChestTest])
-						};
-					}
-				case DungeonNodeID.MMB1TopSide:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.MMB1TopSideTest])
-						};
-					}
-				case DungeonNodeID.MMB1LobbyBeyondBlueBlocks:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.MMB1LobbyBeyondBlueBlocksTest])
-						};
-					}
-				case DungeonNodeID.MMB1RightSideBeyondBlueBlocks:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.MMB1RightSideBeyondBlueBlocksTest])
-						};
-					}
-				case DungeonNodeID.MMB1LeftSidePastFirstKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.MMB1LeftSidePastFirstKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.MMB1LeftSidePastSecondKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.MMB1LeftSidePastSecondKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.MMB1PastFourTorchRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.MMB1PastFourTorchRoomTest])
-						};
-					}
-				case DungeonNodeID.MMF1PastFourTorchRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.MMF1PastFourTorchRoomTest])
-						};
-					}
-				case DungeonNodeID.MMB1PastPortalBigKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.MMB1PastPortalBigKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.MMB1PastBridgeBigKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.MMB1PastBridgeBigKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.MMDarkRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.MMDarkRoomTest])
-						};
-					}
-				case DungeonNodeID.MMB2PastWorthlessKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.MMB2PastWorthlessKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.MMB2PastCaneOfSomariaSwitch:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.MMB2PastCaneOfSomariaSwitchTest])
-						};
-					}
-				case DungeonNodeID.MMBossRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.MMBossRoomTest])
-						};
-					}
-				case DungeonNodeID.MMBoss:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.MMBossTest])
-						};
-					}
-				case DungeonNodeID.TRF1CompassChestArea:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRF1CompassChestAreaTest])
-						};
-					}
-				case DungeonNodeID.TRF1FourTorchRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRF1FourTorchRoomTest])
-						};
-					}
-				case DungeonNodeID.TRF1RollerRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRF1RollerRoomTest])
-						};
-					}
-				case DungeonNodeID.TRF1FirstKeyDoorArea:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRF1FirstKeyDoorAreaTest])
-						};
-					}
-				case DungeonNodeID.TRF1PastFirstKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRF1PastFirstKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.TRF1PastSecondKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRF1PastSecondKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.TRB1PastBigKeyChestKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRB1PastBigKeyChestKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.TRB1BigChestArea:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRB1BigChestAreaTest])
-						};
-					}
-				case DungeonNodeID.TRBigChest:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRBigChestTest])
-						};
-					}
-				case DungeonNodeID.TRB1RightSide:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRB1RightSideTest])
-						};
-					}
-				case DungeonNodeID.TRPastB1toB2KeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRPastB1toB2KeyDoorTest])
-						};
-					}
-				case DungeonNodeID.TRB2DarkRoomTop:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRB2DarkRoomTopTest])
-						};
-					}
-				case DungeonNodeID.TRB2DarkRoomBottom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRB2DarkRoomBottomTest])
-						};
-					}
-				case DungeonNodeID.TRLaserBridgeChests:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRLaserBridgeChestsTest])
-						};
-					}
-				case DungeonNodeID.TRB2PastKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRB2PastKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.TRB3:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRB3Test])
-						};
-					}
-				case DungeonNodeID.TRB3BossRoomEntry:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRB3BossRoomEntryTest])
-						};
-					}
-				case DungeonNodeID.TRBossRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRBossRoomTest])
-						};
-					}
-				case DungeonNodeID.TRBoss:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.TRBossTest])
-						};
-					}
-				case DungeonNodeID.GTBobsTorch:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GTBobsTorchTest])
-						};
-					}
-				case DungeonNodeID.GT1FLeft:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT1FLeftTest])
-						};
-					}
-				case DungeonNodeID.GT1FLeftPastHammerBlocks:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT1FLeftPastHammerBlocksTest])
-						};
-					}
-				case DungeonNodeID.GT1FLeftDMsRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT1FLeftDMsRoomTest])
-						};
-					}
-				case DungeonNodeID.GT1FLeftPastBonkableGaps:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT1FLeftPastBonkableGapsTest])
-						};
-					}
-				case DungeonNodeID.GT1FLeftMapChestRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT1FLeftMapChestRoomTest])
-						};
-					}
-				case DungeonNodeID.GT1FLeftSpikeTrapPortalRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT1FLeftSpikeTrapPortalRoomTest])
-						};
-					}
-				case DungeonNodeID.GT1FLeftFiresnakeRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT1FLeftFiresnakeRoomTest])
-						};
-					}
-				case DungeonNodeID.GT1FLeftPastFiresnakeRoomGap:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT1FLeftPastFiresnakeRoomGapTest])
-						};
-					}
-				case DungeonNodeID.GT1FLeftPastFiresnakeRoomKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT1FLeftPastFiresnakeRoomKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.GT1FLeftRandomizerRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT1FLeftRandomizerRoomTest])
-						};
-					}
-				case DungeonNodeID.GT1FRight:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT1FRightTest])
-						};
-					}
-				case DungeonNodeID.GT1FRightTileRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT1FRightTileRoomTest])
-						};
-					}
-				case DungeonNodeID.GT1FRightFourTorchRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT1FRightFourTorchRoomTest])
-						};
-					}
-				case DungeonNodeID.GT1FRightCompassRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT1FRightCompassRoomTest])
-						};
-					}
-				case DungeonNodeID.GT1FRightPastCompassRoomPortal:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT1FRightPastCompassRoomPortalTest])
-						};
-					}
-				case DungeonNodeID.GT1FRightCollapsingWalkway:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT1FRightCollapsingWalkwayTest])
-						};
-					}
-				case DungeonNodeID.GT1FBottomRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT1FBottomRoomTest])
-						};
-					}
-				case DungeonNodeID.GTBoss1:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GTBoss1Test])
-						};
-					}
-				case DungeonNodeID.GTB1BossChests:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GTB1BossChestsTest])
-						};
-					}
-				case DungeonNodeID.GTBigChest:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GTBigChestTest])
-						};
-					}
-				case DungeonNodeID.GT3FPastRedGoriyaRooms:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT3FPastRedGoriyaRoomsTest])
-						};
-					}
-				case DungeonNodeID.GT3FPastBigKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT3FPastBigKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.GTBoss2:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GTBoss2Test])
-						};
-					}
-				case DungeonNodeID.GT4FPastBoss2:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT3FPastBoss2Test])
-						};
-					}
-				case DungeonNodeID.GT5FPastFourTorchRooms:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT5FPastFourTorchRoomsTest])
-						};
-					}
-				case DungeonNodeID.GT6FPastFirstKeyDoor:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT6FPastFirstKeyDoorTest])
-						};
-					}
-				case DungeonNodeID.GT6FBossRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT6FBossRoomTest])
-						};
-					}
-				case DungeonNodeID.GTBoss3:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GTBoss3Test])
-						};
-					}
-				case DungeonNodeID.GT6FPastBossRoomGap:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GT6FPastBossRoomGapTest])
-						};
-					}
-				case DungeonNodeID.GTFinalBossRoom:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GTFinalBossRoomTest])
-						};
-					}
-				case DungeonNodeID.GTFinalBoss:
-					{
-						return new List<RequirementNodeConnection>
-						{
-							new RequirementNodeConnection(RequirementNodeID.Start,
-								RequirementDictionary.Instance[RequirementType.GTFinalBossTest])
-						};
-					}
-				default:
-					{
-						return new List<RequirementNodeConnection>(0);
-					}
+				throw new ArgumentNullException(nameof(node));
 			}
+
+			if (connections == null)
+			{
+				throw new ArgumentNullException(nameof(connections));
+			}
+
+			if (dungeonData == null)
+			{
+				throw new ArgumentNullException(nameof(dungeonData));
+			}
+
+            switch (id)
+            {
+                case DungeonNodeID.HCSanctuary:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.HCSanctuaryEntry]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCBack], node));
+                    }
+                    break;
+                case DungeonNodeID.HCFront:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.HCFrontEntry]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCPastEscapeFirstKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.HCEscapeFirstKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCDarkRoomFront], node));
+                    }
+                    break;
+                case DungeonNodeID.HCEscapeFirstKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCFront], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCPastEscapeFirstKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.HCPastEscapeFirstKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCFront], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.HCEscapeFirstKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCPastEscapeSecondKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.HCEscapeSecondKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.HCEscapeSecondKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCPastEscapeFirstKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCPastEscapeSecondKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.HCPastEscapeSecondKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCPastEscapeFirstKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.HCEscapeSecondKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.HCDarkRoomFront:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCFront], node,
+                            RequirementDictionary.Instance[RequirementType.DarkRoomHC]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCPastDarkCrossKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.HCDarkCrossKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.HCDarkCrossKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCDarkRoomFront], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCPastDarkCrossKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.HCPastDarkCrossKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCDarkRoomFront], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.HCDarkCrossKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCPastSewerRatRoomKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.HCSewerRatRoomKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.HCSewerRatRoomKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCPastDarkCrossKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCPastSewerRatRoomKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.HCPastSewerRatRoomKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCDarkRoomBack], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCPastDarkCrossKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.HCSewerRatRoomKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.HCDarkRoomBack:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCPastSewerRatRoomKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCBack], node,
+                            RequirementDictionary.Instance[RequirementType.DarkRoomHC]));
+                    }
+                    break;
+                case DungeonNodeID.HCBack:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.HCBackEntry]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCDarkRoomBack], node));
+                    }
+                    break;
+                case DungeonNodeID.AT:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.ATEntry]));
+                    }
+                    break;
+                case DungeonNodeID.ATDarkMaze:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.AT], node,
+                            RequirementDictionary.Instance[RequirementType.DarkRoomAT]));
+                    }
+                    break;
+                case DungeonNodeID.ATPastFirstKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.ATDarkMaze], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.ATFirstKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.ATPastSecondKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.ATSecondKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.ATSecondKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.ATPastFirstKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.ATPastSecondKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.ATPastSecondKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.ATPastFirstKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.ATSecondKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.ATPastThirdKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.ATPastSecondKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.ATThirdKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.ATPastFourthKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.ATFourthKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.ATFourthKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.ATPastThirdKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.ATPastFourthKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.ATPastFourthKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.ATPastThirdKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.ATFourthKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.ATBossRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.ATPastFourthKeyDoor], node,
+                            RequirementDictionary.Instance[RequirementType.Curtains]));
+                    }
+                    break;
+                case DungeonNodeID.ATBoss:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.ATBossRoom], node,
+                            RequirementDictionary.Instance[RequirementType.ATBoss]));
+                    }
+                    break;
+                case DungeonNodeID.EP:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.EPEntry]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.EPPastBigKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.EPBigKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.EPBigChest:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.EP], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.EPBigChest].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.EPRightDarkRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.EP], node,
+                            RequirementDictionary.Instance[RequirementType.DarkRoomEPRight]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.EPPastRightKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.EPRightKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.EPRightKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.EPRightDarkRoom], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.EPPastRightKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.EPPastRightKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.EPRightDarkRoom], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.EPRightKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.EPBigKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.EP], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.EPPastBigKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.EPPastBigKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.EP], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.EPBigKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.EPBackDarkRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.EPPastBigKeyDoor], node,
+                            RequirementDictionary.Instance[RequirementType.DarkRoomEPBack]));
+                    }
+                    break;
+                case DungeonNodeID.EPPastBackKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.EPBackDarkRoom], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.EPBackKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.EPBossRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.EPPastBackKeyDoor], node,
+                            RequirementDictionary.Instance[RequirementType.RedEyegoreGoriya]));
+                    }
+                    break;
+                case DungeonNodeID.EPBoss:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.EPBossRoom], node,
+                            RequirementDictionary.Instance[RequirementType.EPBoss]));
+                    }
+                    break;
+                case DungeonNodeID.DPFront:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.DPFrontEntry]));
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.DPLeftEntry]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.DPPastRightKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.DPRightKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.DPTorchItem:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.DPFront], node,
+                            RequirementDictionary.Instance[RequirementType.Torch]));
+                    }
+                    break;
+                case DungeonNodeID.DPBigChest:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.DPFront], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.DPBigChest].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.DPRightKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.DPFront], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.DPPastRightKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.DPPastRightKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.DPFront], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.DPRightKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.DPBack:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.DPBackEntry]));
+                    }
+                    break;
+                case DungeonNodeID.DP2F:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.DPBack], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.DP1FKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.DP2FPastFirstKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.DP2FFirstKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.DP2FFirstKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.DP2F], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.DP2FPastFirstKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.DP2FPastFirstKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.DP2F], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.DP2FFirstKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.DP2FPastSecondKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.DP2FSecondKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.DP2FSecondKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.DP2FPastFirstKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.DP2FPastSecondKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.DP2FPastSecondKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.DP2FPastFirstKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.DP2FSecondKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.DPPastFourTorchWall:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.DP2FPastSecondKeyDoor], node,
+                            RequirementDictionary.Instance[RequirementType.FireSource]));
+                    }
+                    break;
+                case DungeonNodeID.DPBossRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.DPPastFourTorchWall], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.DPBigKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.DPBoss:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.DPBossRoom], node,
+                            RequirementDictionary.Instance[RequirementType.DPBoss]));
+                    }
+                    break;
+                case DungeonNodeID.ToH:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.ToHEntry]));
+                    }
+                    break;
+                case DungeonNodeID.ToHPastKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.ToH], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.ToHKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.ToHBasementTorchRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.ToHPastKeyDoor], node,
+                            RequirementDictionary.Instance[RequirementType.FireSource]));
+                    }
+                    break;
+                case DungeonNodeID.ToHPastBigKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.ToH], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.ToHBigKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.ToH], node,
+                            RequirementDictionary.Instance[RequirementType.ToHHerapot]));
+                    }
+                    break;
+                case DungeonNodeID.ToHBigChest:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.ToHPastBigKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.ToHBigChest].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.ToHBoss:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.ToHPastBigKeyDoor], node,
+                            RequirementDictionary.Instance[RequirementType.ToHBoss]));
+                    }
+                    break;
+                case DungeonNodeID.PoD:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.PoDEntry]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDLobbyArena], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.PoDFrontKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.PoDPastFirstRedGoriyaRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoD], node,
+                            RequirementDictionary.Instance[RequirementType.RedEyegoreGoriya]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoD], node,
+                            RequirementDictionary.Instance[RequirementType.CameraUnlock]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoD], node,
+                            RequirementDictionary.Instance[RequirementType.SBMimicClip]));
+                    }
+                    break;
+                case DungeonNodeID.PoDFrontKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoD], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDLobbyArena], node));
+                    }
+                    break;
+                case DungeonNodeID.PoDLobbyArena:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoD], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.PoDFrontKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDPastFirstRedGoriyaRoom], node,
+                            RequirementDictionary.Instance[RequirementType.Hammer]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.PoDCollapsingWalkwayKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.PoDBigKeyChestArea:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDLobbyArena], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.PoDBigKeyChestKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.PoDCollapsingWalkwayKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDLobbyArena], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDLobbyArena], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.PoDCollapsingWalkwayKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDPastDarkMazeKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.PoDDarkMazeKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDHarmlessHellwayRoom], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.PoDHarmlessHellwayKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.PoDDarkBasement:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor], node,
+                            RequirementDictionary.Instance[RequirementType.DarkRoomPoDDarkBasement]));
+                    }
+                    break;
+                case DungeonNodeID.PoDHarmlessHellwayKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDHarmlessHellwayRoom], node));
+                    }
+                    break;
+                case DungeonNodeID.PoDHarmlessHellwayRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.PoDHarmlessHellwayKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.PoDDarkMazeKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDPastDarkMazeKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.PoDPastDarkMazeKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.PoDDarkMazeKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDDarkMaze], node));
+                    }
+                    break;
+                case DungeonNodeID.PoDDarkMaze:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDPastDarkMazeKeyDoor], node,
+                            RequirementDictionary.Instance[RequirementType.DarkRoomPoDDarkMaze]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDBigChestLedge], node,
+                            RequirementDictionary.Instance[RequirementType.DarkRoomPoDDarkMaze]));
+                    }
+                    break;
+                case DungeonNodeID.PoDBigChestLedge:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDDarkMaze], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor], node,
+                            RequirementDictionary.Instance[RequirementType.BombJumpPoDHammerJump]));
+                    }
+                    break;
+                case DungeonNodeID.PoDBigChest:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDBigChestLedge], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.PoDBigChest].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.PoDPastSecondRedGoriyaRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDLobbyArena], node,
+                            RequirementDictionary.Instance[RequirementType.RedEyegoreGoriya]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDLobbyArena], node,
+                            RequirementDictionary.Instance[RequirementType.SBMimicClip]));
+                    }
+                    break;
+                case DungeonNodeID.PoDPastBowStatue:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDPastSecondRedGoriyaRoom], node,
+                            RequirementDictionary.Instance[RequirementType.Bow]));
+                    }
+                    break;
+                case DungeonNodeID.PoDBossAreaDarkRooms:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDPastBowStatue], node,
+                            RequirementDictionary.Instance[RequirementType.DarkRoomPoDBossArea]));
+                    }
+                    break;
+                case DungeonNodeID.PoDPastHammerBlocks:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDBossAreaDarkRooms], node,
+                            RequirementDictionary.Instance[RequirementType.Hammer]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDPastBossAreaKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.PoDBossAreaKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.PoDBossAreaKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDPastHammerBlocks], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDPastBossAreaKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.PoDPastBossAreaKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDPastHammerBlocks], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.PoDBossAreaKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.PoDBossRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDPastBossAreaKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.PoDBigKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.PoDBoss:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDBossRoom], node,
+                            RequirementDictionary.Instance[RequirementType.PoDBoss]));
+                    }
+                    break;
+                case DungeonNodeID.SP:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.SPEntry]));
+                    }
+                    break;
+                case DungeonNodeID.SPAfterRiver:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SP], node,
+                            RequirementDictionary.Instance[RequirementType.Flippers]));
+                    }
+                    break;
+                case DungeonNodeID.SPB1:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPAfterRiver], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.SP1FKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPB1PastFirstRightKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.SPB1FirstRightKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.SPB1FirstRightKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPB1], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPB1PastFirstRightKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.SPB1PastFirstRightKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPB1], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.SPB1FirstRightKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPB1PastSecondRightKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.SPB1SecondRightKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.SPB1SecondRightKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPB1PastFirstRightKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPB1PastSecondRightKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.SPB1PastSecondRightKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPB1PastFirstRightKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.SPB1SecondRightKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.SPB1PastRightHammerBlocks:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPB1PastSecondRightKeyDoor], node,
+                            RequirementDictionary.Instance[RequirementType.Hammer]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPB1PastLeftKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.SPB1LeftKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.SPB1KeyLedge:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPB1PastRightHammerBlocks], node,
+                            RequirementDictionary.Instance[RequirementType.Hookshot]));
+                    }
+                    break;
+                case DungeonNodeID.SPB1LeftKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPB1PastRightHammerBlocks], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPB1PastLeftKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.SPB1PastLeftKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPB1PastRightHammerBlocks], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.SPB1LeftKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.SPBigChest:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPB1PastRightHammerBlocks], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.SPBigChest].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.SPB1Back:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPB1PastRightHammerBlocks], node,
+                            RequirementDictionary.Instance[RequirementType.Hookshot]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPB1PastBackFirstKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.SPB1BackFirstKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.SPB1BackFirstKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPB1Back], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPB1PastBackFirstKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.SPB1PastBackFirstKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPB1Back], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.SPB1BackFirstKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPBossRoom], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.SPBossRoomKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.SPBossRoomKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPB1PastBackFirstKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPBossRoom], node));
+                    }
+                    break;
+                case DungeonNodeID.SPBossRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPB1PastBackFirstKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.SPBossRoomKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.SPBoss:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SPBossRoom], node,
+                            RequirementDictionary.Instance[RequirementType.SPBoss]));
+                    }
+                    break;
+                case DungeonNodeID.SWBigChestAreaBottom:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.SWFrontEntry]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWBigChestAreaTop], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWFrontLeftSide], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.SWFrontLeftKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWFrontRightSide], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.SWFrontRightKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.SWBigChestAreaTop:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.SWFrontEntry]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWBigChestAreaBottom], node,
+                            RequirementDictionary.Instance[RequirementType.Hookshot]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWBigChestAreaBottom], node,
+                            RequirementDictionary.Instance[RequirementType.BombJumpSWBigChest]));
+                    }
+                    break;
+                case DungeonNodeID.SWBigChest:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWBigChestAreaTop], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.SWBigChest].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.SWFrontLeftKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWFrontLeftSide], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWBigChestAreaBottom], node));
+                    }
+                    break;
+                case DungeonNodeID.SWFrontLeftSide:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.SWFrontEntry]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWBigChestAreaBottom], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.SWFrontLeftKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.SWFrontRightKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWFrontRightSide], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWBigChestAreaBottom], node));
+                    }
+                    break;
+                case DungeonNodeID.SWFrontRightSide:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.SWFrontEntry]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWFrontLeftSide], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWBigChestAreaBottom], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.SWFrontRightKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.SWFrontBackConnector:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.SWFrontEntry]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWPastTheWorthlessKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.SWWorthlessKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.SWWorthlessKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWFrontBackConnector], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWPastTheWorthlessKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.SWPastTheWorthlessKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWFrontBackConnector], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.SWWorthlessKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.SWBack:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.SWBackEntry]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWBackFirstKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.SWBackFirstKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.SWBackFirstKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWBack], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWBackPastFirstKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.SWBackPastFirstKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWBack], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.SWBackFirstKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.SWBackPastFourTorchRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWBackPastFirstKeyDoor], node,
+                            RequirementDictionary.Instance[RequirementType.FireRod]));
+                    }
+                    break;
+                case DungeonNodeID.SWBackPastCurtains:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWBackPastFourTorchRoom], node,
+                            RequirementDictionary.Instance[RequirementType.Curtains]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWBossRoom], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.SWBackSecondKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.SWBackSecondKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWBackPastCurtains], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWBossRoom], node));
+                    }
+                    break;
+                case DungeonNodeID.SWBossRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWBackPastCurtains], node,
+                             dungeonData.KeyDoorDictionary[KeyDoorID.SWBackSecondKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.SWBoss:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.SWBossRoom], node,
+                            RequirementDictionary.Instance[RequirementType.SWBoss]));
+                    }
+                    break;
+                case DungeonNodeID.TT:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.TTEntry]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TTPastBigKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.TTBigKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.TTBigKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TT], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TTPastBigKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.TTPastBigKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TT], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.TTBigKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TTPastFirstKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.TTFirstKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.TTFirstKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TTPastBigKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TTPastFirstKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.TTPastFirstKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TTPastBigKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.TTFirstKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TTPastBigChestRoomKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.TTBigChestKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.TTPastSecondKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TTPastFirstKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.TTSecondKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.TTBigChestKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TTPastFirstKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TTPastBigChestRoomKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.TTPastBigChestRoomKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TTPastFirstKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.TTBigChestKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.TTPastHammerBlocks:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TTPastBigChestRoomKeyDoor], node,
+                            RequirementDictionary.Instance[RequirementType.Hammer]));
+                    }
+                    break;
+                case DungeonNodeID.TTBigChest:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TTPastHammerBlocks], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.TTBigChest].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.TTBossRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TTPastBigKeyDoor], node,
+                            RequirementDictionary.Instance[RequirementType.BossShuffleOn]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TTPastSecondKeyDoor], node,
+                            RequirementDictionary.Instance[RequirementType.BossShuffleOff]));
+                    }
+                    break;
+                case DungeonNodeID.TTBoss:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TTBossRoom], node,
+                            RequirementDictionary.Instance[RequirementType.TTBoss]));
+                    }
+                    break;
+                case DungeonNodeID.IP:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.IPEntry]));
+                    }
+                    break;
+                case DungeonNodeID.IPPastEntranceFreezorRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IP], node,
+                            RequirementDictionary.Instance[RequirementType.MeltThings]));
+                    }
+                    break;
+                case DungeonNodeID.IPB1LeftSide:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPPastEntranceFreezorRoom], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.IP1FKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.IPB1RightSide:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB2PastLiftBlock], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB1LeftSide], node,
+                            RequirementDictionary.Instance[RequirementType.IPIceBreaker]));
+                    }
+                    break;
+                case DungeonNodeID.IPB2LeftSide:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB1LeftSide], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB2PastKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.IPB2KeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.IPB2KeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB2LeftSide], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB2PastKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.IPB2PastKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB2LeftSide], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.IPB2KeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPSpikeRoom], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.IPB3KeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB4FreezorRoom], node));
+                    }
+                    break;
+                case DungeonNodeID.IPB2PastHammerBlocks:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB2PastLiftBlock], node,
+                            RequirementDictionary.Instance[RequirementType.Gloves1]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPSpikeRoom], node,
+                            RequirementDictionary.Instance[RequirementType.Hammer]));
+                    }
+                    break;
+                case DungeonNodeID.IPB2PastLiftBlock:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB2PastHammerBlocks], node,
+                            RequirementDictionary.Instance[RequirementType.Gloves1]));
+                    }
+                    break;
+                case DungeonNodeID.IPB3KeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB2PastKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPSpikeRoom], node));
+                    }
+                    break;
+                case DungeonNodeID.IPSpikeRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB1RightSide], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB2PastHammerBlocks], node,
+                            RequirementDictionary.Instance[RequirementType.Hammer]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB2PastKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.IPB3KeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB4RightSide], node));
+                    }
+                    break;
+                case DungeonNodeID.IPB4RightSide:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPSpikeRoom], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB4IceRoom], node,
+                            RequirementDictionary.Instance[RequirementType.Hookshot]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB4IceRoom], node,
+                            RequirementDictionary.Instance[RequirementType.BombJumpIPHookshotGap]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB4IceRoom], node,
+                            RequirementDictionary.Instance[RequirementType.Hover]));
+                    }
+                    break;
+                case DungeonNodeID.IPB4IceRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB2PastKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB4PastKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.IPB4KeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB4FreezorRoom], node,
+                            RequirementDictionary.Instance[RequirementType.BombJumpIPFreezorRoomGap]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB4FreezorRoom], node,
+                            RequirementDictionary.Instance[RequirementType.Hover]));
+                    }
+                    break;
+                case DungeonNodeID.IPB4FreezorRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB2PastKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB4IceRoom], node,
+                            RequirementDictionary.Instance[RequirementType.BombJumpIPFreezorRoomGap]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB4IceRoom], node,
+                            RequirementDictionary.Instance[RequirementType.Hover]));
+                    }
+                    break;
+                case DungeonNodeID.IPFreezorChest:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB4FreezorRoom], node,
+                            RequirementDictionary.Instance[RequirementType.MeltThings]));
+                    }
+                    break;
+                case DungeonNodeID.IPB4KeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB4IceRoom], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB4PastKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.IPB4PastKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB4IceRoom], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.IPB4KeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB5], node));
+                    }
+                    break;
+                case DungeonNodeID.IPBigChestArea:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB4FreezorRoom], node));
+                    }
+                    break;
+                case DungeonNodeID.IPBigChest:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPBigChestArea], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.IPBigChest].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.IPB5:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB4FreezorRoom], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB4PastKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.IPB5PastBigKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB5], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.IPBigKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.IPB6:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB5PastBigKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.IPB5KeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB6PastKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.IPB6KeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB5], node,
+                            RequirementDictionary.Instance[RequirementType.BombJumpIPBJ]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB5], node,
+                            RequirementDictionary.Instance[RequirementType.IPIceBreaker]));
+                    }
+                    break;
+                case DungeonNodeID.IPB6KeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB6], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB6PastKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.IPB6PastKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB6], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.IPB6KeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.IPB6PreBossRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB6], node,
+                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB6PastKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB6], node,
+                            RequirementDictionary.Instance[RequirementType.BombJumpIPBJ]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB6], node,
+                            RequirementDictionary.Instance[RequirementType.IPIceBreaker]));
+                    }
+                    break;
+                case DungeonNodeID.IPB6PastHammerBlocks:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB6PreBossRoom], node,
+                            RequirementDictionary.Instance[RequirementType.Hammer]));
+                    }
+                    break;
+                case DungeonNodeID.IPB6PastLiftBlock:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB6PastHammerBlocks], node,
+                            RequirementDictionary.Instance[RequirementType.Gloves1]));
+                    }
+                    break;
+                case DungeonNodeID.IPBoss:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB6PastLiftBlock], node,
+                            RequirementDictionary.Instance[RequirementType.IPBoss]));
+                    }
+                    break;
+                case DungeonNodeID.MM:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.MMEntry]));
+                    }
+                    break;
+                case DungeonNodeID.MMPastEntranceGap:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MM], node,
+                            RequirementDictionary.Instance[RequirementType.Hookshot]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MM], node,
+                            RequirementDictionary.Instance[RequirementType.BonkOverLedge]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MM], node,
+                            RequirementDictionary.Instance[RequirementType.Hover]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1TopSide], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.MMB1TopLeftKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1TopSide], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.MMB1TopRightKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1LeftSidePastFirstKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.MMB1LeftSideFirstKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.MMBigChest:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMPastEntranceGap], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.MMBigChest].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.MMB1TopLeftKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMPastEntranceGap], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1TopSide], node));
+                    }
+                    break;
+                case DungeonNodeID.MMB1TopRightKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMPastEntranceGap], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1TopSide], node));
+                    }
+                    break;
+                case DungeonNodeID.MMB1TopSide:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMPastEntranceGap], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.MMB1TopLeftKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMPastEntranceGap], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.MMB1TopRightKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1PastPortalBigKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1PastBridgeBigKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.MMBridgeBigKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.MMB1LobbyBeyondBlueBlocks:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1TopSide], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1LeftSidePastFirstKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1RightSideBeyondBlueBlocks], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.MMB1RightSideKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.MMB1RightSideKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1LobbyBeyondBlueBlocks], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1RightSideBeyondBlueBlocks], node));
+                    }
+                    break;
+                case DungeonNodeID.MMB1RightSideBeyondBlueBlocks:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1LeftSideFirstKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1TopSide], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1LobbyBeyondBlueBlocks], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.MMB1RightSideKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.MMB1LeftSideFirstKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMPastEntranceGap], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1LeftSidePastFirstKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.MMB1LeftSidePastFirstKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMPastEntranceGap], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.MMB1LeftSideFirstKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1LeftSidePastSecondKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.MMB1LeftSideSecondKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.MMB1LeftSideSecondKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1LeftSidePastFirstKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1LeftSidePastSecondKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.MMB1LeftSidePastSecondKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1LeftSidePastFirstKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.MMB1LeftSideSecondKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.MMB1PastFourTorchRoom:
+                case DungeonNodeID.MMF1PastFourTorchRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1LeftSidePastSecondKeyDoor], node,
+                            RequirementDictionary.Instance[RequirementType.FireSource]));
+                    }
+                    break;
+                case DungeonNodeID.MMB1PastPortalBigKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMPastEntranceGap], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.MMPortalBigKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.MMBridgeBigKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1TopSide], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1PastBridgeBigKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.MMB1PastBridgeBigKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1TopSide], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.MMBridgeBigKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.MMDarkRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB2PastWorthlessKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.MMB2WorthlessKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB1PastBridgeBigKeyDoor], node,
+                            RequirementDictionary.Instance[RequirementType.DarkRoomMM]));
+                    }
+                    break;
+                case DungeonNodeID.MMB2WorthlessKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMDarkRoom], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB2PastWorthlessKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.MMB2PastWorthlessKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMDarkRoom], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.MMB2WorthlessKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.MMB2PastCaneOfSomariaSwitch:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMDarkRoom], node,
+                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria]));
+                    }
+                    break;
+                case DungeonNodeID.MMBossRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMB2PastCaneOfSomariaSwitch], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.MMBossRoomBigKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.MMBoss:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.MMBossRoom], node,
+                            RequirementDictionary.Instance[RequirementType.MMBoss]));
+                    }
+                    break;
+                case DungeonNodeID.TRFront:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.TRFrontEntry]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRF1SomariaTrack], node));
+                    }
+                    break;
+                case DungeonNodeID.TRF1SomariaTrack:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRFront], node,
+                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRF1CompassChestArea], node,
+                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRF1FourTorchRoom], node,
+                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRF1FirstKeyDoorArea], node,
+                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria]));
+                    }
+                    break;
+                case DungeonNodeID.TRF1CompassChestArea:
+                case DungeonNodeID.TRF1FourTorchRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRF1SomariaTrack], node));
+                    }
+                    break;
+                case DungeonNodeID.TRF1RollerRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRF1FourTorchRoom], node,
+                            RequirementDictionary.Instance[RequirementType.FireRod]));
+                    }
+                    break;
+                case DungeonNodeID.TRF1FirstKeyDoorArea:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRF1SomariaTrack], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRF1PastFirstKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.TR1FFirstKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.TRF1FirstKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRF1FirstKeyDoorArea], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRF1PastFirstKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.TRF1PastFirstKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRF1FirstKeyDoorArea], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.TR1FFirstKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRF1PastSecondKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.TR1FSecondKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.TRF1SecondKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRF1PastFirstKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRF1PastSecondKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.TRF1PastSecondKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRF1PastFirstKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.TR1FSecondKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB1], node));
+                    }
+                    break;
+                case DungeonNodeID.TRB1:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.TRMiddleEntry]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRF1PastSecondKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.TR1FThirdKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB1BigChestArea], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB1RightSide], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.TRB1BigKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB1PastBigKeyChestKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.TRB1BigKeyChestKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.TRB1BigKeyChestKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB1], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB1PastBigKeyChestKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.TRB1PastBigKeyChestKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB1], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.TRB1BigKeyChestKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.TRB1MiddleRightEntranceArea:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.TRMiddleEntry]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB1], node));
+                    }
+                    break;
+                case DungeonNodeID.TRB1BigChestArea:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB1MiddleRightEntranceArea], node,
+                            RequirementDictionary.Instance[RequirementType.Hookshot]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB1MiddleRightEntranceArea], node,
+                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB1MiddleRightEntranceArea], node,
+                            RequirementDictionary.Instance[RequirementType.Hover]));
+                    }
+                    break;
+                case DungeonNodeID.TRBigChest:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB1BigChestArea], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.TRBigChest].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.TRB1BigKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB1], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB1RightSide], node));
+                    }
+                    break;
+                case DungeonNodeID.TRB1RightSide:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB1], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.TRB1BigKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRPastB1toB2KeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.TRPastB1toB2KeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB1RightSide], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.TRB1toB2KeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB2DarkRoomTop], node));
+                    }
+                    break;
+                case DungeonNodeID.TRB2DarkRoomTop:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRPastB1toB2KeyDoor], node,
+                            RequirementDictionary.Instance[RequirementType.DarkRoomTR]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB2DarkRoomBottom], node,
+                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria]));
+                    }
+                    break;
+                case DungeonNodeID.TRB2DarkRoomBottom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB2DarkRoomTop], node,
+                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB2PastDarkMaze], node,
+                            RequirementDictionary.Instance[RequirementType.DarkRoomTR]));
+                    }
+                    break;
+                case DungeonNodeID.TRB2PastDarkMaze:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.TRBackEntry]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB2DarkRoomBottom], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB2PastKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.TRB2KeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.TRLaserBridgeChests:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB2PastDarkMaze], node,
+                            RequirementDictionary.Instance[RequirementType.LaserBridge]));
+                    }
+                    break;
+                case DungeonNodeID.TRB2KeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB2PastDarkMaze], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB2PastKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.TRB2PastKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB2PastDarkMaze], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.TRB2KeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.TRB3:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB2PastKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.TRB3BossRoomEntry:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB3], node,
+                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria]));
+                    }
+                    break;
+                case DungeonNodeID.TRBossRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRB3BossRoomEntry], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.TRBossRoomBigKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.TRBoss:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.TRBossRoom], node,
+                            RequirementDictionary.Instance[RequirementType.TRBoss]));
+                    }
+                    break;
+                case DungeonNodeID.GT:
+                    {
+                        connections.Add(new EntryNodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.GTEntry]));
+                    }
+                    break;
+                case DungeonNodeID.GTBobsTorch:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeft], node,
+                            RequirementDictionary.Instance[RequirementType.Torch]));
+                    }
+                    break;
+                case DungeonNodeID.GT1FLeft:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FRight], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.GT1FLeftToRightKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.GT1FLeftToRightKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeft], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FRight], node));
+                    }
+                    break;
+                case DungeonNodeID.GT1FLeftPastHammerBlocks:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeft], node,
+                            RequirementDictionary.Instance[RequirementType.Hammer]));
+                    }
+                    break;
+                case DungeonNodeID.GT1FLeftDMsRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeftPastHammerBlocks], node,
+                            RequirementDictionary.Instance[RequirementType.Hookshot]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeftPastHammerBlocks], node,
+                            RequirementDictionary.Instance[RequirementType.Hover]));
+                    }
+                    break;
+                case DungeonNodeID.GT1FLeftPastBonkableGaps:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeftPastHammerBlocks], node,
+                            RequirementDictionary.Instance[RequirementType.Hookshot]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeftPastHammerBlocks], node,
+                            RequirementDictionary.Instance[RequirementType.BonkOverLedge]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeftPastHammerBlocks], node,
+                            RequirementDictionary.Instance[RequirementType.Hover]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeftMapChestRoom], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.GT1FMapChestRoomKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeftSpikeTrapPortalRoom], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.GT1FSpikeTrapPortalRoomKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.GT1FMapChestRoomKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeftPastBonkableGaps], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeftMapChestRoom], node));
+                    }
+                    break;
+                case DungeonNodeID.GT1FLeftMapChestRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeftPastBonkableGaps], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.GT1FMapChestRoomKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.GT1FSpikeTrapPortalRoomKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeftPastBonkableGaps], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeftSpikeTrapPortalRoom], node));
+                    }
+                    break;
+                case DungeonNodeID.GT1FLeftSpikeTrapPortalRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeftPastBonkableGaps], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.GT1FSpikeTrapPortalRoomKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.GT1FLeftFiresnakeRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeftSpikeTrapPortalRoom], node));
+                    }
+                    break;
+                case DungeonNodeID.GT1FLeftPastFiresnakeRoomGap:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeftFiresnakeRoom], node,
+                            RequirementDictionary.Instance[RequirementType.Hookshot]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeftPastFiresnakeRoomKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.GT1FFiresnakeRoomKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeftFiresnakeRoom], node,
+                            RequirementDictionary.Instance[RequirementType.Hover]));
+                    }
+                    break;
+                case DungeonNodeID.GT1FFiresnakeRoomKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeftPastFiresnakeRoomGap], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeftPastFiresnakeRoomKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.GT1FLeftPastFiresnakeRoomKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeftPastFiresnakeRoomGap], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.GT1FFiresnakeRoomKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.GT1FLeftRandomizerRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeftPastFiresnakeRoomKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.GT1FRight:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeft], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.GT1FLeftToRightKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.GT1FRightTileRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FRight], node,
+                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FRightFourTorchRoom], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.GT1FTileRoomKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.GT1FTileRoomKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FRightTileRoom], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FRightFourTorchRoom], node));
+                    }
+                    break;
+                case DungeonNodeID.GT1FRightFourTorchRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FRightTileRoom], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.GT1FTileRoomKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.GT1FRightCompassRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FRightFourTorchRoom], node,
+                            RequirementDictionary.Instance[RequirementType.FireRod]));
+                    }
+                    break;
+                case DungeonNodeID.GT1FRightPastCompassRoomPortal:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FRightCompassRoom], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FRightCollapsingWalkway], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.GT1FCollapsingWalkwayKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.GT1FCollapsingWalkwayKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FRightPastCompassRoomPortal], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FRightCollapsingWalkway], node));
+                    }
+                    break;
+                case DungeonNodeID.GT1FRightCollapsingWalkway:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FRightPastCompassRoomPortal], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.GT1FCollapsingWalkwayKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.GT1FBottomRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FLeftRandomizerRoom], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FRightCollapsingWalkway], node));
+                    }
+                    break;
+                case DungeonNodeID.GTBoss1:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FBottomRoom], node,
+                            RequirementDictionary.Instance[RequirementType.GTBoss1]));
+                    }
+                    break;
+                case DungeonNodeID.GTB1BossChests:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GTBoss1], node));
+                    }
+                    break;
+                case DungeonNodeID.GTBigChest:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT1FBottomRoom], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.GTBigChest].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.GT3FPastRedGoriyaRooms:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT], node,
+                            RequirementDictionary.Instance[RequirementType.RedEyegoreGoriya]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT3FPastBigKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.GT3FBigKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT], node,
+                            RequirementDictionary.Instance[RequirementType.SBMimicClip]));
+                    }
+                    break;
+                case DungeonNodeID.GT3FBigKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT3FPastRedGoriyaRooms], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT3FPastBigKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.GT3FPastBigKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT3FPastRedGoriyaRooms], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.GT3FBigKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.GTBoss2:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT3FPastBigKeyDoor], node,
+                            RequirementDictionary.Instance[RequirementType.GTBoss2]));
+                    }
+                    break;
+                case DungeonNodeID.GT4FPastBoss2:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GTBoss2], node));
+                    }
+                    break;
+                case DungeonNodeID.GT5FPastFourTorchRooms:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT4FPastBoss2], node,
+                            RequirementDictionary.Instance[RequirementType.FireSource]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT6FPastFirstKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.GT6FFirstKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.GT6FFirstKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT5FPastFourTorchRooms], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT6FPastFirstKeyDoor], node));
+                    }
+                    break;
+                case DungeonNodeID.GT6FPastFirstKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT5FPastFourTorchRooms], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.GT6FFirstKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT6FBossRoom], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.GT6FSecondKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.GT6FSecondKeyDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT6FPastFirstKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT6FBossRoom], node));
+                    }
+                    break;
+                case DungeonNodeID.GT6FBossRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT6FPastFirstKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.GT6FSecondKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.GTBoss3:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT6FBossRoom], node,
+                            RequirementDictionary.Instance[RequirementType.GTBoss3]));
+                    }
+                    break;
+                case DungeonNodeID.GTBoss3Item:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GTBoss3], node,
+                            RequirementDictionary.Instance[RequirementType.Hookshot]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GTBoss3], node,
+                            RequirementDictionary.Instance[RequirementType.Hover]));
+                    }
+                    break;
+                case DungeonNodeID.GT6FPastBossRoomGap:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GTBoss3Item], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT6FBossRoom], node,
+                            RequirementDictionary.Instance[RequirementType.Hover]));
+                    }
+                    break;
+                case DungeonNodeID.GTFinalBossRoom:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT6FPastBossRoomGap], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.GT7FBigKeyDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.GTFinalBoss:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GTFinalBossRoom], node,
+                            RequirementDictionary.Instance[RequirementType.GTFinalBoss]));
+                    }
+                    break;
+            }
         }
 
         /// <summary>
-        /// Returns a list of key doors to which the specified node is connected.
+        /// Returns a new dungeon node instance for the specified node ID.
         /// </summary>
         /// <param name="id">
         /// The node ID.
+        /// </param>
+        /// <param name="dungeonData">
+        /// The mutable dungeon data parent class.
         /// </param>
         /// <param name="dungeon">
         /// The dungeon parent class.
         /// </param>
         /// <returns>
-        /// A list of key doors.
+        /// A new dungeon node instance.
         /// </returns>
-        private static List<KeyDoorID> GetDungeonKeyDoorConnections(
-            DungeonNodeID id, IDungeon dungeon)
-        {
-            if (dungeon == null)
-            {
-                throw new ArgumentNullException(nameof(dungeon));
-            }
-
-            List<KeyDoorID> keyDoorConnections = new List<KeyDoorID>();
-
-            foreach (var smallKeyDoor in dungeon.SmallKeyDoors)
-            {
-                if (KeyDoorFactory.GetKeyDoorConnectedNodeIDs(smallKeyDoor).Contains(id))
-                {
-                    keyDoorConnections.Add(smallKeyDoor);
-                }    
-            }
-
-            foreach (var bigKeyDoor in dungeon.BigKeyDoors)
-            {
-                if (KeyDoorFactory.GetKeyDoorConnectedNodeIDs(bigKeyDoor).Contains(id))
-                {
-                    keyDoorConnections.Add(bigKeyDoor);
-                }
-            }
-
-            return keyDoorConnections;
-        }
-
-		/// <summary>
-		/// Returns a list of connections from inside the dungeon for the specified node.
-		/// </summary>
-		/// <param name="id">
-		/// The node ID.
-		/// </param>
-		/// <returns>
-		/// A list of connections from inside the dungeon.
-		/// </returns>
-        internal static List<DungeonNodeConnection> GetDungeonConnections(DungeonNodeID id)
-        {
-            switch (id)
-            {
-				case DungeonNodeID.HCSanctuary:
-                    {
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.HCBack)
-						};
-					}
-				case DungeonNodeID.HCFront:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.HCDarkRoomFront)
-						};
-					}
-				case DungeonNodeID.HCDarkRoomFront:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.HCFront,
-								RequirementDictionary.Instance[RequirementType.DarkRoomHC])
-						};
-					}
-				case DungeonNodeID.HCPastSewerRatRoomKeyDoor:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.HCDarkRoomBack)
-						};
-					}
-				case DungeonNodeID.HCDarkRoomBack:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.HCPastSewerRatRoomKeyDoor),
-							new DungeonNodeConnection(
-								DungeonNodeID.HCBack,
-								RequirementDictionary.Instance[RequirementType.DarkRoomHC])
-						};
-					}
-				case DungeonNodeID.HCBack:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.HCDarkRoomBack)
-						};
-					}
-				case DungeonNodeID.ATDarkMaze:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.AT,
-								RequirementDictionary.Instance[RequirementType.DarkRoomAT])
-						};
-					}
-				case DungeonNodeID.ATBossRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.ATPastFourthKeyDoor,
-								RequirementDictionary.Instance[RequirementType.Curtains])
-						};
-					}
-				case DungeonNodeID.ATBoss:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.ATBossRoom,
-								RequirementDictionary.Instance[RequirementType.ATBoss])
-						};
-					}
-				case DungeonNodeID.EP:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.EPPastRightKeyDoor)
-						};
-					}
-				case DungeonNodeID.EPRightDarkRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.EP,
-								RequirementDictionary.Instance[RequirementType.DarkRoomEPRight])
-						};
-					}
-				case DungeonNodeID.EPBackDarkRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.EPPastBigKeyDoor,
-								RequirementDictionary.Instance[RequirementType.DarkRoomEPBack])
-						};
-					}
-				case DungeonNodeID.EPBossRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.EPPastBackKeyDoor,
-								RequirementDictionary.Instance[RequirementType.RedEyegoreGoriya])
-						};
-					}
-				case DungeonNodeID.EPBoss:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.EPBossRoom,
-								RequirementDictionary.Instance[RequirementType.EPBoss])
-						};
-					}
-				case DungeonNodeID.DPTorchItem:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.DPFront,
-								RequirementDictionary.Instance[RequirementType.Torch])
-						};
-					}
-				case DungeonNodeID.DPPastFourTorchWall:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.DP2FPastSecondKeyDoor,
-								RequirementDictionary.Instance[RequirementType.FireSource])
-						};
-					}
-				case DungeonNodeID.DPBoss:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.DPBossRoom,
-								RequirementDictionary.Instance[RequirementType.DPBoss])
-						};
-					}
-				case DungeonNodeID.ToHBasementTorchRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.ToHPastKeyDoor,
-								RequirementDictionary.Instance[RequirementType.FireSource])
-						};
-					}
-				case DungeonNodeID.ToHPastBigKeyDoor:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.ToH,
-								RequirementDictionary.Instance[RequirementType.ToHHerapot])
-						};
-					}
-				case DungeonNodeID.ToHBoss:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.ToHPastBigKeyDoor,
-								RequirementDictionary.Instance[RequirementType.ToHBoss])
-						};
-					}
-				case DungeonNodeID.PoDPastFirstRedGoriyaRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.PoD,
-								RequirementDictionary.Instance[RequirementType.RedEyegoreGoriya]),
-							new DungeonNodeConnection(
-								DungeonNodeID.PoD,
-								RequirementDictionary.Instance[RequirementType.CameraUnlock]),
-							new DungeonNodeConnection(
-								DungeonNodeID.PoD,
-								RequirementDictionary.Instance[RequirementType.SBMimicClip])
-						};
-					}
-				case DungeonNodeID.PoDLobbyArena:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.PoDPastFirstRedGoriyaRoom,
-								RequirementDictionary.Instance[RequirementType.Hammer]),
-							new DungeonNodeConnection(DungeonNodeID.PoDBigKeyChestArea),
-							new DungeonNodeConnection(DungeonNodeID.PoDHarmlessHellwayRoom),
-							new DungeonNodeConnection(
-								DungeonNodeID.PoDPastSecondRedGoriyaRoom,
-								RequirementDictionary.Instance[RequirementType.RedEyegoreGoriya]),
-							new DungeonNodeConnection(
-								DungeonNodeID.PoDPastSecondRedGoriyaRoom,
-								RequirementDictionary.Instance[RequirementType.SBMimicClip])
-						};
-					}
-				case DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.PoDDarkBasement)
-						};
-					}
-				case DungeonNodeID.PoDDarkBasement:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor,
-								RequirementDictionary.Instance[RequirementType.DarkRoomPoDDarkBasement])
-						};
-					}
-				case DungeonNodeID.PoDPastDarkMazeKeyDoor:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.PoDDarkMaze)
-						};
-					}
-				case DungeonNodeID.PoDDarkMaze:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.PoDPastDarkMazeKeyDoor,
-								RequirementDictionary.Instance[RequirementType.DarkRoomPoDDarkMaze]),
-							new DungeonNodeConnection(
-								DungeonNodeID.PoDBigChestLedge,
-								RequirementDictionary.Instance[RequirementType.DarkRoomPoDDarkMaze])
-						};
-					}
-				case DungeonNodeID.PoDBigChestLedge:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.PoDDarkMaze),
-							new DungeonNodeConnection(
-								DungeonNodeID.PoDPastCollapsingWalkwayKeyDoor,
-								RequirementDictionary.Instance[RequirementType.BombJumpPoDHammerJump])
-						};
-					}
-				case DungeonNodeID.PoDPastSecondRedGoriyaRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.PoDLobbyArena,
-								RequirementDictionary.Instance[RequirementType.RedEyegoreGoriya]),
-							new DungeonNodeConnection(
-								DungeonNodeID.PoDLobbyArena,
-								RequirementDictionary.Instance[RequirementType.SBMimicClip]),
-							new DungeonNodeConnection(
-								DungeonNodeID.PoDPastBowStatue,
-								RequirementDictionary.Instance[RequirementType.Bow])
-						};
-					}
-				case DungeonNodeID.PoDPastBowStatue:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.PoDPastSecondRedGoriyaRoom,
-								RequirementDictionary.Instance[RequirementType.Bow]),
-							new DungeonNodeConnection(DungeonNodeID.PoDBossAreaDarkRooms)
-						};
-					}
-				case DungeonNodeID.PoDBossAreaDarkRooms:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.PoDPastBowStatue,
-								RequirementDictionary.Instance[RequirementType.DarkRoomPoDBossArea]),
-							new DungeonNodeConnection(
-								DungeonNodeID.PoDPastHammerBlocks,
-								RequirementDictionary.Instance[RequirementType.Hammer])
-						};
-					}
-				case DungeonNodeID.PoDPastHammerBlocks:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.PoDBossAreaDarkRooms,
-								RequirementDictionary.Instance[RequirementType.Hammer])
-						};
-					}
-				case DungeonNodeID.PoDBoss:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.PoDBossRoom,
-								RequirementDictionary.Instance[RequirementType.PoDBoss])
-						};
-					}
-				case DungeonNodeID.SP:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.SPAfterRiver,
-								RequirementDictionary.Instance[RequirementType.Flippers])
-						};
-					}
-				case DungeonNodeID.SPAfterRiver:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.SP,
-								RequirementDictionary.Instance[RequirementType.Flippers])
-						};
-					}
-				case DungeonNodeID.SPB1PastSecondRightKeyDoor:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.SPB1PastRightHammerBlocks)
-						};
-					}
-				case DungeonNodeID.SPB1PastRightHammerBlocks:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.SPB1PastSecondRightKeyDoor,
-								RequirementDictionary.Instance[RequirementType.Hammer]),
-							new DungeonNodeConnection(DungeonNodeID.SPB1KeyLedge)
-						};
-					}
-				case DungeonNodeID.SPB1KeyLedge:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.SPB1PastRightHammerBlocks,
-								RequirementDictionary.Instance[RequirementType.Hookshot])
-						};
-					}
-				case DungeonNodeID.SPB1Back:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.SPB1PastRightHammerBlocks,
-								RequirementDictionary.Instance[RequirementType.Hookshot])
-						};
-					}
-				case DungeonNodeID.SPBoss:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.SPBossRoom,
-								RequirementDictionary.Instance[RequirementType.SPBoss])
-						};
-					}
-				case DungeonNodeID.SWBigChestAreaBottom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.SWBigChestAreaTop)
-						};
-					}
-				case DungeonNodeID.SWBigChestAreaTop:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.SWBigChestAreaBottom,
-								RequirementDictionary.Instance[RequirementType.Hookshot]),
-							new DungeonNodeConnection(
-								DungeonNodeID.SWBigChestAreaBottom,
-								RequirementDictionary.Instance[RequirementType.BombJumpSWBigChest])
-						};
-					}
-				case DungeonNodeID.SWFrontRightSide:
-                    {
-                        return new List<DungeonNodeConnection>
-                        {
-                            new DungeonNodeConnection(DungeonNodeID.SWFrontLeftSide)
-                        };
-                    }
-				case DungeonNodeID.SWBackPastFirstKeyDoor:
-                    {
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.SWBackPastFourTorchRoom)
-						};
-                    }
-				case DungeonNodeID.SWBackPastFourTorchRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.SWBackPastFirstKeyDoor,
-								RequirementDictionary.Instance[RequirementType.FireRod]),
-							new DungeonNodeConnection(DungeonNodeID.SWBackPastCurtains)
-						};
-					}
-				case DungeonNodeID.SWBackPastCurtains:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.SWBackPastFourTorchRoom,
-								RequirementDictionary.Instance[RequirementType.Curtains])
-						};
-					}
-				case DungeonNodeID.SWBoss:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.SWBossRoom,
-								RequirementDictionary.Instance[RequirementType.SWBoss])
-						};
-					}
-				case DungeonNodeID.TTPastBigChestRoomKeyDoor:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.TTPastHammerBlocks,
-								RequirementDictionary.Instance[RequirementType.Hammer])
-						};
-					}
-				case DungeonNodeID.TTPastHammerBlocks:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.TTPastBigChestRoomKeyDoor,
-								RequirementDictionary.Instance[RequirementType.Hammer])
-						};
-					}
-				case DungeonNodeID.TTBossRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.TTPastSecondKeyDoor,
-								RequirementDictionary.Instance[RequirementType.BossShuffleOff]),
-							new DungeonNodeConnection(
-								DungeonNodeID.TTPastBigKeyDoor,
-								RequirementDictionary.Instance[RequirementType.BossShuffleOn])
-						};
-					}
-				case DungeonNodeID.TTBoss:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.TTBossRoom)
-						};
-					}
-				case DungeonNodeID.IP:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.IPPastEntranceFreezorRoom)
-						};
-					}
-				case DungeonNodeID.IPPastEntranceFreezorRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.IP,
-								RequirementDictionary.Instance[RequirementType.MeltThings])
-						};
-					}
-				case DungeonNodeID.IPB1RightSide:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.IPB1LeftSide,
-								RequirementDictionary.Instance[RequirementType.IPIceBreaker]),
-							new DungeonNodeConnection(DungeonNodeID.IPB2PastLiftBlock)
-						};
-					}
-				case DungeonNodeID.IPB2LeftSide:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.IPB1LeftSide)
-						};
-					}
-				case DungeonNodeID.IPB2PastKeyDoor:
-                    {
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.IPB4FreezorRoom)
-						};
-					}
-				case DungeonNodeID.IPB2PastHammerBlocks:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.IPSpikeRoom,
-								RequirementDictionary.Instance[RequirementType.Hammer]),
-							new DungeonNodeConnection(
-								DungeonNodeID.IPB2PastLiftBlock,
-								RequirementDictionary.Instance[RequirementType.Gloves1])
-						};
-					}
-				case DungeonNodeID.IPB2PastLiftBlock:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.IPB2PastHammerBlocks,
-								RequirementDictionary.Instance[RequirementType.Gloves1])
-						};
-					}
-				case DungeonNodeID.IPSpikeRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.IPB1RightSide),
-							new DungeonNodeConnection(
-								DungeonNodeID.IPB2PastHammerBlocks,
-								RequirementDictionary.Instance[RequirementType.Hammer]),
-							new DungeonNodeConnection(DungeonNodeID.IPB4RightSide)
-						};
-					}
-				case DungeonNodeID.IPB4RightSide:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.IPSpikeRoom),
-							new DungeonNodeConnection(
-								DungeonNodeID.IPB4IceRoom,
-								RequirementDictionary.Instance[RequirementType.Hookshot]),
-							new DungeonNodeConnection(
-								DungeonNodeID.IPB4IceRoom,
-								RequirementDictionary.Instance[RequirementType.BombJumpIPHookshotGap])
-						};
-					}
-				case DungeonNodeID.IPB4IceRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.IPB4FreezorRoom,
-								RequirementDictionary.Instance[RequirementType.BombJumpIPFreezorRoomGap]),
-							new DungeonNodeConnection(DungeonNodeID.IPB2PastKeyDoor)
-						};
-					}
-				case DungeonNodeID.IPB4FreezorRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.IPB2PastKeyDoor),
-							new DungeonNodeConnection(
-								DungeonNodeID.IPB4IceRoom,
-								RequirementDictionary.Instance[RequirementType.BombJumpIPFreezorRoomGap])
-						};
-					}
-				case DungeonNodeID.IPFreezorChest:
-                    {
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.IPB4FreezorRoom,
-								RequirementDictionary.Instance[RequirementType.MeltThings])
-						};
-					}
-				case DungeonNodeID.IPB4PastKeyDoor:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.IPB5)
-						};
-					}
-				case DungeonNodeID.IPBigChestArea:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.IPB4FreezorRoom)
-						};
-					}
-				case DungeonNodeID.IPB5:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.IPB4FreezorRoom),
-							new DungeonNodeConnection(DungeonNodeID.IPB4PastKeyDoor)
-						};
-					}
-				case DungeonNodeID.IPB6:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.IPB5,
-								new AlternativeRequirement(new List<IRequirement>
-								{
-									RequirementDictionary.Instance[RequirementType.IPIceBreaker],
-									RequirementDictionary.Instance[RequirementType.BombJumpIPBJ]
-								}))
-						};
-					}
-				case DungeonNodeID.IPB6PreBossRoom:
-                    {
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.IPB6,
-								new AlternativeRequirement(new List<IRequirement>
-								{
-									RequirementDictionary.Instance[RequirementType.CaneOfSomaria],
-									RequirementDictionary.Instance[RequirementType.BombJumpIPBJ]
-								})),
-							new DungeonNodeConnection(DungeonNodeID.IPB6PastKeyDoor)
-						};
-                    }
-				case DungeonNodeID.IPB6PastHammerBlocks:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.IPB6PreBossRoom,
-								RequirementDictionary.Instance[RequirementType.Hammer])
-						};
-					}
-				case DungeonNodeID.IPB6PastLiftBlock:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.IPB6PastHammerBlocks,
-								RequirementDictionary.Instance[RequirementType.Gloves1])
-						};
-					}
-				case DungeonNodeID.IPBoss:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.IPB6PastLiftBlock,
-								RequirementDictionary.Instance[RequirementType.IPBoss])
-						};
-					}
-				case DungeonNodeID.MM:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.MMPastEntranceGap,
-								new AlternativeRequirement(new List<IRequirement>
-                                {
-									RequirementDictionary.Instance[RequirementType.Hookshot],
-									RequirementDictionary.Instance[RequirementType.BonkOverLedge]
-								}))
-						};
-					}
-				case DungeonNodeID.MMPastEntranceGap:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.MM,
-								new AlternativeRequirement(new List<IRequirement>
-								{
-									RequirementDictionary.Instance[RequirementType.Hookshot],
-									RequirementDictionary.Instance[RequirementType.BonkOverLedge]
-								})),
-							new DungeonNodeConnection(DungeonNodeID.MMB1PastFourTorchRoom)
-						};
-					}
-				case DungeonNodeID.MMB1TopSide:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.MMB1PastPortalBigKeyDoor)
-						};
-					}
-				case DungeonNodeID.MMB1LobbyBeyondBlueBlocks:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.MMB1TopSide),
-							new DungeonNodeConnection(DungeonNodeID.MMB1LeftSidePastFirstKeyDoor)
-						};
-					}
-				case DungeonNodeID.MMB1RightSideBeyondBlueBlocks:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.MMB1TopSide),
-							new DungeonNodeConnection(DungeonNodeID.MMB1LeftSidePastFirstKeyDoor)
-						};
-					}
-				case DungeonNodeID.MMB1LeftSidePastSecondKeyDoor:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.MMB1PastFourTorchRoom)
-						};
-					}
-				case DungeonNodeID.MMB1PastFourTorchRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.MMB1LeftSidePastSecondKeyDoor,
-								RequirementDictionary.Instance[RequirementType.FireSource])
-						};
-					}
-				case DungeonNodeID.MMF1PastFourTorchRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.MMB1LeftSidePastSecondKeyDoor,
-								RequirementDictionary.Instance[RequirementType.FireSource])
-						};
-					}
-				case DungeonNodeID.MMDarkRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.MMB1PastBridgeBigKeyDoor,
-								RequirementDictionary.Instance[RequirementType.DarkRoomMM])
-						};
-					}
-				case DungeonNodeID.MMB2PastCaneOfSomariaSwitch:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.MMDarkRoom,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria])
-						};
-					}
-				case DungeonNodeID.MMBoss:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.MMBossRoom,
-								RequirementDictionary.Instance[RequirementType.MMBoss])
-						};
-					}
-				case DungeonNodeID.TRFront:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.TRF1CompassChestArea,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria]),
-							new DungeonNodeConnection(
-								DungeonNodeID.TRF1FourTorchRoom,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria]),
-							new DungeonNodeConnection(
-								DungeonNodeID.TRF1FirstKeyDoorArea,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria])
-						};
-					}
-				case DungeonNodeID.TRF1CompassChestArea:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.TRFront,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria]),
-							new DungeonNodeConnection(
-								DungeonNodeID.TRF1FourTorchRoom,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria]),
-							new DungeonNodeConnection(
-								DungeonNodeID.TRF1FirstKeyDoorArea,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria])
-						};
-					}
-				case DungeonNodeID.TRF1FourTorchRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.TRFront,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria]),
-							new DungeonNodeConnection(
-								DungeonNodeID.TRF1CompassChestArea,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria]),
-							new DungeonNodeConnection(DungeonNodeID.TRF1RollerRoom),
-							new DungeonNodeConnection(
-								DungeonNodeID.TRF1FirstKeyDoorArea,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria])
-						};
-					}
-				case DungeonNodeID.TRF1RollerRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.TRF1FourTorchRoom,
-								RequirementDictionary.Instance[RequirementType.FireRod])
-						};
-					}
-				case DungeonNodeID.TRF1FirstKeyDoorArea:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.TRFront,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria]),
-							new DungeonNodeConnection(
-								DungeonNodeID.TRF1CompassChestArea,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria]),
-							new DungeonNodeConnection(
-								DungeonNodeID.TRF1FourTorchRoom,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria])
-						};
-					}
-				case DungeonNodeID.TRF1PastSecondKeyDoor:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.TRB1)
-						};
-					}
-				case DungeonNodeID.TRB1:
-                    {
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.TRB1BigChestArea)
-						};
-                    }
-				case DungeonNodeID.TRB1MiddleRightEntranceArea:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.TRB1)
-						};
-					}
-				case DungeonNodeID.TRB1BigChestArea:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.TRB1MiddleRightEntranceArea,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria]),
-							new DungeonNodeConnection(
-								DungeonNodeID.TRB1MiddleRightEntranceArea,
-								RequirementDictionary.Instance[RequirementType.Hookshot])
-						};
-					}
-				case DungeonNodeID.TRB1RightSide:
-                    {
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.TRPastB1toB2KeyDoor)
-						};
-					}
-				case DungeonNodeID.TRPastB1toB2KeyDoor:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.TRB2DarkRoomTop)
-						};
-					}
-				case DungeonNodeID.TRB2DarkRoomTop:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.TRPastB1toB2KeyDoor,
-								RequirementDictionary.Instance[RequirementType.DarkRoomTR]),
-							new DungeonNodeConnection(
-								DungeonNodeID.TRB2DarkRoomBottom,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria])
-						};
-					}
-				case DungeonNodeID.TRB2DarkRoomBottom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.TRB2DarkRoomTop,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria]),
-							new DungeonNodeConnection(
-								DungeonNodeID.TRB2PastDarkMaze,
-								RequirementDictionary.Instance[RequirementType.DarkRoomTR])
-						};
-					}
-				case DungeonNodeID.TRB2PastDarkMaze:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.TRB2DarkRoomBottom)
-						};
-					}
-				case DungeonNodeID.TRLaserBridgeChests:
-                    {
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.TRB2PastDarkMaze,
-								RequirementDictionary.Instance[RequirementType.LaserBridge])
-						};
-					}
-				case DungeonNodeID.TRB2PastKeyDoor:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.TRB3)
-						};
-					}
-				case DungeonNodeID.TRB3:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.TRB2PastKeyDoor),
-							new DungeonNodeConnection(
-								DungeonNodeID.TRB3BossRoomEntry,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria])
-						};
-					}
-				case DungeonNodeID.TRB3BossRoomEntry:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.TRB3,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria])
-						};
-					}
-				case DungeonNodeID.TRBoss:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.TRBossRoom,
-								RequirementDictionary.Instance[RequirementType.TRBoss])
-						};
-					}
-				case DungeonNodeID.GT:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.GT1FLeft),
-							new DungeonNodeConnection(DungeonNodeID.GT1FRight),
-							new DungeonNodeConnection(
-								DungeonNodeID.GT3FPastRedGoriyaRooms,
-								new AlternativeRequirement(new List<IRequirement>
-								{
-									RequirementDictionary.Instance[RequirementType.RedEyegoreGoriya],
-									RequirementDictionary.Instance[RequirementType.SBMimicClip]
-								}))
-						};
-					}
-				case DungeonNodeID.GTBobsTorch:
-                    {
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.GT1FLeft,
-								RequirementDictionary.Instance[RequirementType.Torch])
-						};
-					}
-				case DungeonNodeID.GT1FLeft:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.GT),
-							new DungeonNodeConnection(DungeonNodeID.GT1FLeftPastHammerBlocks),
-							new DungeonNodeConnection(DungeonNodeID.GT1FBottomRoom)
-						};
-					}
-				case DungeonNodeID.GT1FLeftPastHammerBlocks:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.GT1FLeft,
-								RequirementDictionary.Instance[RequirementType.Hammer]),
-							new DungeonNodeConnection(
-								DungeonNodeID.GT1FLeftDMsRoom,
-								new AlternativeRequirement(new List<IRequirement>
-								{
-									RequirementDictionary.Instance[RequirementType.Hookshot],
-									RequirementDictionary.Instance[RequirementType.Hover]
-								})),
-							new DungeonNodeConnection(
-								DungeonNodeID.GT1FLeftPastBonkableGaps,
-								new AlternativeRequirement(new List<IRequirement>
-								{
-									RequirementDictionary.Instance[RequirementType.Hookshot],
-									RequirementDictionary.Instance[RequirementType.Hover]
-								}))
-						};
-					}
-				case DungeonNodeID.GT1FLeftDMsRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.GT1FLeftPastHammerBlocks,
-								new AlternativeRequirement(new List<IRequirement>
-								{
-									RequirementDictionary.Instance[RequirementType.Hookshot],
-									RequirementDictionary.Instance[RequirementType.Hover]
-								}))
-						};
-					}
-				case DungeonNodeID.GT1FLeftPastBonkableGaps:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.GT1FLeftPastHammerBlocks,
-								new AlternativeRequirement(new List<IRequirement>
-								{
-									RequirementDictionary.Instance[RequirementType.Hookshot],
-									RequirementDictionary.Instance[RequirementType.BonkOverLedge],
-									RequirementDictionary.Instance[RequirementType.Hover]
-								}))
-						};
-					}
-				case DungeonNodeID.GT1FLeftFiresnakeRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.GT1FLeftSpikeTrapPortalRoom)
-						};
-					}
-				case DungeonNodeID.GT1FLeftPastFiresnakeRoomGap:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.GT1FLeftFiresnakeRoom,
-								new AlternativeRequirement(new List<IRequirement>
-								{
-									RequirementDictionary.Instance[RequirementType.Hookshot],
-									RequirementDictionary.Instance[RequirementType.Hover]
-								}))
-						};
-					}
-				case DungeonNodeID.GT1FLeftRandomizerRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.GT1FLeftPastFiresnakeRoomKeyDoor)
-						};
-					}
-				case DungeonNodeID.GT1FRight:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.GT),
-							new DungeonNodeConnection(DungeonNodeID.GT1FRightTileRoom)
-						};
-					}
-				case DungeonNodeID.GT1FRightTileRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.GT1FRight,
-								RequirementDictionary.Instance[RequirementType.CaneOfSomaria])
-						};
-					}
-				case DungeonNodeID.GT1FRightFourTorchRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.GT1FRightCompassRoom)
-						};
-					}
-				case DungeonNodeID.GT1FRightCompassRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.GT1FRightFourTorchRoom,
-								RequirementDictionary.Instance[RequirementType.FireRod])
-						};
-					}
-				case DungeonNodeID.GT1FRightPastCompassRoomPortal:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.GT1FRightCompassRoom)
-						};
-					}
-				case DungeonNodeID.GT1FBottomRoom:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.GT1FLeftRandomizerRoom),
-							new DungeonNodeConnection(DungeonNodeID.GT1FRightCollapsingWalkway),
-							new DungeonNodeConnection(DungeonNodeID.GTBoss1)
-						};
-					}
-				case DungeonNodeID.GTBoss1:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.GT1FBottomRoom,
-								RequirementDictionary.Instance[RequirementType.GTBoss1])
-						};
-					}
-				case DungeonNodeID.GTB1BossChests:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.GTBoss1)
-						};
-					}
-				case DungeonNodeID.GT3FPastRedGoriyaRooms:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.GT,
-								new AlternativeRequirement(new List<IRequirement>
-								{
-									RequirementDictionary.Instance[RequirementType.RedEyegoreGoriya],
-									RequirementDictionary.Instance[RequirementType.SBMimicClip]
-								}))
-						};
-					}
-				case DungeonNodeID.GT3FPastBigKeyDoor:
-                    {
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.GTBoss2)
-						};
-                    }
-				case DungeonNodeID.GTBoss2:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.GT3FPastBigKeyDoor,
-								RequirementDictionary.Instance[RequirementType.GTBoss2])
-						};
-					}
-				case DungeonNodeID.GT4FPastBoss2:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(DungeonNodeID.GTBoss2)
-						};
-					}
-				case DungeonNodeID.GT5FPastFourTorchRooms:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.GT4FPastBoss2,
-								RequirementDictionary.Instance[RequirementType.FireSource])
-						};
-					}
-				case DungeonNodeID.GTBoss3:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.GT6FBossRoom,
-								RequirementDictionary.Instance[RequirementType.GTBoss3])
-						};
-					}
-				case DungeonNodeID.GT6FPastBossRoomGap:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.GTBoss3,
-								RequirementDictionary.Instance[RequirementType.Hookshot]),
-							new DungeonNodeConnection(
-								DungeonNodeID.GT6FBossRoom,
-								RequirementDictionary.Instance[RequirementType.Hover])
-						};
-					}
-				case DungeonNodeID.GTFinalBoss:
-					{
-						return new List<DungeonNodeConnection>
-						{
-							new DungeonNodeConnection(
-								DungeonNodeID.GTFinalBossRoom,
-								RequirementDictionary.Instance[RequirementType.GTFinalBoss])
-						};
-					}
-			}
-
-            return new List<DungeonNodeConnection>(0);
-        }
-
-		/// <summary>
-		/// Returns a new dungeon node instance for the specified node ID.
-		/// </summary>
-		/// <param name="id">
-		/// The node ID.
-		/// </param>
-		/// <param name="dungeonData">
-		/// The mutable dungeon data parent class.
-		/// </param>
-		/// <param name="dungeon">
-		/// The dungeon parent class.
-		/// </param>
-		/// <returns>
-		/// A new dungeon node instance.
-		/// </returns>
-        internal static IDungeonNode GetDungeonNode(
+        public static IDungeonNode GetDungeonNode(
             DungeonNodeID id, IMutableDungeon dungeonData, IDungeon dungeon)
         {
             if (dungeonData == null)
@@ -2939,9 +1807,7 @@ namespace OpenTracker.Models.DungeonNodes
 				throw new ArgumentNullException(nameof(dungeon));
             }
 
-			return new DungeonNode(id, dungeonData, GetDungeonNodeFreeKeys(id),
-				GetDungeonEntryConnections(id), GetDungeonKeyDoorConnections(id, dungeon),
-				GetDungeonConnections(id));
+			return new DungeonNode(id, dungeonData, GetDungeonNodeFreeKeys(id));
         }
     }
 }

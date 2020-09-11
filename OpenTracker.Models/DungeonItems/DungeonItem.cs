@@ -1,6 +1,7 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Dungeons;
+using OpenTracker.Models.RequirementNodes;
 using System;
 using System.ComponentModel;
 
@@ -13,7 +14,7 @@ namespace OpenTracker.Models.DungeonItems
     {
         private readonly DungeonItemID _id;
         private readonly IMutableDungeon _dungeonData;
-        private readonly IDungeonNode _node;
+        private readonly IRequirementNode _node;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -44,7 +45,7 @@ namespace OpenTracker.Models.DungeonItems
         /// The dungeon node to which this item belongs.
         /// </param>
         public DungeonItem(
-            DungeonItemID id, IMutableDungeon dungeonData, IDungeonNode node)
+            DungeonItemID id, IMutableDungeon dungeonData, IRequirementNode node)
         {
             _id = id;
             _dungeonData = dungeonData ?? throw new ArgumentNullException(nameof(dungeonData));

@@ -351,10 +351,20 @@ namespace OpenTracker.Models.Locations
 
             foreach (var marking in saveData.Markings)
             {
-                Notes.Add(new Marking()
+                if (marking.HasValue)
                 {
-                    Mark = marking
-                });
+                    Notes.Add(new Marking()
+                    {
+                        Mark = marking.Value
+                    });
+                }
+                else
+                {
+                    Notes.Add(new Marking()
+                    {
+                        Mark = MarkType.Unknown
+                    });
+                }
             }
         }
     }

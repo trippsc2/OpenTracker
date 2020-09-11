@@ -1,18 +1,15 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using OpenTracker.Models.NodeConnections;
+using OpenTracker.Models.RequirementNodes;
 using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace OpenTracker.Models.DungeonNodes
 {
     /// <summary>
     /// This is the interface for a dungeon node.
     /// </summary>
-    public interface IDungeonNode : INotifyPropertyChanged
+    public interface IDungeonNode : IRequirementNode
     {
-        AccessibilityLevel Accessibility { get; }
-        int FreeKeysProvided { get; }
-        DungeonNodeID ID { get; }
-
-        AccessibilityLevel GetNodeAccessibility(List<DungeonNodeID> excludedNodes);
+        List<INodeConnection> Connections { get; }
+        int KeysProvided { get; }
     }
 }

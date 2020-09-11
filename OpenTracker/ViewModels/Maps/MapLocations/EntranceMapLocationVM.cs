@@ -5,6 +5,7 @@ using OpenTracker.Interfaces;
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Connections;
 using OpenTracker.Models.Locations;
+using OpenTracker.Models.Markings;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.Settings;
@@ -88,7 +89,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         public bool Visible =>
             _mapLocation.Requirement.Met && (AppSettings.Instance.Tracker.DisplayAllLocations ||
             (_mapLocation.Location.Sections[0] is IMarkableSection markableSection &&
-            markableSection.Marking.Mark != null) ||
+            markableSection.Marking.Mark != MarkType.Unknown) ||
             _mapLocation.Location.Accessibility != AccessibilityLevel.Cleared);
 
         public MarkingMapLocationVM Marking { get; }

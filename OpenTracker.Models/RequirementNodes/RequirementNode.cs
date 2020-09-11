@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.Requirements;
+using OpenTracker.Models.Modes;
+using OpenTracker.Models.NodeConnections;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,9 +13,53 @@ namespace OpenTracker.Models.RequirementNodes
     public class RequirementNode : IRequirementNode
     {
         private readonly RequirementNodeID _id;
-        private readonly List<RequirementNodeConnection> _connections;
+        private readonly bool _start;
+        private readonly List<INodeConnection> _connections =
+            new List<INodeConnection>();
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private bool _alwaysAccessible;
+        public bool AlwaysAccessible
+        {
+            get => _alwaysAccessible;
+            set
+            {
+                if (_alwaysAccessible != value)
+                {
+                    _alwaysAccessible = value;
+                    UpdateAccessibility();
+                }
+            }
+        }
+
+        private int _exitsAccessible;
+        public int ExitsAccessible
+        {
+            get => _exitsAccessible;
+            set
+            {
+                if (_exitsAccessible != value)
+                {
+                    _exitsAccessible = value;
+                    UpdateAccessibility();
+                }
+            }
+        }
+
+        private int _dungeonExitsAccessible;
+        public int DungeonExitsAccessible
+        {
+            get => _dungeonExitsAccessible;
+            set
+            {
+                if (_dungeonExitsAccessible != value)
+                {
+                    _dungeonExitsAccessible = value;
+                    OnPropertyChanged(nameof(DungeonExitsAccessible));
+                }
+            }
+        }
 
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
@@ -39,13 +84,14 @@ namespace OpenTracker.Models.RequirementNodes
         /// <param name="connections">
         /// A list of connections to this node.
         /// </param>
-        public RequirementNode(
-            RequirementNodeID id, List<RequirementNodeConnection> connections = null)
+        public RequirementNode(RequirementNodeID id, bool start)
         {
             _id = id;
-            _connections = connections ?? new List<RequirementNodeConnection>(0);
+            _start = start;
+            AlwaysAccessible = _start;
 
             RequirementNodeDictionary.Instance.NodeCreated += OnNodeCreated;
+            Mode.Instance.PropertyChanged += OnModeChanged;
         }
 
         /// <summary>
@@ -57,6 +103,21 @@ namespace OpenTracker.Models.RequirementNodes
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+            if (propertyName == nameof(ExitsAccessible) ||
+                propertyName == nameof(DungeonExitsAccessible) ||
+                propertyName == nameof(AlwaysAccessible))
+            {
+                UpdateAccessibility();
+            }
+        }
+
+        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Mode.EntranceShuffle))
+            {
+                UpdateAccessibility();
+            }    
         }
 
         /// <summary>
@@ -68,19 +129,23 @@ namespace OpenTracker.Models.RequirementNodes
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnNodeCreated(object sender, RequirementNodeID id)
+        private void OnNodeCreated(object sender, KeyValuePair<RequirementNodeID, IRequirementNode> e)
         {
-            if (id == _id)
+            if (e.Value == this)
             {
-                SubscribeToNodesAndRequirements();
-                UpdateAccessibility();
                 RequirementNodeDictionary.Instance.NodeCreated -= OnNodeCreated;
+                RequirementNodeFactory.PopulateNodeConnections(e.Key, this, _connections);
+                UpdateAccessibility();
+
+                foreach (var connection in _connections)
+                {
+                    connection.PropertyChanged += OnConnectionChanged;
+                }
             }
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IRequirement interface and
-        /// RequirementNode class.
+        /// Subscribes to the PropertyChanged event on the INodeConnection interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -88,9 +153,12 @@ namespace OpenTracker.Models.RequirementNodes
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private void OnConnectionChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateAccessibility();
+            if (e.PropertyName == nameof(INodeConnection.Accessibility))
+            {
+                UpdateAccessibility();
+            }
         }
 
         /// <summary>
@@ -98,32 +166,7 @@ namespace OpenTracker.Models.RequirementNodes
         /// </summary>
         private void UpdateAccessibility()
         {
-            Accessibility = GetNodeAccessibility(new List<RequirementNodeID>());
-        }
-
-        /// <summary>
-        /// Creates subscriptions to connected nodes and requirements.
-        /// </summary>
-        private void SubscribeToNodesAndRequirements()
-        {
-            List<RequirementNodeID> nodeSubscriptions = new List<RequirementNodeID>();
-            List<IRequirement> requirementSubscriptions = new List<IRequirement>();
-
-            foreach (RequirementNodeConnection connection in _connections)
-            {
-                if (!nodeSubscriptions.Contains(connection.FromNode))
-                {
-                    RequirementNodeDictionary.Instance[connection.FromNode].PropertyChanged +=
-                        OnRequirementChanged;
-                    nodeSubscriptions.Add(connection.FromNode);
-                }
-
-                if (!requirementSubscriptions.Contains(connection.Requirement))
-                {
-                    connection.Requirement.PropertyChanged += OnRequirementChanged;
-                    requirementSubscriptions.Add(connection.Requirement);
-                }
-            }
+            Accessibility = GetNodeAccessibility(new List<IRequirementNode>());
         }
 
         /// <summary>
@@ -135,62 +178,43 @@ namespace OpenTracker.Models.RequirementNodes
         /// <returns>
         /// The accessibility of the node.
         /// </returns>
-        public AccessibilityLevel GetNodeAccessibility(List<RequirementNodeID> excludedNodes)
+        public AccessibilityLevel GetNodeAccessibility(List<IRequirementNode> excludedNodes)
         {
-            if (_id == RequirementNodeID.Start)
-            {
-                return AccessibilityLevel.Normal;
-            }
-
             if (excludedNodes == null)
             {
                 throw new ArgumentNullException(nameof(excludedNodes));
             }
 
-            List<RequirementNodeID> newExcludedNodes =
-                excludedNodes.GetRange(0, excludedNodes.Count);
-            newExcludedNodes.Add(_id);
+            if (AlwaysAccessible ||
+                (ExitsAccessible > 0 && Mode.Instance.EntranceShuffle == EntranceShuffle.All) ||
+                (DungeonExitsAccessible > 0 &&
+                Mode.Instance.EntranceShuffle > EntranceShuffle.None))
+            {
+                return AccessibilityLevel.Normal;
+            }
+
             AccessibilityLevel finalAccessibility = AccessibilityLevel.None;
 
-            foreach (RequirementNodeConnection connection in _connections)
+            foreach (var connection in _connections)
             {
-                if (!connection.Requirement.Met)
+                finalAccessibility = AccessibilityLevelMethods.Max(
+                    finalAccessibility, connection.GetConnectionAccessibility(excludedNodes));
+
+                if (finalAccessibility == AccessibilityLevel.Normal)
                 {
-                    continue;
-                }
-
-                if (newExcludedNodes.Contains(connection.FromNode))
-                {
-                    continue;
-                }
-
-                AccessibilityLevel nodeAccessibility =
-                    RequirementNodeDictionary.Instance[connection.FromNode]
-                    .GetNodeAccessibility(newExcludedNodes);
-
-                if (nodeAccessibility < AccessibilityLevel.SequenceBreak)
-                {
-                    continue;
-                }
-
-                AccessibilityLevel requirementAccessibility = connection.Requirement.Accessibility;
-
-                AccessibilityLevel finalConnectionAccessibility =
-                    (AccessibilityLevel)Math.Min((byte)nodeAccessibility,
-                    (byte)requirementAccessibility);
-
-                if (finalConnectionAccessibility == AccessibilityLevel.Normal)
-                {
-                    return AccessibilityLevel.Normal;
-                }
-
-                if (finalConnectionAccessibility > finalAccessibility)
-                {
-                    finalAccessibility = finalConnectionAccessibility;
+                    break;
                 }
             }
 
             return finalAccessibility;
+        }
+
+        /// <summary>
+        /// Resets AlwaysAccessible property for testing purposes.
+        /// </summary>
+        public void Reset()
+        {
+            AlwaysAccessible = _start;
         }
     }
 }

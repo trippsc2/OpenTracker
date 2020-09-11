@@ -2,51 +2,60 @@
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.SequenceBreaks;
 using System.Collections.Generic;
-using System.Reflection;
 using Xunit;
 
 namespace OpenTracker.UnitTests.RequirementNodes
 {
+    [Collection("Tests")]
     public class DarkWorldNorthEastTests
     {
         [Theory]
-        [MemberData(nameof(Start_To_DWWitchArea))]
         [MemberData(nameof(LWWitchArea_To_DWWitchArea))]
-        [MemberData(nameof(DarkWorldWest_To_DWWitchArea))]
-        [MemberData(nameof(DarkWorldEast_To_DWWitchArea))]
-        [MemberData(nameof(Catfish_To_DWWitchArea))]
-        [MemberData(nameof(Zora_To_Catfish))]
-        [MemberData(nameof(DWWitchArea_To_Catfish))]
-        [MemberData(nameof(Start_To_DarkWorldEast))]
-        [MemberData(nameof(LightWorld_To_DarkWorldEast))]
-        [MemberData(nameof(DWWitchArea_To_DarkWorldEast))]
-        [MemberData(nameof(DarkWorldSouth_To_DarkWorldEast))]
-        [MemberData(nameof(DWLakeHylia_To_DarkWorldEast))]
+        [MemberData(nameof(DarkWorldEastNotBunny_To_DWWitchArea))]
+        [MemberData(nameof(DWLakeHyliaFlippers_To_DWWitchArea))]
+        [MemberData(nameof(DWLakeHyliaFakeFlippers_To_DWWitchArea))]
+        [MemberData(nameof(DWLakeHyliaWaterWalk_To_DWWitchArea))]
+        [MemberData(nameof(DWWitchArea_To_DWWitchAreaNotBunny))]
+        [MemberData(nameof(ZoraArea_To_CatfishArea))]
+        [MemberData(nameof(DWWitchAreaNotBunny_To_CatfishArea))]
+        [MemberData(nameof(LightWorldStandardOpen_To_DarkWorldEast))]
+        [MemberData(nameof(LightWorldMirror_To_DarkWorldEast))]
+        [MemberData(nameof(DWWitchAreaNotBunny_To_DarkWorldEast))]
+        [MemberData(nameof(DarkWorldSouthHammer_To_DarkWorldEast))]
+        [MemberData(nameof(DWEastPortalNotBunny_To_DarkWorldEast))]
+        [MemberData(nameof(DWLakeHyliaFlippers_To_DarkWorldEast))]
+        [MemberData(nameof(DWLakeHyliaFakeFlippers_To_DarkWorldEast))]
         [MemberData(nameof(DWLakeHyliaWaterWalk_To_DarkWorldEast))]
-        [MemberData(nameof(DWEastPortal_To_DarkWorldEast))]
-        [MemberData(nameof(BigBombToWall_To_FatFairy))]
-        [MemberData(nameof(DarkWorldEast_To_PalaceOfDarknessEntrance))]
-        [MemberData(nameof(LWEastPortal_To_DWEastPortal))]
-        [MemberData(nameof(DarkWorldEast_To_DWEastPortal))]
-        public void AccessibilityTests(
-            RequirementNodeID id, ItemPlacement itemPlacement,
-            DungeonItemShuffle dungeonItemShuffle, WorldState worldState,
-            bool entranceShuffle, bool enemyShuffle, (ItemType, int)[] items,
-            (SequenceBreakType, bool)[] sequenceBreaks, AccessibilityLevel expected)
+        [MemberData(nameof(DarkWorldEast_To_DarkWorldEastStandardOpen))]
+        [MemberData(nameof(DarkWorldEast_To_DarkWorldEastNotBunny))]
+        [MemberData(nameof(DarkWorldEastNotBunny_To_DarkWorldEastHammer))]
+        [MemberData(nameof(DarkWorldEastNotBunny_To_FatFairyEntrance))]
+        [MemberData(nameof(LWEastPortalStandardOpen_To_DWEastPortal))]
+        [MemberData(nameof(DarkWorldEastHammer_To_DWEastPortal))]
+        [MemberData(nameof(DWEastPortal_To_DWEastPortalInverted))]
+        [MemberData(nameof(DWEastPortal_To_DWEastPortalNotBunny))]
+        public void Tests(
+            ModeSaveData mode, (ItemType, int)[] items, (PrizeType, int)[] prizes,
+            (SequenceBreakType, bool)[] sequenceBreaks, RequirementNodeID[] accessibleNodes,
+            RequirementNodeID id, AccessibilityLevel expected)
         {
-            Mode.Instance.ItemPlacement = itemPlacement;
-            Mode.Instance.DungeonItemShuffle = dungeonItemShuffle;
-            Mode.Instance.WorldState = worldState;
-            Mode.Instance.EntranceShuffle = entranceShuffle;
-            Mode.Instance.EnemyShuffle = enemyShuffle;
             ItemDictionary.Instance.Reset();
+            PrizeDictionary.Instance.Reset();
             SequenceBreakDictionary.Instance.Reset();
+            RequirementNodeDictionary.Instance.Reset();
+            Mode.Instance.Load(mode);
 
             foreach (var item in items)
             {
                 ItemDictionary.Instance[item.Item1].Current = item.Item2;
+            }
+
+            foreach (var prize in prizes)
+            {
+                PrizeDictionary.Instance[prize.Item1].Current = prize.Item2;
             }
 
             foreach (var sequenceBreak in sequenceBreaks)
@@ -55,6292 +64,631 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     sequenceBreak.Item2;
             }
 
+            foreach (var node in accessibleNodes)
+            {
+                RequirementNodeDictionary.Instance[node].AlwaysAccessible = true;
+            }
+
             Assert.Equal(expected, RequirementNodeDictionary.Instance[id].Accessibility);
         }
-
-        public static IEnumerable<object[]> Start_To_DWWitchArea =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaAccess, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaAccess, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaAccess, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                }
-            };
 
         public static IEnumerable<object[]> LWWitchArea_To_DWWitchArea =>
             new List<object[]>
             {
                 new object[]
                 {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.LWWitchAreaTest, 1),
-                        (ItemType.Mirror, 1),
+                        (ItemType.Mirror, 1)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.LWWitchArea
+                    },
+                    RequirementNodeID.DWWitchArea,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.LWWitchAreaTest, 1),
-                        (ItemType.Mirror, 1),
+                        (ItemType.Mirror, 0)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new RequirementNodeID[]
                     {
-                        (ItemType.LWWitchAreaTest, 0),
-                        (ItemType.Mirror, 0),
+                        RequirementNodeID.LWWitchArea
                     },
-                    new (SequenceBreakType, bool)[0],
+                    RequirementNodeID.DWWitchArea,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
                 {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.LWWitchAreaTest, 1),
-                        (ItemType.Mirror, 0),
+                        (ItemType.Mirror, 1)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new RequirementNodeID[]
                     {
-                        (ItemType.LWWitchAreaTest, 1),
-                        (ItemType.Mirror, 1),
+                        RequirementNodeID.LWWitchArea
                     },
-                    new (SequenceBreakType, bool)[0],
+                    RequirementNodeID.DWWitchArea,
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> DarkWorldWest_To_DWWitchArea =>
+        public static IEnumerable<object[]> DarkWorldEastNotBunny_To_DWWitchArea =>
             new List<object[]>
             {
                 new object[]
                 {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
+                    new ModeSaveData(),
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkWorldWestTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 1),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, false),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 1),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, false),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, false),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 1),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 1),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldWestTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 1),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Boots, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersQirnJump, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true),
-                        (SequenceBreakType.WaterWalk, true)
-                    },
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> DarkWorldEast_To_DWWitchArea =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 0),
-                        (ItemType.MoonPearl, 0),
                         (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
+                        (ItemType.Gloves, 0)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
                     {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
+                        RequirementNodeID.DarkWorldEastNotBunny
                     },
+                    RequirementNodeID.DWWitchArea,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
+                    new ModeSaveData(),
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
                         (ItemType.Hammer, 1),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
+                        (ItemType.Gloves, 0)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
                     {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
+                        RequirementNodeID.DarkWorldEastNotBunny
                     },
-                    AccessibilityLevel.None
+                    RequirementNodeID.DWWitchArea,
+                    AccessibilityLevel.Normal
                 },
                 new object[]
                 {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
+                    new ModeSaveData(),
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
                         (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
+                        (ItemType.Gloves, 1)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
                     {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
+                        RequirementNodeID.DarkWorldEastNotBunny
                     },
+                    RequirementNodeID.DWWitchArea,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> DWLakeHyliaFlippers_To_DWWitchArea =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.DWWitchArea,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DWLakeHyliaFlippers
+                    },
                     RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> DWLakeHyliaFakeFlippers_To_DWWitchArea =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.DWWitchArea,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DWLakeHyliaFakeFlippers
+                    },
+                    RequirementNodeID.DWWitchArea,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> DWLakeHyliaWaterWalk_To_DWWitchArea =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.DWWitchArea,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DWLakeHyliaWaterWalk
+                    },
+                    RequirementNodeID.DWWitchArea,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> DWWitchArea_To_DWWitchAreaNotBunny =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
+                        (ItemType.MoonPearl, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DWWitchArea
+                    },
+                    RequirementNodeID.DWWitchAreaNotBunny,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.MoonPearl, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.DWWitchAreaNotBunny,
+                    AccessibilityLevel.SequenceBreak
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.MoonPearl, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DWWitchArea
+                    },
+                    RequirementNodeID.DWWitchAreaNotBunny,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.MoonPearl, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DWWitchArea
+                    },
+                    RequirementNodeID.DWWitchAreaNotBunny,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> ZoraArea_To_CatfishArea =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Mirror, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.ZoraArea
+                    },
+                    RequirementNodeID.CatfishArea,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Mirror, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.ZoraArea
+                    },
+                    RequirementNodeID.CatfishArea,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Mirror, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.ZoraArea
+                    },
+                    RequirementNodeID.CatfishArea,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> DWWitchAreaNotBunny_To_CatfishArea =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Gloves, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DWWitchAreaNotBunny
+                    },
+                    RequirementNodeID.CatfishArea,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Gloves, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DWWitchAreaNotBunny
+                    },
+                    RequirementNodeID.CatfishArea,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> LightWorldStandardOpen_To_DarkWorldEast =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[]
+                    {
+                        (PrizeType.Aga1, 0)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.LightWorldStandardOpen
+                    },
+                    RequirementNodeID.DarkWorldEast,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[]
+                    {
+                        (PrizeType.Aga1, 1)
+                    },
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.LightWorldStandardOpen
+                    },
+                    RequirementNodeID.DarkWorldEast,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> LightWorldMirror_To_DarkWorldEast =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.DarkWorldEast,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.LightWorldMirror
+                    },
+                    RequirementNodeID.DarkWorldEast,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> DWWitchAreaNotBunny_To_DarkWorldEast =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[]
+                    {
                         (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 1),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
+                        (ItemType.Gloves, 0)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
                     {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
+                        RequirementNodeID.DWWitchAreaNotBunny
                     },
+                    RequirementNodeID.DarkWorldEast,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
+                    new ModeSaveData(),
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
                         (ItemType.Hammer, 1),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
+                        (ItemType.Gloves, 0)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
                     {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
+                        RequirementNodeID.DWWitchAreaNotBunny
                     },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 1),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 1),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
+                    RequirementNodeID.DarkWorldEast,
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
+                    new ModeSaveData(),
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
                         (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
+                        (ItemType.Gloves, 1)
                     },
-                    new (SequenceBreakType, bool)[]
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
                     {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
+                        RequirementNodeID.DWWitchAreaNotBunny
                     },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 1),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 1),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 1),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 1),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Flippers, 1),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
+                    RequirementNodeID.DarkWorldEast,
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Catfish_To_DWWitchArea =>
+        public static IEnumerable<object[]> DarkWorldSouthHammer_To_DarkWorldEast =>
             new List<object[]>
             {
                 new object[]
                 {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.CatfishTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 0),
-                    },
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.DarkWorldEast,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.CatfishTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 0),
-                    },
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new RequirementNodeID[]
                     {
-                        (ItemType.CatfishTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 1),
+                        RequirementNodeID.DarkWorldSouthHammer
                     },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.CatfishTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 0),
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.CatfishTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 0),
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.CatfishTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 1),
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.CatfishTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 0),
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.CatfishTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 0),
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.CatfishTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Gloves, 1),
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.CatfishTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Gloves, 1),
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWWitchArea,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.CatfishTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 1),
-                    },
-                    new (SequenceBreakType, bool)[0],
+                    RequirementNodeID.DarkWorldEast,
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Zora_To_Catfish =>
+        public static IEnumerable<object[]> DWEastPortalNotBunny_To_DarkWorldEast =>
             new List<object[]>
             {
                 new object[]
                 {
-                    RequirementNodeID.Catfish,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
+                    new ModeSaveData(),
                     new (ItemType, int)[]
                     {
-                        (ItemType.ZoraTest, 1),
-                        (ItemType.Mirror, 1)
+                        (ItemType.Hammer, 0)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DWEastPortalNotBunny
+                    },
+                    RequirementNodeID.DarkWorldEast,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.Catfish,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
+                    new ModeSaveData(),
                     new (ItemType, int)[]
                     {
-                        (ItemType.ZoraTest, 1),
-                        (ItemType.Mirror, 1)
+                        (ItemType.Hammer, 1)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.Catfish,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new RequirementNodeID[]
                     {
-                        (ItemType.ZoraTest, 0),
-                        (ItemType.Mirror, 0)
+                        RequirementNodeID.DWEastPortalNotBunny
                     },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.Catfish,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.ZoraTest, 1),
-                        (ItemType.Mirror, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.Catfish,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.ZoraTest, 1),
-                        (ItemType.Mirror, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
+                    RequirementNodeID.DarkWorldEast,
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> DWWitchArea_To_Catfish =>
+        public static IEnumerable<object[]> DWLakeHyliaFlippers_To_DarkWorldEast =>
             new List<object[]>
             {
                 new object[]
                 {
-                    RequirementNodeID.Catfish,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 0),
-                    },
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.DarkWorldEast,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.Catfish,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 0),
-                    },
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.Catfish,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new RequirementNodeID[]
                     {
-                        (ItemType.DWWitchAreaTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 1),
+                        RequirementNodeID.DWLakeHyliaFlippers
                     },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.Catfish,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 0),
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.Catfish,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 0),
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.Catfish,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 1),
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.Catfish,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 0),
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.Catfish,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 0),
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.Catfish,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Gloves, 1),
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.Catfish,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Gloves, 1),
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.Catfish,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 1),
-                    },
-                    new (SequenceBreakType, bool)[0],
+                    RequirementNodeID.DarkWorldEast,
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> Start_To_DarkWorldEast =>
+        public static IEnumerable<object[]> DWLakeHyliaFakeFlippers_To_DarkWorldEast =>
             new List<object[]>
             {
                 new object[]
                 {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastAccess, 1)
-                    },
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.DarkWorldEast,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastAccess, 0)
-                    },
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastAccess, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastAccess, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastAccess, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastAccess, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastAccess, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastAccess, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastAccess, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> LightWorld_To_DarkWorldEast =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.LightWorldTest, 0),
-                        (ItemType.Aga1, 0),
-                        (ItemType.Mirror, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.LightWorldTest, 1),
-                        (ItemType.Aga1, 0),
-                        (ItemType.Mirror, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.LightWorldTest, 1),
-                        (ItemType.Aga1, 0),
-                        (ItemType.Mirror, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.LightWorldTest, 0),
-                        (ItemType.Aga1, 0),
-                        (ItemType.Mirror, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.LightWorldTest, 1),
-                        (ItemType.Aga1, 0),
-                        (ItemType.Mirror, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.LightWorldTest, 1),
-                        (ItemType.Aga1, 0),
-                        (ItemType.Mirror, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.LightWorldTest, 0),
-                        (ItemType.Aga1, 0),
-                        (ItemType.Mirror, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.LightWorldTest, 1),
-                        (ItemType.Aga1, 0),
-                        (ItemType.Mirror, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.LightWorldTest, 1),
-                        (ItemType.Aga1, 1),
-                        (ItemType.Mirror, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.LightWorldTest, 1),
-                        (ItemType.Aga1, 1),
-                        (ItemType.Mirror, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.LightWorldTest, 1),
-                        (ItemType.Aga1, 1),
-                        (ItemType.Mirror, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.LightWorldTest, 1),
-                        (ItemType.Aga1, 0),
-                        (ItemType.Mirror, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> DWWitchArea_To_DarkWorldEast =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 1),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Hammer, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 1),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Hammer, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Gloves, 1),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Hammer, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Gloves, 1),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Hammer, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 1),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWWitchAreaTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Gloves, 0),
-                        (ItemType.Hammer, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> DarkWorldSouth_To_DarkWorldEast =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 1),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 1),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, false),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, false)
-                    },
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new RequirementNodeID[]
                     {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
+                        RequirementNodeID.DWLakeHyliaFakeFlippers
                     },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 1),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 1),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 1),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 1),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 1),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.SequenceBreak
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 1),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
                     RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 1),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 1),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldSouthTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Flippers, 0),
-                        (ItemType.Bottle, 0),
-                        (ItemType.Bow, 0),
-                        (ItemType.RedBoomerang, 0),
-                        (ItemType.CaneOfSomaria, 0),
-                        (ItemType.IceRod, 0),
-                        (ItemType.Hammer, 1)
-                    },
-                    new (SequenceBreakType, bool)[]
-                    {
-                        (SequenceBreakType.FakeFlippersFairyRevival, true),
-                        (SequenceBreakType.FakeFlippersSplashDeletion, true)
-                    },
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> DWLakeHylia_To_DarkWorldEast =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWLakeHyliaTest, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWLakeHyliaTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
                     AccessibilityLevel.Normal
                 }
             };
@@ -6350,701 +698,394 @@ namespace OpenTracker.UnitTests.RequirementNodes
             {
                 new object[]
                 {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWLakeHyliaWaterWalkTest, 0)
-                    },
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.DarkWorldEast,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWLakeHyliaWaterWalkTest, 1)
-                    },
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DWLakeHyliaWaterWalk
+                    },
+                    RequirementNodeID.DarkWorldEast,
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> DWEastPortal_To_DarkWorldEast =>
+        public static IEnumerable<object[]> DarkWorldEast_To_DarkWorldEastStandardOpen =>
             new List<object[]>
             {
                 new object[]
                 {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new ModeSaveData()
                     {
-                        (ItemType.DWEastPortalTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0)
+                        WorldState = WorldState.Inverted
                     },
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkWorldEast
+                    },
+                    RequirementNodeID.DarkWorldEastStandardOpen,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new ModeSaveData()
                     {
-                        (ItemType.DWEastPortalTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0)
+                        WorldState = WorldState.StandardOpen
                     },
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new RequirementNodeID[]
                     {
-                        (ItemType.DWEastPortalTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 1)
+                        RequirementNodeID.DarkWorldEast
                     },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWEastPortalTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWEastPortalTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWEastPortalTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWEastPortalTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWEastPortalTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWEastPortalTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWEastPortalTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DarkWorldEast,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DWEastPortalTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
+                    RequirementNodeID.DarkWorldEastStandardOpen,
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> BigBombToWall_To_FatFairy =>
+        public static IEnumerable<object[]> DarkWorldEast_To_DarkWorldEastNotBunny =>
             new List<object[]>
             {
                 new object[]
                 {
-                    RequirementNodeID.FatFairy,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new ModeSaveData()
                     {
-                        (ItemType.BigBombToWallTest, 0)
+                        WorldState = WorldState.StandardOpen
                     },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.FatFairy,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.BigBombToWallTest, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> DarkWorldEast_To_PalaceOfDarknessEntrance =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    RequirementNodeID.PalaceOfDarknessEntrance,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 0),
                         (ItemType.MoonPearl, 0)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.PalaceOfDarknessEntrance,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new RequirementNodeID[]
                     {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0)
+                        RequirementNodeID.DarkWorldEast
                     },
-                    new (SequenceBreakType, bool)[0],
+                    RequirementNodeID.DarkWorldEastNotBunny,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.PalaceOfDarknessEntrance,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new ModeSaveData()
                     {
-                        (ItemType.DarkWorldEastTest, 0),
-                        (ItemType.MoonPearl, 0)
+                        WorldState = WorldState.Inverted
                     },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.PalaceOfDarknessEntrance,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.PalaceOfDarknessEntrance,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 0),
-                        (ItemType.MoonPearl, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.PalaceOfDarknessEntrance,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
                         (ItemType.MoonPearl, 1)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
+                    new RequirementNodeID[0],
+                    RequirementNodeID.DarkWorldEastNotBunny,
+                    AccessibilityLevel.SequenceBreak
                 },
                 new object[]
                 {
-                    RequirementNodeID.PalaceOfDarknessEntrance,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkWorldEastTest, 1),
                         (ItemType.MoonPearl, 1)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkWorldEast
+                    },
+                    RequirementNodeID.DarkWorldEastNotBunny,
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
-                    RequirementNodeID.PalaceOfDarknessEntrance,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkWorldEastTest, 1),
                         (ItemType.MoonPearl, 0)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkWorldEast
+                    },
+                    RequirementNodeID.DarkWorldEastNotBunny,
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> LWEastPortal_To_DWEastPortal =>
+        public static IEnumerable<object[]> DarkWorldEastNotBunny_To_DarkWorldEastHammer =>
             new List<object[]>
             {
                 new object[]
                 {
-                    RequirementNodeID.DWEastPortal,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
+                    new ModeSaveData(),
                     new (ItemType, int)[]
                     {
-                        (ItemType.LWEastPortalTest, 0),
-                        (ItemType.Gloves, 0)
+                        (ItemType.Hammer, 0)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkWorldEastNotBunny
+                    },
+                    RequirementNodeID.DarkWorldEastHammer,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DWEastPortal,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
+                    new ModeSaveData(),
                     new (ItemType, int)[]
                     {
-                        (ItemType.LWEastPortalTest, 1),
-                        (ItemType.Gloves, 0)
+                        (ItemType.Hammer, 1)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWEastPortal,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new RequirementNodeID[]
                     {
-                        (ItemType.LWEastPortalTest, 0),
-                        (ItemType.Gloves, 0)
+                        RequirementNodeID.DarkWorldEastNotBunny
                     },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWEastPortal,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.LWEastPortalTest, 1),
-                        (ItemType.Gloves, 0)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWEastPortal,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.LWEastPortalTest, 1),
-                        (ItemType.Gloves, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWEastPortal,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.LWEastPortalTest, 1),
-                        (ItemType.Gloves, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWEastPortal,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.LWEastPortalTest, 1),
-                        (ItemType.Gloves, 1)
-                    },
-                    new (SequenceBreakType, bool)[0],
+                    RequirementNodeID.DarkWorldEastHammer,
                     AccessibilityLevel.Normal
                 }
             };
 
-        public static IEnumerable<object[]> DarkWorldEast_To_DWEastPortal =>
+        public static IEnumerable<object[]> DarkWorldEastNotBunny_To_FatFairyEntrance =>
             new List<object[]>
             {
                 new object[]
                 {
-                    RequirementNodeID.DWEastPortal,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[]
                     {
-                        (ItemType.DarkWorldEastTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
+                        (PrizeType.RedCrystal, 1)
                     },
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkWorldEastNotBunny
+                    },
+                    RequirementNodeID.FatFairyEntrance,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DWEastPortal,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[]
                     {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
+                        (PrizeType.RedCrystal, 2)
                     },
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkWorldEastNotBunny
+                    },
+                    RequirementNodeID.FatFairyEntrance,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> LWEastPortalStandardOpen_To_DWEastPortal =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Gloves, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.LWEastPortalStandardOpen
+                    },
+                    RequirementNodeID.DWEastPortal,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DWEastPortal,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
+                    new ModeSaveData(),
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 1),
+                        (ItemType.Gloves, 1)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.LWEastPortalStandardOpen
+                    },
+                    RequirementNodeID.DWEastPortal,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> DarkWorldEastHammer_To_DWEastPortal =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.DWEastPortal,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DWEastPortal,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
-                    },
+                    new ModeSaveData(),
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkWorldEastHammer
+                    },
+                    RequirementNodeID.DWEastPortal,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> DWEastPortal_To_DWEastPortalInverted =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DWEastPortal
+                    },
+                    RequirementNodeID.DWEastPortalInverted,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DWEastPortal,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DWEastPortal
+                    },
+                    RequirementNodeID.DWEastPortalInverted,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> DWEastPortal_To_DWEastPortalNotBunny =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
+                        (ItemType.MoonPearl, 0)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DWEastPortal
+                    },
+                    RequirementNodeID.DWEastPortalNotBunny,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DWEastPortal,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 1),
+                        (ItemType.MoonPearl, 1)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.DWEastPortalNotBunny,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    RequirementNodeID.DWEastPortal,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkWorldEastTest, 0),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
+                        (ItemType.MoonPearl, 1)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWEastPortal,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
+                    new RequirementNodeID[]
                     {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 0),
+                        RequirementNodeID.DWEastPortal
                     },
-                    new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWEastPortal,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.StandardOpen,
-                    false,
-                    false,
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 1),
-                    },
-                    new (SequenceBreakType, bool)[0],
+                    RequirementNodeID.DWEastPortalNotBunny,
                     AccessibilityLevel.Normal
                 },
                 new object[]
                 {
-                    RequirementNodeID.DWEastPortal,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Retro,
-                    false,
-                    false,
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
                     new (ItemType, int)[]
                     {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 1),
-                        (ItemType.Hammer, 1),
+                        (ItemType.MoonPearl, 0)
                     },
+                    new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    RequirementNodeID.DWEastPortal,
-                    ItemPlacement.Advanced,
-                    DungeonItemShuffle.Standard,
-                    WorldState.Inverted,
-                    true,
-                    false,
-                    new (ItemType, int)[]
+                    new RequirementNodeID[]
                     {
-                        (ItemType.DarkWorldEastTest, 1),
-                        (ItemType.MoonPearl, 0),
-                        (ItemType.Hammer, 1),
+                        RequirementNodeID.DWEastPortal
                     },
-                    new (SequenceBreakType, bool)[0],
+                    RequirementNodeID.DWEastPortalNotBunny,
                     AccessibilityLevel.Normal
                 }
             };

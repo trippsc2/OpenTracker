@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Interfaces;
+using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Settings;
@@ -17,6 +18,7 @@ namespace OpenTracker.ViewModels.Items.Small
     public class SmallKeySmallItemVM : SmallItemVMBase, IClickHandler
     {
         private readonly IRequirement _requirement;
+        private readonly IDungeon _dungeon;
         private readonly IItem _item;
 
         public bool Visible =>
@@ -29,7 +31,7 @@ namespace OpenTracker.ViewModels.Items.Small
             {
                 StringBuilder sb = new StringBuilder();
                 sb.Append(_item.Current.ToString(CultureInfo.InvariantCulture));
-                sb.Append(_item.Current == _item.Maximum ? "*" : "");
+                sb.Append(_item.Current == _dungeon.SmallKeys ? "*" : "");
 
                 return sb.ToString();
             }
@@ -43,7 +45,7 @@ namespace OpenTracker.ViewModels.Items.Small
                     return "#ffffff";
                 }
 
-                if (_item.Current == _item.Maximum)
+                if (_item.Current == _dungeon.SmallKeys)
                 {
                     return AppSettings.Instance.Colors.EmphasisFontColor;
                 }
@@ -58,9 +60,16 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="item">
         /// The item of the key to be represented.
         /// </param>
-        public SmallKeySmallItemVM(IItem item)
+        public SmallKeySmallItemVM(IDungeon dungeon)
         {
-            _item = item ?? throw new ArgumentNullException(nameof(item));
+            _dungeon = dungeon ?? throw new ArgumentNullException(nameof(dungeon));
+
+            if (_dungeon.SmallKeyItem == null)
+            {
+                throw new ArgumentOutOfRangeException(nameof(dungeon));
+            }
+
+            _item = _dungeon.SmallKeyItem;
             _requirement = RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn];
 
             AppSettings.Instance.Colors.PropertyChanged += OnColorsChanged;

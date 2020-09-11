@@ -7,8 +7,8 @@ namespace OpenTracker.Models.Markings
         public event PropertyChangingEventHandler PropertyChanging;
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private MarkType? _mark;
-        public MarkType? Mark
+        private MarkType _mark;
+        public MarkType Mark
         {
             get => _mark;
             set
