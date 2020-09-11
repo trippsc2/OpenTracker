@@ -138,8 +138,7 @@ namespace OpenTracker.ViewModels.Items.Small
                         new List<IRequirement>
                         {
                             new ItemsPanelOrientationRequirement(Orientation.Vertical),
-                            RequirementDictionary.Instance[
-                                RequirementType.DungeonItemShuffleKeysanity]
+                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]
                         })));
             }
             else

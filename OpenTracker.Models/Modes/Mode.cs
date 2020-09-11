@@ -12,14 +12,6 @@ namespace OpenTracker.Models.Modes
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public bool MapCompassShuffle =>
-            DungeonItemShuffle >= DungeonItemShuffle.MapsCompasses;
-        public bool SmallKeyShuffle =>
-            DungeonItemShuffle >= DungeonItemShuffle.MapsCompassesSmallKeys ||
-            WorldState == WorldState.Retro;
-        public bool BigKeyShuffle =>
-            DungeonItemShuffle >= DungeonItemShuffle.Keysanity;
-
         private ItemPlacement _itemPlacement = ItemPlacement.Advanced;
         public ItemPlacement ItemPlacement
         {
@@ -34,16 +26,58 @@ namespace OpenTracker.Models.Modes
             }
         }
 
-        private DungeonItemShuffle _dungeonItemShuffle = DungeonItemShuffle.Standard;
-        public DungeonItemShuffle DungeonItemShuffle
+        private bool _mapShuffle;
+        public bool MapShuffle
         {
-            get => _dungeonItemShuffle;
+            get => _mapShuffle;
             set
             {
-                if (_dungeonItemShuffle != value)
+                if (_mapShuffle != value)
                 {
-                    _dungeonItemShuffle = value;
-                    OnPropertyChanged(nameof(DungeonItemShuffle));
+                    _mapShuffle = value;
+                    OnPropertyChanged(nameof(MapShuffle));
+                }
+            }
+        }
+
+        private bool _compassShuffle;
+        public bool CompassShuffle
+        {
+            get => _compassShuffle;
+            set
+            {
+                if (_compassShuffle != value)
+                {
+                    _compassShuffle = value;
+                    OnPropertyChanged(nameof(CompassShuffle));
+                }
+            }
+        }
+
+        private bool _smallKeyShuffle;
+        public bool SmallKeyShuffle
+        {
+            get => _smallKeyShuffle;
+            set
+            {
+                if (_smallKeyShuffle != value)
+                {
+                    _smallKeyShuffle = value;
+                    OnPropertyChanged(nameof(SmallKeyShuffle));
+                }
+            }
+        }
+
+        private bool _bigKeyShuffle;
+        public bool BigKeyShuffle
+        {
+            get => _bigKeyShuffle;
+            set
+            {
+                if (_bigKeyShuffle != value)
+                {
+                    _bigKeyShuffle = value;
+                    OnPropertyChanged(nameof(BigKeyShuffle));
                 }
             }
         }
@@ -132,6 +166,20 @@ namespace OpenTracker.Models.Modes
             }
         }
 
+        private bool _takeAnyLocations;
+        public bool TakeAnyLocations
+        {
+            get => _takeAnyLocations;
+            set
+            {
+                if (_takeAnyLocations != value)
+                {
+                    _takeAnyLocations = value;
+                    OnPropertyChanged(nameof(TakeAnyLocations));
+                }
+            }
+        }
+
         /// <summary>
         /// Raises the PropertyChanged event for the specified property.
         /// </summary>
@@ -146,6 +194,11 @@ namespace OpenTracker.Models.Modes
             {
                 ItemPlacement = ItemPlacement.Advanced;
             }
+
+            if (propertyName == nameof(GenericKeys) && GenericKeys)
+            {
+                SmallKeyShuffle = true;
+            }
         }
 
         /// <summary>
@@ -159,11 +212,17 @@ namespace OpenTracker.Models.Modes
             return new ModeSaveData()
             {
                 ItemPlacement = ItemPlacement,
-                DungeonItemShuffle = DungeonItemShuffle,
+                MapShuffle = MapShuffle,
+                CompassShuffle = CompassShuffle,
+                SmallKeyShuffle = SmallKeyShuffle,
+                BigKeyShuffle = BigKeyShuffle,
                 WorldState = WorldState,
                 EntranceShuffle = EntranceShuffle,
                 BossShuffle = BossShuffle,
-                EnemyShuffle = EnemyShuffle
+                EnemyShuffle = EnemyShuffle,
+                GuaranteedBossItems = GuaranteedBossItems,
+                GenericKeys = GenericKeys,
+                TakeAnyLocations = TakeAnyLocations
             };
         }
 
@@ -181,11 +240,17 @@ namespace OpenTracker.Models.Modes
             }
 
             ItemPlacement = saveData.ItemPlacement;
-            DungeonItemShuffle = saveData.DungeonItemShuffle;
+            MapShuffle = saveData.MapShuffle;
+            CompassShuffle = saveData.CompassShuffle;
+            SmallKeyShuffle = saveData.SmallKeyShuffle;
+            BigKeyShuffle = saveData.BigKeyShuffle;
             WorldState = saveData.WorldState;
             EntranceShuffle = saveData.EntranceShuffle;
             BossShuffle = saveData.BossShuffle;
             EnemyShuffle = saveData.EnemyShuffle;
+            GuaranteedBossItems = saveData.GuaranteedBossItems;
+            GenericKeys = saveData.GenericKeys;
+            TakeAnyLocations = saveData.TakeAnyLocations;
         }
     }
 }

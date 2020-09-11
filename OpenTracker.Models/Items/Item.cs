@@ -115,6 +115,11 @@ namespace OpenTracker.Models.Items
         /// </summary>
         public virtual void Remove()
         {
+            if (Current == 0)
+            {
+                throw new Exception("Cannot be remove from item.");
+            }
+
             Current--;
         }
 

@@ -88,7 +88,7 @@ namespace OpenTracker.Models.Sections
             }
 
             return IsAvailable() && Accessibility == AccessibilityLevel.Inspect &&
-                Marking.Mark != MarkType.Unknown;
+                Marking.Mark == MarkType.Unknown;
         }
 
         /// <summary>

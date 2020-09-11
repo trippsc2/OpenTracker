@@ -43,6 +43,7 @@
         Bombos,
         Ether,
         Quake,
+        TriforcePiece,
         Aga,
         Powder,
         TRBack,

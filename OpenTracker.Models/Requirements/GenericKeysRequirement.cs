@@ -1,18 +1,12 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.Items;
 using OpenTracker.Models.Modes;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
-    /// <summary>
-    /// This is the class for a small key requirement.
-    /// </summary>
-    public class SmallKeyRequirement : IRequirement
+    public class GenericKeysRequirement : IRequirement
     {
-        private readonly IItem _item;
-        private readonly int _count;
+        private readonly bool _genericKeys;
 
         public bool Met =>
             Accessibility != AccessibilityLevel.None;
@@ -36,19 +30,13 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="item">
-        /// The item of the requirement.
+        /// <param name="genericKeys">
+        /// The required enemy shuffle value.
         /// </param>
-        /// <param name="count">
-        /// A 32-bit integer representing the number of the item required.
-        /// </param>
-        public SmallKeyRequirement(IItem item, int count = 1)
+        public GenericKeysRequirement(bool genericKeys)
         {
-            _item = item ?? throw new ArgumentNullException(nameof(item));
-            _count = count;
+            _genericKeys = genericKeys;
 
-            _item.PropertyChanged += OnItemChanged;
-            ItemDictionary.Instance[ItemType.SmallKey].PropertyChanged += OnItemChanged;
             Mode.Instance.PropertyChanged += OnModeChanged;
 
             UpdateAccessibility();
@@ -66,23 +54,6 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IItem interface.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnItemChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(IItem.Current))
-            {
-                UpdateAccessibility();
-            }
-        }
-
-        /// <summary>
         /// Subscribes to the PropertyChanged event on the Mode class.
         /// </summary>
         /// <param name="sender">
@@ -93,7 +64,7 @@ namespace OpenTracker.Models.Requirements
         /// </param>
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.WorldState))
+            if (e.PropertyName == nameof(Mode.GenericKeys))
             {
                 UpdateAccessibility();
             }
@@ -104,8 +75,7 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         private void UpdateAccessibility()
         {
-            Accessibility = (_item.Current + (Mode.Instance.GenericKeys ?
-                ItemDictionary.Instance[ItemType.SmallKey].Current : 0)) >= _count ?
+            Accessibility = Mode.Instance.GenericKeys == _genericKeys ?
                 AccessibilityLevel.Normal : AccessibilityLevel.None;
         }
     }

@@ -124,5 +124,15 @@ namespace OpenTracker.UnitTests.BossPlacements
                     BossType.Aga
                 }
             };
+
+        [Fact]
+        public void PropertyChanged_Tests()
+        {
+            var bossPlacement = new BossPlacement(BossType.Armos);
+
+            Assert.PropertyChanged(
+                bossPlacement, nameof(IBossPlacement.Boss),
+                () => { bossPlacement.Boss = BossType.Armos; });
+        }
     }
 }

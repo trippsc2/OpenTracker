@@ -61,8 +61,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// </param>
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.WorldState) ||
-                e.PropertyName == nameof(Mode.DungeonItemShuffle))
+            if (e.PropertyName == nameof(Mode.SmallKeyShuffle))
             {
                 this.RaisePropertyChanged(nameof(ATItemsVisible));
             }

@@ -22,6 +22,7 @@ namespace OpenTracker.Models.Dungeons
         List<(KeyDoorID, bool)> GetAccessibleKeyDoors();
         List<AccessibilityLevel> GetBossAccessibility();
         int GetFreeKeys();
+        int GetFreeKeysSequenceBreak();
         (AccessibilityLevel, int, bool) GetItemAccessibility(
             int smallKeyValue, bool bigKeyValue, bool sequenceBroken);
         void SetBigKeyDoorState(bool unlocked);

@@ -44,6 +44,8 @@ namespace OpenTracker.ViewModels.Markings
                     case MarkType.IceRod:
                     case MarkType.Bombos:
                     case MarkType.Ether:
+                    case MarkType.Quake:
+                    case MarkType.TriforcePiece:
                     case MarkType.Powder:
                     case MarkType.Lamp:
                     case MarkType.Hammer:
@@ -63,12 +65,6 @@ namespace OpenTracker.ViewModels.Markings
                             NonEntranceMarkingSelect.Add(new MarkingSelectButtonVM((MarkType)i));
                         }
                         break;
-                    case MarkType.Quake:
-                        {
-                            NonEntranceMarkingSelect.Add(new MarkingSelectButtonVM((MarkType)i));
-                            NonEntranceMarkingSelect.Add(new MarkingSelectButtonVM(null));
-                        }
-                        break;
                 }
             }
         }
@@ -81,6 +77,11 @@ namespace OpenTracker.ViewModels.Markings
         {
             for (int i = 1; i < Enum.GetValues(typeof(MarkType)).Length; i++)
             {
+                if ((MarkType)i == MarkType.TriforcePiece)
+                {
+                    continue;
+                }
+
                 EntranceMarkingSelect.Add(new MarkingSelectButtonVM((MarkType)i));
             }
         }

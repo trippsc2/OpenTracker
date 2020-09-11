@@ -138,7 +138,10 @@ namespace OpenTracker.Models.Sections
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Mode.WorldState) ||
-                e.PropertyName == nameof(Mode.DungeonItemShuffle))
+                e.PropertyName == nameof(Mode.MapShuffle) ||
+                e.PropertyName == nameof(Mode.CompassShuffle) ||
+                e.PropertyName == nameof(Mode.SmallKeyShuffle) ||
+                e.PropertyName == nameof(Mode.BigKeyShuffle))
             {
                 SetTotal();
             }
@@ -153,7 +156,8 @@ namespace OpenTracker.Models.Sections
         private void SetTotal()
         {
             int newTotal = _dungeon.Items.Count -
-                (Mode.Instance.MapCompassShuffle ? 0 : (_dungeon.Map + _dungeon.Compass)) -
+                (Mode.Instance.MapShuffle ? 0 : _dungeon.Map) -
+                (Mode.Instance.CompassShuffle ? 0 : _dungeon.Compass) -
                 (Mode.Instance.SmallKeyShuffle ? 0 : _dungeon.SmallKeys) -
                 (Mode.Instance.BigKeyShuffle ? 0 : _dungeon.BigKey);
 

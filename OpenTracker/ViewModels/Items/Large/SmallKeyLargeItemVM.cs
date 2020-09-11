@@ -40,7 +40,7 @@ namespace OpenTracker.ViewModels.Items.Large
             _item = item ?? throw new ArgumentNullException(nameof(item));
             _imageSourceBase = imageSourceBase ??
                 throw new ArgumentNullException(nameof(imageSourceBase));
-            _requirement = RequirementDictionary.Instance[RequirementType.WorldStateRetro];
+            _requirement = RequirementDictionary.Instance[RequirementType.GenericKeys];
 
             _item.PropertyChanged += OnItemChanged;
             _requirement.PropertyChanged += OnRequirementChanged;

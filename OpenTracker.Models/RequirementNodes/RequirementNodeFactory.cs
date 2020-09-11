@@ -34,7 +34,7 @@ namespace OpenTracker.Models.RequirementNodes
 
             switch (id)
             {
-                case RequirementNodeID.EntranceShuffle:
+                case RequirementNodeID.EntranceDungeon:
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.Start], node,
@@ -59,7 +59,7 @@ namespace OpenTracker.Models.RequirementNodes
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.Start], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEntry], node));
                         connections.Add(new NodeConnection(
@@ -85,8 +85,6 @@ namespace OpenTracker.Models.RequirementNodes
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.CheckerboardLedge], node));
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BombosTabletLedge], node));
-                        connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LWMirePortal], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LWSouthPortalNotBunny], node,
@@ -94,19 +92,11 @@ namespace OpenTracker.Models.RequirementNodes
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LWWitchAreaNotBunny], node));
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWEastPortalNotBunny], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWestMirror], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.LWEastPortalNotBunny], node,
+                            RequirementDictionary.Instance[RequirementType.Hammer]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthInverted], node,
                             RequirementDictionary.Instance[RequirementType.Aga1]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthMirror], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEastMirror], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthEast], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
                     }
                     break;
                 case RequirementNodeID.LightWorldInverted:
@@ -116,11 +106,18 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.LightWorldNonInverted:
+                case RequirementNodeID.LightWorldInvertedNotBunny:
+                    {
+                        connections.Add(new NodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldInverted], node,
+                            RequirementDictionary.Instance[RequirementType.MoonPearl]));
+                    }
+                    break;
+                case RequirementNodeID.LightWorldStandardOpen:
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.LightWorldInspect:
@@ -142,6 +139,14 @@ namespace OpenTracker.Models.RequirementNodes
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld], node,
                             RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                    }
+                    break;
+                case RequirementNodeID.LightWorldNotBunnyOrInspect:
+                    {
+                        connections.Add(new NodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node));
+                        connections.Add(new NodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldInspect], node));
                     }
                     break;
                 case RequirementNodeID.LightWorldNotBunnyOrDungeonRevive:
@@ -192,13 +197,6 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.Gloves1]));
                     }
                     break;
-                case RequirementNodeID.GroveDiggingSpot:
-                    {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Shovel]));
-                    }
-                    break;
                 case RequirementNodeID.Flute:
                     {
                         connections.Add(new NodeConnection(
@@ -213,11 +211,11 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.FluteNonInverted:
+                case RequirementNodeID.FluteStandardOpen:
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.Flute], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.Pedestal:
@@ -262,10 +260,10 @@ namespace OpenTracker.Models.RequirementNodes
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEntryNonEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestBottomNonEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.BumperCaveEntryNonEntrance], node,
                             RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
@@ -285,7 +283,7 @@ namespace OpenTracker.Models.RequirementNodes
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainExitCaveDark], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.BumperCaveBack], node,
                             RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
@@ -305,10 +303,10 @@ namespace OpenTracker.Models.RequirementNodes
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainExitNonEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestBottomNonEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainExitCaveDark:
@@ -316,14 +314,6 @@ namespace OpenTracker.Models.RequirementNodes
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainExitCave], node,
                             RequirementDictionary.Instance[RequirementType.DarkRoomDeathMountainExit]));
-                    }
-                    break;
-                case RequirementNodeID.ForestHideout:
-                    {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldInspect], node));
                     }
                     break;
                 case RequirementNodeID.LWKakarikoPortal:
@@ -338,11 +328,11 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.Gloves1]));
                     }
                     break;
-                case RequirementNodeID.LWKakarikoPortalNonInverted:
+                case RequirementNodeID.LWKakarikoPortalStandardOpen:
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LWKakarikoPortal], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.LWKakarikoPortalNotBunny:
@@ -379,7 +369,7 @@ namespace OpenTracker.Models.RequirementNodes
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.MagicBatLedge], node,
-                            RequirementDictionary.Instance[RequirementType.Powder]));
+                            RequirementDictionary.Instance[RequirementType.MagicBat]));
                     }
                     break;
                 case RequirementNodeID.MagicBatEntrance:
@@ -434,6 +424,13 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.SuperBunnyMirror]));
                     }
                     break;
+                case RequirementNodeID.GroveDiggingSpot:
+                    {
+                        connections.Add(new NodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node,
+                            RequirementDictionary.Instance[RequirementType.Shovel]));
+                    }
+                    break;
                 case RequirementNodeID.DesertLedge:
                     {
                         connections.Add(new NodeConnection(
@@ -449,9 +446,9 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.DesertLedgeItem:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldInspect], node));
-                        connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DesertLedge], node));
+                        connections.Add(new NodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldInspect], node));
                     }
                     break;
                 case RequirementNodeID.DesertLedgeNotBunny:
@@ -526,17 +523,17 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.LWMirePortal:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.FluteNonInverted], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.FluteStandardOpen], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DWMirePortalInverted], node,
                             RequirementDictionary.Instance[RequirementType.Gloves2]));
                     }
                     break;
-                case RequirementNodeID.LWMirePortalNonInverted:
+                case RequirementNodeID.LWMirePortalStandardOpen:
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LWMirePortal], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.LWGraveyard:
@@ -548,10 +545,6 @@ namespace OpenTracker.Models.RequirementNodes
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.KingsTombNotBunny], node,
                             RequirementDictionary.Instance[RequirementType.Gloves2]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWestMirror], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWGraveyardMirror], node));
                     }
                     break;
                 case RequirementNodeID.LWGraveyardNotBunny:
@@ -567,8 +560,7 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementNodeDictionary.Instance[RequirementNodeID.LWGraveyardNotBunny], node,
                             RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWGraveyardLedge], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.DWGraveyardMirror], node));
                     }
                     break;
                 case RequirementNodeID.EscapeGrave:
@@ -609,21 +601,14 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.Boots]));
                     }
                     break;
-                case RequirementNodeID.HoulihanHoleEntrance:
-                    {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldInspect], node));
-                    }
-                    break;
                 case RequirementNodeID.HyruleCastleTop:
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld], node,
                             RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]));
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEastMirror], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEast], node,
+                            RequirementDictionary.Instance[RequirementType.DWMirror]));
                     }
                     break;
                 case RequirementNodeID.HyruleCastleTopInverted:
@@ -633,11 +618,11 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.HyruleCastleTopNonInverted:
+                case RequirementNodeID.HyruleCastleTopStandardOpen:
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.HyruleCastleTop], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.AgahnimTowerEntrance:
@@ -646,7 +631,7 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementNodeDictionary.Instance[RequirementNodeID.HyruleCastleTopInverted], node,
                             RequirementDictionary.Instance[RequirementType.GTCrystal]));
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.HyruleCastleTopNonInverted], node,
+                            RequirementNodeDictionary.Instance[RequirementNodeID.HyruleCastleTopStandardOpen], node,
                             RequirementDictionary.Instance[RequirementType.ATBarrier]));
                     }
                     break;
@@ -656,7 +641,7 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementNodeDictionary.Instance[RequirementNodeID.HyruleCastleTopInverted], node,
                             RequirementDictionary.Instance[RequirementType.Aga2]));
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEastNonInverted], node,
+                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEastStandardOpen], node,
                             RequirementDictionary.Instance[RequirementType.Aga2]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldInspect], node,
@@ -672,11 +657,11 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.Gloves1]));
                     }
                     break;
-                case RequirementNodeID.LWSouthPortalNonInverted:
+                case RequirementNodeID.LWSouthPortalStandardOpen:
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LWSouthPortal], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.LWSouthPortalNotBunny:
@@ -743,9 +728,6 @@ namespace OpenTracker.Models.RequirementNodes
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.ZoraArea], node,
                             RequirementDictionary.Instance[RequirementType.Gloves1]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWWitchArea], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
                     }
                     break;
                 case RequirementNodeID.LWWitchAreaNotBunny:
@@ -778,11 +760,11 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.Gloves1]));
                     }
                     break;
-                case RequirementNodeID.LWEastPortalNonInverted:
+                case RequirementNodeID.LWEastPortalStandardOpen:
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LWEastPortal], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.LWEastPortalNotBunny:
@@ -828,9 +810,9 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.Hobo:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWLakeHyliaFakeFlippers], node));
-                        connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LWLakeHyliaFlippers], node));
+                        connections.Add(new NodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.LWLakeHyliaFakeFlippers], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LWLakeHyliaWaterWalk], node));
                     }
@@ -875,23 +857,23 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementNodeDictionary.Instance[RequirementNodeID.LWLakeHyliaWaterWalk], node));
                     }
                     break;
-                case RequirementNodeID.LakeHyliaFairyIslandNonInverted:
+                case RequirementNodeID.LakeHyliaFairyIslandStandardOpen:
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LakeHyliaFairyIsland], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainWestBottom:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.FluteNonInverted], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.FluteStandardOpen], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEntryCaveDark], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainExitCaveDark], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestTop], node));
                         connections.Add(new NodeConnection(
@@ -968,8 +950,7 @@ namespace OpenTracker.Models.RequirementNodes
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastBottomConnector], node));
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.ParadoxCave], node,
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll]));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.ParadoxCave], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastTop], node));
                         connections.Add(new NodeConnection(
@@ -1002,8 +983,7 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.DeathMountainEastBottomConnector:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastBottomNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves2]));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastBottomLift2], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastTopConnector], node));
                         connections.Add(new NodeConnection(
@@ -1021,11 +1001,27 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll]));
                     }
                     break;
+                case RequirementNodeID.ParadoxCaveSuperBunnyFallInHole:
+                    {
+                        connections.Add(new NodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.ParadoxCave], node,
+                            RequirementDictionary.Instance[RequirementType.SuperBunnyFallInHole]));
+                    }
+                    break;
                 case RequirementNodeID.ParadoxCaveNotBunny:
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.ParadoxCave], node,
                             RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                    }
+                    break;
+                case RequirementNodeID.ParadoxCaveTop:
+                    {
+                        connections.Add(new NodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.ParadoxCaveNotBunny], node));
+                        connections.Add(new NodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.ParadoxCaveSuperBunnyFallInHole], node,
+                            RequirementDictionary.Instance[RequirementType.Sword2]));
                     }
                     break;
                 case RequirementNodeID.DeathMountainEastTop:
@@ -1147,17 +1143,17 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
                     }
                     break;
-                case RequirementNodeID.LWTurtleRockTopNonInverted:
+                case RequirementNodeID.LWTurtleRockTopStandardOpen:
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LWTurtleRockTop], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.DWKakarikoPortal:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWKakarikoPortalNonInverted], node,
+                            RequirementNodeDictionary.Instance[RequirementNodeID.LWKakarikoPortalStandardOpen], node,
                             RequirementDictionary.Instance[RequirementType.Gloves1]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWestNotBunny], node));
@@ -1178,7 +1174,7 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldMirror], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DWKakarikoPortal], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.BumperCaveEntry], node));
                         connections.Add(new NodeConnection(
@@ -1192,13 +1188,6 @@ namespace OpenTracker.Models.RequirementNodes
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DWWitchAreaNotBunny], node,
                             RequirementDictionary.Instance[RequirementType.Hookshot]));
-                    }
-                    break;
-                case RequirementNodeID.DarkWorldWestMirror:
-                    {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWest], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
                     }
                     break;
                 case RequirementNodeID.DarkWorldWestNotBunny:
@@ -1255,7 +1244,7 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.BumperCaveEntryNonEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.BumperCaveNotBunny:
@@ -1269,7 +1258,7 @@ namespace OpenTracker.Models.RequirementNodes
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.BumperCaveNotBunny], node,
-                            RequirementDictionary.Instance[RequirementType.BumperCave]));
+                            RequirementDictionary.Instance[RequirementType.BumperCaveGap]));
                     }
                     break;
                 case RequirementNodeID.BumperCaveBack:
@@ -1286,7 +1275,7 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.LWMirror]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.BumperCaveBack], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.BumperCaveItem:
@@ -1371,11 +1360,18 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.DarkWorldSouthNonInverted:
+                case RequirementNodeID.DarkWorldSouthStandardOpen:
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouth], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
+                    }
+                    break;
+                case RequirementNodeID.DarkWorldSouthStandardOpenNotBunny:
+                    {
+                        connections.Add(new NodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthStandardOpen], node,
+                            RequirementDictionary.Instance[RequirementType.MoonPearl]));
                     }
                     break;
                 case RequirementNodeID.DarkWorldSouthMirror:
@@ -1409,18 +1405,18 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.BuyBigBomb:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldInverted], node,
+                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldInvertedNotBunny], node,
                             RequirementDictionary.Instance[RequirementType.RedCrystal]));
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthNonInverted], node,
+                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthStandardOpenNotBunny], node,
                             RequirementDictionary.Instance[RequirementType.RedCrystal]));
                     }
                     break;
-                case RequirementNodeID.BuyBigBombNonInverted:
+                case RequirementNodeID.BuyBigBombStandardOpen:
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.BuyBigBomb], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.BigBombToLightWorld:
@@ -1433,33 +1429,33 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.BigBombToLightWorldNonInverted:
+                case RequirementNodeID.BigBombToLightWorldStandardOpen:
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.BigBombToLightWorld], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.BigBombToDWLakeHylia:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BuyBigBombNonInverted], node,
+                            RequirementNodeDictionary.Instance[RequirementNodeID.BuyBigBombStandardOpen], node,
                             RequirementDictionary.Instance[RequirementType.BombDuplicationMirror]));
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BuyBigBombNonInverted], node,
+                            RequirementNodeDictionary.Instance[RequirementNodeID.BuyBigBombStandardOpen], node,
                             RequirementDictionary.Instance[RequirementType.BombDuplicationAncillaOverload]));
                     }
                     break;
                 case RequirementNodeID.BigBombToWall:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BuyBigBombNonInverted], node,
+                            RequirementNodeDictionary.Instance[RequirementNodeID.BuyBigBombStandardOpen], node,
                             RequirementDictionary.Instance[RequirementType.Hammer]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.BigBombToLightWorld], node,
                             RequirementDictionary.Instance[RequirementType.LWMirror]));
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.BigBombToLightWorldNonInverted], node,
+                            RequirementNodeDictionary.Instance[RequirementNodeID.BigBombToLightWorldStandardOpen], node,
                             RequirementDictionary.Instance[RequirementType.Aga1]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.BigBombToDWLakeHylia], node));
@@ -1468,7 +1464,7 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.DWSouthPortal:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWSouthPortalNonInverted], node,
+                            RequirementNodeDictionary.Instance[RequirementNodeID.LWSouthPortalStandardOpen], node,
                             RequirementDictionary.Instance[RequirementType.Gloves1]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthHammer], node));
@@ -1531,10 +1527,7 @@ namespace OpenTracker.Models.RequirementNodes
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.FluteInverted], node));
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWMirePortal], node,
-                            RequirementDictionary.Instance[RequirementType.LWMirror]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWMirePortalNonInverted], node,
+                            RequirementNodeDictionary.Instance[RequirementNodeID.LWMirePortalStandardOpen], node,
                             RequirementDictionary.Instance[RequirementType.Gloves2]));
                     }
                     break;
@@ -1548,9 +1541,6 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.DWGraveyard:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWGraveyard], node,
-                            RequirementDictionary.Instance[RequirementType.LWMirror]));
-                        connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWestNotBunny], node));
                     }
                     break;
@@ -1559,15 +1549,6 @@ namespace OpenTracker.Models.RequirementNodes
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DWGraveyard], node,
                             RequirementDictionary.Instance[RequirementType.DWMirror]));
-                    }
-                    break;
-                case RequirementNodeID.DWGraveyardLedge:
-                    {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWGraveyardLedge], node,
-                            RequirementDictionary.Instance[RequirementType.LWMirror]));
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DWGraveyard], node));
                     }
                     break;
                 case RequirementNodeID.DWWitchArea:
@@ -1609,7 +1590,7 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.DarkWorldEast:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNonInverted], node,
+                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldStandardOpen], node,
                             RequirementDictionary.Instance[RequirementType.Aga1]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldMirror], node));
@@ -1632,18 +1613,11 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementNodeDictionary.Instance[RequirementNodeID.DWLakeHyliaWaterWalk], node));
                     }
                     break;
-                case RequirementNodeID.DarkWorldEastNonInverted:
+                case RequirementNodeID.DarkWorldEastStandardOpen:
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEast], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
-                    }
-                    break;
-                case RequirementNodeID.DarkWorldEastMirror:
-                    {
-                        connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEast], node,
-                            RequirementDictionary.Instance[RequirementType.DWMirror]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.DarkWorldEastNotBunny:
@@ -1660,10 +1634,17 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.Hammer]));
                     }
                     break;
+                case RequirementNodeID.FatFairyEntrance:
+                    {
+                        connections.Add(new NodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEastNotBunny], node,
+                            RequirementDictionary.Instance[RequirementType.RedCrystal]));
+                    }
+                    break;
                 case RequirementNodeID.DWEastPortal:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWEastPortalNonInverted], node,
+                            RequirementNodeDictionary.Instance[RequirementNodeID.LWEastPortalStandardOpen], node,
                             RequirementDictionary.Instance[RequirementType.Gloves1]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEastHammer], node));
@@ -1761,7 +1742,7 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementNodeDictionary.Instance[RequirementNodeID.LakeHyliaFairyIsland], node,
                             RequirementDictionary.Instance[RequirementType.LWMirror]));
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LakeHyliaFairyIslandNonInverted], node,
+                            RequirementNodeDictionary.Instance[RequirementNodeID.LakeHyliaFairyIslandStandardOpen], node,
                             RequirementDictionary.Instance[RequirementType.Gloves2]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DWLakeHyliaFlippers], node,
@@ -1816,7 +1797,7 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestBottom], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestBottom], node,
                             RequirementDictionary.Instance[RequirementType.LWMirror]));
@@ -1898,11 +1879,11 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
                     }
                     break;
-                case RequirementNodeID.DarkDeathMountainTopNonInverted:
+                case RequirementNodeID.DarkDeathMountainTopStandardOpen:
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainTop], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.DarkDeathMountainTopMirror:
@@ -1944,15 +1925,15 @@ namespace OpenTracker.Models.RequirementNodes
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainTopInverted], node));
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainTopNonInverted], node,
+                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainTopStandardOpen], node,
                             RequirementDictionary.Instance[RequirementType.GTCrystal]));
                     }
                     break;
-                case RequirementNodeID.GanonsTowerEntranceNonInverted:
+                case RequirementNodeID.GanonsTowerEntranceStandardOpen:
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.GanonsTowerEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
                 case RequirementNodeID.DWFloatingIsland:
@@ -2008,7 +1989,7 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.DWTurtleRockTop:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LWTurtleRockTopNonInverted], node,
+                            RequirementNodeDictionary.Instance[RequirementNodeID.LWTurtleRockTopStandardOpen], node,
                             RequirementDictionary.Instance[RequirementType.Hammer]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainTopInverted], node));
@@ -2042,7 +2023,7 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.LWMirror]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastBottomLift2], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainTop], node));
                     }
@@ -2091,7 +2072,7 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.HCSanctuaryEntry:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceShuffle], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeon], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunnyOrSuperBunnyMirror], node));
                     }
@@ -2099,7 +2080,7 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.HCFrontEntry:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceShuffle], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeon], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunnyOrDungeonRevive], node));
                     }
@@ -2107,7 +2088,7 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.HCBackEntry:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceShuffle], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeon], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.EscapeGrave], node));
                     }
@@ -2115,10 +2096,10 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.ATEntry:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceShuffle], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeon], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.AgahnimTowerEntrance], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.GanonsTowerEntrance], node,
                             RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
@@ -2127,7 +2108,7 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.EPEntry:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceShuffle], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeon], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunnyOrDungeonRevive], node));
                     }
@@ -2135,7 +2116,7 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.DPFrontEntry:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceShuffle], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeon], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DesertPalaceFrontEntrance], node,
                             RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
@@ -2147,7 +2128,7 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.DPLeftEntry:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceShuffle], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeon], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DesertLedge], node));
                     }
@@ -2155,7 +2136,7 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.DPBackEntry:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceShuffle], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeon], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DesertBack], node));
                     }
@@ -2163,7 +2144,7 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.ToHEntry:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceShuffle], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeon], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainWestTopNotBunny], node));
                         connections.Add(new NodeConnection(
@@ -2174,7 +2155,7 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.PoDEntry:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceShuffle], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeon], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEastNotBunny], node));
                     }
@@ -2182,13 +2163,13 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.SPEntry:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceShuffle], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeon], node));
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldInverted], node,
-                            RequirementDictionary.Instance[RequirementType.SPEntry]));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldInvertedNotBunny], node,
+                            RequirementDictionary.Instance[RequirementType.Mirror]));
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthNonInverted], node,
-                            RequirementDictionary.Instance[RequirementType.SPEntry]));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthStandardOpenNotBunny], node,
+                            RequirementDictionary.Instance[RequirementType.Mirror]));
                     }
                     break;
                 case RequirementNodeID.SWFrontEntry:
@@ -2203,7 +2184,7 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.SWBackEntry:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceShuffle], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeon], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.SkullWoodsBack], node));
                     }
@@ -2211,7 +2192,7 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.TTEntry:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceShuffle], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeon], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWestNotBunny], node));
                     }
@@ -2219,7 +2200,7 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.IPEntry:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceShuffle], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeon], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.IcePalaceIsland], node,
                             RequirementDictionary.Instance[RequirementType.NotBunnyDW]));
@@ -2231,7 +2212,7 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.MMEntry:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceShuffle], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeon], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.MiseryMireEntrance], node));
                     }
@@ -2239,29 +2220,29 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.TRFrontEntry:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceShuffle], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeon], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.TurtleRockFrontEntrance], node));
                     }
                     break;
-                case RequirementNodeID.TRFrontEntryNonInverted:
+                case RequirementNodeID.TRFrontEntryStandardOpen:
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.TRFrontEntry], node,
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]));
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
-                case RequirementNodeID.TRFrontEntryNonInvertedNonEntrance:
+                case RequirementNodeID.TRFrontEntryStandardOpenNonEntrance:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.TRFrontEntryNonInverted], node,
+                            RequirementNodeDictionary.Instance[RequirementNodeID.TRFrontEntryStandardOpen], node,
                             RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]));
                     }
                     break;
                 case RequirementNodeID.TRFrontToKeyDoors:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.TRFrontEntryNonInvertedNonEntrance], node,
+                            RequirementNodeDictionary.Instance[RequirementNodeID.TRFrontEntryStandardOpenNonEntrance], node,
                             RequirementDictionary.Instance[RequirementType.CaneOfSomaria]));
                     }
                     break;
@@ -2275,7 +2256,7 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.TRMiddleEntry:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceShuffle], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeon], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.TurtleRockTunnel], node));
                     }
@@ -2283,7 +2264,7 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.TRBackEntry:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceShuffle], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeon], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.TurtleRockSafetyDoor], node));
                     }
@@ -2291,15 +2272,15 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.GTEntry:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceShuffle], node));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.EntranceDungeon], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.AgahnimTowerEntrance], node,
                             RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.GanonsTowerEntranceNonInverted], node,
-                            RequirementDictionary.Instance[RequirementType.NotBunnyLW]));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.GanonsTowerEntranceStandardOpen], node,
+                            RequirementDictionary.Instance[RequirementType.NotBunnyDW]));
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.GanonsTowerEntranceNonInverted], node,
+                            RequirementNodeDictionary.Instance[RequirementNodeID.GanonsTowerEntranceStandardOpen], node,
                             RequirementDictionary.Instance[RequirementType.DungeonRevive]));
                     }
                     break;

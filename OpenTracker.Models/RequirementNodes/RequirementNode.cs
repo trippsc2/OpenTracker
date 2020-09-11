@@ -195,22 +195,6 @@ namespace OpenTracker.Models.RequirementNodes
 
             AccessibilityLevel finalAccessibility = AccessibilityLevel.None;
 
-            if (excludedNodes.Count == 0)
-            {
-                foreach (var connection in _connections)
-                {
-                    finalAccessibility = AccessibilityLevelMethods.Max(
-                        finalAccessibility, connection.Accessibility);
-
-                    if (finalAccessibility == AccessibilityLevel.Normal)
-                    {
-                        break;
-                    }
-                }
-
-                return finalAccessibility;
-            }
-
             foreach (var connection in _connections)
             {
                 finalAccessibility = AccessibilityLevelMethods.Max(

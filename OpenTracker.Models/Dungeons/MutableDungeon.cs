@@ -126,12 +126,37 @@ namespace OpenTracker.Models.Dungeons
         }
 
         /// <summary>
-        /// Returns the number of keys that are available in all dungeon nodes for free.
+        /// Returns the number of keys that are available in all dungeon nodes for free without
+        /// sequence break.
         /// </summary>
         /// <returns>
-        /// A 32-bit integer representing the number of keys that can be collected for free.
+        /// A 32-bit integer representing the number of keys that can be collected for free
+        /// without sequence break.
         /// </returns>
         public int GetFreeKeys()
+        {
+            int freeKeys = 0;
+
+            foreach (DungeonNode node in Nodes.Values)
+            {
+                if (node.Accessibility == AccessibilityLevel.Normal)
+                {
+                    freeKeys += node.KeysProvided;
+                }
+            }
+
+            return freeKeys;
+        }
+
+        /// <summary>
+        /// Returns the number of keys that are available in all dungeon nodes for free with
+        /// sequence break.
+        /// </summary>
+        /// <returns>
+        /// A 32-bit integer representing the number of keys that can be collected for free with
+        /// sequence break.
+        /// </returns>
+        public int GetFreeKeysSequenceBreak()
         {
             int freeKeys = 0;
 
@@ -307,15 +332,20 @@ namespace OpenTracker.Models.Dungeons
                     return (AccessibilityLevel.Normal, _dungeon.Sections[0].Available, sequenceBroken);
                 }
             }
-
-            if (!Mode.Instance.MapCompassShuffle)
-            {
-                inaccessibleItems -= _dungeon.Map + _dungeon.Compass;
-
-                if (Mode.Instance.GuaranteedBossItems)
+            
+            if (!Mode.Instance.MapShuffle)
                 {
-                    inaccessibleItems = Math.Max(inaccessibleItems, inaccessibleBosses);
+                    inaccessibleItems -= _dungeon.Map;
                 }
+            
+            if (!Mode.Instance.CompassShuffle)
+                {
+                    inaccessibleItems -= _dungeon.Compass;
+                }
+            
+            if (Mode.Instance.GuaranteedBossItems)
+            {
+                inaccessibleItems = Math.Max(inaccessibleItems, inaccessibleBosses);
             }
 
             if (inaccessibleItems <= 0)

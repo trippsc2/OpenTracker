@@ -5,11 +5,11 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for Dungeon Item Shuffle requirements.
+    /// This is the class for big key shuffle requirements.
     /// </summary>
-    internal class DungeonItemShuffleRequirement : IRequirement
+    public class BigKeyShuffleRequirement : IRequirement
     {
-        private readonly DungeonItemShuffle _dungeonItemShuffle;
+        private readonly bool _bigKeyShuffle;
 
         public bool Met =>
             Accessibility != AccessibilityLevel.None;
@@ -33,12 +33,12 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="dungeonItemShuffle">
-        /// The required dungeon item shuffle.
+        /// <param name="bigKeyShuffle">
+        /// A boolean representing the required big key shuffle value.
         /// </param>
-        public DungeonItemShuffleRequirement(DungeonItemShuffle dungeonItemShuffle)
+        public BigKeyShuffleRequirement(bool bigKeyShuffle)
         {
-            _dungeonItemShuffle = dungeonItemShuffle;
+            _bigKeyShuffle = bigKeyShuffle;
 
             Mode.Instance.PropertyChanged += OnModeChanged;
 
@@ -67,7 +67,7 @@ namespace OpenTracker.Models.Requirements
         /// </param>
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.DungeonItemShuffle))
+            if (e.PropertyName == nameof(Mode.BigKeyShuffle))
             {
                 UpdateAccessibility();
             }
@@ -78,7 +78,7 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         private void UpdateAccessibility()
         {
-            Accessibility = Mode.Instance.DungeonItemShuffle == _dungeonItemShuffle ?
+            Accessibility = Mode.Instance.BigKeyShuffle == _bigKeyShuffle ?
                 AccessibilityLevel.Normal : AccessibilityLevel.None;
         }
     }

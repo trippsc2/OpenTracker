@@ -26,7 +26,7 @@ namespace OpenTracker.Models.Locations
                 {
                     new MapLocation(
                         id, MapID.LightWorld, 1097, 1366,
-                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted]),
+                        RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]),
                     new MapLocation(
                         id, MapID.DarkWorld, 1097, 1366,
                         RequirementDictionary.Instance[RequirementType.WorldStateInvertedEntranceShuffleNotAll])
@@ -189,7 +189,7 @@ namespace OpenTracker.Models.Locations
                     new MapLocation(id, MapID.LightWorld, 440, 1845),
                     new MapLocation(
                         id, MapID.DarkWorld, 440, 1845,
-                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted])
+                        RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen])
                 },
                 LocationID.SouthOfGrove => new List<MapLocation>
                 {
@@ -198,7 +198,7 @@ namespace OpenTracker.Models.Locations
                         RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll]),
                     new MapLocation(
                         id, MapID.DarkWorld, 552, 1693,
-                        RequirementDictionary.Instance[RequirementType.WorldStateNonInvertedEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.WorldStateStandardOpenEntranceShuffleNotAll])
                 },
                 LocationID.DiggingGame => new List<MapLocation>
                 {
@@ -225,7 +225,7 @@ namespace OpenTracker.Models.Locations
                         RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll]),
                     new MapLocation(
                         id, MapID.DarkWorld, 1132, 530,
-                        RequirementDictionary.Instance[RequirementType.WorldStateNonInvertedEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.WorldStateStandardOpenEntranceShuffleNotAll])
                 },
                 LocationID.DesertLedge => new List<MapLocation>
                 {
@@ -283,7 +283,7 @@ namespace OpenTracker.Models.Locations
                     new MapLocation(id, MapID.LightWorld, 1450, 1666),
                     new MapLocation(
                         id, MapID.DarkWorld, 1450, 1666,
-                        RequirementDictionary.Instance[RequirementType.WorldStateNonInverted])
+                        RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen])
                 },
                 LocationID.MireShack => new List<MapLocation>
                 {
@@ -307,7 +307,7 @@ namespace OpenTracker.Models.Locations
                         RequirementDictionary.Instance[RequirementType.WorldStateInvertedEntranceShuffleNotAll]),
                     new MapLocation(
                         id, MapID.LightWorld, 900, 440,
-                        RequirementDictionary.Instance[RequirementType.WorldStateNonInvertedEntranceShuffleNotAll]),
+                        RequirementDictionary.Instance[RequirementType.WorldStateStandardOpenEntranceShuffleNotAll]),
                     new MapLocation(
                         id, MapID.DarkWorld, 816, 378,
                         RequirementDictionary.Instance[RequirementType.WorldStateInvertedEntranceShuffleNotAll])
@@ -360,7 +360,7 @@ namespace OpenTracker.Models.Locations
                     new MapLocation(id, MapID.LightWorld, 1627, 40),
                     new MapLocation(
                         id, MapID.DarkWorld, 1627, 40,
-                        RequirementDictionary.Instance[RequirementType.WorldStateNonInvertedEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.WorldStateStandardOpenEntranceShuffleNotAll])
                 },
                 LocationID.MimicCave => new List<MapLocation>
                 {
@@ -382,7 +382,7 @@ namespace OpenTracker.Models.Locations
                 {
                     new MapLocation(
                         id, MapID.LightWorld, 1003, 807,
-                        RequirementDictionary.Instance[RequirementType.WorldStateNonInvertedEntranceShuffleNone]),
+                        RequirementDictionary.Instance[RequirementType.WorldStateStandardOpenEntranceShuffleNone]),
                     new MapLocation(
                         id, MapID.DarkWorld, 1126, 68,
                         RequirementDictionary.Instance[RequirementType.WorldStateInvertedEntranceShuffleNone]),
@@ -484,7 +484,7 @@ namespace OpenTracker.Models.Locations
                 {
                     new MapLocation(
                         id, MapID.DarkWorld, 1126, 68,
-                        RequirementDictionary.Instance[RequirementType.WorldStateNonInvertedEntranceShuffleNone]),
+                        RequirementDictionary.Instance[RequirementType.WorldStateStandardOpenEntranceShuffleNone]),
                     new MapLocation(
                         id, MapID.LightWorld, 1003, 797,
                         RequirementDictionary.Instance[RequirementType.WorldStateInvertedEntranceShuffleNone]),
@@ -961,7 +961,7 @@ namespace OpenTracker.Models.Locations
                         id, MapID.DarkWorld, 1000, 820,
                         new AggregateRequirement(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.WorldStateNonInverted],
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen],
                             RequirementDictionary.Instance[RequirementType.EntranceShuffleAll]
                         }))
                 },
@@ -1251,187 +1251,187 @@ namespace OpenTracker.Models.Locations
                 {
                     new MapLocation(
                         id, MapID.LightWorld, 1650, 1295,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.PegsFairyCaveTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.LightWorld, 1970, 1405,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.KakarikoFortuneTellerTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.LightWorld, 375, 645,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.GrassHouseTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.LightWorld, 410, 1075,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.ForestChestGameTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.LightWorld, 370, 40,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.LumberjackHouseTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.LightWorld, 688, 120,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.LeftSnitchHouseTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.LightWorld, 100, 940,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.RightSnitchHouseTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.LightWorld, 415, 965,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.BombHutTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.LightWorld, 55, 1195,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.IceFairyCaveTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.LightWorld, 1810, 1602,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.RupeeCaveTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.LightWorld, 625, 1920,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.CentralBonkRocksTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.LightWorld, 945, 1310,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.ThiefCaveTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.LightWorld, 555, 1790,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.IceBeeCaveTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.LightWorld, 1850, 1545,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.FortuneTellerTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.LightWorld, 1300, 1615,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.HypeFairyCaveTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.LightWorld, 1200, 1565,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.ChestGameTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.LightWorld, 425, 1410,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.EDMFairyCaveTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.LightWorld, 1695, 290,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.DarkChapelTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.DarkWorld, 924, 551,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.DarkVillageFortuneTellerTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.DarkWorld, 377, 647,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.DarkTreesFairyCaveTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.DarkWorld, 1656, 1296,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.DarkSahasrahlaTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
-                        id, MapID.DarkWorld, 1968, 1405,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        id, MapID.DarkWorld, 1706, 1008,
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.DarkFluteSpotFiveTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
-                        id, MapID.DarkWorld, 431, 1409,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        id, MapID.DarkWorld, 1968, 1405,
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.ArrowGameTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
-                        id, MapID.DarkWorld, 945, 1310,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        id, MapID.DarkWorld, 431, 1409,
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.DarkCentralBonkRocksTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
-                        id, MapID.DarkWorld, 1795, 1545,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        id, MapID.DarkWorld, 945, 1310,
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.DarkIceRodCaveTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
-                        id, MapID.DarkWorld, 1835, 1545,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        id, MapID.DarkWorld, 1795, 1545,
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.DarkFakeIceRodCaveTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.DarkWorld, 1835, 1545,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.DarkIceRodRockTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.DarkWorld, 1810, 1585,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.DarkMountainFairyTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.DarkWorld, 815, 376,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.MireRightShackTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.DarkWorld, 220, 1610,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 LocationID.MireCaveTakeAny => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.DarkWorld, 400, 1655,
-                        RequirementDictionary.Instance[RequirementType.WorldStateRetroEntranceShuffleNotAll])
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNotAll])
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(id))
             };

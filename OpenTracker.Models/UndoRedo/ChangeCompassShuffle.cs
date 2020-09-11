@@ -3,22 +3,22 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to change the dungeon item shuffle setting.
+    /// This is the class for an undoable action to change the compass shuffle setting.
     /// </summary>
-    public class ChangeDungeonItemShuffle : IUndoable
+    public class ChangeCompassShuffle : IUndoable
     {
-        private readonly DungeonItemShuffle _dungeonItemShuffle;
-        private DungeonItemShuffle _previousDungeonItemShuffle;
+        private readonly bool _compassShuffle;
+        private bool _previousCompassShuffle;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="dungeonItemShuffle">
-        /// The new dungeon item shuffle setting.
+        /// <param name="compassShuffle">
+        /// The new compass shuffle setting.
         /// </param>
-        public ChangeDungeonItemShuffle(DungeonItemShuffle dungeonItemShuffle)
+        public ChangeCompassShuffle(bool compassShuffle)
         {
-            _dungeonItemShuffle = dungeonItemShuffle;
+            _compassShuffle = compassShuffle;
         }
 
         /// <summary>
@@ -37,8 +37,8 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Execute()
         {
-            _previousDungeonItemShuffle = Mode.Instance.DungeonItemShuffle;
-            Mode.Instance.DungeonItemShuffle = _dungeonItemShuffle;
+            _previousCompassShuffle = Mode.Instance.CompassShuffle;
+            Mode.Instance.CompassShuffle = _compassShuffle;
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Undo()
         {
-            Mode.Instance.DungeonItemShuffle = _previousDungeonItemShuffle;
+            Mode.Instance.CompassShuffle = _previousCompassShuffle;
         }
     }
 }

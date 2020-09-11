@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.Items;
+using System;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Items
@@ -29,6 +30,18 @@ namespace OpenTracker.UnitTests.Items
         }
 
         [Theory]
+        [InlineData(0, 1)]
+        [InlineData(1, 2)]
+        [InlineData(2, 3)]
+        public void Add_Tests(int starting, int expected)
+        {
+            var item = new Item(starting, null);
+            item.Add();
+
+            Assert.Equal(expected, item.Current);
+        }
+
+        [Theory]
         [InlineData(0, false)]
         [InlineData(1, true)]
         [InlineData(2, true)]
@@ -37,6 +50,25 @@ namespace OpenTracker.UnitTests.Items
             var item = new Item(starting, null);
 
             Assert.Equal(expected, item.CanRemove());
+        }
+
+        [Theory]
+        [InlineData(1, 0)]
+        [InlineData(2, 1)]
+        [InlineData(3, 2)]
+        public void Remove_Tests(int starting, int expected)
+        {
+            var item = new Item(starting, null);
+            item.Remove();
+
+            Assert.Equal(expected, item.Current);
+        }
+
+        [Fact]
+        public void Remove_ExceptionTest()
+        {
+            var item = new Item(0, null);
+            Assert.Throws<Exception>(() => { item.Remove(); });
         }
 
         [Theory]

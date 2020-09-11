@@ -206,7 +206,11 @@ namespace OpenTracker.Models.Dungeons
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Mode.WorldState) ||
-                e.PropertyName == nameof(Mode.DungeonItemShuffle) ||
+                e.PropertyName == nameof(Mode.MapShuffle) ||
+                e.PropertyName == nameof(Mode.CompassShuffle) ||
+                e.PropertyName == nameof(Mode.SmallKeyShuffle) ||
+                e.PropertyName == nameof(Mode.BigKeyShuffle) ||
+                e.PropertyName == nameof(Mode.GenericKeys) ||
                 e.PropertyName == nameof(Mode.GuaranteedBossItems))
             {
                 UpdateSectionAccessibility();
@@ -298,7 +302,7 @@ namespace OpenTracker.Models.Dungeons
                 if (SmallKeyItem != null)
                 {
                     smallKeyValues.Add(Math.Min(SmallKeys, SmallKeyItem.Current +
-                        (Mode.Instance.WorldState == WorldState.Retro ?
+                        (Mode.Instance.GenericKeys ?
                         ItemDictionary.Instance[ItemType.SmallKey].Current : 0)));
                 }
                 else
@@ -409,14 +413,23 @@ namespace OpenTracker.Models.Dungeons
                     dungeonData.SetBigKeyDoorState(item.Item3);
                     
                     int availableKeys = dungeonData.GetFreeKeys() + item.Item2 - item.Item1.Count;
+                    int availableKeysSequenceBreak = dungeonData.GetFreeKeysSequenceBreak() +
+                        item.Item2 - item.Item1.Count;
+                    bool sequenceBreak = item.Item4;
 
-                    if (availableKeys == 0)
+                    if (availableKeysSequenceBreak == 0)
                     {
                         finalKeyDoorPermutationQueue.Add(item);
                         DungeonDataQueue.Enqueue(dungeonData);
                         continue;
                     }
-                    
+
+                    if (availableKeys == 0)
+                    {
+                        finalKeyDoorPermutationQueue.Add(item);
+                        sequenceBreak = true;
+                    }
+
                     var accessibleKeyDoors = dungeonData.GetAccessibleKeyDoors();
                     
                     if (accessibleKeyDoors.Count == 0)
@@ -437,7 +450,7 @@ namespace OpenTracker.Models.Dungeons
 
                         newPermutation.Add(keyDoor.Item1);
                         keyDoorPermutationQueue[i + 1].Add((newPermutation, item.Item2,
-                            item.Item3, item.Item4 || keyDoor.Item2));
+                            item.Item3, sequenceBreak || keyDoor.Item2));
                     }
                     
                     DungeonDataQueue.Enqueue(dungeonData);
@@ -499,7 +512,7 @@ namespace OpenTracker.Models.Dungeons
             {
                 for (int i = 0; i < item.Item1.Count; i++)
                 {
-                    if (item.Item1[i] < lowestBossAccessibilities[i])
+                    if (item.Item1[i] < lowestBossAccessibilities[i] && !item.Item4)
                     {
                         lowestBossAccessibilities[i] = item.Item1[i];
                     }
@@ -623,12 +636,21 @@ namespace OpenTracker.Models.Dungeons
                             dungeonData.SetBigKeyDoorState(item.Item3);
 
                             int availableKeys = dungeonData.GetFreeKeys() + item.Item2 - item.Item1.Count;
+                            int availableKeysSequenceBreak = dungeonData.GetFreeKeysSequenceBreak() +
+                                item.Item2 - item.Item1.Count;
+                            bool sequenceBreak = item.Item4;
 
-                            if (availableKeys == 0)
+                            if (availableKeysSequenceBreak == 0)
                             {
                                 finalKeyDoorPermutationQueue.Add(item);
                                 DungeonDataQueue.Enqueue(dungeonData);
                                 continue;
+                            }
+
+                            if (availableKeys == 0)
+                            {
+                                finalKeyDoorPermutationQueue.Add(item);
+                                sequenceBreak = true;
                             }
 
                             var accessibleKeyDoors = dungeonData.GetAccessibleKeyDoors();
@@ -645,7 +667,7 @@ namespace OpenTracker.Models.Dungeons
                                 List<KeyDoorID> newPermutation = item.Item1.GetRange(0, item.Item1.Count);
                                 newPermutation.Add(keyDoor.Item1);
                                 keyDoorPermutationQueue[currentIteration + 1].Add(
-                                    (newPermutation, item.Item2, item.Item3, item.Item4 || keyDoor.Item2));
+                                    (newPermutation, item.Item2, item.Item3, sequenceBreak || keyDoor.Item2));
                             }
 
                             DungeonDataQueue.Enqueue(dungeonData);
@@ -720,7 +742,7 @@ namespace OpenTracker.Models.Dungeons
             {
                 for (int i = 0; i < item.Item1.Count; i++)
                 {
-                    if (item.Item1[i] < lowestBossAccessibilities[i])
+                    if (item.Item1[i] < lowestBossAccessibilities[i] && !item.Item4)
                     {
                         lowestBossAccessibilities[i] = item.Item1[i];
                     }

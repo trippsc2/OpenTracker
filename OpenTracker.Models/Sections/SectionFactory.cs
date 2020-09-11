@@ -447,7 +447,6 @@ namespace OpenTracker.Models.Sections
                 case LocationID.BlindsHouse when index == 1:
                 case LocationID.TheWell when index == 1:
                 case LocationID.ChickenHouse:
-                case LocationID.MushroomSpot:
                 case LocationID.SahasrahlasHut when index == 0:
                 case LocationID.AginahsCave:
                 case LocationID.Dam when index == 1:
@@ -527,9 +526,11 @@ namespace OpenTracker.Models.Sections
                     {
                         return RequirementNodeDictionary.Instance[RequirementNodeID.Library];
                     }
+                case LocationID.MushroomSpot:
                 case LocationID.ForestHideout:
+                case LocationID.HoulihanHole:
                     {
-                        return RequirementNodeDictionary.Instance[RequirementNodeID.ForestHideout];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunnyOrInspect];
                     }
                 case LocationID.CastleSecret:
                     {
@@ -572,7 +573,6 @@ namespace OpenTracker.Models.Sections
                         return RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEast];
                     }
                 case LocationID.FatFairy:
-                case LocationID.FatFairyEntrance:
                     {
                         return RequirementNodeDictionary.Instance[RequirementNodeID.BigBombToWall];
                     }
@@ -692,10 +692,15 @@ namespace OpenTracker.Models.Sections
                     {
                         return RequirementNodeDictionary.Instance[RequirementNodeID.SpiralCave];
                     }
-                case LocationID.ParadoxCave:
+                case LocationID.ParadoxCave when index == 0:
                     {
                         return RequirementNodeDictionary.Instance[
                             RequirementNodeID.ParadoxCaveNotBunny];
+                    }
+                case LocationID.ParadoxCave:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.ParadoxCaveTop];
                     }
                 case LocationID.SuperBunnyCave:
                     {
@@ -752,7 +757,7 @@ namespace OpenTracker.Models.Sections
                     }
                 case LocationID.ForestHideoutEntrance:
                     {
-                        return RequirementNodeDictionary.Instance[RequirementNodeID.ForestHideout];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunnyOrInspect];
                     }
                 case LocationID.CastleLeftEntrance:
                 case LocationID.CastleRightEntrance:
@@ -773,11 +778,6 @@ namespace OpenTracker.Models.Sections
                     {
                         return RequirementNodeDictionary.Instance[
                             RequirementNodeID.WaterfallFairy];
-                    }
-                case LocationID.HoulihanHole:
-                    {
-                        return RequirementNodeDictionary.Instance[
-                            RequirementNodeID.HoulihanHoleEntrance];
                     }
                 case LocationID.SanctuaryGrave:
                     {
@@ -885,6 +885,10 @@ namespace OpenTracker.Models.Sections
                 case LocationID.DarkWitchsHut:
                     {
                         return RequirementNodeDictionary.Instance[RequirementNodeID.DWWitchArea];
+                    }
+                case LocationID.FatFairyEntrance:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.FatFairyEntrance];
                     }
                 case LocationID.GanonHole:
                     {

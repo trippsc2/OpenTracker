@@ -9,7 +9,7 @@ namespace OpenTracker.Models.KeyLayouts
     /// <summary>
     /// This is the class for creating key layouts.
     /// </summary>
-    internal static class KeyLayoutFactory
+    public static class KeyLayoutFactory
     {
         /// <summary>
         /// Returns the list of key layouts for the specified dungeon.
@@ -20,8 +20,13 @@ namespace OpenTracker.Models.KeyLayouts
         /// <returns>
         /// The list of key layouts.
         /// </returns>
-        internal static List<IKeyLayout> GetDungeonKeyLayouts(IDungeon dungeon)
+        public static List<IKeyLayout> GetDungeonKeyLayouts(IDungeon dungeon)
         {
+            if (dungeon == null)
+            {
+                throw new ArgumentNullException(nameof(dungeon));
+            }
+
             switch (dungeon.ID)
             {
                 case Locations.LocationID.HyruleCastle:
@@ -31,7 +36,8 @@ namespace OpenTracker.Models.KeyLayouts
                             new EndKeyLayout(
                                 RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
                             new SmallKeyLayout(
-                                1, new List<DungeonItemID>
+                                1,
+                                new List<DungeonItemID>
                                 {
                                     DungeonItemID.HCSanctuary,
                                     DungeonItemID.HCMapChest,
@@ -40,7 +46,8 @@ namespace OpenTracker.Models.KeyLayouts
                                     DungeonItemID.HCSecretRoomMiddle,
                                     DungeonItemID.HCSecretRoomRight
                                 },
-                                false, new List<IKeyLayout>
+                                false,
+                                new List<IKeyLayout>
                                 {
                                     new EndKeyLayout()
                                 },
@@ -54,12 +61,14 @@ namespace OpenTracker.Models.KeyLayouts
                             new EndKeyLayout(
                                 RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
                             new SmallKeyLayout(
-                                2, new List<DungeonItemID>
+                                2,
+                                new List<DungeonItemID>
                                 {
                                     DungeonItemID.ATRoom03,
                                     DungeonItemID.ATDarkMaze
                                 },
-                                false, new List<IKeyLayout>
+                                false,
+                                new List<IKeyLayout>
                                 {
                                     new EndKeyLayout()
                                 },
@@ -71,7 +80,7 @@ namespace OpenTracker.Models.KeyLayouts
                         return new List<IKeyLayout>
                         {
                             new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.DungeonItemShuffleKeysanity]),
+                                RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]),
                             new BigKeyLayout(new List<DungeonItemID>
                                 {
                                     DungeonItemID.EPCannonballChest,
@@ -82,7 +91,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 new List<IKeyLayout>
                                 {
                                     new EndKeyLayout()
-                                })
+                                },
+                                RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff])
                         };
                     }
                 case Locations.LocationID.DesertPalace:
@@ -90,7 +100,22 @@ namespace OpenTracker.Models.KeyLayouts
                         return new List<IKeyLayout>
                         {
                             new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.DungeonItemShuffleKeysanity]),
+                                RequirementDictionary.Instance[RequirementType.AllKeyShuffle]),
+                            new SmallKeyLayout(
+                                1,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.DPMapChest,
+                                    DungeonItemID.DPTorch,
+                                    DungeonItemID.DPBigChest
+                                },
+                                false,
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout()
+                                },
+                                dungeon,
+                                RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -103,7 +128,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 {
                                     new EndKeyLayout()
                                 },
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
+                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -112,20 +137,22 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(1,
+                                    new SmallKeyLayout(
+                                        1,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.DPMapChest,
                                             DungeonItemID.DPTorch,
                                             DungeonItemID.DPBigChest
-                                        }, true,
+                                        },
+                                        true,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
                                         },
                                         dungeon)
                                 },
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]),
+                                RequirementDictionary.Instance[RequirementType.NoKeyShuffle]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -134,7 +161,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(1,
+                                    new SmallKeyLayout(
+                                        1,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.DPMapChest,
@@ -147,7 +175,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         },
                                         dungeon)
                                 },
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                RequirementDictionary.Instance[RequirementType.NoKeyShuffle])
                         };
                     }
                 case Locations.LocationID.TowerOfHera:
@@ -155,7 +183,50 @@ namespace OpenTracker.Models.KeyLayouts
                         return new List<IKeyLayout>
                         {
                             new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.DungeonItemShuffleKeysanity]),
+                                RequirementDictionary.Instance[RequirementType.AllKeyShuffle]),
+                            new SmallKeyLayout(
+                                1,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.ToHBasementCage,
+                                    DungeonItemID.ToHMapChest,
+                                    DungeonItemID.ToHBigKeyChest,
+                                    DungeonItemID.ToHCompassChest,
+                                    DungeonItemID.ToHBigChest,
+                                    DungeonItemID.ToHBoss
+                                },
+                                false,
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout()
+                                },
+                                dungeon,
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly],
+                                    RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff]
+                                })),
+                            new SmallKeyLayout(
+                                1,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.ToHBasementCage,
+                                    DungeonItemID.ToHMapChest,
+                                    DungeonItemID.ToHBigKeyChest,
+                                    DungeonItemID.ToHCompassChest,
+                                    DungeonItemID.ToHBigChest
+                                },
+                                false,
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout()
+                                },
+                                dungeon,
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly],
+                                    RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn]
+                                })),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -167,7 +238,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 {
                                     new EndKeyLayout()
                                 },
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
+                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -176,7 +247,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(1,
+                                    new SmallKeyLayout(
+                                        1,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.ToHBasementCage,
@@ -185,14 +257,16 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.ToHCompassChest,
                                             DungeonItemID.ToHBigChest,
                                             DungeonItemID.ToHBoss
-                                        }, true,
+                                        },
+                                        true,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
                                         },
                                         dungeon,
                                         RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff]),
-                                    new SmallKeyLayout(1,
+                                    new SmallKeyLayout(
+                                        1,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.ToHBasementCage,
@@ -200,7 +274,8 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.ToHBigKeyChest,
                                             DungeonItemID.ToHCompassChest,
                                             DungeonItemID.ToHBigChest
-                                        }, true,
+                                        },
+                                        true,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
@@ -208,7 +283,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         dungeon,
                                         RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn]),
                                 },
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]),
+                                RequirementDictionary.Instance[RequirementType.NoKeyShuffle]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -216,7 +291,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(1,
+                                    new SmallKeyLayout(
+                                        1,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.ToHBasementCage,
@@ -229,7 +305,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         },
                                         dungeon)
                                 },
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                RequirementDictionary.Instance[RequirementType.NoKeyShuffle])
                         };
                     }
                 case Locations.LocationID.PalaceOfDarkness:
@@ -237,7 +313,45 @@ namespace OpenTracker.Models.KeyLayouts
                         return new List<IKeyLayout>
                         {
                             new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.DungeonItemShuffleKeysanity]),
+                                RequirementDictionary.Instance[RequirementType.AllKeyShuffle]),
+                            new SmallKeyLayout(
+                                4,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.PoDShooterRoom,
+                                    DungeonItemID.PoDMapChest,
+                                    DungeonItemID.PoDArenaLedge,
+                                    DungeonItemID.PoDBigKeyChest,
+                                    DungeonItemID.PoDStalfosBasement,
+                                    DungeonItemID.PoDArenaBridge
+                                },
+                                false,
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        6,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.PoDShooterRoom,
+                                            DungeonItemID.PoDMapChest,
+                                            DungeonItemID.PoDArenaLedge,
+                                            DungeonItemID.PoDBigKeyChest,
+                                            DungeonItemID.PoDStalfosBasement,
+                                            DungeonItemID.PoDArenaBridge,
+                                            DungeonItemID.PoDCompassChest,
+                                            DungeonItemID.PoDDarkBasementLeft,
+                                            DungeonItemID.PoDDarkBasementRight,
+                                            DungeonItemID.PoDHarmlessHellway
+                                        },
+                                        false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new EndKeyLayout()
+                                        },
+                                        dungeon)
+                                },
+                                dungeon,
+                                RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -258,7 +372,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 {
                                     new EndKeyLayout()
                                 },
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
+                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -271,7 +385,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(4,
+                                    new SmallKeyLayout(
+                                        4,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.PoDShooterRoom,
@@ -280,10 +395,12 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.PoDBigKeyChest,
                                             DungeonItemID.PoDStalfosBasement,
                                             DungeonItemID.PoDArenaBridge
-                                        }, true,
+                                        },
+                                        true,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(6,
+                                            new SmallKeyLayout(
+                                                6,
                                                 new List<DungeonItemID>
                                                 {
                                                     DungeonItemID.PoDShooterRoom,
@@ -296,7 +413,8 @@ namespace OpenTracker.Models.KeyLayouts
                                                     DungeonItemID.PoDDarkBasementLeft,
                                                     DungeonItemID.PoDDarkBasementRight,
                                                     DungeonItemID.PoDHarmlessHellway
-                                                }, true,
+                                                },
+                                                true,
                                                 new List<IKeyLayout>
                                                 {
                                                     new EndKeyLayout()
@@ -305,7 +423,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         },
                                         dungeon)
                                 },
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]),
+                                RequirementDictionary.Instance[RequirementType.NoKeyShuffle]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -316,7 +434,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(4,
+                                    new SmallKeyLayout(
+                                        4,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.PoDShooterRoom,
@@ -325,10 +444,12 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.PoDBigKeyChest,
                                             DungeonItemID.PoDStalfosBasement,
                                             DungeonItemID.PoDArenaBridge
-                                        }, false,
+                                        },
+                                        false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(6,
+                                            new SmallKeyLayout(
+                                                6,
                                                 new List<DungeonItemID>
                                                 {
                                                     DungeonItemID.PoDShooterRoom,
@@ -341,7 +462,8 @@ namespace OpenTracker.Models.KeyLayouts
                                                     DungeonItemID.PoDDarkBasementLeft,
                                                     DungeonItemID.PoDDarkBasementRight,
                                                     DungeonItemID.PoDHarmlessHellway
-                                                }, true,
+                                                },
+                                                true,
                                                 new List<IKeyLayout>
                                                 {
                                                     new EndKeyLayout()
@@ -350,7 +472,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         },
                                         dungeon)
                                 },
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]),
+                                RequirementDictionary.Instance[RequirementType.NoKeyShuffle]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -359,7 +481,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(4,
+                                    new SmallKeyLayout(
+                                        4,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.PoDShooterRoom,
@@ -368,10 +491,12 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.PoDBigKeyChest,
                                             DungeonItemID.PoDStalfosBasement,
                                             DungeonItemID.PoDArenaBridge
-                                        }, false,
+                                        },
+                                        false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(6,
+                                            new SmallKeyLayout(
+                                                6,
                                                 new List<DungeonItemID>
                                                 {
                                                     DungeonItemID.PoDShooterRoom,
@@ -384,7 +509,8 @@ namespace OpenTracker.Models.KeyLayouts
                                                     DungeonItemID.PoDDarkBasementLeft,
                                                     DungeonItemID.PoDDarkBasementRight,
                                                     DungeonItemID.PoDHarmlessHellway
-                                                }, false,
+                                                },
+                                                false,
                                                 new List<IKeyLayout>
                                                 {
                                                     new EndKeyLayout()
@@ -393,7 +519,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         },
                                         dungeon)
                                 },
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]),
+                                RequirementDictionary.Instance[RequirementType.NoKeyShuffle])
                         };
                     }
                 case Locations.LocationID.SwampPalace:
@@ -401,7 +527,20 @@ namespace OpenTracker.Models.KeyLayouts
                         return new List<IKeyLayout>
                         {
                             new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.DungeonItemShuffleKeysanity]),
+                                RequirementDictionary.Instance[RequirementType.AllKeyShuffle]),
+                            new SmallKeyLayout(
+                                1,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.SPEntrance
+                                },
+                                false,
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout()
+                                },
+                                dungeon,
+                                RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -423,7 +562,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 new AggregateRequirement(new List<IRequirement>
                                 {
                                     RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
-                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]
+                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]
                                 })),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
@@ -445,7 +584,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 new AggregateRequirement(new List<IRequirement>
                                 {
                                     RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn],
-                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]
+                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]
                                 })),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
@@ -462,11 +601,13 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(1,
+                                    new SmallKeyLayout(
+                                        1,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.SPEntrance
-                                        }, false,
+                                        },
+                                        false,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
@@ -476,7 +617,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 new AggregateRequirement(new List<IRequirement>
                                 {
                                     RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
-                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
+                                    RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
                                 })),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
@@ -492,11 +633,13 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(1,
+                                    new SmallKeyLayout(
+                                        1,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.SPEntrance
-                                        }, false,
+                                        },
+                                        false,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
@@ -506,7 +649,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 new AggregateRequirement(new List<IRequirement>
                                 {
                                     RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn],
-                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
+                                    RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
                                 }))
                         };
                     }
@@ -515,7 +658,64 @@ namespace OpenTracker.Models.KeyLayouts
                         return new List<IKeyLayout>
                         {
                             new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.DungeonItemShuffleKeysanity]),
+                                RequirementDictionary.Instance[RequirementType.AllKeyShuffle]),
+                            new SmallKeyLayout(
+                                3,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.SWBigKeyChest,
+                                    DungeonItemID.SWMapChest,
+                                    DungeonItemID.SWBigChest,
+                                    DungeonItemID.SWPotPrison,
+                                    DungeonItemID.SWCompassChest,
+                                    DungeonItemID.SWPinballRoom,
+                                    DungeonItemID.SWBridgeRoom
+                                },
+                                false,
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout()
+                                },
+                                dungeon,
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
+                                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]
+                                })),
+                            new SmallKeyLayout(
+                                1,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.SWPinballRoom
+                                },
+                                false,
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        3,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.SWBigKeyChest,
+                                            DungeonItemID.SWMapChest,
+                                            DungeonItemID.SWBigChest,
+                                            DungeonItemID.SWPotPrison,
+                                            DungeonItemID.SWCompassChest,
+                                            DungeonItemID.SWPinballRoom,
+                                            DungeonItemID.SWBridgeRoom
+                                        },
+                                        true,
+                                        new List<IKeyLayout>
+                                        {
+                                            new EndKeyLayout()
+                                        },
+                                        dungeon)
+                                },
+                                dungeon,
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.ItemPlacementBasic],
+                                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]
+                                })),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -535,7 +735,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 new AggregateRequirement(new List<IRequirement>
                                 {
                                     RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
-                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]
+                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]
                                 })),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
@@ -555,7 +755,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 new AggregateRequirement(new List<IRequirement>
                                 {
                                     RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn],
-                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]
+                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]
                                 })),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
@@ -569,14 +769,17 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(1,
+                                    new SmallKeyLayout(
+                                        1,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.SWPinballRoom
-                                        }, false,
+                                        },
+                                        false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(3,
+                                            new SmallKeyLayout(
+                                                3,
                                                 new List<DungeonItemID>
                                                 {
                                                     DungeonItemID.SWBigKeyChest,
@@ -586,7 +789,8 @@ namespace OpenTracker.Models.KeyLayouts
                                                     DungeonItemID.SWCompassChest,
                                                     DungeonItemID.SWPinballRoom,
                                                     DungeonItemID.SWBridgeRoom
-                                                }, true,
+                                                },
+                                                true,
                                                 new List<IKeyLayout>
                                                 {
                                                     new EndKeyLayout()
@@ -598,7 +802,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 new AggregateRequirement(new List<IRequirement>
                                 {
                                     RequirementDictionary.Instance[RequirementType.ItemPlacementBasic],
-                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
+                                    RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
                                 })),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
@@ -613,7 +817,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(3,
+                                    new SmallKeyLayout(
+                                        3,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.SWBigKeyChest,
@@ -623,7 +828,8 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.SWCompassChest,
                                             DungeonItemID.SWPinballRoom,
                                             DungeonItemID.SWBridgeRoom
-                                        }, true,
+                                        },
+                                        true,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
@@ -633,7 +839,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 new AggregateRequirement(new List<IRequirement>
                                 {
                                     RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
+                                    RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
                                 })),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
@@ -642,14 +848,17 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(1,
+                                    new SmallKeyLayout(
+                                        1,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.SWPinballRoom
-                                        }, false,
+                                        },
+                                        false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(3,
+                                            new SmallKeyLayout(
+                                                3,
                                                 new List<DungeonItemID>
                                                 {
                                                     DungeonItemID.SWBigKeyChest,
@@ -658,7 +867,8 @@ namespace OpenTracker.Models.KeyLayouts
                                                     DungeonItemID.SWCompassChest,
                                                     DungeonItemID.SWPinballRoom,
                                                     DungeonItemID.SWBridgeRoom
-                                                }, false,
+                                                },
+                                                false,
                                                 new List<IKeyLayout>
                                                 {
                                                     new EndKeyLayout()
@@ -667,7 +877,8 @@ namespace OpenTracker.Models.KeyLayouts
                                         },
                                         dungeon,
                                         RequirementDictionary.Instance[RequirementType.ItemPlacementBasic]),
-                                    new SmallKeyLayout(3,
+                                    new SmallKeyLayout(
+                                        3,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.SWBigKeyChest,
@@ -676,7 +887,8 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.SWCompassChest,
                                             DungeonItemID.SWPinballRoom,
                                             DungeonItemID.SWBridgeRoom
-                                        }, false,
+                                        },
+                                        false,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
@@ -687,7 +899,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 new AggregateRequirement(new List<IRequirement>
                                 {
                                     RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
-                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
+                                    RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
                                 }))
                         };
                     }
@@ -696,7 +908,25 @@ namespace OpenTracker.Models.KeyLayouts
                         return new List<IKeyLayout>
                         {
                             new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.DungeonItemShuffleKeysanity]),
+                                RequirementDictionary.Instance[RequirementType.AllKeyShuffle]),
+                            new SmallKeyLayout(
+                                1,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.TTMapChest,
+                                    DungeonItemID.TTAmbushChest,
+                                    DungeonItemID.TTCompassChest,
+                                    DungeonItemID.TTBigKeyChest,
+                                    DungeonItemID.TTBlindsCell,
+                                    DungeonItemID.TTBigChest
+                                },
+                                false,
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout()
+                                },
+                                dungeon,
+                                RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -709,7 +939,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 {
                                     new EndKeyLayout(
                                         RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(1,
+                                    new SmallKeyLayout(
+                                        1,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.TTMapChest,
@@ -718,14 +949,16 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.TTBigKeyChest,
                                             DungeonItemID.TTBlindsCell,
                                             DungeonItemID.TTBigChest
-                                        }, true,
+                                        },
+                                        true,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
                                         },
                                         dungeon,
                                         RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
-                                })
+                                },
+                                RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff])
                         };
                     }
                 case Locations.LocationID.IcePalace:
@@ -733,8 +966,59 @@ namespace OpenTracker.Models.KeyLayouts
                         return new List<IKeyLayout>
                         {
                             new EndKeyLayout(
-                                RequirementDictionary.Instance[
-                                    RequirementType.DungeonItemShuffleKeysanity]),
+                                RequirementDictionary.Instance[RequirementType.AllKeyShuffle]),
+                            new SmallKeyLayout(
+                                2,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.IPCompassChest,
+                                    DungeonItemID.IPSpikeRoom,
+                                    DungeonItemID.IPMapChest,
+                                    DungeonItemID.IPBigKeyChest,
+                                    DungeonItemID.IPFreezorChest,
+                                    DungeonItemID.IPBigChest,
+                                    DungeonItemID.IPIcedTRoom
+                                },
+                                false,
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout()
+                                },
+                                dungeon,
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    new AlternativeRequirement(new List<IRequirement>
+                                    {
+                                        RequirementDictionary.Instance[RequirementType.ItemPlacementBasic],
+                                        RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn]
+                                    }),
+                                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]
+                                })),
+                            new SmallKeyLayout(
+                                2,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.IPCompassChest,
+                                    DungeonItemID.IPSpikeRoom,
+                                    DungeonItemID.IPMapChest,
+                                    DungeonItemID.IPBigKeyChest,
+                                    DungeonItemID.IPFreezorChest,
+                                    DungeonItemID.IPBigChest,
+                                    DungeonItemID.IPIcedTRoom,
+                                    DungeonItemID.IPBoss
+                                },
+                                true,
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout()
+                                },
+                                dungeon,
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
+                                    RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
+                                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]
+                                })),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -749,7 +1033,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 {
                                     new EndKeyLayout(
                                         RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(2,
+                                    new SmallKeyLayout(
+                                        2,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.IPCompassChest,
@@ -759,7 +1044,8 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.IPFreezorChest,
                                             DungeonItemID.IPBigChest,
                                             DungeonItemID.IPIcedTRoom
-                                        }, true,
+                                        },
+                                        true,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
@@ -774,7 +1060,8 @@ namespace OpenTracker.Models.KeyLayouts
                                             }),
                                             RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
                                         })),
-                                    new SmallKeyLayout(2,
+                                    new SmallKeyLayout(
+                                        2,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.IPCompassChest,
@@ -785,7 +1072,8 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.IPBigChest,
                                             DungeonItemID.IPIcedTRoom,
                                             DungeonItemID.IPBoss
-                                        }, true,
+                                        },
+                                        true,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
@@ -797,7 +1085,8 @@ namespace OpenTracker.Models.KeyLayouts
                                             RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
                                             RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
                                         }))
-                                })
+                                },
+                                RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff])
                         };
                     }
                 case Locations.LocationID.MiseryMire:
@@ -805,7 +1094,50 @@ namespace OpenTracker.Models.KeyLayouts
                         return new List<IKeyLayout>
                         {
                             new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.DungeonItemShuffleKeysanity]),
+                                RequirementDictionary.Instance[RequirementType.AllKeyShuffle]),
+                            new SmallKeyLayout(
+                                3,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.MMBridgeChest,
+                                    DungeonItemID.MMSpikeChest,
+                                    DungeonItemID.MMMainLobby,
+                                    DungeonItemID.MMBigChest,
+                                    DungeonItemID.MMMapChest,
+                                    DungeonItemID.MMBoss
+                                },
+                                false,
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout()
+                                },
+                                dungeon,
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly],
+                                    RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff]
+                                })),
+                            new SmallKeyLayout(
+                                3,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.MMBridgeChest,
+                                    DungeonItemID.MMSpikeChest,
+                                    DungeonItemID.MMMainLobby,
+                                    DungeonItemID.MMBigChest,
+                                    DungeonItemID.MMMapChest
+                                },
+                                true,
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout()
+                                },
+                                dungeon,
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly],
+                                    RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn]
+                                })),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -820,7 +1152,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 {
                                     new EndKeyLayout()
                                 },
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
+                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -829,7 +1161,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(3,
+                                    new SmallKeyLayout(
+                                        3,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.MMBridgeChest,
@@ -838,14 +1171,16 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.MMBigChest,
                                             DungeonItemID.MMMapChest,
                                             DungeonItemID.MMBoss
-                                        }, true,
+                                        },
+                                        true,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
                                         },
                                         dungeon,
                                         RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff]),
-                                    new SmallKeyLayout(3,
+                                    new SmallKeyLayout(
+                                        3,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.MMBridgeChest,
@@ -853,7 +1188,8 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.MMMainLobby,
                                             DungeonItemID.MMBigChest,
                                             DungeonItemID.MMMapChest
-                                        }, true,
+                                        },
+                                        true,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
@@ -861,7 +1197,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         dungeon,
                                         RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn])
                                 },
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]),
+                                RequirementDictionary.Instance[RequirementType.NoKeyShuffle]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -870,15 +1206,18 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(1,
+                                    new SmallKeyLayout(
+                                        1,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.MMBridgeChest,
                                             DungeonItemID.MMSpikeChest
-                                        }, false,
+                                        },
+                                        false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(3,
+                                            new SmallKeyLayout(
+                                                3,
                                                 new List<DungeonItemID>
                                                 {
                                                     DungeonItemID.MMBridgeChest,
@@ -887,14 +1226,16 @@ namespace OpenTracker.Models.KeyLayouts
                                                     DungeonItemID.MMBigChest,
                                                     DungeonItemID.MMMapChest,
                                                     DungeonItemID.MMBoss
-                                                }, true,
+                                                },
+                                                true,
                                                 new List<IKeyLayout>
                                                 {
                                                     new EndKeyLayout()
                                                 },
                                                 dungeon,
                                                 RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff]),
-                                            new SmallKeyLayout(3,
+                                            new SmallKeyLayout(
+                                                3,
                                                 new List<DungeonItemID>
                                                 {
                                                     DungeonItemID.MMBridgeChest,
@@ -902,7 +1243,8 @@ namespace OpenTracker.Models.KeyLayouts
                                                     DungeonItemID.MMMainLobby,
                                                     DungeonItemID.MMBigChest,
                                                     DungeonItemID.MMMapChest
-                                                }, true,
+                                                },
+                                                true,
                                                 new List<IKeyLayout>
                                                 {
                                                     new EndKeyLayout()
@@ -912,7 +1254,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         },
                                         dungeon)
                                 },
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]),
+                                RequirementDictionary.Instance[RequirementType.NoKeyShuffle]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -921,22 +1263,26 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(1,
+                                    new SmallKeyLayout(
+                                        1,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.MMBridgeChest,
                                             DungeonItemID.MMSpikeChest
-                                        }, false,
+                                        },
+                                        false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(2,
+                                            new SmallKeyLayout(
+                                                2,
                                                 new List<DungeonItemID>
                                                 {
                                                     DungeonItemID.MMBridgeChest,
                                                     DungeonItemID.MMSpikeChest,
                                                     DungeonItemID.MMMainLobby,
                                                     DungeonItemID.MMMapChest
-                                                }, false,
+                                                },
+                                                false,
                                                 new List<IKeyLayout>
                                                 {
                                                     new SmallKeyLayout(3,
@@ -979,7 +1325,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         },
                                         dungeon)
                                 },
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                RequirementDictionary.Instance[RequirementType.NoKeyShuffle])
                         };
                     }
                 case Locations.LocationID.TurtleRock:
@@ -987,7 +1333,97 @@ namespace OpenTracker.Models.KeyLayouts
                         return new List<IKeyLayout>
                         {
                             new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.DungeonItemShuffleKeysanity]),
+                                RequirementDictionary.Instance[RequirementType.AllKeyShuffle]),
+                            new SmallKeyLayout(
+                                2,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.TRCompassChest,
+                                    DungeonItemID.TRRollerRoomLeft,
+                                    DungeonItemID.TRRollerRoomRight,
+                                    DungeonItemID.TRChainChomps
+                                },
+                                false,
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        3,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.TRCompassChest,
+                                            DungeonItemID.TRRollerRoomLeft,
+                                            DungeonItemID.TRRollerRoomRight,
+                                            DungeonItemID.TRChainChomps,
+                                            DungeonItemID.TRBigKeyChest,
+                                            DungeonItemID.TRBigChest,
+                                            DungeonItemID.TRCrystarollerRoom
+                                        },
+                                        false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                4,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.TRCompassChest,
+                                                    DungeonItemID.TRRollerRoomLeft,
+                                                    DungeonItemID.TRRollerRoomRight,
+                                                    DungeonItemID.TRChainChomps,
+                                                    DungeonItemID.TRBigKeyChest,
+                                                    DungeonItemID.TRBigChest,
+                                                    DungeonItemID.TRCrystarollerRoom,
+                                                    DungeonItemID.TRLaserBridgeTopLeft,
+                                                    DungeonItemID.TRLaserBridgeTopRight,
+                                                    DungeonItemID.TRLaserBridgeBottomLeft,
+                                                    DungeonItemID.TRLaserBrdigeBottomRight
+                                                },
+                                                false,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new EndKeyLayout()
+                                                },
+                                                dungeon)
+                                        },
+                                        dungeon)
+                                },
+                                dungeon,
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[
+                                        RequirementType.WorldStateStandardOpenEntranceShuffleNone],
+                                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]
+                                })),
+                            new SmallKeyLayout(
+                                4,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.TRCompassChest,
+                                    DungeonItemID.TRRollerRoomLeft,
+                                    DungeonItemID.TRRollerRoomRight,
+                                    DungeonItemID.TRChainChomps,
+                                    DungeonItemID.TRBigKeyChest,
+                                    DungeonItemID.TRBigChest,
+                                    DungeonItemID.TRCrystarollerRoom,
+                                    DungeonItemID.TRLaserBridgeTopLeft,
+                                    DungeonItemID.TRLaserBridgeTopRight,
+                                    DungeonItemID.TRLaserBridgeBottomLeft,
+                                    DungeonItemID.TRLaserBrdigeBottomRight
+                                },
+                                false,
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout()
+                                },
+                                dungeon,
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    new AlternativeRequirement(new List<IRequirement>
+                                    {
+                                        RequirementDictionary.Instance[RequirementType.WorldStateInverted],
+                                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonOn]
+                                    }),
+                                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]
+                                })),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -1004,8 +1440,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 new AggregateRequirement(new List<IRequirement>
                                 {
                                     RequirementDictionary.Instance[
-                                        RequirementType.WorldStateNonInvertedEntranceShuffleNone],
-                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]
+                                        RequirementType.WorldStateStandardOpenEntranceShuffleNone],
+                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]
                                 })),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
@@ -1032,7 +1468,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         RequirementDictionary.Instance[RequirementType.WorldStateInverted],
                                         RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonOn]
                                     }),
-                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]
+                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]
                                 })),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
@@ -1044,17 +1480,20 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(2,
+                                    new SmallKeyLayout(
+                                        2,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.TRCompassChest,
                                             DungeonItemID.TRRollerRoomLeft,
                                             DungeonItemID.TRRollerRoomRight,
                                             DungeonItemID.TRChainChomps
-                                        }, true,
+                                        },
+                                        true,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(3,
+                                            new SmallKeyLayout(
+                                                3,
                                                 new List<DungeonItemID>
                                                 {
                                                     DungeonItemID.TRCompassChest,
@@ -1064,10 +1503,12 @@ namespace OpenTracker.Models.KeyLayouts
                                                     DungeonItemID.TRBigKeyChest,
                                                     DungeonItemID.TRBigChest,
                                                     DungeonItemID.TRCrystarollerRoom
-                                                }, true,
+                                                },
+                                                true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(4,
+                                                    new SmallKeyLayout(
+                                                        4,
                                                         new List<DungeonItemID>
                                                         {
                                                             DungeonItemID.TRCompassChest,
@@ -1081,7 +1522,8 @@ namespace OpenTracker.Models.KeyLayouts
                                                             DungeonItemID.TRLaserBridgeTopRight,
                                                             DungeonItemID.TRLaserBridgeBottomLeft,
                                                             DungeonItemID.TRLaserBrdigeBottomRight
-                                                        }, true,
+                                                        },
+                                                        true,
                                                         new List<IKeyLayout>
                                                         {
                                                             new EndKeyLayout()
@@ -1095,8 +1537,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 new AggregateRequirement(new List<IRequirement>
                                 {
                                     RequirementDictionary.Instance[
-                                        RequirementType.WorldStateNonInvertedEntranceShuffleNone],
-                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
+                                        RequirementType.WorldStateStandardOpenEntranceShuffleNone],
+                                    RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
                                 })),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
@@ -1105,17 +1547,20 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(2,
+                                    new SmallKeyLayout(
+                                        2,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.TRCompassChest,
                                             DungeonItemID.TRRollerRoomLeft,
                                             DungeonItemID.TRRollerRoomRight,
                                             DungeonItemID.TRChainChomps
-                                        }, false,
+                                        },
+                                        false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(3,
+                                            new SmallKeyLayout(
+                                                3,
                                                 new List<DungeonItemID>
                                                 {
                                                     DungeonItemID.TRCompassChest,
@@ -1124,10 +1569,12 @@ namespace OpenTracker.Models.KeyLayouts
                                                     DungeonItemID.TRChainChomps,
                                                     DungeonItemID.TRBigChest,
                                                     DungeonItemID.TRCrystarollerRoom
-                                                }, false,
+                                                },
+                                                false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(4,
+                                                    new SmallKeyLayout(
+                                                        4,
                                                         new List<DungeonItemID>
                                                         {
                                                             DungeonItemID.TRCompassChest,
@@ -1140,7 +1587,8 @@ namespace OpenTracker.Models.KeyLayouts
                                                             DungeonItemID.TRLaserBridgeTopRight,
                                                             DungeonItemID.TRLaserBridgeBottomLeft,
                                                             DungeonItemID.TRLaserBrdigeBottomRight
-                                                        }, false,
+                                                        },
+                                                        false,
                                                         new List<IKeyLayout>
                                                         {
                                                             new EndKeyLayout()
@@ -1154,8 +1602,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 new AggregateRequirement(new List<IRequirement>
                                 {
                                     RequirementDictionary.Instance[
-                                        RequirementType.WorldStateNonInvertedEntranceShuffleNone],
-                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
+                                        RequirementType.WorldStateStandardOpenEntranceShuffleNone],
+                                    RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
                                 })),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
@@ -1172,7 +1620,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(4,
+                                    new SmallKeyLayout(
+                                        4,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.TRCompassChest,
@@ -1186,7 +1635,8 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.TRLaserBridgeTopRight,
                                             DungeonItemID.TRLaserBridgeBottomLeft,
                                             DungeonItemID.TRLaserBrdigeBottomRight
-                                        }, true,
+                                        },
+                                        true,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
@@ -1200,7 +1650,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         RequirementDictionary.Instance[RequirementType.WorldStateInverted],
                                         RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonOn]
                                     }),
-                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
+                                    RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
                                 })),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
@@ -1209,7 +1659,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(4,
+                                    new SmallKeyLayout(
+                                        4,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.TRCompassChest,
@@ -1221,7 +1672,8 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.TRLaserBridgeTopRight,
                                             DungeonItemID.TRLaserBridgeBottomLeft,
                                             DungeonItemID.TRLaserBrdigeBottomRight
-                                        }, false,
+                                        },
+                                        false,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
@@ -1235,7 +1687,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         RequirementDictionary.Instance[RequirementType.WorldStateInverted],
                                         RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonOn]
                                     }),
-                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
+                                    RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
                                 }))
                         };
                     }
@@ -1244,7 +1696,55 @@ namespace OpenTracker.Models.KeyLayouts
                         return new List<IKeyLayout>
                         {
                             new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.DungeonItemShuffleKeysanity]),
+                                RequirementDictionary.Instance[RequirementType.AllKeyShuffle]),
+                            new SmallKeyLayout(
+                                3,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.GTHopeRoomLeft,
+                                    DungeonItemID.GTHopeRoomRight,
+                                    DungeonItemID.GTBobsTorch,
+                                    DungeonItemID.GTDMsRoomTopLeft,
+                                    DungeonItemID.GTDMsRoomTopRight,
+                                    DungeonItemID.GTDMsRoomBottomLeft,
+                                    DungeonItemID.GTDMsRoomBottomRight,
+                                    DungeonItemID.GTTileRoom
+                                },
+                                false,
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        4,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.GTHopeRoomLeft,
+                                            DungeonItemID.GTHopeRoomRight,
+                                            DungeonItemID.GTBobsTorch,
+                                            DungeonItemID.GTDMsRoomTopLeft,
+                                            DungeonItemID.GTDMsRoomTopRight,
+                                            DungeonItemID.GTDMsRoomBottomLeft,
+                                            DungeonItemID.GTDMsRoomBottomRight,
+                                            DungeonItemID.GTMapChest,
+                                            DungeonItemID.GTFiresnakeRoom,
+                                            DungeonItemID.GTTileRoom,
+                                            DungeonItemID.GTBobsChest,
+                                            DungeonItemID.GTBigKeyRoomTopLeft,
+                                            DungeonItemID.GTBigKeyRoomTopRight,
+                                            DungeonItemID.GTBigKeyChest,
+                                            DungeonItemID.GTBigChest,
+                                            DungeonItemID.GTMiniHelmasaurRoomLeft,
+                                            DungeonItemID.GTMiniHelmasaurRoomRight,
+                                            DungeonItemID.GTPreMoldormChest
+                                        },
+                                        false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new EndKeyLayout()
+                                        },
+                                        dungeon)
+                                },
+                                dungeon,
+                                RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -1275,7 +1775,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 {
                                     new EndKeyLayout()
                                 },
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
+                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -1290,7 +1790,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(3,
+                                    new SmallKeyLayout(
+                                        3,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.GTHopeRoomLeft,
@@ -1301,10 +1802,12 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.GTDMsRoomBottomLeft,
                                             DungeonItemID.GTDMsRoomBottomRight,
                                             DungeonItemID.GTTileRoom
-                                        }, true,
+                                        },
+                                        true,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(4,
+                                            new SmallKeyLayout(
+                                                4,
                                                 new List<DungeonItemID>
                                                 {
                                                     DungeonItemID.GTHopeRoomLeft,
@@ -1325,7 +1828,8 @@ namespace OpenTracker.Models.KeyLayouts
                                                     DungeonItemID.GTMiniHelmasaurRoomLeft,
                                                     DungeonItemID.GTMiniHelmasaurRoomRight,
                                                     DungeonItemID.GTPreMoldormChest
-                                                }, true,
+                                                },
+                                                true,
                                                 new List<IKeyLayout>
                                                 {
                                                     new EndKeyLayout()
@@ -1334,7 +1838,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         },
                                         dungeon)
                                 },
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]),
+                                RequirementDictionary.Instance[RequirementType.NoKeyShuffle]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -1346,7 +1850,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(3,
+                                    new SmallKeyLayout(
+                                        3,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.GTHopeRoomLeft,
@@ -1357,10 +1862,12 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.GTDMsRoomBottomLeft,
                                             DungeonItemID.GTDMsRoomBottomRight,
                                             DungeonItemID.GTTileRoom
-                                        }, false,
+                                        },
+                                        false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(4,
+                                            new SmallKeyLayout(
+                                                4,
                                                 new List<DungeonItemID>
                                                 {
                                                     DungeonItemID.GTHopeRoomLeft,
@@ -1381,7 +1888,8 @@ namespace OpenTracker.Models.KeyLayouts
                                                     DungeonItemID.GTMiniHelmasaurRoomLeft,
                                                     DungeonItemID.GTMiniHelmasaurRoomRight,
                                                     DungeonItemID.GTPreMoldormChest
-                                                }, true,
+                                                },
+                                                true,
                                                 new List<IKeyLayout>
                                                 {
                                                     new EndKeyLayout()
@@ -1390,7 +1898,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         },
                                         dungeon)
                                 },
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]),
+                                RequirementDictionary.Instance[RequirementType.NoKeyShuffle]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -1398,7 +1906,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(3,
+                                    new SmallKeyLayout(
+                                        3,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.GTHopeRoomLeft,
@@ -1409,7 +1918,8 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.GTDMsRoomBottomLeft,
                                             DungeonItemID.GTDMsRoomBottomRight,
                                             DungeonItemID.GTTileRoom
-                                        }, false,
+                                        },
+                                        false,
                                         new List<IKeyLayout>
                                         {
                                             new SmallKeyLayout(4,
@@ -1441,7 +1951,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         },
                                         dungeon)
                                 },
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]),
+                                RequirementDictionary.Instance[RequirementType.NoKeyShuffle]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -1452,7 +1962,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(2,
+                                    new SmallKeyLayout(
+                                        2,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.GTHopeRoomLeft,
@@ -1463,10 +1974,12 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.GTDMsRoomBottomLeft,
                                             DungeonItemID.GTDMsRoomBottomRight,
                                             DungeonItemID.GTTileRoom
-                                        }, false,
+                                        },
+                                        false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(3,
+                                            new SmallKeyLayout(
+                                                3,
                                                 new List<DungeonItemID>
                                                 {
                                                     DungeonItemID.GTHopeRoomLeft,
@@ -1478,10 +1991,12 @@ namespace OpenTracker.Models.KeyLayouts
                                                     DungeonItemID.GTDMsRoomBottomRight,
                                                     DungeonItemID.GTFiresnakeRoom,
                                                     DungeonItemID.GTTileRoom
-                                                }, false,
+                                                },
+                                                false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(4,
+                                                    new SmallKeyLayout(
+                                                        4,
                                                         new List<DungeonItemID>
                                                         {
                                                             DungeonItemID.GTHopeRoomLeft,
@@ -1502,7 +2017,8 @@ namespace OpenTracker.Models.KeyLayouts
                                                             DungeonItemID.GTBigKeyRoomTopLeft,
                                                             DungeonItemID.GTBigKeyRoomTopRight,
                                                             DungeonItemID.GTBigKeyChest
-                                                        }, true,
+                                                        },
+                                                        true,
                                                         new List<IKeyLayout>
                                                         {
                                                             new EndKeyLayout()
@@ -1513,7 +2029,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         },
                                         dungeon)
                                 },
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]),
+                                RequirementDictionary.Instance[RequirementType.NoKeyShuffle]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -1524,7 +2040,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(2,
+                                    new SmallKeyLayout(
+                                        2,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.GTHopeRoomLeft,
@@ -1535,10 +2052,12 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.GTDMsRoomBottomLeft,
                                             DungeonItemID.GTDMsRoomBottomRight,
                                             DungeonItemID.GTTileRoom
-                                        }, false,
+                                        },
+                                        false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(3,
+                                            new SmallKeyLayout(
+                                                3,
                                                 new List<DungeonItemID>
                                                 {
                                                     DungeonItemID.GTHopeRoomLeft,
@@ -1550,10 +2069,12 @@ namespace OpenTracker.Models.KeyLayouts
                                                     DungeonItemID.GTDMsRoomBottomRight,
                                                     DungeonItemID.GTFiresnakeRoom,
                                                     DungeonItemID.GTTileRoom
-                                                }, false,
+                                                },
+                                                false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(4,
+                                                    new SmallKeyLayout(
+                                                        4,
                                                         new List<DungeonItemID>
                                                         {
                                                             DungeonItemID.GTHopeRoomLeft,
@@ -1574,7 +2095,8 @@ namespace OpenTracker.Models.KeyLayouts
                                                             DungeonItemID.GTBigKeyRoomTopLeft,
                                                             DungeonItemID.GTBigKeyRoomTopRight,
                                                             DungeonItemID.GTBigKeyChest
-                                                        }, true,
+                                                        },
+                                                        true,
                                                         new List<IKeyLayout>
                                                         {
                                                             new EndKeyLayout()
@@ -1585,7 +2107,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         },
                                         dungeon)
                                 },
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                RequirementDictionary.Instance[RequirementType.NoKeyShuffle])
                         };
                     }
             }
