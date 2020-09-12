@@ -3,7 +3,9 @@ using OpenTracker.Models.Connections;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.PrizePlacements;
+using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace OpenTracker.Models.SaveLoad
 {
@@ -12,6 +14,7 @@ namespace OpenTracker.Models.SaveLoad
     /// </summary>
     public class SaveData
     {
+        public Version Version { get; set; }
         public ModeSaveData Mode { get; set; }
         public Dictionary<ItemType, ItemSaveData> Items { get; set; }
         public Dictionary<LocationID, LocationSaveData> Locations { get; set; }
@@ -24,6 +27,7 @@ namespace OpenTracker.Models.SaveLoad
         /// </summary>
         public void Save()
         {
+            Version = Assembly.GetExecutingAssembly().GetName().Version;
             Mode = Modes.Mode.Instance.Save();
             Items = ItemDictionary.Instance.Save();
             Locations = LocationDictionary.Instance.Save();
