@@ -6,7 +6,6 @@ using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.KeyLayouts;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
-using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Sections;

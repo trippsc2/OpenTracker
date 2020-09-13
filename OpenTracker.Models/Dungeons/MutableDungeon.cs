@@ -364,5 +364,18 @@ namespace OpenTracker.Models.Dungeons
                     _dungeon.Sections[0].Available - inaccessibleItems), sequenceBroken);
             }
         }
+
+        public void Reset()
+        {
+            foreach (var node in Nodes.Values)
+            {
+                node.Reset();
+            }
+
+            foreach (var door in KeyDoorDictionary.Values)
+            {
+                door.Unlocked = false;
+            }
+        }
     }
 }

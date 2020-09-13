@@ -28,5 +28,6 @@ namespace OpenTracker.Models.Dungeons
         void SetBigKeyDoorState(bool unlocked);
         void SetSmallKeyDoorState(List<KeyDoorID> unlockedDoors);
         bool ValidateKeyLayout(int keysCollected, bool bigKeyCollected);
+        void Reset();
     }
 }
