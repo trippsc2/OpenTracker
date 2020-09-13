@@ -21,6 +21,8 @@ namespace OpenTracker.UnitTests.DungeonNodes
         [MemberData(nameof(HCBack_To_HCSanctuary))]
         [MemberData(nameof(HCFrontEntry_To_HCFront))]
         [MemberData(nameof(HCPastEscapeFirstKeyDoor_To_HCFront))]
+        [MemberData(nameof(HCDarkRoomFront_To_HCFront))]
+        [MemberData(nameof(HCFront_To_HCEscapeFirstKeyDoor))]
         public void Tests(
             ModeSaveData mode, RequirementNodeID[] accessibleEntryNodes,
             DungeonNodeID[] accessibleNodes, KeyDoorID[] unlockedDoors, (ItemType, int)[] items,
@@ -250,6 +252,97 @@ namespace OpenTracker.UnitTests.DungeonNodes
                     DungeonNodeID.HCFront,
                     AccessibilityLevel.Normal
                 }
-           };
+            };
+
+        public static IEnumerable<object[]> HCDarkRoomFront_To_HCFront =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
+                    new RequirementNodeID[0],
+                    new DungeonNodeID[0],
+                    new KeyDoorID[0],
+                    new (ItemType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    LocationID.HyruleCastle,
+                    DungeonNodeID.HCFront,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
+                    new RequirementNodeID[0],
+                    new DungeonNodeID[]
+                    {
+                        DungeonNodeID.HCDarkRoomFront
+                    },
+                    new KeyDoorID[0],
+                    new (ItemType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    LocationID.HyruleCastle,
+                    DungeonNodeID.HCFront,
+                    AccessibilityLevel.Normal
+                }
+            };
+        
+        public static IEnumerable<object[]> HCFront_To_HCEscapeFirstKeyDoor =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
+                    new RequirementNodeID[0],
+                    new DungeonNodeID[0],
+                    new KeyDoorID[0],
+                    new (ItemType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    LocationID.HyruleCastle,
+                    DungeonNodeID.HCEscapeFirstKeyDoor,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
+                    new RequirementNodeID[0],
+                    new DungeonNodeID[0],
+                    new KeyDoorID[0],
+                    new (ItemType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    LocationID.HyruleCastle,
+                    DungeonNodeID.HCEscapeFirstKeyDoor,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
+                    new RequirementNodeID[0],
+                    new DungeonNodeID[]
+                    {
+                        DungeonNodeID.HCFront
+                    },
+                    new KeyDoorID[0],
+                    new (ItemType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    LocationID.HyruleCastle,
+                    DungeonNodeID.HCEscapeFirstKeyDoor,
+                    AccessibilityLevel.Normal
+                },
+            };
     }
 }
