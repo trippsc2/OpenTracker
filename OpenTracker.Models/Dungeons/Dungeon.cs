@@ -238,9 +238,9 @@ namespace OpenTracker.Models.Dungeons
         /// </summary>
         private void CreateDungeonData()
         {
-            IMutableDungeon dungeonData = MutableDungeonFactory.GetMutableDungeon(this);
+            var dungeonData = MutableDungeonFactory.GetMutableDungeon(this);
             DungeonDataQueue.Enqueue(dungeonData);
-            DungeonDataCreated?.Invoke(this, dungeonData);
+            FinishMutableDungeonCreation(dungeonData);
         }
 
         /// <summary>
@@ -813,6 +813,11 @@ namespace OpenTracker.Models.Dungeons
 
                 (Sections[i + 1] as IBossSection).Accessibility = highestBossAccessibilities[i];
             }
+        }
+
+        public void FinishMutableDungeonCreation(IMutableDungeon dungeonData)
+        {
+            DungeonDataCreated?.Invoke(this, dungeonData);
         }
     }
 }

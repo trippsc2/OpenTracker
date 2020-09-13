@@ -30,5 +30,7 @@ namespace OpenTracker.Models.Dungeons
         List<DungeonNodeID> Nodes { get; }
 
         event EventHandler<IMutableDungeon> DungeonDataCreated;
+
+        void FinishMutableDungeonCreation(IMutableDungeon dungeonData);
     }
 }
