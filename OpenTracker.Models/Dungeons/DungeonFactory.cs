@@ -370,7 +370,7 @@ namespace OpenTracker.Models.Dungeons
                 LocationID.DesertPalace => new List<DungeonNodeID>
                 {
                     DungeonNodeID.DPFront,
-                    DungeonNodeID.DPTorchItem,
+                    DungeonNodeID.DPTorch,
                     DungeonNodeID.DPBigChest,
                     DungeonNodeID.DPRightKeyDoor,
                     DungeonNodeID.DPPastRightKeyDoor,

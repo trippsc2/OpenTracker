@@ -40,7 +40,7 @@
         EPBossRoom,
         EPBoss,
         DPFront,
-        DPTorchItem,
+        DPTorch,
         DPBigChest,
         DPRightKeyDoor,
         DPPastRightKeyDoor,

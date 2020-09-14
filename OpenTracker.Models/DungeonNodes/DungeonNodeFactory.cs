@@ -322,7 +322,7 @@ namespace OpenTracker.Models.DungeonNodes
                             dungeonData.KeyDoorDictionary[KeyDoorID.DPRightKeyDoor].Requirement));
                     }
                     break;
-                case DungeonNodeID.DPTorchItem:
+                case DungeonNodeID.DPTorch:
                     {
                         connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.DPFront], node,
                             RequirementDictionary.Instance[RequirementType.Torch]));
@@ -457,7 +457,7 @@ namespace OpenTracker.Models.DungeonNodes
                         connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoD], node,
                             RequirementDictionary.Instance[RequirementType.CameraUnlock]));
                         connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoD], node,
-                            RequirementDictionary.Instance[RequirementType.SBMimicClip]));
+                            RequirementDictionary.Instance[RequirementType.MimicClip]));
                     }
                     break;
                 case DungeonNodeID.PoDFrontKeyDoor:
@@ -555,7 +555,7 @@ namespace OpenTracker.Models.DungeonNodes
                         connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDLobbyArena], node,
                             RequirementDictionary.Instance[RequirementType.RedEyegoreGoriya]));
                         connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.PoDLobbyArena], node,
-                            RequirementDictionary.Instance[RequirementType.SBMimicClip]));
+                            RequirementDictionary.Instance[RequirementType.MimicClip]));
                     }
                     break;
                 case DungeonNodeID.PoDPastBowStatue:
@@ -1109,8 +1109,6 @@ namespace OpenTracker.Models.DungeonNodes
                         connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB6PastKeyDoor], node));
                         connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB6], node,
                             RequirementDictionary.Instance[RequirementType.BombJumpIPBJ]));
-                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB6], node,
-                            RequirementDictionary.Instance[RequirementType.IPIceBreaker]));
                     }
                     break;
                 case DungeonNodeID.IPB6PastHammerBlocks:

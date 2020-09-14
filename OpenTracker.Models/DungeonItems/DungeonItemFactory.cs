@@ -89,7 +89,7 @@ namespace OpenTracker.Models.DungeonItems
                     }
                 case DungeonItemID.DPTorch:
                     {
-                        return dungeonData.Nodes[DungeonNodeID.DPTorchItem];
+                        return dungeonData.Nodes[DungeonNodeID.DPTorch];
                     }
                 case DungeonItemID.DPBigChest:
                     {

@@ -1149,6 +1149,10 @@ namespace OpenTracker.Models.Requirements
                             RequirementDictionary.Instance[RequirementType.Powder]
                         });
                     }
+                case RequirementType.MimicClip:
+                    {
+                        return RequirementDictionary.Instance[RequirementType.SBMimicClip];
+                    }
                 case RequirementType.Pedestal:
                     {
                         return new AlternativeRequirement(new List<IRequirement>

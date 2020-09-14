@@ -577,8 +577,9 @@ namespace OpenTracker.Models.Sections
                         return RequirementNodeDictionary.Instance[RequirementNodeID.BigBombToWall];
                     }
                 case LocationID.HauntedGrove:
+                case LocationID.HypeCaveEntrance:
                     {
-                        return RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouth];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthNotBunny];
                     }
                 case LocationID.HypeCave:
                 case LocationID.DiggingGame:
@@ -848,7 +849,6 @@ namespace OpenTracker.Models.Sections
                         return RequirementNodeDictionary.Instance[
                             RequirementNodeID.BumperCaveEntry];
                     }
-                case LocationID.HypeCaveEntrance:
                 case LocationID.SwampPalaceEntrance:
                 case LocationID.BombShop:
                 case LocationID.ArrowGameEntrance:
