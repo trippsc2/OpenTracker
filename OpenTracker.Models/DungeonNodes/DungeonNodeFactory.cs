@@ -1681,7 +1681,7 @@ namespace OpenTracker.Models.DungeonNodes
                         connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT3FPastBigKeyDoor], node,
                             dungeonData.KeyDoorDictionary[KeyDoorID.GT3FBigKeyDoor].Requirement));
                         connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.GT], node,
-                            RequirementDictionary.Instance[RequirementType.SBMimicClip]));
+                            RequirementDictionary.Instance[RequirementType.MimicClip]));
                     }
                     break;
                 case DungeonNodeID.GT3FBigKeyDoor:

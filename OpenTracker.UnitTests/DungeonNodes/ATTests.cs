@@ -8,9 +8,7 @@ using OpenTracker.Models.Modes;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.SequenceBreaks;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace OpenTracker.UnitTests.DungeonNodes
