@@ -365,6 +365,9 @@ namespace OpenTracker.Models.Dungeons
             }
         }
 
+        /// <summary>
+        /// Resets the dungeon data for testing purposes.
+        /// </summary>
         public void Reset()
         {
             foreach (var node in Nodes.Values)

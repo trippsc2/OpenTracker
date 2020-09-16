@@ -3,6 +3,9 @@ using OpenTracker.Models.Requirements;
 
 namespace OpenTracker.Models.KeyLayouts
 {
+    /// <summary>
+    /// This is the class containing the end key layout.
+    /// </summary>
     public class EndKeyLayout : IKeyLayout
     {
         private readonly IRequirement _requirement;

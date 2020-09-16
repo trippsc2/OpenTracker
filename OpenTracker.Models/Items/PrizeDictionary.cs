@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.Items
 {
     /// <summary>
-    /// This is the dictionary container for prizes
+    /// This is the dictionary container for prizes.
     /// </summary>
     public class PrizeDictionary : Singleton<PrizeDictionary>, IDictionary<PrizeType, IItem>
     {

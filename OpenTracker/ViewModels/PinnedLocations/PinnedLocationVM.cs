@@ -16,12 +16,14 @@ namespace OpenTracker.ViewModels.PinnedLocations
     {
         private readonly ILocation _location;
 
-        public double Scale =>
+        public static double Scale =>
             AppSettings.Instance.Layout.UIScale;
         public string Name =>
             _location.Name;
+
         public ObservableCollection<SectionVM> Sections { get; } =
             new ObservableCollection<SectionVM>();
+
         public PinnedLocationNoteAreaVM Notes { get; }
 
         /// <summary>
@@ -29,9 +31,6 @@ namespace OpenTracker.ViewModels.PinnedLocations
         /// </summary>
         /// <param name="location">
         /// The location to be represented.
-        /// </param>
-        /// <param name="pinnedLocations">
-        /// The observable collection of pinned location control ViewModels.
         /// </param>
         /// <param name="sections">
         /// The observable collection of section control ViewModels.

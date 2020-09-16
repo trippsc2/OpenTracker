@@ -5,7 +5,7 @@ namespace OpenTracker.Models.PrizePlacements
     /// <summary>
     /// This is the class for creating prize placement classes.
     /// </summary>
-    internal static class PrizePlacementFactory
+    public static class PrizePlacementFactory
     {
         /// <summary>
         /// Returns a new prize placement instance for the specified prize placement ID.
@@ -16,7 +16,7 @@ namespace OpenTracker.Models.PrizePlacements
         /// <returns>
         /// A new prize placement instance.
         /// </returns>
-        internal static IPrizePlacement GetPrizePlacement(PrizePlacementID id)
+        public static IPrizePlacement GetPrizePlacement(PrizePlacementID id)
         {
             switch (id)
             {

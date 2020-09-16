@@ -50,7 +50,6 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                 return x + 13;
             }
         }
-
         public double CanvasY
         {
             get
@@ -70,7 +69,6 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                 return y + 23;
             }
         }
-
         public double Size
         {
             get
@@ -88,15 +86,13 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                 return 70.0;
             }
         }
-
         public bool Visible =>
             _mapLocation.Requirement.Met && (AppSettings.Instance.Tracker.DisplayAllLocations ||
             (_mapLocation.Location.Accessibility != AccessibilityLevel.Cleared &&
             _mapLocation.Location.Accessibility != AccessibilityLevel.None));
-
         public string Color =>
             AppSettings.Instance.Colors.AccessibilityColors[_mapLocation.Location.Accessibility];
-        public Thickness BorderSize =>
+        public static Thickness BorderSize =>
             Mode.Instance.EntranceShuffle == EntranceShuffle.All ? new Thickness(5) : new Thickness(9);
         public string BorderColor =>
             Highlighted ? "#ffffffff" : "#ff000000";
@@ -104,7 +100,6 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
             Mode.Instance.EntranceShuffle < EntranceShuffle.All &&
             AppSettings.Instance.Tracker.ShowItemCountsOnMap &&
             _mapLocation.Location.Available != 0 && _mapLocation.Location.Total > 1;
-
         public string Text
         {
             get
@@ -136,12 +131,6 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         /// </summary>
         /// <param name="mapLocation">
         /// The map location being represented.
-        /// </param>
-        /// <param name="mapArea">
-        /// The view-model of the main window.
-        /// </param>
-        /// <param name="pinnedLocations">
-        /// The observable collection of pinned locations.
         /// </param>
         public MapLocationVM(MapLocation mapLocation)
         {

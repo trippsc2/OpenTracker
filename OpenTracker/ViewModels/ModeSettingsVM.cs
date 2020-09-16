@@ -25,41 +25,41 @@ namespace OpenTracker.ViewModels
         public ReactiveCommand<Unit, Unit> GenericKeysCommand { get; }
         public ReactiveCommand<Unit, Unit> TakeAnyLocationsCommand { get; }
 
-        public bool BasicItemPlacement =>
+        public static bool BasicItemPlacement =>
             Mode.Instance.ItemPlacement == ItemPlacement.Basic;
-        public bool AdvancedItemPlacement =>
+        public static bool AdvancedItemPlacement =>
             Mode.Instance.ItemPlacement == ItemPlacement.Advanced;
 
-        public bool MapShuffle =>
+        public static bool MapShuffle =>
             Mode.Instance.MapShuffle;
-        public bool CompassShuffle =>
+        public static bool CompassShuffle =>
             Mode.Instance.CompassShuffle;
-        public bool SmallKeyShuffle =>
+        public static bool SmallKeyShuffle =>
             Mode.Instance.SmallKeyShuffle;
-        public bool BigKeyShuffle =>
+        public static bool BigKeyShuffle =>
             Mode.Instance.BigKeyShuffle;
 
         public bool StandardOpenWorldState =>
             Mode.Instance.WorldState == WorldState.StandardOpen;
-        public bool InvertedWorldState =>
+        public static bool InvertedWorldState =>
             Mode.Instance.WorldState == WorldState.Inverted;
 
-        public bool EntranceShuffleNone =>
+        public static bool EntranceShuffleNone =>
             Mode.Instance.EntranceShuffle == Models.Modes.EntranceShuffle.None;
-        public bool EntranceShuffleDungeon =>
+        public static bool EntranceShuffleDungeon =>
             Mode.Instance.EntranceShuffle == Models.Modes.EntranceShuffle.Dungeon;
-        public bool EntranceShuffleAll =>
+        public static bool EntranceShuffleAll =>
             Mode.Instance.EntranceShuffle == Models.Modes.EntranceShuffle.All;
 
-        public bool BossShuffle =>
+        public static bool BossShuffle =>
             Mode.Instance.BossShuffle;
-        public bool EnemyShuffle =>
+        public static bool EnemyShuffle =>
             Mode.Instance.EnemyShuffle;
-        public bool GuaranteedBossItems =>
+        public static bool GuaranteedBossItems =>
             Mode.Instance.GuaranteedBossItems;
-        public bool GenericKeys =>
+        public static bool GenericKeys =>
             Mode.Instance.GenericKeys;
-        public bool TakeAnyLocations =>
+        public static bool TakeAnyLocations =>
             Mode.Instance.TakeAnyLocations;
 
         private bool _modeSettingsPopupOpen;

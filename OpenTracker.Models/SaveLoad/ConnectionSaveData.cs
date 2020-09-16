@@ -2,6 +2,9 @@
 
 namespace OpenTracker.Models.SaveLoad
 {
+    /// <summary>
+    /// This is the class for connection save data.
+    /// </summary>
     public class ConnectionSaveData
     {
         public LocationID Location1 { get; set; }

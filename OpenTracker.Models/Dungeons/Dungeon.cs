@@ -89,6 +89,9 @@ namespace OpenTracker.Models.Dungeons
         /// <param name="bigKeyDoors">
         /// A list of big key door IDs within the dungeon.
         /// </param>
+        /// <param name="entryNodes">
+        /// A list of entry nodes for this dungeon.
+        /// </param>
         public Dungeon(
             LocationID id, string name, List<MapLocation> mapLocations, int map, int compass,
             int smallKeys, int bigKey, IItem smallKeyItem, IItem bigKeyItem,

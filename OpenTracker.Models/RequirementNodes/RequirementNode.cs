@@ -81,8 +81,8 @@ namespace OpenTracker.Models.RequirementNodes
         /// <param name="id">
         /// The requirement node identity.
         /// </param>
-        /// <param name="connections">
-        /// A list of connections to this node.
+        /// <param name="start">
+        /// A boolean representing whether the node is the start node.
         /// </param>
         public RequirementNode(RequirementNodeID id, bool start)
         {
@@ -112,6 +112,15 @@ namespace OpenTracker.Models.RequirementNodes
             }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Mode.EntranceShuffle))
@@ -127,7 +136,7 @@ namespace OpenTracker.Models.RequirementNodes
         /// The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        /// The arguments of the NodeCreated event.
         /// </param>
         private void OnNodeCreated(object sender, KeyValuePair<RequirementNodeID, IRequirementNode> e)
         {

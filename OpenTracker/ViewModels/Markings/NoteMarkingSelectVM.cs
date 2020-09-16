@@ -18,7 +18,7 @@ namespace OpenTracker.ViewModels.Markings
         private readonly IMarking _marking;
         private readonly ILocation _location;
 
-        public double Scale =>
+        public static double Scale =>
             AppSettings.Instance.Layout.UIScale;
 
         public ObservableCollection<MarkingSelectButtonVM> Buttons { get; }

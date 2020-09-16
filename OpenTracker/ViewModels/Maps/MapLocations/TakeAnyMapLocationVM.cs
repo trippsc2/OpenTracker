@@ -45,7 +45,6 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                 return _mapLocation.X - 7;
             }
         }
-
         public double CanvasY
         {
             get
@@ -63,7 +62,6 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                 return _mapLocation.Y + 3;
             }
         }
-
         public bool Visible =>
             _mapLocation.Requirement.Met && (AppSettings.Instance.Tracker.DisplayAllLocations ||
             (_mapLocation.Location.Accessibility != AccessibilityLevel.Cleared &&

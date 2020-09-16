@@ -21,8 +21,8 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
     /// <summary>
     /// This is the ViewModel of the map location control representing a entrance map location.
     /// </summary>
-    public class EntranceMapLocationVM : MapLocationVMBase, IClickHandler,
-        IConnectLocation, IDoubleClickHandler, IPointerOver
+    public class EntranceMapLocationVM : MapLocationVMBase, IClickHandler, IConnectLocation,
+        IDoubleClickHandler, IPointerOver
     {
         private readonly MapLocation _mapLocation;
         private PinnedLocationVM _pinnedLocation;
@@ -60,7 +60,6 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                 return x + 13;
             }
         }
-
         public double CanvasY
         {
             get
@@ -85,7 +84,6 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                 return y + 23;
             }
         }
-
         public bool Visible =>
             _mapLocation.Requirement.Met && (AppSettings.Instance.Tracker.DisplayAllLocations ||
             (_mapLocation.Location.Sections[0] is IMarkableSection markableSection &&
@@ -105,12 +103,6 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         /// </summary>
         /// <param name="mapLocation">
         /// The map location to be represented.
-        /// </param>
-        /// <param name="mapArea">
-        /// The map area ViewModel parent class.
-        /// </param>
-        /// <param name="pinnedLocations">
-        /// The observable collection of pinned locations.
         /// </param>
         /// <param name="marking">
         /// The marking ViewModel.
@@ -132,6 +124,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
 
             foreach (var section in _mapLocation.Location.Sections)
             {
+                ((IMarkableSection)section).Marking.PropertyChanged += OnMarkingChanged;
                 section.PropertyChanged += OnSectionChanged;
             }
 
@@ -209,6 +202,23 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
             {
                 this.RaisePropertyChanged(nameof(CanvasX));
                 this.RaisePropertyChanged(nameof(CanvasY));
+            }
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IMarking interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnMarkingChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IMarking.Mark))
+            {
+                UpdateVisibility();
             }
         }
 

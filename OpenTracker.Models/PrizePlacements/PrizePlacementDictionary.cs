@@ -40,13 +40,6 @@ namespace OpenTracker.Models.PrizePlacements
         }
 
         /// <summary>
-        /// Constructor
-        /// </summary>
-        public PrizePlacementDictionary() : base()
-        {
-        }
-
-        /// <summary>
         /// Creates a new prize placement for the specified key.
         /// </summary>
         /// <param name="key">

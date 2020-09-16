@@ -21,7 +21,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <returns>
         /// A new basic large item control ViewModel instance.
         /// </returns>
-        private static LargeItemVMBase GetLargeItemControlVM(ItemType type)
+        private static LargeItemVMBase GetLargeItemControlVM(LargeItemType type)
         {
             return new LargeItemVM(
                 $"avares://OpenTracker/Assets/Images/Items/{type.ToString().ToLowerInvariant()}",
@@ -32,19 +32,19 @@ namespace OpenTracker.ViewModels.Items.Large
         /// Creates a new prize large item control ViewModel instance representing the specified
         /// item type.
         /// </summary>
-        /// <param name="id">
-        /// The location identity to be represented.
+        /// <param name="type">
+        /// The item type to be represented.
         /// </param>
         /// <returns>
         /// A new prize large item control ViewModel instance.
         /// </returns>
-        private static LargeItemVMBase GetPrizeLargeItemControlVM(ItemType type)
+        private static LargeItemVMBase GetPrizeLargeItemControlVM(LargeItemType type)
         {
             IPrizeSection section = type switch
             {
-                ItemType.Aga1 => (IPrizeSection)LocationDictionary
+                LargeItemType.Aga1 => (IPrizeSection)LocationDictionary
                     .Instance[LocationID.AgahnimTower].Sections[1],
-                ItemType.Aga2 => (IPrizeSection)LocationDictionary
+                LargeItemType.Aga2 => (IPrizeSection)LocationDictionary
                     .Instance[LocationID.GanonsTower].Sections[4],
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
@@ -64,7 +64,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <returns>
         /// A new crystal requirement large item control ViewModel instance.
         /// </returns>
-        private static LargeItemVMBase GetCrystalRequirementLargeItemVM(ItemType type)
+        private static LargeItemVMBase GetCrystalRequirementLargeItemVM(LargeItemType type)
         {
             return new CrystalRequirementLargeItemVM(
                 $"avares://OpenTracker/Assets/Images/Items/{type.ToString().ToLowerInvariant()}.png",
@@ -81,7 +81,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <returns>
         /// A new small key large item control ViewModel instance.
         /// </returns>
-        private static LargeItemVMBase GetSmallKeyLargeItemVM(ItemType type)
+        private static LargeItemVMBase GetSmallKeyLargeItemVM(LargeItemType type)
         {
             return new SmallKeyLargeItemVM(
                 $"avares://OpenTracker/Assets/Images/Items/{type.ToString().ToLowerInvariant()}",
@@ -98,14 +98,16 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <returns>
         /// A new pair large item control ViewModel instance.
         /// </returns>
-        private static LargeItemVMBase GetPairLargeItemVM(ItemType type)
+        private static LargeItemVMBase GetPairLargeItemVM(LargeItemType type)
         {
+            var itemType = Enum.Parse<ItemType>(type.ToString());
+
             return new PairLargeItemVM(
                 $"avares://OpenTracker/Assets/Images/Items/{type.ToString().ToLowerInvariant()}",
                 new IItem[]
                 {
-                    ItemDictionary.Instance[type],
-                    ItemDictionary.Instance[type + 1]
+                    ItemDictionary.Instance[itemType],
+                    ItemDictionary.Instance[itemType + 1]
                 });
         }
 
@@ -119,63 +121,63 @@ namespace OpenTracker.ViewModels.Items.Large
         {
             var largeItems = new ObservableCollection<LargeItemVMBase>();
 
-            for (int i = 0; i < Enum.GetValues(typeof(ItemType)).Length; i++)
+            for (int i = 0; i < Enum.GetValues(typeof(LargeItemType)).Length; i++)
             {
-                switch ((ItemType)i)
+                switch ((LargeItemType)i)
                 {
-                    case ItemType.Sword:
-                    case ItemType.Shield:
-                    case ItemType.Mail:
-                    case ItemType.Hookshot:
-                    case ItemType.Mushroom:
-                    case ItemType.Boots:
-                    case ItemType.FireRod:
-                    case ItemType.IceRod:
-                    case ItemType.Gloves:
-                    case ItemType.Lamp:
-                    case ItemType.Hammer:
-                    case ItemType.Net:
-                    case ItemType.Book:
-                    case ItemType.Shovel:
-                    case ItemType.Flippers:
-                    case ItemType.Bottle:
-                    case ItemType.CaneOfSomaria:
-                    case ItemType.CaneOfByrna:
-                    case ItemType.Cape:
-                    case ItemType.Mirror:
-                    case ItemType.HalfMagic:
-                    case ItemType.MoonPearl:
+                    case LargeItemType.Sword:
+                    case LargeItemType.Shield:
+                    case LargeItemType.Mail:
+                    case LargeItemType.Hookshot:
+                    case LargeItemType.Mushroom:
+                    case LargeItemType.Boots:
+                    case LargeItemType.FireRod:
+                    case LargeItemType.IceRod:
+                    case LargeItemType.Gloves:
+                    case LargeItemType.Lamp:
+                    case LargeItemType.Hammer:
+                    case LargeItemType.Net:
+                    case LargeItemType.Book:
+                    case LargeItemType.Shovel:
+                    case LargeItemType.Flippers:
+                    case LargeItemType.Bottle:
+                    case LargeItemType.CaneOfSomaria:
+                    case LargeItemType.CaneOfByrna:
+                    case LargeItemType.Cape:
+                    case LargeItemType.Mirror:
+                    case LargeItemType.HalfMagic:
+                    case LargeItemType.MoonPearl:
                         {
-                            largeItems.Add(GetLargeItemControlVM((ItemType)i));
+                            largeItems.Add(GetLargeItemControlVM((LargeItemType)i));
                         }
                         break;
-                    case ItemType.Aga1:
-                    case ItemType.Aga2:
+                    case LargeItemType.Aga1:
+                    case LargeItemType.Aga2:
                         {
-                            largeItems.Add(GetPrizeLargeItemControlVM((ItemType)i));
+                            largeItems.Add(GetPrizeLargeItemControlVM((LargeItemType)i));
                         }
                         break;
-                    case ItemType.TowerCrystals:
-                    case ItemType.GanonCrystals:
+                    case LargeItemType.TowerCrystals:
+                    case LargeItemType.GanonCrystals:
                         {
-                            largeItems.Add(GetCrystalRequirementLargeItemVM((ItemType)i));
+                            largeItems.Add(GetCrystalRequirementLargeItemVM((LargeItemType)i));
                         }
                         break;
-                    case ItemType.SmallKey:
+                    case LargeItemType.SmallKey:
                         {
-                            largeItems.Add(GetSmallKeyLargeItemVM((ItemType)i));
+                            largeItems.Add(GetSmallKeyLargeItemVM((LargeItemType)i));
                         }
                         break;
-                    case ItemType.Bow:
-                    case ItemType.Boomerang:
-                    case ItemType.Bomb:
-                    case ItemType.Powder:
-                    case ItemType.Bombos:
-                    case ItemType.Ether:
-                    case ItemType.Quake:
-                    case ItemType.Flute:
+                    case LargeItemType.Bow:
+                    case LargeItemType.Boomerang:
+                    case LargeItemType.Bomb:
+                    case LargeItemType.Powder:
+                    case LargeItemType.Bombos:
+                    case LargeItemType.Ether:
+                    case LargeItemType.Quake:
+                    case LargeItemType.Flute:
                         {
-                            largeItems.Add(GetPairLargeItemVM((ItemType)i));
+                            largeItems.Add(GetPairLargeItemVM((LargeItemType)i));
                         }
                         break;
                 }

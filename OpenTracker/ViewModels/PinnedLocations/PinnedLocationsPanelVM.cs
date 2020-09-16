@@ -12,7 +12,7 @@ namespace OpenTracker.ViewModels.PinnedLocations
     /// </summary>
     public class PinnedLocationsPanelVM : ViewModelBase
     {
-        public Orientation Orientation =>
+        public static Orientation Orientation =>
             AppSettings.Instance.Layout.CurrentLayoutOrientation;
 
         public ObservableCollection<PinnedLocationVM> Locations { get; } =

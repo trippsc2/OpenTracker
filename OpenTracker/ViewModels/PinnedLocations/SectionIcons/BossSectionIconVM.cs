@@ -15,7 +15,7 @@ namespace OpenTracker.ViewModels.PinnedLocations.SectionIcons
     {
         private readonly IBossPlacement _bossPlacement;
 
-        public bool Visible =>
+        public static bool Visible =>
             Mode.Instance.BossShuffle;
         public string ImageSource =>
             _bossPlacement.Boss.HasValue ?

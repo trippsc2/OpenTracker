@@ -66,6 +66,21 @@ namespace OpenTracker.Models.DungeonNodes
             return 0;
         }
 
+        /// <summary>
+        /// Populates the dungeon node connections.
+        /// </summary>
+        /// <param name="id">
+        /// The dungeon node ID.
+        /// </param>
+        /// <param name="node">
+        /// The dungeon node.
+        /// </param>
+        /// <param name="dungeonData">
+        /// The mutable dungeon data parent class.
+        /// </param>
+        /// <param name="connections">
+        /// The list of connections to be populated.
+        /// </param>
 		public static void PopulateNodeConnections(
 			DungeonNodeID id, IRequirementNode node, IMutableDungeon dungeonData,
 			List<INodeConnection> connections)

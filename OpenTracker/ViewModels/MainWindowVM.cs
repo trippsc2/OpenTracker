@@ -52,7 +52,7 @@ namespace OpenTracker.ViewModels
             set => AppSettings.Instance.Bounds.Height = value;
         }
 
-        public Dock UIDock =>
+        public static Dock UIDock =>
             AppSettings.Instance.Layout.CurrentLayoutOrientation switch
             {
                 Orientation.Horizontal => AppSettings.Instance.Layout.HorizontalUIPanelPlacement,

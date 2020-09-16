@@ -7,7 +7,7 @@ namespace OpenTracker.Models.Requirements
     /// <summary>
     /// This is the class for Item Placement requirements.
     /// </summary>
-    internal class ItemPlacementRequirement : IRequirement
+    public class ItemPlacementRequirement : IRequirement
     {
         private readonly ItemPlacement _itemPlacement;
 

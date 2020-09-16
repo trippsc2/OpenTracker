@@ -60,7 +60,7 @@ namespace OpenTracker.Models.KeyDoors
         /// </param>
         private void Create(KeyDoorID key)
         {
-            Add(key, KeyDoorFactory.GetKeyDoor(key, _dungeonData));
+            Add(key, KeyDoorFactory.GetKeyDoor(_dungeonData));
             DoorCreated?.Invoke(this, new KeyValuePair<KeyDoorID, IKeyDoor>(key, this[key]));
         }
 

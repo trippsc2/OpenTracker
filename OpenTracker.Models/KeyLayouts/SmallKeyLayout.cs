@@ -7,6 +7,9 @@ using System.Collections.Generic;
 
 namespace OpenTracker.Models.KeyLayouts
 {
+    /// <summary>
+    /// This is the class containing the small key layout.
+    /// </summary>
     public class SmallKeyLayout : IKeyLayout
     {
         private readonly int _count;

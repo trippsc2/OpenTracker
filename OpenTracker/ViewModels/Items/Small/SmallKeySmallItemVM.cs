@@ -57,8 +57,8 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="item">
-        /// The item of the key to be represented.
+        /// <param name="dungeon">
+        /// The dungeon whose small keys are to be represented.
         /// </param>
         public SmallKeySmallItemVM(IDungeon dungeon)
         {

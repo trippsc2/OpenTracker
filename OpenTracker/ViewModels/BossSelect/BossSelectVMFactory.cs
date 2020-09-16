@@ -52,6 +52,15 @@ namespace OpenTracker.ViewModels.BossSelect
             return buttons;
         }
 
+        /// <summary>
+        /// Returns a new boss select popup ViewModel instance.
+        /// </summary>
+        /// <param name="bossPlacement">
+        /// The boss placement to be manipulated by the boss select popup.
+        /// </param>
+        /// <returns>
+        /// A new boss select popup ViewModel instance.
+        /// </returns>
         internal static BossSelectPopupVM GetBossSelectPopupVM(IBossPlacement bossPlacement)
         {
             if (bossPlacement == null)

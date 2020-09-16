@@ -46,12 +46,12 @@ namespace OpenTracker.ViewModels.PinnedLocations.SectionIcons
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="prizeSection">
+        /// <param name="section">
         /// The prize section to be presented.
         /// </param>
-        public PrizeSectionIconVM(IPrizeSection prizeSection)
+        public PrizeSectionIconVM(IPrizeSection section)
         {
-            _section = prizeSection ?? throw new ArgumentNullException(nameof(prizeSection));
+            _section = section ?? throw new ArgumentNullException(nameof(section));
 
             _section.PropertyChanged += OnSectionChanged;
             _section.PrizePlacement.PropertyChanged += OnPrizeChanged; 

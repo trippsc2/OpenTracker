@@ -2,6 +2,9 @@
 
 namespace OpenTracker.Models.Markings
 {
+    /// <summary>
+    /// This is the class for marking data.
+    /// </summary>
     public class Marking : IMarking
     {
         public event PropertyChangingEventHandler PropertyChanging;

@@ -1176,6 +1176,15 @@ namespace OpenTracker.Models.Dungeons
             throw new ArgumentOutOfRangeException(nameof(id));
         }
 
+        /// <summary>
+        /// Returns a list of dungeon entry nodes for the specified dungeon.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID of the dungeon.
+        /// </param>
+        /// <returns>
+        /// A list of dungeon entry nodes.
+        /// </returns>
         private static List<IRequirementNode> GetDungeonEntryNodes(LocationID id)
         {
             return id switch

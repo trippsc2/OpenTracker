@@ -42,13 +42,6 @@ namespace OpenTracker.Models.Items
         public event EventHandler<ItemType> ItemCreated;
 
         /// <summary>
-        /// Constructor
-        /// </summary>
-        public ItemDictionary()
-        {
-        }
-
-        /// <summary>
         /// Creates a new item at the specified key.
         /// </summary>
         /// <param name="key">

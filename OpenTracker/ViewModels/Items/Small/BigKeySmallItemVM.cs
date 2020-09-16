@@ -5,7 +5,6 @@ using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
-using System.Text;
 
 namespace OpenTracker.ViewModels.Items.Small
 {

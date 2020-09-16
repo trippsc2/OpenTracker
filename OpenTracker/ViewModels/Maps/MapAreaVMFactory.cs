@@ -8,7 +8,7 @@ namespace OpenTracker.ViewModels.Maps
     /// <summary>
     /// This is the class for creating map area control ViewModel classes.
     /// </summary>
-    public static class MapAreaVMFactory
+    internal static class MapAreaVMFactory
     {
         /// <summary>
         /// Returns an observable collection of map control ViewModel instances.
@@ -16,7 +16,7 @@ namespace OpenTracker.ViewModels.Maps
         /// <returns>
         /// An observable collection of map control ViewModel instances.
         /// </returns>
-        public static ObservableCollection<MapVM> GetMapControlVMs()
+        internal static ObservableCollection<MapVM> GetMapControlVMs()
         {
             ObservableCollection<MapVM> maps = new ObservableCollection<MapVM>();
 
@@ -34,7 +34,7 @@ namespace OpenTracker.ViewModels.Maps
         /// <returns>
         /// An observable collection of map location control ViewModel instances.
         /// </returns>
-        public static ObservableCollection<MapLocationVMBase> GetMapLocationControlVMs()
+        internal static ObservableCollection<MapLocationVMBase> GetMapLocationControlVMs()
         {
             ObservableCollection<MapLocationVMBase> mapLocations =
                 new ObservableCollection<MapLocationVMBase>();

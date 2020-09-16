@@ -8,7 +8,7 @@ namespace OpenTracker.Models.DungeonItems
     /// <summary>
     /// This is the class for creating dungeon items.
     /// </summary>
-    internal static class DungeonItemFactory
+    public static class DungeonItemFactory
     {
         /// <summary>
         /// Returns a dungeon node to which the specified item ID belongs.
@@ -449,7 +449,7 @@ namespace OpenTracker.Models.DungeonItems
         /// The dungeon mutable data parent class.
         /// </param>
         /// <returns>A new dungeon item instance.</returns>
-        internal static IDungeonItem GetDungeonItem(
+        public static IDungeonItem GetDungeonItem(
             DungeonItemID id, IMutableDungeon dungeonData)
         {
             if (dungeonData == null)

@@ -56,7 +56,6 @@ namespace OpenTracker.Models.Items
                     {
                         return 2;
                     }
-                case ItemType.Aga1:
                 case ItemType.Bow:
                 case ItemType.Boomerang:
                 case ItemType.RedBoomerang:
@@ -85,7 +84,6 @@ namespace OpenTracker.Models.Items
                 case ItemType.Mirror:
                 case ItemType.HalfMagic:
                 case ItemType.MoonPearl:
-                case ItemType.Aga2:
                 case ItemType.HCSmallKey:
                 case ItemType.DPSmallKey:
                 case ItemType.ToHSmallKey:

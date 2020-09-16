@@ -53,9 +53,6 @@ namespace OpenTracker.Models.KeyDoors
         /// <param name="dungeonData">
         /// The mutable dungeon data parent class.
         /// </param>
-        /// <param name="id">
-        /// The key door identity.
-        /// </param>
         public KeyDoor(IMutableDungeon dungeonData)
         {
             _dungeonData = dungeonData ?? throw new ArgumentNullException(nameof(dungeonData));
@@ -65,13 +62,10 @@ namespace OpenTracker.Models.KeyDoors
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// Raises the PropertyChanged event for the specified property.
         /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
         /// </param>
         private void OnPropertyChanged(string propertyName)
         {

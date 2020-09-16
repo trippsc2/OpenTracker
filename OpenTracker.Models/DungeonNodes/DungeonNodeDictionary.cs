@@ -6,6 +6,9 @@ using System.Collections.Generic;
 
 namespace OpenTracker.Models.DungeonNodes
 {
+    /// <summary>
+    /// This is the class containing the dictionary of dungeon nodes.
+    /// </summary>
     public class DungeonNodeDictionary : IDictionary<DungeonNodeID, IDungeonNode>
     {
         private readonly MutableDungeon _dungeonData;

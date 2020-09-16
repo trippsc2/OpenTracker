@@ -18,7 +18,6 @@ namespace OpenTracker.ViewModels.Items.Small
 
         public bool Visible =>
             _requirement.Met;
-
         public string ImageSource =>
             _bossPlacement.Boss.HasValue ? "avares://OpenTracker/Assets/Images/Bosses/" +
             $"{_bossPlacement.Boss.ToString().ToLowerInvariant()}1.png" :

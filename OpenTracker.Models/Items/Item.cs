@@ -32,14 +32,11 @@ namespace OpenTracker.Models.Items
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="itemType">
-        /// The item type.
-        /// </param>
         /// <param name="starting">
         /// A 32-bit signed integer representing the starting value of the item.
         /// </param>
-        /// <param name="maximum">
-        /// A 32-bit signed integer representing the maximum value of the item.
+        /// <param name="autoTrackValue">
+        /// The autotracking value for the item.
         /// </param>
         public Item(int starting, IAutoTrackValue autoTrackValue)
         {
@@ -64,6 +61,15 @@ namespace OpenTracker.Models.Items
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IAutoTrackValue interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnAutoTrackChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
@@ -72,6 +78,9 @@ namespace OpenTracker.Models.Items
             }
         }
 
+        /// <summary>
+        /// Update the Current property to match the autotracking value.
+        /// </summary>
         private void AutoTrackUpdate()
         {
             if (_autoTrackValue.CurrentValue.HasValue)

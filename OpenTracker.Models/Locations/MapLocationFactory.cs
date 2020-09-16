@@ -7,7 +7,7 @@ namespace OpenTracker.Models.Locations
     /// <summary>
     /// This is the class for creating map locations.
     /// </summary>
-    internal static class MapLocationFactory
+    public static class MapLocationFactory
     {
         /// <summary>
         /// Returns the list of map locations for the specified location.
@@ -18,7 +18,7 @@ namespace OpenTracker.Models.Locations
         /// <returns>
         /// The list of map locations.
         /// </returns>
-        internal static List<MapLocation> GetMapLocations(LocationID id)
+        public static List<MapLocation> GetMapLocations(LocationID id)
         {
             return id switch
             {

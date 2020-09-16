@@ -2,6 +2,9 @@
 
 namespace OpenTracker.Models.AutoTracking.AutotrackValues
 {
+    /// <summary>
+    /// This is the base class representing autotracking result value.
+    /// </summary>
     public abstract class AutoTrackValue : IAutoTrackValue
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -20,6 +23,12 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
             }
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
+        /// </param>
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

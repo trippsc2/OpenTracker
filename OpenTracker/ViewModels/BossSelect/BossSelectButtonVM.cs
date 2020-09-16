@@ -11,7 +11,6 @@ namespace OpenTracker.ViewModels.BossSelect
         private readonly IBossPlacement _bossPlacement;
 
         public BossType? Boss { get; }
-
         public string ImageSource =>
             Boss.HasValue ? 
             "avares://OpenTracker/Assets/Images/Bosses/" +
@@ -26,7 +25,7 @@ namespace OpenTracker.ViewModels.BossSelect
         /// The boss to be represented by this button.
         /// </param>
         /// <param name="bossPlacement">
-        /// The boss placement.
+        /// The boss placement to be manipulated.
         /// </param>
         public BossSelectButtonVM(BossType? boss, IBossPlacement bossPlacement)
         {

@@ -221,12 +221,6 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         /// <param name="mapLocation">
         /// The map location.
         /// </param>
-        /// <param name="mapArea">
-        /// The map area control ViewModel parent class.
-        /// </param>
-        /// <param name="pinnedLocations">
-        /// The observable collection of pinned locations.
-        /// </param>
         /// <returns>
         /// A new markable map location control ViewModel instance.
         /// </returns>
@@ -259,16 +253,10 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         /// <param name="mapLocation">
         /// The map location.
         /// </param>
-        /// <param name="mapArea">
-        /// The map area control ViewModel parent class.
-        /// </param>
-        /// <param name="pinnedLocations">
-        /// The observable collection of pinned locations.
-        /// </param>
         /// <returns>
         /// A new map location control ViewModel instance.
         /// </returns>
-        public static MapLocationVMBase GetMapLocationControlVM(MapLocation mapLocation)
+        internal static MapLocationVMBase GetMapLocationControlVM(MapLocation mapLocation)
         {
             if (mapLocation == null)
             {

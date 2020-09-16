@@ -1,11 +1,9 @@
 ﻿using Avalonia.Layout;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons;
-using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Sections;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -19,8 +17,8 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <summary>
         /// Returns a new small item control ViewModel instance representing a small key.
         /// </summary>
-        /// <param name="type">
-        /// The item type to be represented.
+        /// <param name="dungeon">
+        /// The dungeon from which the small key represented.
         /// </param>
         /// <returns>
         /// A new small item control ViewModel instance.
@@ -33,8 +31,8 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <summary>
         /// Returns a new small item control ViewModel instance representing a spacer.
         /// </summary>
-        /// <param name="itemsPanel">
-        /// The items panel parent class.
+        /// <param name="requirement">
+        /// The requirement for the spacer to be visible.
         /// </param>
         /// <returns>
         /// A new small item control ViewModel instance.
@@ -49,7 +47,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// Returns a new small item control ViewModel instance representing dungeon items.
         /// </summary>
         /// <param name="section">
-        /// The location ID.
+        /// The section to be represented.
         /// </param>
         /// <returns>
         /// A new small item control ViewModel instance.
@@ -63,8 +61,8 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <summary>
         /// Returns a new small item control ViewModel instance representing a dungeon prize.
         /// </summary>
-        /// <param name="id">
-        /// The location ID.
+        /// <param name="section">
+        /// The prize section.
         /// </param>
         /// <returns>
         /// A new small item control ViewModel instance.
@@ -78,7 +76,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// Returns a new small item control ViewModel instance representing a big key.
         /// </summary>
         /// <param name="dungeon">
-        /// The item type to be represented.
+        /// The dungeon from which the big key represented.
         /// </param>
         /// <returns>
         /// A new small item control ViewModel instance.
@@ -103,18 +101,15 @@ namespace OpenTracker.ViewModels.Items.Small
         }
 
         /// <summary>
-        /// Populates an observable collection of small item control ViewModel instances for the
+        /// Returns a new observable collection of small item control ViewModel instances for the
         /// specified location.
         /// </summary>
         /// <param name="location">
         /// The location ID.
         /// </param>
-        /// <param name="itemsPanel">
-        /// The Items panel control ViewModel parent class.
-        /// </param>
-        /// <param name="smallItems">
-        /// The observable collection of small item control ViewModel instances to be populated.
-        /// </param>
+        /// <returns>
+        /// A new observable collection of small item control ViewModel instances.
+        /// </returns>
         internal static ObservableCollection<SmallItemVMBase> GetSmallItemControlVMs(
             LocationID location)
         {

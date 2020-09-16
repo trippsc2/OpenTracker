@@ -3,6 +3,9 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models.AutoTracking
 {
+    /// <summary>
+    /// This is the class for representing a SNES memory flag.
+    /// </summary>
     public class MemoryFlag : INotifyPropertyChanged
     {
         private readonly MemoryAddress _memoryAddress;

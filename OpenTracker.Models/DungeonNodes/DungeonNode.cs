@@ -1,6 +1,5 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Dungeons;
-using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.RequirementNodes;
 using System;
@@ -66,15 +65,6 @@ namespace OpenTracker.Models.DungeonNodes
         /// A 32-bit signed integer representing the number of free keys provided by accessing the
         /// node.
         /// </param>
-        /// <param name="entryConnections">
-        /// A list of connections to the node from outside the dungeon.
-        /// </param>
-        /// <param name="keyDoorConnections">
-        /// A list of key doors to which this node is connected.
-        /// </param>
-        /// <param name="dungeonConnections">
-        /// A list of non-key door connections to this node from within the dungeon.
-        /// </param>
         public DungeonNode(
             DungeonNodeID id, IMutableDungeon dungeonData, int freeKeysProvided)
         {
@@ -83,7 +73,6 @@ namespace OpenTracker.Models.DungeonNodes
             KeysProvided = freeKeysProvided;
 
             _dungeonData.Nodes.NodeCreated += OnNodeCreated;
-            _dungeonData.KeyDoorDictionary.DoorCreated += OnDoorCreated;
         }
 
         /// <summary>
@@ -120,19 +109,6 @@ namespace OpenTracker.Models.DungeonNodes
                     connection.PropertyChanged += OnConnectionChanged;
                 }
             }
-        }
-
-        /// <summary>
-        /// Subscribes to the DoorCreated event on the KeyDoorDictionary class.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the DoorCreated event.
-        /// </param>
-        private void OnDoorCreated(object sender, KeyValuePair<KeyDoorID, IKeyDoor> e)
-        {
         }
 
         /// <summary>
@@ -198,6 +174,9 @@ namespace OpenTracker.Models.DungeonNodes
             return finalAccessibility;
         }
 
+        /// <summary>
+        /// Resets the dungeon node for testing purposes.
+        /// </summary>
         public void Reset()
         {
             AlwaysAccessible = false;

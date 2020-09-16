@@ -5,8 +5,23 @@ using System.Collections.Generic;
 
 namespace OpenTracker.Models.AutoTracking.AutotrackValues
 {
+    /// <summary>
+    /// This is the class containing creation logic for autotracking values.
+    /// </summary>
     public static class AutoTrackValueFactory
     {
+        /// <summary>
+        /// Returns the specified memory address.
+        /// </summary>
+        /// <param name="memorySegment">
+        /// The memory segment of the address.
+        /// </param>
+        /// <param name="index">
+        /// The index of the address.
+        /// </param>
+        /// <returns>
+        /// The memory address.
+        /// </returns>
         private static MemoryAddress GetMemoryAddress(MemorySegmentType memorySegment, int index)
         {
             return memorySegment switch
@@ -20,6 +35,18 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
             };
         }
 
+        /// <summary>
+        /// Returns the memory segment of the specified item.
+        /// </summary>
+        /// <param name="type">
+        /// The item type.
+        /// </param>
+        /// <param name="index">
+        /// The index of the memory address to be retrieved.
+        /// </param>
+        /// <returns>
+        /// The memory segment of the specified item.
+        /// </returns>
         private static MemorySegmentType GetItemMemorySegment(ItemType type, int index = 0)
         {
             switch (type)
@@ -87,8 +114,20 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
             }
         }
 
+        /// <summary>
+        /// Returns the memory segment of the specified section.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID of the section.
+        /// </param>
+        /// <param name="index">
+        /// The index of the section.
+        /// </param>
+        /// <returns>
+        /// The memory segment of the specified section.
+        /// </returns>
         private static MemorySegmentType GetSectionMemorySegment(
-            LocationID id, int sectionIndex = 0, int index = 0)
+            LocationID id, int sectionIndex = 0)
         {
             switch (id)
             {
@@ -184,6 +223,18 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
             }
         }
 
+        /// <summary>
+        /// Returns the memory address index of the specified item.
+        /// </summary>
+        /// <param name="type">
+        /// The item type.
+        /// </param>
+        /// <param name="index">
+        /// The index of the memory address to be retrieved.
+        /// </param>
+        /// <returns>
+        /// The memory address index.
+        /// </returns>
         private static int GetItemMemoryIndex(ItemType type, int index = 0)
         {
             switch (type)
@@ -351,6 +402,21 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
             }
         }
 
+        /// <summary>
+        /// Returns the memory address index of the specified section.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID of the section.
+        /// </param>
+        /// <param name="sectionIndex">
+        /// The index of the section.
+        /// </param>
+        /// <param name="index">
+        /// The index of the memory address to be retrieved.
+        /// </param>
+        /// <returns>
+        /// The memory address index.
+        /// </returns>
         private static int GetSectionMemoryIndex(LocationID id, int sectionIndex = 0, int index = 0)
         {
             switch (id)
@@ -637,6 +703,15 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
             }
         }
 
+        /// <summary>
+        /// Returns the maximum value of the specified item.
+        /// </summary>
+        /// <param name="type">
+        /// The item type.
+        /// </param>
+        /// <returns>
+        /// The maximum autotracking value.
+        /// </returns>
         private static byte GetItemMaximum(ItemType type)
         {
             switch (type)
@@ -661,6 +736,15 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
             }
         }
 
+        /// <summary>
+        /// Returns the adjustment value of the specified item.
+        /// </summary>
+        /// <param name="type">
+        /// The item type.
+        /// </param>
+        /// <returns>
+        /// The adjustment autotracking value.
+        /// </returns>
         private static int GetItemAdjustment(ItemType type)
         {
             switch (type)
@@ -682,6 +766,15 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
             }
         }
 
+        /// <summary>
+        /// Returns the comparison value of the specified item.
+        /// </summary>
+        /// <param name="type">
+        /// The item type.
+        /// </param>
+        /// <returns>
+        /// The comparison autotracking value.
+        /// </returns>
         private static byte GetItemComparison(ItemType type)
         {
             switch (type)
@@ -718,6 +811,18 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
             }
         }
 
+        /// <summary>
+        /// Returns the value returned when the comparison is true for the specified item.
+        /// </summary>
+        /// <param name="type">
+        /// The item type.
+        /// </param>
+        /// <param name="index">
+        /// The index of the memory address to be retrieved.
+        /// </param>
+        /// <returns>
+        /// The value returned when the comparison is true.
+        /// </returns>
         private static int GetItemTrueValue(ItemType type, int index = 0)
         {
             switch (type)
@@ -779,6 +884,18 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
             }
         }
 
+        /// <summary>
+        /// Returns the memory flag for the specified item.
+        /// </summary>
+        /// <param name="type">
+        /// The item type.
+        /// </param>
+        /// <param name="index">
+        /// The index of the memory address to be retrieved.
+        /// </param>
+        /// <returns>
+        /// The memory flag for the specified item.
+        /// </returns>
         private static byte GetItemFlag(ItemType type, int index = 0)
         {
             switch (type)
@@ -837,6 +954,21 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
             }
         }
 
+        /// <summary>
+        /// Returns the memory flag for the specified section.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID of the section.
+        /// </param>
+        /// <param name="sectionIndex">
+        /// The index of the section.
+        /// </param>
+        /// <param name="index">
+        /// The index of the memory flag to be retrieved.
+        /// </param>
+        /// <returns>
+        /// The memory flag for the specified item.
+        /// </returns>
         private static byte GetSectionFlag(LocationID id, int sectionIndex = 0, int index = 0)
         {
             switch (id)
@@ -976,6 +1108,15 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
             }
         }
 
+        /// <summary>
+        /// Returns the autotracking value for the specified item.
+        /// </summary>
+        /// <param name="type">
+        /// The item type.
+        /// </param>
+        /// <returns>
+        /// The autotracking value for the specified item.
+        /// </returns>
         private static IAutoTrackValue GetItemAddressValue(ItemType type)
         {
             return new AutoTrackAddressValue(
@@ -983,6 +1124,18 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
                 GetItemMaximum(type), GetItemAdjustment(type));
         }
 
+        /// <summary>
+        /// Returns the autotracking boolean value for the specified item.
+        /// </summary>
+        /// <param name="type">
+        /// The item type.
+        /// </param>
+        /// <param name="index">
+        /// The index of the memory address.
+        /// </param>
+        /// <returns>
+        /// The autotracking boolean value for the specified item.
+        /// </returns>
         private static IAutoTrackValue GetItemAddressBool(ItemType type, int index = 0)
         {
             return new AutoTrackAddressBool(
@@ -991,6 +1144,18 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
                 GetItemComparison(type), GetItemTrueValue(type, index));
         }
 
+        /// <summary>
+        /// Returns the autotracking flag value for the specified item.
+        /// </summary>
+        /// <param name="type">
+        /// The item type.
+        /// </param>
+        /// <param name="index">
+        /// The index of the memory address.
+        /// </param>
+        /// <returns>
+        /// The autotracking flag value for the specified item.
+        /// </returns>
         private static IAutoTrackValue GetItemFlagBool(ItemType type, int index = 0)
         {
             return new AutoTrackFlagBool(
@@ -1000,17 +1165,41 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
                     GetItemFlag(type, index)), GetItemTrueValue(type, index));
         }
 
+        /// <summary>
+        /// Returns the autotracking value for the specified section.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID of the section.
+        /// </param>
+        /// <param name="sectionIndex">
+        /// The index of the section.
+        /// </param>
+        /// <param name="index">
+        /// The index of the memory address.
+        /// </param>
+        /// <returns>
+        /// The autotracking value for the specified section.
+        /// </returns>
         private static IAutoTrackValue GetSectionFlagBool(
             LocationID id, int sectionIndex, int index = 0)
         {
             return new AutoTrackFlagBool(
                 new MemoryFlag(
                     GetMemoryAddress(
-                        GetSectionMemorySegment(id, sectionIndex, index),
+                        GetSectionMemorySegment(id, sectionIndex),
                         GetSectionMemoryIndex(id, sectionIndex, index)),
                     GetSectionFlag(id, sectionIndex, index)), 1);
         }
 
+        /// <summary>
+        /// Returns the list of autotracking values for the specified item.
+        /// </summary>
+        /// <param name="type">
+        /// The item type.
+        /// </param>
+        /// <returns>
+        /// The list of autotracking values for the specified item.
+        /// </returns>
         private static List<IAutoTrackValue> GetItemValues(ItemType type)
         {
             var values = new List<IAutoTrackValue>();
@@ -1061,6 +1250,18 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
             return values;
         }
 
+        /// <summary>
+        /// Returns the list of autotracking values for the specified section.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID for the section.
+        /// </param>
+        /// <param name="sectionIndex">
+        /// The index of the section.
+        /// </param>
+        /// <returns>
+        /// The list of autotracking values for the specified section.
+        /// </returns>
         private static List<IAutoTrackValue> GetSectionValues(LocationID id, int sectionIndex)
         {
             var values = new List<IAutoTrackValue>();
@@ -1111,26 +1312,77 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
             return values;
         }
 
+        /// <summary>
+        /// Returns the autotracking override value for the specified item.
+        /// </summary>
+        /// <param name="type">
+        /// The item type.
+        /// </param>
+        /// <returns>
+        /// The autotracking override value for the specified item.
+        /// </returns>
         private static IAutoTrackValue GetItemMultipleOverride(ItemType type)
         {
             return new AutoTrackMultipleOverride(GetItemValues(type));
         }
 
+        /// <summary>
+        /// Returns the autotracking override value for the specified section.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID of the section.
+        /// </param>
+        /// <param name="sectionIndex">
+        /// The index of the section.
+        /// </param>
+        /// <returns>
+        /// The autotracking override value for the specified section.
+        /// </returns>
         private static IAutoTrackValue GetSectionMultipleOverride(LocationID id, int sectionIndex)
         {
             return new AutoTrackMultipleOverride(GetSectionValues(id, sectionIndex));
         }
 
+        /// <summary>
+        /// Returns the autotracking sum value for the specified item.
+        /// </summary>
+        /// <param name="type">
+        /// The item type.
+        /// </param>
+        /// <returns>
+        /// The autotracking sum value for the specified item.
+        /// </returns>
         private static IAutoTrackValue GetItemMultipleSum(ItemType type)
         {
             return new AutoTrackMultipleSum(GetItemValues(type));
         }
 
+        /// <summary>
+        /// Returns the autotracking sum value for the specified section.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID of the section.
+        /// </param>
+        /// <param name="sectionIndex">
+        /// The index of the section.
+        /// </param>
+        /// <returns>
+        /// The autotracking sum value for the specified section.
+        /// </returns>
         private static IAutoTrackValue GetSectionMultipleSum(LocationID id, int sectionIndex)
         {
             return new AutoTrackMultipleSum(GetSectionValues(id, sectionIndex));
         }
 
+        /// <summary>
+        /// Returns the autotracking value for the specified item.
+        /// </summary>
+        /// <param name="type">
+        /// The item type.
+        /// </param>
+        /// <returns>
+        /// The autotracking value for the specified item.
+        /// </returns>
         public static IAutoTrackValue GetItemAutoTrackValue(ItemType type)
         {
             switch (type)
@@ -1203,6 +1455,18 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
             }
         }
 
+        /// <summary>
+        /// Returns the autotracking value for the specified section.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID of the section.
+        /// </param>
+        /// <param name="sectionIndex">
+        /// The index of the section.
+        /// </param>
+        /// <returns>
+        /// The autotracking value for the specified section.
+        /// </returns>
         public static IAutoTrackValue GetSectionAutoTrackValue(LocationID id, int sectionIndex)
         {
             switch (id)

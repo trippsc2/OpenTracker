@@ -15,7 +15,7 @@ namespace OpenTracker.ViewModels.Maps
     /// </summary>
     public class MapAreaVM : ViewModelBase
     {
-        public Orientation Orientation => 
+        public static Orientation Orientation => 
             AppSettings.Instance.Layout.CurrentMapOrientation;
 
         public ObservableCollection<MapVM> Maps { get; }

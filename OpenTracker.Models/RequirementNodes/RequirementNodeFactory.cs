@@ -11,14 +11,17 @@ namespace OpenTracker.Models.RequirementNodes
     public static class RequirementNodeFactory
     {
         /// <summary>
-        /// Returns a list of connections to the specified requirement node ID.
+        /// Populates the list of connections to the specified requirement node ID.
         /// </summary>
         /// <param name="id">
         /// The requirement node ID.
         /// </param>
-        /// <returns>
-        /// A list of connections.
-        /// </returns>
+        /// <param name="node">
+        /// The node.
+        /// </param>
+        /// <param name="connections">
+        /// The list of connections to be populated.
+        /// </param>
         public static void PopulateNodeConnections(
             RequirementNodeID id, IRequirementNode node, List<INodeConnection> connections)
         {

@@ -26,13 +26,13 @@ namespace OpenTracker.ViewModels.Maps
             private set => this.RaiseAndSetIfChanged(ref _highlighted, value);
         }
 
-        public bool Visible =>
+        public static bool Visible =>
             Mode.Instance.EntranceShuffle > EntranceShuffle.None;
 
         public Connection Connection { get; }
 
         public Point Start =>
-            _mapArea.Orientation switch
+            MapAreaVM.Orientation switch
             {
                 Orientation.Vertical => Connection.Location1.Map == MapID.DarkWorld ?
                     new Point(Connection.Location1.X + 23, Connection.Location1.Y + 2046) :
@@ -41,15 +41,16 @@ namespace OpenTracker.ViewModels.Maps
                     new Point(Connection.Location1.X + 2046, Connection.Location1.Y + 23) :
                     new Point(Connection.Location1.X + 13, Connection.Location1.Y + 23)
             };
-        public Point End => _mapArea.Orientation switch
-        {
-            Orientation.Vertical => Connection.Location2.Map == MapID.DarkWorld ?
-                new Point(Connection.Location2.X + 23, Connection.Location2.Y + 2046) :
-                new Point(Connection.Location2.X + 23, Connection.Location2.Y + 13),
-            _ => Connection.Location2.Map == MapID.DarkWorld ?
-                new Point(Connection.Location2.X + 2046, Connection.Location2.Y + 23) :
-                new Point(Connection.Location2.X + 13, Connection.Location2.Y + 23)
-        };
+        public Point End =>
+            MapAreaVM.Orientation switch
+            {
+                Orientation.Vertical => Connection.Location2.Map == MapID.DarkWorld ?
+                    new Point(Connection.Location2.X + 23, Connection.Location2.Y + 2046) :
+                    new Point(Connection.Location2.X + 23, Connection.Location2.Y + 13),
+                _ => Connection.Location2.Map == MapID.DarkWorld ?
+                    new Point(Connection.Location2.X + 2046, Connection.Location2.Y + 23) :
+                    new Point(Connection.Location2.X + 13, Connection.Location2.Y + 23)
+            };
         public string Color =>
             Highlighted ? "#ffffffff" : AppSettings.Instance.Colors.ConnectorColor;
 

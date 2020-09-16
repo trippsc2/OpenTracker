@@ -25,54 +25,54 @@ namespace OpenTracker.ViewModels
     /// </summary>
     public class TopMenuVM : ViewModelBase
     {
-        public bool DisplayAllLocations =>
+        public static bool DisplayAllLocations =>
             AppSettings.Instance.Tracker.DisplayAllLocations;
-        public bool ShowItemCountsOnMap =>
+        public static bool ShowItemCountsOnMap =>
             AppSettings.Instance.Tracker.ShowItemCountsOnMap;
 
-        public bool DynamicLayoutOrientation =>
+        public static bool DynamicLayoutOrientation =>
             AppSettings.Instance.Layout.LayoutOrientation == null;
-        public bool HorizontalLayoutOrientation =>
+        public static bool HorizontalLayoutOrientation =>
             AppSettings.Instance.Layout.LayoutOrientation == Orientation.Horizontal;
-        public bool VerticalLayoutOrientation =>
+        public static bool VerticalLayoutOrientation =>
             AppSettings.Instance.Layout.LayoutOrientation == Orientation.Vertical;
 
-        public bool DynamicMapOrientation =>
+        public static bool DynamicMapOrientation =>
             AppSettings.Instance.Layout.MapOrientation == null;
-        public bool HorizontalMapOrientation =>
+        public static bool HorizontalMapOrientation =>
             AppSettings.Instance.Layout.MapOrientation == Orientation.Horizontal;
-        public bool VerticalMapOrientation =>
+        public static bool VerticalMapOrientation =>
             AppSettings.Instance.Layout.MapOrientation == Orientation.Vertical;
 
-        public bool TopHorizontalUIPanelPlacement =>
+        public static bool TopHorizontalUIPanelPlacement =>
             AppSettings.Instance.Layout.HorizontalUIPanelPlacement == Dock.Top;
-        public bool BottomHorizontalUIPanelPlacement =>
+        public static bool BottomHorizontalUIPanelPlacement =>
             AppSettings.Instance.Layout.HorizontalUIPanelPlacement == Dock.Bottom;
 
-        public bool LeftVerticalUIPanelPlacement =>
+        public static bool LeftVerticalUIPanelPlacement =>
             AppSettings.Instance.Layout.VerticalUIPanelPlacement == Dock.Left;
-        public bool RightVerticalUIPanelPlacement =>
+        public static bool RightVerticalUIPanelPlacement =>
             AppSettings.Instance.Layout.VerticalUIPanelPlacement == Dock.Right;
 
-        public bool LeftHorizontalItemsPlacement =>
+        public static bool LeftHorizontalItemsPlacement =>
             AppSettings.Instance.Layout.HorizontalItemsPlacement == Dock.Left;
-        public bool RightHorizontalItemsPlacement =>
+        public static bool RightHorizontalItemsPlacement =>
             AppSettings.Instance.Layout.HorizontalItemsPlacement == Dock.Right;
 
-        public bool TopVerticalItemsPlacement =>
+        public static bool TopVerticalItemsPlacement =>
             AppSettings.Instance.Layout.VerticalItemsPlacement == Dock.Top;
-        public bool BottomVerticalItemsPlacement =>
+        public static bool BottomVerticalItemsPlacement =>
             AppSettings.Instance.Layout.VerticalItemsPlacement == Dock.Bottom;
 
-        public bool NoneUIScale =>
+        public static bool OneHundredPercentUIScale =>
             AppSettings.Instance.Layout.UIScale == 1.0;
-        public bool TwentyFivePercentUIScale =>
+        public static bool OneHundredTwentyFivePercentUIScale =>
             AppSettings.Instance.Layout.UIScale == 1.25;
-        public bool FiftyPercentUIScale =>
+        public static bool OneHundredFiftyPercentUIScale =>
             AppSettings.Instance.Layout.UIScale == 1.50;
-        public bool SeventyFivePercentUIScale =>
+        public static bool OneHundredSeventyFivePercentUIScale =>
             AppSettings.Instance.Layout.UIScale == 1.75;
-        public bool OneHundredPercentUIScale =>
+        public static bool TwoHundredPercentUIScale =>
             AppSettings.Instance.Layout.UIScale == 2.0;
 
         public ReactiveCommand<Unit, Unit> OpenResetDialogCommand { get; }
@@ -235,11 +235,11 @@ namespace OpenTracker.ViewModels
 
             if (e.PropertyName == nameof(LayoutSettings.UIScale))
             {
-                this.RaisePropertyChanged(nameof(NoneUIScale));
-                this.RaisePropertyChanged(nameof(TwentyFivePercentUIScale));
-                this.RaisePropertyChanged(nameof(FiftyPercentUIScale));
-                this.RaisePropertyChanged(nameof(SeventyFivePercentUIScale));
                 this.RaisePropertyChanged(nameof(OneHundredPercentUIScale));
+                this.RaisePropertyChanged(nameof(OneHundredTwentyFivePercentUIScale));
+                this.RaisePropertyChanged(nameof(OneHundredFiftyPercentUIScale));
+                this.RaisePropertyChanged(nameof(OneHundredSeventyFivePercentUIScale));
+                this.RaisePropertyChanged(nameof(TwoHundredPercentUIScale));
             }
         }
 

@@ -3,6 +3,9 @@ using System;
 
 namespace OpenTracker.Models.Items
 {
+    /// <summary>
+    /// This is the class for an item with a maximum value.
+    /// </summary>
     public class CappedItem : Item
     {
         private readonly int _maximum;
@@ -15,6 +18,9 @@ namespace OpenTracker.Models.Items
         /// </param>
         /// <param name="maximum">
         /// A 32-bit signed integer representing the maximum value of the item.
+        /// </param>
+        /// <param name="autoTrackValue">
+        /// The autotracking value for the item.
         /// </param>
         public CappedItem(int starting, int maximum, IAutoTrackValue autoTrackValue)
             : base(starting, autoTrackValue)

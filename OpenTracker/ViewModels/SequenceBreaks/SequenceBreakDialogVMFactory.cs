@@ -7,7 +7,7 @@ namespace OpenTracker.ViewModels.SequenceBreaks
     /// This is the class containing creation logic for sequence break dialog window ViewModel
     /// classes.
     /// </summary>
-    public static class SequenceBreakDialogVMFactory
+    internal static class SequenceBreakDialogVMFactory
     {
         /// <summary>
         /// Returns the observable collection of bomb duplication sequence break control ViewModel
@@ -148,7 +148,7 @@ namespace OpenTracker.ViewModels.SequenceBreaks
         /// <returns>
         /// A new sequence break dialog window ViewModel instance.
         /// </returns>
-        public static SequenceBreakDialogVM GetSequenceBreakDialogVM()
+        internal static SequenceBreakDialogVM GetSequenceBreakDialogVM()
         {
             return new SequenceBreakDialogVM(
                 GetBombDuplicationSequenceBreaks(), GetBombJumpsSequenceBreaks(),

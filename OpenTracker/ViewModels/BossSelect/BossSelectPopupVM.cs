@@ -16,9 +16,8 @@ namespace OpenTracker.ViewModels.BossSelect
     {
         private readonly IBossPlacement _bossPlacement;
 
-        public double Scale =>
+        public static double Scale =>
             AppSettings.Instance.Layout.UIScale;
-
         public ObservableCollection<BossSelectButtonVM> Buttons { get; }
 
         private bool _popupOpen;
@@ -34,7 +33,7 @@ namespace OpenTracker.ViewModels.BossSelect
         /// Constructor
         /// </summary>
         /// <param name="bossPlacement">
-        /// The marking to be represented.
+        /// The boss placement to be manipulated.
         /// </param>
         /// <param name="buttons">
         /// The observable collection of boss select button control ViewModel instances.

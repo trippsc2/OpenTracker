@@ -42,13 +42,6 @@ namespace OpenTracker.Models.SequenceBreaks
         public event EventHandler<SequenceBreakType> SequenceBreakCreated;
 
         /// <summary>
-        /// Constructor
-        /// </summary>
-        public SequenceBreakDictionary()
-        {
-        }
-
-        /// <summary>
         /// Creates a new sequence break at the specified key.
         /// </summary>
         /// <param name="key">

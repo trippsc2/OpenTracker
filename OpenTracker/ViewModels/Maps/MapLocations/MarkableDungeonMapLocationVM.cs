@@ -17,6 +17,10 @@ using System.Globalization;
 
 namespace OpenTracker.ViewModels.Maps.MapLocations
 {
+    /// <summary>
+    /// This is the ViewModel of the map location control representing a markable dungeon map
+    /// location.
+    /// </summary>
     public class MarkableDungeonMapLocationVM : MapLocationVMBase, IClickHandler,
         IDoubleClickHandler, IPointerOver
     {
@@ -64,7 +68,6 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                 return x + 13;
             }
         }
-
         public double CanvasY
         {
             get
@@ -89,7 +92,6 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                 return y + 23;
             }
         }
-
         public double Size
         {
             get
@@ -127,7 +129,6 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                 return 70.0;
             }
         }
-
         public bool Visible =>
             _mapLocation.Requirement.Met && (AppSettings.Instance.Tracker.DisplayAllLocations ||
             (_mapLocation.Location.Accessibility != AccessibilityLevel.Cleared &&
@@ -137,7 +138,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
 
         public string Color =>
             AppSettings.Instance.Colors.AccessibilityColors[_mapLocation.Location.Accessibility];
-        public Thickness BorderSize =>
+        public static Thickness BorderSize =>
             Mode.Instance.EntranceShuffle > EntranceShuffle.None ? new Thickness(5) : new Thickness(9);
         public string BorderColor =>
             Highlighted ? "#ffffffff" : "#ff000000";
@@ -145,7 +146,6 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
             Mode.Instance.EntranceShuffle == EntranceShuffle.None &&
             AppSettings.Instance.Tracker.ShowItemCountsOnMap &&
             _mapLocation.Location.Available != 0 && _mapLocation.Location.Total > 1;
-
         public string Text
         {
             get
@@ -178,11 +178,14 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         /// <param name="mapLocation">
         /// The map location being represented.
         /// </param>
-        /// <param name="mapArea">
-        /// The map area control ViewModel parent class.
+        /// <param name="marking">
+        /// The marking ViewModel.
         /// </param>
-        /// <param name="pinnedLocations">
-        /// The observable collection of pinned locations.
+        /// <param name="entranceMarkingDock">
+        /// The dock direction when entrance shuffle is enabled.
+        /// </param>
+        /// <param name="nonEntranceMarkingDock">
+        /// The dock direction when entrance shuffle is disabled.
         /// </param>
         public MarkableDungeonMapLocationVM(
             MapLocation mapLocation, MarkingMapLocationVM marking, Dock entranceMarkingDock,

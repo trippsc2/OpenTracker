@@ -15,18 +15,17 @@ namespace OpenTracker.ViewModels.Maps
     {
         private readonly MapID _id;
 
-        public Thickness Margin =>
+        public static Thickness Margin =>
             AppSettings.Instance.Layout.CurrentMapOrientation switch
             {
                 Orientation.Horizontal => new Thickness(10, 20),
                 _ => new Thickness(20, 10)
             };
-
         public string ImageSource 
         {
             get
             {
-                WorldState worldState = Mode.Instance.WorldState == WorldState.Inverted ?
+                var worldState = Mode.Instance.WorldState == WorldState.Inverted ?
                     WorldState.Inverted : WorldState.StandardOpen;
 
                 return $"avares://OpenTracker/Assets/Images/Maps/" +

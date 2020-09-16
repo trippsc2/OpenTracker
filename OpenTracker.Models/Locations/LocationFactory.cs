@@ -6,7 +6,7 @@ namespace OpenTracker.Models.Locations
     /// <summary>
     /// This is the class for creating locations.
     /// </summary>
-    internal static class LocationFactory
+    public static class LocationFactory
     {
         /// <summary>
         /// Returns the name of a specified location.
@@ -17,7 +17,7 @@ namespace OpenTracker.Models.Locations
         /// <returns>
         /// A string representing the name of the location.
         /// </returns>
-        internal static string GetLocationName(LocationID id)
+        public static string GetLocationName(LocationID id)
         {
             return id switch
             {
@@ -259,7 +259,7 @@ namespace OpenTracker.Models.Locations
         /// <returns>
         /// A new base location.
         /// </returns>
-        internal static ILocation GetBaseLocation(LocationID id)
+        public static ILocation GetBaseLocation(LocationID id)
         {
             return new Location(
                 id, GetLocationName(id), MapLocationFactory.GetMapLocations(id));
@@ -274,7 +274,7 @@ namespace OpenTracker.Models.Locations
         /// <returns>
         /// A new location.
         /// </returns>
-        internal static ILocation GetLocation(LocationID id)
+        public static ILocation GetLocation(LocationID id)
         {
             switch (id)
             {

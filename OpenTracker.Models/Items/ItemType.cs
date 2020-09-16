@@ -8,8 +8,6 @@
         Sword,
         Shield,
         Mail,
-        Aga1,
-        Aga2,
         TowerCrystals,
         GanonCrystals,
         Bow,

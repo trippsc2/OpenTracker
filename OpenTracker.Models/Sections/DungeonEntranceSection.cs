@@ -8,6 +8,9 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models.Sections
 {
+    /// <summary>
+    /// This is the class for dungeon entrance sections.
+    /// </summary>
     public class DungeonEntranceSection : IEntranceSection
     {
         private readonly IRequirementNode _node;

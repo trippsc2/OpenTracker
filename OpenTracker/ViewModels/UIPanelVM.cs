@@ -13,7 +13,7 @@ namespace OpenTracker.ViewModels
     /// </summary>
     public class UIPanelVM : ViewModelBase
     {
-        public Dock ItemsDock =>
+        public static Dock ItemsDock =>
             AppSettings.Instance.Layout.CurrentLayoutOrientation switch
             {
                 Orientation.Horizontal => AppSettings.Instance.Layout.HorizontalItemsPlacement,

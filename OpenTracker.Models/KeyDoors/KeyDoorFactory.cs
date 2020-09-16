@@ -10,6 +10,18 @@ namespace OpenTracker.Models.KeyDoors
     /// </summary>
     public static class KeyDoorFactory
     {
+        /// <summary>
+        /// Returns the requirement for the specified key door.
+        /// </summary>
+        /// <param name="id">
+        /// The key door ID.
+        /// </param>
+        /// <param name="dungeonData">
+        /// The mutable dungeon data.
+        /// </param>
+        /// <returns>
+        /// The requirement for the specified key door.
+        /// </returns>
         public static IRequirementNode GetKeyDoorNode(KeyDoorID id, IMutableDungeon dungeonData)
         {
             if (dungeonData == null)
@@ -111,14 +123,13 @@ namespace OpenTracker.Models.KeyDoors
         /// <summary>
         /// Returns a new key door for the specified key door ID.
         /// </summary>
-        /// <param name="id">
-        /// The key door ID.
-        /// </param>
         /// <param name="dungeonData">
         /// The mutable dungeon data parent class.
         /// </param>
-        /// <returns></returns>
-        public static IKeyDoor GetKeyDoor(KeyDoorID id, IMutableDungeon dungeonData)
+        /// <returns>
+        /// A new key door for the specified key door ID.
+        /// </returns>
+        public static IKeyDoor GetKeyDoor(IMutableDungeon dungeonData)
         {
             if (dungeonData == null)
             {

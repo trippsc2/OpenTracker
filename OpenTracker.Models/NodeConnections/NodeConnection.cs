@@ -7,6 +7,9 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models.NodeConnections
 {
+    /// <summary>
+    /// This is the class for node connections.
+    /// </summary>
     public class NodeConnection : INodeConnection
     {
         private readonly IRequirementNode _fromNode;
@@ -30,6 +33,18 @@ namespace OpenTracker.Models.NodeConnections
             }
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="fromNode">
+        /// The node from which the connection originates.
+        /// </param>
+        /// <param name="toNode">
+        /// The node to which the connection belongs.
+        /// </param>
+        /// <param name="requirement">
+        /// The requirement for the connection to be accessible.
+        /// </param>
         public NodeConnection(
             IRequirementNode fromNode, IRequirementNode toNode, IRequirement requirement = null)
         {
@@ -42,11 +57,26 @@ namespace OpenTracker.Models.NodeConnections
             UpdateAccessibility();
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
+        /// </param>
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IRequirementNode interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnNodeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirementNode.Accessibility))
@@ -55,6 +85,15 @@ namespace OpenTracker.Models.NodeConnections
             }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IRequirement interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirement.Accessibility))
@@ -63,11 +102,23 @@ namespace OpenTracker.Models.NodeConnections
             }
         }
 
+        /// <summary>
+        /// Updates the Accessibility property.
+        /// </summary>
         private void UpdateAccessibility()
         {
             Accessibility = GetConnectionAccessibility(new List<IRequirementNode>());
         }
 
+        /// <summary>
+        /// Returns the availability of the connection, excluding loops from the specified nodes.
+        /// </summary>
+        /// <param name="excludedNodes">
+        /// A list of nodes to exclude to prevent loops.
+        /// </param>
+        /// <returns>
+        /// The availability of the connection.
+        /// </returns>
         public AccessibilityLevel GetConnectionAccessibility(List<IRequirementNode> excludedNodes)
         {
             if (excludedNodes == null)

@@ -17,9 +17,9 @@ namespace OpenTracker.ViewModels.Items
         private readonly VerticalSmallItemPanelVM _verticalSmallItemPanel =
             new VerticalSmallItemPanelVM();
 
-        public double Scale =>
+        public static double Scale =>
             AppSettings.Instance.Layout.UIScale;
-        public Orientation Orientation =>
+        public static Orientation Orientation =>
             AppSettings.Instance.Layout.CurrentLayoutOrientation;
 
         public ModeSettingsVM ModeSettings { get; } =

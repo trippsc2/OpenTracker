@@ -41,16 +41,6 @@ namespace OpenTracker.Models.RequirementNodes
         public event EventHandler<KeyValuePair<RequirementNodeID, IRequirementNode>> NodeCreated;
 
         /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="game">
-        /// The game data parent class.
-        /// </param>
-        public RequirementNodeDictionary() : base()
-        {
-        }
-
-        /// <summary>
         /// Creates a new requirement node for the specified key.
         /// </summary>
         /// <param name="key">

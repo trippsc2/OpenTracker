@@ -42,13 +42,6 @@ namespace OpenTracker.Models.BossPlacements
         public event EventHandler<BossPlacementID> BossPlacementCreated;
 
         /// <summary>
-        /// Constructor
-        /// </summary>
-        public BossPlacementDictionary()
-        {
-        }
-
-        /// <summary>
         /// Creates a new boss placement at the specified key.
         /// </summary>
         /// <param name="key">
