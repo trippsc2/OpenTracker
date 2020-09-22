@@ -24,7 +24,6 @@
 
 	<DockPanel>
 		<ContentControl Content="{Binding TopMenu}" DockPanel.Dock="Top" />
-    <ContentControl Content="{Binding StatusBar}" DockPanel.Dock="Bottom" />
 		<ContentControl Content="{Binding UIPanel}" DockPanel.Dock="{Binding UIDock, Mode=OneWay}" />
 		<ContentControl Content="{Binding MapArea}" />
 	</DockPanel>
