@@ -39,6 +39,11 @@
 			<Setter Property="Height" Value="1" />
 		</Style>
 
+    <Style Selector="Border.StatusBar">
+      <Setter Property="Background" Value="{DynamicResource ThemeControlLowBrush}" />
+      <Setter Property="Padding" Value="5,0" />
+    </Style>
+
 		<Style Selector="Border.Popup">
 			<Setter Property="Background" Value="{DynamicResource ThemeBackgroundBrush}" />
 			<Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderLowBrush}" />
