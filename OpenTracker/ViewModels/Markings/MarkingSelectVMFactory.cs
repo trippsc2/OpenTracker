@@ -11,10 +11,10 @@ namespace OpenTracker.ViewModels.Markings
     /// </summary>
     internal static class MarkingSelectVMFactory
     {
-        internal static ObservableCollection<MarkingSelectButtonVM> NonEntranceMarkingSelect { get; } =
-            new ObservableCollection<MarkingSelectButtonVM>();
-        internal static ObservableCollection<MarkingSelectButtonVM> EntranceMarkingSelect { get; } =
-            new ObservableCollection<MarkingSelectButtonVM>();
+        internal static ObservableCollection<MarkingSelectItemVMBase> NonEntranceMarkingSelect { get; } =
+            new ObservableCollection<MarkingSelectItemVMBase>();
+        internal static ObservableCollection<MarkingSelectItemVMBase> EntranceMarkingSelect { get; } =
+            new ObservableCollection<MarkingSelectItemVMBase>();
 
         /// <summary>
         /// Populates the observable collection of marking select button control ViewModel
@@ -77,11 +77,6 @@ namespace OpenTracker.ViewModels.Markings
         {
             for (int i = 1; i < Enum.GetValues(typeof(MarkType)).Length; i++)
             {
-                if ((MarkType)i == MarkType.TriforcePiece)
-                {
-                    continue;
-                }
-
                 EntranceMarkingSelect.Add(new MarkingSelectButtonVM((MarkType)i));
             }
         }
@@ -125,7 +120,7 @@ namespace OpenTracker.ViewModels.Markings
                 PopulateEntranceMarkingSelect();
             }
 
-            return new MarkingSelectVM(marking, EntranceMarkingSelect, 272.0, 280.0);
+            return new MarkingSelectVM(marking, EntranceMarkingSelect, 374.0, 320.0);
         }
 
         /// <summary>

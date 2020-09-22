@@ -6,7 +6,7 @@ namespace OpenTracker.ViewModels.Markings
     /// <summary>
     /// This is the ViewModel for the marking select button control.
     /// </summary>
-    public class MarkingSelectButtonVM : ViewModelBase
+    public class MarkingSelectButtonVM : MarkingSelectItemVMBase
     {
         public MarkType? Marking { get; }
         public MarkingImageVMBase Image { get; }
