@@ -18,7 +18,7 @@ namespace OpenTracker.ViewModels.Markings
 
         public static double Scale =>
             AppSettings.Instance.Layout.UIScale;
-        public ObservableCollection<MarkingSelectButtonVM> Buttons { get; }
+        public ObservableCollection<MarkingSelectItemVMBase> Buttons { get; }
         public double Width { get; }
         public double Height { get; }
 
@@ -48,7 +48,7 @@ namespace OpenTracker.ViewModels.Markings
         /// The height of the popup.
         /// </param>
         public MarkingSelectVM(
-            IMarking marking, ObservableCollection<MarkingSelectButtonVM> buttons,
+            IMarking marking, ObservableCollection<MarkingSelectItemVMBase> buttons,
             double width, double height)
         {
             _marking = marking ?? throw new ArgumentNullException(nameof(marking));

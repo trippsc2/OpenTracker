@@ -3,6 +3,7 @@ using OpenTracker.Models.Connections;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.PrizePlacements;
+using OpenTracker.Models.SaveLoad.Converters;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -41,6 +42,16 @@ namespace OpenTracker.Models.SaveLoad
         /// </summary>
         public void Load()
         {
+            if (Version.Major < 1 || (Version.Major == 1 &&
+                (Version.Minor < 4 ||
+                (Version.Minor == 4 && Version.Build <= 1))))
+            {
+                foreach (var location in Locations.Values)
+                {
+                    MarkingConverter.ConvertFrom141(location);
+                }
+            }
+
             Modes.Mode.Instance.Load(Mode);
             ItemDictionary.Instance.Load(Items);
             LocationDictionary.Instance.Load(Locations);

@@ -21,7 +21,7 @@ namespace OpenTracker.ViewModels.Markings
         public static double Scale =>
             AppSettings.Instance.Layout.UIScale;
 
-        public ObservableCollection<MarkingSelectButtonVM> Buttons { get; }
+        public ObservableCollection<MarkingSelectItemVMBase> Buttons { get; }
 
         private bool _popupOpen;
         public bool PopupOpen
@@ -46,7 +46,7 @@ namespace OpenTracker.ViewModels.Markings
         /// The location.
         /// </param>
         public NoteMarkingSelectVM(
-            IMarking marking, ObservableCollection<MarkingSelectButtonVM> buttons,
+            IMarking marking, ObservableCollection<MarkingSelectItemVMBase> buttons,
             ILocation location)
         {
             _marking = marking ?? throw new ArgumentNullException(nameof(marking));
