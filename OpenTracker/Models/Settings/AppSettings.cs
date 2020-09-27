@@ -84,6 +84,8 @@ namespace OpenTracker.Models.Settings
             {
                 Version = Assembly.GetExecutingAssembly().GetName().Version,
                 Maximized = Bounds.Maximized,
+                PositionX = Bounds.PositionX,
+                PositionY = Bounds.PositionY,
                 X = Bounds.X,
                 Y = Bounds.Y,
                 Width = Bounds.Width,
@@ -115,6 +117,8 @@ namespace OpenTracker.Models.Settings
             }
 
             Bounds.Maximized = saveData.Maximized;
+            Bounds.PositionX = saveData.PositionX;
+            Bounds.PositionY = saveData.PositionY;
             Bounds.X = saveData.X;
             Bounds.Y = saveData.Y;
             Bounds.Width = saveData.Width;
