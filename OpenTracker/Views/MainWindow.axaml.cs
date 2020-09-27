@@ -68,7 +68,7 @@ namespace OpenTracker.Views
 
         private void OnClose(object sender, CancelEventArgs e)
         {
-            CloseHandler.Close(WindowState == WindowState.Maximized, base.Bounds);
+            CloseHandler.Close(WindowState == WindowState.Maximized, Bounds, Position);
 
             if (_autoTrackerDialog != null && _autoTrackerDialog.IsVisible)
             {
@@ -88,12 +88,9 @@ namespace OpenTracker.Views
 
         private void OnDataContextChanged(object sender, EventArgs e)
         {
-            if (BoundsData.Maximized.HasValue)
+            if (BoundsData.PositionX.HasValue && BoundsData.PositionY.HasValue)
             {
-                if (BoundsData.Maximized.Value)
-                {
-                    WindowState = WindowState.Maximized;
-                }
+                Position = new PixelPoint(BoundsData.PositionX.Value, BoundsData.PositionY.Value);
             }
 
             if (BoundsData.X.HasValue && BoundsData.Y.HasValue &&
@@ -101,6 +98,14 @@ namespace OpenTracker.Views
             {
                 Bounds = new Rect(BoundsData.X.Value, BoundsData.Y.Value,
                     BoundsData.Width.Value, BoundsData.Height.Value);
+            }
+
+            if (BoundsData.Maximized.HasValue)
+            {
+                if (BoundsData.Maximized.Value)
+                {
+                    WindowState = WindowState.Maximized;
+                }
             }
 
             ChangeLayout(Bounds);

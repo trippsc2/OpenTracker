@@ -7,6 +7,6 @@ namespace OpenTracker.Interfaces
     /// </summary>
     public interface ICloseHandler
     {
-        void Close(bool maximized, Rect bounds);
+        void Close(bool maximized, Rect bounds, PixelPoint pixelPoint);
     }
 }

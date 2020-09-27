@@ -6,6 +6,8 @@
     public class BoundsSettings
     {
         public bool? Maximized { get; set; }
+        public int? PositionX { get; set; }
+        public int? PositionY { get; set; }
         public double? X { get; set; }
         public double? Y { get; set; }
         public double? Width { get; set; }
