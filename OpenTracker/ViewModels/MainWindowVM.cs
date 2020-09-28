@@ -31,16 +31,6 @@ namespace OpenTracker.ViewModels
             get => AppSettings.Instance.Bounds.Maximized;
             set => AppSettings.Instance.Bounds.Maximized = value;
         }
-        public int? PositionX
-        {
-            get => AppSettings.Instance.Bounds.PositionX;
-            set => AppSettings.Instance.Bounds.PositionX = value;
-        }
-        public int? PositionY
-        {
-            get => AppSettings.Instance.Bounds.PositionY;
-            set => AppSettings.Instance.Bounds.PositionY = value;
-        }
         public double? X
         {
             get => AppSettings.Instance.Bounds.X;
@@ -171,10 +161,8 @@ namespace OpenTracker.ViewModels
         private static void SaveAppSettings(bool maximized, Rect bounds, PixelPoint pixelPoint)
         {
             AppSettings.Instance.Bounds.Maximized = maximized;
-            AppSettings.Instance.Bounds.PositionX = pixelPoint.X;
-            AppSettings.Instance.Bounds.PositionY = pixelPoint.Y;
-            AppSettings.Instance.Bounds.X = bounds.X;
-            AppSettings.Instance.Bounds.Y = bounds.Y;
+            AppSettings.Instance.Bounds.X = pixelPoint.X;
+            AppSettings.Instance.Bounds.Y = pixelPoint.Y;
             AppSettings.Instance.Bounds.Width = bounds.Width;
             AppSettings.Instance.Bounds.Height = bounds.Height;
 

@@ -88,16 +88,15 @@ namespace OpenTracker.Views
 
         private void OnDataContextChanged(object sender, EventArgs e)
         {
-            if (BoundsData.X.HasValue && BoundsData.Y.HasValue &&
-                BoundsData.Width.HasValue && BoundsData.Height.HasValue)
+            if (BoundsData.Width.HasValue && BoundsData.Height.HasValue)
             {
-                Bounds = new Rect(BoundsData.X.Value, BoundsData.Y.Value,
-                    BoundsData.Width.Value, BoundsData.Height.Value);
+                Bounds = new Rect(0, 0, BoundsData.Width.Value, BoundsData.Height.Value);
             }
 
-            if (BoundsData.PositionX.HasValue && BoundsData.PositionY.HasValue)
+            if (BoundsData.X.HasValue && BoundsData.Y.HasValue)
             {
-                Position = new PixelPoint(BoundsData.PositionX.Value, BoundsData.PositionY.Value);
+                Position = new PixelPoint(
+                    (int)Math.Floor(BoundsData.X.Value), (int)Math.Floor(BoundsData.Y.Value));
             }
 
             if (BoundsData.Maximized.HasValue)
