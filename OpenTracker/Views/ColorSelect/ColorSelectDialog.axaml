@@ -4,9 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:view="clr-namespace:OpenTracker.Views.ColorSelect;assembly=OpenTracker"
         mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="462"
-        Width="420" Height="554" Padding="5"
-        CanResize="True"
-        WindowStartupLocation="CenterOwner"
+        Width="420" Height="554" Padding="5" CanResize="True" WindowStartupLocation="CenterScreen"
         x:Class="OpenTracker.Views.ColorSelect.ColorSelectDialog"
         Icon="avares://OpenTracker/Assets/triforce.png"
         Title="OpenTracker - Color Select">

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
         mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="600"
-        x:Class="OpenTracker.Views.AutoTrackerDialog"
+        x:Class="OpenTracker.Views.AutoTrackerDialog" WindowStartupLocation="CenterScreen"
         Icon="avares://OpenTracker/Assets/triforce.png"
         Title="OpenTracker - AutoTracker" Width="420" Height="600" Padding="5">
 
