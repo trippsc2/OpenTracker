@@ -78,10 +78,10 @@ namespace OpenTracker
             }
         }
 
-        private static void InitializeThemes()
+        private void InitializeThemes()
         {
             CopyDefaultThemesToAppData();
-            Selector = ThemeSelector.Create(GetAppDataThemesFolder());
+            Selector = ThemeSelector.Create(GetAppDataThemesFolder(), this);
             MakeDefaultThemeFirst();
         }
 

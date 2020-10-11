@@ -10,7 +10,7 @@ namespace OpenTracker.Interfaces
     public interface IDialog
     {
         object DataContext { get; set; }
-        WindowBase Owner { get; set; }
+        WindowBase Owner { get; }
         Styles Styles { get; }
 
         void Close(object dialogResult);

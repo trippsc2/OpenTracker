@@ -81,11 +81,6 @@ namespace OpenTracker.Utils
             viewModel.CloseRequested += handler;
 
             dialog.DataContext = viewModel;
-            dialog.Owner = Owner;
-
-            // Dialog inherits theme from the owner window
-            dialog.Styles[0] = Owner.Styles[0];
-
             bool? result = await dialog.ShowDialog<bool?>(Owner).ConfigureAwait(false);
 
             return result;

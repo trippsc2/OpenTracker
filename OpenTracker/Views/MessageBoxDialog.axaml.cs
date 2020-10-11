@@ -9,7 +9,7 @@ namespace OpenTracker.Views
     {
         public MessageBoxDialog()
         {
-            this.InitializeComponent();
+            InitializeComponent();
 #if DEBUG
             this.AttachDevTools();
 #endif

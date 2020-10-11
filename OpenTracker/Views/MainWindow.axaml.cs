@@ -41,7 +41,7 @@ namespace OpenTracker.Views
             AvaloniaProperty.Register<MainWindow, string>(nameof(CurrentFilePath));
         public string CurrentFilePath
         {
-            get => GetValue(CurrentFilePathProperty);
+            get => (string)GetValue(CurrentFilePathProperty);
             set => SetValue(CurrentFilePathProperty, value);
         }
 
@@ -53,7 +53,6 @@ namespace OpenTracker.Views
 #if DEBUG
             this.AttachDevTools();
 #endif
-            App.Selector.EnableThemes(this);
         }
 
         private void InitializeComponent()

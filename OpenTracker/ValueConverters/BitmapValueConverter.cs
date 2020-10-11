@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Data.Converters;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using System;
@@ -27,7 +28,7 @@ namespace OpenTracker.ValueConverters
                 return null;
             }
 
-            if (value is string @string && targetType == typeof(IBitmap))
+            if (value is string @string && targetType == typeof(IImage))
             {
                 var uri = new Uri(@string, UriKind.RelativeOrAbsolute);
                 var scheme = uri.IsAbsoluteUri ? uri.Scheme : "file";

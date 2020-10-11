@@ -12,11 +12,10 @@ namespace OpenTracker.Views
 
         public AutoTrackerDialog()
         {
-            this.InitializeComponent();
+            InitializeComponent();
 #if DEBUG
             this.AttachDevTools();
 #endif
-            App.Selector.EnableThemes(this);
         }
 
         private void InitializeComponent()
@@ -28,9 +27,7 @@ namespace OpenTracker.Views
         {
             SaveFileDialog dialog = new SaveFileDialog();
             dialog.Filters.Add(new FileDialogFilter() { Name = "Text", Extensions = { "txt" } });
-
             string path = await dialog.ShowAsync(this).ConfigureAwait(false);
-
             ViewModelSave.Save(path);
         }
     }
