@@ -1094,7 +1094,7 @@ namespace OpenTracker.Models.Sections
             return new ItemSection(
                 GetSectionName(id, index), GetItemSectionTotal(id, index),
                 GetSectionConnections(id, index),
-                AutoTrackValueFactory.GetSectionAutoTrackValue(id, index),
+                AutoTrackValueFactory.GetAutoTrackValue(id, index),
                 GetSectionRequirement(id, index));
         }
 
@@ -1356,7 +1356,7 @@ namespace OpenTracker.Models.Sections
             return new PrizeSection(
                 GetSectionName(id, index), GetSectionBossPlacement(id, index),
                 GetSectionPrizePlacement(id), 
-                AutoTrackValueFactory.GetSectionAutoTrackValue(id, index),
+                AutoTrackValueFactory.GetAutoTrackValue(id, index),
                 GetPrizeSectionAlwaysClearable(id, index), GetSectionRequirement(id, index));
         }
 

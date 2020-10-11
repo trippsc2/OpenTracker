@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
+using OpenTracker.Models.Requirements;
 using System;
 using System.Collections.Generic;
 
@@ -47,7 +48,7 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The memory segment of the specified item.
         /// </returns>
-        private static MemorySegmentType GetItemMemorySegment(ItemType type, int index = 0)
+        private static MemorySegmentType GetMemorySegment(ItemType type, int index = 0)
         {
             switch (type)
             {
@@ -126,8 +127,7 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The memory segment of the specified section.
         /// </returns>
-        private static MemorySegmentType GetSectionMemorySegment(
-            LocationID id, int sectionIndex = 0)
+        private static MemorySegmentType GetMemorySegment(LocationID id, int sectionIndex = 0)
         {
             switch (id)
             {
@@ -235,7 +235,7 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The memory address index.
         /// </returns>
-        private static int GetItemMemoryIndex(ItemType type, int index = 0)
+        private static int GetMemoryIndex(ItemType type, int index = 0)
         {
             switch (type)
             {
@@ -417,7 +417,7 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The memory address index.
         /// </returns>
-        private static int GetSectionMemoryIndex(LocationID id, int sectionIndex = 0, int index = 0)
+        private static int GetMemoryIndex(LocationID id, int sectionIndex = 0, int index = 0)
         {
             switch (id)
             {
@@ -712,7 +712,7 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The maximum autotracking value.
         /// </returns>
-        private static byte GetItemMaximum(ItemType type)
+        private static byte GetMaximum(ItemType type)
         {
             switch (type)
             {
@@ -745,7 +745,7 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The adjustment autotracking value.
         /// </returns>
-        private static int GetItemAdjustment(ItemType type)
+        private static int GetAdjustment(ItemType type)
         {
             switch (type)
             {
@@ -775,7 +775,7 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The comparison autotracking value.
         /// </returns>
-        private static byte GetItemComparison(ItemType type)
+        private static byte GetComparison(ItemType type)
         {
             switch (type)
             {
@@ -823,7 +823,7 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The value returned when the comparison is true.
         /// </returns>
-        private static int GetItemTrueValue(ItemType type, int index = 0)
+        private static int GetTrueValue(ItemType type, int index = 0)
         {
             switch (type)
             {
@@ -896,7 +896,7 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The memory flag for the specified item.
         /// </returns>
-        private static byte GetItemFlag(ItemType type, int index = 0)
+        private static byte GetFlag(ItemType type, int index = 0)
         {
             switch (type)
             {
@@ -969,7 +969,7 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The memory flag for the specified item.
         /// </returns>
-        private static byte GetSectionFlag(LocationID id, int sectionIndex = 0, int index = 0)
+        private static byte GetFlag(LocationID id, int sectionIndex = 0, int index = 0)
         {
             switch (id)
             {
@@ -1117,11 +1117,11 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The autotracking value for the specified item.
         /// </returns>
-        private static IAutoTrackValue GetItemAddressValue(ItemType type)
+        private static IAutoTrackValue GetAddressValue(ItemType type)
         {
             return new AutoTrackAddressValue(
-                GetMemoryAddress(GetItemMemorySegment(type), GetItemMemoryIndex(type)),
-                GetItemMaximum(type), GetItemAdjustment(type));
+                GetMemoryAddress(GetMemorySegment(type), GetMemoryIndex(type)),
+                GetMaximum(type), GetAdjustment(type));
         }
 
         /// <summary>
@@ -1136,12 +1136,12 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The autotracking boolean value for the specified item.
         /// </returns>
-        private static IAutoTrackValue GetItemAddressBool(ItemType type, int index = 0)
+        private static IAutoTrackValue GetAddressBool(ItemType type, int index = 0)
         {
             return new AutoTrackAddressBool(
                 GetMemoryAddress(
-                    GetItemMemorySegment(type, index), GetItemMemoryIndex(type, index)),
-                GetItemComparison(type), GetItemTrueValue(type, index));
+                    GetMemorySegment(type, index), GetMemoryIndex(type, index)),
+                GetComparison(type), GetTrueValue(type, index));
         }
 
         /// <summary>
@@ -1156,13 +1156,13 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The autotracking flag value for the specified item.
         /// </returns>
-        private static IAutoTrackValue GetItemFlagBool(ItemType type, int index = 0)
+        private static IAutoTrackValue GetFlagBool(ItemType type, int index = 0)
         {
             return new AutoTrackFlagBool(
                 new MemoryFlag(
                     GetMemoryAddress(
-                        GetItemMemorySegment(type, index), GetItemMemoryIndex(type, index)),
-                    GetItemFlag(type, index)), GetItemTrueValue(type, index));
+                        GetMemorySegment(type, index), GetMemoryIndex(type, index)),
+                    GetFlag(type, index)), GetTrueValue(type, index));
         }
 
         /// <summary>
@@ -1180,15 +1180,15 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The autotracking value for the specified section.
         /// </returns>
-        private static IAutoTrackValue GetSectionFlagBool(
+        private static IAutoTrackValue GetFlagBool(
             LocationID id, int sectionIndex, int index = 0)
         {
             return new AutoTrackFlagBool(
                 new MemoryFlag(
                     GetMemoryAddress(
-                        GetSectionMemorySegment(id, sectionIndex),
-                        GetSectionMemoryIndex(id, sectionIndex, index)),
-                    GetSectionFlag(id, sectionIndex, index)), 1);
+                        GetMemorySegment(id, sectionIndex),
+                        GetMemoryIndex(id, sectionIndex, index)),
+                    GetFlag(id, sectionIndex, index)), 1);
         }
 
         /// <summary>
@@ -1200,7 +1200,7 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The list of autotracking values for the specified item.
         /// </returns>
-        private static List<IAutoTrackValue> GetItemValues(ItemType type)
+        private static List<IAutoTrackValue> GetValues(ItemType type)
         {
             var values = new List<IAutoTrackValue>();
             int count;
@@ -1235,13 +1235,13 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
                     case ItemType.Mushroom:
                     case ItemType.Flute:
                         {
-                            values.Add(GetItemFlagBool(type, i));
+                            values.Add(GetFlagBool(type, i));
                         }
                         break;
                     case ItemType.Arrows:
                     case ItemType.Bottle:
                         {
-                            values.Add(GetItemAddressBool(type, i));
+                            values.Add(GetAddressBool(type, i));
                         }
                         break;
                 }
@@ -1262,7 +1262,7 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The list of autotracking values for the specified section.
         /// </returns>
-        private static List<IAutoTrackValue> GetSectionValues(LocationID id, int sectionIndex)
+        private static List<IAutoTrackValue> GetValues(LocationID id, int sectionIndex)
         {
             var values = new List<IAutoTrackValue>();
             int count;
@@ -1306,7 +1306,7 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
 
             for (int i = 0; i < count; i++)
             {
-                values.Add(GetSectionFlagBool(id, sectionIndex, i));
+                values.Add(GetFlagBool(id, sectionIndex, i));
             }
 
             return values;
@@ -1321,9 +1321,9 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The autotracking override value for the specified item.
         /// </returns>
-        private static IAutoTrackValue GetItemMultipleOverride(ItemType type)
+        private static IAutoTrackValue GetMultipleOverride(ItemType type)
         {
-            return new AutoTrackMultipleOverride(GetItemValues(type));
+            return new AutoTrackMultipleOverride(GetValues(type));
         }
 
         /// <summary>
@@ -1338,9 +1338,9 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The autotracking override value for the specified section.
         /// </returns>
-        private static IAutoTrackValue GetSectionMultipleOverride(LocationID id, int sectionIndex)
+        private static IAutoTrackValue GetMultipleOverride(LocationID id, int sectionIndex)
         {
-            return new AutoTrackMultipleOverride(GetSectionValues(id, sectionIndex));
+            return new AutoTrackMultipleOverride(GetValues(id, sectionIndex));
         }
 
         /// <summary>
@@ -1352,9 +1352,9 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The autotracking sum value for the specified item.
         /// </returns>
-        private static IAutoTrackValue GetItemMultipleSum(ItemType type)
+        private static IAutoTrackValue GetMultipleSum(ItemType type)
         {
-            return new AutoTrackMultipleSum(GetItemValues(type));
+            return new AutoTrackMultipleSum(GetValues(type));
         }
 
         /// <summary>
@@ -1369,9 +1369,9 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The autotracking sum value for the specified section.
         /// </returns>
-        private static IAutoTrackValue GetSectionMultipleSum(LocationID id, int sectionIndex)
+        private static IAutoTrackValue GetMultipleSum(LocationID id, int sectionIndex)
         {
-            return new AutoTrackMultipleSum(GetSectionValues(id, sectionIndex));
+            return new AutoTrackMultipleSum(GetValues(id, sectionIndex));
         }
 
         /// <summary>
@@ -1383,7 +1383,7 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The autotracking value for the specified item.
         /// </returns>
-        public static IAutoTrackValue GetItemAutoTrackValue(ItemType type)
+        public static IAutoTrackValue GetAutoTrackValue(ItemType type)
         {
             switch (type)
             {
@@ -1392,7 +1392,7 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
                 case ItemType.Mail:
                 case ItemType.Gloves:
                     {
-                        return GetItemAddressValue(type);
+                        return GetAddressValue(type);
                     }
                 case ItemType.Bow:
                 case ItemType.Hookshot:
@@ -1415,14 +1415,14 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
                 case ItemType.HalfMagic:
                 case ItemType.MoonPearl:
                     {
-                        return GetItemAddressBool(type);
+                        return GetAddressBool(type);
                     }
                 case ItemType.Arrows:
                 case ItemType.BigBomb:
                 case ItemType.Mushroom:
                 case ItemType.Flute:
                     {
-                        return GetItemMultipleOverride(type);
+                        return GetMultipleOverride(type);
                     }
                 case ItemType.Boomerang:
                 case ItemType.RedBoomerang:
@@ -1442,11 +1442,30 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
                 case ItemType.TRBigKey:
                 case ItemType.GTBigKey:
                     {
-                        return GetItemFlagBool(type);
+                        return GetFlagBool(type);
                     }
                 case ItemType.Bottle:
                     {
-                        return GetItemMultipleSum(type);
+                        return GetMultipleSum(type);
+                    }
+                case ItemType.SmallKey:
+                    {
+                        return null;
+                    }
+                case ItemType.HCSmallKey:
+                case ItemType.DPSmallKey:
+                case ItemType.ToHSmallKey:
+                case ItemType.ATSmallKey:
+                case ItemType.PoDSmallKey:
+                case ItemType.SPSmallKey:
+                case ItemType.SWSmallKey:
+                case ItemType.TTSmallKey:
+                case ItemType.IPSmallKey:
+                case ItemType.MMSmallKey:
+                case ItemType.TRSmallKey:
+                case ItemType.GTSmallKey:
+                    {
+                        return null;
                     }
                 default:
                     {
@@ -1467,13 +1486,13 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The autotracking value for the specified section.
         /// </returns>
-        public static IAutoTrackValue GetSectionAutoTrackValue(LocationID id, int sectionIndex)
+        public static IAutoTrackValue GetAutoTrackValue(LocationID id, int sectionIndex)
         {
             switch (id)
             {
                 case LocationID.LinksHouse:
                     {
-                        return GetSectionMultipleOverride(id, sectionIndex);
+                        return GetMultipleOverride(id, sectionIndex);
                     }
                 case LocationID.Pedestal:
                 case LocationID.LumberjackCave:
@@ -1536,7 +1555,7 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
                 case LocationID.MiseryMire when sectionIndex == 1:
                 case LocationID.TurtleRock when sectionIndex == 1:
                     {
-                        return GetSectionFlagBool(id, sectionIndex);
+                        return GetFlagBool(id, sectionIndex);
                     }
                 case LocationID.BlindsHouse:
                 case LocationID.TheWell:
@@ -1550,7 +1569,7 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
                 case LocationID.SuperBunnyCave:
                 case LocationID.HookshotCave:
                     {
-                        return GetSectionMultipleSum(id, sectionIndex);
+                        return GetMultipleSum(id, sectionIndex);
                     }
                 default:
                     {
