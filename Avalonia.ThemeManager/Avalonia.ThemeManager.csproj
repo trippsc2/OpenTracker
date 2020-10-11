@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="0.10.0-preview5" />
+    <PackageReference Include="Avalonia.Desktop" Version="0.10.0-preview5" />
+    <PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="0.10.0-preview5" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0-preview5" />
+  </ItemGroup>
+
+</Project>

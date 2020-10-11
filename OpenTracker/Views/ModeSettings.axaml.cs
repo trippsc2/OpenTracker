@@ -11,7 +11,7 @@ namespace OpenTracker.Views
             AvaloniaProperty.Register<MainWindow, bool>(nameof(ModeSettingsPopupOpen));
         public bool ModeSettingsPopupOpen
         {
-            get => GetValue(ModeSettingsPopupOpenProperty);
+            get => (bool)GetValue(ModeSettingsPopupOpenProperty);
             set => SetValue(ModeSettingsPopupOpenProperty, value);
         }
 
