@@ -700,6 +700,10 @@ namespace OpenTracker.Models.Requirements
                             RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll]
                         });
                     }
+                case RequirementType.RaceIllegalTracking:
+                    {
+                        return new RaceIllegalTrackingRequirement(true);
+                    }
                 case RequirementType.Swordless:
                 case RequirementType.Mushroom:
                 case RequirementType.BombosMM:

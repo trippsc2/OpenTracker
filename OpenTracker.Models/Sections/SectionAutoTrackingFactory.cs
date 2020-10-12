@@ -1,120 +1,16 @@
-﻿using OpenTracker.Models.Items;
+﻿using OpenTracker.Models.AutoTracking;
+using OpenTracker.Models.AutoTracking.AutotrackValues;
 using OpenTracker.Models.Locations;
-using OpenTracker.Models.Requirements;
 using System;
 using System.Collections.Generic;
 
-namespace OpenTracker.Models.AutoTracking.AutotrackValues
+namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the class containing creation logic for autotracking values.
+    /// This is the class for creating section auto tracking.
     /// </summary>
-    public static class AutoTrackValueFactory
+    public static class SectionAutoTrackingFactory
     {
-        /// <summary>
-        /// Returns the specified memory address.
-        /// </summary>
-        /// <param name="memorySegment">
-        /// The memory segment of the address.
-        /// </param>
-        /// <param name="index">
-        /// The index of the address.
-        /// </param>
-        /// <returns>
-        /// The memory address.
-        /// </returns>
-        private static MemoryAddress GetMemoryAddress(MemorySegmentType memorySegment, int index)
-        {
-            return memorySegment switch
-            {
-                MemorySegmentType.Room => AutoTracker.Instance.RoomMemory[index],
-                MemorySegmentType.OverworldEvent =>
-                    AutoTracker.Instance.OverworldEventMemory[index],
-                MemorySegmentType.Item => AutoTracker.Instance.ItemMemory[index],
-                MemorySegmentType.NPCItem => AutoTracker.Instance.NPCItemMemory[index],
-                _ => throw new ArgumentOutOfRangeException(nameof(memorySegment)),
-            };
-        }
-
-        /// <summary>
-        /// Returns the memory segment of the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <param name="index">
-        /// The index of the memory address to be retrieved.
-        /// </param>
-        /// <returns>
-        /// The memory segment of the specified item.
-        /// </returns>
-        private static MemorySegmentType GetMemorySegment(ItemType type, int index = 0)
-        {
-            switch (type)
-            {
-                case ItemType.Sword:
-                case ItemType.Shield:
-                case ItemType.Mail:
-                case ItemType.Bow:
-                case ItemType.Arrows:
-                case ItemType.Boomerang:
-                case ItemType.RedBoomerang:
-                case ItemType.Hookshot:
-                case ItemType.Bomb:
-                case ItemType.Powder:
-                case ItemType.Mushroom when index == 1:
-                case ItemType.Boots:
-                case ItemType.FireRod:
-                case ItemType.IceRod:
-                case ItemType.Bombos:
-                case ItemType.Ether:
-                case ItemType.Quake:
-                case ItemType.Gloves:
-                case ItemType.Lamp:
-                case ItemType.Hammer:
-                case ItemType.Flute:
-                case ItemType.FluteActivated:
-                case ItemType.Net:
-                case ItemType.Book:
-                case ItemType.Shovel:
-                case ItemType.Flippers:
-                case ItemType.Bottle:
-                case ItemType.CaneOfSomaria:
-                case ItemType.CaneOfByrna:
-                case ItemType.Cape:
-                case ItemType.Mirror:
-                case ItemType.HalfMagic:
-                case ItemType.MoonPearl:
-                case ItemType.EPBigKey:
-                case ItemType.DPBigKey:
-                case ItemType.ToHBigKey:
-                case ItemType.PoDBigKey:
-                case ItemType.SPBigKey:
-                case ItemType.SWBigKey:
-                case ItemType.TTBigKey:
-                case ItemType.IPBigKey:
-                case ItemType.MMBigKey:
-                case ItemType.TRBigKey:
-                case ItemType.GTBigKey:
-                    {
-                        return MemorySegmentType.Item;
-                    }
-                case ItemType.MagicBat:
-                case ItemType.Mushroom:
-                    {
-                        return MemorySegmentType.NPCItem;
-                    }
-                case ItemType.BigBomb:
-                    {
-                        return MemorySegmentType.Room;
-                    }
-                default:
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(type));
-                    }
-            }
-        }
-
         /// <summary>
         /// Returns the memory segment of the specified section.
         /// </summary>
@@ -219,185 +115,6 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
                 default:
                     {
                         throw new ArgumentOutOfRangeException(nameof(id));
-                    }
-            }
-        }
-
-        /// <summary>
-        /// Returns the memory address index of the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <param name="index">
-        /// The index of the memory address to be retrieved.
-        /// </param>
-        /// <returns>
-        /// The memory address index.
-        /// </returns>
-        private static int GetMemoryIndex(ItemType type, int index = 0)
-        {
-            switch (type)
-            {
-                case ItemType.Sword:
-                    {
-                        return 25;
-                    }
-                case ItemType.Shield:
-                    {
-                        return 26;
-                    }
-                case ItemType.Mail:
-                    {
-                        return 27;
-                    }
-                case ItemType.Bow:
-                    {
-                        return 0;
-                    }
-                case ItemType.Arrows when index == 0:
-                    {
-                        return 78;
-                    }
-                case ItemType.Arrows:
-                    {
-                        return 55;
-                    }
-                case ItemType.Boomerang:
-                case ItemType.RedBoomerang:
-                case ItemType.Powder:
-                case ItemType.Mushroom when index == 1:
-                case ItemType.Flute:
-                case ItemType.FluteActivated:
-                case ItemType.Shovel:
-                    {
-                        return 76;
-                    }
-                case ItemType.Hookshot:
-                    {
-                        return 2;
-                    }
-                case ItemType.Bomb:
-                    {
-                        return 3;
-                    }
-                case ItemType.BigBomb:
-                    {
-                        return 556;
-                    }
-                case ItemType.MagicBat:
-                case ItemType.Mushroom:
-                    {
-                        return 1;
-                    }
-                case ItemType.Boots:
-                    {
-                        return 21;
-                    }
-                case ItemType.FireRod:
-                    {
-                        return 5;
-                    }
-                case ItemType.IceRod:
-                    {
-                        return 6;
-                    }
-                case ItemType.Bombos:
-                    {
-                        return 7;
-                    }
-                case ItemType.Ether:
-                    {
-                        return 8;
-                    }
-                case ItemType.Quake:
-                    {
-                        return 9;
-                    }
-                case ItemType.Gloves:
-                    {
-                        return 20;
-                    }
-                case ItemType.Lamp:
-                    {
-                        return 10;
-                    }
-                case ItemType.Hammer:
-                    {
-                        return 11;
-                    }
-                case ItemType.Net:
-                    {
-                        return 13;
-                    }
-                case ItemType.Book:
-                    {
-                        return 14;
-                    }
-                case ItemType.Flippers:
-                    {
-                        return 22;
-                    }
-                case ItemType.Bottle when index == 0:
-                    {
-                        return 28;
-                    }
-                case ItemType.Bottle when index == 1:
-                    {
-                        return 29;
-                    }
-                case ItemType.Bottle when index == 2:
-                    {
-                        return 30;
-                    }
-                case ItemType.Bottle:
-                    {
-                        return 31;
-                    }
-                case ItemType.CaneOfSomaria:
-                    {
-                        return 16;
-                    }
-                case ItemType.CaneOfByrna:
-                    {
-                        return 17;
-                    }
-                case ItemType.Cape:
-                    {
-                        return 18;
-                    }
-                case ItemType.Mirror:
-                    {
-                        return 19;
-                    }
-                case ItemType.HalfMagic:
-                    {
-                        return 59;
-                    }
-                case ItemType.MoonPearl:
-                    {
-                        return 23;
-                    }
-                case ItemType.EPBigKey:
-                case ItemType.DPBigKey:
-                case ItemType.PoDBigKey:
-                case ItemType.SPBigKey:
-                case ItemType.MMBigKey:
-                    {
-                        return 39;
-                    }
-                case ItemType.ToHBigKey:
-                case ItemType.SWBigKey:
-                case ItemType.TTBigKey:
-                case ItemType.IPBigKey:
-                case ItemType.TRBigKey:
-                case ItemType.GTBigKey:
-                    {
-                        return 38;
-                    }
-                default:
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(type));
                     }
             }
         }
@@ -704,257 +421,6 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         }
 
         /// <summary>
-        /// Returns the maximum value of the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <returns>
-        /// The maximum autotracking value.
-        /// </returns>
-        private static byte GetMaximum(ItemType type)
-        {
-            switch (type)
-            {
-                case ItemType.Sword:
-                    {
-                        return 5;
-                    }
-                case ItemType.Shield:
-                    {
-                        return 3;
-                    }
-                case ItemType.Mail:
-                case ItemType.Gloves:
-                    {
-                        return 2;
-                    }
-                default:
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(type));
-                    }
-            }
-        }
-
-        /// <summary>
-        /// Returns the adjustment value of the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <returns>
-        /// The adjustment autotracking value.
-        /// </returns>
-        private static int GetAdjustment(ItemType type)
-        {
-            switch (type)
-            {
-                case ItemType.Sword:
-                    {
-                        return 1;
-                    }
-                case ItemType.Shield:
-                case ItemType.Mail:
-                case ItemType.Gloves:
-                    {
-                        return 0;
-                    }
-                default:
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(type));
-                    }
-            }
-        }
-
-        /// <summary>
-        /// Returns the comparison value of the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <returns>
-        /// The comparison autotracking value.
-        /// </returns>
-        private static byte GetComparison(ItemType type)
-        {
-            switch (type)
-            {
-                case ItemType.Bow:
-                case ItemType.Arrows:
-                case ItemType.Hookshot:
-                case ItemType.Bomb:
-                case ItemType.Boots:
-                case ItemType.FireRod:
-                case ItemType.IceRod:
-                case ItemType.Bombos:
-                case ItemType.Ether:
-                case ItemType.Quake:
-                case ItemType.Lamp:
-                case ItemType.Hammer:
-                case ItemType.Net:
-                case ItemType.Book:
-                case ItemType.Flippers:
-                case ItemType.Bottle:
-                case ItemType.CaneOfSomaria:
-                case ItemType.CaneOfByrna:
-                case ItemType.Cape:
-                case ItemType.Mirror:
-                case ItemType.HalfMagic:
-                case ItemType.MoonPearl:
-                    {
-                        return 0;
-                    }
-                default:
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(type));
-                    }
-            }
-        }
-
-        /// <summary>
-        /// Returns the value returned when the comparison is true for the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <param name="index">
-        /// The index of the memory address to be retrieved.
-        /// </param>
-        /// <returns>
-        /// The value returned when the comparison is true.
-        /// </returns>
-        private static int GetTrueValue(ItemType type, int index = 0)
-        {
-            switch (type)
-            {
-                case ItemType.Arrows when index == 0:
-                case ItemType.Mushroom when index == 0:
-                    {
-                        return 2;
-                    }
-                case ItemType.Bow:
-                case ItemType.Boomerang:
-                case ItemType.RedBoomerang:
-                case ItemType.Arrows:
-                case ItemType.Hookshot:
-                case ItemType.Bomb:
-                case ItemType.BigBomb:
-                case ItemType.Powder:
-                case ItemType.MagicBat:
-                case ItemType.Mushroom:
-                case ItemType.Boots:
-                case ItemType.FireRod:
-                case ItemType.IceRod:
-                case ItemType.Bombos:
-                case ItemType.Ether:
-                case ItemType.Quake:
-                case ItemType.Lamp:
-                case ItemType.Hammer:
-                case ItemType.Flute:
-                case ItemType.FluteActivated:
-                case ItemType.Net:
-                case ItemType.Book:
-                case ItemType.Shovel:
-                case ItemType.Flippers:
-                case ItemType.Bottle:
-                case ItemType.CaneOfSomaria:
-                case ItemType.CaneOfByrna:
-                case ItemType.Cape:
-                case ItemType.Mirror:
-                case ItemType.HalfMagic:
-                case ItemType.MoonPearl:
-                case ItemType.EPBigKey:
-                case ItemType.DPBigKey:
-                case ItemType.ToHBigKey:
-                case ItemType.PoDBigKey:
-                case ItemType.SPBigKey:
-                case ItemType.SWBigKey:
-                case ItemType.TTBigKey:
-                case ItemType.IPBigKey:
-                case ItemType.MMBigKey:
-                case ItemType.TRBigKey:
-                case ItemType.GTBigKey:
-                    {
-                        return 1;
-                    }
-                default:
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(type));
-                    }
-            }
-        }
-
-        /// <summary>
-        /// Returns the memory flag for the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <param name="index">
-        /// The index of the memory address to be retrieved.
-        /// </param>
-        /// <returns>
-        /// The memory flag for the specified item.
-        /// </returns>
-        private static byte GetFlag(ItemType type, int index = 0)
-        {
-            switch (type)
-            {
-                case ItemType.Arrows:
-                case ItemType.RedBoomerang:
-                case ItemType.IPBigKey:
-                    {
-                        return 64;
-                    }
-                case ItemType.Boomerang:
-                case ItemType.MagicBat:
-                case ItemType.SWBigKey:
-                    {
-                        return 128;
-                    }
-                case ItemType.BigBomb when index == 0:
-                case ItemType.Powder:
-                case ItemType.DPBigKey:
-                case ItemType.TTBigKey:
-                    {
-                        return 16;
-                    }
-                case ItemType.BigBomb:
-                case ItemType.Mushroom:
-                case ItemType.EPBigKey:
-                case ItemType.ToHBigKey:
-                    {
-                        return 32;
-                    }
-                case ItemType.Flute when index == 0:
-                case ItemType.FluteActivated:
-                case ItemType.MMBigKey:
-                    {
-                        return 1;
-                    }
-                case ItemType.Flute:
-                case ItemType.PoDBigKey:
-                    {
-                        return 2;
-                    }
-                case ItemType.Shovel:
-                case ItemType.SPBigKey:
-                case ItemType.GTBigKey:
-                    {
-                        return 4;
-                    }
-                case ItemType.TRBigKey:
-                    {
-                        return 8;
-                    }
-                default:
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(type));
-                    }
-            }
-        }
-
-        /// <summary>
         /// Returns the memory flag for the specified section.
         /// </summary>
         /// <param name="id">
@@ -981,6 +447,7 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
                 case LocationID.TreasureGame:
                 case LocationID.Blacksmith:
                 case LocationID.HammerPegs:
+                case LocationID.SpectacleRock when sectionIndex == 1:
                     {
                         return 4;
                     }
@@ -1006,7 +473,6 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
                 case LocationID.BombableShack:
                 case LocationID.PurpleChest:
                 case LocationID.MireShack when index == 0:
-                case LocationID.SpectacleRock when sectionIndex == 1:
                 case LocationID.SpikeCave:
                 case LocationID.SpiralCave:
                 case LocationID.ParadoxCave when index == 0:
@@ -1109,63 +575,6 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         }
 
         /// <summary>
-        /// Returns the autotracking value for the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <returns>
-        /// The autotracking value for the specified item.
-        /// </returns>
-        private static IAutoTrackValue GetAddressValue(ItemType type)
-        {
-            return new AutoTrackAddressValue(
-                GetMemoryAddress(GetMemorySegment(type), GetMemoryIndex(type)),
-                GetMaximum(type), GetAdjustment(type));
-        }
-
-        /// <summary>
-        /// Returns the autotracking boolean value for the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <param name="index">
-        /// The index of the memory address.
-        /// </param>
-        /// <returns>
-        /// The autotracking boolean value for the specified item.
-        /// </returns>
-        private static IAutoTrackValue GetAddressBool(ItemType type, int index = 0)
-        {
-            return new AutoTrackAddressBool(
-                GetMemoryAddress(
-                    GetMemorySegment(type, index), GetMemoryIndex(type, index)),
-                GetComparison(type), GetTrueValue(type, index));
-        }
-
-        /// <summary>
-        /// Returns the autotracking flag value for the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <param name="index">
-        /// The index of the memory address.
-        /// </param>
-        /// <returns>
-        /// The autotracking flag value for the specified item.
-        /// </returns>
-        private static IAutoTrackValue GetFlagBool(ItemType type, int index = 0)
-        {
-            return new AutoTrackFlagBool(
-                new MemoryFlag(
-                    GetMemoryAddress(
-                        GetMemorySegment(type, index), GetMemoryIndex(type, index)),
-                    GetFlag(type, index)), GetTrueValue(type, index));
-        }
-
-        /// <summary>
         /// Returns the autotracking value for the specified section.
         /// </summary>
         /// <param name="id">
@@ -1180,74 +589,14 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         /// <returns>
         /// The autotracking value for the specified section.
         /// </returns>
-        private static IAutoTrackValue GetFlagBool(
-            LocationID id, int sectionIndex, int index = 0)
+        private static IAutoTrackValue GetFlagBool(LocationID id, int sectionIndex, int index = 0)
         {
             return new AutoTrackFlagBool(
                 new MemoryFlag(
-                    GetMemoryAddress(
+                    AutoTracker.GetMemoryAddress(
                         GetMemorySegment(id, sectionIndex),
                         GetMemoryIndex(id, sectionIndex, index)),
                     GetFlag(id, sectionIndex, index)), 1);
-        }
-
-        /// <summary>
-        /// Returns the list of autotracking values for the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <returns>
-        /// The list of autotracking values for the specified item.
-        /// </returns>
-        private static List<IAutoTrackValue> GetValues(ItemType type)
-        {
-            var values = new List<IAutoTrackValue>();
-            int count;
-
-            switch (type)
-            {
-                case ItemType.Arrows:
-                case ItemType.BigBomb:
-                case ItemType.Mushroom:
-                case ItemType.Flute:
-                    {
-                        count = 2;
-                    }
-                    break;
-                case ItemType.Bottle:
-                    {
-                        count = 4;
-                    }
-                    break;
-                default:
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(type));
-                    }
-            }
-
-            for (int i = 0; i < count; i++)
-            {
-                switch (type)
-                {
-                    case ItemType.Arrows when i == 0:
-                    case ItemType.BigBomb:
-                    case ItemType.Mushroom:
-                    case ItemType.Flute:
-                        {
-                            values.Add(GetFlagBool(type, i));
-                        }
-                        break;
-                    case ItemType.Arrows:
-                    case ItemType.Bottle:
-                        {
-                            values.Add(GetAddressBool(type, i));
-                        }
-                        break;
-                }
-            }
-
-            return values;
         }
 
         /// <summary>
@@ -1313,20 +662,6 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         }
 
         /// <summary>
-        /// Returns the autotracking override value for the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <returns>
-        /// The autotracking override value for the specified item.
-        /// </returns>
-        private static IAutoTrackValue GetMultipleOverride(ItemType type)
-        {
-            return new AutoTrackMultipleOverride(GetValues(type));
-        }
-
-        /// <summary>
         /// Returns the autotracking override value for the specified section.
         /// </summary>
         /// <param name="id">
@@ -1344,20 +679,6 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         }
 
         /// <summary>
-        /// Returns the autotracking sum value for the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <returns>
-        /// The autotracking sum value for the specified item.
-        /// </returns>
-        private static IAutoTrackValue GetMultipleSum(ItemType type)
-        {
-            return new AutoTrackMultipleSum(GetValues(type));
-        }
-
-        /// <summary>
         /// Returns the autotracking sum value for the specified section.
         /// </summary>
         /// <param name="id">
@@ -1372,106 +693,6 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         private static IAutoTrackValue GetMultipleSum(LocationID id, int sectionIndex)
         {
             return new AutoTrackMultipleSum(GetValues(id, sectionIndex));
-        }
-
-        /// <summary>
-        /// Returns the autotracking value for the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <returns>
-        /// The autotracking value for the specified item.
-        /// </returns>
-        public static IAutoTrackValue GetAutoTrackValue(ItemType type)
-        {
-            switch (type)
-            {
-                case ItemType.Sword:
-                case ItemType.Shield:
-                case ItemType.Mail:
-                case ItemType.Gloves:
-                    {
-                        return GetAddressValue(type);
-                    }
-                case ItemType.Bow:
-                case ItemType.Hookshot:
-                case ItemType.Bomb:
-                case ItemType.Boots:
-                case ItemType.FireRod:
-                case ItemType.IceRod:
-                case ItemType.Bombos:
-                case ItemType.Ether:
-                case ItemType.Quake:
-                case ItemType.Lamp:
-                case ItemType.Hammer:
-                case ItemType.Net:
-                case ItemType.Book:
-                case ItemType.Flippers:
-                case ItemType.CaneOfSomaria:
-                case ItemType.CaneOfByrna:
-                case ItemType.Cape:
-                case ItemType.Mirror:
-                case ItemType.HalfMagic:
-                case ItemType.MoonPearl:
-                    {
-                        return GetAddressBool(type);
-                    }
-                case ItemType.Arrows:
-                case ItemType.BigBomb:
-                case ItemType.Mushroom:
-                case ItemType.Flute:
-                    {
-                        return GetMultipleOverride(type);
-                    }
-                case ItemType.Boomerang:
-                case ItemType.RedBoomerang:
-                case ItemType.Powder:
-                case ItemType.MagicBat:
-                case ItemType.FluteActivated:
-                case ItemType.Shovel:
-                case ItemType.EPBigKey:
-                case ItemType.DPBigKey:
-                case ItemType.ToHBigKey:
-                case ItemType.PoDBigKey:
-                case ItemType.SPBigKey:
-                case ItemType.SWBigKey:
-                case ItemType.TTBigKey:
-                case ItemType.IPBigKey:
-                case ItemType.MMBigKey:
-                case ItemType.TRBigKey:
-                case ItemType.GTBigKey:
-                    {
-                        return GetFlagBool(type);
-                    }
-                case ItemType.Bottle:
-                    {
-                        return GetMultipleSum(type);
-                    }
-                case ItemType.SmallKey:
-                    {
-                        return null;
-                    }
-                case ItemType.HCSmallKey:
-                case ItemType.DPSmallKey:
-                case ItemType.ToHSmallKey:
-                case ItemType.ATSmallKey:
-                case ItemType.PoDSmallKey:
-                case ItemType.SPSmallKey:
-                case ItemType.SWSmallKey:
-                case ItemType.TTSmallKey:
-                case ItemType.IPSmallKey:
-                case ItemType.MMSmallKey:
-                case ItemType.TRSmallKey:
-                case ItemType.GTSmallKey:
-                    {
-                        return null;
-                    }
-                default:
-                    {
-                        return null;
-                    }
-            }
         }
 
         /// <summary>

@@ -144,11 +144,11 @@ namespace OpenTracker.Models.Items
             {
                 return new CappedItem(
                     GetItemStarting(type), maximum.Value,
-                    AutoTrackValueFactory.GetAutoTrackValue(type));
+                    ItemAutoTrackingFactory.GetAutoTrackValue(type));
             }
 
             return new Item(
-                GetItemStarting(type), AutoTrackValueFactory.GetAutoTrackValue(type));
+                GetItemStarting(type), ItemAutoTrackingFactory.GetAutoTrackValue(type));
         }
     }
 }

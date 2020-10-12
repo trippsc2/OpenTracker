@@ -11,6 +11,7 @@ using System.Globalization;
 using System.IO;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Text;
 using WebSocketSharp;
 
 namespace OpenTracker.ViewModels
@@ -58,6 +59,13 @@ namespace OpenTracker.ViewModels
             set => this.RaiseAndSetIfChanged(ref _device, value);
         }
 
+        private bool _raceIllegalTracking;
+        public bool RaceIllegalTracking
+        {
+            get => _raceIllegalTracking;
+            private set => this.RaiseAndSetIfChanged(ref _raceIllegalTracking, value);
+        }
+
         private bool _canStart;
         public bool CanStart
         {
@@ -100,6 +108,7 @@ namespace OpenTracker.ViewModels
             set => this.RaiseAndSetIfChanged(ref _visibleLog, value);
         }
 
+        public ReactiveCommand<Unit, Unit> RaceIllegalTrackingCommand { get; }
         public ReactiveCommand<Unit, Unit> GetDevicesCommand { get; }
         public ReactiveCommand<Unit, Unit> StartCommand { get; }
         public ReactiveCommand<Unit, Unit> StopCommand { get; }
@@ -135,6 +144,8 @@ namespace OpenTracker.ViewModels
             };
             _memoryCheckTimer.Tick += OnMemoryCheckTimerTick;
 
+            RaceIllegalTrackingCommand = ReactiveCommand.Create(ToggleRaceIllegalTracking);
+
             GetDevicesCommand = ReactiveCommand.CreateFromObservable(
                 GetDevicesAsync, this.WhenAnyValue(x => x.CanGetDevices));
             GetDevicesCommand.IsExecuting.ToProperty(
@@ -153,6 +164,7 @@ namespace OpenTracker.ViewModels
             ResetLogCommand = ReactiveCommand.Create(ResetLog);
 
             PropertyChanged += OnPropertyChanged;
+            AutoTracker.Instance.PropertyChanged += OnAutoTrackerChanged;
             AutoTracker.Instance.SNESConnector.PropertyChanged += OnConnectorChanged;
             LogMessages.CollectionChanged += OnLogMessageChanged;
 
@@ -258,6 +270,24 @@ namespace OpenTracker.ViewModels
             UpdateCanGetDevices();
             UpdateCanStart();
             UpdateCanStop();
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the AutoTracker class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnAutoTrackerChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(AutoTracker.RaceIllegalTracking))
+            {
+                UpdateStatusText();
+                RaceIllegalTracking = AutoTracker.Instance.RaceIllegalTracking;
+            }
         }
 
         /// <summary>
@@ -413,7 +443,19 @@ namespace OpenTracker.ViewModels
                     case ConnectionStatus.Connected:
                         {
                             StatusTextColor = "#00ff00";
-                            StatusText = "CONNECTED";
+                            var sb = new StringBuilder();
+                            sb.Append("CONNECTED (");
+
+                            if (AutoTracker.Instance.RaceIllegalTracking)
+                            {
+                                sb.Append("RACE ILLEGAL)");
+                            }
+                            else
+                            {
+                                sb.Append("RACE LEGAL)");
+                            }
+
+                            StatusText = sb.ToString();
                         }
                         break;
                     case ConnectionStatus.Error:
@@ -439,6 +481,14 @@ namespace OpenTracker.ViewModels
                 LogText.AppendLine($"{message.Item1.ToString().ToUpper(CultureInfo.CurrentCulture)}:" +
                     $" {message.Item2}");
             });
+        }
+
+        /// <summary>
+        /// Toggles the race illegal tracking flag.
+        /// </summary>
+        private void ToggleRaceIllegalTracking()
+        {
+            AutoTracker.Instance.RaceIllegalTracking = !AutoTracker.Instance.RaceIllegalTracking;
         }
 
         /// <summary>

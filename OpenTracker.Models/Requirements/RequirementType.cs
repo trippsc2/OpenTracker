@@ -39,6 +39,7 @@
         WorldStateInvertedEntranceShuffleNotAll,
         WorldStateInvertedEntranceShuffleAll,
         TakeAnyLocationsEntranceShuffleNotAll,
+        RaceIllegalTracking,
         Swordless,
         Sword1,
         Sword2,

@@ -8,6 +8,7 @@
         Room,
         OverworldEvent,
         Item,
-        NPCItem
+        NPCItem,
+        SmallKey
     }
 }

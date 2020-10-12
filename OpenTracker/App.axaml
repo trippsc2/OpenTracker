@@ -96,6 +96,10 @@
 			<Setter Property="HorizontalAlignment" Value="Center" />
 			<Setter Property="VerticalAlignment" Value="Center" />
 		</Style>
+
+    <Style Selector="Border.StatusBar">
+      <Setter Property="Background" Value="{DynamicResource ThemeControlLowBrush}" />
+    </Style>
 		
 		<Style Selector="Menu.MenuBar">
 			<Setter Property="Background" Value="{DynamicResource ThemeControlLowBrush}" />

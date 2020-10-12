@@ -1,6 +1,7 @@
 ﻿using OpenTracker.Models.Utils;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using WebSocketSharp;
 
 namespace OpenTracker.Models.AutoTracking
@@ -8,7 +9,7 @@ namespace OpenTracker.Models.AutoTracking
     /// <summary>
     /// This is the class containing autotracking data and methods
     /// </summary>
-    public class AutoTracker : Singleton<AutoTracker>
+    public class AutoTracker : Singleton<AutoTracker>, INotifyPropertyChanged
     {
         private byte? _inGameStatus;
 
@@ -25,6 +26,25 @@ namespace OpenTracker.Models.AutoTracking
             new List<MemoryAddress>(144);
         public List<MemoryAddress> NPCItemMemory { get; } =
             new List<MemoryAddress>(2);
+        public List<MemoryAddress> SmallKeyMemory { get; } =
+            new List<MemoryAddress>(16);
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private bool _raceIllegalTracking;
+        public bool RaceIllegalTracking
+        {
+            get => _raceIllegalTracking;
+            set
+            {
+                if (_raceIllegalTracking != value)
+                {
+                    _raceIllegalTracking = value;
+                    PropertyChanged?.Invoke(
+                        this, new PropertyChangedEventArgs(nameof(RaceIllegalTracking)));
+                }
+            }
+        }
         
         /// <summary>
         /// Constructor
@@ -45,6 +65,11 @@ namespace OpenTracker.Models.AutoTracking
                 if (i < 144)
                 {
                     ItemMemory.Add(new MemoryAddress());
+                }
+
+                if (i < 16)
+                {
+                    SmallKeyMemory.Add(new MemoryAddress());
                 }
 
                 if (i < 2)
@@ -121,6 +146,12 @@ namespace OpenTracker.Models.AutoTracking
                             memory = NPCItemMemory;
                         }
                         break;
+                    case MemorySegmentType.SmallKey:
+                        {
+                            startAddress = 0x7ef4e0;
+                            memory = SmallKeyMemory;
+                        }
+                        break;
                     default:
                         {
                             throw new ArgumentOutOfRangeException(nameof(segment));
@@ -178,6 +209,31 @@ namespace OpenTracker.Models.AutoTracking
             {
                 address.Reset();
             }
+        }
+
+        /// <summary>
+        /// Returns the specified memory address.
+        /// </summary>
+        /// <param name="memorySegment">
+        /// The memory segment of the address.
+        /// </param>
+        /// <param name="index">
+        /// The index of the address.
+        /// </param>
+        /// <returns>
+        /// The memory address.
+        /// </returns>
+        public static MemoryAddress GetMemoryAddress(MemorySegmentType memorySegment, int index)
+        {
+            return memorySegment switch
+            {
+                MemorySegmentType.Room => Instance.RoomMemory[index],
+                MemorySegmentType.OverworldEvent => Instance.OverworldEventMemory[index],
+                MemorySegmentType.Item => Instance.ItemMemory[index],
+                MemorySegmentType.NPCItem => Instance.NPCItemMemory[index],
+                MemorySegmentType.SmallKey => Instance.SmallKeyMemory[index],
+                _ => throw new ArgumentOutOfRangeException(nameof(memorySegment))
+            };
         }
     }
 }

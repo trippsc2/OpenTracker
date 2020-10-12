@@ -24,8 +24,6 @@ namespace OpenTracker.ViewModels
     public class MainWindowVM : ViewModelBase, IAutoTrackerAccess, IBoundsData, ICloseHandler,
         IColorSelectAccess, IDynamicLayout, IOpenData, ISaveData, ISequenceBreakAccess
     {
-        private AutoTrackerDialogVM _autoTrackerDialog;
-
         public bool? Maximized
         {
             get => AppSettings.Instance.Bounds.Maximized;
@@ -59,12 +57,16 @@ namespace OpenTracker.ViewModels
                 _ => AppSettings.Instance.Layout.VerticalUIPanelPlacement
             };
 
+        public AutoTrackerDialogVM AutoTrackerDialog { get; } =
+            new AutoTrackerDialogVM();
         public TopMenuVM TopMenu { get; } =
             new TopMenuVM();
         public UIPanelVM UIPanel { get; } =
             new UIPanelVM();
         public MapAreaVM MapArea { get; } =
             new MapAreaVM();
+        public StatusBarVM StatusBar { get; } =
+            new StatusBarVM();
 
         public ReactiveCommand<Unit, Unit> OpenResetDialogCommand =>
             TopMenu.OpenResetDialogCommand;
@@ -241,12 +243,7 @@ namespace OpenTracker.ViewModels
         /// </returns>
         public object GetAutoTrackerViewModel()
         {
-            if (_autoTrackerDialog == null)
-            {
-                _autoTrackerDialog = new AutoTrackerDialogVM();
-            }
-
-            return _autoTrackerDialog;
+            return AutoTrackerDialog;
         }
 
         /// <summary>
