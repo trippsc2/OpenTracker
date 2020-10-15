@@ -77,6 +77,44 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
+        /// Returns a map requirement.
+        /// </summary>
+        /// <param name="type">
+        /// The requirement type.
+        /// </param>
+        /// <returns>
+        /// A map requirement.
+        /// </returns>
+        private static IRequirement GetMapShuffleRequirement(RequirementType type)
+        {
+            return type switch
+            {
+                RequirementType.MapShuffleOff => new MapShuffleRequirement(false),
+                RequirementType.MapShuffleOn => new MapShuffleRequirement(true),
+                _ => throw new ArgumentOutOfRangeException(nameof(type))
+            };
+        }
+
+        /// <summary>
+        /// Returns a compass requirement.
+        /// </summary>
+        /// <param name="type">
+        /// The requirement type.
+        /// </param>
+        /// <returns>
+        /// A compass requirement.
+        /// </returns>
+        private static IRequirement GetCompassShuffleRequirement(RequirementType type)
+        {
+            return type switch
+            {
+                RequirementType.CompassShuffleOff => new CompassShuffleRequirement(false),
+                RequirementType.CompassShuffleOn => new CompassShuffleRequirement(true),
+                _ => throw new ArgumentOutOfRangeException(nameof(type))
+            };
+        }
+
+        /// <summary>
         /// Returns a small key requirement.
         /// </summary>
         /// <param name="type">
@@ -559,6 +597,16 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.ItemPlacementAdvanced:
                     {
                         return GetItemPlacementRequirement(type);
+                    }
+                case RequirementType.MapShuffleOff:
+                case RequirementType.MapShuffleOn:
+                    {
+                        return GetMapShuffleRequirement(type);
+                    }
+                case RequirementType.CompassShuffleOff:
+                case RequirementType.CompassShuffleOn:
+                    {
+                        return GetCompassShuffleRequirement(type);
                     }
                 case RequirementType.SmallKeyShuffleOff:
                 case RequirementType.SmallKeyShuffleOn:

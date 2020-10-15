@@ -1,4 +1,6 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.AutoTracking;
+using OpenTracker.Models.AutoTracking.AutotrackValues;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
@@ -15,6 +17,7 @@ namespace OpenTracker.Models.Sections
     public class DungeonItemSection : IDungeonItemSection
     {
         private readonly IDungeon _dungeon;
+        private readonly IAutoTrackValue _autoTrackValue;
 
         public string Name =>
             "Dungeon";
@@ -89,13 +92,20 @@ namespace OpenTracker.Models.Sections
         /// <param name="requirement">
         /// The requirement for this section to be visible.
         /// </param>
-        public DungeonItemSection(IDungeon dungeon, IRequirement requirement = null)
+        public DungeonItemSection(
+            IDungeon dungeon, IAutoTrackValue autoTrackValue, IRequirement requirement = null)
         {
             _dungeon = dungeon ?? throw new ArgumentNullException(nameof(dungeon));
+            _autoTrackValue = autoTrackValue;
             Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.NoRequirement];
 
             Mode.Instance.PropertyChanged += OnModeChanged;
             LocationDictionary.Instance.LocationCreated += OnLocationCreated;
+
+            if (_autoTrackValue != null)
+            {
+                _autoTrackValue.PropertyChanged += OnAutoTrackChanged;
+            }
         }
 
         /// <summary>
@@ -144,6 +154,22 @@ namespace OpenTracker.Models.Sections
                 e.PropertyName == nameof(Mode.BigKeyShuffle))
             {
                 SetTotal();
+            }
+        }
+
+        private void OnAutoTrackChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
+            {
+                AutoTrackUpdate();
+            }
+        }
+
+        private void AutoTrackUpdate()
+        {
+            if (_autoTrackValue.CurrentValue.HasValue)
+            {
+                Available = Total - _autoTrackValue.CurrentValue.Value;
             }
         }
 

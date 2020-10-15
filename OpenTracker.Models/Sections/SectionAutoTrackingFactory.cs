@@ -1,6 +1,8 @@
 ﻿using OpenTracker.Models.AutoTracking;
 using OpenTracker.Models.AutoTracking.AutotrackValues;
+using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
+using OpenTracker.Models.Requirements;
 using System;
 using System.Collections.Generic;
 
@@ -696,6 +698,858 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
+        /// Returns the autotracking value for the specified dungeon section.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID of the dungeon.
+        /// </param>
+        /// <returns>
+        /// The autotracking value for the specified dungeon section.
+        /// </returns>
+        private static IAutoTrackValue GetDungeonValue(LocationID id)
+        {
+            switch (id)
+            {
+                case LocationID.HyruleCastle:
+                    {
+                        return new AutoTrackConditionalValue(
+                            RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                            new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x24),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x22),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x22),
+                                            0x20), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x22),
+                                            0x40), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xe4),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xe2),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x100),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x64),
+                                            0x10), 1)
+                                }),
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.MapShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.HCMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.HCSmallKey]),
+                                        new AutoTrackStaticValue(0))
+                                })), null);
+                    }
+                case LocationID.AgahnimTower:
+                    {
+                        return new AutoTrackConditionalValue(
+                            RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                            new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1c0),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1a0),
+                                            0x10), 1)
+                                }),
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.ATSmallKey]),
+                                        new AutoTrackStaticValue(0))
+                                })), null);
+                    }
+                case LocationID.EasternPalace:
+                    {
+                        return new AutoTrackConditionalValue(
+                            RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                            new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x172),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x154),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x150),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x152),
+                                            0x40), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x170),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x191),
+                                            0x8), 1)
+                                }),
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.MapShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.EPMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.CompassShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.EPCompass]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.EPBigKey]),
+                                        new AutoTrackStaticValue(0))
+                                })), null);
+                    }
+                case LocationID.DesertPalace:
+                    {
+                        return new AutoTrackConditionalValue(
+                            RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                            new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xe7),
+                                            0x4), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xe6),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xe8),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x10a),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xea),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x67),
+                                            0x8), 1)
+                                }),
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.MapShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.DPMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.CompassShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.DPCompass]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.DPSmallKey]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.DPBigKey]),
+                                        new AutoTrackStaticValue(0))
+                                })), null);
+                    }
+                case LocationID.TowerOfHera:
+                    {
+                        return new AutoTrackConditionalValue(
+                            RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                            new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x10f),
+                                            0x4), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xee),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x10e),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x4e),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x4e),
+                                            0x20), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xf),
+                                            0x8), 1)
+                                }),
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.MapShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.ToHMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.CompassShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.ToHCompass]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.ToHSmallKey]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.ToHBigKey]),
+                                        new AutoTrackStaticValue(0))
+                                })), null);
+                    }
+                case LocationID.PalaceOfDarkness:
+                    {
+                        return new AutoTrackConditionalValue(
+                            RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                            new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x12),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x54),
+                                            0x20), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x74),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x14),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x56),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x54),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x34),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x32),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x32),
+                                            0x20), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x34),
+                                            0x20), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xd4),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xd4),
+                                            0x20), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x34),
+                                            0x40), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xb5),
+                                            0x8), 1)
+                                }),
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.MapShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.PoDMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.CompassShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.PoDCompass]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.PoDSmallKey]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.PoDBigKey]),
+                                        new AutoTrackStaticValue(0))
+                                })), null);
+                    }
+                case LocationID.SwampPalace:
+                    {
+                        return new AutoTrackConditionalValue(
+                            RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                            new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x50),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x6e),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x6c),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x8c),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x68),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x6a),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xec),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xec),
+                                            0x20), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xcc),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xd),
+                                            0x8), 1)
+                                }),
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.MapShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.SPMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.CompassShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.SPCompass]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.SPSmallKey]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.SPBigKey]),
+                                        new AutoTrackStaticValue(0))
+                                })), null);
+                    }
+                case LocationID.SkullWoods:
+                    {
+                        return new AutoTrackConditionalValue(
+                            RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                            new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xae),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xb2),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xb0),
+                                            0x20), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xb0),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xae),
+                                            0x20), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xce),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xd0),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x53),
+                                            0x8), 1)
+                                }),
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.MapShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.SWMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.CompassShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.SWCompass]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.SWSmallKey]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.SWBigKey]),
+                                        new AutoTrackStaticValue(0))
+                                })), null);
+                    }
+                case LocationID.ThievesTown:
+                    {
+                        return new AutoTrackConditionalValue(
+                            RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                            new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1b6),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x196),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1b8),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1b6),
+                                            0x20), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xca),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x8a),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x88),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x159),
+                                            0x8), 1)
+                                }),
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.MapShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.TTMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.CompassShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.TTCompass]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.TTSmallKey]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.TTBigKey]),
+                                        new AutoTrackStaticValue(0))
+                                })), null);
+                    }
+                case LocationID.IcePalace:
+                    {
+                        return new AutoTrackConditionalValue(
+                            RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                            new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x5c),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x3e),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x7e),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xbe),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xfc),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x15c),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x13c),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1bd),
+                                            0x8), 1)
+                                }),
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.MapShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.IPMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.CompassShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.IPCompass]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.IPSmallKey]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.IPBigKey]),
+                                        new AutoTrackStaticValue(0))
+                                })), null);
+                    }
+                case LocationID.MiseryMire:
+                    {
+                        return new AutoTrackConditionalValue(
+                            RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                            new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x182),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1a2),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x184),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x186),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x186),
+                                            0x20), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x166),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x144),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x121),
+                                            0x8), 1)
+                                }),
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.MapShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.MMMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.CompassShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.MMCompass]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.MMSmallKey]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.MMBigKey]),
+                                        new AutoTrackStaticValue(0))
+                                })), null);
+                    }
+                case LocationID.TurtleRock:
+                    {
+                        return new AutoTrackConditionalValue(
+                            RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                            new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x163),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x163),
+                                            0x20), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1ac),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x16c),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x28),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x48),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x8),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1aa),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1aa),
+                                            0x20), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1aa),
+                                            0x40), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1aa),
+                                            0x80), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x149),
+                                            0x8), 1)
+                                }),
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.MapShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.TRMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.CompassShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.TRCompass]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.TRSmallKey]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.TRBigKey]),
+                                        new AutoTrackStaticValue(0))
+                                })), null);
+                    }
+                case LocationID.GanonsTower:
+                    {
+                        return new AutoTrackConditionalValue(
+                            RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                            new AutoTrackMultipleDifference(
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x119),
+                                            0x4), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xf6),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xf6),
+                                            0x20), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xf6),
+                                            0x40), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xf6),
+                                            0x80), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x116),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xfa),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xf8),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xf8),
+                                            0x20), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xf8),
+                                            0x40), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xf8),
+                                            0x80), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x118),
+                                            0x20), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x118),
+                                            0x40), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x11a),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x13a),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x13a),
+                                            0x20), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x13a),
+                                            0x40), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x13a),
+                                            0x80), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x118),
+                                            0x80), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x38),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x38),
+                                            0x20), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x38),
+                                            0x40), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x118),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x7a),
+                                            0x10), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x7a),
+                                            0x20), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x7a),
+                                            0x40), 1),
+                                    new AutoTrackFlagBool(
+                                        new MemoryFlag(
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x9a),
+                                            0x10), 1)
+                                }),
+                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.MapShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.GTMap]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.CompassShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.GTCompass]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.GTSmallKey]),
+                                        new AutoTrackStaticValue(0)),
+                                    new AutoTrackConditionalValue(
+                                        RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff],
+                                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.GTBigKey]),
+                                        new AutoTrackStaticValue(0))
+                                })), null);
+                    }
+                default:
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(id));
+                    }
+            }
+        }
+
+        /// <summary>
         /// Returns the autotracking value for the specified section.
         /// </summary>
         /// <param name="id">
@@ -791,6 +1645,22 @@ namespace OpenTracker.Models.Sections
                 case LocationID.HookshotCave:
                     {
                         return GetMultipleSum(id, sectionIndex);
+                    }
+                case LocationID.HyruleCastle:
+                case LocationID.AgahnimTower:
+                case LocationID.EasternPalace:
+                case LocationID.DesertPalace:
+                case LocationID.TowerOfHera:
+                case LocationID.PalaceOfDarkness:
+                case LocationID.SwampPalace:
+                case LocationID.SkullWoods:
+                case LocationID.ThievesTown:
+                case LocationID.IcePalace:
+                case LocationID.MiseryMire:
+                case LocationID.TurtleRock:
+                case LocationID.GanonsTower when sectionIndex == 0:
+                    {
+                        return GetDungeonValue(id);
                     }
                 default:
                     {

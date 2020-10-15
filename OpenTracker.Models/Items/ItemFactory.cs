@@ -1,6 +1,4 @@
-﻿using OpenTracker.Models.AutoTracking.AutotrackValues;
-
-namespace OpenTracker.Models.Items
+﻿namespace OpenTracker.Models.Items
 {
     /// <summary>
     /// This is the class for creating items.
@@ -100,6 +98,29 @@ namespace OpenTracker.Models.Items
                 case ItemType.MMBigKey:
                 case ItemType.TRBigKey:
                 case ItemType.GTBigKey:
+                case ItemType.HCMap:
+                case ItemType.EPMap:
+                case ItemType.DPMap:
+                case ItemType.ToHMap:
+                case ItemType.PoDMap:
+                case ItemType.SPMap:
+                case ItemType.SWMap:
+                case ItemType.TTMap:
+                case ItemType.IPMap:
+                case ItemType.MMMap:
+                case ItemType.TRMap:
+                case ItemType.GTMap:
+                case ItemType.EPCompass:
+                case ItemType.DPCompass:
+                case ItemType.ToHCompass:
+                case ItemType.PoDCompass:
+                case ItemType.SPCompass:
+                case ItemType.SWCompass:
+                case ItemType.TTCompass:
+                case ItemType.IPCompass:
+                case ItemType.MMCompass:
+                case ItemType.TRCompass:
+                case ItemType.GTCompass:
                     {
                         return 1;
                     }

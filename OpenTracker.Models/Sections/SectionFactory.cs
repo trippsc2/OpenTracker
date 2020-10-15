@@ -1130,7 +1130,9 @@ namespace OpenTracker.Models.Sections
         private static IDungeonItemSection GetDungeonItemSection(
             IDungeon dungeon, LocationID id, int index = 0)
         {
-            return new DungeonItemSection(dungeon, GetSectionRequirement(id, index));
+            return new DungeonItemSection(
+                dungeon, SectionAutoTrackingFactory.GetAutoTrackValue(id, index),
+                GetSectionRequirement(id, index));
         }
 
         /// <summary>
