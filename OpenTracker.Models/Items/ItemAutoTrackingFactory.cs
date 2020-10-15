@@ -179,6 +179,7 @@ namespace OpenTracker.Models.Items
                         return 27;
                     }
                 case ItemType.Bow:
+                case ItemType.HCSmallKey when index == 0:
                     {
                         return 0;
                     }
@@ -522,6 +523,7 @@ namespace OpenTracker.Models.Items
                 case ItemType.Mirror:
                 case ItemType.HalfMagic:
                 case ItemType.MoonPearl:
+                case ItemType.HCSmallKey:
                     {
                         return 0;
                     }
@@ -689,6 +691,7 @@ namespace OpenTracker.Models.Items
                 case ItemType.MMBigKey:
                 case ItemType.TRBigKey:
                 case ItemType.GTBigKey:
+                case ItemType.HCSmallKey:
                 case ItemType.HCMap:
                 case ItemType.EPMap:
                 case ItemType.DPMap:
@@ -764,6 +767,7 @@ namespace OpenTracker.Models.Items
                 case ItemType.Mushroom:
                 case ItemType.Flute:
                 case ItemType.HCMap:
+                case ItemType.HCSmallKey:
                     {
                         count = 2;
                     }
@@ -794,6 +798,7 @@ namespace OpenTracker.Models.Items
                         break;
                     case ItemType.Arrows:
                     case ItemType.Bottle:
+                    case ItemType.HCSmallKey:
                         {
                             values.Add(GetAddressBool(type, i));
                         }
@@ -890,7 +895,7 @@ namespace OpenTracker.Models.Items
                                 new AutoTrackMultipleDifference(
                                     new AutoTrackItemValue(ItemDictionary.Instance[ItemType.HCUnlockedDoor]),
                                     new AutoTrackItemValue(ItemDictionary.Instance[ItemType.HCFreeKey])), null),
-                            GetAddressValue(type));
+                            GetMultipleOverride(type));
                     }
                 case ItemType.DPSmallKey:
                     {
