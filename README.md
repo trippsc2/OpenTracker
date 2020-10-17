@@ -62,7 +62,7 @@ To run the application, run the OpenTracker binary file.  It will be located in 
 
 ### MacOS
 
-Download the OpenTracker.<version>.macOS.zip file from the Releases page.  This contains an .app bundle that can be moved to your Applications folder or run directly.
+Download the OpenTracker.\<version\>.macOS.zip file from the Releases page.  This contains an .app bundle that can be moved to your Applications folder or run directly.
 
 ## How it Works
 
@@ -70,12 +70,11 @@ Download the OpenTracker.<version>.macOS.zip file from the Releases page.  This 
 
 Some notable differences from other map trackers:
 
-- The tracker assumes that fake flippers is always possible (except for entry to Swamp Palace).  This is because there are so many Splash Deletion setups that the logic would be very complicated.  There is room for development on this.
 - Game mode settings can be changed by clicking the Gear icon on the top right of the Items panel and modifying the settings listed.
 - The Dungeon Item Placement settings change the number of available checks in a dungeon to the number of non-dungeon items applicible for that mode.  (e.g. If Standard Dungeon Item Placement is set, Palace of Darkness has 5 items.  If Maps/Compasses is set, PoD has 7 items.)
 - To allow for mystery seed friendliness, all mode settings can be changed without affecting the tracker state.  Modifying Dungeon Item Placement adds or subtracts remaining items from relevant dungeons when the mode is changed.
-- In Retro, you can use the generic key in the Items panel to indicate keys in inventory.  Any keys used in a dungeon should be tracked using the dungeon key icons.  The dungeon logic will take the total of the generic keys and dungeon keys, so to give you a better sense of what you can currently do.
-- The Rupee quiver is assumed to be had in Retro mode, but is trackable.
+- With Generic Keys enabled, you can use the Small Key icon in the Items panel to indicate the number of keys in inventory.  Any keys used in a dungeon can be tracked using the dungeon key icons.  The dungeon logic will take the total of the generic keys and dungeon keys, so to give you a better sense of what you can currently do.
+- The Rupee quiver is assumed to be had in Retro mode, but is trackable by right clicking the Bow icon in the Items panel.
 
 ### Autotracking
 
@@ -85,13 +84,16 @@ To start Autotracking, have QUSB2SNES or USB2SNES open and connected to your gam
 
 Some notes about Autotracking:
 
-- Most inventory items are autotracked.
-- Small keys are not autotracked.
-- Big keys are autotracked.
-- The dungeon prize type is not autotracked, but whether or not the dungeon prize has been acquired is autotracked.
+- Please note the rules for competitions regarding autotracking.  I will do my best to provide options to disable forbidden functionality, when reported.
+- All inventory items are autotracked.
+- Small keys are autotracked for ROMs that support it.
+  - Berserker's Multiworld 3.2.0 or higher.
+  - alttpr.com 31.0.7 or higher will support this.
+- Big Keys are autotracked in all versions.
+- The dungeon prize type is not autotracked, but whether or not the dungeon prize has been acquired from the dungeon is autotracked.
 - All non-dungeon item locations are autotracked.
-- Dungeon item locations (including Hyrule Castle, Agahnim's Tower, and Ganon's Tower) are not autotracked.
-- Crystal requirements for GT and Ganon Vulnerability are not autotracked.
+- OpenTracker v1.5 or newer supports an option for Race Illegal Tracking.  This enables tracking of dungeon item locations and should not be used in competitive races, unless it is allowed.
+- All mode settings (including crystal requirements, swordless, etc.) are not autotracked.  This is to prevent providing information not available to the player in mystery seeds.
 - Entrance locations in Entrance Shuffle mode are not autotracked.
 - Take Any locations are not autotracked.
 
@@ -150,3 +152,4 @@ This project is licensed under the MIT license.
 - EmoSaru - Thank you for creating EmoTracker and providing inspiration for this app.
 - Avalonia team - Thank you for delivering a cross-platform desktop app framework for .NET programmers.
 - Wiesław Šoltés - Thank you for creating all of the various Avalonia extension libraries.  Your work has been extremely helpful to this project!
+- codemann8 - Thank you for allowing me to use your assets for marking entrances!  It is much appreciated!
