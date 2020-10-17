@@ -97,6 +97,8 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
             AppSettings.Instance.Colors.AccessibilityColors[_mapLocation.Location.Accessibility];
         public string BorderColor =>
             Highlighted ? "#FFFFFFFF" : "#FF000000";
+        public string ToolTipText =>
+            _mapLocation.Location.Name;
 
         /// <summary>
         /// Constructor

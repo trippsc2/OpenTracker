@@ -10,8 +10,9 @@
     <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
   </UserControl.Resources>
 
-  <DockPanel IsVisible="{Binding Visible}" IsHitTestVisible="{Binding Visible}" DragDrop.AllowDrop="True"
-             PointerEnter="OnPointerEnter" PointerLeave="OnPointerLeave">
+  <DockPanel IsVisible="{Binding Visible}" IsHitTestVisible="{Binding Visible}"
+             DragDrop.AllowDrop="True" PointerEnter="OnPointerEnter" PointerLeave="OnPointerLeave"
+             ToolTip.Tip="{Binding ToolTipText}">
 
     <ContentControl DockPanel.Dock="{Binding MarkingDock}" Content="{Binding Marking}" />
       

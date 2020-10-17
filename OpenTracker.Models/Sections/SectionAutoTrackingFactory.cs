@@ -62,7 +62,6 @@ namespace OpenTracker.Models.Sections
                 case LocationID.SuperBunnyCave:
                 case LocationID.HookshotCave:
                 case LocationID.MimicCave:
-                case LocationID.AgahnimTower when sectionIndex == 1:
                 case LocationID.EasternPalace when sectionIndex == 1:
                 case LocationID.DesertPalace when sectionIndex == 1:
                 case LocationID.TowerOfHera when sectionIndex == 1:
@@ -95,6 +94,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.CastleSecret:
                 case LocationID.Hobo:
                 case LocationID.PurpleChest:
+                case LocationID.AgahnimTower when sectionIndex == 1:
                     {
                         return MemorySegmentType.Item;
                     }
@@ -423,6 +423,33 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
+        /// Returns the comparison value of the specified item.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID.
+        /// </param>
+        /// <param name="sectionIndex">
+        /// The index of the section to be tracked.
+        /// </param>
+        /// <returns>
+        /// The comparison autotracking value.
+        /// </returns>
+        private static byte GetComparison(LocationID id, int sectionIndex = 0)
+        {
+            switch (id)
+            {
+                case LocationID.AgahnimTower when sectionIndex == 1:
+                    {
+                        return 2;
+                    }
+                default:
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(id));
+                    }
+            }
+        }
+
+        /// <summary>
         /// Returns the memory flag for the specified section.
         /// </summary>
         /// <param name="id">
@@ -577,6 +604,33 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
+        /// Returns the value returned when the comparison is true for the specified item.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID.
+        /// </param>
+        /// <param name="sectionIndex">
+        /// The index of the section to be tracked.
+        /// </param>
+        /// <returns>
+        /// The value returned when the comparison is true.
+        /// </returns>
+        private static int GetTrueValue(LocationID id, int sectionIndex = 0)
+        {
+            switch (id)
+            {
+                case LocationID.AgahnimTower when sectionIndex == 1:
+                    {
+                        return 1;
+                    }
+                default:
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(id));
+                    }
+            }
+        }
+
+        /// <summary>
         /// Returns the autotracking value for the specified section.
         /// </summary>
         /// <param name="id">
@@ -599,6 +653,26 @@ namespace OpenTracker.Models.Sections
                         GetMemorySegment(id, sectionIndex),
                         GetMemoryIndex(id, sectionIndex, index)),
                     GetFlag(id, sectionIndex, index)), 1);
+        }
+
+        /// <summary>
+        /// Returns the autotracking boolean value for the specified item.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID.
+        /// </param>
+        /// <param name="sectionIndex">
+        /// The index of the section to be tracked.
+        /// </param>
+        /// <returns>
+        /// The autotracking boolean value for the specified item.
+        /// </returns>
+        private static IAutoTrackValue GetAddressBool(LocationID id, int sectionIndex = 0)
+        {
+            return new AutoTrackAddressBool(
+                AutoTracker.GetMemoryAddress(
+                    GetMemorySegment(id, sectionIndex), GetMemoryIndex(id, sectionIndex)),
+                GetComparison(id, sectionIndex), GetTrueValue(id, sectionIndex));
         }
 
         /// <summary>
@@ -808,7 +882,7 @@ namespace OpenTracker.Models.Sections
                                     new AutoTrackFlagBool(
                                         new MemoryFlag(
                                             AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x152),
-                                            0x40), 1),
+                                            0x10), 1),
                                     new AutoTrackFlagBool(
                                         new MemoryFlag(
                                             AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x170),
@@ -1339,11 +1413,11 @@ namespace OpenTracker.Models.Sections
                                 {
                                     new AutoTrackFlagBool(
                                         new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x163),
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x16e),
                                             0x10), 1),
                                     new AutoTrackFlagBool(
                                         new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x163),
+                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x16e),
                                             0x20), 1),
                                     new AutoTrackFlagBool(
                                         new MemoryFlag(
@@ -1618,7 +1692,6 @@ namespace OpenTracker.Models.Sections
                 case LocationID.HookshotCave when sectionIndex == 0:
                 case LocationID.FloatingIsland:
                 case LocationID.MimicCave:
-                case LocationID.AgahnimTower when sectionIndex == 1:
                 case LocationID.EasternPalace when sectionIndex == 1:
                 case LocationID.DesertPalace when sectionIndex == 1:
                 case LocationID.TowerOfHera when sectionIndex == 1:
@@ -1647,7 +1720,7 @@ namespace OpenTracker.Models.Sections
                         return GetMultipleSum(id, sectionIndex);
                     }
                 case LocationID.HyruleCastle:
-                case LocationID.AgahnimTower:
+                case LocationID.AgahnimTower when sectionIndex == 0:
                 case LocationID.EasternPalace:
                 case LocationID.DesertPalace:
                 case LocationID.TowerOfHera:
@@ -1661,6 +1734,10 @@ namespace OpenTracker.Models.Sections
                 case LocationID.GanonsTower when sectionIndex == 0:
                     {
                         return GetDungeonValue(id);
+                    }
+                case LocationID.AgahnimTower:
+                    {
+                        return GetAddressBool(id, sectionIndex);
                     }
                 default:
                     {

@@ -9,7 +9,7 @@
          PointerEnter="OnPointerEnter" PointerLeave="OnPointerLeave">
     <Border Classes="MapLocation" Width="{Binding Size}" Height="{Binding Size}"
             Background="{Binding Color, Mode=OneWay}" BorderThickness="{Binding BorderSize}"
-            BorderBrush="{Binding BorderColor, Mode=OneWay}">
+            BorderBrush="{Binding BorderColor, Mode=OneWay}" ToolTip.Tip="{Binding ToolTipText}">
       <Border Classes="MapLocationNumber" IsHitTestVisible="{Binding TextVisible}"
               IsVisible="{Binding TextVisible}">
         <TextBlock Classes="MapLocationNumber" Foreground="{Binding Color}" Text="{Binding Text}" />

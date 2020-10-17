@@ -9,6 +9,6 @@
          PointerEnter="OnPointerEnter" PointerLeave="OnPointerLeave">
     <Border Classes="MapLocation" Width="40" Height="40" CornerRadius="40"
             Background="{Binding Color, Mode=OneWay}" BorderThickness="5"
-            BorderBrush="{Binding BorderColor, Mode=OneWay}" />
+            BorderBrush="{Binding BorderColor, Mode=OneWay}" ToolTip.Tip="{Binding ToolTipText}" />
   </Panel>
 </UserControl>

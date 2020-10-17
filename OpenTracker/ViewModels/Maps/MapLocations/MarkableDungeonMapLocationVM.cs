@@ -171,6 +171,8 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                     _mapLocation.Location.Available.ToString(CultureInfo.InvariantCulture);
             }
         }
+        public string ToolTipText =>
+            _mapLocation.Location.Name;
 
         /// <summary>
         /// Constructor
