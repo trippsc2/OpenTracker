@@ -9,6 +9,7 @@
         OverworldEvent,
         Item,
         NPCItem,
+        DungeonItem,
         SmallKey
     }
 }

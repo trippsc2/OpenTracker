@@ -789,41 +789,9 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                                {
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x24),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x22),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x22),
-                                            0x20), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x22),
-                                            0x40), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xe4),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xe2),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x100),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x64),
-                                            0x10), 1)
-                                }),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 0),
+                                    0xF0, 4),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -841,17 +809,9 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                                {
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1c0),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1a0),
-                                            0x10), 1)
-                                }),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 1),
+                                    0xF, 0),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -865,33 +825,9 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                                {
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x172),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x154),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x150),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x152),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x170),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x191),
-                                            0x8), 1)
-                                }),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 2),
+                                    0x07, 0),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -913,33 +849,9 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                                {
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xe7),
-                                            0x4), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xe6),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xe8),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x10a),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xea),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x67),
-                                            0x8), 1)
-                                }),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 1),
+                                    0xE0, 5),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -965,33 +877,9 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                                {
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x10f),
-                                            0x4), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xee),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x10e),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x4e),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x4e),
-                                            0x20), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xf),
-                                            0x8), 1)
-                                }),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 1),
+                                    0x1C, 2),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -1017,65 +905,9 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                                {
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x12),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x54),
-                                            0x20), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x74),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x14),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x56),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x54),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x34),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x32),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x32),
-                                            0x20), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x34),
-                                            0x20), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xd4),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xd4),
-                                            0x20), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x34),
-                                            0x40), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xb5),
-                                            0x8), 1)
-                                }),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 0),
+                                    0x0F, 0),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -1101,49 +933,9 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                                {
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x50),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x6e),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x6c),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x8c),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x68),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x6a),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xec),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xec),
-                                            0x20), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xcc),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xd),
-                                            0x8), 1)
-                                }),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 5),
+                                    0xF, 0),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -1169,41 +961,9 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                                {
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xae),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xb2),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xb0),
-                                            0x20), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xb0),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xae),
-                                            0x20), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xce),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xd0),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x53),
-                                            0x8), 1)
-                                }),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 3),
+                                    0xF0, 4),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -1229,41 +989,9 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                                {
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1b6),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x196),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1b8),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1b6),
-                                            0x20), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xca),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x8a),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x88),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x159),
-                                            0x8), 1)
-                                }),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 3),
+                                    0xF, 0),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -1289,41 +1017,9 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                                {
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x5c),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x3e),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x7e),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xbe),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xfc),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x15c),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x13c),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1bd),
-                                            0x8), 1)
-                                }),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 4),
+                                    0xF0, 4),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -1349,41 +1045,9 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                                {
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x182),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1a2),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x184),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x186),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x186),
-                                            0x20), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x166),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x144),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x121),
-                                            0x8), 1)
-                                }),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 4),
+                                    0xF, 0),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -1409,57 +1073,9 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                                {
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x16e),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x16e),
-                                            0x20), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1ac),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x16c),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x28),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x48),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x8),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1aa),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1aa),
-                                            0x20), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1aa),
-                                            0x40), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1aa),
-                                            0x80), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x149),
-                                            0x8), 1)
-                                }),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 5),
+                                    0xF0, 4),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -1485,117 +1101,9 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                                {
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x119),
-                                            0x4), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xf6),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xf6),
-                                            0x20), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xf6),
-                                            0x40), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xf6),
-                                            0x80), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x116),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xfa),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xf8),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xf8),
-                                            0x20), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xf8),
-                                            0x40), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xf8),
-                                            0x80), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x118),
-                                            0x20), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x118),
-                                            0x40), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x11a),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x13a),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x13a),
-                                            0x20), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x13a),
-                                            0x40), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x13a),
-                                            0x80), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x118),
-                                            0x80), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x38),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x38),
-                                            0x20), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x38),
-                                            0x40), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x118),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x7a),
-                                            0x10), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x7a),
-                                            0x20), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x7a),
-                                            0x40), 1),
-                                    new AutoTrackFlagBool(
-                                        new MemoryFlag(
-                                            AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x9a),
-                                            0x10), 1)
-                                }),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 2),
+                                    0xF8, 3),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(

@@ -26,6 +26,8 @@ namespace OpenTracker.Models.AutoTracking
             new List<MemoryAddress>(144);
         public List<MemoryAddress> NPCItemMemory { get; } =
             new List<MemoryAddress>(2);
+        public List<MemoryAddress> DungeonItemMemory { get; } =
+            new List<MemoryAddress>(6);
         public List<MemoryAddress> SmallKeyMemory { get; } =
             new List<MemoryAddress>(16);
 
@@ -70,6 +72,11 @@ namespace OpenTracker.Models.AutoTracking
                 if (i < 16)
                 {
                     SmallKeyMemory.Add(new MemoryAddress());
+                }
+
+                if (i < 6)
+                {
+                    DungeonItemMemory.Add(new MemoryAddress());
                 }
 
                 if (i < 2)
@@ -146,6 +153,12 @@ namespace OpenTracker.Models.AutoTracking
                             memory = NPCItemMemory;
                         }
                         break;
+                    case MemorySegmentType.DungeonItem:
+                        {
+                            startAddress = 0x7ef434;
+                            memory = DungeonItemMemory;
+                        }
+                        break;
                     case MemorySegmentType.SmallKey:
                         {
                             startAddress = 0x7ef4e0;
@@ -209,6 +222,16 @@ namespace OpenTracker.Models.AutoTracking
             {
                 address.Reset();
             }
+
+            foreach (var address in DungeonItemMemory)
+            {
+                address.Reset();
+            }
+
+            foreach (var address in SmallKeyMemory)
+            {
+                address.Reset();
+            }
         }
 
         /// <summary>
@@ -231,6 +254,7 @@ namespace OpenTracker.Models.AutoTracking
                 MemorySegmentType.OverworldEvent => Instance.OverworldEventMemory[index],
                 MemorySegmentType.Item => Instance.ItemMemory[index],
                 MemorySegmentType.NPCItem => Instance.NPCItemMemory[index],
+                MemorySegmentType.DungeonItem => Instance.DungeonItemMemory[index],
                 MemorySegmentType.SmallKey => Instance.SmallKeyMemory[index],
                 _ => throw new ArgumentOutOfRangeException(nameof(memorySegment))
             };
