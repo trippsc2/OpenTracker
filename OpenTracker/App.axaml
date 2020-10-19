@@ -239,8 +239,14 @@
 			<Setter Property="BorderThickness" Value="0" />
 			<Setter Property="IsHitTestVisible" Value="False" />
 		</Style>
-		
-		<Style Selector="CheckBox.ModeSettings">
+
+    <Style Selector="CheckBox.AutoTracker">
+      <Setter Property="FontFamily" Value="avares://OpenTracker/Assets/#Open Sans" />
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="Margin" Value="10" />
+    </Style>
+
+    <Style Selector="CheckBox.ModeSettings">
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/#Open Sans" />
 			<Setter Property="FontSize" Value="11" />
 			<Setter Property="Margin" Value="4" />
@@ -256,8 +262,8 @@
 			<Setter Property="FontSize" Value="11" />
 			<Setter Property="Margin" Value="4" />
 		</Style>
-		
-		<Style Selector="Panel.ItemControl">
+
+    <Style Selector="Panel.ItemControl">
 			<Setter Property="Margin" Value="1,4" />
 			<Setter Property="Height" Value="32" />
 			<Setter Property="Width" Value="32" />

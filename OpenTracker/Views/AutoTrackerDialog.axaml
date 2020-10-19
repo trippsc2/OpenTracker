@@ -34,9 +34,8 @@
 						  SelectedItem="{Binding Device, Mode=TwoWay}" />
 			</StackPanel>
 
-      <CheckBox Margin="10" HorizontalAlignment="Center" IsChecked="{Binding
-                RaceIllegalTracking}" Command="{Binding
-                RaceIllegalTrackingCommand}"
+      <CheckBox HorizontalAlignment="Center" Classes="AutoTracker" IsChecked="{Binding
+                RaceIllegalTracking}" Command="{Binding RaceIllegalTrackingCommand}"
                 ToolTip.Tip="This enables autotracking of dungeon items.">Race Illegal Tracking</CheckBox>
 
 			<StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
