@@ -520,12 +520,15 @@ namespace OpenTracker.Models.Items
                 case ItemType.CaneOfSomaria:
                 case ItemType.CaneOfByrna:
                 case ItemType.Cape:
-                case ItemType.Mirror:
                 case ItemType.HalfMagic:
                 case ItemType.MoonPearl:
                 case ItemType.HCSmallKey:
                     {
                         return 0;
+                    }
+                case ItemType.Mirror:
+                    {
+                        return 1;
                     }
                 default:
                     {
