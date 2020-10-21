@@ -70,6 +70,7 @@ Download the OpenTracker.\<version\>.macOS.zip file from the Releases page.  Thi
 
 Some notable differences from other map trackers:
 
+- You can bypass the logic by holding CTRL while clearing or collecting a location.  This will allow you to clear inaccessible locations.
 - Game mode settings can be changed by clicking the Gear icon on the top right of the Items panel and modifying the settings listed.
 - The Dungeon Item Placement settings change the number of available checks in a dungeon to the number of non-dungeon items applicible for that mode.  (e.g. If Standard Dungeon Item Placement is set, Palace of Darkness has 5 items.  If Maps/Compasses is set, PoD has 7 items.)
 - To allow for mystery seed friendliness, all mode settings can be changed without affecting the tracker state.  Modifying Dungeon Item Placement adds or subtracts remaining items from relevant dungeons when the mode is changed.
