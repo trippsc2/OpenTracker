@@ -46,7 +46,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
         [MemberData(nameof(LightWorldMirror_To_HammerPegsArea))]
         [MemberData(nameof(DarkWorldWestLift2_To_HammerPegsArea))]
         [MemberData(nameof(HammerPegsArea_To_HammerPegs))]
-        [MemberData(nameof(HammerPegsArea_To_PurpleChest))]
+        [MemberData(nameof(Blacksmith_To_PurpleChest))]
         [MemberData(nameof(LightWorldMirror_To_BlacksmithPrison))]
         [MemberData(nameof(DarkWorldWestLift2_To_BlacksmithPrison))]
         [MemberData(nameof(BlacksmithPrison_To_Blacksmith))]
@@ -1451,67 +1451,32 @@ namespace OpenTracker.UnitTests.RequirementNodes
                 }
             };
 
-        public static IEnumerable<object[]> HammerPegsArea_To_PurpleChest =>
+        public static IEnumerable<object[]> Blacksmith_To_PurpleChest =>
             new List<object[]>
             {
                 new object[]
                 {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.StandardOpen
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.PurpleChest,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
+                    new ModeSaveData(),
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.HammerPegsArea
+                        RequirementNodeID.Blacksmith
                     },
                     RequirementNodeID.PurpleChest,
                     AccessibilityLevel.None
                 },
                 new object[]
                 {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.StandardOpen
-                    },
+                    new ModeSaveData(),
                     new (ItemType, int)[0],
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
+                        RequirementNodeID.Blacksmith,
                         RequirementNodeID.HammerPegsArea
-                    },
-                    RequirementNodeID.PurpleChest,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.HammerPegsArea,
-                        RequirementNodeID.LightWorld
                     },
                     RequirementNodeID.PurpleChest,
                     AccessibilityLevel.Normal
