@@ -522,6 +522,27 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
+        /// Returns a requrement node requirement.
+        /// </summary>
+        /// <param name="type">
+        /// The requirement type.
+        /// </param>
+        /// <returns>
+        /// A requirement node requirement.
+        /// </returns>
+        private static IRequirement GetRequirementNodeRequirement(RequirementType type)
+        {
+            return type switch
+            {
+                RequirementType.LightWorld => new RequirementNodeRequirement(
+                    RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld]),
+                RequirementType.HammerPegsArea => new RequirementNodeRequirement(
+                    RequirementNodeDictionary.Instance[RequirementNodeID.HammerPegsArea]),
+                _ => throw new ArgumentOutOfRangeException(nameof(type))
+            };
+        }
+
+        /// <summary>
         /// Returns a boss requirement.
         /// </summary>
         /// <param name="game">
@@ -864,9 +885,9 @@ namespace OpenTracker.Models.Requirements
                         return new CrystalRequirement();
                     }
                 case RequirementType.LightWorld:
+                case RequirementType.HammerPegsArea:
                     {
-                        return new RequirementNodeRequirement(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld]);
+                        return GetRequirementNodeRequirement(type);
                     }
                 case RequirementType.AllMedallions:
                     {

@@ -141,6 +141,7 @@
         SBIPIceBreaker,
         GTCrystal,
         LightWorld,
+        HammerPegsArea,
         AllMedallions,
         ExtendMagic1,
         ExtendMagic2,

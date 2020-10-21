@@ -1322,8 +1322,8 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.PurpleChest:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.HammerPegsArea], node,
-                            RequirementDictionary.Instance[RequirementType.LightWorld]));
+                            RequirementNodeDictionary.Instance[RequirementNodeID.Blacksmith], node,
+                            RequirementDictionary.Instance[RequirementType.HammerPegsArea]));
                     }
                     break;
                 case RequirementNodeID.BlacksmithPrison:
