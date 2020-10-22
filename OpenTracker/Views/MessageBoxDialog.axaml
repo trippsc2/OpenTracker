@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         MaxWidth="400" SizeToContent="Height" Padding="5" WindowStartupLocation="CenterOwner"
         CanResize="False" mc:Ignorable="d" x:Class="OpenTracker.Views.MessageBoxDialog"
-        Icon="avares://OpenTracker/Assets/triforce.png" Title="{Binding Title}">
+        Icon="avares://OpenTracker/Assets/Images/triforce.png" Title="{Binding Title}">
 
 	<Window.Styles>
 		<Style Selector="Button">

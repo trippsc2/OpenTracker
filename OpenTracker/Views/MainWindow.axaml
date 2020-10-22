@@ -3,11 +3,12 @@
         xmlns:vm="clr-namespace:OpenTracker.ViewModels;assembly=OpenTracker"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
         mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="960"
         x:Class="OpenTracker.Views.MainWindow" Closing="OnClose" WindowStartupLocation="Manual"
         Background="{DynamicResource ThemeBackgroundBrush}" UseLayoutRounding="True"
-        Icon="avares://OpenTracker/Assets/triforce.png" Title="OpenTracker"
-		Height="{Binding Height}" Width="{Binding Width}">
+        Icon="avares://OpenTracker/Assets/Images/triforce.png" Title="OpenTracker"
+        Height="{Binding Height}" Width="{Binding Width}">
 	
 	<Design.DataContext>
 		<vm:MainWindowVM />
@@ -23,8 +24,9 @@
 		<KeyBinding Gesture="F11" Command="{Binding ToggleDisplayAllLocationsCommand}" />
 	</Window.KeyBindings>
 
-	<DockPanel>
-		<ContentControl Content="{Binding TopMenu}" DockPanel.Dock="Top" />
+
+  <DockPanel>
+    <ContentControl Content="{Binding TopMenu}" DockPanel.Dock="Top" />
     <ContentControl Content="{Binding StatusBar}" DockPanel.Dock="Bottom" />
 		<ContentControl Content="{Binding UIPanel}" DockPanel.Dock="{Binding UIDock, Mode=OneWay}" />
 		<ContentControl Content="{Binding MapArea}" />

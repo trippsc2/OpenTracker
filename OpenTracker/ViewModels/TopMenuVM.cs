@@ -76,6 +76,7 @@ namespace OpenTracker.ViewModels
             AppSettings.Instance.Layout.UIScale == 2.0;
 
         public ReactiveCommand<Unit, Unit> OpenResetDialogCommand { get; }
+        public ReactiveCommand<Unit, Unit> OpenAboutDialogCommand { get; }
         public ReactiveCommand<Unit, Unit> UndoCommand { get; }
         public ReactiveCommand<Unit, Unit> RedoCommand { get; }
         public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocationsCommand { get; }
@@ -91,6 +92,10 @@ namespace OpenTracker.ViewModels
         private readonly ObservableAsPropertyHelper<bool> _isOpeningResetDialog;
         public bool IsOpeningResetDialog =>
             _isOpeningResetDialog.Value;
+
+        private readonly ObservableAsPropertyHelper<bool> _isOpeningAboutDialog;
+        public bool IsOpeningAboutDialog =>
+            _isOpeningAboutDialog.Value;
 
         private bool _canUndo;
         public bool CanUndo
@@ -114,6 +119,10 @@ namespace OpenTracker.ViewModels
             OpenResetDialogCommand = ReactiveCommand.CreateFromObservable(OpenResetDialogAsync);
             OpenResetDialogCommand.IsExecuting.ToProperty(
                 this, x => x.IsOpeningResetDialog, out _isOpeningResetDialog);
+
+            OpenAboutDialogCommand = ReactiveCommand.CreateFromObservable(OpenAboutDialogAsync);
+            OpenAboutDialogCommand.IsExecuting.ToProperty(
+                this, x => x.IsOpeningAboutDialog, out _isOpeningResetDialog);
 
             UndoCommand = ReactiveCommand.Create(Undo, this.WhenAnyValue(x => x.CanUndo));
             RedoCommand = ReactiveCommand.Create(Redo, this.WhenAnyValue(x => x.CanRedo));
@@ -437,6 +446,18 @@ namespace OpenTracker.ViewModels
         }
 
         /// <summary>
+        /// Opens an about dialog window.
+        /// </summary>
+        private static void OpenAboutDialog()
+        {
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                bool? result = await App.DialogService.ShowDialog(new AboutDialogVM())
+                    .ConfigureAwait(false);
+            });
+        }
+
+        /// <summary>
         /// Returns the observable result of the OpenResetDialog method.
         /// </summary>
         /// <returns>
@@ -445,6 +466,17 @@ namespace OpenTracker.ViewModels
         private IObservable<Unit> OpenResetDialogAsync()
         {
             return Observable.Start(() => { OpenResetDialog(); });
+        }
+
+        /// <summary>
+        /// Returns the observable result of the OpenAboutDialog method.
+        /// </summary>
+        /// <returns>
+        /// The observable result of the OpenAboutDialog method.
+        /// </returns>
+        private IObservable<Unit> OpenAboutDialogAsync()
+        {
+            return Observable.Start(() => { OpenAboutDialog(); });
         }
     }
 }

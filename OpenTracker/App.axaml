@@ -119,7 +119,21 @@
 			<Setter Property="MinWidth" Value="190" />
 		</Style>
 
-		<Style Selector="TextBlock.UIPanelTitleText">
+    <Style Selector="TextBlock.About">
+      <Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
+      <Setter Property="FontSize" Value="24" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.AboutVersion">
+      <Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
+      <Setter Property="FontSize" Value="16" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.UIPanelTitleText">
 			<Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
 			<Setter Property="FontSize" Value="12" />
 			<Setter Property="FontWeight" Value="SemiBold" />

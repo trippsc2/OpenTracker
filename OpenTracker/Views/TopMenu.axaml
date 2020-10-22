@@ -351,6 +351,10 @@
 
         </MenuItem>
 
+        <Separator />
+        <MenuItem Classes="Menu InnerMenu" Header="About..." Command="{Binding
+                  OpenAboutDialogCommand}" />
+
       </MenuItem>
 
     </Menu>

@@ -68,6 +68,13 @@ namespace OpenTracker.ViewModels
         public StatusBarVM StatusBar { get; } =
             new StatusBarVM();
 
+        private bool _aboutPageOpen;
+        public bool AboutPageOpen
+        {
+            get => _aboutPageOpen;
+            set => this.RaiseAndSetIfChanged(ref _aboutPageOpen, value);
+        }
+
         public ReactiveCommand<Unit, Unit> OpenResetDialogCommand =>
             TopMenu.OpenResetDialogCommand;
         public ReactiveCommand<Unit, Unit> UndoCommand =>
@@ -76,12 +83,14 @@ namespace OpenTracker.ViewModels
             TopMenu.RedoCommand;
         public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocationsCommand =>
             TopMenu.ToggleDisplayAllLocationsCommand;
+        public ReactiveCommand<Unit, Unit> AboutCommand { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
         public MainWindowVM()
         {
+            AboutCommand = ReactiveCommand.Create(OpenAbout);
             AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
             LoadSequenceBreaks();
         }
@@ -266,6 +275,14 @@ namespace OpenTracker.ViewModels
         public object GetSequenceBreakViewModel()
         {
             return SequenceBreakDialogVMFactory.GetSequenceBreakDialogVM();
+        }
+
+        /// <summary>
+        /// Opens the About popup.
+        /// </summary>
+        public void OpenAbout()
+        {
+            AboutPageOpen = true;
         }
     }
 }

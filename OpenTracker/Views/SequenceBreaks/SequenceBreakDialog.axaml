@@ -6,7 +6,7 @@
         Width="700" Height="650" Padding="5" CanResize="False" WindowStartupLocation="CenterScreen"
         SizeToContent="WidthAndHeight"
         x:Class="OpenTracker.Views.SequenceBreaks.SequenceBreakDialog"
-        Icon="avares://OpenTracker/Assets/triforce.png" Title="OpenTracker - Sequence Breaks">
+        Icon="avares://OpenTracker/Assets/Images/triforce.png" Title="OpenTracker - Sequence Breaks">
   <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
     <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
       
