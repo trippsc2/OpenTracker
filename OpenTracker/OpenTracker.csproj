@@ -49,6 +49,9 @@
     <Compile Update="Views\AboutDialog.axaml.cs">
       <DependentUpon>AboutDialog.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Items\Small\SmallItem.axaml.cs">
+      <DependentUpon>SmallItem.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Update="Themes\Dark.xaml">

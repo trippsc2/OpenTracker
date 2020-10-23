@@ -1,16 +1,15 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
-using System;
-using System.Collections.Generic;
+using OpenTracker.Models.Settings;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for a set of requirement alternatives.
+    /// This is the class for the requirement of the always display dungeon items setting.
     /// </summary>
-    public class AlternativeRequirement : IRequirement
+    public class AlwaysDisplayDungeonItemsRequirement : IRequirement
     {
-        private readonly List<IRequirement> _requirements;
+        private readonly bool _alwaysDisplayDungeonItems;
 
         public bool Met =>
             Accessibility != AccessibilityLevel.None;
@@ -34,17 +33,14 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="requirements">
-        /// A list of requirements to be aggregated.
+        /// <param name="alwaysDisplayDungeonItems">
+        /// A boolean representing the always display dungeon items requirement.
         /// </param>
-        public AlternativeRequirement(List<IRequirement> requirements)
+        public AlwaysDisplayDungeonItemsRequirement(bool alwaysDisplayDungeonItems)
         {
-            _requirements = requirements ?? throw new ArgumentNullException(nameof(requirements));
+            _alwaysDisplayDungeonItems = alwaysDisplayDungeonItems;
 
-            foreach (var requirement in requirements)
-            {
-                requirement.PropertyChanged += OnRequirementChanged;
-            }
+            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
 
             UpdateAccessibility();
         }
@@ -61,7 +57,7 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IRequirement interface.
+        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -69,9 +65,9 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IRequirement.Accessibility))
+            if (e.PropertyName == nameof(LayoutSettings.AlwaysDisplayDungeonItems))
             {
                 UpdateAccessibility();
             }
@@ -82,19 +78,9 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         private void UpdateAccessibility()
         {
-            var accessibility = AccessibilityLevel.None;
-
-            foreach (var requirement in _requirements)
-            {
-                accessibility = AccessibilityLevelMethods.Max(accessibility, requirement.Accessibility);
-
-                if (accessibility == AccessibilityLevel.Normal)
-                {
-                    break;
-                }
-            }
-
-            Accessibility = accessibility;
+            Accessibility = 
+                AppSettings.Instance.Layout.AlwaysDisplayDungeonItems == _alwaysDisplayDungeonItems ?
+                AccessibilityLevel.Normal : AccessibilityLevel.None;
         }
     }
 }

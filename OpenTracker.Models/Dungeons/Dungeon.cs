@@ -31,6 +31,8 @@ namespace OpenTracker.Models.Dungeons
         public int SmallKeys { get; }
         public int BigKey { get; }
 
+        public IItem MapItem { get; }
+        public IItem CompassItem { get; }
         public IItem SmallKeyItem { get; }
         public IItem BigKeyItem { get; }
 
@@ -68,6 +70,12 @@ namespace OpenTracker.Models.Dungeons
         /// <param name="bigKey">
         /// A 32-bit signed integer representing the number of big keys in the dungeon.
         /// </param>
+        /// <param name="mapItem">
+        /// The map item.
+        /// </param>
+        /// <param name="compassItem">
+        /// The compass item.
+        /// </param>
         /// <param name="smallKeyItem">
         /// The small key item.
         /// </param>
@@ -94,15 +102,17 @@ namespace OpenTracker.Models.Dungeons
         /// </param>
         public Dungeon(
             LocationID id, string name, List<MapLocation> mapLocations, int map, int compass,
-            int smallKeys, int bigKey, IItem smallKeyItem, IItem bigKeyItem,
-            List<DungeonNodeID> nodes, List<DungeonItemID> items, List<DungeonItemID> bosses,
-            List<KeyDoorID> smallKeyDoors, List<KeyDoorID> bigKeyDoors,
+            int smallKeys, int bigKey, IItem mapItem, IItem compassItem, IItem smallKeyItem,
+            IItem bigKeyItem, List<DungeonNodeID> nodes, List<DungeonItemID> items,
+            List<DungeonItemID> bosses, List<KeyDoorID> smallKeyDoors, List<KeyDoorID> bigKeyDoors,
             List<IRequirementNode> entryNodes) : base(id, name, mapLocations)
         {
             Map = map;
             Compass = compass;
             SmallKeys = smallKeys;
             BigKey = bigKey;
+            MapItem = mapItem;
+            CompassItem = compassItem;
             SmallKeyItem = smallKeyItem;
             BigKeyItem = bigKeyItem;
             Nodes = nodes ?? throw new ArgumentNullException(nameof(nodes));

@@ -147,8 +147,28 @@
         </MenuItem>
 
         <Separator />
+        
+        <MenuItem Classes="Menu InnerMenu" Command="{Binding ToggleDisplayMapsCompassesCommand}"
+				  Header="Display Maps/Compasses">
+
+          <MenuItem.Icon>
+            <CheckBox Classes="Menu" IsChecked="{Binding DisplayMapsCompasses}" />
+          </MenuItem.Icon>
+
+        </MenuItem>
+
+        <MenuItem Classes="Menu InnerMenu" Command="{Binding ToggleAlwaysDisplayDungeonItemsCommand}"
+				  Header="Always Display Dungeon Items">
+
+          <MenuItem.Icon>
+            <CheckBox Classes="Menu" IsChecked="{Binding AlwaysDisplayDungeonItems}" />
+          </MenuItem.Icon>
+
+        </MenuItem>
+
+        <Separator />
         <MenuItem Classes="Menu InnerMenu" Command="{Binding $parent[view:MainWindow].ColorSelect}"
-				  Header="Change Colors..." />
+                  Header="Change Colors..." />
         <Separator />
 
         <MenuItem Classes="Menu InnerMenu" Header="Layout Orientation">

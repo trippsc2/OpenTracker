@@ -11,6 +11,34 @@ namespace OpenTracker.Models.Settings
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private bool _displayMapsCompasses;
+        public bool DisplayMapsCompasses
+        {
+            get => _displayMapsCompasses;
+            set
+            {
+                if (_displayMapsCompasses != value)
+                {
+                    _displayMapsCompasses = value;
+                    OnPropertyChanged(nameof(DisplayMapsCompasses));
+                }
+            }
+        }
+
+        private bool _alwaysDisplayDungeonItems;
+        public bool AlwaysDisplayDungeonItems
+        {
+            get => _alwaysDisplayDungeonItems;
+            set
+            {
+                if (_alwaysDisplayDungeonItems != value)
+                {
+                    _alwaysDisplayDungeonItems = value;
+                    OnPropertyChanged(nameof(AlwaysDisplayDungeonItems));
+                }
+            }
+        }
+
         private Orientation _currentDynamicOrientation;
         public Orientation CurrentDynamicOrientation
         {

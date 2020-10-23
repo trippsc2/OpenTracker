@@ -30,6 +30,11 @@ namespace OpenTracker.ViewModels
         public static bool ShowItemCountsOnMap =>
             AppSettings.Instance.Tracker.ShowItemCountsOnMap;
 
+        public static bool DisplayMapsCompasses =>
+            AppSettings.Instance.Layout.DisplayMapsCompasses;
+        public static bool AlwaysDisplayDungeonItems =>
+            AppSettings.Instance.Layout.AlwaysDisplayDungeonItems;
+
         public static bool DynamicLayoutOrientation =>
             AppSettings.Instance.Layout.LayoutOrientation == null;
         public static bool HorizontalLayoutOrientation =>
@@ -81,6 +86,8 @@ namespace OpenTracker.ViewModels
         public ReactiveCommand<Unit, Unit> RedoCommand { get; }
         public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocationsCommand { get; }
         public ReactiveCommand<Unit, Unit> ToggleShowItemCountsOnMapCommand { get; }
+        public ReactiveCommand<Unit, Unit> ToggleDisplayMapsCompassesCommand { get; }
+        public ReactiveCommand<Unit, Unit> ToggleAlwaysDisplayDungeonItemsCommand { get; }
         public ReactiveCommand<string, Unit> SetLayoutOrientationCommand { get; }
         public ReactiveCommand<string, Unit> SetMapOrientationCommand { get; }
         public ReactiveCommand<string, Unit> SetHorizontalUIPanelPlacementCommand { get; }
@@ -129,6 +136,8 @@ namespace OpenTracker.ViewModels
             ToggleDisplayAllLocationsCommand = ReactiveCommand.Create(ToggleDisplayAllLocations);
 
             ToggleShowItemCountsOnMapCommand = ReactiveCommand.Create(ToggleShowItemCountsOnMap);
+            ToggleDisplayMapsCompassesCommand = ReactiveCommand.Create(ToggleDisplayMapsCompasses);
+            ToggleAlwaysDisplayDungeonItemsCommand = ReactiveCommand.Create(ToggleAlwaysDisplayDungeonItems);
             SetLayoutOrientationCommand = ReactiveCommand.Create<string>(SetLayoutOrientation);
             SetMapOrientationCommand = ReactiveCommand.Create<string>(SetMapOrientation);
             SetHorizontalUIPanelPlacementCommand = ReactiveCommand.Create<string>(SetHorizontalUIPanelPlacement);
@@ -204,6 +213,16 @@ namespace OpenTracker.ViewModels
         /// </param>
         private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (e.PropertyName == nameof(LayoutSettings.DisplayMapsCompasses))
+            {
+                this.RaisePropertyChanged(nameof(DisplayMapsCompasses));
+            }
+
+            if (e.PropertyName == nameof(LayoutSettings.AlwaysDisplayDungeonItems))
+            {
+                this.RaisePropertyChanged(nameof(AlwaysDisplayDungeonItems));
+            }
+
             if (e.PropertyName == nameof(LayoutSettings.LayoutOrientation))
             {
                 this.RaisePropertyChanged(nameof(DynamicLayoutOrientation));
@@ -405,6 +424,24 @@ namespace OpenTracker.ViewModels
         {
             AppSettings.Instance.Tracker.DisplayAllLocations =
                 !AppSettings.Instance.Tracker.DisplayAllLocations;
+        }
+
+        /// <summary>
+        /// Toggles whether to display maps and compasses.
+        /// </summary>
+        private void ToggleDisplayMapsCompasses()
+        {
+            AppSettings.Instance.Layout.DisplayMapsCompasses =
+                !AppSettings.Instance.Layout.DisplayMapsCompasses;
+        }
+
+        /// <summary>
+        /// Toggles whether to always display dungeon items.
+        /// </summary>
+        private void ToggleAlwaysDisplayDungeonItems()
+        {
+            AppSettings.Instance.Layout.AlwaysDisplayDungeonItems =
+                !AppSettings.Instance.Layout.AlwaysDisplayDungeonItems;
         }
 
         /// <summary>

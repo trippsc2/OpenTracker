@@ -16,6 +16,8 @@ namespace OpenTracker.Models.SaveLoad
         public double? Height { get; set; }
         public bool DisplayAllLocations { get; set; }
         public bool ShowItemCountsOnMap { get; set; }
+        public bool? DisplayMapsCompasses { get; set; }
+        public bool? AlwaysDisplayDungeonItems { get; set; }
         public Orientation? LayoutOrientation { get; set; }
         public Orientation? MapOrientation { get; set; }
         public Dock HorizontalUIPanelPlacement { get; set; }

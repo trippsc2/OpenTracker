@@ -9,29 +9,38 @@ using System.ComponentModel;
 namespace OpenTracker.ViewModels.Items.Small
 {
     /// <summary>
-    /// This is the ViewModel of the small Items panel control representing big keys.
+    /// This is the ViewModel of the small Items panel control representing big keys, compasses,
+    /// and maps.
     /// </summary>
-    public class BigKeySmallItemVM : SmallItemVMBase, IClickHandler
+    public class SmallItemVM : SmallItemVMBase, IClickHandler
     {
+        private readonly string _imageSourceBase;
         private readonly IRequirement _requirement;
         private readonly IItem _item;
 
         public bool Visible =>
             _requirement.Met;
         public string ImageSource =>
-            _item.Current > 0 ? "avares://OpenTracker/Assets/Images/Items/bigkey1.png" :
-            "avares://OpenTracker/Assets/Images/Items/bigkey0.png";
+            _imageSourceBase + (_item.Current > 0 ? "1" : "0") + ".png";
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="imageSourceBase">
+        /// A string representing the base image source.
+        /// </param>
         /// <param name="item">
         /// The item of the key to be represented.
         /// </param>
-        public BigKeySmallItemVM(IItem item)
+        /// <param name="requirement">
+        /// The requirement for displaying the control.
+        /// </param>
+        public SmallItemVM(string imageSourceBase, IItem item, IRequirement requirement)
         {
+            _imageSourceBase = imageSourceBase ??
+                throw new ArgumentNullException(nameof(imageSourceBase));
             _item = item ?? throw new ArgumentNullException(nameof(item));
-            _requirement = RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn];
+            _requirement = requirement ?? throw new ArgumentNullException(nameof(requirement));
             
             _item.PropertyChanged += OnItemChanged;
             _requirement.PropertyChanged += OnRequirementChanged;

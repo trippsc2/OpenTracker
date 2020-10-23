@@ -6,6 +6,7 @@ using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Text;
@@ -70,7 +71,11 @@ namespace OpenTracker.ViewModels.Items.Small
             }
 
             _item = _dungeon.SmallKeyItem;
-            _requirement = RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn];
+            _requirement = new AlternativeRequirement(new List<IRequirement>
+            {
+                new AlwaysDisplayDungeonItemsRequirement(true),
+                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]
+            });
 
             AppSettings.Instance.Colors.PropertyChanged += OnColorsChanged;
             _item.PropertyChanged += OnItemChanged;

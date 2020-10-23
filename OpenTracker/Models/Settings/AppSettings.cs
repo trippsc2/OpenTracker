@@ -90,6 +90,8 @@ namespace OpenTracker.Models.Settings
                 Height = Bounds.Height,
                 DisplayAllLocations = Tracker.DisplayAllLocations,
                 ShowItemCountsOnMap = Tracker.ShowItemCountsOnMap,
+                DisplayMapsCompasses = Layout.DisplayMapsCompasses,
+                AlwaysDisplayDungeonItems = Layout.AlwaysDisplayDungeonItems,
                 LayoutOrientation = Layout.LayoutOrientation,
                 MapOrientation = Layout.MapOrientation,
                 HorizontalUIPanelPlacement = Layout.HorizontalUIPanelPlacement,
@@ -121,6 +123,17 @@ namespace OpenTracker.Models.Settings
             Bounds.Height = saveData.Height;
             Tracker.DisplayAllLocations = saveData.DisplayAllLocations;
             Tracker.ShowItemCountsOnMap = saveData.ShowItemCountsOnMap;
+            
+            if (saveData.DisplayMapsCompasses.HasValue)
+            {
+                Layout.DisplayMapsCompasses = saveData.DisplayMapsCompasses.Value;
+            }
+
+            if (saveData.AlwaysDisplayDungeonItems.HasValue)
+            {
+                Layout.AlwaysDisplayDungeonItems = saveData.AlwaysDisplayDungeonItems.Value;
+            }
+
             Layout.LayoutOrientation = saveData.LayoutOrientation;
             Layout.MapOrientation = saveData.MapOrientation;
 

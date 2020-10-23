@@ -28,6 +28,8 @@ namespace OpenTracker.Models.Dungeons
         List<KeyDoorID> BigKeyDoors { get; }
         ConcurrentQueue<IMutableDungeon> DungeonDataQueue { get; }
         List<DungeonNodeID> Nodes { get; }
+        IItem MapItem { get; }
+        IItem CompassItem { get; }
 
         event EventHandler<IMutableDungeon> DungeonDataCreated;
 
