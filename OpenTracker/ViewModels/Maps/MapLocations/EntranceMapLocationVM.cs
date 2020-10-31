@@ -97,8 +97,8 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
             AppSettings.Instance.Colors.AccessibilityColors[_mapLocation.Location.Accessibility];
         public string BorderColor =>
             Highlighted ? "#FFFFFFFF" : "#FF000000";
-        public string ToolTipText =>
-            _mapLocation.Location.Name;
+
+        public MapLocationToolTipVM ToolTip { get; }
 
         /// <summary>
         /// Constructor
@@ -120,6 +120,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
             List<Point> points)
         {
             _mapLocation = mapLocation ?? throw new ArgumentNullException(nameof(mapLocation));
+            ToolTip = new MapLocationToolTipVM(_mapLocation.Location);
             Marking = marking ?? throw new ArgumentNullException(nameof(marking));
             MarkingDock = markingDock;
             Points = points ?? throw new ArgumentNullException(nameof(points));

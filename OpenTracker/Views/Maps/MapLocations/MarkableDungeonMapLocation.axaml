@@ -11,8 +11,11 @@
   </UserControl.Resources>
 
   <DockPanel IsVisible="{Binding Visible}" IsHitTestVisible="{Binding Visible}"
-             PointerEnter="OnPointerEnter" PointerLeave="OnPointerLeave" ToolTip.Tip="{Binding
-             ToolTipText}">
+             PointerEnter="OnPointerEnter" PointerLeave="OnPointerLeave">
+
+    <ToolTip.Tip>
+      <ContentControl Content="{Binding ToolTip}" />
+    </ToolTip.Tip>
 
     <ContentControl DockPanel.Dock="{Binding MarkingDock}" Content="{Binding Marking}" />
 

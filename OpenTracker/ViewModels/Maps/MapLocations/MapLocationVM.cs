@@ -125,8 +125,8 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                     _mapLocation.Location.Available.ToString(CultureInfo.InvariantCulture);
             }
         }
-        public string ToolTipText =>
-            _mapLocation.Location.Name;
+
+        public MapLocationToolTipVM ToolTip { get; }
 
         /// <summary>
         /// Constructor
@@ -137,9 +137,9 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         public MapLocationVM(MapLocation mapLocation)
         {
             _mapLocation = mapLocation ?? throw new ArgumentNullException(nameof(mapLocation));
+            ToolTip = new MapLocationToolTipVM(_mapLocation.Location);
 
             PropertyChanged += OnPropertyChanged;
-
             AppSettings.Instance.Tracker.PropertyChanged += OnTrackerSettingsChanged;
             AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
             AppSettings.Instance.Colors.AccessibilityColors.PropertyChanged += OnColorChanged;

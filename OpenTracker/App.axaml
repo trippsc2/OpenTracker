@@ -12,10 +12,6 @@
 		<StyleInclude Source="avares://Avalonia.Themes.Default/DefaultTheme.xaml" />
 		<StyleInclude Source="avares://ThemeEditor.Controls.ColorPicker/ColorPicker.xaml" />
 
-    <Style Selector="ToolTip">
-      <Setter Property="FontFamily" Value="avares://OpenTracker/Assets/Fonts/#Open Sans" />
-    </Style>
-
 		<Style Selector="Border.ControlBorder">
 			<Setter Property="BorderBrush" Value="{DynamicResource ThemeBorderLowBrush}" />
 			<Setter Property="BorderThickness" Value="1" />
