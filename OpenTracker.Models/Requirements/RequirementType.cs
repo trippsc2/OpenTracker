@@ -75,6 +75,7 @@
         Lamp,
         Hammer,
         Flute,
+        FluteActivated,
         Net,
         Book,
         Shovel,

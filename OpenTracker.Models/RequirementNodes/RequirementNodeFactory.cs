@@ -58,6 +58,22 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
                     }
                     break;
+                case RequirementNodeID.Flute:
+                    {
+                        connections.Add(new NodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.Start], node,
+                            RequirementDictionary.Instance[RequirementType.Flute]));
+                    }
+                    break;
+                case RequirementNodeID.FluteActivated:
+                    {
+                        connections.Add(new NodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.Flute], node,
+                            RequirementDictionary.Instance[RequirementType.FluteActivated]));
+                        connections.Add(new NodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldFlute], node));
+                    }
+                    break;
                 case RequirementNodeID.LightWorld:
                     {
                         connections.Add(new NodeConnection(
@@ -200,7 +216,7 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementDictionary.Instance[RequirementType.Gloves1]));
                     }
                     break;
-                case RequirementNodeID.Flute:
+                case RequirementNodeID.LightWorldFlute:
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunny], node,
@@ -210,14 +226,14 @@ namespace OpenTracker.Models.RequirementNodes
                 case RequirementNodeID.FluteInverted:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.Flute], node,
+                            RequirementNodeDictionary.Instance[RequirementNodeID.FluteActivated], node,
                             RequirementDictionary.Instance[RequirementType.WorldStateInverted]));
                     }
                     break;
                 case RequirementNodeID.FluteStandardOpen:
                     {
                         connections.Add(new NodeConnection(
-                            RequirementNodeDictionary.Instance[RequirementNodeID.Flute], node,
+                            RequirementNodeDictionary.Instance[RequirementNodeID.FluteActivated], node,
                             RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]));
                     }
                     break;
