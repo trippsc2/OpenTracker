@@ -1,5 +1,4 @@
-﻿using OpenTracker.Models.AutoTracking.AutotrackValues;
-using OpenTracker.Models.BossPlacements;
+﻿using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.PrizePlacements;
