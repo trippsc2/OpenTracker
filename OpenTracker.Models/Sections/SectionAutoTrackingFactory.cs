@@ -811,7 +811,7 @@ namespace OpenTracker.Models.Sections
                             new AutoTrackMultipleDifference(
                                 new AutoTrackBitwiseIntegerValue(
                                     AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 1),
-                                    0xF, 0),
+                                    0x3, 0),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(

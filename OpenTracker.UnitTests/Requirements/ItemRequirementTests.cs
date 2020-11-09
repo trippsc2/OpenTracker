@@ -40,6 +40,7 @@ namespace OpenTracker.UnitTests.Requirements
         [MemberData(nameof(Lamp))]
         [MemberData(nameof(Hammer))]
         [MemberData(nameof(Flute))]
+        [MemberData(nameof(FluteActivated))]
         [MemberData(nameof(Net))]
         [MemberData(nameof(Book))]
         [MemberData(nameof(Shovel))]
@@ -1081,6 +1082,31 @@ namespace OpenTracker.UnitTests.Requirements
                     new (ItemType, int)[]
                     {
                         (ItemType.Flute, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> FluteActivated =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    RequirementType.FluteActivated,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.FluteActivated, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    RequirementType.FluteActivated,
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.FluteActivated, 1)
                     },
                     new (PrizeType, int)[0],
                     AccessibilityLevel.Normal

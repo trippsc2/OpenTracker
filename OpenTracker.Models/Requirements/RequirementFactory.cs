@@ -354,6 +354,8 @@ namespace OpenTracker.Models.Requirements
                     ItemDictionary.Instance[ItemType.Hammer]),
                 RequirementType.Flute => new ItemRequirement(
                     ItemDictionary.Instance[ItemType.Flute]),
+                RequirementType.FluteActivated => new ItemRequirement(
+                    ItemDictionary.Instance[ItemType.FluteActivated]),
                 RequirementType.Net => new ItemRequirement(
                     ItemDictionary.Instance[ItemType.Net]),
                 RequirementType.Book => new ItemRequirement(
@@ -809,6 +811,7 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.Lamp:
                 case RequirementType.Hammer:
                 case RequirementType.Flute:
+                case RequirementType.FluteActivated:
                 case RequirementType.Net:
                 case RequirementType.Book:
                 case RequirementType.Shovel:
