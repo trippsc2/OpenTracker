@@ -1603,7 +1603,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         RequirementNodeID.TRFrontEntryStandardOpen
                     },
                     new (LocationID, int)[0],
-                    RequirementNodeID.TRFrontEntryStandardOpenNonEntrance,
+                    RequirementNodeID.TRFrontEntryStandardOpenEntranceNone,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1620,7 +1620,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         RequirementNodeID.TRFrontEntryStandardOpen
                     },
                     new (LocationID, int)[0],
-                    RequirementNodeID.TRFrontEntryStandardOpenNonEntrance,
+                    RequirementNodeID.TRFrontEntryStandardOpenEntranceNone,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1637,7 +1637,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         RequirementNodeID.TRFrontEntryStandardOpen
                     },
                     new (LocationID, int)[0],
-                    RequirementNodeID.TRFrontEntryStandardOpenNonEntrance,
+                    RequirementNodeID.TRFrontEntryStandardOpenEntranceNone,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1656,7 +1656,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.TRFrontEntryStandardOpenNonEntrance
+                        RequirementNodeID.TRFrontEntryStandardOpenEntranceNone
                     },
                     new (LocationID, int)[0],
                     RequirementNodeID.TRFrontToKeyDoors,
@@ -1673,7 +1673,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.TRFrontEntryStandardOpenNonEntrance
+                        RequirementNodeID.TRFrontEntryStandardOpenEntranceNone
                     },
                     new (LocationID, int)[0],
                     RequirementNodeID.TRFrontToKeyDoors,

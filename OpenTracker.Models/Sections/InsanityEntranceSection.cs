@@ -8,10 +8,7 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models.Sections
 {
-    /// <summary>
-    /// This is the class containing the entrance sections of locations.
-    /// </summary>
-    public class EntranceSection : IEntranceSection
+    public class InsanityEntranceSection : IEntranceSection
     {
         private readonly IRequirementNode _node;
         private readonly IRequirementNode _exitProvided;
@@ -56,7 +53,7 @@ namespace OpenTracker.Models.Sections
         /// <param name="requirement">
         /// The requirement for this section to be visible.
         /// </param>
-        public EntranceSection(
+        public InsanityEntranceSection(
             string name, IRequirementNode exitProvided, IRequirementNode node,
             IRequirement requirement = null)
         {
@@ -86,11 +83,11 @@ namespace OpenTracker.Models.Sections
                 {
                     if (IsAvailable())
                     {
-                        _exitProvided.ExitsAccessible--;
+                        _exitProvided.InsanityExitsAccessible--;
                     }
                     else
                     {
-                        _exitProvided.ExitsAccessible++;
+                        _exitProvided.InsanityExitsAccessible++;
                     }
                 }
             }

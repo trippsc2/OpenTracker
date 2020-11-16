@@ -209,6 +209,8 @@ namespace OpenTracker.Models.Requirements
                     new EntranceShuffleRequirement(EntranceShuffle.Dungeon),
                 RequirementType.EntranceShuffleAll =>
                     new EntranceShuffleRequirement(EntranceShuffle.All),
+                RequirementType.EntranceShuffleInsanity =>
+                    new EntranceShuffleRequirement(EntranceShuffle.Insanity),
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
@@ -647,6 +649,7 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.EntranceShuffleNone:
                 case RequirementType.EntranceShuffleDungeon:
                 case RequirementType.EntranceShuffleAll:
+                case RequirementType.EntranceShuffleInsanity:
                     {
                         return GetEntranceShuffleRequirement(type);
                     }
@@ -705,7 +708,7 @@ namespace OpenTracker.Models.Requirements
                             RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]
                         });
                     }
-                case RequirementType.EntranceShuffleNotAll:
+                case RequirementType.EntranceShuffleNoneDungeon:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
@@ -713,12 +716,30 @@ namespace OpenTracker.Models.Requirements
                             RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeon]
                         });
                     }
-                case RequirementType.EntranceShuffleDungeonOn:
+                case RequirementType.EntranceShuffleNoneDungeonAll:
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNone],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeon],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleAll]
+                        });
+                    }
+                case RequirementType.EntranceShuffleDungeonAllInsanity:
                     {
                         return new AlternativeRequirement(new List<IRequirement>
                         {
                             RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeon],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleAll]
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleAll],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity]
+                        });
+                    }
+                case RequirementType.EntranceShuffleAllInsanity:
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleAll],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity]
                         });
                     }
                 case RequirementType.WorldStateStandardOpenEntranceShuffleNone:
@@ -729,12 +750,20 @@ namespace OpenTracker.Models.Requirements
                             RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]
                         });
                     }
-                case RequirementType.WorldStateStandardOpenEntranceShuffleNotAll:
+                case RequirementType.WorldStateStandardOpenEntranceShuffleNoneDungeon:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
                             RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll]
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]
+                        });
+                    }
+                case RequirementType.WorldStateStandardOpenEntranceShuffleAllInsanity:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity]
                         });
                     }
                 case RequirementType.WorldStateInvertedEntranceShuffleNone:
@@ -745,28 +774,36 @@ namespace OpenTracker.Models.Requirements
                             RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]
                         });
                     }
-                case RequirementType.WorldStateInvertedEntranceShuffleNotAll:
+                case RequirementType.WorldStateInvertedEntranceShuffleNoneDungeon:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
                             RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll]
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]
                         });
                     }
-                case RequirementType.WorldStateInvertedEntranceShuffleAll:
+                case RequirementType.WorldStateInvertedEntranceShuffleAllInsanity:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
                             RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleAll]
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity]
                         });
                     }
-                case RequirementType.TakeAnyLocationsEntranceShuffleNotAll:
+                case RequirementType.WorldStateInvertedEntranceShuffleInsanity:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.WorldStateInverted],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity]
+                        });
+                    }
+                case RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon:
                     {
                         return new AggregateRequirement(new List<IRequirement>
                         {
                             RequirementDictionary.Instance[RequirementType.TakeAnyLocations],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll]
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]
                         });
                     }
                 case RequirementType.RaceIllegalTracking:

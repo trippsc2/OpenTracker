@@ -63,6 +63,9 @@
             <RadioButton Classes="ModeSettings" IsChecked="{Binding EntranceShuffleAll,
                          Mode=OneWay}" GroupName="EntranceShuffle" Command="{Binding
                          EntranceShuffleCommand}" CommandParameter="All">All</RadioButton>
+            <RadioButton Classes="ModeSettings" IsChecked="{Binding EntranceShuffleInsanity,
+                         Mode=OneWay}" GroupName="EntranceShuffle" Command="{Binding
+                         EntranceShuffleCommand}" CommandParameter="Insanity">Insanity</RadioButton>
           </UniformGrid>
           
           <Border Classes="Separator" Margin="0,4" />

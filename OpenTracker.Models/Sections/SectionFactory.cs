@@ -1,5 +1,4 @@
-﻿using OpenTracker.Models.AutoTracking.AutotrackValues;
-using OpenTracker.Models.BossPlacements;
+﻿using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.PrizePlacements;
@@ -276,6 +275,9 @@ namespace OpenTracker.Models.Sections
                 case LocationID.TowerOfHeraEntrance:
                 case LocationID.TurtleRockEntrance:
                 case LocationID.GanonsTowerEntrance:
+                case LocationID.SkullWoodsWestEntrance:
+                case LocationID.SkullWoodsCenterEntrance:
+                case LocationID.SkullWoodsEastEntrance:
                     {
                         return "Dungeon";
                     }
@@ -317,6 +319,10 @@ namespace OpenTracker.Models.Sections
                 case LocationID.HoulihanHole:
                 case LocationID.SanctuaryGrave:
                 case LocationID.GanonHole:
+                case LocationID.SkullWoodsNWHole:
+                case LocationID.SkullWoodsSWHole:
+                case LocationID.SkullWoodsSEHole:
+                case LocationID.SkullWoodsNEHole:
                     {
                         return "Dropdown";
                     }
@@ -353,6 +359,16 @@ namespace OpenTracker.Models.Sections
                 case LocationID.MireCaveTakeAny:
                     {
                         return "Take Any";
+                    }
+                case LocationID.ForestHideoutExit:
+                case LocationID.CastleSecretExit:
+                case LocationID.GanonHoleExit:
+                    {
+                        return "Exit";
+                    }
+                case LocationID.Sanctuary:
+                    {
+                        return "Sanc";
                     }
                 default:
                     {
@@ -513,6 +529,12 @@ namespace OpenTracker.Models.Sections
                 case LocationID.IceBeeCaveTakeAny:
                 case LocationID.FortuneTellerTakeAny:
                 case LocationID.ChestGameTakeAny:
+                case LocationID.LumberjackCaveExit:
+                case LocationID.TheWellExit:
+                case LocationID.MagicBatExit:
+                case LocationID.ForestHideoutExit:
+                case LocationID.HoulihanHoleExit:
+                case LocationID.Sanctuary:
                     {
                         return RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld];
                     }
@@ -621,6 +643,7 @@ namespace OpenTracker.Models.Sections
                     }
                 case LocationID.BombableShack:
                 case LocationID.BombableShackEntrance:
+                case LocationID.SkullWoodsNEHole:
                     {
                         return RequirementNodeDictionary.Instance[
                             RequirementNodeID.DarkWorldWestNotBunny];
@@ -823,6 +846,10 @@ namespace OpenTracker.Models.Sections
                 case LocationID.TreasureGameEntrance:
                 case LocationID.DarkChapelTakeAny:
                 case LocationID.DarkVillageFortuneTellerTakeAny:
+                case LocationID.SkullWoodsCenterEntrance:
+                case LocationID.SkullWoodsEastEntrance:
+                case LocationID.SkullWoodsSWHole:
+                case LocationID.SkullWoodsSEHole:
                     {
                         return RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWest];
                     }
@@ -1026,6 +1053,19 @@ namespace OpenTracker.Models.Sections
                         return RequirementNodeDictionary.Instance[
                             RequirementNodeID.DWFloatingIsland];
                     }
+                case LocationID.CastleSecretExit:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.CastleSecretExitArea];
+                    }
+                case LocationID.GanonHoleExit:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldInverted];
+                    }
+                case LocationID.SkullWoodsWestEntrance:
+                case LocationID.SkullWoodsNWHole:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.SkullWoodsBackArea];
+                    }
             }
 
             throw new ArgumentOutOfRangeException(nameof(id));
@@ -1060,6 +1100,12 @@ namespace OpenTracker.Models.Sections
                 case LocationID.ForestHideout:
                 case LocationID.DesertLedge:
                 case LocationID.LakeHyliaIsland:
+                case LocationID.LumberjackCaveEntrance:
+                case LocationID.TheWellEntrance:
+                case LocationID.MagicBatEntrance:
+                case LocationID.ForestHideoutEntrance:
+                case LocationID.HoulihanHole:
+                case LocationID.SanctuaryGrave:
                     {
                         return RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld];
                     }
@@ -1081,22 +1127,16 @@ namespace OpenTracker.Models.Sections
                         return RequirementNodeDictionary.Instance[
                             RequirementNodeID.DeathMountainEastTop];
                     }
-                case LocationID.LumberjackCaveEntrance:
-                    break;
-                case LocationID.TheWellEntrance:
-                    break;
-                case LocationID.MagicBatEntrance:
-                    break;
-                case LocationID.ForestHideoutEntrance:
-                    break;
                 case LocationID.CastleSecretEntrance:
-                    break;
-                case LocationID.HoulihanHole:
-                    break;
-                case LocationID.SanctuaryGrave:
-                    break;
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.CastleSecretExitArea];
+                    }
                 case LocationID.GanonHole:
-                    break;
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.LightWorldInverted];
+                    }
             }
 
             throw new ArgumentOutOfRangeException(nameof(id));
@@ -1121,7 +1161,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.Dam when index == 0:
                 case LocationID.SpectacleRock when index == 1:
                     {
-                        return RequirementDictionary.Instance[RequirementType.EntranceShuffleNotAll];
+                        return RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon];
                     }
                 case LocationID.AgahnimTower when index == 0:
                     {
@@ -1478,6 +1518,13 @@ namespace OpenTracker.Models.Sections
                 case LocationID.IceBeeCaveEntrance:
                 case LocationID.IceFairyCaveEntrance:
                 case LocationID.LinksHouseEntrance:
+                case LocationID.LumberjackCaveExit:
+                case LocationID.TheWellExit:
+                case LocationID.MagicBatExit:
+                case LocationID.ForestHideoutExit:
+                case LocationID.HoulihanHoleExit:
+                case LocationID.Sanctuary:
+                case LocationID.GanonHoleExit:
                     {
                         return RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld];
                     }
@@ -1489,6 +1536,10 @@ namespace OpenTracker.Models.Sections
                 case LocationID.HoulihanHole:
                 case LocationID.SanctuaryGrave:
                 case LocationID.GanonHole:
+                case LocationID.SkullWoodsNWHole:
+                case LocationID.SkullWoodsSWHole:
+                case LocationID.SkullWoodsSEHole:
+                case LocationID.SkullWoodsNEHole:
                     {
                         return null;
                     }
@@ -1548,6 +1599,10 @@ namespace OpenTracker.Models.Sections
                         return null;
                     }
                 case LocationID.SkullWoodsBack:
+                case LocationID.SkullWoodsWestEntrance:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.SkullWoodsBackArea];
+                    }
                 case LocationID.ThievesTownEntrance:
                 case LocationID.CShapedHouseEntrance:
                 case LocationID.DarkVillageFortuneTellerEntrance:
@@ -1556,6 +1611,8 @@ namespace OpenTracker.Models.Sections
                 case LocationID.DarkLumberjack:
                 case LocationID.TreasureGameEntrance:
                 case LocationID.BombableShackEntrance:
+                case LocationID.SkullWoodsCenterEntrance:
+                case LocationID.SkullWoodsEastEntrance:
                     {
                         return RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWest];
                     }
@@ -1692,6 +1749,10 @@ namespace OpenTracker.Models.Sections
                     {
                         return RequirementNodeDictionary.Instance[RequirementNodeID.DWFloatingIsland];
                     }
+                case LocationID.CastleSecretExit:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.CastleSecretExitArea];
+                    }
             }
 
             throw new ArgumentOutOfRangeException(nameof(id));
@@ -1709,6 +1770,53 @@ namespace OpenTracker.Models.Sections
         private static ISection GetEntranceSection(LocationID id)
         {
             return new EntranceSection(
+                GetSectionName(id), GetEntranceSectionExitProvided(id), GetSectionNode(id),
+                GetSectionRequirement(id));
+        }
+
+        /// <summary>
+        /// Returns a new dropdown section instance for the specified section.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID.
+        /// </param>
+        /// <returns>
+        /// A new dropdown section instance.
+        /// </returns>
+        private static ISection GetDropdownSection(LocationID id)
+        {
+            switch (id)
+            {
+                case LocationID.LumberjackCaveEntrance:
+                case LocationID.TheWellEntrance:
+                case LocationID.MagicBatEntrance:
+                case LocationID.ForestHideoutEntrance:
+                case LocationID.CastleSecretEntrance:
+                case LocationID.HoulihanHole:
+                case LocationID.SanctuaryGrave:
+                case LocationID.GanonHole:
+                    {
+                        return new DropdownSection(
+                            GetSectionName(id), GetVisibleNode(id), GetSectionNode(id),
+                            GetSectionRequirement(id));
+                    }
+            }
+
+            throw new ArgumentOutOfRangeException(nameof(id));
+        }
+
+        /// <summary>
+        /// Returns a new insanity entrance section instance for the specified section.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID.
+        /// </param>
+        /// <returns>
+        /// A new insanity entrance section instance.
+        /// </returns>
+        private static ISection GetInsanityEntranceSection(LocationID id)
+        {
+            return new InsanityEntranceSection(
                 GetSectionName(id), GetEntranceSectionExitProvided(id), GetSectionNode(id),
                 GetSectionRequirement(id));
         }
@@ -1902,7 +2010,6 @@ namespace OpenTracker.Models.Sections
                     }
                     break;
                 case LocationID.LumberjackHouseEntrance:
-                case LocationID.LumberjackCaveEntrance:
                 case LocationID.DeathMountainEntryCave:
                 case LocationID.DeathMountainExitCave:
                 case LocationID.KakarikoFortuneTellerEntrance:
@@ -1911,7 +2018,6 @@ namespace OpenTracker.Models.Sections
                 case LocationID.LeftSnitchHouseEntrance:
                 case LocationID.RightSnitchHouseEntrance:
                 case LocationID.BlindsHouseEntrance:
-                case LocationID.TheWellEntrance:
                 case LocationID.ChickenHouseEntrance:
                 case LocationID.GrassHouseEntrance:
                 case LocationID.TavernFront:
@@ -1919,23 +2025,17 @@ namespace OpenTracker.Models.Sections
                 case LocationID.BombHutEntrance:
                 case LocationID.SickKidEntrance:
                 case LocationID.BlacksmithHouse:
-                case LocationID.MagicBatEntrance:
                 case LocationID.ChestGameEntrance:
                 case LocationID.RaceHouseLeft:
                 case LocationID.RaceHouseRight:
                 case LocationID.LibraryEntrance:
-                case LocationID.ForestHideoutEntrance:
                 case LocationID.ForestChestGameEntrance:
-                case LocationID.CastleSecretEntrance:
                 case LocationID.DamEntrance:
                 case LocationID.CentralBonkRocksEntrance:
                 case LocationID.WitchsHutEntrance:
                 case LocationID.WaterfallFairyEntrance:
                 case LocationID.SahasrahlasHutEntrance:
                 case LocationID.TreesFairyCaveEntrance:
-                case LocationID.PegsFairyCaveEntrance:
-                case LocationID.HoulihanHole:
-                case LocationID.SanctuaryGrave:
                 case LocationID.NorthBonkRocks:
                 case LocationID.KingsTombEntrance:
                 case LocationID.GraveyardLedgeEntrance:
@@ -1964,7 +2064,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.DarkWitchsHut:
                 case LocationID.DarkFluteSpotFiveEntrance:
                 case LocationID.FatFairyEntrance:
-                case LocationID.GanonHole:
+                case LocationID.PegsFairyCaveEntrance:
                 case LocationID.DarkIceRodCaveEntrance:
                 case LocationID.DarkFakeIceRodCaveEntrance:
                 case LocationID.DarkIceRodRockEntrance:
@@ -2008,6 +2108,20 @@ namespace OpenTracker.Models.Sections
                         return new List<ISection>
                         {
                             GetEntranceSection(id)
+                        };
+                    }
+                case LocationID.LumberjackCaveEntrance:
+                case LocationID.TheWellEntrance:
+                case LocationID.MagicBatEntrance:
+                case LocationID.ForestHideoutEntrance:
+                case LocationID.CastleSecretEntrance:
+                case LocationID.HoulihanHole:
+                case LocationID.SanctuaryGrave:
+                case LocationID.GanonHole:
+                    {
+                        return new List<ISection>
+                        {
+                            GetDropdownSection(id)
                         };
                     }
                 case LocationID.CastleMainEntrance:
@@ -2072,6 +2186,27 @@ namespace OpenTracker.Models.Sections
                         return new List<ISection>
                         {
                             GetTakeAnySection(id)
+                        };
+                    }
+                case LocationID.LumberjackCaveExit:
+                case LocationID.TheWellExit:
+                case LocationID.MagicBatExit:
+                case LocationID.ForestHideoutExit:
+                case LocationID.CastleSecretExit:
+                case LocationID.HoulihanHoleExit:
+                case LocationID.Sanctuary:
+                case LocationID.GanonHoleExit:
+                case LocationID.SkullWoodsWestEntrance:
+                case LocationID.SkullWoodsCenterEntrance:
+                case LocationID.SkullWoodsEastEntrance:
+                case LocationID.SkullWoodsNWHole:
+                case LocationID.SkullWoodsSWHole:
+                case LocationID.SkullWoodsSEHole:
+                case LocationID.SkullWoodsNEHole:
+                    {
+                        return new List<ISection>
+                        {
+                            GetInsanityEntranceSection(id)
                         };
                     }
             }

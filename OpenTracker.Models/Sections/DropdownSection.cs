@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Markings;
+using OpenTracker.Models.Modes;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
@@ -8,14 +9,11 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models.Sections
 {
-    /// <summary>
-    /// This is the class containing the entrance sections of locations.
-    /// </summary>
-    public class EntranceSection : IEntranceSection
+    public class DropdownSection : IEntranceSection
     {
-        private readonly IRequirementNode _node;
+        private readonly IRequirementNode _exitNode;
+        private readonly IRequirementNode _holeNode;
         private readonly IRequirementNode _exitProvided;
-
         public string Name { get; }
         public IRequirement Requirement { get; }
         public bool UserManipulated { get; set; }
@@ -24,8 +22,20 @@ namespace OpenTracker.Models.Sections
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public AccessibilityLevel Accessibility =>
-            _node.Accessibility;
+        public AccessibilityLevel Accessibility
+        {
+            get
+            {
+                if (Mode.Instance.EntranceShuffle == EntranceShuffle.Insanity)
+                {
+                    return _holeNode.Accessibility;
+                }
+
+                return AccessibilityLevelMethods.Max(_holeNode.Accessibility,
+                    _exitNode.Accessibility > AccessibilityLevel.Inspect ?
+                    AccessibilityLevel.Inspect : AccessibilityLevel.None);
+            }
+        }
 
         private int _available;
         public int Available
@@ -50,24 +60,29 @@ namespace OpenTracker.Models.Sections
         /// <param name="exitProvided">
         /// The exit provided.
         /// </param>
-        /// <param name="node">
-        /// The requirement node of the entrance.
+        /// <param name="exitNode">
+        /// The requirement node of the exit of the dropdown.
+        /// </param>
+        /// <param name="holeNode">
+        /// The requirement node of the hole of the dropdown.
         /// </param>
         /// <param name="requirement">
         /// The requirement for this section to be visible.
         /// </param>
-        public EntranceSection(
-            string name, IRequirementNode exitProvided, IRequirementNode node,
+        public DropdownSection(
+            string name, IRequirementNode exitNode, IRequirementNode holeNode,
             IRequirement requirement = null)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
             Available = 1;
-            _exitProvided = exitProvided;
-            _node = node ?? throw new ArgumentNullException(nameof(node));
+            _exitNode = exitNode ?? throw new ArgumentNullException(nameof(exitNode));
+            _holeNode = holeNode ?? throw new ArgumentNullException(nameof(holeNode));
             Requirement = requirement ??
                 RequirementDictionary.Instance[RequirementType.NoRequirement];
 
-            _node.PropertyChanged += OnNodeChanged;
+            _exitNode.PropertyChanged += OnNodeChanged;
+            _holeNode.PropertyChanged += OnNodeChanged;
+            Mode.Instance.PropertyChanged += OnModeChanged;
         }
 
         /// <summary>
@@ -79,21 +94,6 @@ namespace OpenTracker.Models.Sections
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-            if (propertyName == nameof(Available))
-            {
-                if (_exitProvided != null)
-                {
-                    if (IsAvailable())
-                    {
-                        _exitProvided.ExitsAccessible--;
-                    }
-                    else
-                    {
-                        _exitProvided.ExitsAccessible++;
-                    }
-                }
-            }
         }
 
         /// <summary>
@@ -108,6 +108,23 @@ namespace OpenTracker.Models.Sections
         private void OnNodeChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirementNode.Accessibility))
+            {
+                OnPropertyChanged(nameof(Accessibility));
+            }
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Mode.EntranceShuffle))
             {
                 OnPropertyChanged(nameof(Accessibility));
             }

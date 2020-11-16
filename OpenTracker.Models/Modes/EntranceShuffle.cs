@@ -7,6 +7,7 @@
     {
         None,
         Dungeon,
-        All
+        All,
+        Insanity
     }
 }
