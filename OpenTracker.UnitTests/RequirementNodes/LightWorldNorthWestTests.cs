@@ -2052,7 +2052,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    RequirementNodeID.RaceGame,
+                    RequirementNodeID.RaceGameLegdeNotBunny,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2071,7 +2071,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     {
                         RequirementNodeID.RaceGameLedge
                     },
-                    RequirementNodeID.RaceGame,
+                    RequirementNodeID.RaceGameLegdeNotBunny,
                     AccessibilityLevel.Inspect
                 },
                 new object[]
@@ -2087,7 +2087,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    RequirementNodeID.RaceGame,
+                    RequirementNodeID.RaceGameLegdeNotBunny,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -2106,7 +2106,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     {
                         RequirementNodeID.RaceGameLedge
                     },
-                    RequirementNodeID.RaceGame,
+                    RequirementNodeID.RaceGameLegdeNotBunny,
                     AccessibilityLevel.Normal
                 }
             };
@@ -2124,7 +2124,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    RequirementNodeID.RaceGame,
+                    RequirementNodeID.RaceGameLegdeNotBunny,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2140,7 +2140,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     {
                         RequirementNodeID.LightWorld
                     },
-                    RequirementNodeID.RaceGame,
+                    RequirementNodeID.RaceGameLegdeNotBunny,
                     AccessibilityLevel.Inspect
                 }
             };

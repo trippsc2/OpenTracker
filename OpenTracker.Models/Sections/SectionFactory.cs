@@ -409,7 +409,7 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
-        /// Returns the connections to the specified section.
+        /// Returns the requirement node to which the specified section belongs.
         /// </summary>
         /// <param name="id">
         /// The location ID.
@@ -418,9 +418,9 @@ namespace OpenTracker.Models.Sections
         /// The section index.
         /// </param>
         /// <returns>
-        /// A list of connections to the section.
+        /// The requirement node to which the section belongs.
         /// </returns>
-        private static IRequirementNode GetSectionConnections(LocationID id, int index = 0)
+        private static IRequirementNode GetSectionNode(LocationID id, int index = 0)
         {
             switch (id)
             {
@@ -435,7 +435,8 @@ namespace OpenTracker.Models.Sections
                 case LocationID.LumberjackCave:
                 case LocationID.LumberjackCaveEntrance:
                     {
-                        return RequirementNodeDictionary.Instance[RequirementNodeID.LumberjackCave];
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.LumberjackCave];
                     }
                 case LocationID.BlindsHouse when index == 0:
                 case LocationID.Tavern:
@@ -447,12 +448,17 @@ namespace OpenTracker.Models.Sections
                 case LocationID.BlindsHouse when index == 1:
                 case LocationID.TheWell when index == 1:
                 case LocationID.ChickenHouse:
+                case LocationID.MushroomSpot:
+                case LocationID.ForestHideout:
+                case LocationID.CastleSecret:
                 case LocationID.SahasrahlasHut when index == 0:
                 case LocationID.AginahsCave:
                 case LocationID.Dam when index == 1:
                 case LocationID.MiniMoldormCave:
                 case LocationID.IceRodCave:
+                case LocationID.ForestHideoutEntrance:
                 case LocationID.CastleSecretEntrance:
+                case LocationID.HoulihanHole:
                 case LocationID.HypeFairyCaveEntrance:
                 case LocationID.MiniMoldormCaveEntrance:
                 case LocationID.IceRodCaveEntrance:
@@ -520,22 +526,17 @@ namespace OpenTracker.Models.Sections
                     }
                 case LocationID.RaceGame:
                     {
-                        return RequirementNodeDictionary.Instance[RequirementNodeID.RaceGame];
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.RaceGameLegdeNotBunny];
                     }
                 case LocationID.Library:
-                    {
-                        return RequirementNodeDictionary.Instance[RequirementNodeID.Library];
-                    }
-                case LocationID.MushroomSpot:
-                case LocationID.ForestHideout:
-                case LocationID.HoulihanHole:
-                    {
-                        return RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunnyOrInspect];
-                    }
-                case LocationID.CastleSecret:
+                case LocationID.BonkRocks:
+                case LocationID.CentralBonkRocksEntrance:
+                case LocationID.NorthBonkRocks:
+                case LocationID.CentralBonkRocksTakeAny:
                     {
                         return RequirementNodeDictionary.Instance[
-                            RequirementNodeID.LightWorldNotBunny];
+                            RequirementNodeID.LightWorldDash];
                     }
                 case LocationID.WitchsHut:
                     {
@@ -544,14 +545,6 @@ namespace OpenTracker.Models.Sections
                 case LocationID.SahasrahlasHut when index == 1:
                     {
                         return RequirementNodeDictionary.Instance[RequirementNodeID.Sahasrahla];
-                    }
-                case LocationID.BonkRocks:
-                case LocationID.CentralBonkRocksEntrance:
-                case LocationID.NorthBonkRocks:
-                case LocationID.CentralBonkRocksTakeAny:
-                    {
-                        return RequirementNodeDictionary.Instance[
-                            RequirementNodeID.LightWorldDash];
                     }
                 case LocationID.KingsTomb:
                 case LocationID.KingsTombEntrance:
@@ -579,7 +572,8 @@ namespace OpenTracker.Models.Sections
                 case LocationID.HauntedGrove:
                 case LocationID.HypeCaveEntrance:
                     {
-                        return RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouthNotBunny];
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DarkWorldSouthNotBunny];
                     }
                 case LocationID.HypeCave:
                 case LocationID.DiggingGame:
@@ -617,7 +611,7 @@ namespace OpenTracker.Models.Sections
                     }
                 case LocationID.DesertLedge:
                     {
-                        return RequirementNodeDictionary.Instance[RequirementNodeID.DesertLedgeItem];
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DesertLedge];
                     }
                 case LocationID.CShapedHouse:
                 case LocationID.TreasureGame:
@@ -647,12 +641,12 @@ namespace OpenTracker.Models.Sections
                 case LocationID.BumperCave:
                     {
                         return RequirementNodeDictionary.Instance[
-                            RequirementNodeID.BumperCaveItem];
+                            RequirementNodeID.BumperCaveTop];
                     }
                 case LocationID.LakeHyliaIsland:
                     {
                         return RequirementNodeDictionary.Instance[
-                            RequirementNodeID.LakeHyliaIslandItem];
+                            RequirementNodeID.LakeHyliaIsland];
                     }
                 case LocationID.MireShack:
                     {
@@ -673,7 +667,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.SpectacleRock when index == 0:
                     {
                         return RequirementNodeDictionary.Instance[
-                            RequirementNodeID.SpectacleRockTopItem];
+                            RequirementNodeID.SpectacleRockTop];
                     }
                 case LocationID.SpectacleRock when index == 1:
                     {
@@ -721,7 +715,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.FloatingIsland:
                     {
                         return RequirementNodeDictionary.Instance[
-                            RequirementNodeID.FloatingIsland];
+                            RequirementNodeID.LWFloatingIsland];
                     }
                 case LocationID.MimicCave:
                     {
@@ -750,15 +744,11 @@ namespace OpenTracker.Models.Sections
                 case LocationID.MagicBatEntrance:
                     {
                         return RequirementNodeDictionary.Instance[
-                            RequirementNodeID.MagicBatEntrance];
+                            RequirementNodeID.MagicBatLedge];
                     }
                 case LocationID.RaceHouseLeft:
                     {
                         return RequirementNodeDictionary.Instance[RequirementNodeID.RaceGameLedge];
-                    }
-                case LocationID.ForestHideoutEntrance:
-                    {
-                        return RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldNotBunnyOrInspect];
                     }
                 case LocationID.CastleLeftEntrance:
                 case LocationID.CastleRightEntrance:
@@ -783,7 +773,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.SanctuaryGrave:
                     {
                         return RequirementNodeDictionary.Instance[
-                            RequirementNodeID.SanctuaryGraveEntrance];
+                            RequirementNodeID.EscapeGrave];
                     }
                 case LocationID.GraveyardLedgeEntrance:
                     {
@@ -1042,6 +1032,77 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
+        /// Returns the requirement node from which the specified section is visible.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID.
+        /// </param>
+        /// <param name="index">
+        /// The section index.
+        /// </param>
+        /// <returns>
+        /// The requirement node from which the section is visible.
+        /// </returns>
+        private static IRequirementNode GetVisibleNode(LocationID id, int index = 0)
+        {
+            switch (id)
+            {
+                case LocationID.Pedestal:
+                case LocationID.BombosTablet:
+                case LocationID.EtherTablet:
+                    {
+                        return null;
+                    }
+                case LocationID.LumberjackCave:
+                case LocationID.RaceGame:
+                case LocationID.Library:
+                case LocationID.MushroomSpot:
+                case LocationID.ForestHideout:
+                case LocationID.DesertLedge:
+                case LocationID.LakeHyliaIsland:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld];
+                    }
+                case LocationID.ZoraArea when index == 0:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.ZoraArea];
+                    }
+                case LocationID.BumperCave:
+                    {
+                        return RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWest];
+                    }
+                case LocationID.SpectacleRock when index == 0:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DeathMountainWestBottom];
+                    }
+                case LocationID.FloatingIsland:
+                    {
+                        return RequirementNodeDictionary.Instance[
+                            RequirementNodeID.DeathMountainEastTop];
+                    }
+                case LocationID.LumberjackCaveEntrance:
+                    break;
+                case LocationID.TheWellEntrance:
+                    break;
+                case LocationID.MagicBatEntrance:
+                    break;
+                case LocationID.ForestHideoutEntrance:
+                    break;
+                case LocationID.CastleSecretEntrance:
+                    break;
+                case LocationID.HoulihanHole:
+                    break;
+                case LocationID.SanctuaryGrave:
+                    break;
+                case LocationID.GanonHole:
+                    break;
+            }
+
+            throw new ArgumentOutOfRangeException(nameof(id));
+        }
+
+        /// <summary>
         /// Returns the requirement for the specified section.
         /// </summary>
         /// <param name="id">
@@ -1093,7 +1154,7 @@ namespace OpenTracker.Models.Sections
         {
             return new ItemSection(
                 GetSectionName(id, index), GetItemSectionTotal(id, index),
-                GetSectionConnections(id, index),
+                GetSectionNode(id, index),
                 SectionAutoTrackingFactory.GetAutoTrackValue(id, index),
                 GetSectionRequirement(id, index));
         }
@@ -1110,9 +1171,13 @@ namespace OpenTracker.Models.Sections
         /// <returns>
         /// A new markable item section.
         /// </returns>
-        private static ISection GetMarkableItemSection(LocationID id, int index = 0)
+        private static ISection GetVisibleItemSection(LocationID id, int index = 0)
         {
-            return new MarkableItemSection(GetItemSection(id, index));
+            return new VisibleItemSection(
+                GetSectionName(id, index), GetItemSectionTotal(id, index),
+                GetSectionNode(id, index),
+                SectionAutoTrackingFactory.GetAutoTrackValue(id, index),
+                GetSectionRequirement(id, index), GetVisibleNode(id, index));
         }
 
         /// <summary>
@@ -1644,7 +1709,7 @@ namespace OpenTracker.Models.Sections
         private static ISection GetEntranceSection(LocationID id)
         {
             return new EntranceSection(
-                GetSectionName(id), GetEntranceSectionExitProvided(id), GetSectionConnections(id),
+                GetSectionName(id), GetEntranceSectionExitProvided(id), GetSectionNode(id),
                 GetSectionRequirement(id));
         }
 
@@ -1660,7 +1725,7 @@ namespace OpenTracker.Models.Sections
         private static ISection GetDungeonEntranceSection(LocationID id)
         {
             return new DungeonEntranceSection(
-                GetSectionName(id), GetEntranceSectionExitProvided(id), GetSectionConnections(id),
+                GetSectionName(id), GetEntranceSectionExitProvided(id), GetSectionNode(id),
                 GetSectionRequirement(id));
         }
 
@@ -1675,7 +1740,7 @@ namespace OpenTracker.Models.Sections
         /// </returns>
         private static ISection GetTakeAnySection(LocationID id)
         {
-            return new TakeAnySection(GetSectionConnections(id), GetSectionRequirement(id));
+            return new TakeAnySection(GetSectionNode(id), GetSectionRequirement(id));
         }
 
         /// <summary>
@@ -1751,7 +1816,7 @@ namespace OpenTracker.Models.Sections
                     {
                         return new List<ISection>
                         {
-                            GetMarkableItemSection(id)
+                            GetVisibleItemSection(id)
                         };
                     }
                 case LocationID.BlindsHouse:
@@ -1773,7 +1838,7 @@ namespace OpenTracker.Models.Sections
                     {
                         return new List<ISection>
                         {
-                            GetMarkableItemSection(id, 0),
+                            GetVisibleItemSection(id, 0),
                             GetItemSection(id, 1)
                         };
                     }
