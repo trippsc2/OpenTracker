@@ -39,8 +39,6 @@ namespace OpenTracker.UnitTests.RequirementNodes
         [MemberData(nameof(BumperCavePastGap_To_BumperCaveBack))]
         [MemberData(nameof(DeathMountainExit_To_BumperCaveTop))]
         [MemberData(nameof(BumperCaveBack_To_BumperCaveTop))]
-        [MemberData(nameof(BumperCaveTop_To_BumperCaveItem))]
-        [MemberData(nameof(DarkWorldWest_To_BumperCaveItem))]
         [MemberData(nameof(DarkWorldWestNotBunny_To_HammerHouse))]
         [MemberData(nameof(HammerHouse_To_HammerHouseNotBunny))]
         [MemberData(nameof(LightWorldMirror_To_HammerPegsArea))]
@@ -1184,62 +1182,6 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     },
                     RequirementNodeID.BumperCaveTop,
                     AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> BumperCaveTop_To_BumperCaveItem =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new ModeSaveData(),
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.BumperCaveItem,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData(),
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.BumperCaveTop
-                    },
-                    RequirementNodeID.BumperCaveItem,
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> DarkWorldWest_To_BumperCaveItem =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new ModeSaveData(),
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.BumperCaveItem,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData(),
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.DarkWorldWest
-                    },
-                    RequirementNodeID.BumperCaveItem,
-                    AccessibilityLevel.Inspect
                 }
             };
 

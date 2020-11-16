@@ -49,8 +49,6 @@ namespace OpenTracker.UnitTests.RequirementNodes
         [MemberData(nameof(MimicCaveLedgeNotBunny_To_MimicCave))]
         [MemberData(nameof(DeathMountainEastTopInverted_To_LWFloatingIsland))]
         [MemberData(nameof(DWFloatingIsland_To_LWFloatingIsland))]
-        [MemberData(nameof(LWFloatingIsland_To_FloatingIsland))]
-        [MemberData(nameof(DeathMountainEastTop_To_FloatingIsland))]
         [MemberData(nameof(DeathMountainEastTopNotBunny_To_LWTurtleRockTop))]
         [MemberData(nameof(DWTurtleRockTopInverted_To_LWTurtleRockTop))]
         [MemberData(nameof(LWTurtleRockTop_To_LWTurtleRockTopInverted))]
@@ -1669,62 +1667,6 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     },
                     RequirementNodeID.LWFloatingIsland,
                     AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> LWFloatingIsland_To_FloatingIsland =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new ModeSaveData(),
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.FloatingIsland,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData(),
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.LWFloatingIsland
-                    },
-                    RequirementNodeID.FloatingIsland,
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> DeathMountainEastTop_To_FloatingIsland =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new ModeSaveData(),
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.FloatingIsland,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData(),
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.DeathMountainEastTop
-                    },
-                    RequirementNodeID.FloatingIsland,
-                    AccessibilityLevel.Inspect
                 }
             };
 

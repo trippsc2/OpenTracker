@@ -23,8 +23,6 @@ namespace OpenTracker.UnitTests.RequirementNodes
         [MemberData(nameof(DeathMountainWestBottom_To_DeathMountainWestBottomNotBunny))]
         [MemberData(nameof(DeathMountainWestTop_To_SpectacleRockTop))]
         [MemberData(nameof(DarkDeathMountainWestBottomMirror_To_SpectacleRockTop))]
-        [MemberData(nameof(SpectacleRockTop_To_SpectacleRockTopItem))]
-        [MemberData(nameof(DeathMountainWestBottom_To_SpectacleRockTopItem))]
         [MemberData(nameof(SpectacleRockTop_To_DeathMountainWestTop))]
         [MemberData(nameof(DeathMountainEastTopNotBunny_To_DeathMountainWestTop))]
         [MemberData(nameof(DarkDeathMountainTopMirror_To_DeathMountainWestTop))]
@@ -444,62 +442,6 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     },
                     RequirementNodeID.SpectacleRockTop,
                     AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> SpectacleRockTop_To_SpectacleRockTopItem =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new ModeSaveData(),
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.SpectacleRockTopItem,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData(),
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.SpectacleRockTop
-                    },
-                    RequirementNodeID.SpectacleRockTopItem,
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> DeathMountainWestBottom_To_SpectacleRockTopItem =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new ModeSaveData(),
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.SpectacleRockTopItem,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData(),
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.DeathMountainWestBottom
-                    },
-                    RequirementNodeID.SpectacleRockTopItem,
-                    AccessibilityLevel.Inspect
                 }
             };
 

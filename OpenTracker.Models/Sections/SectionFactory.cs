@@ -436,7 +436,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.LumberjackCaveEntrance:
                     {
                         return RequirementNodeDictionary.Instance[
-                            RequirementNodeID.LumberjackCave];
+                            RequirementNodeID.LumberjackCaveHole];
                     }
                 case LocationID.BlindsHouse when index == 0:
                 case LocationID.Tavern:

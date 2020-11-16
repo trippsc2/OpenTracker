@@ -29,7 +29,6 @@
         FluteStandardOpen,
         Pedestal,
         LumberjackCaveHole,
-        LumberjackCave,
         DeathMountainEntry,
         DeathMountainEntryNonEntrance,
         DeathMountainEntryCave,
