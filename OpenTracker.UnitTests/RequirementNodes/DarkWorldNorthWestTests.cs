@@ -28,7 +28,9 @@ namespace OpenTracker.UnitTests.RequirementNodes
         [MemberData(nameof(DarkWorldWestNotBunny_To_DarkWorldWestNotBunnyOrSuperBunnyMirror))]
         [MemberData(nameof(DarkWorldWest_To_DarkWorldWestNotBunnyOrSuperBunnyMirror))]
         [MemberData(nameof(DarkWorldWestNotBunny_To_DarkWorldWestLift2))]
-        [MemberData(nameof(DarkWorldWestNotBunny_To_SkullWoodsBack))]
+        [MemberData(nameof(DarkWorldWest_To_SkullWoodsBackArea))]
+        [MemberData(nameof(SkullWoodsBackArea_To_SkullWoodsBackAreaNotBunny))]
+        [MemberData(nameof(SkullWoodsBackAreaNotBunny_To_SkullWoodsBack))]
         [MemberData(nameof(DarkWorldWestNotBunny_To_BumperCaveEntry))]
         [MemberData(nameof(DeathMountainEntry_To_BumperCaveEntry))]
         [MemberData(nameof(BumperCaveEntry_To_BumperCaveEntryNonEntrance))]
@@ -208,7 +210,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.NonEntranceInverted
+                        RequirementNodeID.EntranceNoneInverted
                     },
                     RequirementNodeID.DarkWorldWest,
                     AccessibilityLevel.Normal
@@ -655,7 +657,174 @@ namespace OpenTracker.UnitTests.RequirementNodes
                 }
             };
 
-        public static IEnumerable<object[]> DarkWorldWestNotBunny_To_SkullWoodsBack =>
+        public static IEnumerable<object[]> DarkWorldWest_To_SkullWoodsBackArea =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.Insanity
+                    },
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkWorldWest
+                    },
+                    RequirementNodeID.SkullWoodsBackArea,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.None
+                    },
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.SkullWoodsBackArea,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.Dungeon
+                    },
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.SkullWoodsBackArea,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.All
+                    },
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.SkullWoodsBackArea,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.None
+                    },
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkWorldWest
+                    },
+                    RequirementNodeID.SkullWoodsBackArea,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.Dungeon
+                    },
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkWorldWest
+                    },
+                    RequirementNodeID.SkullWoodsBackArea,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.All
+                    },
+                    new (ItemType, int)[0],
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.DarkWorldWest
+                    },
+                    RequirementNodeID.SkullWoodsBackArea,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> SkullWoodsBackArea_To_SkullWoodsBackAreaNotBunny =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.MoonPearl, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.SkullWoodsBackArea
+                    },
+                    RequirementNodeID.SkullWoodsBackAreaNotBunny,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.StandardOpen
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.MoonPearl, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.SkullWoodsBackArea
+                    },
+                    RequirementNodeID.SkullWoodsBackAreaNotBunny,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        WorldState = WorldState.Inverted
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.MoonPearl, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[0],
+                    RequirementNodeID.SkullWoodsBackAreaNotBunny,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> SkullWoodsBackAreaNotBunny_To_SkullWoodsBack =>
             new List<object[]>
             {
                 new object[]
@@ -669,7 +838,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.DarkWorldWestNotBunny
+                        RequirementNodeID.SkullWoodsBackAreaNotBunny
                     },
                     RequirementNodeID.SkullWoodsBack,
                     AccessibilityLevel.None
@@ -685,7 +854,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.DarkWorldWestNotBunny
+                        RequirementNodeID.SkullWoodsBackAreaNotBunny
                     },
                     RequirementNodeID.SkullWoodsBack,
                     AccessibilityLevel.Normal

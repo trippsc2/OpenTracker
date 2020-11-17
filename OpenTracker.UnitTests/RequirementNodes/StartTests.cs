@@ -65,7 +65,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         EntranceShuffle = EntranceShuffle.None
                     },
                     new RequirementNodeID[0],
-                    RequirementNodeID.EntranceDungeon,
+                    RequirementNodeID.EntranceDungeonAllInsanity,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -75,7 +75,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         EntranceShuffle = EntranceShuffle.Dungeon
                     },
                     new RequirementNodeID[0],
-                    RequirementNodeID.EntranceDungeon,
+                    RequirementNodeID.EntranceDungeonAllInsanity,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -85,7 +85,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         EntranceShuffle = EntranceShuffle.All
                     },
                     new RequirementNodeID[0],
-                    RequirementNodeID.EntranceDungeon,
+                    RequirementNodeID.EntranceDungeonAllInsanity,
                     AccessibilityLevel.Normal
                 }
             };
@@ -100,7 +100,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         EntranceShuffle = EntranceShuffle.All
                     },
                     new RequirementNodeID[0],
-                    RequirementNodeID.NonEntrance,
+                    RequirementNodeID.EntranceNone,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -110,7 +110,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         EntranceShuffle = EntranceShuffle.None
                     },
                     new RequirementNodeID[0],
-                    RequirementNodeID.NonEntrance,
+                    RequirementNodeID.EntranceNone,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -120,7 +120,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         EntranceShuffle = EntranceShuffle.Dungeon
                     },
                     new RequirementNodeID[0],
-                    RequirementNodeID.NonEntrance,
+                    RequirementNodeID.EntranceNone,
                     AccessibilityLevel.Normal
                 }
             };
@@ -136,9 +136,9 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     },
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.NonEntrance
+                        RequirementNodeID.EntranceNone
                     },
-                    RequirementNodeID.NonEntranceInverted,
+                    RequirementNodeID.EntranceNoneInverted,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -149,9 +149,9 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     },
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.NonEntrance
+                        RequirementNodeID.EntranceNone
                     },
-                    RequirementNodeID.NonEntranceInverted,
+                    RequirementNodeID.EntranceNoneInverted,
                     AccessibilityLevel.Normal
                 }
             };

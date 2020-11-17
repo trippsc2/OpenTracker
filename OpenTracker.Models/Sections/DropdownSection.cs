@@ -13,7 +13,7 @@ namespace OpenTracker.Models.Sections
     {
         private readonly IRequirementNode _exitNode;
         private readonly IRequirementNode _holeNode;
-        private readonly IRequirementNode _exitProvided;
+
         public string Name { get; }
         public IRequirement Requirement { get; }
         public bool UserManipulated { get; set; }

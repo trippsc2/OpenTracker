@@ -95,7 +95,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.NonEntranceInverted
+                        RequirementNodeID.EntranceNoneInverted
                     },
                     RequirementNodeID.DarkWorldSouth,
                     AccessibilityLevel.Normal

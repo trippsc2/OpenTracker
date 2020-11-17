@@ -7,9 +7,9 @@
     {
         Inaccessible,
         Start,
-        EntranceDungeon,
-        NonEntrance,
-        NonEntranceInverted,
+        EntranceDungeonAllInsanity,
+        EntranceNone,
+        EntranceNoneInverted,
         LightWorld,
         LightWorldInverted,
         LightWorldInvertedNotBunny,

@@ -147,7 +147,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.EntranceDungeon
+                        RequirementNodeID.EntranceDungeonAllInsanity
                     },
                     new (LocationID, int)[0],
                     RequirementNodeID.HCSanctuaryEntry,
@@ -233,7 +233,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.EntranceDungeon
+                        RequirementNodeID.EntranceDungeonAllInsanity
                     },
                     new (LocationID, int)[0],
                     RequirementNodeID.HCFrontEntry,
@@ -299,7 +299,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.EntranceDungeon
+                        RequirementNodeID.EntranceDungeonAllInsanity
                     },
                     new (LocationID, int)[0],
                     RequirementNodeID.HCBackEntry,
@@ -359,7 +359,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.EntranceDungeon
+                        RequirementNodeID.EntranceDungeonAllInsanity
                     },
                     new (LocationID, int)[0],
                     RequirementNodeID.ATEntry,
@@ -487,7 +487,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.EntranceDungeon
+                        RequirementNodeID.EntranceDungeonAllInsanity
                     },
                     new (LocationID, int)[0],
                     RequirementNodeID.EPEntry,
@@ -553,7 +553,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.EntranceDungeon
+                        RequirementNodeID.EntranceDungeonAllInsanity
                     },
                     new (LocationID, int)[0],
                     RequirementNodeID.DPFrontEntry,
@@ -700,7 +700,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.EntranceDungeon
+                        RequirementNodeID.EntranceDungeonAllInsanity
                     },
                     new (LocationID, int)[0],
                     RequirementNodeID.DPLeftEntry,
@@ -760,7 +760,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.EntranceDungeon
+                        RequirementNodeID.EntranceDungeonAllInsanity
                     },
                     new (LocationID, int)[0],
                     RequirementNodeID.DPBackEntry,
@@ -820,7 +820,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.EntranceDungeon
+                        RequirementNodeID.EntranceDungeonAllInsanity
                     },
                     new (LocationID, int)[0],
                     RequirementNodeID.ToHEntry,
@@ -945,7 +945,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.EntranceDungeon
+                        RequirementNodeID.EntranceDungeonAllInsanity
                     },
                     new (LocationID, int)[0],
                     RequirementNodeID.PoDEntry,
@@ -1005,7 +1005,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.EntranceDungeon
+                        RequirementNodeID.EntranceDungeonAllInsanity
                     },
                     new (LocationID, int)[0],
                     RequirementNodeID.SPEntry,
@@ -1182,7 +1182,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.EntranceDungeon
+                        RequirementNodeID.EntranceDungeonAllInsanity
                     },
                     new (LocationID, int)[0],
                     RequirementNodeID.SWBackEntry,
@@ -1242,7 +1242,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.EntranceDungeon
+                        RequirementNodeID.EntranceDungeonAllInsanity
                     },
                     new (LocationID, int)[0],
                     RequirementNodeID.TTEntry,
@@ -1302,7 +1302,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.EntranceDungeon
+                        RequirementNodeID.EntranceDungeonAllInsanity
                     },
                     new (LocationID, int)[0],
                     RequirementNodeID.IPEntry,
@@ -1449,7 +1449,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.EntranceDungeon
+                        RequirementNodeID.EntranceDungeonAllInsanity
                     },
                     new (LocationID, int)[0],
                     RequirementNodeID.MMEntry,
@@ -1509,7 +1509,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.EntranceDungeon
+                        RequirementNodeID.EntranceDungeonAllInsanity
                     },
                     new (LocationID, int)[0],
                     RequirementNodeID.TRFrontEntry,
@@ -2058,7 +2058,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.EntranceDungeon
+                        RequirementNodeID.EntranceDungeonAllInsanity
                     },
                     new (LocationID, int)[0],
                     RequirementNodeID.TRMiddleEntry,
@@ -2118,7 +2118,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.EntranceDungeon
+                        RequirementNodeID.EntranceDungeonAllInsanity
                     },
                     new (LocationID, int)[0],
                     RequirementNodeID.TRBackEntry,
@@ -2178,7 +2178,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[]
                     {
-                        RequirementNodeID.EntranceDungeon
+                        RequirementNodeID.EntranceDungeonAllInsanity
                     },
                     new (LocationID, int)[0],
                     RequirementNodeID.GTEntry,
