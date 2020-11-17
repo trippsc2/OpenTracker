@@ -95,7 +95,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         {
             get
             {
-                if (Mode.Instance.EntranceShuffle == EntranceShuffle.All)
+                if (Mode.Instance.EntranceShuffle >= EntranceShuffle.All)
                 {
                     return 40.0;
                 }
@@ -139,7 +139,8 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         public string Color =>
             AppSettings.Instance.Colors.AccessibilityColors[_mapLocation.Location.Accessibility];
         public static Thickness BorderSize =>
-            Mode.Instance.EntranceShuffle == EntranceShuffle.All ? new Thickness(5) : new Thickness(9);
+            Mode.Instance.EntranceShuffle >= EntranceShuffle.All ?
+            new Thickness(5) : new Thickness(9);
         public string BorderColor =>
             Highlighted ? "#ffffffff" : "#ff000000";
         public bool TextVisible =>

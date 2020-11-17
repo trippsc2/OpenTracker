@@ -21,7 +21,6 @@ namespace OpenTracker.UnitTests.RequirementNodes
         [MemberData(nameof(HyruleCastleTopStandardOpen_To_AgahnimTowerEntrance))]
         [MemberData(nameof(HyruleCastleTopInverted_To_GanonHole))]
         [MemberData(nameof(DarkWorldEastStandardOpen_To_GanonHole))]
-        [MemberData(nameof(LightWorldInspect_To_GanonHole))]
         [MemberData(nameof(LWLakeHyliaFlippers_To_ZoraArea))]
         [MemberData(nameof(LWWitchAreaNotBunny_To_ZoraArea))]
         [MemberData(nameof(CatfishArea_To_ZoraArea))]
@@ -456,43 +455,6 @@ namespace OpenTracker.UnitTests.RequirementNodes
                 }
             };
 
-        public static IEnumerable<object[]> LightWorldInspect_To_GanonHole =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.StandardOpen
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.LightWorld
-                    },
-                    RequirementNodeID.GanonHole,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.LightWorld
-                    },
-                    RequirementNodeID.GanonHole,
-                    AccessibilityLevel.Inspect
-                }
-            };
-
         public static IEnumerable<object[]> LWLakeHyliaFlippers_To_ZoraArea =>
             new List<object[]>
             {
@@ -727,7 +689,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     },
                     new RequirementNodeID[0],
                     RequirementNodeID.ZoraLedge,
-                    AccessibilityLevel.Inspect
+                    AccessibilityLevel.None
                 },
                 new object[]
                 {
@@ -755,7 +717,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         RequirementNodeID.ZoraArea
                     },
                     RequirementNodeID.ZoraLedge,
-                    AccessibilityLevel.Inspect
+                    AccessibilityLevel.None
                 },
                 new object[]
                 {
@@ -783,7 +745,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         RequirementNodeID.ZoraArea
                     },
                     RequirementNodeID.ZoraLedge,
-                    AccessibilityLevel.Inspect
+                    AccessibilityLevel.None
                 },
                 new object[]
                 {
@@ -811,7 +773,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         RequirementNodeID.ZoraArea
                     },
                     RequirementNodeID.ZoraLedge,
-                    AccessibilityLevel.Inspect
+                    AccessibilityLevel.None
                 },
                 new object[]
                 {
@@ -839,7 +801,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         RequirementNodeID.ZoraArea
                     },
                     RequirementNodeID.ZoraLedge,
-                    AccessibilityLevel.Inspect
+                    AccessibilityLevel.None
                 },
                 new object[]
                 {
@@ -867,7 +829,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         RequirementNodeID.ZoraArea
                     },
                     RequirementNodeID.ZoraLedge,
-                    AccessibilityLevel.Inspect
+                    AccessibilityLevel.None
                 },
                 new object[]
                 {
@@ -895,7 +857,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         RequirementNodeID.ZoraArea
                     },
                     RequirementNodeID.ZoraLedge,
-                    AccessibilityLevel.Inspect
+                    AccessibilityLevel.None
                 },
                 new object[]
                 {
@@ -923,7 +885,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         RequirementNodeID.ZoraArea
                     },
                     RequirementNodeID.ZoraLedge,
-                    AccessibilityLevel.Inspect
+                    AccessibilityLevel.None
                 },
                 new object[]
                 {
@@ -951,7 +913,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         RequirementNodeID.ZoraArea
                     },
                     RequirementNodeID.ZoraLedge,
-                    AccessibilityLevel.Inspect
+                    AccessibilityLevel.None
                 },
                 new object[]
                 {
@@ -979,7 +941,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         RequirementNodeID.ZoraArea
                     },
                     RequirementNodeID.ZoraLedge,
-                    AccessibilityLevel.Inspect
+                    AccessibilityLevel.None
                 },
                 new object[]
                 {
@@ -1007,7 +969,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         RequirementNodeID.ZoraArea
                     },
                     RequirementNodeID.ZoraLedge,
-                    AccessibilityLevel.Inspect
+                    AccessibilityLevel.None
                 },
                 new object[]
                 {
@@ -1035,7 +997,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         RequirementNodeID.ZoraArea
                     },
                     RequirementNodeID.ZoraLedge,
-                    AccessibilityLevel.Inspect
+                    AccessibilityLevel.None
                 },
                 new object[]
                 {
@@ -1203,7 +1165,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         RequirementNodeID.ZoraArea
                     },
                     RequirementNodeID.ZoraLedge,
-                    AccessibilityLevel.Inspect
+                    AccessibilityLevel.None
                 },
                 new object[]
                 {
@@ -1231,7 +1193,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         RequirementNodeID.ZoraArea
                     },
                     RequirementNodeID.ZoraLedge,
-                    AccessibilityLevel.Inspect
+                    AccessibilityLevel.None
                 },
                 new object[]
                 {
@@ -1259,7 +1221,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         RequirementNodeID.ZoraArea
                     },
                     RequirementNodeID.ZoraLedge,
-                    AccessibilityLevel.Inspect
+                    AccessibilityLevel.None
                 },
                 new object[]
                 {

@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.AutoTracking.AutotrackValues;
+using OpenTracker.Models.Markings;
+using OpenTracker.Models.Modes;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
@@ -8,23 +9,33 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models.Sections
 {
-    /// <summary>
-    /// This is the class containing item sections of locations.
-    /// </summary>
-    public class ItemSection : IItemSection
+    public class DropdownSection : IEntranceSection
     {
-        private readonly IRequirementNode _node;
-        private readonly IAutoTrackValue _autoTrackValue;
-
+        private readonly IRequirementNode _exitNode;
+        private readonly IRequirementNode _holeNode;
+        private readonly IRequirementNode _exitProvided;
         public string Name { get; }
-        public int Total { get; }
         public IRequirement Requirement { get; }
         public bool UserManipulated { get; set; }
+        public IMarking Marking { get; } =
+            MarkingFactory.GetMarking();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public AccessibilityLevel Accessibility =>
-            _node.Accessibility;
+        public AccessibilityLevel Accessibility
+        {
+            get
+            {
+                if (Mode.Instance.EntranceShuffle == EntranceShuffle.Insanity)
+                {
+                    return _holeNode.Accessibility;
+                }
+
+                return AccessibilityLevelMethods.Max(_holeNode.Accessibility,
+                    _exitNode.Accessibility > AccessibilityLevel.Inspect ?
+                    AccessibilityLevel.Inspect : AccessibilityLevel.None);
+            }
+        }
 
         private int _available;
         public int Available
@@ -40,54 +51,38 @@ namespace OpenTracker.Models.Sections
             }
         }
 
-        private int _accessible;
-        public int Accessible
-        {
-            get => _accessible;
-            private set
-            {
-                if (_accessible != value)
-                {
-                    _accessible = value;
-                    OnPropertyChanged(nameof(Accessible));
-                }
-            }
-        }
-
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="name">
         /// A string representing the name of the section.
         /// </param>
-        /// <param name="total">
-        /// A 32-bit signed integer representing the total number of items in the section.
+        /// <param name="exitProvided">
+        /// The exit provided.
         /// </param>
-        /// <param name="node">
-        /// The requirement node to which this section belongs.
+        /// <param name="exitNode">
+        /// The requirement node of the exit of the dropdown.
         /// </param>
-        /// <param name="autoTrackValue">
-        /// The autotracking value for this section.
+        /// <param name="holeNode">
+        /// The requirement node of the hole of the dropdown.
         /// </param>
-        public ItemSection(
-            string name, int total, IRequirementNode node, IAutoTrackValue autoTrackValue,
+        /// <param name="requirement">
+        /// The requirement for this section to be visible.
+        /// </param>
+        public DropdownSection(
+            string name, IRequirementNode exitNode, IRequirementNode holeNode,
             IRequirement requirement = null)
         {
             Name = name ?? throw new ArgumentNullException(nameof(name));
-            Total = total;
-            _node = node ?? throw new ArgumentNullException(nameof(node));
-            _autoTrackValue = autoTrackValue;
+            Available = 1;
+            _exitNode = exitNode ?? throw new ArgumentNullException(nameof(exitNode));
+            _holeNode = holeNode ?? throw new ArgumentNullException(nameof(holeNode));
             Requirement = requirement ??
                 RequirementDictionary.Instance[RequirementType.NoRequirement];
-            Available = Total;
 
-            _node.PropertyChanged += OnNodeChanged;
-            UpdateAccessible();
-
-            if (_autoTrackValue != null)
-            {
-                _autoTrackValue.PropertyChanged += OnAutoTrackChanged;
-            }
+            _exitNode.PropertyChanged += OnNodeChanged;
+            _holeNode.PropertyChanged += OnNodeChanged;
+            Mode.Instance.PropertyChanged += OnModeChanged;
         }
 
         /// <summary>
@@ -99,11 +94,6 @@ namespace OpenTracker.Models.Sections
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
-            if (propertyName == nameof(Available))
-            {
-                UpdateAccessible();
-            }
         }
 
         /// <summary>
@@ -120,12 +110,11 @@ namespace OpenTracker.Models.Sections
             if (e.PropertyName == nameof(IRequirementNode.Accessibility))
             {
                 OnPropertyChanged(nameof(Accessibility));
-                UpdateAccessible();
             }
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IAutoTrackValue interface.
+        /// Subscribes to the PropertyChanged event on the Mode class.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -133,37 +122,11 @@ namespace OpenTracker.Models.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnAutoTrackChanged(object sender, PropertyChangedEventArgs e)
+        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
+            if (e.PropertyName == nameof(Mode.EntranceShuffle))
             {
-                AutoTrackUpdate();
-            }
-        }
-
-        /// <summary>
-        /// Updates the section available/accessible count from the autotracked value.
-        /// </summary>
-        private void AutoTrackUpdate()
-        {
-            if (_autoTrackValue.CurrentValue.HasValue)
-            {
-                Available = Total - _autoTrackValue.CurrentValue.Value;
-            }
-        }
-
-        /// <summary>
-        /// Updates the number of accessible items.
-        /// </summary>
-        private void UpdateAccessible()
-        {
-            if (Accessibility >= AccessibilityLevel.SequenceBreak)
-            {
-                Accessible = Available;
-            }
-            else
-            {
-                Accessible = 0;
+                OnPropertyChanged(nameof(Accessibility));
             }
         }
 
@@ -175,7 +138,7 @@ namespace OpenTracker.Models.Sections
         /// </returns>
         public bool CanBeCleared(bool force)
         {
-            return IsAvailable() && (force || Accessibility > AccessibilityLevel.Inspect);
+            return IsAvailable();
         }
 
         /// <summary>
@@ -186,7 +149,7 @@ namespace OpenTracker.Models.Sections
         /// </returns>
         public bool CanBeUncleared()
         {
-            return Available < Total;
+            return Available == 0;
         }
 
         /// <summary>
@@ -197,10 +160,7 @@ namespace OpenTracker.Models.Sections
         /// </param>
         public void Clear(bool force)
         {
-            do
-            {
-                Available--;
-            } while ((Accessibility > AccessibilityLevel.None || force) && Available > 0);
+            Available = 0;
         }
 
         /// <summary>
@@ -219,8 +179,8 @@ namespace OpenTracker.Models.Sections
         /// </summary>
         public void Reset()
         {
-            Available = Total;
-            UserManipulated = false;
+            Marking.Mark = MarkType.Unknown;
+            Available = 1;
         }
 
         /// <summary>
@@ -233,7 +193,9 @@ namespace OpenTracker.Models.Sections
         {
             return new SectionSaveData()
             {
-                Available = Available
+                Available = Available,
+                UserManipulated = UserManipulated,
+                Marking = Marking.Mark
             };
         }
 
@@ -248,6 +210,12 @@ namespace OpenTracker.Models.Sections
             }
 
             Available = saveData.Available;
+            UserManipulated = saveData.UserManipulated;
+
+            if (saveData.Marking.HasValue)
+            {
+                Marking.Mark = saveData.Marking.Value;
+            }
         }
     }
 }

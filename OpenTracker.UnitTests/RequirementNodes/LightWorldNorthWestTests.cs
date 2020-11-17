@@ -15,8 +15,6 @@ namespace OpenTracker.UnitTests.RequirementNodes
         [Theory]
         [MemberData(nameof(LightWorld_To_Pedestal))]
         [MemberData(nameof(LightWorldDash_To_LumberjackCaveHole))]
-        [MemberData(nameof(LumberjackCaveHole_To_LumberjackCave))]
-        [MemberData(nameof(LightWorldInspect_To_LumberjackCave))]
         [MemberData(nameof(LightWorldLift1_To_DeathMountainEntry))]
         [MemberData(nameof(BumperCaveEntry_To_DeathMountainEntry))]
         [MemberData(nameof(DeathMountainEntry_To_DeathMountainEntryNonEntrance))]
@@ -43,14 +41,9 @@ namespace OpenTracker.UnitTests.RequirementNodes
         [MemberData(nameof(LightWorldHammer_To_MagicBatLedge))]
         [MemberData(nameof(HammerPegsArea_To_MagicBatLedge))]
         [MemberData(nameof(MagicBatLedge_To_MagicBat))]
-        [MemberData(nameof(MagicBatLedge_To_MagicBatEntrance))]
-        [MemberData(nameof(LightWorldInspect_To_MagicBatEntrance))]
-        [MemberData(nameof(LightWorldDash_To_Library))]
-        [MemberData(nameof(LightWorldInspect_To_Library))]
         [MemberData(nameof(LightWorldNotBunny_To_RaceGameLedge))]
         [MemberData(nameof(DarkWorldSouthMirror_To_RaceGameLedge))]
-        [MemberData(nameof(RaceGameLedge_To_RaceGame))]
-        [MemberData(nameof(LightWorldInspect_To_RaceGame))]
+        [MemberData(nameof(RaceGameLedge_To_RaceGameLedgeNotBunny))]
         [MemberData(nameof(LightWorldNotBunny_To_LWGraveyard))]
         [MemberData(nameof(LWGraveyardLedge_To_LWGraveyard))]
         [MemberData(nameof(KingsTombNotBunny_To_LWGraveyard))]
@@ -58,8 +51,6 @@ namespace OpenTracker.UnitTests.RequirementNodes
         [MemberData(nameof(LWGraveyardNotBunny_To_LWGraveyardLedge))]
         [MemberData(nameof(DWGraveyardMirror_To_LWGraveyardLedge))]
         [MemberData(nameof(LWGraveyardNotBunny_To_EscapeGrave))]
-        [MemberData(nameof(EscapeGrave_To_SanctuaryGraveEntrance))]
-        [MemberData(nameof(LightWorldInspect_To_SanctuaryGraveEntrance))]
         [MemberData(nameof(LWGraveyardNotBunny_To_KingsTomb))]
         [MemberData(nameof(DWGraveyardMirror_To_KingsTomb))]
         [MemberData(nameof(KingsTomb_To_KingsTombNotBunny))]
@@ -346,81 +337,6 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     },
                     RequirementNodeID.LumberjackCaveHole,
                     AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> LumberjackCaveHole_To_LumberjackCave =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new ModeSaveData(),
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.LumberjackCave,
-                    AccessibilityLevel.Inspect
-                },
-                new object[]
-                {
-                    new ModeSaveData(),
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.LumberjackCaveHole
-                    },
-                    RequirementNodeID.LumberjackCave,
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> LightWorldInspect_To_LumberjackCave =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.LumberjackCave,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.StandardOpen
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.LumberjackCave,
-                    AccessibilityLevel.Inspect
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.LightWorld
-                    },
-                    RequirementNodeID.LumberjackCave,
-                    AccessibilityLevel.Inspect
                 }
             };
 
@@ -1723,156 +1639,6 @@ namespace OpenTracker.UnitTests.RequirementNodes
                 }
             };
 
-        public static IEnumerable<object[]> MagicBatLedge_To_MagicBatEntrance =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new ModeSaveData(),
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.MagicBatEntrance,
-                    AccessibilityLevel.Inspect
-                },
-                new object[]
-                {
-                    new ModeSaveData(),
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.MagicBatLedge
-                    },
-                    RequirementNodeID.MagicBatEntrance,
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> LightWorldInspect_To_MagicBatEntrance =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.MagicBatEntrance,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.StandardOpen
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.MagicBatEntrance,
-                    AccessibilityLevel.Inspect
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.LightWorld
-                    },
-                    RequirementNodeID.MagicBatEntrance,
-                    AccessibilityLevel.Inspect
-                }
-            };
-
-        public static IEnumerable<object[]> LightWorldDash_To_Library =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new ModeSaveData(),
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.Library,
-                    AccessibilityLevel.Inspect
-                },
-                new object[]
-                {
-                    new ModeSaveData(),
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.LightWorldDash
-                    },
-                    RequirementNodeID.Library,
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> LightWorldInspect_To_Library =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.Library,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.StandardOpen
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.Library,
-                    AccessibilityLevel.Inspect
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.LightWorld
-                    },
-                    RequirementNodeID.Library,
-                    AccessibilityLevel.Inspect
-                }
-            };
-
         public static IEnumerable<object[]> LightWorldNotBunny_To_RaceGameLedge =>
             new List<object[]>
             {
@@ -2036,25 +1802,9 @@ namespace OpenTracker.UnitTests.RequirementNodes
                 }
             };
 
-        public static IEnumerable<object[]> RaceGameLedge_To_RaceGame =>
+        public static IEnumerable<object[]> RaceGameLedge_To_RaceGameLedgeNotBunny =>
             new List<object[]>
             {
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.MoonPearl, 1)
-                    },
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.RaceGame,
-                    AccessibilityLevel.None
-                },
                 new object[]
                 {
                     new ModeSaveData()
@@ -2071,8 +1821,8 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     {
                         RequirementNodeID.RaceGameLedge
                     },
-                    RequirementNodeID.RaceGame,
-                    AccessibilityLevel.Inspect
+                    RequirementNodeID.RaceGameLegdeNotBunny,
+                    AccessibilityLevel.None
                 },
                 new object[]
                 {
@@ -2087,7 +1837,7 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    RequirementNodeID.RaceGame,
+                    RequirementNodeID.RaceGameLegdeNotBunny,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -2106,42 +1856,8 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     {
                         RequirementNodeID.RaceGameLedge
                     },
-                    RequirementNodeID.RaceGame,
+                    RequirementNodeID.RaceGameLegdeNotBunny,
                     AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> LightWorldInspect_To_RaceGame =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.RaceGame,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.LightWorld
-                    },
-                    RequirementNodeID.RaceGame,
-                    AccessibilityLevel.Inspect
                 }
             };
 
@@ -2453,116 +2169,6 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     },
                     RequirementNodeID.EscapeGrave,
                     AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> EscapeGrave_To_SanctuaryGraveEntrance =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.SanctuaryGraveEntrance,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.StandardOpen
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.SanctuaryGraveEntrance,
-                    AccessibilityLevel.Inspect
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.StandardOpen
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.EscapeGrave
-                    },
-                    RequirementNodeID.SanctuaryGraveEntrance,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.EscapeGrave
-                    },
-                    RequirementNodeID.SanctuaryGraveEntrance,
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> LightWorldInspect_To_SanctuaryGraveEntrance =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.SanctuaryGraveEntrance,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.StandardOpen
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.SanctuaryGraveEntrance,
-                    AccessibilityLevel.Inspect
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.LightWorld
-                    },
-                    RequirementNodeID.SanctuaryGraveEntrance,
-                    AccessibilityLevel.Inspect
                 }
             };
 

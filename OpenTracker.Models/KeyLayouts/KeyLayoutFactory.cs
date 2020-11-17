@@ -1420,7 +1420,7 @@ namespace OpenTracker.Models.KeyLayouts
                                     new AlternativeRequirement(new List<IRequirement>
                                     {
                                         RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonOn]
+                                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity]
                                     }),
                                     RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]
                                 })),
@@ -1466,7 +1466,7 @@ namespace OpenTracker.Models.KeyLayouts
                                     new AlternativeRequirement(new List<IRequirement>
                                     {
                                         RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonOn]
+                                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity]
                                     }),
                                     RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]
                                 })),
@@ -1648,7 +1648,7 @@ namespace OpenTracker.Models.KeyLayouts
                                     new AlternativeRequirement(new List<IRequirement>
                                     {
                                         RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonOn]
+                                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity]
                                     }),
                                     RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
                                 })),
@@ -1685,7 +1685,7 @@ namespace OpenTracker.Models.KeyLayouts
                                     new AlternativeRequirement(new List<IRequirement>
                                     {
                                         RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonOn]
+                                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity]
                                     }),
                                     RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
                                 }))

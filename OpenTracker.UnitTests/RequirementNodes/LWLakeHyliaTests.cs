@@ -26,8 +26,6 @@ namespace OpenTracker.UnitTests.RequirementNodes
         [MemberData(nameof(LWLakeHyliaFakeFlippers_To_LakeHyliaIsland))]
         [MemberData(nameof(LWLakeHyliaWaterWalk_To_LakeHyliaIsland))]
         [MemberData(nameof(DWLakeHyliaWaterWalk_To_LakeHyliaIsland))]
-        [MemberData(nameof(LakeHyliaIsland_To_LakeHyliaIslandItem))]
-        [MemberData(nameof(LightWorldInspect_To_LakeHyliaIslandItem))]
         [MemberData(nameof(LWLakeHyliaFlippers_To_LakeHyliaFairyIsland))]
         [MemberData(nameof(IcePalaceIsland_To_LakeHyliaFairyIsland))]
         [MemberData(nameof(LWLakeHyliaFakeFlippers_To_LakeHyliaFairyIsland))]
@@ -1064,81 +1062,6 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     },
                     RequirementNodeID.LakeHyliaIsland,
                     AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> LakeHyliaIsland_To_LakeHyliaIslandItem =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new ModeSaveData(),
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.LakeHyliaIslandItem,
-                    AccessibilityLevel.Inspect
-                },
-                new object[]
-                {
-                    new ModeSaveData(),
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.LakeHyliaIsland
-                    },
-                    RequirementNodeID.LakeHyliaIslandItem,
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> LightWorldInspect_To_LakeHyliaIslandItem =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.LakeHyliaIslandItem,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.StandardOpen
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.LakeHyliaIslandItem,
-                    AccessibilityLevel.Inspect
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.LightWorld
-                    },
-                    RequirementNodeID.LakeHyliaIslandItem,
-                    AccessibilityLevel.Inspect
                 }
             };
 

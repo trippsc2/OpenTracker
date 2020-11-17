@@ -41,11 +41,12 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         {
             switch (id)
             {
+                case LocationID.LumberjackHouseEntrance:
                 case LocationID.WomanLeftDoor:
                 case LocationID.TavernFront:
+                case LocationID.MagicBatEntrance:
                 case LocationID.ForestChestGameEntrance:
                 case LocationID.CastleMainEntrance:
-                case LocationID.CastleTowerEntrance:
                 case LocationID.EasternPalaceEntrance:
                 case LocationID.DesertFrontEntrance:
                 case LocationID.SkullWoodsBack:
@@ -63,23 +64,37 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                 case LocationID.EDMConnectorBottom:
                 case LocationID.TurtleRockEntrance:
                 case LocationID.GanonsTowerEntrance:
+                case LocationID.ForestHideoutExit:
+                case LocationID.CastleSecretExit:
+                case LocationID.Sanctuary:
+                case LocationID.GanonHoleExit:
+                case LocationID.SkullWoodsWestEntrance:
+                case LocationID.SkullWoodsSWHole:
+                case LocationID.SkullWoodsSEHole:
                     {
                         return Dock.Bottom;
                     }
-                case LocationID.LibraryEntrance:
+                case LocationID.LumberjackCaveEntrance:
                 case LocationID.DeathMountainEntryCave:
+                case LocationID.LeftSnitchHouseEntrance:
+                case LocationID.LibraryEntrance:
+                case LocationID.CastleTowerEntrance:
                 case LocationID.DarkIceRodCaveEntrance:
                 case LocationID.IceRodCaveEntrance:
                 case LocationID.SpiralCaveBottom:
                 case LocationID.SpiralCaveTop:
                 case LocationID.HookshotCaveTop:
                 case LocationID.TRSafetyDoor:
+                case LocationID.LumberjackCaveExit:
+                case LocationID.MagicBatExit:
                     {
                         return Dock.Left;
                     }
+                case LocationID.GanonHole:
                 case LocationID.MimicCaveEntrance:
                 case LocationID.DeathMountainShop:
                 case LocationID.TRLedgeRight:
+                case LocationID.SkullWoodsEastEntrance:
                     {
                         return Dock.Right;
                     }
