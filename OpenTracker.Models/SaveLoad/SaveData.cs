@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Connections;
+using OpenTracker.Models.Dropdowns;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.PrizePlacements;
@@ -22,6 +23,7 @@ namespace OpenTracker.Models.SaveLoad
         public Dictionary<BossPlacementID, BossPlacementSaveData> BossPlacements { get; set; }
         public Dictionary<PrizePlacementID, PrizePlacementSaveData> PrizePlacements { get; set; }
         public List<ConnectionSaveData> Connections { get; set; }
+        public Dictionary<DropdownID, DropdownSaveData> Dropdowns { get; set; }
 
         /// <summary>
         /// Saves data to this class.
@@ -35,6 +37,7 @@ namespace OpenTracker.Models.SaveLoad
             BossPlacements = BossPlacementDictionary.Instance.Save();
             PrizePlacements = PrizePlacementDictionary.Instance.Save();
             Connections = ConnectionCollection.Instance.Save();
+            Dropdowns = DropdownDictionary.Instance.Save();
         }
 
         /// <summary>
@@ -58,6 +61,11 @@ namespace OpenTracker.Models.SaveLoad
             BossPlacementDictionary.Instance.Load(BossPlacements);
             PrizePlacementDictionary.Instance.Load(PrizePlacements);
             ConnectionCollection.Instance.Load(Connections);
+
+            if (Dropdowns != null)
+            {
+                DropdownDictionary.Instance.Load(Dropdowns);
+            }
         }
     }
 }
