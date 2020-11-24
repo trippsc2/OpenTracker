@@ -1,12 +1,14 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Logging;
 using Avalonia.Markup.Xaml;
 using Avalonia.ThemeManager;
 using OpenTracker.Interfaces;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels;
 using OpenTracker.Views;
+using Serilog;
 using System;
 using System.IO;
 using System.Reflection;
@@ -90,6 +92,11 @@ namespace OpenTracker
             return Path.Combine(GetAppDataFolder(), "OpenTracker.theme");
         }
 
+        private static string GetAvaloniaLogFile()
+        {
+            return Path.Combine(GetAppDataFolder(), "OpenTracker.Avalonia.log");
+        }
+
         private static void SetThemeToLastOrDefault()
         {
             string themeConfigFile = GetThemeConfigFile();
@@ -113,10 +120,14 @@ namespace OpenTracker
 
             DialogService = new DialogService(owner);
             DialogService.Register<MessageBoxDialogVM, MessageBoxDialog>();
+            DialogService.Register<AboutDialogVM, AboutDialog>();
         }
 
         public override void Initialize()
         {
+            Logger.Sink = new SerilogLogSink(
+                GetAvaloniaLogFile(), Serilog.Events.LogEventLevel.Warning);
+
             AvaloniaXamlLoader.Load(this);
         }
 

@@ -4,6 +4,7 @@ using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Sections;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -73,6 +74,54 @@ namespace OpenTracker.ViewModels.Items.Small
         }
 
         /// <summary>
+        /// Returns a new small item control ViewModel instance representing a compass.
+        /// </summary>
+        /// <param name="dungeon">
+        /// The dungeon from which the compass represented.
+        /// </param>
+        /// <returns>
+        /// A new small item control ViewModel instance.
+        /// </returns>
+        private static SmallItemVM GetCompassSmallItemControlVM(IDungeon dungeon)
+        {
+            return new SmallItemVM(
+                "avares://OpenTracker/Assets/Images/Items/compass", dungeon.CompassItem,
+                new AggregateRequirement(new List<IRequirement>
+                {
+                    new DisplayMapsCompassesRequirement(true),
+                    new AlternativeRequirement(new List<IRequirement>
+                    {
+                        new AlwaysDisplayDungeonItemsRequirement(true),
+                        RequirementDictionary.Instance[RequirementType.CompassShuffleOn]
+                    })
+                }));
+        }
+
+        /// <summary>
+        /// Returns a new small item control ViewModel instance representing a map.
+        /// </summary>
+        /// <param name="dungeon">
+        /// The dungeon from which the map represented.
+        /// </param>
+        /// <returns>
+        /// A new small item control ViewModel instance.
+        /// </returns>
+        private static SmallItemVM GetMapSmallItemControlVM(IDungeon dungeon)
+        {
+            return new SmallItemVM(
+                "avares://OpenTracker/Assets/Images/Items/map", dungeon.MapItem,
+                new AggregateRequirement(new List<IRequirement>
+                {
+                    new DisplayMapsCompassesRequirement(true),
+                    new AlternativeRequirement(new List<IRequirement>
+                    {
+                        new AlwaysDisplayDungeonItemsRequirement(true),
+                        RequirementDictionary.Instance[RequirementType.MapShuffleOn]
+                    })
+                }));
+        }
+
+        /// <summary>
         /// Returns a new small item control ViewModel instance representing a big key.
         /// </summary>
         /// <param name="dungeon">
@@ -81,9 +130,15 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <returns>
         /// A new small item control ViewModel instance.
         /// </returns>
-        private static BigKeySmallItemVM GetBigKeySmallItemControlVM(IDungeon dungeon)
+        private static SmallItemVM GetBigKeySmallItemControlVM(IDungeon dungeon)
         {
-            return new BigKeySmallItemVM(dungeon.BigKeyItem);
+            return new SmallItemVM(
+                "avares://OpenTracker/Assets/Images/Items/bigkey", dungeon.BigKeyItem,
+                new AlternativeRequirement(new List<IRequirement>
+                {
+                    new AlwaysDisplayDungeonItemsRequirement(true),
+                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]
+                }));
         }
 
         /// <summary>
@@ -116,10 +171,52 @@ namespace OpenTracker.ViewModels.Items.Small
             var smallItems = new ObservableCollection<SmallItemVMBase>();
             var dungeon = (IDungeon)LocationDictionary.Instance[location];
 
+            if (dungeon.CompassItem == null)
+            {
+                smallItems.Add(GetSpacerSmallItemControlVM(
+                    new AggregateRequirement(new List<IRequirement>
+                    {
+                        new DisplayMapsCompassesRequirement(true),
+                        new ItemsPanelOrientationRequirement(Orientation.Vertical),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            new AlwaysDisplayDungeonItemsRequirement(true),
+                            RequirementDictionary.Instance[RequirementType.CompassShuffleOn]
+                        })
+                    })));
+            }
+            else
+            {
+                smallItems.Add(GetCompassSmallItemControlVM(dungeon));
+            }
+
+            if (dungeon.MapItem == null)
+            {
+                smallItems.Add(GetSpacerSmallItemControlVM(
+                    new AggregateRequirement(new List<IRequirement>
+                    {
+                        new DisplayMapsCompassesRequirement(true),
+                        new ItemsPanelOrientationRequirement(Orientation.Vertical),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            new AlwaysDisplayDungeonItemsRequirement(true),
+                            RequirementDictionary.Instance[RequirementType.MapShuffleOn]
+                        })
+                    })));
+            }
+            else
+            {
+                smallItems.Add(GetMapSmallItemControlVM(dungeon));
+            }
+
             if (dungeon.SmallKeyItem == null)
             {
                 smallItems.Add(GetSpacerSmallItemControlVM(
-                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]));
+                    new AlternativeRequirement(new List<IRequirement>
+                    {
+                        new AlwaysDisplayDungeonItemsRequirement(true),
+                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]
+                    })));
             }
             else
             {
@@ -129,12 +226,15 @@ namespace OpenTracker.ViewModels.Items.Small
             if (dungeon.BigKeyItem == null)
             {
                 smallItems.Add(GetSpacerSmallItemControlVM(
-                    new AggregateRequirement(
-                        new List<IRequirement>
+                    new AggregateRequirement(new List<IRequirement>
+                    {
+                        new ItemsPanelOrientationRequirement(Orientation.Vertical),
+                        new AlternativeRequirement(new List<IRequirement>
                         {
-                            new ItemsPanelOrientationRequirement(Orientation.Vertical),
+                            new AlwaysDisplayDungeonItemsRequirement(true),
                             RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]
-                        })));
+                        })
+                    })));
             }
             else
             {

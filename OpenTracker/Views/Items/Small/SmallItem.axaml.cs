@@ -5,12 +5,12 @@ using OpenTracker.Interfaces;
 
 namespace OpenTracker.Views.Items.Small
 {
-    public class BigKeySmallItem : UserControl
+    public class SmallItem : UserControl
     {
         public IClickHandler ViewModelClickHandler =>
             DataContext as IClickHandler;
 
-        public BigKeySmallItem()
+        public SmallItem()
         {
             InitializeComponent();
         }

@@ -18,3 +18,4 @@ using System.Diagnostics.CodeAnalysis;
 [assembly: SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Collections in save data classes must be writable to allow for deserialization.", Scope = "member", Target = "~P:OpenTracker.Models.SaveLoad.SaveData.Locations")]
 [assembly: SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "Collections in save data classes must be writable to allow for deserialization.", Scope = "member", Target = "~P:OpenTracker.Models.SaveLoad.SaveData.PrizePlacements")]
 [assembly: SuppressMessage("CodeQuality", "IDE0052:Remove unread private members", Justification = "<Pending>", Scope = "member", Target = "~F:OpenTracker.Models.DungeonNodes.DungeonNode._id")]
+[assembly: SuppressMessage("Usage", "CA2227:Collection properties should be read only", Justification = "<Pending>", Scope = "member", Target = "~P:OpenTracker.Models.SaveLoad.SaveData.Dropdowns")]

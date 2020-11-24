@@ -66,11 +66,8 @@ namespace OpenTracker.Models.Sections
         /// <param name="node">
         /// The requirement node to which this section belongs.
         /// </param>
-        /// <param name="autoTrackFunction">
-        /// The autotracking function.
-        /// </param>
-        /// <param name="memoryAddresses">
-        /// The list of memory addresses to subscribe to for autotracking.
+        /// <param name="autoTrackValue">
+        /// The autotracking value for this section.
         /// </param>
         public ItemSection(
             string name, int total, IRequirementNode node, IAutoTrackValue autoTrackValue,
@@ -127,6 +124,15 @@ namespace OpenTracker.Models.Sections
             }
         }
 
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IAutoTrackValue interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
         private void OnAutoTrackChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
@@ -135,6 +141,9 @@ namespace OpenTracker.Models.Sections
             }
         }
 
+        /// <summary>
+        /// Updates the section available/accessible count from the autotracked value.
+        /// </summary>
         private void AutoTrackUpdate()
         {
             if (_autoTrackValue.CurrentValue.HasValue)

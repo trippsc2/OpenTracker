@@ -51,7 +51,7 @@ namespace OpenTracker.Models.Sections
         /// The exit provided.
         /// </param>
         /// <param name="node">
-        /// The list of connections to this section.
+        /// The requirement node of the entrance.
         /// </param>
         /// <param name="requirement">
         /// The requirement for this section to be visible.
@@ -82,16 +82,13 @@ namespace OpenTracker.Models.Sections
 
             if (propertyName == nameof(Available))
             {
-                if (IsAvailable())
+                if (_exitProvided != null)
                 {
-                    if (_exitProvided != null)
+                    if (IsAvailable())
                     {
                         _exitProvided.ExitsAccessible--;
                     }
-                }
-                else
-                {
-                    if (_exitProvided != null)
+                    else
                     {
                         _exitProvided.ExitsAccessible++;
                     }

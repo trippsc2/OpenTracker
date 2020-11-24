@@ -50,6 +50,8 @@ namespace OpenTracker.ViewModels
             Mode.Instance.EntranceShuffle == Models.Modes.EntranceShuffle.Dungeon;
         public static bool EntranceShuffleAll =>
             Mode.Instance.EntranceShuffle == Models.Modes.EntranceShuffle.All;
+        public static bool EntranceShuffleInsanity =>
+            Mode.Instance.EntranceShuffle == EntranceShuffle.Insanity;
 
         public static bool BossShuffle =>
             Mode.Instance.BossShuffle;
@@ -139,6 +141,7 @@ namespace OpenTracker.ViewModels
                 this.RaisePropertyChanged(nameof(EntranceShuffleNone));
                 this.RaisePropertyChanged(nameof(EntranceShuffleDungeon));
                 this.RaisePropertyChanged(nameof(EntranceShuffleAll));
+                this.RaisePropertyChanged(nameof(EntranceShuffleInsanity));
             }
 
             if (e.PropertyName == nameof(Mode.BossShuffle))

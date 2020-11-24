@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vc="clr-namespace:OpenTracker.ValueConverters;assembly=OpenTracker"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="OpenTracker.Views.Items.Small.BigKeySmallItem">
+             x:Class="OpenTracker.Views.Items.Small.SmallItem">
 
   <UserControl.Resources>
     <vc:BitmapValueConverter x:Key="BitmapValueConverter" />

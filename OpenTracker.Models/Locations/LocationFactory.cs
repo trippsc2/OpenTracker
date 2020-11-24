@@ -246,6 +246,21 @@ namespace OpenTracker.Models.Locations
                 LocationID.DarkMountainFairyTakeAny => "Dark Mountain Fairy",
                 LocationID.MireRightShackTakeAny => "Mire Right Shack",
                 LocationID.MireCaveTakeAny => "Mire Cave",
+                LocationID.LumberjackCaveExit => "Lumberjack Exit",
+                LocationID.TheWellExit => "The Well Exit",
+                LocationID.MagicBatExit => "Magic Bat Exit",
+                LocationID.ForestHideoutExit => "Forest Hideout Exit",
+                LocationID.CastleSecretExit => "Castle Secret Exit",
+                LocationID.HoulihanHoleExit => "Houlihan Hole Exit",
+                LocationID.Sanctuary => "Sanctuary",
+                LocationID.GanonHoleExit => "Ganon Hole Exit",
+                LocationID.SkullWoodsWestEntrance => "Skull Woods West Entrance",
+                LocationID.SkullWoodsCenterEntrance => "Skull Woods Center Entrance",
+                LocationID.SkullWoodsEastEntrance => "Skull Woods East Entrance",
+                LocationID.SkullWoodsNWHole => "Skull Woods NW Hole",
+                LocationID.SkullWoodsSWHole => "Skull Woods SW Hole",
+                LocationID.SkullWoodsSEHole => "Skull Woods SE Hole",
+                LocationID.SkullWoodsNEHole => "Skull Woods NE Hole",
                 _ => throw new ArgumentOutOfRangeException(nameof(id))
             };
         }

@@ -5,7 +5,9 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="OpenTracker.Views.UIPanel">
 	<DockPanel Margin="1">
-		<ContentControl Content="{Binding Items}" DockPanel.Dock="{Binding ItemsDock,
+    <ContentControl Content="{Binding Dropdowns}" DockPanel.Dock="{Binding ItemsDock,
+						Mode=OneWay}" />
+    <ContentControl Content="{Binding Items}" DockPanel.Dock="{Binding ItemsDock,
 						Mode=OneWay}" />
 		<ContentControl Content="{Binding Locations}" />
 	</DockPanel>

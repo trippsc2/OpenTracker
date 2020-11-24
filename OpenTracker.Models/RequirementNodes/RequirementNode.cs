@@ -61,6 +61,20 @@ namespace OpenTracker.Models.RequirementNodes
             }
         }
 
+        private int _insanityExitsAccessible;
+        public int InsanityExitsAccessible
+        {
+            get => _insanityExitsAccessible;
+            set
+            {
+                if (_insanityExitsAccessible != value)
+                {
+                    _insanityExitsAccessible = value;
+                    OnPropertyChanged(nameof(InsanityExitsAccessible));
+                }
+            }
+        }
+
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
         {
@@ -106,7 +120,8 @@ namespace OpenTracker.Models.RequirementNodes
 
             if (propertyName == nameof(ExitsAccessible) ||
                 propertyName == nameof(DungeonExitsAccessible) ||
-                propertyName == nameof(AlwaysAccessible))
+                propertyName == nameof(AlwaysAccessible) ||
+                propertyName == nameof(InsanityExitsAccessible))
             {
                 UpdateAccessibility();
             }
@@ -195,9 +210,11 @@ namespace OpenTracker.Models.RequirementNodes
             }
 
             if (AlwaysAccessible ||
-                (ExitsAccessible > 0 && Mode.Instance.EntranceShuffle == EntranceShuffle.All) ||
+                (InsanityExitsAccessible > 0 &&
+                Mode.Instance.EntranceShuffle >= EntranceShuffle.Insanity) ||
+                (ExitsAccessible > 0 && Mode.Instance.EntranceShuffle >= EntranceShuffle.All) ||
                 (DungeonExitsAccessible > 0 &&
-                Mode.Instance.EntranceShuffle > EntranceShuffle.None))
+                Mode.Instance.EntranceShuffle >= EntranceShuffle.Dungeon))
             {
                 return AccessibilityLevel.Normal;
             }

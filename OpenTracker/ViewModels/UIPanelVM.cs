@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Layout;
 using OpenTracker.Models.Settings;
+using OpenTracker.ViewModels.Dropdowns;
 using OpenTracker.ViewModels.Items;
 using OpenTracker.ViewModels.PinnedLocations;
 using ReactiveUI;
@@ -20,6 +21,8 @@ namespace OpenTracker.ViewModels
                 _ => AppSettings.Instance.Layout.VerticalItemsPlacement
             };
 
+        public DropdownPanelVM Dropdowns { get; } =
+            new DropdownPanelVM();
         public ItemsPanelVM Items { get; } =
             new ItemsPanelVM();
         public PinnedLocationsPanelVM Locations { get; } =

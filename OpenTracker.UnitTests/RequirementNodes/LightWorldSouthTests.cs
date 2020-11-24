@@ -19,8 +19,6 @@ namespace OpenTracker.UnitTests.RequirementNodes
         [MemberData(nameof(DesertBackNotBunny_To_DesertLedge))]
         [MemberData(nameof(MireAreaMirror_To_DesertLedge))]
         [MemberData(nameof(DPFrontEntry_To_DesertLedge))]
-        [MemberData(nameof(DesertLedge_To_DesertLedgeItem))]
-        [MemberData(nameof(LightWorldInspect_To_DesertLedgeItem))]
         [MemberData(nameof(DesertLedge_To_DesertLedgeNotBunny))]
         [MemberData(nameof(DesertLedgeNotBunny_To_DesertBack))]
         [MemberData(nameof(MireAreaMirror_To_DesertBack))]
@@ -396,81 +394,6 @@ namespace OpenTracker.UnitTests.RequirementNodes
                     },
                     RequirementNodeID.DesertLedge,
                     AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> DesertLedge_To_DesertLedgeItem =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new ModeSaveData(),
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.DesertLedgeItem,
-                    AccessibilityLevel.Inspect
-                },
-                new object[]
-                {
-                    new ModeSaveData(),
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.DesertLedge
-                    },
-                    RequirementNodeID.DesertLedgeItem,
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> LightWorldInspect_To_DesertLedgeItem =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.DesertLedgeItem,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.StandardOpen
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.DesertLedgeItem,
-                    AccessibilityLevel.Inspect
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.LightWorld
-                    },
-                    RequirementNodeID.DesertLedgeItem,
-                    AccessibilityLevel.Inspect
                 }
             };
 

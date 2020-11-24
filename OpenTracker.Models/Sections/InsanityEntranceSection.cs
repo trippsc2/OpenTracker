@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Markings;
+using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using System;
@@ -7,53 +8,93 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models.Sections
 {
-    /// <summary>
-    /// This is the section class of items with a marking.
-    /// </summary>
-    public class MarkableItemSection : IMarkableSection, IItemSection
+    public class InsanityEntranceSection : IEntranceSection
     {
-        private readonly IItemSection _section;
+        private readonly IRequirementNode _node;
+        private readonly IRequirementNode _exitProvided;
 
-        public string Name =>
-            _section.Name;
-        public IRequirement Requirement =>
-            _section.Requirement;
-        public AccessibilityLevel Accessibility =>
-            _section.Accessibility;
-        public bool UserManipulated
-        {
-            get => _section.UserManipulated;
-            set => _section.UserManipulated = value;
-        }
-        public int Available
-        {
-            get => _section.Available;
-            set => _section.Available = value;
-        }
-        public int Accessible =>
-            _section.Accessible;
-        public int Total =>
-            _section.Total;
+        public string Name { get; }
+        public IRequirement Requirement { get; }
+        public bool UserManipulated { get; set; }
         public IMarking Marking { get; } =
             MarkingFactory.GetMarking();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="section">
-        /// The item section to be encapsulated.
-        /// </param>
-        public MarkableItemSection(IItemSection section)
-        {
-            _section = section ?? throw new ArgumentNullException(nameof(section));
+        public AccessibilityLevel Accessibility =>
+            _node.Accessibility;
 
-            _section.PropertyChanged += OnPropertyChanged;
+        private int _available;
+        public int Available
+        {
+            get => _available;
+            set
+            {
+                if (_available != value)
+                {
+                    _available = value;
+                    OnPropertyChanged(nameof(Available));
+                }
+            }
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the encapsulated IItem interface.
+        /// Constructor
+        /// </summary>
+        /// <param name="name">
+        /// A string representing the name of the section.
+        /// </param>
+        /// <param name="exitProvided">
+        /// The exit provided.
+        /// </param>
+        /// <param name="node">
+        /// The requirement node of the entrance.
+        /// </param>
+        /// <param name="requirement">
+        /// The requirement for this section to be visible.
+        /// </param>
+        public InsanityEntranceSection(
+            string name, IRequirementNode exitProvided, IRequirementNode node,
+            IRequirement requirement = null)
+        {
+            Name = name ?? throw new ArgumentNullException(nameof(name));
+            Available = 1;
+            _exitProvided = exitProvided;
+            _node = node ?? throw new ArgumentNullException(nameof(node));
+            Requirement = requirement ??
+                RequirementDictionary.Instance[RequirementType.NoRequirement];
+
+            _node.PropertyChanged += OnNodeChanged;
+        }
+
+        /// <summary>
+        /// Raises the PropertyChanged event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
+        /// </param>
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+            if (propertyName == nameof(Available))
+            {
+                if (_exitProvided != null)
+                {
+                    if (IsAvailable())
+                    {
+                        _exitProvided.InsanityExitsAccessible--;
+                    }
+                    else
+                    {
+                        _exitProvided.InsanityExitsAccessible++;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IRequirementNode interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -61,16 +102,11 @@ namespace OpenTracker.Models.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnNodeChanged(object sender, PropertyChangedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, e);
-
-            if (e.PropertyName == nameof(ISection.Available))
+            if (e.PropertyName == nameof(IRequirementNode.Accessibility))
             {
-                if (!IsAvailable())
-                {
-                    Marking.Mark = MarkType.Unknown;
-                }
+                OnPropertyChanged(nameof(Accessibility));
             }
         }
 
@@ -82,13 +118,7 @@ namespace OpenTracker.Models.Sections
         /// </returns>
         public bool CanBeCleared(bool force)
         {
-            if (_section.CanBeCleared(force))
-            {
-                return true;
-            }
-
-            return IsAvailable() && Accessibility == AccessibilityLevel.Inspect &&
-                Marking.Mark == MarkType.Unknown;
+            return IsAvailable();
         }
 
         /// <summary>
@@ -99,7 +129,7 @@ namespace OpenTracker.Models.Sections
         /// </returns>
         public bool CanBeUncleared()
         {
-            return Available < Total;
+            return Available == 0;
         }
 
         /// <summary>
@@ -110,7 +140,7 @@ namespace OpenTracker.Models.Sections
         /// </param>
         public void Clear(bool force)
         {
-            _section.Clear(force);
+            Available = 0;
         }
 
         /// <summary>
@@ -121,7 +151,7 @@ namespace OpenTracker.Models.Sections
         /// </returns>
         public bool IsAvailable()
         {
-            return _section.IsAvailable();
+            return Available > 0;
         }
 
         /// <summary>
@@ -129,8 +159,8 @@ namespace OpenTracker.Models.Sections
         /// </summary>
         public void Reset()
         {
-            _section.Reset();
             Marking.Mark = MarkType.Unknown;
+            Available = 1;
         }
 
         /// <summary>

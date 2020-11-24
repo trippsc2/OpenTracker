@@ -95,7 +95,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         {
             get
             {
-                if (Mode.Instance.EntranceShuffle == EntranceShuffle.All)
+                if (Mode.Instance.EntranceShuffle >= EntranceShuffle.All)
                 {
                     return 40.0;
                 }
@@ -134,11 +134,13 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
             _mapLocation.Location.Accessibility != AccessibilityLevel.None));
 
         public MarkingMapLocationVM Marking { get; }
+        public MapLocationToolTipVM ToolTip { get; }
 
         public string Color =>
             AppSettings.Instance.Colors.AccessibilityColors[_mapLocation.Location.Accessibility];
         public static Thickness BorderSize =>
-            Mode.Instance.EntranceShuffle == EntranceShuffle.All ? new Thickness(5) : new Thickness(9);
+            Mode.Instance.EntranceShuffle >= EntranceShuffle.All ?
+            new Thickness(5) : new Thickness(9);
         public string BorderColor =>
             Highlighted ? "#ffffffff" : "#ff000000";
         public bool TextVisible =>
@@ -170,8 +172,6 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                     _mapLocation.Location.Available.ToString(CultureInfo.InvariantCulture);
             }
         }
-        public string ToolTipText =>
-            _mapLocation.Location.Name;
 
         /// <summary>
         /// Constructor
@@ -194,6 +194,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         {
             _mapLocation = mapLocation ?? throw new ArgumentNullException(nameof(mapLocation));
             Marking = marking ?? throw new ArgumentNullException(nameof(marking));
+            ToolTip = new MapLocationToolTipVM(_mapLocation.Location);
             _entranceMarkingDock = entranceMarkingDock;
             _nonEntranceMarkingDock = nonEntranceMarkingDock;
 

@@ -6,7 +6,7 @@
         mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="462"
         Width="420" Height="554" Padding="5" CanResize="True" WindowStartupLocation="CenterScreen"
         x:Class="OpenTracker.Views.ColorSelect.ColorSelectDialog"
-        Icon="avares://OpenTracker/Assets/triforce.png"
+        Icon="avares://OpenTracker/Assets/Images/triforce.png"
         Title="OpenTracker - Color Select">
 	<ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
 		<Grid ColumnDefinitions="Auto,*,Auto"

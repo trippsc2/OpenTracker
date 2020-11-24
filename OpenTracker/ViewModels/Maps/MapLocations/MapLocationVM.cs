@@ -73,7 +73,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         {
             get
             {
-                if (Mode.Instance.EntranceShuffle == EntranceShuffle.All)
+                if (Mode.Instance.EntranceShuffle >= EntranceShuffle.All)
                 {
                     return 40.0;
                 }
@@ -93,7 +93,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         public string Color =>
             AppSettings.Instance.Colors.AccessibilityColors[_mapLocation.Location.Accessibility];
         public static Thickness BorderSize =>
-            Mode.Instance.EntranceShuffle == EntranceShuffle.All ? new Thickness(5) : new Thickness(9);
+            Mode.Instance.EntranceShuffle >= EntranceShuffle.All ? new Thickness(5) : new Thickness(9);
         public string BorderColor =>
             Highlighted ? "#ffffffff" : "#ff000000";
         public bool TextVisible =>
@@ -125,8 +125,8 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                     _mapLocation.Location.Available.ToString(CultureInfo.InvariantCulture);
             }
         }
-        public string ToolTipText =>
-            _mapLocation.Location.Name;
+
+        public MapLocationToolTipVM ToolTip { get; }
 
         /// <summary>
         /// Constructor
@@ -137,9 +137,9 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         public MapLocationVM(MapLocation mapLocation)
         {
             _mapLocation = mapLocation ?? throw new ArgumentNullException(nameof(mapLocation));
+            ToolTip = new MapLocationToolTipVM(_mapLocation.Location);
 
             PropertyChanged += OnPropertyChanged;
-
             AppSettings.Instance.Tracker.PropertyChanged += OnTrackerSettingsChanged;
             AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
             AppSettings.Instance.Colors.AccessibilityColors.PropertyChanged += OnColorChanged;

@@ -175,6 +175,143 @@ namespace OpenTracker.Models.Dungeons
         }
 
         /// <summary>
+        /// Returns the map item for the specified dungeon.
+        /// </summary>
+        /// <param name="id">
+        /// The dungeon ID.
+        /// </param>
+        /// <returns>
+        /// The map item.
+        /// </returns>
+        private static IItem GetDungeonMapItem(LocationID id)
+        {
+            switch (id)
+            {
+                case LocationID.HyruleCastle:
+                    {
+                        return ItemDictionary.Instance[ItemType.HCMap];
+                    }
+                case LocationID.AgahnimTower:
+                    {
+                        return null;
+                    }
+                case LocationID.EasternPalace:
+                    {
+                        return ItemDictionary.Instance[ItemType.EPMap];
+                    }
+                case LocationID.DesertPalace:
+                    {
+                        return ItemDictionary.Instance[ItemType.DPMap];
+                    }
+                case LocationID.TowerOfHera:
+                    {
+                        return ItemDictionary.Instance[ItemType.ToHMap];
+                    }
+                case LocationID.PalaceOfDarkness:
+                    {
+                        return ItemDictionary.Instance[ItemType.PoDMap];
+                    }
+                case LocationID.SwampPalace:
+                    {
+                        return ItemDictionary.Instance[ItemType.SPMap];
+                    }
+                case LocationID.SkullWoods:
+                    {
+                        return ItemDictionary.Instance[ItemType.SWMap];
+                    }
+                case LocationID.ThievesTown:
+                    {
+                        return ItemDictionary.Instance[ItemType.TTMap];
+                    }
+                case LocationID.IcePalace:
+                    {
+                        return ItemDictionary.Instance[ItemType.IPMap];
+                    }
+                case LocationID.MiseryMire:
+                    {
+                        return ItemDictionary.Instance[ItemType.MMMap];
+                    }
+                case LocationID.TurtleRock:
+                    {
+                        return ItemDictionary.Instance[ItemType.TRMap];
+                    }
+                case LocationID.GanonsTower:
+                    {
+                        return ItemDictionary.Instance[ItemType.GTMap];
+                    }
+            }
+
+            throw new ArgumentOutOfRangeException(nameof(id));
+        }
+
+        /// <summary>
+        /// Returns the compass item for the specified dungeon.
+        /// </summary>
+        /// <param name="id">
+        /// The dungeon ID.
+        /// </param>
+        /// <returns>
+        /// The compass item.
+        /// </returns>
+        private static IItem GetDungeonCompassItem(LocationID id)
+        {
+            switch (id)
+            {
+                case LocationID.HyruleCastle:
+                case LocationID.AgahnimTower:
+                    {
+                        return null;
+                    }
+                case LocationID.EasternPalace:
+                    {
+                        return ItemDictionary.Instance[ItemType.EPCompass];
+                    }
+                case LocationID.DesertPalace:
+                    {
+                        return ItemDictionary.Instance[ItemType.DPCompass];
+                    }
+                case LocationID.TowerOfHera:
+                    {
+                        return ItemDictionary.Instance[ItemType.ToHCompass];
+                    }
+                case LocationID.PalaceOfDarkness:
+                    {
+                        return ItemDictionary.Instance[ItemType.PoDCompass];
+                    }
+                case LocationID.SwampPalace:
+                    {
+                        return ItemDictionary.Instance[ItemType.SPCompass];
+                    }
+                case LocationID.SkullWoods:
+                    {
+                        return ItemDictionary.Instance[ItemType.SWCompass];
+                    }
+                case LocationID.ThievesTown:
+                    {
+                        return ItemDictionary.Instance[ItemType.TTCompass];
+                    }
+                case LocationID.IcePalace:
+                    {
+                        return ItemDictionary.Instance[ItemType.IPCompass];
+                    }
+                case LocationID.MiseryMire:
+                    {
+                        return ItemDictionary.Instance[ItemType.MMCompass];
+                    }
+                case LocationID.TurtleRock:
+                    {
+                        return ItemDictionary.Instance[ItemType.TRCompass];
+                    }
+                case LocationID.GanonsTower:
+                    {
+                        return ItemDictionary.Instance[ItemType.GTCompass];
+                    }
+            }
+
+            throw new ArgumentOutOfRangeException(nameof(id));
+        }
+
+        /// <summary>
         /// Returns the small key item for the specified dungeon.
         /// </summary>
         /// <param name="id">
@@ -1266,9 +1403,10 @@ namespace OpenTracker.Models.Dungeons
             return new Dungeon(
                 id, LocationFactory.GetLocationName(id), MapLocationFactory.GetMapLocations(id),
                 GetDungeonMapCount(id), GetDungeonCompassCount(id), GetDungeonSmallKeyCount(id),
-                GetDungeonBigKeyCount(id), GetDungeonSmallKeyItem(id), GetDungeonBigKeyItem(id),
-                GetDungeonNodes(id), GetDungeonItems(id), GetDungeonBosses(id),
-                GetDungeonSmallKeyDoors(id), GetDungeonBigKeyDoors(id), GetDungeonEntryNodes(id));
+                GetDungeonBigKeyCount(id), GetDungeonMapItem(id), GetDungeonCompassItem(id),
+                GetDungeonSmallKeyItem(id), GetDungeonBigKeyItem(id), GetDungeonNodes(id),
+                GetDungeonItems(id), GetDungeonBosses(id), GetDungeonSmallKeyDoors(id),
+                GetDungeonBigKeyDoors(id), GetDungeonEntryNodes(id));
         }
     }
 }

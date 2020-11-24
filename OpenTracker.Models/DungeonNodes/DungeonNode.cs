@@ -18,6 +18,7 @@ namespace OpenTracker.Models.DungeonNodes
 
         public int ExitsAccessible { get; set; }
         public int DungeonExitsAccessible { get; set; }
+        public int InsanityExitsAccessible { get; set; }
         public int KeysProvided { get; }
         public List<INodeConnection> Connections { get; } =
             new List<INodeConnection>();

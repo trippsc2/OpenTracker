@@ -30,6 +30,11 @@ namespace OpenTracker.ViewModels
         public static bool ShowItemCountsOnMap =>
             AppSettings.Instance.Tracker.ShowItemCountsOnMap;
 
+        public static bool DisplayMapsCompasses =>
+            AppSettings.Instance.Layout.DisplayMapsCompasses;
+        public static bool AlwaysDisplayDungeonItems =>
+            AppSettings.Instance.Layout.AlwaysDisplayDungeonItems;
+
         public static bool DynamicLayoutOrientation =>
             AppSettings.Instance.Layout.LayoutOrientation == null;
         public static bool HorizontalLayoutOrientation =>
@@ -76,10 +81,13 @@ namespace OpenTracker.ViewModels
             AppSettings.Instance.Layout.UIScale == 2.0;
 
         public ReactiveCommand<Unit, Unit> OpenResetDialogCommand { get; }
+        public ReactiveCommand<Unit, Unit> OpenAboutDialogCommand { get; }
         public ReactiveCommand<Unit, Unit> UndoCommand { get; }
         public ReactiveCommand<Unit, Unit> RedoCommand { get; }
         public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocationsCommand { get; }
         public ReactiveCommand<Unit, Unit> ToggleShowItemCountsOnMapCommand { get; }
+        public ReactiveCommand<Unit, Unit> ToggleDisplayMapsCompassesCommand { get; }
+        public ReactiveCommand<Unit, Unit> ToggleAlwaysDisplayDungeonItemsCommand { get; }
         public ReactiveCommand<string, Unit> SetLayoutOrientationCommand { get; }
         public ReactiveCommand<string, Unit> SetMapOrientationCommand { get; }
         public ReactiveCommand<string, Unit> SetHorizontalUIPanelPlacementCommand { get; }
@@ -91,6 +99,10 @@ namespace OpenTracker.ViewModels
         private readonly ObservableAsPropertyHelper<bool> _isOpeningResetDialog;
         public bool IsOpeningResetDialog =>
             _isOpeningResetDialog.Value;
+
+        private readonly ObservableAsPropertyHelper<bool> _isOpeningAboutDialog;
+        public bool IsOpeningAboutDialog =>
+            _isOpeningAboutDialog.Value;
 
         private bool _canUndo;
         public bool CanUndo
@@ -115,11 +127,17 @@ namespace OpenTracker.ViewModels
             OpenResetDialogCommand.IsExecuting.ToProperty(
                 this, x => x.IsOpeningResetDialog, out _isOpeningResetDialog);
 
+            OpenAboutDialogCommand = ReactiveCommand.CreateFromObservable(OpenAboutDialogAsync);
+            OpenAboutDialogCommand.IsExecuting.ToProperty(
+                this, x => x.IsOpeningAboutDialog, out _isOpeningResetDialog);
+
             UndoCommand = ReactiveCommand.Create(Undo, this.WhenAnyValue(x => x.CanUndo));
             RedoCommand = ReactiveCommand.Create(Redo, this.WhenAnyValue(x => x.CanRedo));
             ToggleDisplayAllLocationsCommand = ReactiveCommand.Create(ToggleDisplayAllLocations);
 
             ToggleShowItemCountsOnMapCommand = ReactiveCommand.Create(ToggleShowItemCountsOnMap);
+            ToggleDisplayMapsCompassesCommand = ReactiveCommand.Create(ToggleDisplayMapsCompasses);
+            ToggleAlwaysDisplayDungeonItemsCommand = ReactiveCommand.Create(ToggleAlwaysDisplayDungeonItems);
             SetLayoutOrientationCommand = ReactiveCommand.Create<string>(SetLayoutOrientation);
             SetMapOrientationCommand = ReactiveCommand.Create<string>(SetMapOrientation);
             SetHorizontalUIPanelPlacementCommand = ReactiveCommand.Create<string>(SetHorizontalUIPanelPlacement);
@@ -195,6 +213,16 @@ namespace OpenTracker.ViewModels
         /// </param>
         private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
+            if (e.PropertyName == nameof(LayoutSettings.DisplayMapsCompasses))
+            {
+                this.RaisePropertyChanged(nameof(DisplayMapsCompasses));
+            }
+
+            if (e.PropertyName == nameof(LayoutSettings.AlwaysDisplayDungeonItems))
+            {
+                this.RaisePropertyChanged(nameof(AlwaysDisplayDungeonItems));
+            }
+
             if (e.PropertyName == nameof(LayoutSettings.LayoutOrientation))
             {
                 this.RaisePropertyChanged(nameof(DynamicLayoutOrientation));
@@ -399,6 +427,24 @@ namespace OpenTracker.ViewModels
         }
 
         /// <summary>
+        /// Toggles whether to display maps and compasses.
+        /// </summary>
+        private void ToggleDisplayMapsCompasses()
+        {
+            AppSettings.Instance.Layout.DisplayMapsCompasses =
+                !AppSettings.Instance.Layout.DisplayMapsCompasses;
+        }
+
+        /// <summary>
+        /// Toggles whether to always display dungeon items.
+        /// </summary>
+        private void ToggleAlwaysDisplayDungeonItems()
+        {
+            AppSettings.Instance.Layout.AlwaysDisplayDungeonItems =
+                !AppSettings.Instance.Layout.AlwaysDisplayDungeonItems;
+        }
+
+        /// <summary>
         /// Resets the undo/redo manager, pinned locations, and game data to their starting values.
         /// </summary>
         private static void Reset()
@@ -437,6 +483,18 @@ namespace OpenTracker.ViewModels
         }
 
         /// <summary>
+        /// Opens an about dialog window.
+        /// </summary>
+        private static void OpenAboutDialog()
+        {
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                bool? result = await App.DialogService.ShowDialog(new AboutDialogVM())
+                    .ConfigureAwait(false);
+            });
+        }
+
+        /// <summary>
         /// Returns the observable result of the OpenResetDialog method.
         /// </summary>
         /// <returns>
@@ -445,6 +503,17 @@ namespace OpenTracker.ViewModels
         private IObservable<Unit> OpenResetDialogAsync()
         {
             return Observable.Start(() => { OpenResetDialog(); });
+        }
+
+        /// <summary>
+        /// Returns the observable result of the OpenAboutDialog method.
+        /// </summary>
+        /// <returns>
+        /// The observable result of the OpenAboutDialog method.
+        /// </returns>
+        private IObservable<Unit> OpenAboutDialogAsync()
+        {
+            return Observable.Start(() => { OpenAboutDialog(); });
         }
     }
 }

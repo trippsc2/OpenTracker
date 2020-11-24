@@ -32,10 +32,8 @@ namespace OpenTracker.UnitTests.RequirementNodes
         [MemberData(nameof(LightWorld_To_LightWorldInverted))]
         [MemberData(nameof(LightWorldInverted_To_LightWorldInvertedNotBunny))]
         [MemberData(nameof(LightWorld_To_LightWorldStandardOpen))]
-        [MemberData(nameof(LightWorld_To_LightWorldInspect))]
         [MemberData(nameof(LightWorld_To_LightWorldMirror))]
         [MemberData(nameof(LightWorld_To_LightWorldNotBunny))]
-        [MemberData(nameof(LightWorld_To_LightWorldNotBunnyOrInspect))]
         [MemberData(nameof(LightWorld_To_LightWorldNotBunnyOrDungeonRevive))]
         [MemberData(nameof(LightWorld_To_LightWorldNotBunnyOrSuperBunnyFallInHole))]
         [MemberData(nameof(LightWorld_To_LightWorldNotBunnyOrSuperBunnyMirror))]
@@ -771,53 +769,6 @@ namespace OpenTracker.UnitTests.RequirementNodes
                 }
             };
 
-        public static IEnumerable<object[]> LightWorld_To_LightWorldInspect =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.LightWorldInspect,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.StandardOpen
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.LightWorldInspect,
-                    AccessibilityLevel.Inspect
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[0],
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.LightWorld
-                    },
-                    RequirementNodeID.LightWorldInspect,
-                    AccessibilityLevel.Inspect
-                }
-            };
-
         public static IEnumerable<object[]> LightWorld_To_LightWorldMirror =>
             new List<object[]>
             {
@@ -935,81 +886,6 @@ namespace OpenTracker.UnitTests.RequirementNodes
                         RequirementNodeID.LightWorld
                     },
                     RequirementNodeID.LightWorldNotBunny,
-                    AccessibilityLevel.Normal
-                }
-            };
-
-        public static IEnumerable<object[]> LightWorld_To_LightWorldNotBunnyOrInspect =>
-            new List<object[]>
-            {
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.StandardOpen
-                    },
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.MoonPearl, 0)
-                    },
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.LightWorldNotBunnyOrInspect,
-                    AccessibilityLevel.Normal
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.MoonPearl, 0)
-                    },
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[0],
-                    RequirementNodeID.LightWorldNotBunnyOrInspect,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.MoonPearl, 0)
-                    },
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.LightWorld
-                    },
-                    RequirementNodeID.LightWorldNotBunnyOrInspect,
-                    AccessibilityLevel.Inspect
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted
-                    },
-                    new (ItemType, int)[]
-                    {
-                        (ItemType.MoonPearl, 1)
-                    },
-                    new (PrizeType, int)[0],
-                    new (SequenceBreakType, bool)[0],
-                    new RequirementNodeID[]
-                    {
-                        RequirementNodeID.LightWorld
-                    },
-                    RequirementNodeID.LightWorldNotBunnyOrInspect,
                     AccessibilityLevel.Normal
                 }
             };

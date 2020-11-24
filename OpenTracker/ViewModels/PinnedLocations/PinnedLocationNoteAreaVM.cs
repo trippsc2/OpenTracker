@@ -47,8 +47,7 @@ namespace OpenTracker.ViewModels.PinnedLocations
         }
 
         /// <summary>
-        /// Subscribes to the CollectionChanged event on the ObservableCollection of notes
-        /// connections.
+        /// Subscribes to the CollectionChanged event on the ObservableCollection of notes.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.

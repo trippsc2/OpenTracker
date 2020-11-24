@@ -8,7 +8,7 @@ namespace OpenTracker.Models.Requirements
     /// <summary>
     /// This is the class for a set of requirement alternatives.
     /// </summary>
-    internal class AlternativeRequirement : IRequirement
+    public class AlternativeRequirement : IRequirement
     {
         private readonly List<IRequirement> _requirements;
 

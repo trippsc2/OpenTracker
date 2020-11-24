@@ -229,6 +229,21 @@
         DarkIceRodRockTakeAny,
         DarkMountainFairyTakeAny,
         MireRightShackTakeAny,
-        MireCaveTakeAny
+        MireCaveTakeAny,
+        LumberjackCaveExit,
+        TheWellExit,
+        MagicBatExit,
+        ForestHideoutExit,
+        CastleSecretExit,
+        HoulihanHoleExit,
+        Sanctuary,
+        GanonHoleExit,
+        SkullWoodsWestEntrance,
+        SkullWoodsCenterEntrance,
+        SkullWoodsEastEntrance,
+        SkullWoodsNWHole,
+        SkullWoodsSWHole,
+        SkullWoodsSEHole,
+        SkullWoodsNEHole
     }
 }

@@ -230,6 +230,15 @@ namespace OpenTracker.UnitTests.Requirements
                 {
                     new ModeSaveData()
                     {
+                        EntranceShuffle = EntranceShuffle.Insanity
+                    },
+                    RequirementType.EntranceShuffleNone,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
                         EntranceShuffle = EntranceShuffle.None
                     },
                     RequirementType.EntranceShuffleDungeon,
@@ -257,6 +266,15 @@ namespace OpenTracker.UnitTests.Requirements
                 {
                     new ModeSaveData()
                     {
+                        EntranceShuffle = EntranceShuffle.Insanity
+                    },
+                    RequirementType.EntranceShuffleDungeon,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
                         EntranceShuffle = EntranceShuffle.None
                     },
                     RequirementType.EntranceShuffleAll,
@@ -278,6 +296,51 @@ namespace OpenTracker.UnitTests.Requirements
                         EntranceShuffle = EntranceShuffle.All
                     },
                     RequirementType.EntranceShuffleAll,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.Insanity
+                    },
+                    RequirementType.EntranceShuffleAll,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.None
+                    },
+                    RequirementType.EntranceShuffleInsanity,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.Dungeon
+                    },
+                    RequirementType.EntranceShuffleInsanity,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.All
+                    },
+                    RequirementType.EntranceShuffleInsanity,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        EntranceShuffle = EntranceShuffle.Insanity
+                    },
+                    RequirementType.EntranceShuffleInsanity,
                     AccessibilityLevel.Normal
                 }
             };
@@ -686,7 +749,7 @@ namespace OpenTracker.UnitTests.Requirements
                         WorldState = WorldState.StandardOpen,
                         EntranceShuffle = EntranceShuffle.None
                     },
-                    RequirementType.WorldStateStandardOpenEntranceShuffleNotAll,
+                    RequirementType.WorldStateStandardOpenEntranceShuffleNoneDungeon,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -696,7 +759,7 @@ namespace OpenTracker.UnitTests.Requirements
                         WorldState = WorldState.Inverted,
                         EntranceShuffle = EntranceShuffle.None
                     },
-                    RequirementType.WorldStateStandardOpenEntranceShuffleNotAll,
+                    RequirementType.WorldStateStandardOpenEntranceShuffleNoneDungeon,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -706,7 +769,7 @@ namespace OpenTracker.UnitTests.Requirements
                         WorldState = WorldState.StandardOpen,
                         EntranceShuffle = EntranceShuffle.Dungeon
                     },
-                    RequirementType.WorldStateStandardOpenEntranceShuffleNotAll,
+                    RequirementType.WorldStateStandardOpenEntranceShuffleNoneDungeon,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -716,7 +779,7 @@ namespace OpenTracker.UnitTests.Requirements
                         WorldState = WorldState.Inverted,
                         EntranceShuffle = EntranceShuffle.Dungeon
                     },
-                    RequirementType.WorldStateStandardOpenEntranceShuffleNotAll,
+                    RequirementType.WorldStateStandardOpenEntranceShuffleNoneDungeon,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -726,7 +789,7 @@ namespace OpenTracker.UnitTests.Requirements
                         WorldState = WorldState.StandardOpen,
                         EntranceShuffle = EntranceShuffle.All
                     },
-                    RequirementType.WorldStateStandardOpenEntranceShuffleNotAll,
+                    RequirementType.WorldStateStandardOpenEntranceShuffleNoneDungeon,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -736,7 +799,7 @@ namespace OpenTracker.UnitTests.Requirements
                         WorldState = WorldState.Inverted,
                         EntranceShuffle = EntranceShuffle.All
                     },
-                    RequirementType.WorldStateStandardOpenEntranceShuffleNotAll,
+                    RequirementType.WorldStateStandardOpenEntranceShuffleNoneDungeon,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -806,7 +869,7 @@ namespace OpenTracker.UnitTests.Requirements
                         WorldState = WorldState.StandardOpen,
                         EntranceShuffle = EntranceShuffle.None
                     },
-                    RequirementType.WorldStateInvertedEntranceShuffleNotAll,
+                    RequirementType.WorldStateInvertedEntranceShuffleNoneDungeon,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -816,7 +879,7 @@ namespace OpenTracker.UnitTests.Requirements
                         WorldState = WorldState.Inverted,
                         EntranceShuffle = EntranceShuffle.None
                     },
-                    RequirementType.WorldStateInvertedEntranceShuffleNotAll,
+                    RequirementType.WorldStateInvertedEntranceShuffleNoneDungeon,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -826,7 +889,7 @@ namespace OpenTracker.UnitTests.Requirements
                         WorldState = WorldState.StandardOpen,
                         EntranceShuffle = EntranceShuffle.Dungeon
                     },
-                    RequirementType.WorldStateInvertedEntranceShuffleNotAll,
+                    RequirementType.WorldStateInvertedEntranceShuffleNoneDungeon,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -836,7 +899,7 @@ namespace OpenTracker.UnitTests.Requirements
                         WorldState = WorldState.Inverted,
                         EntranceShuffle = EntranceShuffle.Dungeon
                     },
-                    RequirementType.WorldStateInvertedEntranceShuffleNotAll,
+                    RequirementType.WorldStateInvertedEntranceShuffleNoneDungeon,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -846,7 +909,7 @@ namespace OpenTracker.UnitTests.Requirements
                         WorldState = WorldState.StandardOpen,
                         EntranceShuffle = EntranceShuffle.All
                     },
-                    RequirementType.WorldStateInvertedEntranceShuffleNotAll,
+                    RequirementType.WorldStateInvertedEntranceShuffleNoneDungeon,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -856,68 +919,8 @@ namespace OpenTracker.UnitTests.Requirements
                         WorldState = WorldState.Inverted,
                         EntranceShuffle = EntranceShuffle.All
                     },
-                    RequirementType.WorldStateInvertedEntranceShuffleNotAll,
+                    RequirementType.WorldStateInvertedEntranceShuffleNoneDungeon,
                     AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.StandardOpen,
-                        EntranceShuffle = EntranceShuffle.None
-                    },
-                    RequirementType.WorldStateInvertedEntranceShuffleAll,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted,
-                        EntranceShuffle = EntranceShuffle.None
-                    },
-                    RequirementType.WorldStateInvertedEntranceShuffleAll,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.StandardOpen,
-                        EntranceShuffle = EntranceShuffle.Dungeon
-                    },
-                    RequirementType.WorldStateInvertedEntranceShuffleAll,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted,
-                        EntranceShuffle = EntranceShuffle.Dungeon
-                    },
-                    RequirementType.WorldStateInvertedEntranceShuffleAll,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.StandardOpen,
-                        EntranceShuffle = EntranceShuffle.All
-                    },
-                    RequirementType.WorldStateInvertedEntranceShuffleAll,
-                    AccessibilityLevel.None
-                },
-                new object[]
-                {
-                    new ModeSaveData()
-                    {
-                        WorldState = WorldState.Inverted,
-                        EntranceShuffle = EntranceShuffle.All
-                    },
-                    RequirementType.WorldStateInvertedEntranceShuffleAll,
-                    AccessibilityLevel.Normal
                 }
             };
 
@@ -931,7 +934,7 @@ namespace OpenTracker.UnitTests.Requirements
                         TakeAnyLocations = false,
                         EntranceShuffle = EntranceShuffle.None
                     },
-                    RequirementType.TakeAnyLocationsEntranceShuffleNotAll,
+                    RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -941,7 +944,7 @@ namespace OpenTracker.UnitTests.Requirements
                         TakeAnyLocations = true,
                         EntranceShuffle = EntranceShuffle.None
                     },
-                    RequirementType.TakeAnyLocationsEntranceShuffleNotAll,
+                    RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -951,7 +954,7 @@ namespace OpenTracker.UnitTests.Requirements
                         TakeAnyLocations = false,
                         EntranceShuffle = EntranceShuffle.Dungeon
                     },
-                    RequirementType.TakeAnyLocationsEntranceShuffleNotAll,
+                    RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -961,7 +964,7 @@ namespace OpenTracker.UnitTests.Requirements
                         TakeAnyLocations = true,
                         EntranceShuffle = EntranceShuffle.Dungeon
                     },
-                    RequirementType.TakeAnyLocationsEntranceShuffleNotAll,
+                    RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -971,7 +974,7 @@ namespace OpenTracker.UnitTests.Requirements
                         TakeAnyLocations = false,
                         EntranceShuffle = EntranceShuffle.All
                     },
-                    RequirementType.TakeAnyLocationsEntranceShuffleNotAll,
+                    RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -981,7 +984,7 @@ namespace OpenTracker.UnitTests.Requirements
                         TakeAnyLocations = true,
                         EntranceShuffle = EntranceShuffle.All
                     },
-                    RequirementType.TakeAnyLocationsEntranceShuffleNotAll,
+                    RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon,
                     AccessibilityLevel.None
                 }
             };
