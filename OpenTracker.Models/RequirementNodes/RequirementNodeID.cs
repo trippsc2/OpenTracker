@@ -10,6 +10,8 @@
         EntranceDungeonAllInsanity,
         EntranceNone,
         EntranceNoneInverted,
+        Flute,
+        FluteActivated,
         LightWorld,
         LightWorldInverted,
         LightWorldInvertedNotBunny,
