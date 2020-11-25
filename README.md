@@ -1,6 +1,8 @@
 # OpenTracker
 An open-source cross-platform tracking app for A Link to the Past Randomizer.
 
+By request, I created a Discord server for the project.  https://discord.gg/VGjNVmKXgJ
+
 This project is intended to provide a tracker with the following features:
 - Mystery seed friendly
 - Support for most game modes (No Glitches logic only and no Door shuffle yet)
