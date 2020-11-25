@@ -244,6 +244,7 @@ namespace OpenTracker.Models.Sections
         /// </summary>
         public void Reset()
         {
+            Marking.Mark = MarkType.Unknown;
             Available = Total;
             UserManipulated = false;
         }
