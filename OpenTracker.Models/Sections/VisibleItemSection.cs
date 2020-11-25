@@ -200,7 +200,9 @@ namespace OpenTracker.Models.Sections
         /// </returns>
         public bool CanBeCleared(bool force)
         {
-            return IsAvailable() && (force || Accessibility > AccessibilityLevel.Inspect);
+            return IsAvailable() && (force || Accessibility > AccessibilityLevel.Inspect
+                || (Accessibility == AccessibilityLevel.Inspect &&
+                Marking.Mark == MarkType.Unknown));
         }
 
         /// <summary>
