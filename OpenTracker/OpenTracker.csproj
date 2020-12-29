@@ -29,7 +29,7 @@
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.0-preview6" />
     <PackageReference Include="Avalonia.Xaml.Behaviors" Version="0.10.0-preview6" />
     <PackageReference Include="Dotnet.Bundle" Version="0.9.13" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.1">
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="5.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
