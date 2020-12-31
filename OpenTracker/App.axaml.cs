@@ -121,6 +121,7 @@ namespace OpenTracker
             DialogService = new DialogService(owner);
             DialogService.Register<MessageBoxDialogVM, MessageBoxDialog>();
             DialogService.Register<AboutDialogVM, AboutDialog>();
+            DialogService.Register<ErrorBoxDialogVM, ErrorBoxDialog>();
         }
 
         public override void Initialize()

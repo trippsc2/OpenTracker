@@ -37,14 +37,6 @@ namespace OpenTracker.Views
         private ISequenceBreakAccess SequenceBreakAccess =>
             DataContext as ISequenceBreakAccess;
 
-        public static AvaloniaProperty<string> CurrentFilePathProperty =
-            AvaloniaProperty.Register<MainWindow, string>(nameof(CurrentFilePath));
-        public string CurrentFilePath
-        {
-            get => (string)GetValue(CurrentFilePathProperty);
-            set => SetValue(CurrentFilePathProperty, value);
-        }
-
         public MainWindow()
         {
             BoundsProperty.Changed.AddClassHandler<MainWindow>(OnBoundsChanged);
@@ -127,9 +119,9 @@ namespace OpenTracker.Views
             dialog.Filters.Add(new FileDialogFilter() { Name = "JSON", Extensions = { "json" } });
             dialog.AllowMultiple = false;
 
-            if (CurrentFilePath != null)
+            if (OpenData.CurrentFilePath != null)
             {
-                dialog.InitialFileName = CurrentFilePath;
+                dialog.InitialFileName = OpenData.CurrentFilePath;
             }
 
             string[] path = await dialog.ShowAsync(this).ConfigureAwait(false);
@@ -138,18 +130,16 @@ namespace OpenTracker.Views
             {
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    CurrentFilePath = path[0];
-                    OpenData.Open(CurrentFilePath);
-                })
-                    .ConfigureAwait(false);
+                    OpenData.Open(path[0]);
+                }).ConfigureAwait(false);
             }
         }
 
         public async Task Save()
         {
-            if (CurrentFilePath != null)
+            if (SaveData.CurrentFilePath != null)
             {
-                SaveData.Save(CurrentFilePath);
+                SaveData.Save();
             }
             else
             {
@@ -167,8 +157,7 @@ namespace OpenTracker.Views
             {
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    CurrentFilePath = path;
-                    SaveData.Save(CurrentFilePath);
+                    SaveData.Save(path);
                 }).ConfigureAwait(false);
             }
         }

@@ -24,6 +24,9 @@ namespace OpenTracker.ViewModels
         private readonly DispatcherTimer _memoryCheckTimer;
         private int _tickCount;
 
+        public string CurrentFilePath =>
+            null;
+
         public ObservableCollection<(LogLevel, string)> LogMessages { get; } =
             new ObservableCollection<(LogLevel, string)>();
         public ObservableCollection<string> LogLevelOptions { get; } =
@@ -591,7 +594,7 @@ namespace OpenTracker.ViewModels
         /// <param name="path">
         /// The path of the text file.
         /// </param>
-        public void Save(string path)
+        public void Save(string path = null)
         {
             if (path == null)
             {

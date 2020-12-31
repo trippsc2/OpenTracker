@@ -45,7 +45,7 @@ namespace OpenTracker.Models.SaveLoad
         /// </summary>
         public void Load()
         {
-            if (Version.Major < 1 || (Version.Major == 1 &&
+            if (Version == null || Version.Major < 1 || (Version.Major == 1 &&
                 (Version.Minor < 4 ||
                 (Version.Minor == 4 && Version.Build <= 1))))
             {

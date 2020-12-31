@@ -85,7 +85,11 @@ namespace OpenTracker.Models.Items
         {
             if (_autoTrackValue.CurrentValue.HasValue)
             {
-                Current = _autoTrackValue.CurrentValue.Value;
+                if (Current != _autoTrackValue.CurrentValue.Value)
+                {
+                    Current = _autoTrackValue.CurrentValue.Value;
+                    SaveLoadManager.Instance.Unsaved = true;
+                }
             }
         }
 

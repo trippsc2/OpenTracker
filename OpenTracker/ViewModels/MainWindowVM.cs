@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
+using Avalonia.Threading;
 using Newtonsoft.Json;
 using OpenTracker.Interfaces;
 using OpenTracker.Models.SaveLoad;
@@ -13,8 +14,10 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Reactive;
+using System.Text;
 
 namespace OpenTracker.ViewModels
 {
@@ -24,6 +27,31 @@ namespace OpenTracker.ViewModels
     public class MainWindowVM : ViewModelBase, IAutoTrackerAccess, IBoundsData, ICloseHandler,
         IColorSelectAccess, IDynamicLayout, IOpenData, ISaveData, ISequenceBreakAccess
     {
+        public static string Title
+        {
+            get
+            {
+                var sb = new StringBuilder();
+                sb.Append("OpenTracker - ");
+
+                if (SaveLoadManager.Instance.CurrentFilePath == null)
+                {
+                    sb.Append("Untitled");
+                }
+                else
+                {
+                    sb.Append(SaveLoadManager.Instance.CurrentFilePath);
+                }
+
+                if (SaveLoadManager.Instance.Unsaved)
+                {
+                    sb.Append('*');
+                }
+
+                return sb.ToString();
+            }
+        }
+
         public bool? Maximized
         {
             get => AppSettings.Instance.Bounds.Maximized;
@@ -49,6 +77,9 @@ namespace OpenTracker.ViewModels
             get => AppSettings.Instance.Bounds.Height;
             set => AppSettings.Instance.Bounds.Height = value;
         }
+
+        public string CurrentFilePath =>
+            SaveLoadManager.Instance.CurrentFilePath;
 
         public static Dock UIDock =>
             AppSettings.Instance.Layout.CurrentLayoutOrientation switch
@@ -83,16 +114,33 @@ namespace OpenTracker.ViewModels
             TopMenu.RedoCommand;
         public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocationsCommand =>
             TopMenu.ToggleDisplayAllLocationsCommand;
-        public ReactiveCommand<Unit, Unit> AboutCommand { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
         public MainWindowVM()
         {
-            AboutCommand = ReactiveCommand.Create(OpenAbout);
+            SaveLoadManager.Instance.PropertyChanged += OnSaveLoadManagerChanged;
             AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
             LoadSequenceBreaks();
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the SaveLoadManager class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnSaveLoadManagerChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(SaveLoadManager.CurrentFilePath) ||
+                e.PropertyName == nameof(SaveLoadManager.Unsaved))
+            {
+                this.RaisePropertyChanged(nameof(Title));
+            }
         }
 
         /// <summary>
@@ -114,6 +162,16 @@ namespace OpenTracker.ViewModels
             }
         }
 
+        private void OpenErrorBox(string message)
+        {
+            Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                bool? result = await App.DialogService.ShowDialog(
+                    new ErrorBoxDialogVM("Error", message))
+                    .ConfigureAwait(false);
+            });
+        }
+
         /// <summary>
         /// Changes the expected orientation layout, if dynamic orientation is enabled,
         /// to the specified orientation.
@@ -132,19 +190,32 @@ namespace OpenTracker.ViewModels
         /// <param name="path">
         /// The file path to which the tracker data is to be saved.
         /// </param>
-        public void Save(string path)
+        public void Save(string path = null)
         {
-            if (File.Exists(path))
+            try
             {
-                File.Delete(path);
+                SaveLoadManager.Save(path);
             }
+            catch (Exception ex)
+            {
+                string message;
 
-            SaveData saveData = new SaveData();
-            saveData.Save();
+                switch (ex)
+                {
+                    case UnauthorizedAccessException uaex:
+                        {
+                            message = "Unable to save to the selected directory.  Check the file permissions and try again.";
+                        }
+                        break;
+                    default:
+                        {
+                            message = ex.Message;
+                        }
+                        break;
+                }
 
-            string json = JsonConvert.SerializeObject(saveData);
-
-            File.WriteAllText(path, json);
+                OpenErrorBox(message);
+            }
         }
 
         /// <summary>
@@ -155,9 +226,35 @@ namespace OpenTracker.ViewModels
         /// </param>
         public void Open(string path)
         {
-            string jsonContent = File.ReadAllText(path);
-            SaveData saveData = JsonConvert.DeserializeObject<SaveData>(jsonContent);
-            saveData.Load();
+            try
+            {
+                SaveLoadManager.Open(path);
+            }
+            catch (Exception ex)
+            {
+                string message;
+
+                switch (ex)
+                {
+                    case JsonReaderException jex:
+                        {
+                            message = "The selected file is not a valid JSON file.";
+                        }
+                        break;
+                    case UnauthorizedAccessException uaex:
+                        {
+                            message = "The file cannot be read.  Check the permissions on the selected file.";
+                        }
+                        break;
+                    default:
+                        {
+                            message = ex.Message;
+                        }
+                        break;
+                }
+
+                OpenErrorBox(message);
+            }
         }
 
         /// <summary>
@@ -275,14 +372,6 @@ namespace OpenTracker.ViewModels
         public object GetSequenceBreakViewModel()
         {
             return SequenceBreakDialogVMFactory.GetSequenceBreakDialogVM();
-        }
-
-        /// <summary>
-        /// Opens the About popup.
-        /// </summary>
-        public void OpenAbout()
-        {
-            AboutPageOpen = true;
         }
     }
 }

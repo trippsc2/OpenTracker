@@ -1,4 +1,5 @@
-﻿using OpenTracker.Models.Utils;
+﻿using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.Utils;
 using System;
 
 namespace OpenTracker.Models.UndoRedo
@@ -56,6 +57,7 @@ namespace OpenTracker.Models.UndoRedo
                 action.Execute();
                 UndoableActions.Push(action);
                 RedoableActions.Clear();
+                SaveLoadManager.Instance.Unsaved = true;
             }
         }
 
@@ -69,6 +71,7 @@ namespace OpenTracker.Models.UndoRedo
                 IUndoable action = UndoableActions.Pop();
                 action.Undo();
                 RedoableActions.Push(action);
+                SaveLoadManager.Instance.Unsaved = true;
             }
         }
 
@@ -82,6 +85,7 @@ namespace OpenTracker.Models.UndoRedo
                 IUndoable action = RedoableActions.Pop();
                 action.Execute();
                 UndoableActions.Push(action);
+                SaveLoadManager.Instance.Unsaved = true;
             }
         }
 

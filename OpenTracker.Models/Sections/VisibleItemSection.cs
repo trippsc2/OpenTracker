@@ -173,7 +173,11 @@ namespace OpenTracker.Models.Sections
         {
             if (_autoTrackValue.CurrentValue.HasValue)
             {
-                Available = Total - _autoTrackValue.CurrentValue.Value;
+                if (Available != Total - _autoTrackValue.CurrentValue.Value)
+                {
+                    Available = Total - _autoTrackValue.CurrentValue.Value;
+                    SaveLoadManager.Instance.Unsaved = true;
+                }
             }
         }
 
