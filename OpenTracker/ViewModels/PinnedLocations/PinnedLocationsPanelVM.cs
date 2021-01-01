@@ -1,8 +1,8 @@
 ﻿using Avalonia.Layout;
 using OpenTracker.Models;
 using OpenTracker.Models.Settings;
+using OpenTracker.Models.Utils;
 using ReactiveUI;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels.PinnedLocations
@@ -15,8 +15,8 @@ namespace OpenTracker.ViewModels.PinnedLocations
         public static Orientation Orientation =>
             AppSettings.Instance.Layout.CurrentLayoutOrientation;
 
-        public ObservableCollection<PinnedLocationVM> Locations { get; } =
-            PinnedLocationCollection.Instance;
+        public IObservableCollection<PinnedLocationVM> Locations { get; } =
+            PinnedLocationVMCollection.Instance;
 
         /// <summary>
         /// Constructor

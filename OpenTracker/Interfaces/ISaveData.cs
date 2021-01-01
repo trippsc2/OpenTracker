@@ -5,6 +5,8 @@
     /// </summary>
     public interface ISaveData
     {
-        void Save(string path);
+        string CurrentFilePath { get; }
+
+        void Save(string path = null);
     }
 }

@@ -7,7 +7,7 @@
         mc:Ignorable="d" d:DesignWidth="1280" d:DesignHeight="960"
         x:Class="OpenTracker.Views.MainWindow" Closing="OnClose" WindowStartupLocation="Manual"
         Background="{DynamicResource ThemeBackgroundBrush}" UseLayoutRounding="True"
-        Icon="avares://OpenTracker/Assets/Images/triforce.png" Title="OpenTracker"
+        Icon="avares://OpenTracker/Assets/Images/triforce.png" Title="{Binding Title}"
         Height="{Binding Height}" Width="{Binding Width}">
 	
 	<Design.DataContext>

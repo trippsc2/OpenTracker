@@ -2,6 +2,7 @@
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Requirements;
+using OpenTracker.Models.SaveLoad;
 using System;
 using System.ComponentModel;
 
@@ -139,7 +140,11 @@ namespace OpenTracker.Models.Sections
         {
             if (_autoTrackValue.CurrentValue.HasValue)
             {
-                Available = 1 - _autoTrackValue.CurrentValue.Value;
+                if (Available != 1 - _autoTrackValue.CurrentValue.Value)
+                {
+                    Available = 1 - _autoTrackValue.CurrentValue.Value;
+                    SaveLoadManager.Instance.Unsaved = true;
+                }
             }
         }
 

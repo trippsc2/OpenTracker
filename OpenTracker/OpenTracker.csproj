@@ -67,4 +67,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\UndoRedo\" />
+  </ItemGroup>
 </Project>

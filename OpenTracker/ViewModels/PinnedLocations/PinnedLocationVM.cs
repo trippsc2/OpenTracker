@@ -4,7 +4,7 @@ using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels.PinnedLocations
@@ -12,7 +12,7 @@ namespace OpenTracker.ViewModels.PinnedLocations
     /// <summary>
     /// This is the ViewModel for the pinned location control.
     /// </summary>
-    public class PinnedLocationVM : ViewModelBase, IClickHandler
+    public class PinnedLocationVM : ViewModelBase, IModelWrapper, IClickHandler
     {
         private readonly ILocation _location;
 
@@ -20,10 +20,10 @@ namespace OpenTracker.ViewModels.PinnedLocations
             AppSettings.Instance.Layout.UIScale;
         public string Name =>
             _location.Name;
+        public object Model =>
+            _location;
 
-        public ObservableCollection<SectionVM> Sections { get; } =
-            new ObservableCollection<SectionVM>();
-
+        public List<SectionVM> Sections { get; }
         public PinnedLocationNoteAreaVM Notes { get; }
 
         /// <summary>
@@ -35,7 +35,7 @@ namespace OpenTracker.ViewModels.PinnedLocations
         /// <param name="sections">
         /// The observable collection of section control ViewModels.
         /// </param>
-        public PinnedLocationVM(ILocation location, ObservableCollection<SectionVM> sections)
+        public PinnedLocationVM(ILocation location, List<SectionVM> sections)
         {
             _location = location ?? throw new ArgumentNullException(nameof(location));
             Sections = sections ?? throw new ArgumentNullException(nameof(sections));
@@ -69,7 +69,7 @@ namespace OpenTracker.ViewModels.PinnedLocations
         /// </param>
         public void OnLeftClick(bool force = false)
         {
-            UndoRedoManager.Instance.Execute(new UnpinLocation(this));
+            UndoRedoManager.Instance.Execute(new UnpinLocation(_location));
         }
 
         /// <summary>

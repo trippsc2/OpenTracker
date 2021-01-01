@@ -5,6 +5,8 @@
     /// </summary>
     public interface IOpenData
     {
+        string CurrentFilePath { get; }
+
         void Open(string path);
     }
 }

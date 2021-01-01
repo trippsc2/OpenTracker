@@ -129,7 +129,7 @@ namespace OpenTracker.ViewModels
 
             OpenAboutDialogCommand = ReactiveCommand.CreateFromObservable(OpenAboutDialogAsync);
             OpenAboutDialogCommand.IsExecuting.ToProperty(
-                this, x => x.IsOpeningAboutDialog, out _isOpeningResetDialog);
+                this, x => x.IsOpeningAboutDialog, out _isOpeningAboutDialog);
 
             UndoCommand = ReactiveCommand.Create(Undo, this.WhenAnyValue(x => x.CanUndo));
             RedoCommand = ReactiveCommand.Create(Redo, this.WhenAnyValue(x => x.CanRedo));
