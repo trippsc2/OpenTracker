@@ -162,7 +162,7 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        private void OpenErrorBox(string message)
+        private static void OpenErrorBox(string message)
         {
             Dispatcher.UIThread.InvokeAsync(async () =>
             {

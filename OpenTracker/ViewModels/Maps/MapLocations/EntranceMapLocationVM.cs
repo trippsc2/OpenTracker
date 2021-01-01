@@ -10,7 +10,6 @@ using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
-using OpenTracker.ViewModels.PinnedLocations;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -25,7 +24,6 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         IDoubleClickHandler, IPointerOver
     {
         private readonly MapLocation _mapLocation;
-        private PinnedLocationVM _pinnedLocation;
 
         public Dock MarkingDock { get; }
 
@@ -296,13 +294,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         /// </summary>
         public void OnDoubleClick()
         {
-            if (_pinnedLocation == null)
-            {
-                _pinnedLocation = PinnedLocationVMFactory.GetLocationControlVM(
-                    _mapLocation.Location);
-            }
-
-            UndoRedoManager.Instance.Execute(new PinLocation(_pinnedLocation));
+            UndoRedoManager.Instance.Execute(new PinLocation(_mapLocation.Location));
         }
 
         /// <summary>

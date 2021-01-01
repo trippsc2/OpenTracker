@@ -1,6 +1,6 @@
 ﻿using OpenTracker.Models.Locations;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 namespace OpenTracker.ViewModels.PinnedLocations
 {
@@ -19,10 +19,9 @@ namespace OpenTracker.ViewModels.PinnedLocations
         /// <returns>
         /// An observable collection of section control ViewModel instances.
         /// </returns>
-        private static ObservableCollection<SectionVM> GetPinnedLocationVMSections(
-            ILocation location)
+        private static List<SectionVM> GetPinnedLocationVMSections(ILocation location)
         {
-            ObservableCollection<SectionVM> sections = new ObservableCollection<SectionVM>();
+            var sections = new List<SectionVM>();
 
             foreach (var section in location.Sections)
             {

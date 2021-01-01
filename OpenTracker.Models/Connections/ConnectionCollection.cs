@@ -19,53 +19,49 @@ namespace OpenTracker.Models.Connections
             new ObservableCollection<Connection>();
 
         public int Count =>
-            ((ICollection<Connection>)_collection).Count;
+            _collection.Count;
         public bool IsReadOnly =>
             ((ICollection<Connection>)_collection).IsReadOnly;
 
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public ConnectionCollection()
+        public event NotifyCollectionChangedEventHandler CollectionChanged
         {
-            _collection.CollectionChanged += (sender, e) => CollectionChanged?.Invoke(sender, e);
+            add => _collection.CollectionChanged += value;
+            remove => _collection.CollectionChanged -= value;
         }
 
         public void Add(Connection item)
         {
-            ((ICollection<Connection>)_collection).Add(item);
+            _collection.Add(item);
         }
 
         public void Clear()
         {
-            ((ICollection<Connection>)_collection).Clear();
+            _collection.Clear();
         }
 
         public bool Contains(Connection item)
         {
-            return ((ICollection<Connection>)_collection).Contains(item);
+            return _collection.Contains(item);
         }
 
         public void CopyTo(Connection[] array, int arrayIndex)
         {
-            ((ICollection<Connection>)_collection).CopyTo(array, arrayIndex);
+            _collection.CopyTo(array, arrayIndex);
         }
 
         public IEnumerator<Connection> GetEnumerator()
         {
-            return ((IEnumerable<Connection>)_collection).GetEnumerator();
+            return _collection.GetEnumerator();
         }
 
         public bool Remove(Connection item)
         {
-            return ((ICollection<Connection>)_collection).Remove(item);
+            return _collection.Remove(item);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable)_collection).GetEnumerator();
+            return _collection.GetEnumerator();
         }
 
         /// <summary>
@@ -89,6 +85,9 @@ namespace OpenTracker.Models.Connections
         /// <summary>
         /// Loads a list of connection save data.
         /// </summary>
+        /// <param name="saveData">
+        /// A list of connection save data.
+        /// </param>
         public void Load(List<ConnectionSaveData> saveData)
         {
             if (saveData == null)

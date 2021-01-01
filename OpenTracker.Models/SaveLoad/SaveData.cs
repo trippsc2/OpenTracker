@@ -24,6 +24,7 @@ namespace OpenTracker.Models.SaveLoad
         public Dictionary<PrizePlacementID, PrizePlacementSaveData> PrizePlacements { get; set; }
         public List<ConnectionSaveData> Connections { get; set; }
         public Dictionary<DropdownID, DropdownSaveData> Dropdowns { get; set; }
+        public List<LocationID> PinnedLocations { get; set; }
 
         /// <summary>
         /// Saves data to this class.
@@ -38,6 +39,7 @@ namespace OpenTracker.Models.SaveLoad
             PrizePlacements = PrizePlacementDictionary.Instance.Save();
             Connections = ConnectionCollection.Instance.Save();
             Dropdowns = DropdownDictionary.Instance.Save();
+            PinnedLocations = PinnedLocationCollection.Instance.Save();
         }
 
         /// <summary>
@@ -65,6 +67,11 @@ namespace OpenTracker.Models.SaveLoad
             if (Dropdowns != null)
             {
                 DropdownDictionary.Instance.Load(Dropdowns);
+            }
+
+            if (PinnedLocations != null)
+            {
+                PinnedLocationCollection.Instance.Load(PinnedLocations);
             }
         }
     }
