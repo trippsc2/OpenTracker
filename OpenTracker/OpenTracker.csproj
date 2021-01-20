@@ -4,14 +4,14 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <ApplicationIcon>triforce.ico</ApplicationIcon>
     <Win32Resource />
-    <Version>1.6.1</Version>
+    <Version>1.7.0</Version>
     <Authors>Tripp</Authors>
-    <AssemblyVersion>1.6.1</AssemblyVersion>
-    <FileVersion>1.6.1</FileVersion>
-    <CFBundleShortVersionString>1.6.1</CFBundleShortVersionString>
+    <AssemblyVersion>1.7.0</AssemblyVersion>
+    <FileVersion>1.7.0</FileVersion>
+    <CFBundleShortVersionString>1.7.0</CFBundleShortVersionString>
     <RuntimeIdentifiers>osx-x64;linux-x64;debian-x64;rhel-x64;win-x64;win-x86;win7-x64;win7-x86</RuntimeIdentifiers>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup>6
     <AvaloniaResource Include="Assets\**" />
     <AvaloniaResource Include="Assets\Images\*.png" />
   </ItemGroup>
