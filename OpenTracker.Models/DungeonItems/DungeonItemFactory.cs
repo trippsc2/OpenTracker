@@ -32,10 +32,12 @@ namespace OpenTracker.Models.DungeonItems
                         return dungeonData.Nodes[DungeonNodeID.HCSanctuary];
                     }
                 case DungeonItemID.HCMapChest:
+                case DungeonItemID.HCMapGuardDrop:
                     {
                         return dungeonData.Nodes[DungeonNodeID.HCFront];
                     }
                 case DungeonItemID.HCBoomerangChest:
+                case DungeonItemID.HCBoomerangGuardDrop:
                     {
                         return dungeonData.Nodes[DungeonNodeID.HCPastEscapeFirstKeyDoor];
                     }
@@ -53,6 +55,10 @@ namespace OpenTracker.Models.DungeonItems
                     {
                         return dungeonData.Nodes[DungeonNodeID.HCBack];
                     }
+                case DungeonItemID.HCKeyRatDrop:
+                    break;
+                case DungeonItemID.HCBigKeyDrop:
+                    break;
                 case DungeonItemID.ATRoom03:
                     {
                         return dungeonData.Nodes[DungeonNodeID.AT];
@@ -434,6 +440,64 @@ namespace OpenTracker.Models.DungeonItems
                     {
                         return dungeonData.Nodes[DungeonNodeID.GTFinalBoss];
                     }
+                case DungeonItemID.ATDarkArcherDrop:
+                    break;
+                case DungeonItemID.ATCircleOfPotsDrop:
+                    break;
+                case DungeonItemID.EPDarkSquarePot:
+                    break;
+                case DungeonItemID.EPDarkEyegoreDrop:
+                    break;
+                case DungeonItemID.DPTiles1Pot:
+                    break;
+                case DungeonItemID.DPBeamosHallPot:
+                    break;
+                case DungeonItemID.DPTiles2Pot:
+                    break;
+                case DungeonItemID.SPPotRowPot:
+                    break;
+                case DungeonItemID.SPTrench1Pot:
+                    break;
+                case DungeonItemID.SPHookshotPot:
+                    break;
+                case DungeonItemID.SPTrench2Pot:
+                    break;
+                case DungeonItemID.SPWaterwayPot:
+                    break;
+                case DungeonItemID.SWWestLobbyPot:
+                    break;
+                case DungeonItemID.SWSpikeCornerDrop:
+                    break;
+                case DungeonItemID.TTHallwayPot:
+                    break;
+                case DungeonItemID.TTSpikeSwitchPot:
+                    break;
+                case DungeonItemID.IPJellyDrop:
+                    break;
+                case DungeonItemID.IPConveyerDrop:
+                    break;
+                case DungeonItemID.IPHammerBlockDrop:
+                    break;
+                case DungeonItemID.IPManyPotsPot:
+                    break;
+                case DungeonItemID.MMSpikesPot:
+                    break;
+                case DungeonItemID.MMFishbonePot:
+                    break;
+                case DungeonItemID.MMConveyerCrystalDrop:
+                    break;
+                case DungeonItemID.TRPokey1Drop:
+                    break;
+                case DungeonItemID.TRPokey2Drop:
+                    break;
+                case DungeonItemID.GTConveyorCrossPot:
+                    break;
+                case DungeonItemID.GTDoubleSwitchPot:
+                    break;
+                case DungeonItemID.GTConveyorStarPitsPot:
+                    break;
+                case DungeonItemID.GTMiniHelmasaurDrop:
+                    break;
             }
 
             throw new ArgumentOutOfRangeException(nameof(id));
