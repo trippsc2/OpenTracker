@@ -2,7 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
-using Avalonia.ThemeManager;
+using Avalonia.Platform;
 using Avalonia.Threading;
 using OpenTracker.Interfaces;
 using OpenTracker.Views.ColorSelect;
@@ -77,14 +77,25 @@ namespace OpenTracker.Views
             }
         }
 
-        private void OnDataContextChanged(object sender, EventArgs e)
+        private Screen GetScreen()
         {
-            if (BoundsData.Width.HasValue && BoundsData.Height.HasValue)
+            foreach (var screen in Screens.All)
             {
-                Bounds = new Rect(0, 0, BoundsData.Width.Value, BoundsData.Height.Value);
+                if (screen.Bounds.X < BoundsData.X.Value &&
+                    screen.Bounds.Y < BoundsData.Y.Value &&
+                    screen.Bounds.X + screen.Bounds.Width > BoundsData.X.Value &&
+                    screen.Bounds.Y + screen.Bounds.Height > BoundsData.Y.Value)
+                {
+                    return screen;
+                }
             }
 
-            if (BoundsData.X.HasValue && BoundsData.Y.HasValue)
+            return null;
+        }
+
+        private void OnDataContextChanged(object sender, EventArgs e)
+        {
+            if (BoundsData.X.HasValue && BoundsData.Y.HasValue && GetScreen() != null)
             {
                 Position = new PixelPoint(
                     (int)Math.Floor(BoundsData.X.Value), (int)Math.Floor(BoundsData.Y.Value));

@@ -24,7 +24,6 @@
 		<KeyBinding Gesture="F11" Command="{Binding ToggleDisplayAllLocationsCommand}" />
 	</Window.KeyBindings>
 
-
   <DockPanel>
     <ContentControl Content="{Binding TopMenu}" DockPanel.Dock="Top" />
     <ContentControl Content="{Binding StatusBar}" DockPanel.Dock="Bottom" />

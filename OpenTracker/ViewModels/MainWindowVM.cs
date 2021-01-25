@@ -88,6 +88,8 @@ namespace OpenTracker.ViewModels
                 _ => AppSettings.Instance.Layout.VerticalUIPanelPlacement
             };
 
+        public Screens Screens { get; set; }
+
         public AutoTrackerDialogVM AutoTrackerDialog { get; } =
             new AutoTrackerDialogVM();
         public TopMenuVM TopMenu { get; } =
