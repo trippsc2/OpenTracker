@@ -36,7 +36,7 @@
 
       <CheckBox HorizontalAlignment="Center" Classes="AutoTracker" IsChecked="{Binding
                 RaceIllegalTracking}" Command="{Binding RaceIllegalTrackingCommand}"
-                ToolTip.Tip="This enables autotracking of dungeon items.">Race Illegal Tracking</CheckBox>
+                ToolTip.Tip="This enables autotracking of dungeon items.&#x0a;This may not work correctly in all randomizer versions.">Race Illegal Tracking</CheckBox>
 
 			<StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
 				<Button Classes="AutoTrackerBig" Command="{Binding
