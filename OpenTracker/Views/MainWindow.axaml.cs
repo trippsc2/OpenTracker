@@ -81,8 +81,8 @@ namespace OpenTracker.Views
         {
             foreach (var screen in Screens.All)
             {
-                if (screen.Bounds.X < BoundsData.X.Value &&
-                    screen.Bounds.Y < BoundsData.Y.Value &&
+                if (screen.Bounds.X <= BoundsData.X.Value &&
+                    screen.Bounds.Y <= BoundsData.Y.Value &&
                     screen.Bounds.X + screen.Bounds.Width > BoundsData.X.Value &&
                     screen.Bounds.Y + screen.Bounds.Height > BoundsData.Y.Value)
                 {
