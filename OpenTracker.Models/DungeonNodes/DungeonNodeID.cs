@@ -11,6 +11,8 @@
         HCPastEscapeFirstKeyDoor,
         HCEscapeSecondKeyDoor,
         HCPastEscapeSecondKeyDoor,
+        HCZeldasCellDoor,
+        HCZeldasCell,
         HCDarkRoomFront,
         HCDarkCrossKeyDoor,
         HCPastDarkCrossKeyDoor,

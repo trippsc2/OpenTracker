@@ -180,6 +180,20 @@ namespace OpenTracker.Models.Modes
             }
         }
 
+        private bool _keyDoorShuffle;
+        public bool KeyDoorShuffle
+        {
+            get => _keyDoorShuffle;
+            set
+            {
+                if (_keyDoorShuffle != value)
+                {
+                    _keyDoorShuffle = value;
+                    OnPropertyChanged(nameof(KeyDoorShuffle));
+                }
+            }
+        }
+
         /// <summary>
         /// Raises the PropertyChanged event for the specified property.
         /// </summary>

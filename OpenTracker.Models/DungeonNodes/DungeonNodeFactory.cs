@@ -142,6 +142,20 @@ namespace OpenTracker.Models.DungeonNodes
                     {
                         connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCPastEscapeFirstKeyDoor], node,
                             dungeonData.KeyDoorDictionary[KeyDoorID.HCEscapeSecondKeyDoor].Requirement));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCZeldasCell], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.HCZeldasCellDoor].Requirement));
+                    }
+                    break;
+                case DungeonNodeID.HCZeldasCellDoor:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCPastEscapeSecondKeyDoor], node));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCZeldasCell], node));
+                    }
+                    break;
+                case DungeonNodeID.HCZeldasCell:
+                    {
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.HCPastEscapeSecondKeyDoor], node,
+                            dungeonData.KeyDoorDictionary[KeyDoorID.HCZeldasCellDoor].Requirement));
                     }
                     break;
                 case DungeonNodeID.HCDarkRoomFront:
