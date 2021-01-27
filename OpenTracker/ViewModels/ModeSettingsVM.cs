@@ -24,6 +24,7 @@ namespace OpenTracker.ViewModels
         public ReactiveCommand<Unit, Unit> GuaranteedBossItemsCommand { get; }
         public ReactiveCommand<Unit, Unit> GenericKeysCommand { get; }
         public ReactiveCommand<Unit, Unit> TakeAnyLocationsCommand { get; }
+        public ReactiveCommand<Unit, Unit> KeyDropShuffleCommand { get; }
 
         public static bool BasicItemPlacement =>
             Mode.Instance.ItemPlacement == ItemPlacement.Basic;
@@ -63,6 +64,8 @@ namespace OpenTracker.ViewModels
             Mode.Instance.GenericKeys;
         public static bool TakeAnyLocations =>
             Mode.Instance.TakeAnyLocations;
+        public static bool KeyDropShuffle =>
+            Mode.Instance.KeyDropShuffle;
 
         private bool _modeSettingsPopupOpen;
         public bool ModeSettingsPopupOpen
@@ -89,6 +92,7 @@ namespace OpenTracker.ViewModels
             GuaranteedBossItemsCommand = ReactiveCommand.Create(ToggleGuaranteedBossItems);
             GenericKeysCommand = ReactiveCommand.Create(ToggleGenericKeys);
             TakeAnyLocationsCommand = ReactiveCommand.Create(ToggleTakeAnyLocations);
+            KeyDropShuffleCommand = ReactiveCommand.Create(ToggleKeyDropShuffle);
 
             Mode.Instance.PropertyChanged += OnModeChanged;
         }
@@ -167,6 +171,11 @@ namespace OpenTracker.ViewModels
             if (e.PropertyName == nameof(Mode.TakeAnyLocations))
             {
                 this.RaisePropertyChanged(nameof(TakeAnyLocations));
+            }
+
+            if (e.PropertyName == nameof(Mode.KeyDropShuffle))
+            {
+                this.RaisePropertyChanged(nameof(KeyDropShuffle));
             }
         }
 
@@ -282,6 +291,15 @@ namespace OpenTracker.ViewModels
         {
             UndoRedoManager.Instance.Execute(new ChangeTakeAnyLocations(
                 !Mode.Instance.TakeAnyLocations));
+        }
+
+        /// <summary>
+        /// Toggles the key drop shuffle setting.
+        /// </summary>
+        private void ToggleKeyDropShuffle()
+        {
+            UndoRedoManager.Instance.Execute(new ChangeKeyDropShuffle(
+                !Mode.Instance.KeyDropShuffle));
         }
     }
 }

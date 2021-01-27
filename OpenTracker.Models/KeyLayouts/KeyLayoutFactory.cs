@@ -34,7 +34,179 @@ namespace OpenTracker.Models.KeyLayouts
                         return new List<IKeyLayout>
                         {
                             new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
+                                new AlternativeRequirement(new List<IRequirement>
+                                {
+                                    new AggregateRequirement(new List<IRequirement>
+                                    {
+                                        RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
+                                        RequirementDictionary.Instance[RequirementType.AllKeyShuffle]
+                                    }),
+                                    new AggregateRequirement(new List<IRequirement>
+                                    {
+                                        RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]
+                                    })
+                                })),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.HCSanctuary,
+                                    DungeonItemID.HCMapChest,
+                                    DungeonItemID.HCDarkCross,
+                                    DungeonItemID.HCSecretRoomLeft,
+                                    DungeonItemID.HCSecretRoomMiddle,
+                                    DungeonItemID.HCSecretRoomRight,
+                                    DungeonItemID.HCMapGuardDrop
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout(
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
+                                    new SmallKeyLayout(
+                                        3,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.HCSanctuary,
+                                            DungeonItemID.HCMapChest,
+                                            DungeonItemID.HCDarkCross,
+                                            DungeonItemID.HCSecretRoomLeft,
+                                            DungeonItemID.HCSecretRoomMiddle,
+                                            DungeonItemID.HCSecretRoomRight,
+                                            DungeonItemID.HCMapGuardDrop
+                                        },
+                                        true,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                4,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.HCSanctuary,
+                                                    DungeonItemID.HCMapChest,
+                                                    DungeonItemID.HCBoomerangChest,
+                                                    DungeonItemID.HCDarkCross,
+                                                    DungeonItemID.HCSecretRoomLeft,
+                                                    DungeonItemID.HCSecretRoomMiddle,
+                                                    DungeonItemID.HCSecretRoomRight,
+                                                    DungeonItemID.HCMapGuardDrop,
+                                                    DungeonItemID.HCBoomerangGuardDrop
+                                                },
+                                                true,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new EndKeyLayout()
+                                                }, dungeon)
+                                        }, dungeon,
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                },
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
+                                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff]
+                                })),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.HCBoomerangChest,
+                                    DungeonItemID.HCBoomerangGuardDrop
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout(
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
+                                    new SmallKeyLayout(
+                                        3,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.HCSanctuary,
+                                            DungeonItemID.HCMapChest,
+                                            DungeonItemID.HCDarkCross,
+                                            DungeonItemID.HCSecretRoomLeft,
+                                            DungeonItemID.HCSecretRoomMiddle,
+                                            DungeonItemID.HCSecretRoomRight,
+                                            DungeonItemID.HCMapGuardDrop
+                                        },
+                                        false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                4,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.HCSanctuary,
+                                                    DungeonItemID.HCMapChest,
+                                                    DungeonItemID.HCBoomerangChest,
+                                                    DungeonItemID.HCDarkCross,
+                                                    DungeonItemID.HCSecretRoomLeft,
+                                                    DungeonItemID.HCSecretRoomMiddle,
+                                                    DungeonItemID.HCSecretRoomRight,
+                                                    DungeonItemID.HCMapGuardDrop,
+                                                    DungeonItemID.HCBoomerangGuardDrop
+                                                },
+                                                true,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new EndKeyLayout()
+                                                }, dungeon)
+                                        }, dungeon,
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                },
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
+                                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff]
+                                })),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.HCBigKeyDrop
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout(
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
+                                    new SmallKeyLayout(
+                                        3,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.HCSanctuary,
+                                            DungeonItemID.HCMapChest,
+                                            DungeonItemID.HCDarkCross,
+                                            DungeonItemID.HCSecretRoomLeft,
+                                            DungeonItemID.HCSecretRoomMiddle,
+                                            DungeonItemID.HCSecretRoomRight,
+                                            DungeonItemID.HCMapGuardDrop
+                                        },
+                                        false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                4,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.HCSanctuary,
+                                                    DungeonItemID.HCMapChest,
+                                                    DungeonItemID.HCBoomerangChest,
+                                                    DungeonItemID.HCDarkCross,
+                                                    DungeonItemID.HCSecretRoomLeft,
+                                                    DungeonItemID.HCSecretRoomMiddle,
+                                                    DungeonItemID.HCSecretRoomRight,
+                                                    DungeonItemID.HCMapGuardDrop,
+                                                    DungeonItemID.HCBoomerangGuardDrop
+                                                },
+                                                false,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new EndKeyLayout()
+                                                }, dungeon)
+                                        }, dungeon,
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                },
+                                new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
+                                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff]
+                                })),
                             new SmallKeyLayout(
                                 1,
                                 new List<DungeonItemID>
@@ -51,7 +223,11 @@ namespace OpenTracker.Models.KeyLayouts
                                 {
                                     new EndKeyLayout()
                                 },
-                                dungeon)
+                                dungeon, new AggregateRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
+                                }))
                         };
                     }
                 case Locations.LocationID.AgahnimTower:

@@ -51,6 +51,9 @@
     <Compile Update="Views\AboutDialog.axaml.cs">
       <DependentUpon>AboutDialog.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Items\Small\BigKeySmallItem.axaml.cs">
+      <DependentUpon>BigKeySmallItem.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Items\Small\SmallItem.axaml.cs">
       <DependentUpon>SmallItem.axaml</DependentUpon>
     </Compile>

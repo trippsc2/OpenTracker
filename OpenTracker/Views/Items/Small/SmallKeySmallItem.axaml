@@ -10,10 +10,11 @@
     <vc:BitmapValueConverter x:Key="BitmapValueConverter" />
   </UserControl.Resources>
 
-  <Panel Classes="DungeonItem" PointerReleased="OnClick" IsVisible="{Binding Visible}"
-         IsHitTestVisible="{Binding Visible}">
+  <Panel Classes="DungeonItem" PointerReleased="OnClick" IsVisible="{Binding SpacerVisible}"
+         Height="16" Width="16">
 
-    <Image Classes="DungeonItem" Source="avares://OpenTracker/Assets/Images/Items/smallkey0.png" />
+    <Image Classes="DungeonItem" Source="avares://OpenTracker/Assets/Images/Items/smallkey0.png"
+           IsVisible="{Binding Visible}" />
 
     <Border Classes="ItemCount" IsVisible="{Binding Path=TextVisible}"
 				IsHitTestVisible="{Binding Path=TextVisible}">

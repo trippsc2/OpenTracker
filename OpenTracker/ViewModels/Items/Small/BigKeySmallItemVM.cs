@@ -1,24 +1,17 @@
-﻿using OpenTracker.Interfaces;
+﻿using Avalonia.Layout;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
-using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements;
-using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
-using System.Text;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
-    /// <summary>
-    /// This is the ViewModel of the small Items panel control representing a small key.
-    /// </summary>
-    public class SmallKeySmallItemVM : SmallItemVMBase, IClickHandler
+    public class BigKeySmallItemVM : SmallItemVMBase
     {
         private readonly IRequirement _spacerRequirement;
         private readonly IRequirement _requirement;
@@ -28,88 +21,80 @@ namespace OpenTracker.ViewModels.Items.Small
             _spacerRequirement.Met;
         public bool Visible =>
             _requirement.Met;
-        public bool TextVisible =>
-            Visible && _item.Current > 0;
-        public string ItemNumber
-        {
-            get
-            {
-                StringBuilder sb = new StringBuilder();
-                sb.Append(_item.Current.ToString(CultureInfo.InvariantCulture));
-                sb.Append(_item.CanAdd() ? "" : "*");
-
-                return sb.ToString();
-            }
-        }
-        public string TextColor
-        {
-            get
-            {
-                if (_item == null)
-                {
-                    return "#ffffff";
-                }
-
-                if (!_item.CanAdd())
-                {
-                    return AppSettings.Instance.Colors.EmphasisFontColor;
-                }
-
-                return "#ffffff";
-            }
-        }
+        public string ImageSource =>
+            "avares://OpenTracker/Assets/Images/Items/bigkey" +
+            (_item.Current > 0 ? "1" : "0") + ".png";
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="dungeon">
-        /// The dungeon whose small keys are to be represented.
+        /// The dungeon whose big keys are to be represented.
         /// </param>
-        public SmallKeySmallItemVM(IDungeon dungeon)
+        public BigKeySmallItemVM(IDungeon dungeon)
         {
             if (dungeon == null)
             {
                 throw new ArgumentNullException(nameof(dungeon));
             }
 
-            if (dungeon.SmallKeyItem == null)
+            if (dungeon.BigKeyItem == null)
             {
                 throw new ArgumentOutOfRangeException(nameof(dungeon));
             }
 
-            _item = dungeon.SmallKeyItem;
+            _item = dungeon.BigKeyItem;
 
-            _spacerRequirement = new AlternativeRequirement(new List<IRequirement>
+            if (dungeon.ID == LocationID.HyruleCastle)
             {
-                new AlwaysDisplayDungeonItemsRequirement(true),
-                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]
-            });
+                _spacerRequirement = new AlternativeRequirement(new List<IRequirement>
+                {
+                    new AggregateRequirement(new List<IRequirement>
+                    {
+                        new ItemsPanelOrientationRequirement(Orientation.Vertical),
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            new AlwaysDisplayDungeonItemsRequirement(true),
+                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]
+                        })
+                    }),
+                    new AggregateRequirement(new List<IRequirement>
+                    {
+                        RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
+                        new AlternativeRequirement(new List<IRequirement>
+                        {
+                            new AlwaysDisplayDungeonItemsRequirement(true),
+                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]
+                        })
+                    })
+                });
+                _requirement = new AggregateRequirement(new List<IRequirement>
+                {
+                    RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
+                    new AlternativeRequirement(new List<IRequirement>
+                    {
+                        new AlwaysDisplayDungeonItemsRequirement(true),
+                        RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]
+                    })
+                });
+            }
+            else
+            {
+                _spacerRequirement = new AlternativeRequirement(new List<IRequirement>
+                {
+                    new AlwaysDisplayDungeonItemsRequirement(true),
+                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]
+                });
+                _requirement = new AlternativeRequirement(new List<IRequirement>
+                {
+                    new AlwaysDisplayDungeonItemsRequirement(true),
+                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]
+                });
+            }
 
-            _requirement = dungeon.ID == LocationID.EasternPalace ?
-                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn] :
-                RequirementDictionary.Instance[RequirementType.NoRequirement];
-
-            AppSettings.Instance.Colors.PropertyChanged += OnColorsChanged;
             _item.PropertyChanged += OnItemChanged;
             _requirement.PropertyChanged += OnRequirementChanged;
             _spacerRequirement.PropertyChanged += OnRequirementChanged;
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the ColorSettings class.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnColorsChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(ColorSettings.EmphasisFontColor))
-            {
-                UpdateTextColor();
-            }
         }
 
         /// <summary>
@@ -125,7 +110,6 @@ namespace OpenTracker.ViewModels.Items.Small
         {
             this.RaisePropertyChanged(nameof(SpacerVisible));
             this.RaisePropertyChanged(nameof(Visible));
-            this.RaisePropertyChanged(nameof(TextVisible));
         }
 
         /// <summary>
@@ -139,17 +123,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// </param>
         private void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
-            UpdateTextColor();
-            this.RaisePropertyChanged(nameof(TextVisible));
-            this.RaisePropertyChanged(nameof(ItemNumber));
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the TextColor properties.
-        /// </summary>
-        private void UpdateTextColor()
-        {
-            this.RaisePropertyChanged(nameof(TextColor));
+            this.RaisePropertyChanged(nameof(ImageSource));
         }
 
         /// <summary>

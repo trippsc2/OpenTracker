@@ -275,6 +275,25 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
+        /// Returns a key drop shuffle requirement.
+        /// </summary>
+        /// <param name="type">
+        /// The requirement type.
+        /// </param>
+        /// <returns>
+        /// A key drop shuffle requirement.
+        /// </returns>
+        private static IRequirement GetKeyDropShuffleRequirement(RequirementType type)
+        {
+            return type switch
+            {
+                RequirementType.KeyDropShuffleOff => new KeyDropShuffleRequirement(false),
+                RequirementType.KeyDropShuffleOn => new KeyDropShuffleRequirement(true),
+                _ => throw new ArgumentOutOfRangeException(nameof(type))
+            };
+        }
+
+        /// <summary>
         /// Returns an item exact amount requirement.
         /// </summary>
         /// <param name="type">
@@ -677,6 +696,11 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.TakeAnyLocations:
                     {
                         return GetTakeAnyLocationsRequirement(type);
+                    }
+                case RequirementType.KeyDropShuffleOff:
+                case RequirementType.KeyDropShuffleOn:
+                    {
+                        return GetKeyDropShuffleRequirement(type);
                     }
                 case RequirementType.NoKeyShuffle:
                     {

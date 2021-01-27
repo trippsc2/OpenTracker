@@ -38,6 +38,8 @@ namespace OpenTracker.Models.Dungeons
 
         public List<DungeonItemID> Items { get; }
         public List<DungeonItemID> Bosses { get; }
+        public List<DungeonItemID> SmallKeyDrops { get; }
+        public List<DungeonItemID> BigKeyDrops { get; }
         public List<KeyDoorID> SmallKeyDoors { get; }
         public List<KeyDoorID> BigKeyDoors { get; }
         public List<IKeyLayout> KeyLayouts { get; }
@@ -104,8 +106,9 @@ namespace OpenTracker.Models.Dungeons
             LocationID id, string name, List<MapLocation> mapLocations, int map, int compass,
             int smallKeys, int bigKey, IItem mapItem, IItem compassItem, IItem smallKeyItem,
             IItem bigKeyItem, List<DungeonNodeID> nodes, List<DungeonItemID> items,
-            List<DungeonItemID> bosses, List<KeyDoorID> smallKeyDoors, List<KeyDoorID> bigKeyDoors,
-            List<IRequirementNode> entryNodes) : base(id, name, mapLocations)
+            List<DungeonItemID> bosses, List<DungeonItemID> smallKeyDrops,
+            List<DungeonItemID> bigKeyDrops, List<KeyDoorID> smallKeyDoors,
+            List<KeyDoorID> bigKeyDoors, List<IRequirementNode> entryNodes) : base(id, name, mapLocations)
         {
             Map = map;
             Compass = compass;
@@ -118,6 +121,8 @@ namespace OpenTracker.Models.Dungeons
             Nodes = nodes ?? throw new ArgumentNullException(nameof(nodes));
             Items = items ?? throw new ArgumentNullException(nameof(items));
             Bosses = bosses ?? throw new ArgumentNullException(nameof(bosses));
+            SmallKeyDrops = smallKeyDrops ?? throw new ArgumentNullException(nameof(smallKeyDrops));
+            BigKeyDrops = bigKeyDrops ?? throw new ArgumentNullException(nameof(bigKeyDrops));
             SmallKeyDoors = smallKeyDoors ??
                 throw new ArgumentNullException(nameof(smallKeyDoors));
             BigKeyDoors = bigKeyDoors ?? throw new ArgumentNullException(nameof(bigKeyDoors));
@@ -223,7 +228,8 @@ namespace OpenTracker.Models.Dungeons
                 e.PropertyName == nameof(Mode.SmallKeyShuffle) ||
                 e.PropertyName == nameof(Mode.BigKeyShuffle) ||
                 e.PropertyName == nameof(Mode.GenericKeys) ||
-                e.PropertyName == nameof(Mode.GuaranteedBossItems))
+                e.PropertyName == nameof(Mode.GuaranteedBossItems) ||
+                e.PropertyName == nameof(Mode.KeyDropShuffle))
             {
                 UpdateSectionAccessibility();
             }
@@ -345,20 +351,34 @@ namespace OpenTracker.Models.Dungeons
 
             if (Mode.Instance.BigKeyShuffle)
             {
-                if (BigKeyItem != null)
+                if (Mode.Instance.KeyDropShuffle)
                 {
-                    bigKeyValues.Add(BigKeyItem.Current > 0);
+                    if (BigKeyItem != null)
+                    {
+                        bigKeyValues.Add(BigKeyItem.Current > 0);
+                    }
+                    else
+                    {
+                        bigKeyValues.Add(false);
+                    }
                 }
                 else
                 {
-                    bigKeyValues.Add(false);
+                    if (BigKey > 0 && BigKeyItem != null)
+                    {
+                        bigKeyValues.Add(BigKeyItem.Current > 0);
+                    }
+                    else
+                    {
+                        bigKeyValues.Add(false);
+                    }
                 }
             }
             else
             {
                 bigKeyValues.Add(false);
                 
-                if (BigKey > 0)
+                if (BigKey > 0 || (BigKeyDrops.Count > 0 && Mode.Instance.KeyDropShuffle))
                 {
                     bigKeyValues.Add(true);
                 }
@@ -383,14 +403,142 @@ namespace OpenTracker.Models.Dungeons
         }
 
         /// <summary>
+        /// Populates the initial key permutations for the initial simulations.
+        /// </summary>
+        /// <param name="collection">
+        /// The collection to be populated.
+        /// </param>
+        private void PopulateInitialKeyPermutations(
+            BlockingCollection<(List<KeyDoorID>, int, bool, bool)> collection)
+        {
+            List<int> smallKeyValues = GetSmallKeyValues();
+            List<bool> bigKeyValues = GetBigKeyValues();
+
+            foreach (var smallKeyValue in smallKeyValues)
+            {
+                foreach (var bigKeyValue in bigKeyValues)
+                {
+                    collection.Add(
+                        (new List<KeyDoorID>(), smallKeyValue, bigKeyValue, false));
+                }
+            }
+
+            collection.CompleteAdding();
+        }
+
+        /// <summary>
+        /// Process the dungeon state permutation.
+        /// </summary>
+        /// <param name="item">
+        /// The permutation to be processed.
+        /// </param>
+        /// <param name="finalQueue">
+        /// The final queue.
+        /// </param>
+        /// <param name="nextQueue">
+        /// The next queue to which this permutation will be added.
+        /// </param>
+        private void ProcessDungeonStatePermutation(
+            (List<KeyDoorID>, int, bool, bool) item,
+            BlockingCollection<(List<KeyDoorID>, int, bool, bool)> finalQueue,
+            BlockingCollection<(List<KeyDoorID>, int, bool, bool)> nextQueue)
+        {
+            var dungeonData = GetDungeonData();
+
+            dungeonData.SetSmallKeyDoorState(item.Item1);
+
+            bool bigKey = item.Item3 || dungeonData.GetAvailableBigKeys() > 0;
+
+            dungeonData.SetBigKeyDoorState(bigKey);
+
+            int availableKeys = dungeonData.GetAvailableSmallKeys() + item.Item2 -
+                item.Item1.Count;
+            int availableKeysSequenceBreak = dungeonData.GetAvailableSmallKeys(true) +
+                item.Item2 - item.Item1.Count;
+            bool sequenceBreak = item.Item4;
+
+            if (availableKeysSequenceBreak == 0)
+            {
+                finalQueue.Add(item);
+                DungeonDataQueue.Enqueue(dungeonData);
+                return;
+            }
+
+            if (availableKeys == 0)
+            {
+                finalQueue.Add(item);
+                sequenceBreak = true;
+            }
+
+            var accessibleKeyDoors = dungeonData.GetAccessibleKeyDoors();
+
+            if (accessibleKeyDoors.Count == 0)
+            {
+                finalQueue.Add(item);
+                DungeonDataQueue.Enqueue(dungeonData);
+                return;
+            }
+
+            foreach (var keyDoor in accessibleKeyDoors)
+            {
+                var newPermutation = item.Item1.GetRange(0, item.Item1.Count);
+
+                if (!accessibleKeyDoors.Exists(x => !x.Item2))
+                {
+                    finalQueue.Add(item);
+                }
+
+                newPermutation.Add(keyDoor.Item1);
+                nextQueue.Add((newPermutation, item.Item2, item.Item3, sequenceBreak ||
+                    keyDoor.Item2));
+            }
+
+            DungeonDataQueue.Enqueue(dungeonData);
+        }
+
+        /// <summary>
+        /// Process the final dungeon state permutation.
+        /// </summary>
+        /// <param name="item">
+        /// The permutation to be processed.
+        /// </param>
+        private void ProcessFinalDungeonState(
+            (List<KeyDoorID>, int, bool, bool) item,
+            BlockingCollection<(List<AccessibilityLevel>, AccessibilityLevel, int, bool)> resultQueue)
+        {
+            var dungeonData = GetDungeonData();
+
+            dungeonData.SetSmallKeyDoorState(item.Item1);
+
+            bool bigKey = item.Item3 || dungeonData.GetAvailableBigKeys() > 0;
+
+            dungeonData.SetBigKeyDoorState(bigKey);
+
+            if (!dungeonData.ValidateKeyLayout(item.Item2, item.Item3))
+            {
+                DungeonDataQueue.Enqueue(dungeonData);
+                return;
+            }
+
+            List<AccessibilityLevel> bossAccessibility = dungeonData.GetBossAccessibility();
+
+            var accessibility =
+                dungeonData.GetItemAccessibility(item.Item2, item.Item3, item.Item4);
+
+            resultQueue.Add(
+                (bossAccessibility, accessibility.Item1, accessibility.Item2, accessibility.Item3));
+
+            DungeonDataQueue.Enqueue(dungeonData);
+        }
+
+        /// <summary>
         /// Updates the accessibility and number of accessible items for the contained sections.
         /// </summary>
         private void UpdateSectionAccessibilitySerial()
         {
             var keyDoorPermutationQueue =
                 new List<BlockingCollection<(List<KeyDoorID>, int, bool, bool)>>();
-            var finalKeyDoorPermutationQueue =
-                new BlockingCollection<(List<KeyDoorID>, int, bool, bool)>();
+            var finalQueue = new BlockingCollection<(List<KeyDoorID>, int, bool, bool)>();
             var resultQueue =
                 new BlockingCollection<
                     (List<AccessibilityLevel>, AccessibilityLevel, int, bool)>();
@@ -401,71 +549,20 @@ namespace OpenTracker.Models.Dungeons
                     new BlockingCollection<(List<KeyDoorID>, int, bool, bool)>());
             }
 
-            List<int> smallKeyValues = GetSmallKeyValues();
-            List<bool> bigKeyValues = GetBigKeyValues();
-
-            foreach (int smallKeyValue in smallKeyValues)
-            {
-                foreach (bool bigKeyValue in bigKeyValues)
-                {
-                    keyDoorPermutationQueue[0].Add(
-                        (new List<KeyDoorID>(), smallKeyValue, bigKeyValue, false));
-                }
-            }
-
-            keyDoorPermutationQueue[0].CompleteAdding();
+            PopulateInitialKeyPermutations(keyDoorPermutationQueue[0]);
 
             for (int i = 0; i < keyDoorPermutationQueue.Count; i++)
             {
                 foreach (var item in keyDoorPermutationQueue[i].GetConsumingEnumerable())
                 {
-                    IMutableDungeon dungeonData = GetDungeonData();
-                    
-                    dungeonData.SetSmallKeyDoorState(item.Item1);
-                    dungeonData.SetBigKeyDoorState(item.Item3);
-                    
-                    int availableKeys = dungeonData.GetFreeKeys() + item.Item2 - item.Item1.Count;
-                    int availableKeysSequenceBreak = dungeonData.GetFreeKeysSequenceBreak() +
-                        item.Item2 - item.Item1.Count;
-                    bool sequenceBreak = item.Item4;
-
-                    if (availableKeysSequenceBreak == 0)
+                    if (keyDoorPermutationQueue.Count > i + 1)
                     {
-                        finalKeyDoorPermutationQueue.Add(item);
-                        DungeonDataQueue.Enqueue(dungeonData);
-                        continue;
+                        ProcessDungeonStatePermutation(item, finalQueue, keyDoorPermutationQueue[i + 1]);
                     }
-
-                    if (availableKeys == 0)
+                    else
                     {
-                        finalKeyDoorPermutationQueue.Add(item);
-                        sequenceBreak = true;
+                        ProcessDungeonStatePermutation(item, finalQueue, null);
                     }
-
-                    var accessibleKeyDoors = dungeonData.GetAccessibleKeyDoors();
-                    
-                    if (accessibleKeyDoors.Count == 0)
-                    {
-                        finalKeyDoorPermutationQueue.Add(item);
-                        DungeonDataQueue.Enqueue(dungeonData);
-                        continue;
-                    }
-                    
-                    foreach (var keyDoor in accessibleKeyDoors)
-                    {
-                        List<KeyDoorID> newPermutation = item.Item1.GetRange(0, item.Item1.Count);
-
-                        if (!accessibleKeyDoors.Exists(x => !x.Item2))
-                        {
-                            finalKeyDoorPermutationQueue.Add(item);
-                        }
-
-                        newPermutation.Add(keyDoor.Item1);
-                        keyDoorPermutationQueue[i + 1].Add((newPermutation, item.Item2,
-                            item.Item3, sequenceBreak || keyDoor.Item2));
-                    }
-                    
-                    DungeonDataQueue.Enqueue(dungeonData);
                 }
 
                 keyDoorPermutationQueue[i].Dispose();
@@ -476,35 +573,16 @@ namespace OpenTracker.Models.Dungeons
                 }
                 else
                 {
-                    finalKeyDoorPermutationQueue.CompleteAdding();
+                    finalQueue.CompleteAdding();
                 }
             }
 
-            foreach (var item in finalKeyDoorPermutationQueue.GetConsumingEnumerable())
+            foreach (var item in finalQueue.GetConsumingEnumerable())
             {
-                IMutableDungeon dungeonData = GetDungeonData();
-
-                dungeonData.SetSmallKeyDoorState(item.Item1);
-                dungeonData.SetBigKeyDoorState(item.Item3);
-
-                if (!dungeonData.ValidateKeyLayout(item.Item2, item.Item3))
-                {
-                    DungeonDataQueue.Enqueue(dungeonData);
-                    continue;
-                }
-
-                List<AccessibilityLevel> bossAccessibility = dungeonData.GetBossAccessibility();
-
-                var accessibility =
-                    dungeonData.GetItemAccessibility(item.Item2, item.Item3, item.Item4);
-
-                resultQueue.Add(
-                    (bossAccessibility, accessibility.Item1, accessibility.Item2, accessibility.Item3));
-
-                DungeonDataQueue.Enqueue(dungeonData);
+                ProcessFinalDungeonState(item, resultQueue);
             }
 
-            finalKeyDoorPermutationQueue.Dispose();
+            finalQueue.Dispose();
             resultQueue.CompleteAdding();
 
             List<AccessibilityLevel> lowestBossAccessibilities = new List<AccessibilityLevel>();
@@ -607,7 +685,7 @@ namespace OpenTracker.Models.Dungeons
             var keyDoorPermutationQueue =
                 new List<BlockingCollection<(List<KeyDoorID>, int, bool, bool)>>();
             var keyDoorTasks = new List<Task[]>();
-            var finalKeyDoorPermutationQueue =
+            var finalQueue =
                 new BlockingCollection<(List<KeyDoorID>, int, bool, bool)>();
             var resultQueue =
                 new BlockingCollection<
@@ -619,19 +697,7 @@ namespace OpenTracker.Models.Dungeons
                     new BlockingCollection<(List<KeyDoorID>, int, bool, bool)>());
             }
 
-            List<int> smallKeyValues = GetSmallKeyValues();
-            List<bool> bigKeyValues = GetBigKeyValues();
-
-            foreach (int smallKeyValue in smallKeyValues)
-            {
-                foreach (bool bigKeyValue in bigKeyValues)
-                {
-                    keyDoorPermutationQueue[0].Add(
-                        (new List<KeyDoorID>(), smallKeyValue, bigKeyValue, false));
-                }
-            }
-
-            keyDoorPermutationQueue[0].CompleteAdding();
+            PopulateInitialKeyPermutations(keyDoorPermutationQueue[0]);
 
             for (int i = 0; i < keyDoorPermutationQueue.Count; i++)
             {
@@ -642,47 +708,14 @@ namespace OpenTracker.Models.Dungeons
                     {
                         foreach (var item in keyDoorPermutationQueue[currentIteration].GetConsumingEnumerable())
                         {
-                            IMutableDungeon dungeonData = GetDungeonData();
-
-                            dungeonData.SetSmallKeyDoorState(item.Item1);
-                            dungeonData.SetBigKeyDoorState(item.Item3);
-
-                            int availableKeys = dungeonData.GetFreeKeys() + item.Item2 - item.Item1.Count;
-                            int availableKeysSequenceBreak = dungeonData.GetFreeKeysSequenceBreak() +
-                                item.Item2 - item.Item1.Count;
-                            bool sequenceBreak = item.Item4;
-
-                            if (availableKeysSequenceBreak == 0)
+                            if (keyDoorPermutationQueue.Count > i + 1)
                             {
-                                finalKeyDoorPermutationQueue.Add(item);
-                                DungeonDataQueue.Enqueue(dungeonData);
-                                continue;
+                                ProcessDungeonStatePermutation(item, finalQueue, keyDoorPermutationQueue[i + 1]);
                             }
-
-                            if (availableKeys == 0)
+                            else
                             {
-                                finalKeyDoorPermutationQueue.Add(item);
-                                sequenceBreak = true;
+                                ProcessDungeonStatePermutation(item, finalQueue, null);
                             }
-
-                            var accessibleKeyDoors = dungeonData.GetAccessibleKeyDoors();
-
-                            if (accessibleKeyDoors.Count == 0)
-                            {
-                                finalKeyDoorPermutationQueue.Add(item);
-                                DungeonDataQueue.Enqueue(dungeonData);
-                                continue;
-                            }
-
-                            foreach (var keyDoor in accessibleKeyDoors)
-                            {
-                                List<KeyDoorID> newPermutation = item.Item1.GetRange(0, item.Item1.Count);
-                                newPermutation.Add(keyDoor.Item1);
-                                keyDoorPermutationQueue[currentIteration + 1].Add(
-                                    (newPermutation, item.Item2, item.Item3, sequenceBreak || keyDoor.Item2));
-                            }
-
-                            DungeonDataQueue.Enqueue(dungeonData);
                         }
                     },
                     CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default)).ToArray());
@@ -699,42 +732,22 @@ namespace OpenTracker.Models.Dungeons
                 }
                 else
                 {
-                    finalKeyDoorPermutationQueue.CompleteAdding();
+                    finalQueue.CompleteAdding();
                 }
             }
 
             Task[] finalKeyDoorTasks = Enumerable.Range(1, Math.Max(1, Environment.ProcessorCount - 1))
                 .Select(_ => Task.Factory.StartNew(() =>
                 {
-                    foreach (var item in finalKeyDoorPermutationQueue.GetConsumingEnumerable())
+                    foreach (var item in finalQueue.GetConsumingEnumerable())
                     {
-                        IMutableDungeon dungeonData = GetDungeonData();
-
-                        dungeonData.SetSmallKeyDoorState(item.Item1);
-                        dungeonData.SetBigKeyDoorState(item.Item3);
-
-                        if (!dungeonData.ValidateKeyLayout(item.Item2, item.Item3))
-                        {
-                            DungeonDataQueue.Enqueue(dungeonData);
-                            continue;
-                        }
-
-                        List<AccessibilityLevel> bossAccessibility = dungeonData.GetBossAccessibility();
-
-                        var accessibility =
-                            dungeonData.GetItemAccessibility(item.Item2, item.Item3, item.Item4);
-
-                        resultQueue.Add(
-                            (bossAccessibility, accessibility.Item1, accessibility.Item2,
-                            accessibility.Item3));
-
-                        DungeonDataQueue.Enqueue(dungeonData);
+                        ProcessFinalDungeonState(item, resultQueue);
                     }
                 },
                 CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default)).ToArray();
 
             Task.WaitAll(finalKeyDoorTasks);
-            finalKeyDoorPermutationQueue.Dispose();
+            finalQueue.Dispose();
             resultQueue.CompleteAdding();
 
             List<AccessibilityLevel> lowestBossAccessibilities = new List<AccessibilityLevel>();

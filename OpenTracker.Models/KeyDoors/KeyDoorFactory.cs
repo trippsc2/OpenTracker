@@ -35,6 +35,7 @@ namespace OpenTracker.Models.KeyDoors
                 KeyDoorID.HCEscapeSecondKeyDoor => dungeonData.Nodes[DungeonNodeID.HCEscapeSecondKeyDoor],
                 KeyDoorID.HCDarkCrossKeyDoor => dungeonData.Nodes[DungeonNodeID.HCDarkCrossKeyDoor],
                 KeyDoorID.HCSewerRatRoomKeyDoor => dungeonData.Nodes[DungeonNodeID.HCSewerRatRoomKeyDoor],
+                KeyDoorID.HCZeldasCellDoor => dungeonData.Nodes[DungeonNodeID.HCZeldasCellDoor],
                 KeyDoorID.ATFirstKeyDoor => dungeonData.Nodes[DungeonNodeID.ATDarkMaze],
                 KeyDoorID.ATSecondKeyDoor => dungeonData.Nodes[DungeonNodeID.ATSecondKeyDoor],
                 KeyDoorID.ATThirdKeyDoor => dungeonData.Nodes[DungeonNodeID.ATPastSecondKeyDoor],

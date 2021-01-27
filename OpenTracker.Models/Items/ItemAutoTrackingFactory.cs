@@ -60,6 +60,7 @@ namespace OpenTracker.Models.Items
                 case ItemType.Mirror:
                 case ItemType.HalfMagic:
                 case ItemType.MoonPearl:
+                case ItemType.HCBigKey:
                 case ItemType.EPBigKey:
                 case ItemType.DPBigKey:
                 case ItemType.ToHBigKey:
@@ -316,6 +317,7 @@ namespace OpenTracker.Models.Items
                     {
                         return 23;
                     }
+                case ItemType.HCBigKey:
                 case ItemType.EPBigKey:
                 case ItemType.DPBigKey:
                 case ItemType.PoDBigKey:
@@ -555,6 +557,7 @@ namespace OpenTracker.Models.Items
             {
                 case ItemType.Arrows:
                 case ItemType.RedBoomerang:
+                case ItemType.HCBigKey when index == 0:
                 case ItemType.IPBigKey:
                 case ItemType.HCMap when index == 0:
                 case ItemType.IPMap:
@@ -564,6 +567,7 @@ namespace OpenTracker.Models.Items
                     }
                 case ItemType.Boomerang:
                 case ItemType.MagicBat:
+                case ItemType.HCBigKey:
                 case ItemType.SWBigKey:
                 case ItemType.SWMap:
                 case ItemType.SWCompass:
@@ -683,6 +687,7 @@ namespace OpenTracker.Models.Items
                 case ItemType.Mirror:
                 case ItemType.HalfMagic:
                 case ItemType.MoonPearl:
+                case ItemType.HCBigKey:
                 case ItemType.EPBigKey:
                 case ItemType.DPBigKey:
                 case ItemType.ToHBigKey:
@@ -771,6 +776,7 @@ namespace OpenTracker.Models.Items
                 case ItemType.Flute:
                 case ItemType.HCMap:
                 case ItemType.HCSmallKey:
+                case ItemType.HCBigKey:
                     {
                         count = 2;
                     }
@@ -1638,6 +1644,7 @@ namespace OpenTracker.Models.Items
                 case ItemType.BigBomb:
                 case ItemType.Mushroom:
                 case ItemType.Flute:
+                case ItemType.HCBigKey:
                 case ItemType.HCMap:
                     {
                         return GetMultipleOverride(type);

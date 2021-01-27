@@ -21,13 +21,13 @@ namespace OpenTracker.Models.Dungeons
 
         List<(KeyDoorID, bool)> GetAccessibleKeyDoors();
         List<AccessibilityLevel> GetBossAccessibility();
-        int GetFreeKeys();
-        int GetFreeKeysSequenceBreak();
+        int GetAvailableSmallKeys(bool sequenceBreak = false);
         (AccessibilityLevel, int, bool) GetItemAccessibility(
             int smallKeyValue, bool bigKeyValue, bool sequenceBroken);
         void SetBigKeyDoorState(bool unlocked);
         void SetSmallKeyDoorState(List<KeyDoorID> unlockedDoors);
         bool ValidateKeyLayout(int keysCollected, bool bigKeyCollected);
         void Reset();
+        int GetAvailableBigKeys(bool sequenceBreak = false);
     }
 }

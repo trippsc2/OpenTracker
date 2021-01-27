@@ -122,7 +122,7 @@ namespace OpenTracker.Models.KeyLayouts
 
             foreach (var item in _smallKeyLocations)
             {
-                if (dungeonData.Items[item].Accessibility <= AccessibilityLevel.Partial)
+                if (dungeonData.ItemDictionary[item].Accessibility <= AccessibilityLevel.Partial)
                 {
                     inaccessible++;
                 }

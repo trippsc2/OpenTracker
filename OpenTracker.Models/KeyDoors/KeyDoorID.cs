@@ -9,6 +9,7 @@
         HCEscapeSecondKeyDoor,
         HCDarkCrossKeyDoor,
         HCSewerRatRoomKeyDoor,
+        HCZeldasCellDoor,
         ATFirstKeyDoor,
         ATSecondKeyDoor,
         ATThirdKeyDoor,

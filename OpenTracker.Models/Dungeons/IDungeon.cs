@@ -30,6 +30,8 @@ namespace OpenTracker.Models.Dungeons
         List<DungeonNodeID> Nodes { get; }
         IItem MapItem { get; }
         IItem CompassItem { get; }
+        List<DungeonItemID> SmallKeyDrops { get; }
+        List<DungeonItemID> BigKeyDrops { get; }
 
         event EventHandler<IMutableDungeon> DungeonDataCreated;
 
