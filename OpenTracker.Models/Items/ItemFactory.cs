@@ -143,6 +143,56 @@
                     {
                         return 6;
                     }
+                case ItemType.HCBigKey:
+                case ItemType.EPSmallKey:
+                    {
+                        return 0;
+                    }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the delta maximum when key drop shuffle is enabled.
+        /// </summary>
+        /// <param name="type">
+        /// The type of item.
+        /// </param>
+        /// <returns>
+        /// A 32-bit integer representing the delta maximum amount of the item.
+        /// </returns>
+        private static int? GetItemKeyDropMaximum(ItemType type)
+        {
+            switch (type)
+            {
+                case ItemType.HCSmallKey:
+                case ItemType.DPSmallKey:
+                case ItemType.MMSmallKey:
+                    {
+                        return 3;
+                    }
+                case ItemType.ATSmallKey:
+                case ItemType.EPSmallKey:
+                case ItemType.SWSmallKey:
+                case ItemType.TTSmallKey:
+                case ItemType.TRSmallKey:
+                    {
+                        return 2;
+                    }
+                case ItemType.SPSmallKey:
+                    {
+                        return 5;
+                    }
+                case ItemType.IPSmallKey:
+                case ItemType.GTSmallKey:
+                    {
+                        return 4;
+                    }
+                case ItemType.HCBigKey:
+                    {
+                        return 1;
+                    }
             }
 
             return null;
@@ -163,6 +213,15 @@
 
             if (maximum.HasValue)
             {
+                int? keyDropMaximum = GetItemKeyDropMaximum(type);
+
+                if (keyDropMaximum.HasValue)
+                {
+                    return new KeyItem(
+                        GetItemStarting(type), maximum.Value, keyDropMaximum.Value,
+                        ItemAutoTrackingFactory.GetAutoTrackValue(type));
+                }
+
                 return new CappedItem(
                     GetItemStarting(type), maximum.Value,
                     ItemAutoTrackingFactory.GetAutoTrackValue(type));

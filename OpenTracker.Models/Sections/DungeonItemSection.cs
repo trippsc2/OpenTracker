@@ -150,7 +150,8 @@ namespace OpenTracker.Models.Sections
                 e.PropertyName == nameof(Mode.MapShuffle) ||
                 e.PropertyName == nameof(Mode.CompassShuffle) ||
                 e.PropertyName == nameof(Mode.SmallKeyShuffle) ||
-                e.PropertyName == nameof(Mode.BigKeyShuffle))
+                e.PropertyName == nameof(Mode.BigKeyShuffle) ||
+                e.PropertyName == nameof(Mode.KeyDropShuffle))
             {
                 SetTotal();
             }
@@ -184,12 +185,46 @@ namespace OpenTracker.Models.Sections
         /// </param>
         private void SetTotal()
         {
-            int newTotal = _dungeon.Items.Count -
-                (Mode.Instance.MapShuffle ? 0 : _dungeon.Map) -
-                (Mode.Instance.CompassShuffle ? 0 : _dungeon.Compass) -
-                (Mode.Instance.SmallKeyShuffle ? 0 : _dungeon.SmallKeys) -
-                (Mode.Instance.BigKeyShuffle ? 0 : _dungeon.BigKey);
+            int baseTotal = _dungeon.Items.Count;
 
+            if (Mode.Instance.KeyDropShuffle)
+            {
+                baseTotal += _dungeon.SmallKeyDrops.Count + _dungeon.BigKeyDrops.Count;
+            }
+
+            int dungeonItems = 0;
+
+            if (!Mode.Instance.MapShuffle)
+            {
+                dungeonItems += _dungeon.Map;
+            }
+
+            if (!Mode.Instance.CompassShuffle)
+            {
+                dungeonItems += _dungeon.Compass;
+            }
+
+            if (!Mode.Instance.SmallKeyShuffle)
+            {
+                dungeonItems += _dungeon.SmallKeys;
+                
+                if (Mode.Instance.KeyDropShuffle)
+                {
+                    dungeonItems += _dungeon.SmallKeyDrops.Count;
+                }
+            }
+
+            if (!Mode.Instance.BigKeyShuffle)
+            {
+                dungeonItems += _dungeon.BigKey;
+
+                if (Mode.Instance.KeyDropShuffle)
+                {
+                    dungeonItems += _dungeon.BigKeyDrops.Count;
+                }
+            }
+
+            int newTotal = baseTotal - dungeonItems;
             int delta = newTotal - Total;
 
             Total = newTotal;

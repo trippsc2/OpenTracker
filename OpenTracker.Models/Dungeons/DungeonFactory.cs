@@ -334,7 +334,7 @@ namespace OpenTracker.Models.Dungeons
                     }
                 case LocationID.EasternPalace:
                     {
-                        return null;
+                        return ItemDictionary.Instance[ItemType.EPSmallKey];
                     }
                 case LocationID.DesertPalace:
                     {
@@ -395,6 +395,9 @@ namespace OpenTracker.Models.Dungeons
             switch (id)
             {
                 case LocationID.HyruleCastle:
+                    {
+                        return ItemDictionary.Instance[ItemType.HCBigKey];
+                    }
                 case LocationID.AgahnimTower:
                     {
                         return null;
@@ -1044,6 +1047,167 @@ namespace OpenTracker.Models.Dungeons
         }
 
         /// <summary>
+        /// Returns a list of dungeon small key drop item IDs for the specified dungeon.
+        /// </summary>
+        /// <param name="id">
+        /// The dungeon ID.
+        /// </param>
+        /// <returns>
+        /// A list of dungeon small key drop item IDs.
+        /// </returns>
+        private static List<DungeonItemID> GetDungeonSmallKeyDrops(LocationID id)
+        {
+            switch (id)
+            {
+                case LocationID.HyruleCastle:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.HCBoomerangGuardDrop,
+                            DungeonItemID.HCMapGuardDrop,
+                            DungeonItemID.HCKeyRatDrop
+                        };
+                    }
+                case LocationID.AgahnimTower:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.ATDarkArcherDrop,
+                            DungeonItemID.ATCircleOfPotsDrop
+                        };
+                    }
+                case LocationID.EasternPalace:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.EPDarkSquarePot,
+                            DungeonItemID.EPDarkEyegoreDrop
+                        };
+                    }
+                case LocationID.DesertPalace:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.DPTiles1Pot,
+                            DungeonItemID.DPBeamosHallPot,
+                            DungeonItemID.DPTiles2Pot
+                        };
+                    }
+                case LocationID.TowerOfHera:
+                case LocationID.PalaceOfDarkness:
+                    {
+                        return new List<DungeonItemID>(0);
+                    }
+                case LocationID.SwampPalace:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.SPPotRowPot,
+                            DungeonItemID.SPTrench1Pot,
+                            DungeonItemID.SPHookshotPot,
+                            DungeonItemID.SPTrench2Pot,
+                            DungeonItemID.SPWaterwayPot
+                        };
+                    }
+                case LocationID.SkullWoods:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.SWWestLobbyPot,
+                            DungeonItemID.SWSpikeCornerDrop
+                        };
+                    }
+                case LocationID.ThievesTown:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.TTHallwayPot,
+                            DungeonItemID.TTSpikeSwitchPot
+                        };
+                    }
+                case LocationID.IcePalace:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.IPJellyDrop,
+                            DungeonItemID.IPConveyerDrop,
+                            DungeonItemID.IPHammerBlockDrop,
+                            DungeonItemID.IPManyPotsPot
+                        };
+                    }
+                case LocationID.MiseryMire:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.MMSpikesPot,
+                            DungeonItemID.MMFishbonePot,
+                            DungeonItemID.MMConveyerCrystalDrop
+                        };
+                    }
+                case LocationID.TurtleRock:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.TRPokey1Drop,
+                            DungeonItemID.TRPokey2Drop
+                        };
+                    }
+                case LocationID.GanonsTower:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.GTConveyorCrossPot,
+                            DungeonItemID.GTDoubleSwitchPot,
+                            DungeonItemID.GTConveyorStarPitsPot,
+                            DungeonItemID.GTMiniHelmasaurDrop
+                        };
+                    }
+            }
+
+            throw new ArgumentOutOfRangeException(nameof(id));
+        }
+
+        /// <summary>
+        /// Returns a list of dungeon small key drop item IDs for the specified dungeon.
+        /// </summary>
+        /// <param name="id">
+        /// The dungeon ID.
+        /// </param>
+        /// <returns>
+        /// A list of dungeon small key drop item IDs.
+        /// </returns>
+        private static List<DungeonItemID> GetDungeonBigKeyDrops(LocationID id)
+        {
+            switch (id)
+            {
+                case LocationID.HyruleCastle:
+                    {
+                        return new List<DungeonItemID>
+                        {
+                            DungeonItemID.HCBigKeyDrop
+                        };
+                    }
+                case LocationID.AgahnimTower:
+                case LocationID.EasternPalace:
+                case LocationID.DesertPalace:
+                case LocationID.TowerOfHera:
+                case LocationID.PalaceOfDarkness:
+                case LocationID.SwampPalace:
+                case LocationID.SkullWoods:
+                case LocationID.ThievesTown:
+                case LocationID.IcePalace:
+                case LocationID.MiseryMire:
+                case LocationID.TurtleRock:
+                case LocationID.GanonsTower:
+                    {
+                        return new List<DungeonItemID>(0);
+                    }
+            }
+
+            throw new ArgumentOutOfRangeException(nameof(id));
+        }
+
+        /// <summary>
         /// Returns a list of small key door IDs for the specified dungeon.
         /// </summary>
         /// <param name="id">
@@ -1214,6 +1378,12 @@ namespace OpenTracker.Models.Dungeons
             switch (id)
             {
                 case LocationID.HyruleCastle:
+                    {
+                        return new List<KeyDoorID>
+                        {
+                            KeyDoorID.HCZeldasCellDoor
+                        };
+                    }
                 case LocationID.AgahnimTower:
                     {
                         return new List<KeyDoorID>(0);
@@ -1405,7 +1575,8 @@ namespace OpenTracker.Models.Dungeons
                 GetDungeonMapCount(id), GetDungeonCompassCount(id), GetDungeonSmallKeyCount(id),
                 GetDungeonBigKeyCount(id), GetDungeonMapItem(id), GetDungeonCompassItem(id),
                 GetDungeonSmallKeyItem(id), GetDungeonBigKeyItem(id), GetDungeonNodes(id),
-                GetDungeonItems(id), GetDungeonBosses(id), GetDungeonSmallKeyDoors(id),
+                GetDungeonItems(id), GetDungeonBosses(id), GetDungeonSmallKeyDrops(id),
+                GetDungeonBigKeyDrops(id), GetDungeonSmallKeyDoors(id),
                 GetDungeonBigKeyDoors(id), GetDungeonEntryNodes(id));
         }
     }

@@ -64,7 +64,7 @@ namespace OpenTracker.Models.Requirements
         /// </param>
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.KeyDoorShuffle))
+            if (e.PropertyName == nameof(Mode.KeyDropShuffle))
             {
                 UpdateAccessibility();
             }
@@ -75,7 +75,7 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         private void UpdateAccessibility()
         {
-            Accessibility = Mode.Instance.KeyDoorShuffle == _keyDoor ?
+            Accessibility = Mode.Instance.KeyDropShuffle == _keyDoor ?
                 AccessibilityLevel.Normal : AccessibilityLevel.None;
         }
     }

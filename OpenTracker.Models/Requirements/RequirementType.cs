@@ -32,6 +32,8 @@
         GuaranteedBossItemsOn,
         GenericKeys,
         TakeAnyLocations,
+        KeyDropShuffleOff,
+        KeyDropShuffleOn,
         NoKeyShuffle,
         SmallKeyShuffleOnly,
         BigKeyShuffleOnly,

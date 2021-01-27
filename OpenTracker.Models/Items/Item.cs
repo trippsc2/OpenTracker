@@ -56,7 +56,7 @@ namespace OpenTracker.Models.Items
         /// <param name="propertyName">
         /// The string of the property name of the changed property.
         /// </param>
-        private void OnPropertyChanged(string propertyName)
+        protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

@@ -180,16 +180,16 @@ namespace OpenTracker.Models.Modes
             }
         }
 
-        private bool _keyDoorShuffle;
-        public bool KeyDoorShuffle
+        private bool _keyDropShuffle;
+        public bool KeyDropShuffle
         {
-            get => _keyDoorShuffle;
+            get => _keyDropShuffle;
             set
             {
-                if (_keyDoorShuffle != value)
+                if (_keyDropShuffle != value)
                 {
-                    _keyDoorShuffle = value;
-                    OnPropertyChanged(nameof(KeyDoorShuffle));
+                    _keyDropShuffle = value;
+                    OnPropertyChanged(nameof(KeyDropShuffle));
                 }
             }
         }

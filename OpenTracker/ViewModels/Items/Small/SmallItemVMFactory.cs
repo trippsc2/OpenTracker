@@ -130,15 +130,9 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <returns>
         /// A new small item control ViewModel instance.
         /// </returns>
-        private static SmallItemVM GetBigKeySmallItemControlVM(IDungeon dungeon)
+        private static BigKeySmallItemVM GetBigKeySmallItemControlVM(IDungeon dungeon)
         {
-            return new SmallItemVM(
-                "avares://OpenTracker/Assets/Images/Items/bigkey", dungeon.BigKeyItem,
-                new AlternativeRequirement(new List<IRequirement>
-                {
-                    new AlwaysDisplayDungeonItemsRequirement(true),
-                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]
-                }));
+            return new BigKeySmallItemVM(dungeon);
         }
 
         /// <summary>

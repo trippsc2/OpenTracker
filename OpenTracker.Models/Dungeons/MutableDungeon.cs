@@ -24,6 +24,10 @@ namespace OpenTracker.Models.Dungeons
         public DungeonNodeDictionary Nodes { get; }
         public Dictionary<DungeonItemID, IDungeonItem> Items { get; } =
             new Dictionary<DungeonItemID, IDungeonItem>();
+        public Dictionary<DungeonItemID, IDungeonItem> SmallKeyDrops { get; } =
+            new Dictionary<DungeonItemID, IDungeonItem>();
+        public Dictionary<DungeonItemID, IDungeonItem> BigKeyDrops { get; } =
+            new Dictionary<DungeonItemID, IDungeonItem>();
         public List<IDungeonItem> BossItems { get; } =
             new List<IDungeonItem>();
 
@@ -56,27 +60,37 @@ namespace OpenTracker.Models.Dungeons
         {
             if (e == this)
             {
-                foreach (KeyDoorID smallKeyDoor in _dungeon.SmallKeyDoors)
+                foreach (var smallKeyDoor in _dungeon.SmallKeyDoors)
                 {
                     SmallKeyDoors.Add(smallKeyDoor, KeyDoorDictionary[smallKeyDoor]);
                 }
 
-                foreach (KeyDoorID bigKeyDoor in _dungeon.BigKeyDoors)
+                foreach (var bigKeyDoor in _dungeon.BigKeyDoors)
                 {
                     BigKeyDoors.Add(bigKeyDoor, KeyDoorDictionary[bigKeyDoor]);
                 }
 
-                foreach (DungeonItemID item in _dungeon.Items)
+                foreach (var item in _dungeon.Items)
                 {
                     Items.Add(item, ItemDictionary[item]);
                 }
 
-                foreach (DungeonItemID boss in _dungeon.Bosses)
+                foreach (var boss in _dungeon.Bosses)
                 {
                     BossItems.Add(ItemDictionary[boss]);
                 }
 
-                foreach (DungeonNodeID node in _dungeon.Nodes)
+                foreach (var smallKeyDrop in _dungeon.SmallKeyDrops)
+                {
+                    SmallKeyDrops.Add(smallKeyDrop, ItemDictionary[smallKeyDrop]);
+                }
+
+                foreach (var bigKeyDrop in _dungeon.BigKeyDrops)
+                {
+                    BigKeyDrops.Add(bigKeyDrop, ItemDictionary[bigKeyDrop]);
+                }
+
+                foreach (var node in _dungeon.Nodes)
                 {
                     _ = Nodes[node];
                 }
@@ -126,49 +140,71 @@ namespace OpenTracker.Models.Dungeons
         }
 
         /// <summary>
-        /// Returns the number of keys that are available in all dungeon nodes for free without
-        /// sequence break.
+        /// Returns the number of keys that are available to be collected in the dungeon.
         /// </summary>
+        /// <param name="sequenceBreak">
+        /// A boolean representing whether sequence breaking is allowed for this count.
+        /// </param>
         /// <returns>
-        /// A 32-bit integer representing the number of keys that can be collected for free
-        /// without sequence break.
+        /// A 32-bit integer representing the number of keys that are available to be collected in the
+        /// dungeon.
         /// </returns>
-        public int GetFreeKeys()
+        public int GetAvailableSmallKeys(bool sequenceBreak = false)
         {
-            int freeKeys = 0;
-
-            foreach (DungeonNode node in Nodes.Values)
+            if (Mode.Instance.KeyDropShuffle)
             {
-                if (node.Accessibility == AccessibilityLevel.Normal)
+                return 0;
+            }
+
+            int smallKeys = 0;
+
+            foreach (var smallKeyDrop in SmallKeyDrops.Values)
+            {
+                if (smallKeyDrop.Accessibility == AccessibilityLevel.Normal)
                 {
-                    freeKeys += node.KeysProvided;
+                    smallKeys++;
+                }
+                else if (sequenceBreak && smallKeyDrop.Accessibility == AccessibilityLevel.SequenceBreak)
+                {
+                    smallKeys++;
                 }
             }
 
-            return freeKeys;
+            return smallKeys;
         }
 
         /// <summary>
-        /// Returns the number of keys that are available in all dungeon nodes for free with
-        /// sequence break.
+        /// Returns the number of big keys that are available to be collected in the dungeon.
         /// </summary>
+        /// <param name="sequenceBreak">
+        /// A boolean representing whether sequence breaking is allowed for this count.
+        /// </param>
         /// <returns>
-        /// A 32-bit integer representing the number of keys that can be collected for free with
-        /// sequence break.
+        /// A 32-bit integer representing the number of big keys that are available to be collected in the
+        /// dungeon.
         /// </returns>
-        public int GetFreeKeysSequenceBreak()
+        public int GetAvailableBigKeys(bool sequenceBreak = false)
         {
-            int freeKeys = 0;
-
-            foreach (DungeonNode node in Nodes.Values)
+            if (Mode.Instance.KeyDropShuffle)
             {
-                if (node.Accessibility >= AccessibilityLevel.SequenceBreak)
+                return 0;
+            }
+
+            int bigKeys = 0;
+
+            foreach (var bigKeyDrop in BigKeyDrops.Values)
+            {
+                if (bigKeyDrop.Accessibility == AccessibilityLevel.Normal)
                 {
-                    freeKeys += node.KeysProvided;
+                    bigKeys++;
+                }
+                else if (sequenceBreak && bigKeyDrop.Accessibility == AccessibilityLevel.SequenceBreak)
+                {
+                    bigKeys++;
                 }
             }
 
-            return freeKeys;
+            return bigKeys;
         }
 
         /// <summary>
