@@ -80,6 +80,8 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                 {
                     switch (_mapLocation.Location.ID)
                     {
+                        case LocationID.AgahnimTower:
+                        case LocationID.HyruleCastle:
                         case LocationID.EasternPalace:
                         case LocationID.DesertPalace:
                         case LocationID.TowerOfHera:

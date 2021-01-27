@@ -374,10 +374,10 @@ namespace OpenTracker.Models.Locations
                 LocationID.HyruleCastle => new List<MapLocation>
                 {
                     new MapLocation(
-                        id, MapID.LightWorld, 1003, 906,
+                        id, MapID.LightWorld, 1003, 926,
                         RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]),
                     new MapLocation(
-                        id, MapID.LightWorld, 925, 536,
+                        id, MapID.LightWorld, 925, 540,
                         RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeonAll]),
                     new MapLocation(
                         id, MapID.LightWorld, 925, 516,
@@ -386,7 +386,7 @@ namespace OpenTracker.Models.Locations
                 LocationID.AgahnimTower => new List<MapLocation>
                 {
                     new MapLocation(
-                        id, MapID.LightWorld, 1003, 807,
+                        id, MapID.LightWorld, 1003, 797,
                         RequirementDictionary.Instance[RequirementType.WorldStateStandardOpenEntranceShuffleNone]),
                     new MapLocation(
                         id, MapID.DarkWorld, 1126, 68,

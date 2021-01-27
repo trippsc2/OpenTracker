@@ -298,7 +298,7 @@ namespace OpenTracker.Models.Dungeons
             int inaccessibleItems = 0;
             bool sequenceBreak = sequenceBroken;
 
-            foreach (DungeonItemID item in Items.Keys)
+            foreach (var item in Items.Keys)
             {
                 switch (Items[item].Accessibility)
                 {
@@ -318,6 +318,45 @@ namespace OpenTracker.Models.Dungeons
                             sequenceBreak = true;
                         }
                         break;
+                }
+            }
+
+            if (Mode.Instance.KeyDropShuffle)
+            {
+                foreach (var item in SmallKeyDrops.Values)
+                {
+                    switch (item.Accessibility)
+                    {
+                        case AccessibilityLevel.None:
+                            {
+                                inaccessibleItems++;
+                            }
+                            break;
+                        case AccessibilityLevel.Inspect:
+                        case AccessibilityLevel.SequenceBreak:
+                            {
+                                sequenceBreak = true;
+                            }
+                            break;
+                    }
+                }
+
+                foreach (var item in BigKeyDrops.Values)
+                {
+                    switch (item.Accessibility)
+                    {
+                        case AccessibilityLevel.None:
+                            {
+                                inaccessibleItems++;
+                            }
+                            break;
+                        case AccessibilityLevel.Inspect:
+                        case AccessibilityLevel.SequenceBreak:
+                            {
+                                sequenceBreak = true;
+                            }
+                            break;
+                    }
                 }
             }
 

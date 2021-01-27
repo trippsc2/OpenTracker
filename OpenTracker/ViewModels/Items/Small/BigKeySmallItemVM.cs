@@ -1,4 +1,5 @@
 ﻿using Avalonia.Layout;
+using OpenTracker.Interfaces;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
@@ -11,7 +12,7 @@ using System.ComponentModel;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
-    public class BigKeySmallItemVM : SmallItemVMBase
+    public class BigKeySmallItemVM : SmallItemVMBase, IClickHandler
     {
         private readonly IRequirement _spacerRequirement;
         private readonly IRequirement _requirement;

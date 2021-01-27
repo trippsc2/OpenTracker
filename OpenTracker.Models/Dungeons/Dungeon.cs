@@ -314,12 +314,14 @@ namespace OpenTracker.Models.Dungeons
         private List<int> GetSmallKeyValues()
         {
             List<int> smallKeyValues = new List<int>();
+            int maximumKeys = Mode.Instance.KeyDropShuffle ?
+                SmallKeys + SmallKeyDrops.Count : SmallKeys;
 
             if (Mode.Instance.SmallKeyShuffle)
             {
                 if (SmallKeyItem != null)
                 {
-                    smallKeyValues.Add(Math.Min(SmallKeys, SmallKeyItem.Current +
+                    smallKeyValues.Add(Math.Min(maximumKeys, SmallKeyItem.Current +
                         (Mode.Instance.GenericKeys ?
                         ItemDictionary.Instance[ItemType.SmallKey].Current : 0)));
                 }
@@ -330,7 +332,7 @@ namespace OpenTracker.Models.Dungeons
             }
             else
             {
-                for (int i = 0; i <= SmallKeys; i++)
+                for (int i = 0; i <= maximumKeys; i++)
                 {
                     smallKeyValues.Add(i);
                 }
@@ -394,11 +396,11 @@ namespace OpenTracker.Models.Dungeons
         {
             if (ID == LocationID.GanonsTower)
             {
-                UpdateSectionAccessibilityParallel();
+                UpdateSectionAccessibility(true);
             }
             else
             {
-                UpdateSectionAccessibilitySerial();
+                UpdateSectionAccessibility(false);
             }
         }
 
@@ -532,156 +534,13 @@ namespace OpenTracker.Models.Dungeons
         }
 
         /// <summary>
-        /// Updates the accessibility and number of accessible items for the contained sections.
-        /// </summary>
-        private void UpdateSectionAccessibilitySerial()
-        {
-            var keyDoorPermutationQueue =
-                new List<BlockingCollection<(List<KeyDoorID>, int, bool, bool)>>();
-            var finalQueue = new BlockingCollection<(List<KeyDoorID>, int, bool, bool)>();
-            var resultQueue =
-                new BlockingCollection<
-                    (List<AccessibilityLevel>, AccessibilityLevel, int, bool)>();
-
-            for (int i = 0; i <= SmallKeyDoors.Count; i++)
-            {
-                keyDoorPermutationQueue.Add(
-                    new BlockingCollection<(List<KeyDoorID>, int, bool, bool)>());
-            }
-
-            PopulateInitialKeyPermutations(keyDoorPermutationQueue[0]);
-
-            for (int i = 0; i < keyDoorPermutationQueue.Count; i++)
-            {
-                foreach (var item in keyDoorPermutationQueue[i].GetConsumingEnumerable())
-                {
-                    if (keyDoorPermutationQueue.Count > i + 1)
-                    {
-                        ProcessDungeonStatePermutation(item, finalQueue, keyDoorPermutationQueue[i + 1]);
-                    }
-                    else
-                    {
-                        ProcessDungeonStatePermutation(item, finalQueue, null);
-                    }
-                }
-
-                keyDoorPermutationQueue[i].Dispose();
-
-                if (i + 1 < keyDoorPermutationQueue.Count)
-                {
-                    keyDoorPermutationQueue[i + 1].CompleteAdding();
-                }
-                else
-                {
-                    finalQueue.CompleteAdding();
-                }
-            }
-
-            foreach (var item in finalQueue.GetConsumingEnumerable())
-            {
-                ProcessFinalDungeonState(item, resultQueue);
-            }
-
-            finalQueue.Dispose();
-            resultQueue.CompleteAdding();
-
-            List<AccessibilityLevel> lowestBossAccessibilities = new List<AccessibilityLevel>();
-            List<AccessibilityLevel> highestBossAccessibilities = new List<AccessibilityLevel>();
-
-            for (int i = 0; i < Bosses.Count; i++)
-            {
-                lowestBossAccessibilities.Add(AccessibilityLevel.Normal);
-                highestBossAccessibilities.Add(AccessibilityLevel.None);
-            }
-
-            AccessibilityLevel lowestAccessibility = AccessibilityLevel.Normal;
-            AccessibilityLevel highestAccessibility = AccessibilityLevel.None;
-            int highestAccessible = 0;
-
-            foreach (var item in resultQueue.GetConsumingEnumerable())
-            {
-                for (int i = 0; i < item.Item1.Count; i++)
-                {
-                    if (item.Item1[i] < lowestBossAccessibilities[i] && !item.Item4)
-                    {
-                        lowestBossAccessibilities[i] = item.Item1[i];
-                    }
-
-                    if (item.Item1[i] > highestBossAccessibilities[i])
-                    {
-                        highestBossAccessibilities[i] = item.Item1[i];
-                    }
-                }
-
-                if (item.Item2 < lowestAccessibility && !item.Item4)
-                {
-                    lowestAccessibility = item.Item2;
-                }
-
-                if (item.Item2 > highestAccessibility)
-                {
-                    highestAccessibility = item.Item2;
-                }
-
-                if (item.Item3 > highestAccessible)
-                {
-                    highestAccessible = item.Item3;
-                }
-            }
-
-            resultQueue.Dispose();
-
-            AccessibilityLevel finalAccessibility = highestAccessibility;
-
-            if (finalAccessibility == AccessibilityLevel.Normal &&
-                lowestAccessibility < AccessibilityLevel.Normal)
-            {
-                finalAccessibility = AccessibilityLevel.SequenceBreak;
-            }
-
-            switch (finalAccessibility)
-            {
-                case AccessibilityLevel.None:
-                    {
-                        (Sections[0] as IDungeonItemSection).Accessibility = finalAccessibility;
-                        (Sections[0] as IDungeonItemSection).Accessible = 0;
-                    }
-                    break;
-                case AccessibilityLevel.Inspect:
-                case AccessibilityLevel.Partial:
-                    {
-                        (Sections[0] as IDungeonItemSection).Accessibility = finalAccessibility;
-                        (Sections[0] as IDungeonItemSection).Accessible = highestAccessible;
-                    }
-                    break;
-                case AccessibilityLevel.SequenceBreak:
-                case AccessibilityLevel.Normal:
-                case AccessibilityLevel.Cleared:
-                    {
-                        (Sections[0] as IDungeonItemSection).Accessibility = finalAccessibility;
-                        (Sections[0] as IDungeonItemSection).Accessible = Sections[0].Available;
-                    }
-                    break;
-            }
-
-            for (int i = 0; i < Bosses.Count; i++)
-            {
-                if (highestBossAccessibilities[i] == AccessibilityLevel.Normal &&
-                    lowestBossAccessibilities[i] != AccessibilityLevel.Normal)
-                {
-                    highestBossAccessibilities[i] = AccessibilityLevel.SequenceBreak;
-                }
-
-                (Sections[i + 1] as IBossSection).Accessibility = highestBossAccessibilities[i];
-            }
-        }
-
-        /// <summary>
         /// Updates the accessibility and number of accessible items for the contained sections
         /// using parallel operation.
         /// </summary>
-        private void UpdateSectionAccessibilityParallel()
+        private void UpdateSectionAccessibility(bool parallel)
         {
+            int parallelThreads = parallel ? Math.Max(1, Environment.ProcessorCount - 1) : 1;
+
             var keyDoorPermutationQueue =
                 new List<BlockingCollection<(List<KeyDoorID>, int, bool, bool)>>();
             var keyDoorTasks = new List<Task[]>();
@@ -703,14 +562,14 @@ namespace OpenTracker.Models.Dungeons
             {
                 int currentIteration = i;
 
-                keyDoorTasks.Add(Enumerable.Range(1, Math.Max(1, Environment.ProcessorCount - 1))
+                keyDoorTasks.Add(Enumerable.Range(1, parallelThreads)
                     .Select(_ => Task.Factory.StartNew(() =>
                     {
                         foreach (var item in keyDoorPermutationQueue[currentIteration].GetConsumingEnumerable())
                         {
-                            if (keyDoorPermutationQueue.Count > i + 1)
+                            if (keyDoorPermutationQueue.Count > currentIteration + 1)
                             {
-                                ProcessDungeonStatePermutation(item, finalQueue, keyDoorPermutationQueue[i + 1]);
+                                ProcessDungeonStatePermutation(item, finalQueue, keyDoorPermutationQueue[currentIteration + 1]);
                             }
                             else
                             {
@@ -736,7 +595,7 @@ namespace OpenTracker.Models.Dungeons
                 }
             }
 
-            Task[] finalKeyDoorTasks = Enumerable.Range(1, Math.Max(1, Environment.ProcessorCount - 1))
+            Task[] finalKeyDoorTasks = Enumerable.Range(1, parallelThreads)
                 .Select(_ => Task.Factory.StartNew(() =>
                 {
                     foreach (var item in finalQueue.GetConsumingEnumerable())
