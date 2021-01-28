@@ -1006,8 +1006,6 @@ namespace OpenTracker.Models.DungeonNodes
                     break;
                 case DungeonNodeID.IPB2PastHammerBlocks:
                     {
-                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB2PastLiftBlock], node,
-                            RequirementDictionary.Instance[RequirementType.Gloves1]));
                         connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPSpikeRoom], node,
                             RequirementDictionary.Instance[RequirementType.Hammer]));
                     }
@@ -1027,8 +1025,6 @@ namespace OpenTracker.Models.DungeonNodes
                 case DungeonNodeID.IPSpikeRoom:
                     {
                         connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB1RightSide], node));
-                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB2PastHammerBlocks], node,
-                            RequirementDictionary.Instance[RequirementType.Hammer]));
                         connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB2PastKeyDoor], node,
                             dungeonData.KeyDoorDictionary[KeyDoorID.IPB3KeyDoor].Requirement));
                         connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB4RightSide], node));
@@ -1138,6 +1134,8 @@ namespace OpenTracker.Models.DungeonNodes
                         connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB6PastKeyDoor], node));
                         connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB6], node,
                             RequirementDictionary.Instance[RequirementType.BombJumpIPBJ]));
+                        connections.Add(new NodeConnection(dungeonData.Nodes[DungeonNodeID.IPB6], node,
+                            RequirementDictionary.Instance[RequirementType.IPIceBreaker]));
                     }
                     break;
                 case DungeonNodeID.IPB6PastHammerBlocks:

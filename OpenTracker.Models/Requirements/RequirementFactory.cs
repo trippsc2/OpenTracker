@@ -832,6 +832,366 @@ namespace OpenTracker.Models.Requirements
                             RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]
                         });
                     }
+                case RequirementType.SmallKeyShuffleOffItemPlacementBasic:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff],
+                            RequirementDictionary.Instance[RequirementType.ItemPlacementBasic]
+                        });
+                    }
+                case RequirementType.GuaranteedBossItemsOnBigKeyShuffleOnly:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn],
+                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]
+                        });
+                    }
+                case RequirementType.GuaranteedBossItemsOnSmallKeyShuffleOnly:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn],
+                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]
+                        });
+                    }
+                case RequirementType.GuaranteedBossItemsOnSmallKeyShuffleOff:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn],
+                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
+                        });
+                    }
+                case RequirementType.GuaranteedBossItemsOnNoKeyShuffle:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn],
+                            RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
+                        });
+                    }
+                case RequirementType.GuaranteedBossItemsOnOrItemPlacementBasic:
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn],
+                            RequirementDictionary.Instance[RequirementType.ItemPlacementBasic]
+                        });
+                    }
+                case RequirementType.GuaranteedBossItemsOnOrItemPlacementBasicSmallKeyShuffleOff:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOnOrItemPlacementBasic],
+                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
+                        });
+                    }
+                case RequirementType.GuaranteedBossItemsOffBigKeyShuffleOnly:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
+                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]
+                        });
+                    }
+                case RequirementType.GuaranteedBossItemsOffSmallKeyShuffleOnly:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
+                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]
+                        });
+                    }
+                case RequirementType.GuaranteedBossItemsOffSmallKeyShuffleOff:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
+                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
+                        });
+                    }
+                case RequirementType.GuaranteedBossItemsOffSmallKeyShuffleOffItemPlacementAdvanced:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOffSmallKeyShuffleOff]
+                        });
+                    }
+                case RequirementType.GuaranteedBossItemsOffNoKeyShuffle:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
+                            RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
+                        });
+                    }
+                case RequirementType.GuaranteedBossItemsOffItemPlacementAdvanced:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
+                            RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOnBigKeyShuffleOff:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
+                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOnBigKeyShuffleOnly:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
+                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOnBigKeyShuffleOnlyItemPlacementAdvanced:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOnBigKeyShuffleOnlyItemPlacementBasic:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.ItemPlacementBasic],
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOnSmallKeyShuffleOnly:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
+                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOnNoKeyShuffle:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
+                            RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOnNoKeyShuffleItemPlacementAdvanced:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffle]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOnNoKeyShuffleItemPlacementBasic:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.ItemPlacementBasic],
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffle]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOnAllKeyShuffle:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
+                            RequirementDictionary.Instance[RequirementType.AllKeyShuffle]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOnGuaranteedBossItemsOnBigKeyShuffleOnly:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOnBigKeyShuffleOnly]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOnGuaranteedBossItemsOnSmallKeyShuffleOnly:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOnSmallKeyShuffleOnly]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOnGuaranteedBossItemsOnNoKeyShuffle:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOnNoKeyShuffle]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOnGuaranteedBossItemsOffSmallKeyShuffleOnly:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOffSmallKeyShuffleOnly]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOnGuaranteedBossItemsOffNoKeyShuffle:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOffNoKeyShuffle]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOffBigKeyShuffleOn:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOffBigKeyShuffleOff:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOffBigKeyShuffleOnly:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOffBigKeyShuffleOnlyGuaranteedBossItemsOrItemPlacementBasic:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly],
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOnOrItemPlacementBasic]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOffBigKeyShuffleOnlyItemPlacementAdvanced:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOffBigKeyShuffleOnlyItemPlacementBasic:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.ItemPlacementBasic],
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOffSmallKeyShuffleOn:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOffSmallKeyShuffleOff:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOffSmallKeyShuffleOnly:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOffNoKeyShuffle:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                            RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOffNoKeyShuffleItemPlacementAdvanced:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffNoKeyShuffle]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOffNoKeyShuffleItemPlacementBasic:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.ItemPlacementBasic],
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffNoKeyShuffle]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOffGuaranteedBossItemsOnBigKeyShuffleOnly:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOnBigKeyShuffleOnly]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOffGuaranteedBossItemsOffBigKeyShuffleOnlyItemPlacementAdvanced:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOnlyItemPlacementAdvanced]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOffGuaranteedBossItemsOnSmallKeyShuffleOnly:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOnSmallKeyShuffleOnly]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOffGuaranteedBossItemsOnNoKeyShuffle:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOnNoKeyShuffle]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOffGuaranteedBossItemsOffSmallKeyShuffleOnly:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOffSmallKeyShuffleOnly]
+                        });
+                    }
+                case RequirementType.KeyDropShuffleOffGuaranteedBossItemsOffNoKeyShuffle:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOffNoKeyShuffle]
+                        });
+                    }
                 case RequirementType.RaceIllegalTracking:
                     {
                         return new RaceIllegalTrackingRequirement(true);

@@ -36,17 +36,78 @@ namespace OpenTracker.Models.KeyLayouts
                             new EndKeyLayout(
                                 new AlternativeRequirement(new List<IRequirement>
                                 {
-                                    new AggregateRequirement(new List<IRequirement>
-                                    {
-                                        RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
-                                        RequirementDictionary.Instance[RequirementType.AllKeyShuffle]
-                                    }),
-                                    new AggregateRequirement(new List<IRequirement>
-                                    {
-                                        RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]
-                                    })
+                                    RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnAllKeyShuffle],
+                                    RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffSmallKeyShuffleOn]
                                 })),
+                            new SmallKeyLayout(
+                                1,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.HCSanctuary,
+                                    DungeonItemID.HCMapChest,
+                                    DungeonItemID.HCDarkCross,
+                                    DungeonItemID.HCSecretRoomLeft,
+                                    DungeonItemID.HCSecretRoomMiddle,
+                                    DungeonItemID.HCSecretRoomRight
+                                }, false,
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout()
+                                }, dungeon,
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffSmallKeyShuffleOff]),
+                            new SmallKeyLayout(
+                                3,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.HCSanctuary,
+                                    DungeonItemID.HCMapChest,
+                                    DungeonItemID.HCDarkCross,
+                                    DungeonItemID.HCSecretRoomLeft,
+                                    DungeonItemID.HCSecretRoomMiddle,
+                                    DungeonItemID.HCSecretRoomRight,
+                                    DungeonItemID.HCMapGuardDrop
+                                }, false,
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        4,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.HCSanctuary,
+                                            DungeonItemID.HCMapChest,
+                                            DungeonItemID.HCBoomerangChest,
+                                            DungeonItemID.HCDarkCross,
+                                            DungeonItemID.HCSecretRoomLeft,
+                                            DungeonItemID.HCSecretRoomMiddle,
+                                            DungeonItemID.HCSecretRoomRight,
+                                            DungeonItemID.HCMapGuardDrop,
+                                            DungeonItemID.HCBoomerangGuardDrop
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new EndKeyLayout()
+                                        }, dungeon)
+                                }, dungeon,
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.HCSanctuary,
+                                    DungeonItemID.HCMapChest,
+                                    DungeonItemID.HCBoomerangChest,
+                                    DungeonItemID.HCDarkCross,
+                                    DungeonItemID.HCSecretRoomLeft,
+                                    DungeonItemID.HCSecretRoomMiddle,
+                                    DungeonItemID.HCSecretRoomRight,
+                                    DungeonItemID.HCMapGuardDrop,
+                                    DungeonItemID.HCBoomerangGuardDrop,
+                                    DungeonItemID.HCBigKeyDrop
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout()
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnSmallKeyShuffleOnly]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -60,8 +121,6 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
                                     new SmallKeyLayout(
                                         3,
                                         new List<DungeonItemID>
@@ -96,14 +155,9 @@ namespace OpenTracker.Models.KeyLayouts
                                                 {
                                                     new EndKeyLayout()
                                                 }, dungeon)
-                                        }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        }, dungeon)
                                 },
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
-                                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff]
-                                })),
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffle]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -112,8 +166,6 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
                                     new SmallKeyLayout(
                                         3,
                                         new List<DungeonItemID>
@@ -148,14 +200,9 @@ namespace OpenTracker.Models.KeyLayouts
                                                 {
                                                     new EndKeyLayout()
                                                 }, dungeon)
-                                        }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        }, dungeon)
                                 },
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
-                                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff]
-                                })),
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffle]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -163,8 +210,6 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
                                     new SmallKeyLayout(
                                         3,
                                         new List<DungeonItemID>
@@ -199,56 +244,16 @@ namespace OpenTracker.Models.KeyLayouts
                                                 {
                                                     new EndKeyLayout()
                                                 }, dungeon)
-                                        }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        }, dungeon)
                                 },
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
-                                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff]
-                                })),
-                            new SmallKeyLayout(
-                                1,
-                                new List<DungeonItemID>
-                                {
-                                    DungeonItemID.HCSanctuary,
-                                    DungeonItemID.HCMapChest,
-                                    DungeonItemID.HCDarkCross,
-                                    DungeonItemID.HCSecretRoomLeft,
-                                    DungeonItemID.HCSecretRoomMiddle,
-                                    DungeonItemID.HCSecretRoomRight
-                                },
-                                false,
-                                new List<IKeyLayout>
-                                {
-                                    new EndKeyLayout()
-                                },
-                                dungeon, new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
-                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
-                                }))
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffle])
                         };
                     }
                 case Locations.LocationID.AgahnimTower:
                     {
                         return new List<IKeyLayout>
                         {
-                            new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                            new SmallKeyLayout(
-                                2,
-                                new List<DungeonItemID>
-                                {
-                                    DungeonItemID.ATRoom03,
-                                    DungeonItemID.ATDarkMaze
-                                },
-                                false,
-                                new List<IKeyLayout>
-                                {
-                                    new EndKeyLayout()
-                                },
-                                dungeon)
+                            new EndKeyLayout()
                         };
                     }
                 case Locations.LocationID.EasternPalace:
@@ -256,8 +261,13 @@ namespace OpenTracker.Models.KeyLayouts
                         return new List<IKeyLayout>
                         {
                             new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]),
-                            new BigKeyLayout(new List<DungeonItemID>
+                                new AlternativeRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.AllKeyShuffle],
+                                    RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOn]
+                                })),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
                                 {
                                     DungeonItemID.EPCannonballChest,
                                     DungeonItemID.EPMapChest,
@@ -268,7 +278,116 @@ namespace OpenTracker.Models.KeyLayouts
                                 {
                                     new EndKeyLayout()
                                 },
-                                RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff])
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
+                            new SmallKeyLayout(
+                                1,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.EPCannonballChest,
+                                    DungeonItemID.EPMapChest,
+                                    DungeonItemID.EPCompassChest,
+                                    DungeonItemID.EPBigChest,
+                                    DungeonItemID.EPDarkSquarePot
+                                }, false,
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        2,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.EPCannonballChest,
+                                            DungeonItemID.EPMapChest,
+                                            DungeonItemID.EPCompassChest,
+                                            DungeonItemID.EPBigChest,
+                                            DungeonItemID.EPBigKeyChest,
+                                            DungeonItemID.EPDarkSquarePot,
+                                            DungeonItemID.EPDarkEyegoreDrop
+                                        },
+                                        false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new EndKeyLayout()
+                                        }, dungeon)
+                                }, dungeon,
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.EPCannonballChest,
+                                    DungeonItemID.EPMapChest,
+                                    DungeonItemID.EPCompassChest,
+                                    DungeonItemID.EPBigKeyChest,
+                                    DungeonItemID.EPDarkSquarePot
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout()
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnSmallKeyShuffleOnly]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.EPCannonballChest,
+                                    DungeonItemID.EPMapChest,
+                                    DungeonItemID.EPCompassChest,
+                                    DungeonItemID.EPDarkSquarePot
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        2,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.EPCannonballChest,
+                                            DungeonItemID.EPMapChest,
+                                            DungeonItemID.EPCompassChest,
+                                            DungeonItemID.EPDarkSquarePot,
+                                            DungeonItemID.EPBigKeyChest,
+                                            DungeonItemID.EPBigChest,
+                                            DungeonItemID.EPDarkEyegoreDrop
+                                        }, true,
+                                        new List<IKeyLayout>
+                                        {
+                                            new EndKeyLayout()
+                                        }, dungeon)
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffle]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.EPBigKeyChest
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        1,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.EPCannonballChest,
+                                            DungeonItemID.EPMapChest,
+                                            DungeonItemID.EPCompassChest,
+                                            DungeonItemID.EPDarkSquarePot
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                2,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.EPCannonballChest,
+                                                    DungeonItemID.EPMapChest,
+                                                    DungeonItemID.EPCompassChest,
+                                                    DungeonItemID.EPDarkSquarePot,
+                                                    DungeonItemID.EPBigChest,
+                                                    DungeonItemID.EPDarkEyegoreDrop
+                                                }, false,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new EndKeyLayout()
+                                                }, dungeon)
+                                        }, dungeon)
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffle])
                         };
                     }
                 case Locations.LocationID.DesertPalace:
@@ -284,14 +403,12 @@ namespace OpenTracker.Models.KeyLayouts
                                     DungeonItemID.DPMapChest,
                                     DungeonItemID.DPTorch,
                                     DungeonItemID.DPBigChest
-                                },
-                                false,
+                                }, false,
                                 new List<IKeyLayout>
                                 {
                                     new EndKeyLayout()
-                                },
-                                dungeon,
-                                RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]),
+                                }, dungeon,
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -304,7 +421,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 {
                                     new EndKeyLayout()
                                 },
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]),
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffSmallKeyShuffleOnly]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -320,15 +437,13 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.DPMapChest,
                                             DungeonItemID.DPTorch,
                                             DungeonItemID.DPBigChest
-                                        },
-                                        true,
+                                        }, true,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
-                                        },
-                                        dungeon)
+                                        }, dungeon)
                                 },
-                                RequirementDictionary.Instance[RequirementType.NoKeyShuffle]),
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffNoKeyShuffle]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -343,15 +458,202 @@ namespace OpenTracker.Models.KeyLayouts
                                         {
                                             DungeonItemID.DPMapChest,
                                             DungeonItemID.DPTorch
-                                        },
-                                        false,
+                                        }, false,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
-                                        },
-                                        dungeon)
+                                        }, dungeon)
                                 },
-                                RequirementDictionary.Instance[RequirementType.NoKeyShuffle])
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffNoKeyShuffle]),
+                            new SmallKeyLayout(
+                                2,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.DPMapChest,
+                                    DungeonItemID.DPTorch,
+                                    DungeonItemID.DPBigChest,
+                                    DungeonItemID.DPTiles1Pot
+                                }, false,
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        3,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.DPMapChest,
+                                            DungeonItemID.DPTorch,
+                                            DungeonItemID.DPBigChest,
+                                            DungeonItemID.DPTiles1Pot,
+                                            DungeonItemID.DPBeamosHallPot
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                4,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.DPMapChest,
+                                                    DungeonItemID.DPTorch,
+                                                    DungeonItemID.DPBigChest,
+                                                    DungeonItemID.DPTiles1Pot,
+                                                    DungeonItemID.DPBeamosHallPot,
+                                                    DungeonItemID.DPTiles2Pot
+                                                }, false,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new EndKeyLayout()
+                                                }, dungeon)
+                                        }, dungeon)
+                                }, dungeon,
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.DPMapChest,
+                                    DungeonItemID.DPTorch,
+                                    DungeonItemID.DPCompassChest,
+                                    DungeonItemID.DPBigKeyChest,
+                                    DungeonItemID.DPTiles1Pot,
+                                    DungeonItemID.DPBeamosHallPot,
+                                    DungeonItemID.DPTiles2Pot
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout()
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnSmallKeyShuffleOnly]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.DPMapChest,
+                                    DungeonItemID.DPTorch,
+                                    DungeonItemID.DPTiles1Pot
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        2,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.DPMapChest,
+                                            DungeonItemID.DPTorch,
+                                            DungeonItemID.DPBigChest,
+                                            DungeonItemID.DPTiles1Pot
+                                        }, true,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout
+                                            (
+                                                3,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.DPMapChest,
+                                                    DungeonItemID.DPTorch,
+                                                    DungeonItemID.DPBigChest,
+                                                    DungeonItemID.DPTiles1Pot,
+                                                    DungeonItemID.DPBeamosHallPot
+                                                }, true,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new SmallKeyLayout(
+                                                        4,
+                                                        new List<DungeonItemID>
+                                                        {
+                                                            DungeonItemID.DPMapChest,
+                                                            DungeonItemID.DPTorch,
+                                                            DungeonItemID.DPBigChest,
+                                                            DungeonItemID.DPTiles1Pot,
+                                                            DungeonItemID.DPBeamosHallPot,
+                                                            DungeonItemID.DPTiles2Pot
+                                                        }, true,
+                                                        new List<IKeyLayout>
+                                                        {
+                                                            new EndKeyLayout()
+                                                        }, dungeon)
+                                                }, dungeon)
+                                        }, dungeon)
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffle]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.DPBeamosHallPot
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        2,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.DPMapChest,
+                                            DungeonItemID.DPTorch,
+                                            DungeonItemID.DPTiles1Pot
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                3,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.DPMapChest,
+                                                    DungeonItemID.DPTorch,
+                                                    DungeonItemID.DPBigChest,
+                                                    DungeonItemID.DPTiles1Pot
+                                                }, false,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new SmallKeyLayout(
+                                                        4,
+                                                        new List<DungeonItemID>
+                                                        {
+                                                            DungeonItemID.DPMapChest,
+                                                            DungeonItemID.DPTorch,
+                                                            DungeonItemID.DPBigChest,
+                                                            DungeonItemID.DPTiles1Pot,
+                                                            DungeonItemID.DPTiles2Pot
+                                                        }, false,
+                                                        new List<IKeyLayout>
+                                                        {
+                                                            new EndKeyLayout()
+                                                        }, dungeon)
+                                                }, dungeon)
+                                        }, dungeon)
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffle]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.DPTiles2Pot
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        2,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.DPMapChest,
+                                            DungeonItemID.DPTorch,
+                                            DungeonItemID.DPTiles1Pot
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                4,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.DPMapChest,
+                                                    DungeonItemID.DPTorch,
+                                                    DungeonItemID.DPBigChest,
+                                                    DungeonItemID.DPTiles1Pot,
+                                                    DungeonItemID.DPBeamosHallPot
+                                                }, false,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new EndKeyLayout()
+                                                }, dungeon)
+                                        }, dungeon)
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffle])
                         };
                     }
                 case Locations.LocationID.TowerOfHera:
@@ -370,18 +672,12 @@ namespace OpenTracker.Models.KeyLayouts
                                     DungeonItemID.ToHCompassChest,
                                     DungeonItemID.ToHBigChest,
                                     DungeonItemID.ToHBoss
-                                },
-                                false,
+                                }, false,
                                 new List<IKeyLayout>
                                 {
                                     new EndKeyLayout()
-                                },
-                                dungeon,
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly],
-                                    RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff]
-                                })),
+                                }, dungeon,
+                                RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOffBigKeyShuffleOnly]),
                             new SmallKeyLayout(
                                 1,
                                 new List<DungeonItemID>
@@ -391,18 +687,12 @@ namespace OpenTracker.Models.KeyLayouts
                                     DungeonItemID.ToHBigKeyChest,
                                     DungeonItemID.ToHCompassChest,
                                     DungeonItemID.ToHBigChest
-                                },
-                                false,
+                                }, false,
                                 new List<IKeyLayout>
                                 {
                                     new EndKeyLayout()
-                                },
-                                dungeon,
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly],
-                                    RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn]
-                                })),
+                                }, dungeon,
+                                RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOnBigKeyShuffleOnly]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -433,13 +723,11 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.ToHCompassChest,
                                             DungeonItemID.ToHBigChest,
                                             DungeonItemID.ToHBoss
-                                        },
-                                        true,
+                                        }, true,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
-                                        },
-                                        dungeon,
+                                        }, dungeon,
                                         RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff]),
                                     new SmallKeyLayout(
                                         1,
@@ -450,14 +738,12 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.ToHBigKeyChest,
                                             DungeonItemID.ToHCompassChest,
                                             DungeonItemID.ToHBigChest
-                                        },
-                                        true,
+                                        }, true,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
-                                        },
-                                        dungeon,
-                                        RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn]),
+                                        }, dungeon,
+                                        RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn])
                                 },
                                 RequirementDictionary.Instance[RequirementType.NoKeyShuffle]),
                             new BigKeyLayout(
@@ -473,13 +759,11 @@ namespace OpenTracker.Models.KeyLayouts
                                         {
                                             DungeonItemID.ToHBasementCage,
                                             DungeonItemID.ToHMapChest
-                                        },
-                                        false,
+                                        }, false,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
-                                        },
-                                        dungeon)
+                                        }, dungeon)
                                 },
                                 RequirementDictionary.Instance[RequirementType.NoKeyShuffle])
                         };
@@ -500,8 +784,7 @@ namespace OpenTracker.Models.KeyLayouts
                                     DungeonItemID.PoDBigKeyChest,
                                     DungeonItemID.PoDStalfosBasement,
                                     DungeonItemID.PoDArenaBridge
-                                },
-                                false,
+                                }, false,
                                 new List<IKeyLayout>
                                 {
                                     new SmallKeyLayout(
@@ -518,15 +801,12 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.PoDDarkBasementLeft,
                                             DungeonItemID.PoDDarkBasementRight,
                                             DungeonItemID.PoDHarmlessHellway
-                                        },
-                                        false,
+                                        }, false,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
-                                        },
-                                        dungeon)
-                                },
-                                dungeon,
+                                        }, dungeon)
+                                }, dungeon,
                                 RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
@@ -571,8 +851,7 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.PoDBigKeyChest,
                                             DungeonItemID.PoDStalfosBasement,
                                             DungeonItemID.PoDArenaBridge
-                                        },
-                                        true,
+                                        }, true,
                                         new List<IKeyLayout>
                                         {
                                             new SmallKeyLayout(
@@ -589,15 +868,12 @@ namespace OpenTracker.Models.KeyLayouts
                                                     DungeonItemID.PoDDarkBasementLeft,
                                                     DungeonItemID.PoDDarkBasementRight,
                                                     DungeonItemID.PoDHarmlessHellway
-                                                },
-                                                true,
+                                                }, true,
                                                 new List<IKeyLayout>
                                                 {
                                                     new EndKeyLayout()
-                                                },
-                                                dungeon)
-                                        },
-                                        dungeon)
+                                                }, dungeon)
+                                        }, dungeon)
                                 },
                                 RequirementDictionary.Instance[RequirementType.NoKeyShuffle]),
                             new BigKeyLayout(
@@ -620,8 +896,7 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.PoDBigKeyChest,
                                             DungeonItemID.PoDStalfosBasement,
                                             DungeonItemID.PoDArenaBridge
-                                        },
-                                        false,
+                                        }, false,
                                         new List<IKeyLayout>
                                         {
                                             new SmallKeyLayout(
@@ -638,15 +913,12 @@ namespace OpenTracker.Models.KeyLayouts
                                                     DungeonItemID.PoDDarkBasementLeft,
                                                     DungeonItemID.PoDDarkBasementRight,
                                                     DungeonItemID.PoDHarmlessHellway
-                                                },
-                                                true,
+                                                }, true,
                                                 new List<IKeyLayout>
                                                 {
                                                     new EndKeyLayout()
-                                                },
-                                                dungeon)
-                                        },
-                                        dungeon)
+                                                }, dungeon)
+                                        }, dungeon)
                                 },
                                 RequirementDictionary.Instance[RequirementType.NoKeyShuffle]),
                             new BigKeyLayout(
@@ -667,8 +939,7 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.PoDBigKeyChest,
                                             DungeonItemID.PoDStalfosBasement,
                                             DungeonItemID.PoDArenaBridge
-                                        },
-                                        false,
+                                        }, false,
                                         new List<IKeyLayout>
                                         {
                                             new SmallKeyLayout(
@@ -685,15 +956,12 @@ namespace OpenTracker.Models.KeyLayouts
                                                     DungeonItemID.PoDDarkBasementLeft,
                                                     DungeonItemID.PoDDarkBasementRight,
                                                     DungeonItemID.PoDHarmlessHellway
-                                                },
-                                                false,
+                                                }, false,
                                                 new List<IKeyLayout>
                                                 {
                                                     new EndKeyLayout()
-                                                },
-                                                dungeon)
-                                        },
-                                        dungeon)
+                                                }, dungeon)
+                                        }, dungeon)
                                 },
                                 RequirementDictionary.Instance[RequirementType.NoKeyShuffle])
                         };
@@ -709,37 +977,12 @@ namespace OpenTracker.Models.KeyLayouts
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.SPEntrance
-                                },
-                                false,
+                                }, false,
                                 new List<IKeyLayout>
                                 {
                                     new EndKeyLayout()
-                                },
-                                dungeon,
-                                RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]),
-                            new BigKeyLayout(
-                                new List<DungeonItemID>
-                                {
-                                    DungeonItemID.SPEntrance,
-                                    DungeonItemID.SPMapChest,
-                                    DungeonItemID.SPBigChest,
-                                    DungeonItemID.SPCompassChest,
-                                    DungeonItemID.SPWestChest,
-                                    DungeonItemID.SPBigKeyChest,
-                                    DungeonItemID.SPFloodedRoomLeft,
-                                    DungeonItemID.SPFloodedRoomRight,
-                                    DungeonItemID.SPWaterfallRoom,
-                                    DungeonItemID.SPBoss
-                                },
-                                new List<IKeyLayout>
-                                {
-                                    new EndKeyLayout()
-                                },
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
-                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]
-                                })),
+                                }, dungeon,
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -757,44 +1000,17 @@ namespace OpenTracker.Models.KeyLayouts
                                 {
                                     new EndKeyLayout()
                                 },
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn],
-                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]
-                                })),
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffSmallKeyShuffleOnly]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
-                                    DungeonItemID.SPMapChest,
-                                    DungeonItemID.SPBigChest,
-                                    DungeonItemID.SPCompassChest,
-                                    DungeonItemID.SPWestChest,
-                                    DungeonItemID.SPBigKeyChest,
-                                    DungeonItemID.SPFloodedRoomLeft,
-                                    DungeonItemID.SPFloodedRoomRight,
-                                    DungeonItemID.SPWaterfallRoom,
                                     DungeonItemID.SPBoss
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(
-                                        1,
-                                        new List<DungeonItemID>
-                                        {
-                                            DungeonItemID.SPEntrance
-                                        },
-                                        false,
-                                        new List<IKeyLayout>
-                                        {
-                                            new EndKeyLayout()
-                                        },
-                                        dungeon)
+                                    new EndKeyLayout()
                                 },
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
-                                    RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
-                                })),
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffGuaranteedBossItemsOffSmallKeyShuffleOnly]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -814,19 +1030,596 @@ namespace OpenTracker.Models.KeyLayouts
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.SPEntrance
-                                        },
-                                        false,
+                                        }, false,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
+                                        }, dungeon)
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffNoKeyShuffle]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.SPBoss
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        1,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.SPEntrance
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new EndKeyLayout()
+                                        }, dungeon)
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffGuaranteedBossItemsOffNoKeyShuffle]),
+                            new SmallKeyLayout(
+                                1,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.SPEntrance
+                                }, false,
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        2,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.SPEntrance,
+                                            DungeonItemID.SPMapChest,
+                                            DungeonItemID.SPPotRowPot
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                3,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.SPEntrance,
+                                                    DungeonItemID.SPMapChest,
+                                                    DungeonItemID.SPPotRowPot,
+                                                    DungeonItemID.SPTrench1Pot
+                                                }, false,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new SmallKeyLayout(
+                                                        5,
+                                                        new List<DungeonItemID>
+                                                        {
+                                                            DungeonItemID.SPEntrance,
+                                                            DungeonItemID.SPMapChest,
+                                                            DungeonItemID.SPPotRowPot,
+                                                            DungeonItemID.SPBigChest,
+                                                            DungeonItemID.SPCompassChest,
+                                                            DungeonItemID.SPTrench1Pot,
+                                                            DungeonItemID.SPHookshotPot
+                                                        }, false,
+                                                        new List<IKeyLayout>
+                                                        {
+                                                            new SmallKeyLayout(
+                                                                6,
+                                                                new List<DungeonItemID>
+                                                                {
+                                                                    DungeonItemID.SPEntrance,
+                                                                    DungeonItemID.SPMapChest,
+                                                                    DungeonItemID.SPPotRowPot,
+                                                                    DungeonItemID.SPBigChest,
+                                                                    DungeonItemID.SPCompassChest,
+                                                                    DungeonItemID.SPFloodedRoomLeft,
+                                                                    DungeonItemID.SPFloodedRoomRight,
+                                                                    DungeonItemID.SPWaterfallRoom,
+                                                                    DungeonItemID.SPTrench1Pot,
+                                                                    DungeonItemID.SPHookshotPot,
+                                                                    DungeonItemID.SPWaterwayPot
+                                                                }, false,
+                                                                new List<IKeyLayout>
+                                                                {
+                                                                    new EndKeyLayout()
+                                                                }, dungeon)
+                                                        }, dungeon)
+                                                }, dungeon)
                                         },
                                         dungeon)
-                                },
-                                new AggregateRequirement(new List<IRequirement>
+                                }, dungeon,
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn],
-                                    RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
-                                }))
+                                    DungeonItemID.SPEntrance,
+                                    DungeonItemID.SPMapChest,
+                                    DungeonItemID.SPBigChest,
+                                    DungeonItemID.SPCompassChest,
+                                    DungeonItemID.SPWestChest,
+                                    DungeonItemID.SPBigKeyChest,
+                                    DungeonItemID.SPFloodedRoomLeft,
+                                    DungeonItemID.SPFloodedRoomRight,
+                                    DungeonItemID.SPWaterfallRoom,
+                                    DungeonItemID.SPPotRowPot,
+                                    DungeonItemID.SPTrench1Pot,
+                                    DungeonItemID.SPHookshotPot,
+                                    DungeonItemID.SPTrench2Pot,
+                                    DungeonItemID.SPWaterwayPot
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout()
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnSmallKeyShuffleOnly]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.SPBoss
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout()
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnGuaranteedBossItemsOffSmallKeyShuffleOnly]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.SPMapChest,
+                                    DungeonItemID.SPPotRowPot
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        1,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.SPEntrance
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                2,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.SPEntrance,
+                                                    DungeonItemID.SPMapChest,
+                                                    DungeonItemID.SPPotRowPot
+                                                }, true,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new SmallKeyLayout(
+                                                        3,
+                                                        new List<DungeonItemID>
+                                                        {
+                                                            DungeonItemID.SPEntrance,
+                                                            DungeonItemID.SPMapChest,
+                                                            DungeonItemID.SPPotRowPot,
+                                                            DungeonItemID.SPTrench1Pot
+                                                        }, true,
+                                                        new List<IKeyLayout>
+                                                        {
+                                                            new SmallKeyLayout(
+                                                                5,
+                                                                new List<DungeonItemID>
+                                                                {
+                                                                    DungeonItemID.SPEntrance,
+                                                                    DungeonItemID.SPMapChest,
+                                                                    DungeonItemID.SPPotRowPot,
+                                                                    DungeonItemID.SPBigChest,
+                                                                    DungeonItemID.SPCompassChest,
+                                                                    DungeonItemID.SPTrench1Pot,
+                                                                    DungeonItemID.SPHookshotPot
+                                                                }, true,
+                                                                new List<IKeyLayout>
+                                                                {
+                                                                    new SmallKeyLayout(
+                                                                        6,
+                                                                        new List<DungeonItemID>
+                                                                        {
+                                                                            DungeonItemID.SPEntrance,
+                                                                            DungeonItemID.SPMapChest,
+                                                                            DungeonItemID.SPPotRowPot,
+                                                                            DungeonItemID.SPBigChest,
+                                                                            DungeonItemID.SPCompassChest,
+                                                                            DungeonItemID.SPFloodedRoomLeft,
+                                                                            DungeonItemID.SPFloodedRoomRight,
+                                                                            DungeonItemID.SPWaterfallRoom,
+                                                                            DungeonItemID.SPTrench1Pot,
+                                                                            DungeonItemID.SPHookshotPot,
+                                                                            DungeonItemID.SPWaterwayPot
+                                                                        }, true,
+                                                                        new List<IKeyLayout>
+                                                                        {
+                                                                            new EndKeyLayout()
+                                                                        }, dungeon)
+                                                                }, dungeon)
+                                                        }, dungeon)
+                                                },
+                                                dungeon)
+                                        }, dungeon)
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffle]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.SPTrench1Pot
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        1,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.SPEntrance
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                2,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.SPEntrance,
+                                                    DungeonItemID.SPMapChest,
+                                                    DungeonItemID.SPPotRowPot
+                                                }, false,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new SmallKeyLayout(
+                                                        3,
+                                                        new List<DungeonItemID>
+                                                        {
+                                                            DungeonItemID.SPEntrance,
+                                                            DungeonItemID.SPMapChest,
+                                                            DungeonItemID.SPPotRowPot
+                                                        }, false,
+                                                        new List<IKeyLayout>
+                                                        {
+                                                            new SmallKeyLayout(
+                                                                5,
+                                                                new List<DungeonItemID>
+                                                                {
+                                                                    DungeonItemID.SPEntrance,
+                                                                    DungeonItemID.SPMapChest,
+                                                                    DungeonItemID.SPPotRowPot,
+                                                                    DungeonItemID.SPBigChest,
+                                                                    DungeonItemID.SPCompassChest,
+                                                                    DungeonItemID.SPHookshotPot
+                                                                }, false,
+                                                                new List<IKeyLayout>
+                                                                {
+                                                                    new SmallKeyLayout(
+                                                                        6,
+                                                                        new List<DungeonItemID>
+                                                                        {
+                                                                            DungeonItemID.SPEntrance,
+                                                                            DungeonItemID.SPMapChest,
+                                                                            DungeonItemID.SPPotRowPot,
+                                                                            DungeonItemID.SPBigChest,
+                                                                            DungeonItemID.SPCompassChest,
+                                                                            DungeonItemID.SPFloodedRoomLeft,
+                                                                            DungeonItemID.SPFloodedRoomRight,
+                                                                            DungeonItemID.SPWaterfallRoom,
+                                                                            DungeonItemID.SPHookshotPot,
+                                                                            DungeonItemID.SPWaterwayPot
+                                                                        }, false,
+                                                                        new List<IKeyLayout>
+                                                                        {
+                                                                            new EndKeyLayout()
+                                                                        }, dungeon)
+                                                                }, dungeon)
+                                                        }, dungeon)
+                                                },
+                                                dungeon)
+                                        }, dungeon)
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffle]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.SPBigChest,
+                                    DungeonItemID.SPCompassChest,
+                                    DungeonItemID.SPHookshotPot
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        1,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.SPEntrance
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                2,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.SPEntrance,
+                                                    DungeonItemID.SPMapChest,
+                                                    DungeonItemID.SPPotRowPot
+                                                }, false,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new SmallKeyLayout(
+                                                        3,
+                                                        new List<DungeonItemID>
+                                                        {
+                                                            DungeonItemID.SPEntrance,
+                                                            DungeonItemID.SPMapChest,
+                                                            DungeonItemID.SPPotRowPot,
+                                                            DungeonItemID.SPTrench1Pot
+                                                        }, false,
+                                                        new List<IKeyLayout>
+                                                        {
+                                                            new SmallKeyLayout(
+                                                                5,
+                                                                new List<DungeonItemID>
+                                                                {
+                                                                    DungeonItemID.SPEntrance,
+                                                                    DungeonItemID.SPMapChest,
+                                                                    DungeonItemID.SPPotRowPot,
+                                                                    DungeonItemID.SPBigChest,
+                                                                    DungeonItemID.SPCompassChest,
+                                                                    DungeonItemID.SPTrench1Pot,
+                                                                    DungeonItemID.SPHookshotPot
+                                                                }, true,
+                                                                new List<IKeyLayout>
+                                                                {
+                                                                    new SmallKeyLayout(
+                                                                        6,
+                                                                        new List<DungeonItemID>
+                                                                        {
+                                                                            DungeonItemID.SPEntrance,
+                                                                            DungeonItemID.SPMapChest,
+                                                                            DungeonItemID.SPPotRowPot,
+                                                                            DungeonItemID.SPBigChest,
+                                                                            DungeonItemID.SPCompassChest,
+                                                                            DungeonItemID.SPFloodedRoomLeft,
+                                                                            DungeonItemID.SPFloodedRoomRight,
+                                                                            DungeonItemID.SPWaterfallRoom,
+                                                                            DungeonItemID.SPTrench1Pot,
+                                                                            DungeonItemID.SPHookshotPot,
+                                                                            DungeonItemID.SPWaterwayPot
+                                                                        }, true,
+                                                                        new List<IKeyLayout>
+                                                                        {
+                                                                            new EndKeyLayout()
+                                                                        }, dungeon)
+                                                                }, dungeon)
+                                                        }, dungeon)
+                                                },
+                                                dungeon)
+                                        }, dungeon)
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffle]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.SPFloodedRoomLeft,
+                                    DungeonItemID.SPFloodedRoomRight,
+                                    DungeonItemID.SPWaterfallRoom,
+                                    DungeonItemID.SPWaterwayPot
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        1,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.SPEntrance
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                2,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.SPEntrance,
+                                                    DungeonItemID.SPMapChest,
+                                                    DungeonItemID.SPPotRowPot
+                                                }, false,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new SmallKeyLayout(
+                                                        3,
+                                                        new List<DungeonItemID>
+                                                        {
+                                                            DungeonItemID.SPEntrance,
+                                                            DungeonItemID.SPMapChest,
+                                                            DungeonItemID.SPPotRowPot,
+                                                            DungeonItemID.SPTrench1Pot
+                                                        }, false,
+                                                        new List<IKeyLayout>
+                                                        {
+                                                            new SmallKeyLayout(
+                                                                5,
+                                                                new List<DungeonItemID>
+                                                                {
+                                                                    DungeonItemID.SPEntrance,
+                                                                    DungeonItemID.SPMapChest,
+                                                                    DungeonItemID.SPPotRowPot,
+                                                                    DungeonItemID.SPCompassChest,
+                                                                    DungeonItemID.SPTrench1Pot,
+                                                                    DungeonItemID.SPHookshotPot
+                                                                }, false,
+                                                                new List<IKeyLayout>
+                                                                {
+                                                                    new SmallKeyLayout(
+                                                                        6,
+                                                                        new List<DungeonItemID>
+                                                                        {
+                                                                            DungeonItemID.SPEntrance,
+                                                                            DungeonItemID.SPMapChest,
+                                                                            DungeonItemID.SPPotRowPot,
+                                                                            DungeonItemID.SPBigChest,
+                                                                            DungeonItemID.SPCompassChest,
+                                                                            DungeonItemID.SPFloodedRoomLeft,
+                                                                            DungeonItemID.SPFloodedRoomRight,
+                                                                            DungeonItemID.SPWaterfallRoom,
+                                                                            DungeonItemID.SPTrench1Pot,
+                                                                            DungeonItemID.SPHookshotPot,
+                                                                            DungeonItemID.SPWaterwayPot
+                                                                        }, true,
+                                                                        new List<IKeyLayout>
+                                                                        {
+                                                                            new EndKeyLayout()
+                                                                        }, dungeon)
+                                                                }, dungeon)
+                                                        }, dungeon)
+                                                },
+                                                dungeon)
+                                        }, dungeon)
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffle]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.SPWestChest,
+                                    DungeonItemID.SPBigKeyChest,
+                                    DungeonItemID.SPTrench2Pot
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        1,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.SPEntrance
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                2,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.SPEntrance,
+                                                    DungeonItemID.SPMapChest,
+                                                    DungeonItemID.SPPotRowPot
+                                                }, false,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new SmallKeyLayout(
+                                                        3,
+                                                        new List<DungeonItemID>
+                                                        {
+                                                            DungeonItemID.SPEntrance,
+                                                            DungeonItemID.SPMapChest,
+                                                            DungeonItemID.SPPotRowPot,
+                                                            DungeonItemID.SPTrench1Pot
+                                                        }, false,
+                                                        new List<IKeyLayout>
+                                                        {
+                                                            new SmallKeyLayout(
+                                                                5,
+                                                                new List<DungeonItemID>
+                                                                {
+                                                                    DungeonItemID.SPEntrance,
+                                                                    DungeonItemID.SPMapChest,
+                                                                    DungeonItemID.SPPotRowPot,
+                                                                    DungeonItemID.SPCompassChest,
+                                                                    DungeonItemID.SPTrench1Pot,
+                                                                    DungeonItemID.SPHookshotPot
+                                                                }, false,
+                                                                new List<IKeyLayout>
+                                                                {
+                                                                    new SmallKeyLayout(
+                                                                        6,
+                                                                        new List<DungeonItemID>
+                                                                        {
+                                                                            DungeonItemID.SPEntrance,
+                                                                            DungeonItemID.SPMapChest,
+                                                                            DungeonItemID.SPPotRowPot,
+                                                                            DungeonItemID.SPCompassChest,
+                                                                            DungeonItemID.SPFloodedRoomLeft,
+                                                                            DungeonItemID.SPFloodedRoomRight,
+                                                                            DungeonItemID.SPWaterfallRoom,
+                                                                            DungeonItemID.SPTrench1Pot,
+                                                                            DungeonItemID.SPHookshotPot,
+                                                                            DungeonItemID.SPWaterwayPot
+                                                                        }, false,
+                                                                        new List<IKeyLayout>
+                                                                        {
+                                                                            new EndKeyLayout()
+                                                                        }, dungeon)
+                                                                }, dungeon)
+                                                        }, dungeon)
+                                                },
+                                                dungeon)
+                                        }, dungeon)
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffle]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.SPBoss
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        1,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.SPEntrance
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                2,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.SPEntrance,
+                                                    DungeonItemID.SPMapChest,
+                                                    DungeonItemID.SPPotRowPot
+                                                }, false,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new SmallKeyLayout(
+                                                        3,
+                                                        new List<DungeonItemID>
+                                                        {
+                                                            DungeonItemID.SPEntrance,
+                                                            DungeonItemID.SPMapChest,
+                                                            DungeonItemID.SPPotRowPot,
+                                                            DungeonItemID.SPTrench1Pot
+                                                        }, false,
+                                                        new List<IKeyLayout>
+                                                        {
+                                                            new SmallKeyLayout(
+                                                                5,
+                                                                new List<DungeonItemID>
+                                                                {
+                                                                    DungeonItemID.SPEntrance,
+                                                                    DungeonItemID.SPMapChest,
+                                                                    DungeonItemID.SPPotRowPot,
+                                                                    DungeonItemID.SPCompassChest,
+                                                                    DungeonItemID.SPTrench1Pot,
+                                                                    DungeonItemID.SPHookshotPot
+                                                                }, false,
+                                                                new List<IKeyLayout>
+                                                                {
+                                                                    new SmallKeyLayout(
+                                                                        6,
+                                                                        new List<DungeonItemID>
+                                                                        {
+                                                                            DungeonItemID.SPEntrance,
+                                                                            DungeonItemID.SPMapChest,
+                                                                            DungeonItemID.SPPotRowPot,
+                                                                            DungeonItemID.SPCompassChest,
+                                                                            DungeonItemID.SPFloodedRoomLeft,
+                                                                            DungeonItemID.SPFloodedRoomRight,
+                                                                            DungeonItemID.SPWaterfallRoom,
+                                                                            DungeonItemID.SPTrench1Pot,
+                                                                            DungeonItemID.SPHookshotPot,
+                                                                            DungeonItemID.SPWaterwayPot
+                                                                        }, false,
+                                                                        new List<IKeyLayout>
+                                                                        {
+                                                                            new EndKeyLayout()
+                                                                        }, dungeon)
+                                                                }, dungeon)
+                                                        }, dungeon)
+                                                },
+                                                dungeon)
+                                        }, dungeon)
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnGuaranteedBossItemsOffNoKeyShuffle])
                         };
                     }
                 case Locations.LocationID.SkullWoods:
@@ -846,25 +1639,19 @@ namespace OpenTracker.Models.KeyLayouts
                                     DungeonItemID.SWCompassChest,
                                     DungeonItemID.SWPinballRoom,
                                     DungeonItemID.SWBridgeRoom
-                                },
-                                false,
+                                }, false,
                                 new List<IKeyLayout>
                                 {
                                     new EndKeyLayout()
-                                },
-                                dungeon,
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]
-                                })),
+                                }, dungeon,
+                                RequirementDictionary.Instance[
+                                    RequirementType.KeyDropShuffleOffBigKeyShuffleOnlyItemPlacementAdvanced]),
                             new SmallKeyLayout(
                                 1,
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.SWPinballRoom
-                                },
-                                false,
+                                }, false,
                                 new List<IKeyLayout>
                                 {
                                     new SmallKeyLayout(
@@ -878,20 +1665,14 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.SWCompassChest,
                                             DungeonItemID.SWPinballRoom,
                                             DungeonItemID.SWBridgeRoom
-                                        },
-                                        true,
+                                        }, false,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
-                                        },
-                                        dungeon)
-                                },
-                                dungeon,
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.ItemPlacementBasic],
-                                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]
-                                })),
+                                        }, dungeon)
+                                }, dungeon,
+                                RequirementDictionary.Instance[
+                                    RequirementType.KeyDropShuffleOffBigKeyShuffleOnlyItemPlacementBasic]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -908,11 +1689,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 {
                                     new EndKeyLayout()
                                 },
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
-                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]
-                                })),
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffGuaranteedBossItemsOffSmallKeyShuffleOnly]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -928,58 +1705,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 {
                                     new EndKeyLayout()
                                 },
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn],
-                                    RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]
-                                })),
-                            new BigKeyLayout(
-                                new List<DungeonItemID>
-                                {
-                                    DungeonItemID.SWBigKeyChest,
-                                    DungeonItemID.SWMapChest,
-                                    DungeonItemID.SWBigChest,
-                                    DungeonItemID.SWPotPrison,
-                                    DungeonItemID.SWCompassChest,
-                                    DungeonItemID.SWBridgeRoom
-                                },
-                                new List<IKeyLayout>
-                                {
-                                    new SmallKeyLayout(
-                                        1,
-                                        new List<DungeonItemID>
-                                        {
-                                            DungeonItemID.SWPinballRoom
-                                        },
-                                        false,
-                                        new List<IKeyLayout>
-                                        {
-                                            new SmallKeyLayout(
-                                                3,
-                                                new List<DungeonItemID>
-                                                {
-                                                    DungeonItemID.SWBigKeyChest,
-                                                    DungeonItemID.SWMapChest,
-                                                    DungeonItemID.SWBigChest,
-                                                    DungeonItemID.SWPotPrison,
-                                                    DungeonItemID.SWCompassChest,
-                                                    DungeonItemID.SWPinballRoom,
-                                                    DungeonItemID.SWBridgeRoom
-                                                },
-                                                true,
-                                                new List<IKeyLayout>
-                                                {
-                                                    new EndKeyLayout()
-                                                },
-                                                dungeon)
-                                        },
-                                        dungeon)
-                                },
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.ItemPlacementBasic],
-                                    RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
-                                })),
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffGuaranteedBossItemsOnSmallKeyShuffleOnly]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -1004,23 +1730,22 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.SWCompassChest,
                                             DungeonItemID.SWPinballRoom,
                                             DungeonItemID.SWBridgeRoom
-                                        },
-                                        true,
+                                        }, true,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
-                                        },
-                                        dungeon)
+                                        }, dungeon)
                                 },
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                                    RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
-                                })),
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffNoKeyShuffleItemPlacementAdvanced]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
-                                    DungeonItemID.SWBoss
+                                    DungeonItemID.SWBigKeyChest,
+                                    DungeonItemID.SWMapChest,
+                                    DungeonItemID.SWBigChest,
+                                    DungeonItemID.SWPotPrison,
+                                    DungeonItemID.SWCompassChest,
+                                    DungeonItemID.SWBridgeRoom
                                 },
                                 new List<IKeyLayout>
                                 {
@@ -1029,8 +1754,57 @@ namespace OpenTracker.Models.KeyLayouts
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.SWPinballRoom
-                                        },
-                                        false,
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                3,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.SWBigKeyChest,
+                                                    DungeonItemID.SWMapChest,
+                                                    DungeonItemID.SWBigChest,
+                                                    DungeonItemID.SWPotPrison,
+                                                    DungeonItemID.SWCompassChest,
+                                                    DungeonItemID.SWPinballRoom,
+                                                    DungeonItemID.SWBridgeRoom
+                                                }, true,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new EndKeyLayout()
+                                                }, dungeon)
+                                        }, dungeon)
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffNoKeyShuffleItemPlacementBasic]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.SWBoss
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        3,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.SWBigKeyChest,
+                                            DungeonItemID.SWMapChest,
+                                            DungeonItemID.SWPotPrison,
+                                            DungeonItemID.SWCompassChest,
+                                            DungeonItemID.SWPinballRoom,
+                                            DungeonItemID.SWBridgeRoom
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new EndKeyLayout()
+                                        }, dungeon,
+                                        RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced]),
+                                    new SmallKeyLayout(
+                                        1,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.SWPinballRoom
+                                        }, false,
                                         new List<IKeyLayout>
                                         {
                                             new SmallKeyLayout(
@@ -1043,18 +1817,302 @@ namespace OpenTracker.Models.KeyLayouts
                                                     DungeonItemID.SWCompassChest,
                                                     DungeonItemID.SWPinballRoom,
                                                     DungeonItemID.SWBridgeRoom
-                                                },
-                                                false,
+                                                }, false,
                                                 new List<IKeyLayout>
                                                 {
                                                     new EndKeyLayout()
-                                                },
-                                                dungeon)
-                                        },
-                                        dungeon,
-                                        RequirementDictionary.Instance[RequirementType.ItemPlacementBasic]),
+                                                }, dungeon)
+                                        }, dungeon,
+                                        RequirementDictionary.Instance[RequirementType.ItemPlacementBasic])
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffGuaranteedBossItemsOffNoKeyShuffle]),
+                            new SmallKeyLayout(
+                                4,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.SWBigKeyChest,
+                                    DungeonItemID.SWMapChest,
+                                    DungeonItemID.SWBigChest,
+                                    DungeonItemID.SWPotPrison,
+                                    DungeonItemID.SWCompassChest,
+                                    DungeonItemID.SWPinballRoom,
+                                    DungeonItemID.SWBridgeRoom,
+                                    DungeonItemID.SWWestLobbyPot
+                                }, false,
+                                new List<IKeyLayout>
+                                {
                                     new SmallKeyLayout(
-                                        3,
+                                        5,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.SWBigKeyChest,
+                                            DungeonItemID.SWMapChest,
+                                            DungeonItemID.SWBigChest,
+                                            DungeonItemID.SWPotPrison,
+                                            DungeonItemID.SWCompassChest,
+                                            DungeonItemID.SWPinballRoom,
+                                            DungeonItemID.SWBridgeRoom,
+                                            DungeonItemID.SWWestLobbyPot,
+                                            DungeonItemID.SWSpikeCornerDrop
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new EndKeyLayout()
+                                        }, dungeon)
+                                }, dungeon,
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnlyItemPlacementAdvanced]),
+                            new SmallKeyLayout(
+                                1,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.SWPinballRoom
+                                }, false,
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        4,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.SWBigKeyChest,
+                                            DungeonItemID.SWMapChest,
+                                            DungeonItemID.SWBigChest,
+                                            DungeonItemID.SWPotPrison,
+                                            DungeonItemID.SWCompassChest,
+                                            DungeonItemID.SWPinballRoom,
+                                            DungeonItemID.SWBridgeRoom,
+                                            DungeonItemID.SWWestLobbyPot
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                5,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.SWBigKeyChest,
+                                                    DungeonItemID.SWMapChest,
+                                                    DungeonItemID.SWBigChest,
+                                                    DungeonItemID.SWPotPrison,
+                                                    DungeonItemID.SWCompassChest,
+                                                    DungeonItemID.SWPinballRoom,
+                                                    DungeonItemID.SWBridgeRoom,
+                                                    DungeonItemID.SWWestLobbyPot,
+                                                    DungeonItemID.SWSpikeCornerDrop
+                                                }, false,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new EndKeyLayout()
+                                                }, dungeon)
+                                        }, dungeon)
+                                }, dungeon,
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnlyItemPlacementBasic]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.SWBigKeyChest,
+                                    DungeonItemID.SWMapChest,
+                                    DungeonItemID.SWBigChest,
+                                    DungeonItemID.SWPotPrison,
+                                    DungeonItemID.SWCompassChest,
+                                    DungeonItemID.SWPinballRoom,
+                                    DungeonItemID.SWBridgeRoom,
+                                    DungeonItemID.SWBoss,
+                                    DungeonItemID.SWWestLobbyPot,
+                                    DungeonItemID.SWSpikeCornerDrop
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout()
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnGuaranteedBossItemsOffSmallKeyShuffleOnly]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.SWBigKeyChest,
+                                    DungeonItemID.SWMapChest,
+                                    DungeonItemID.SWBigChest,
+                                    DungeonItemID.SWPotPrison,
+                                    DungeonItemID.SWCompassChest,
+                                    DungeonItemID.SWPinballRoom,
+                                    DungeonItemID.SWBridgeRoom,
+                                    DungeonItemID.SWWestLobbyPot,
+                                    DungeonItemID.SWSpikeCornerDrop
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout()
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnGuaranteedBossItemsOnSmallKeyShuffleOnly]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.SWBigKeyChest,
+                                    DungeonItemID.SWMapChest,
+                                    DungeonItemID.SWBigChest,
+                                    DungeonItemID.SWPotPrison,
+                                    DungeonItemID.SWCompassChest,
+                                    DungeonItemID.SWPinballRoom,
+                                    DungeonItemID.SWBridgeRoom,
+                                    DungeonItemID.SWWestLobbyPot
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        4,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.SWBigKeyChest,
+                                            DungeonItemID.SWMapChest,
+                                            DungeonItemID.SWBigChest,
+                                            DungeonItemID.SWPotPrison,
+                                            DungeonItemID.SWCompassChest,
+                                            DungeonItemID.SWPinballRoom,
+                                            DungeonItemID.SWBridgeRoom,
+                                            DungeonItemID.SWWestLobbyPot
+                                        }, true,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                5,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.SWBigKeyChest,
+                                                    DungeonItemID.SWMapChest,
+                                                    DungeonItemID.SWBigChest,
+                                                    DungeonItemID.SWPotPrison,
+                                                    DungeonItemID.SWCompassChest,
+                                                    DungeonItemID.SWPinballRoom,
+                                                    DungeonItemID.SWBridgeRoom,
+                                                    DungeonItemID.SWWestLobbyPot,
+                                                    DungeonItemID.SWSpikeCornerDrop
+                                                }, true,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new EndKeyLayout()
+                                                }, dungeon)
+                                        }, dungeon)
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffleItemPlacementAdvanced]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.SWBigKeyChest,
+                                    DungeonItemID.SWMapChest,
+                                    DungeonItemID.SWBigChest,
+                                    DungeonItemID.SWPotPrison,
+                                    DungeonItemID.SWCompassChest,
+                                    DungeonItemID.SWBridgeRoom,
+                                    DungeonItemID.SWWestLobbyPot
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        1,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.SWPinballRoom
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                4,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.SWBigKeyChest,
+                                                    DungeonItemID.SWMapChest,
+                                                    DungeonItemID.SWBigChest,
+                                                    DungeonItemID.SWPotPrison,
+                                                    DungeonItemID.SWCompassChest,
+                                                    DungeonItemID.SWPinballRoom,
+                                                    DungeonItemID.SWBridgeRoom,
+                                                    DungeonItemID.SWWestLobbyPot
+                                                }, true,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new SmallKeyLayout(
+                                                        5,
+                                                        new List<DungeonItemID>
+                                                        {
+                                                            DungeonItemID.SWBigKeyChest,
+                                                            DungeonItemID.SWMapChest,
+                                                            DungeonItemID.SWBigChest,
+                                                            DungeonItemID.SWPotPrison,
+                                                            DungeonItemID.SWCompassChest,
+                                                            DungeonItemID.SWPinballRoom,
+                                                            DungeonItemID.SWBridgeRoom,
+                                                            DungeonItemID.SWWestLobbyPot,
+                                                            DungeonItemID.SWSpikeCornerDrop
+                                                        }, true,
+                                                        new List<IKeyLayout>
+                                                        {
+                                                            new EndKeyLayout()
+                                                        }, dungeon)
+                                                }, dungeon)
+                                        }, dungeon)
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffleItemPlacementBasic]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.SWSpikeCornerDrop
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        5,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.SWBigKeyChest,
+                                            DungeonItemID.SWMapChest,
+                                            DungeonItemID.SWBigChest,
+                                            DungeonItemID.SWPotPrison,
+                                            DungeonItemID.SWCompassChest,
+                                            DungeonItemID.SWPinballRoom,
+                                            DungeonItemID.SWBridgeRoom,
+                                            DungeonItemID.SWWestLobbyPot
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new EndKeyLayout()
+                                        }, dungeon,
+                                        RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced]),
+                                    new SmallKeyLayout(
+                                        1,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.SWPinballRoom
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                5,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.SWBigKeyChest,
+                                                    DungeonItemID.SWMapChest,
+                                                    DungeonItemID.SWBigChest,
+                                                    DungeonItemID.SWPotPrison,
+                                                    DungeonItemID.SWCompassChest,
+                                                    DungeonItemID.SWPinballRoom,
+                                                    DungeonItemID.SWBridgeRoom,
+                                                    DungeonItemID.SWWestLobbyPot
+                                                }, false,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new EndKeyLayout()
+                                                }, dungeon)
+                                        }, dungeon,
+                                        RequirementDictionary.Instance[RequirementType.ItemPlacementBasic])
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffle]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.SWBoss
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        4,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.SWBigKeyChest,
@@ -1062,21 +2120,74 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.SWPotPrison,
                                             DungeonItemID.SWCompassChest,
                                             DungeonItemID.SWPinballRoom,
-                                            DungeonItemID.SWBridgeRoom
-                                        },
-                                        false,
+                                            DungeonItemID.SWBridgeRoom,
+                                            DungeonItemID.SWWestLobbyPot
+                                        }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
-                                        },
-                                        dungeon,
-                                        RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced])
+                                            new SmallKeyLayout(
+                                                5,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.SWBigKeyChest,
+                                                    DungeonItemID.SWMapChest,
+                                                    DungeonItemID.SWPotPrison,
+                                                    DungeonItemID.SWCompassChest,
+                                                    DungeonItemID.SWPinballRoom,
+                                                    DungeonItemID.SWBridgeRoom,
+                                                    DungeonItemID.SWWestLobbyPot,
+                                                    DungeonItemID.SWSpikeCornerDrop
+                                                }, false,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new EndKeyLayout()
+                                                }, dungeon)
+                                        }, dungeon,
+                                        RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced]),
+                                    new SmallKeyLayout(
+                                        1,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.SWPinballRoom
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                4,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.SWBigKeyChest,
+                                                    DungeonItemID.SWMapChest,
+                                                    DungeonItemID.SWPotPrison,
+                                                    DungeonItemID.SWCompassChest,
+                                                    DungeonItemID.SWPinballRoom,
+                                                    DungeonItemID.SWBridgeRoom,
+                                                    DungeonItemID.SWWestLobbyPot
+                                                }, false,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new SmallKeyLayout(
+                                                        5,
+                                                        new List<DungeonItemID>
+                                                        {
+                                                            DungeonItemID.SWBigKeyChest,
+                                                            DungeonItemID.SWMapChest,
+                                                            DungeonItemID.SWPotPrison,
+                                                            DungeonItemID.SWCompassChest,
+                                                            DungeonItemID.SWPinballRoom,
+                                                            DungeonItemID.SWBridgeRoom,
+                                                            DungeonItemID.SWWestLobbyPot,
+                                                            DungeonItemID.SWSpikeCornerDrop
+                                                        }, false,
+                                                        new List<IKeyLayout>
+                                                        {
+                                                            new EndKeyLayout()
+                                                        }, dungeon)
+                                                }, dungeon)
+                                        }, dungeon,
+                                        RequirementDictionary.Instance[RequirementType.ItemPlacementBasic])
                                 },
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
-                                    RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
-                                }))
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnGuaranteedBossItemsOffNoKeyShuffle])
                         };
                     }
                 case Locations.LocationID.ThievesTown:
@@ -1095,14 +2206,12 @@ namespace OpenTracker.Models.KeyLayouts
                                     DungeonItemID.TTBigKeyChest,
                                     DungeonItemID.TTBlindsCell,
                                     DungeonItemID.TTBigChest
-                                },
-                                false,
+                                }, false,
                                 new List<IKeyLayout>
                                 {
                                     new EndKeyLayout()
-                                },
-                                dungeon,
-                                RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]),
+                                }, dungeon,
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -1125,16 +2234,88 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.TTBigKeyChest,
                                             DungeonItemID.TTBlindsCell,
                                             DungeonItemID.TTBigChest
-                                        },
-                                        true,
+                                        }, true,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
-                                        },
-                                        dungeon,
+                                        }, dungeon,
                                         RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff])
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
+                            new SmallKeyLayout(
+                                1,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.TTMapChest,
+                                    DungeonItemID.TTAmbushChest,
+                                    DungeonItemID.TTCompassChest,
+                                    DungeonItemID.TTBigKeyChest,
+                                    DungeonItemID.TTHallwayPot
+                                }, false,
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        3,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.TTMapChest,
+                                            DungeonItemID.TTAmbushChest,
+                                            DungeonItemID.TTCompassChest,
+                                            DungeonItemID.TTBigKeyChest,
+                                            DungeonItemID.TTBlindsCell,
+                                            DungeonItemID.TTHallwayPot,
+                                            DungeonItemID.TTSpikeSwitchPot
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new EndKeyLayout()
+                                        }, dungeon)
+                                }, dungeon,
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.TTMapChest,
+                                    DungeonItemID.TTAmbushChest,
+                                    DungeonItemID.TTCompassChest,
+                                    DungeonItemID.TTBigKeyChest
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout(
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
+                                    new SmallKeyLayout(
+                                        1,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.TTMapChest,
+                                            DungeonItemID.TTAmbushChest,
+                                            DungeonItemID.TTCompassChest,
+                                            DungeonItemID.TTBigKeyChest,
+                                            DungeonItemID.TTHallwayPot
+                                        }, true,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                3,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.TTMapChest,
+                                                    DungeonItemID.TTAmbushChest,
+                                                    DungeonItemID.TTCompassChest,
+                                                    DungeonItemID.TTBigKeyChest,
+                                                    DungeonItemID.TTBlindsCell,
+                                                    DungeonItemID.TTHallwayPot,
+                                                    DungeonItemID.TTSpikeSwitchPot
+                                                }, true,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new EndKeyLayout()
+                                                }, dungeon)
+                                        }, dungeon,
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff])
                         };
                     }
                 case Locations.LocationID.IcePalace:
@@ -1154,22 +2335,13 @@ namespace OpenTracker.Models.KeyLayouts
                                     DungeonItemID.IPFreezorChest,
                                     DungeonItemID.IPBigChest,
                                     DungeonItemID.IPIcedTRoom
-                                },
-                                false,
+                                }, false,
                                 new List<IKeyLayout>
                                 {
                                     new EndKeyLayout()
-                                },
-                                dungeon,
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    new AlternativeRequirement(new List<IRequirement>
-                                    {
-                                        RequirementDictionary.Instance[RequirementType.ItemPlacementBasic],
-                                        RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn]
-                                    }),
-                                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]
-                                })),
+                                }, dungeon,
+                                RequirementDictionary.Instance[
+                                    RequirementType.KeyDropShuffleOffBigKeyShuffleOnlyGuaranteedBossItemsOrItemPlacementBasic]),
                             new SmallKeyLayout(
                                 2,
                                 new List<DungeonItemID>
@@ -1182,19 +2354,13 @@ namespace OpenTracker.Models.KeyLayouts
                                     DungeonItemID.IPBigChest,
                                     DungeonItemID.IPIcedTRoom,
                                     DungeonItemID.IPBoss
-                                },
-                                true,
+                                }, false,
                                 new List<IKeyLayout>
                                 {
                                     new EndKeyLayout()
-                                },
-                                dungeon,
-                                new AggregateRequirement(new List<IRequirement>
-                                {
-                                    RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                                    RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
-                                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]
-                                })),
+                                }, dungeon,
+                                RequirementDictionary.Instance[
+                                    RequirementType.KeyDropShuffleOffGuaranteedBossItemsOffBigKeyShuffleOnlyItemPlacementAdvanced]),
                             new BigKeyLayout(
                                 new List<DungeonItemID>
                                 {
@@ -1220,22 +2386,13 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.IPFreezorChest,
                                             DungeonItemID.IPBigChest,
                                             DungeonItemID.IPIcedTRoom
-                                        },
-                                        true,
+                                        }, true,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
-                                        },
-                                        dungeon,
-                                        new AggregateRequirement(new List<IRequirement>
-                                        {
-                                            new AlternativeRequirement(new List<IRequirement>
-                                            {
-                                                RequirementDictionary.Instance[RequirementType.ItemPlacementBasic],
-                                                RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn]
-                                            }),
-                                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
-                                        })),
+                                        }, dungeon,
+                                        RequirementDictionary.Instance[
+                                            RequirementType.GuaranteedBossItemsOnOrItemPlacementBasicSmallKeyShuffleOff]),
                                     new SmallKeyLayout(
                                         2,
                                         new List<DungeonItemID>
@@ -1248,21 +2405,293 @@ namespace OpenTracker.Models.KeyLayouts
                                             DungeonItemID.IPBigChest,
                                             DungeonItemID.IPIcedTRoom,
                                             DungeonItemID.IPBoss
-                                        },
-                                        true,
+                                        }, true,
                                         new List<IKeyLayout>
                                         {
                                             new EndKeyLayout()
-                                        },
-                                        dungeon,
-                                        new AggregateRequirement(new List<IRequirement>
-                                        {
-                                            RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
-                                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
-                                        }))
+                                        }, dungeon,
+                                        RequirementDictionary.Instance[
+                                            RequirementType.GuaranteedBossItemsOffSmallKeyShuffleOffItemPlacementAdvanced])
                                 },
-                                RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff])
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
+                            new SmallKeyLayout(
+                                1,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.IPJellyDrop
+                                }, false,
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        2,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.IPCompassChest,
+                                            DungeonItemID.IPJellyDrop,
+                                            DungeonItemID.IPConveyerDrop
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                6,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.IPCompassChest,
+                                                    DungeonItemID.IPSpikeRoom,
+                                                    DungeonItemID.IPMapChest,
+                                                    DungeonItemID.IPBigKeyChest,
+                                                    DungeonItemID.IPFreezorChest,
+                                                    DungeonItemID.IPBigChest,
+                                                    DungeonItemID.IPIcedTRoom,
+                                                    DungeonItemID.IPJellyDrop,
+                                                    DungeonItemID.IPConveyerDrop,
+                                                    DungeonItemID.IPHammerBlockDrop,
+                                                    DungeonItemID.IPManyPotsPot
+                                                }, false,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new EndKeyLayout()
+                                                }, dungeon,
+                                                RequirementDictionary.Instance[
+                                                    RequirementType.GuaranteedBossItemsOnOrItemPlacementBasic]),
+                                            new SmallKeyLayout(
+                                                5,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.IPCompassChest,
+                                                    DungeonItemID.IPSpikeRoom,
+                                                    DungeonItemID.IPMapChest,
+                                                    DungeonItemID.IPBigKeyChest,
+                                                    DungeonItemID.IPFreezorChest,
+                                                    DungeonItemID.IPBigChest,
+                                                    DungeonItemID.IPIcedTRoom,
+                                                    DungeonItemID.IPJellyDrop,
+                                                    DungeonItemID.IPConveyerDrop,
+                                                    DungeonItemID.IPHammerBlockDrop,
+                                                    DungeonItemID.IPManyPotsPot
+                                                }, false,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new SmallKeyLayout(
+                                                        6,
+                                                        new List<DungeonItemID>
+                                                        {
+                                                            DungeonItemID.IPCompassChest,
+                                                            DungeonItemID.IPSpikeRoom,
+                                                            DungeonItemID.IPMapChest,
+                                                            DungeonItemID.IPBigKeyChest,
+                                                            DungeonItemID.IPFreezorChest,
+                                                            DungeonItemID.IPBigChest,
+                                                            DungeonItemID.IPIcedTRoom,
+                                                            DungeonItemID.IPBoss,
+                                                            DungeonItemID.IPJellyDrop,
+                                                            DungeonItemID.IPConveyerDrop,
+                                                            DungeonItemID.IPHammerBlockDrop,
+                                                            DungeonItemID.IPManyPotsPot
+                                                        }, false,
+                                                        new List<IKeyLayout>
+                                                        {
+                                                            new EndKeyLayout()
+                                                        }, dungeon)
+                                                }, dungeon,
+                                                RequirementDictionary.Instance[
+                                                    RequirementType.GuaranteedBossItemsOffItemPlacementAdvanced])
+                                        }, dungeon)
+                                }, dungeon,
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.IPCompassChest,
+                                    DungeonItemID.IPConveyerDrop
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        1,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.IPJellyDrop
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                2,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.IPCompassChest,
+                                                    DungeonItemID.IPJellyDrop,
+                                                    DungeonItemID.IPConveyerDrop
+                                                }, true,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new SmallKeyLayout(
+                                                        6,
+                                                        new List<DungeonItemID>
+                                                        {
+                                                            DungeonItemID.IPCompassChest,
+                                                            DungeonItemID.IPSpikeRoom,
+                                                            DungeonItemID.IPMapChest,
+                                                            DungeonItemID.IPBigKeyChest,
+                                                            DungeonItemID.IPFreezorChest,
+                                                            DungeonItemID.IPBigChest,
+                                                            DungeonItemID.IPIcedTRoom,
+                                                            DungeonItemID.IPJellyDrop,
+                                                            DungeonItemID.IPConveyerDrop,
+                                                            DungeonItemID.IPHammerBlockDrop,
+                                                            DungeonItemID.IPManyPotsPot
+                                                        }, true,
+                                                        new List<IKeyLayout>
+                                                        {
+                                                            new EndKeyLayout()
+                                                        }, dungeon,
+                                                        RequirementDictionary.Instance[
+                                                            RequirementType.GuaranteedBossItemsOnOrItemPlacementBasic]),
+                                                    new SmallKeyLayout(
+                                                        5,
+                                                        new List<DungeonItemID>
+                                                        {
+                                                            DungeonItemID.IPCompassChest,
+                                                            DungeonItemID.IPSpikeRoom,
+                                                            DungeonItemID.IPMapChest,
+                                                            DungeonItemID.IPBigKeyChest,
+                                                            DungeonItemID.IPFreezorChest,
+                                                            DungeonItemID.IPBigChest,
+                                                            DungeonItemID.IPIcedTRoom,
+                                                            DungeonItemID.IPJellyDrop,
+                                                            DungeonItemID.IPConveyerDrop,
+                                                            DungeonItemID.IPHammerBlockDrop,
+                                                            DungeonItemID.IPManyPotsPot
+                                                        }, true,
+                                                        new List<IKeyLayout>
+                                                        {
+                                                            new SmallKeyLayout(
+                                                                6,
+                                                                new List<DungeonItemID>
+                                                                {
+                                                                    DungeonItemID.IPCompassChest,
+                                                                    DungeonItemID.IPSpikeRoom,
+                                                                    DungeonItemID.IPMapChest,
+                                                                    DungeonItemID.IPBigKeyChest,
+                                                                    DungeonItemID.IPFreezorChest,
+                                                                    DungeonItemID.IPBigChest,
+                                                                    DungeonItemID.IPIcedTRoom,
+                                                                    DungeonItemID.IPBoss,
+                                                                    DungeonItemID.IPJellyDrop,
+                                                                    DungeonItemID.IPConveyerDrop,
+                                                                    DungeonItemID.IPHammerBlockDrop,
+                                                                    DungeonItemID.IPManyPotsPot
+                                                                }, true,
+                                                                new List<IKeyLayout>
+                                                                {
+                                                                    new EndKeyLayout()
+                                                                }, dungeon)
+                                                        }, dungeon,
+                                                        RequirementDictionary.Instance[
+                                                            RequirementType.GuaranteedBossItemsOffItemPlacementAdvanced])
+                                                }, dungeon)
+                                        }, dungeon)
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
+                            new BigKeyLayout(
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.IPSpikeRoom,
+                                    DungeonItemID.IPMapChest,
+                                    DungeonItemID.IPBigKeyChest,
+                                    DungeonItemID.IPFreezorChest,
+                                    DungeonItemID.IPIcedTRoom,
+                                    DungeonItemID.IPHammerBlockDrop,
+                                    DungeonItemID.IPManyPotsPot
+                                },
+                                new List<IKeyLayout>
+                                {
+                                    new SmallKeyLayout(
+                                        1,
+                                        new List<DungeonItemID>
+                                        {
+                                            DungeonItemID.IPJellyDrop
+                                        }, false,
+                                        new List<IKeyLayout>
+                                        {
+                                            new SmallKeyLayout(
+                                                2,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.IPCompassChest,
+                                                    DungeonItemID.IPJellyDrop,
+                                                    DungeonItemID.IPConveyerDrop
+                                                }, false,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new SmallKeyLayout(
+                                                        6,
+                                                        new List<DungeonItemID>
+                                                        {
+                                                            DungeonItemID.IPCompassChest,
+                                                            DungeonItemID.IPSpikeRoom,
+                                                            DungeonItemID.IPMapChest,
+                                                            DungeonItemID.IPBigKeyChest,
+                                                            DungeonItemID.IPFreezorChest,
+                                                            DungeonItemID.IPBigChest,
+                                                            DungeonItemID.IPIcedTRoom,
+                                                            DungeonItemID.IPJellyDrop,
+                                                            DungeonItemID.IPConveyerDrop,
+                                                            DungeonItemID.IPHammerBlockDrop,
+                                                            DungeonItemID.IPManyPotsPot
+                                                        }, true,
+                                                        new List<IKeyLayout>
+                                                        {
+                                                            new EndKeyLayout()
+                                                        }, dungeon,
+                                                        RequirementDictionary.Instance[
+                                                            RequirementType.GuaranteedBossItemsOnOrItemPlacementBasic]),
+                                                    new SmallKeyLayout(
+                                                        5,
+                                                        new List<DungeonItemID>
+                                                        {
+                                                            DungeonItemID.IPCompassChest,
+                                                            DungeonItemID.IPSpikeRoom,
+                                                            DungeonItemID.IPMapChest,
+                                                            DungeonItemID.IPBigKeyChest,
+                                                            DungeonItemID.IPFreezorChest,
+                                                            DungeonItemID.IPBigChest,
+                                                            DungeonItemID.IPIcedTRoom,
+                                                            DungeonItemID.IPJellyDrop,
+                                                            DungeonItemID.IPConveyerDrop,
+                                                            DungeonItemID.IPHammerBlockDrop,
+                                                            DungeonItemID.IPManyPotsPot
+                                                        }, true,
+                                                        new List<IKeyLayout>
+                                                        {
+                                                            new SmallKeyLayout(
+                                                                6,
+                                                                new List<DungeonItemID>
+                                                                {
+                                                                    DungeonItemID.IPCompassChest,
+                                                                    DungeonItemID.IPSpikeRoom,
+                                                                    DungeonItemID.IPMapChest,
+                                                                    DungeonItemID.IPBigKeyChest,
+                                                                    DungeonItemID.IPFreezorChest,
+                                                                    DungeonItemID.IPBigChest,
+                                                                    DungeonItemID.IPIcedTRoom,
+                                                                    DungeonItemID.IPBoss,
+                                                                    DungeonItemID.IPJellyDrop,
+                                                                    DungeonItemID.IPConveyerDrop,
+                                                                    DungeonItemID.IPHammerBlockDrop,
+                                                                    DungeonItemID.IPManyPotsPot
+                                                                }, true,
+                                                                new List<IKeyLayout>
+                                                                {
+                                                                    new EndKeyLayout()
+                                                                }, dungeon)
+                                                        }, dungeon,
+                                                        RequirementDictionary.Instance[
+                                                            RequirementType.GuaranteedBossItemsOffItemPlacementAdvanced])
+                                                }, dungeon)
+                                        }, dungeon)
+                                },
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff])
                         };
                     }
                 case Locations.LocationID.MiseryMire:

@@ -243,17 +243,26 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A boolean representing whether the result can occur.
         /// </returns>
-        public bool ValidateKeyLayout(int keysCollected, bool bigKeyCollected)
+        public (bool, bool) ValidateKeyLayout(int keysCollected, bool bigKeyCollected)
         {
+            bool possible = false;
+
             foreach (var keyLayout in _dungeon.KeyLayouts)
             {
-                if (keyLayout.CanBeTrue(this, keysCollected, bigKeyCollected))
+                var result = keyLayout.CanBeTrue(this, keysCollected, bigKeyCollected);
+
+                if (result.Item1)
                 {
-                    return true;
+                    if (result.Item2)
+                    {
+                        return result;
+                    }
+
+                    possible = true;
                 }
             }
 
-            return false;
+            return (possible, false);
         }
 
         /// <summary>
@@ -297,6 +306,7 @@ namespace OpenTracker.Models.Dungeons
             int inaccessibleBosses = 0;
             int inaccessibleItems = 0;
             bool sequenceBreak = sequenceBroken;
+            bool visible = false;
 
             foreach (var item in Items.Keys)
             {
@@ -313,6 +323,11 @@ namespace OpenTracker.Models.Dungeons
                         }
                         break;
                     case AccessibilityLevel.Inspect:
+                        {
+                            inaccessibleItems++;
+                            visible = true;
+                        }
+                        break;
                     case AccessibilityLevel.SequenceBreak:
                         {
                             sequenceBreak = true;
@@ -393,7 +408,9 @@ namespace OpenTracker.Models.Dungeons
 
             if (!Mode.Instance.SmallKeyShuffle)
             {
-                inaccessibleItems -= _dungeon.SmallKeys - smallKeyValue;
+                int smallKeys = Mode.Instance.KeyDropShuffle ?
+                    _dungeon.SmallKeys + _dungeon.SmallKeyDrops.Count : _dungeon.SmallKeys;
+                inaccessibleItems -= smallKeys - smallKeyValue;
             }
 
             if (inaccessibleItems <= 0)
@@ -409,14 +426,14 @@ namespace OpenTracker.Models.Dungeons
             }
             
             if (!Mode.Instance.MapShuffle)
-                {
-                    inaccessibleItems -= _dungeon.Map;
-                }
+            {
+                inaccessibleItems -= _dungeon.Map;
+            }
             
             if (!Mode.Instance.CompassShuffle)
-                {
-                    inaccessibleItems -= _dungeon.Compass;
-                }
+            {
+                inaccessibleItems -= _dungeon.Compass;
+            }
             
             if (Mode.Instance.GuaranteedBossItems)
             {
@@ -431,12 +448,18 @@ namespace OpenTracker.Models.Dungeons
 
             if (inaccessibleItems >= _dungeon.Sections[0].Available)
             {
+                if (visible)
+                {
+                    return (AccessibilityLevel.Inspect, 0, sequenceBroken);
+                }
+
                 return (AccessibilityLevel.None, 0, sequenceBroken);
             }
             else
             {
-                return (AccessibilityLevel.Partial, Math.Max(0,
-                    _dungeon.Sections[0].Available - inaccessibleItems), sequenceBroken);
+                return
+                    (AccessibilityLevel.Partial,
+                    _dungeon.Sections[0].Available - inaccessibleItems, sequenceBroken);
             }
         }
 

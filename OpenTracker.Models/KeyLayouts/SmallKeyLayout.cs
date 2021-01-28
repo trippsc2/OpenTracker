@@ -1,6 +1,7 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.Dungeons;
+using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements;
 using System;
 using System.Collections.Generic;
@@ -133,7 +134,10 @@ namespace OpenTracker.Models.KeyLayouts
                 inaccessible--;
             }
 
-            if (!ValidateMinimumKeyCount(_dungeon.SmallKeys, smallKeys, inaccessible))
+            int dungeonSmallKeys = Mode.Instance.KeyDropShuffle ?
+                _dungeon.SmallKeys + _dungeon.SmallKeyDrops.Count : _dungeon.SmallKeys;
+
+            if (!ValidateMinimumKeyCount(dungeonSmallKeys, smallKeys, inaccessible))
             {
                 return false;
             }
