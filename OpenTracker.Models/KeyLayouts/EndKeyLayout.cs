@@ -36,10 +36,9 @@ namespace OpenTracker.Models.KeyLayouts
         /// <returns>
         /// A boolean representing whether the key layout is possible.
         /// </returns>
-        public ValidationStatus CanBeTrue(IMutableDungeon dungeonData, int smallKeys, bool bigKey)
+        public bool CanBeTrue(IMutableDungeon dungeonData, DungeonState state)
         {
-            return _requirement.Met ? ValidationStatus.ValidWithoutSequenceBreak |
-                ValidationStatus.ValidWithSeqenceBreak : ValidationStatus.Invalid;
+            return _requirement.Met;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
+using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
@@ -10,5 +11,7 @@ namespace OpenTracker.Models.Requirements
     {
         bool Met { get; }
         AccessibilityLevel Accessibility { get; }
+
+        event EventHandler ChangePropagated;
     }
 }

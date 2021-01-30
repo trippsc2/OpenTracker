@@ -1,8 +1,6 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.DungeonItems;
+﻿using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.KeyDoors;
-using OpenTracker.Models.KeyLayouts;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.Dungeons
@@ -20,15 +18,11 @@ namespace OpenTracker.Models.Dungeons
         DungeonItemDictionary ItemDictionary { get; }
         KeyDoorDictionary KeyDoorDictionary { get; }
 
-        List<(KeyDoorID, bool)> GetAccessibleKeyDoors();
-        List<AccessibilityLevel> GetBossAccessibility();
+        void ApplyState(DungeonState state);
+        List<KeyDoorID> GetAccessibleKeyDoors(bool sequenceBreak = false);
         int GetAvailableSmallKeys(bool sequenceBreak = false);
-        (AccessibilityLevel, int, bool) GetItemAccessibility(
-            int smallKeyValue, bool bigKeyValue, bool sequenceBroken);
-        void SetBigKeyDoorState(bool unlocked);
-        void SetSmallKeyDoorState(List<KeyDoorID> unlockedDoors);
-        ValidationStatus ValidateKeyLayout(int keysCollected, bool bigKeyCollected);
+        DungeonResult GetDungeonResult(DungeonState state);
+        bool ValidateKeyLayout(DungeonState state);
         void Reset();
-        int GetAvailableBigKeys(bool sequenceBreak = false);
     }
 }

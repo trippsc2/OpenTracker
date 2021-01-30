@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.AutoTracking;
+using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
@@ -15,6 +16,7 @@ namespace OpenTracker.Models.Requirements
             Accessibility == AccessibilityLevel.Normal;
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler ChangePropagated;
 
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
@@ -25,8 +27,7 @@ namespace OpenTracker.Models.Requirements
                 if (_accessibility != value)
                 {
                     _accessibility = value;
-                    PropertyChanged?.Invoke(
-                        this, new PropertyChangedEventArgs(nameof(Accessibility)));
+                    OnPropertyChanged(nameof(Accessibility));
                 }
             }
         }
@@ -44,6 +45,18 @@ namespace OpenTracker.Models.Requirements
             AutoTracker.Instance.PropertyChanged += OnAutoTrackerChanged;
 
             UpdateAccessibility();
+        }
+
+        /// <summary>
+        /// Raises the PropertyChanged event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
+        /// </param>
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            ChangePropagated?.Invoke(this, new EventArgs());
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Settings;
+using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
@@ -15,6 +16,7 @@ namespace OpenTracker.Models.Requirements
             Accessibility != AccessibilityLevel.None;
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler ChangePropagated;
 
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
@@ -54,6 +56,7 @@ namespace OpenTracker.Models.Requirements
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            ChangePropagated?.Invoke(this, new EventArgs());
         }
 
         /// <summary>

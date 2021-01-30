@@ -1,10 +1,10 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Modes;
+using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
-
     public class MapShuffleRequirement : IRequirement
     {
         private readonly bool _mapShuffle;
@@ -13,6 +13,7 @@ namespace OpenTracker.Models.Requirements
             Accessibility == AccessibilityLevel.Normal;
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler ChangePropagated;
 
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
@@ -52,6 +53,7 @@ namespace OpenTracker.Models.Requirements
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            ChangePropagated?.Invoke(this, new EventArgs());
         }
 
         /// <summary>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OpenTracker.Models.KeyLayouts
+namespace OpenTracker.Models.Dungeons
 {
     [Flags]
     public enum ValidationStatus

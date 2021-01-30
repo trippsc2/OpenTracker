@@ -15,6 +15,9 @@ namespace OpenTracker.Models.Requirements
         public bool Met => 
             Accessibility != AccessibilityLevel.None;
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler ChangePropagated;
+
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
         {
@@ -28,8 +31,6 @@ namespace OpenTracker.Models.Requirements
                 }
             }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         /// Constructor
@@ -53,6 +54,7 @@ namespace OpenTracker.Models.Requirements
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            ChangePropagated?.Invoke(this, new EventArgs());
         }
 
         /// <summary>

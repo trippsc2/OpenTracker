@@ -17,6 +17,7 @@ namespace OpenTracker.Models.Requirements
             Accessibility != AccessibilityLevel.None;
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler ChangePropagated;
 
         private IRequirement _currentBossRequirement;
         private IRequirement CurrentBossRequirement
@@ -81,6 +82,7 @@ namespace OpenTracker.Models.Requirements
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            ChangePropagated?.Invoke(this, new EventArgs());
         }
 
         /// <summary>
