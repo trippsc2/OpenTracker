@@ -67,6 +67,7 @@
         KeyDropShuffleOnBigKeyShuffleOnly,
         KeyDropShuffleOnBigKeyShuffleOnlyItemPlacementAdvanced,
         KeyDropShuffleOnBigKeyShuffleOnlyItemPlacementBasic,
+        KeyDropShuffleOnSmallKeyShuffleOff,
         KeyDropShuffleOnSmallKeyShuffleOnly,
         KeyDropShuffleOnNoKeyShuffle,
         KeyDropShuffleOnNoKeyShuffleItemPlacementAdvanced,

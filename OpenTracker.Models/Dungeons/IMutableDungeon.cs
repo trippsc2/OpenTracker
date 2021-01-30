@@ -2,6 +2,7 @@
 using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.KeyDoors;
+using OpenTracker.Models.KeyLayouts;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.Dungeons
@@ -26,7 +27,7 @@ namespace OpenTracker.Models.Dungeons
             int smallKeyValue, bool bigKeyValue, bool sequenceBroken);
         void SetBigKeyDoorState(bool unlocked);
         void SetSmallKeyDoorState(List<KeyDoorID> unlockedDoors);
-        bool ValidateKeyLayout(int keysCollected, bool bigKeyCollected);
+        ValidationStatus ValidateKeyLayout(int keysCollected, bool bigKeyCollected);
         void Reset();
         int GetAvailableBigKeys(bool sequenceBreak = false);
     }

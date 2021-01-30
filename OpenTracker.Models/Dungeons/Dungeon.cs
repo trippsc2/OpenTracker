@@ -516,16 +516,25 @@ namespace OpenTracker.Models.Dungeons
 
             dungeonData.SetBigKeyDoorState(bigKey);
 
-            if (!dungeonData.ValidateKeyLayout(item.Item2, item.Item3))
+            var validateKeyLayoutStatus = dungeonData.ValidateKeyLayout(item.Item2, item.Item3);
+            bool sequenceBreak = item.Item4;
+
+            if (validateKeyLayoutStatus == ValidationStatus.Invalid || 
+                (sequenceBreak && (validateKeyLayoutStatus & ValidationStatus.ValidWithSeqenceBreak) == 0))
             {
                 DungeonDataQueue.Enqueue(dungeonData);
                 return;
             }
 
+            if ((validateKeyLayoutStatus & ValidationStatus.ValidWithoutSequenceBreak) == 0)
+            {
+                sequenceBreak = true;
+            }
+
             List<AccessibilityLevel> bossAccessibility = dungeonData.GetBossAccessibility();
 
             var accessibility =
-                dungeonData.GetItemAccessibility(item.Item2, item.Item3, item.Item4);
+                dungeonData.GetItemAccessibility(item.Item2, item.Item3, sequenceBreak);
 
             resultQueue.Add(
                 (bossAccessibility, accessibility.Item1, accessibility.Item2, accessibility.Item3));

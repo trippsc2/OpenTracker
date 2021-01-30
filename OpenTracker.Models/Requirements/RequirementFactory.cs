@@ -968,6 +968,14 @@ namespace OpenTracker.Models.Requirements
                             RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]
                         });
                     }
+                case RequirementType.KeyDropShuffleOnSmallKeyShuffleOff:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
+                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
+                        });
+                    }
                 case RequirementType.KeyDropShuffleOnSmallKeyShuffleOnly:
                     {
                         return new AggregateRequirement(new List<IRequirement>

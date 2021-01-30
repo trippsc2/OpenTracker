@@ -52,7 +52,7 @@ namespace OpenTracker.Models.KeyLayouts
         /// <returns>
         /// A boolean representing whether the key layout is possible.
         /// </returns>
-        public bool CanBeTrue(IMutableDungeon dungeonData, int smallKeys, bool bigKey)
+        public ValidationStatus CanBeTrue(IMutableDungeon dungeonData, int smallKeys, bool bigKey)
         {
             if (dungeonData == null)
             {
@@ -61,43 +61,91 @@ namespace OpenTracker.Models.KeyLayouts
 
             if (!_requirement.Met)
             {
-                return false;
+                return ValidationStatus.Invalid;
             }
 
-            int accessible = 0;
+            int normal = 0;
+            int sequenceBreak = 0;
             int inaccessible = 0;
 
             foreach (var item in _bigKeyLocations)
             {
-                if (dungeonData.ItemDictionary[item].Accessibility > AccessibilityLevel.Partial)
+                switch (dungeonData.ItemDictionary[item].Accessibility)
                 {
-                    accessible++;
-                }
-                else
-                {
-                    inaccessible++;
+                    case AccessibilityLevel.SequenceBreak:
+                        {
+                            sequenceBreak++;
+                        }
+                        break;
+                    case AccessibilityLevel.Normal:
+                        {
+                            normal++;
+                        }
+                        break;
+                    default:
+                        {
+                            inaccessible++;
+                        }
+                        break;
                 }
             }
 
-            if (bigKey && accessible == 0)
+            bool validWithoutSequenceBreak = true;
+            bool validWithSequenceBreak = true;
+
+            switch (bigKey)
             {
-                return false;
+                case true:
+                    {
+                        if (normal == 0)
+                        {
+                            if (sequenceBreak == 0)
+                            {
+                                return ValidationStatus.Invalid;
+                            }
+                            else
+                            {
+                                validWithoutSequenceBreak = false;
+                            }
+                        }
+                    }
+                    break;
+                case false:
+                    {
+                        if (inaccessible == 0)
+                        {
+                            if (sequenceBreak == 0)
+                            {
+                                return ValidationStatus.Invalid;
+                            }
+                            else
+                            {
+                                validWithSequenceBreak = false;
+                            }
+                        }
+                    }
+                    break;
             }
 
-            if (!bigKey && inaccessible == 0)
-            {
-                return false;
-            }
+            ValidationStatus maximumResult =
+                (validWithSequenceBreak ? ValidationStatus.ValidWithSeqenceBreak :
+                ValidationStatus.Invalid) | (validWithoutSequenceBreak ?
+                ValidationStatus.ValidWithoutSequenceBreak : ValidationStatus.Invalid);
+
+            ValidationStatus result = ValidationStatus.Invalid;
 
             foreach (var child in _children)
             {
-                if (child.CanBeTrue(dungeonData, smallKeys, bigKey))
+                var childResult = child.CanBeTrue(dungeonData, smallKeys, bigKey);
+                result |= childResult;
+
+                if ((maximumResult & result) == maximumResult)
                 {
-                    return true;
+                    return maximumResult;
                 }
             }
 
-            return false;
+            return result;
         }
     }
 }

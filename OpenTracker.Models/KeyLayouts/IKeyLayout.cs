@@ -7,6 +7,6 @@ namespace OpenTracker.Models.KeyLayouts
     /// </summary>
     public interface IKeyLayout
     {
-        bool CanBeTrue(IMutableDungeon dungeonData, int smallKeys, bool bigKey);
+        ValidationStatus CanBeTrue(IMutableDungeon dungeonData, int smallKeys, bool bigKey);
     }
 }

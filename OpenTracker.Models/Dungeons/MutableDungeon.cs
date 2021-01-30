@@ -2,6 +2,7 @@
 using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.KeyDoors;
+using OpenTracker.Models.KeyLayouts;
 using OpenTracker.Models.Modes;
 using System;
 using System.Collections.Generic;
@@ -243,26 +244,22 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A boolean representing whether the result can occur.
         /// </returns>
-        public (bool, bool) ValidateKeyLayout(int keysCollected, bool bigKeyCollected)
+        public ValidationStatus ValidateKeyLayout(int keysCollected, bool bigKeyCollected)
         {
-            bool possible = false;
+            ValidationStatus result = ValidationStatus.Invalid;
 
             foreach (var keyLayout in _dungeon.KeyLayouts)
             {
-                var result = keyLayout.CanBeTrue(this, keysCollected, bigKeyCollected);
+                result |= keyLayout.CanBeTrue(this, keysCollected, bigKeyCollected);
 
-                if (result.Item1)
+                if (result == (ValidationStatus.ValidWithSeqenceBreak |
+                    ValidationStatus.ValidWithoutSequenceBreak))
                 {
-                    if (result.Item2)
-                    {
-                        return result;
-                    }
-
-                    possible = true;
+                    return result;
                 }
             }
 
-            return (possible, false);
+            return result;
         }
 
         /// <summary>
@@ -375,16 +372,35 @@ namespace OpenTracker.Models.Dungeons
                 }
             }
 
-            if (inaccessibleItems <= 0)
+            int minimumInaccessible = Mode.Instance.GuaranteedBossItems ? inaccessibleBosses : 0;
+
+            if (inaccessibleItems <= minimumInaccessible)
             {
-                if (sequenceBreak)
+                if (minimumInaccessible == 0)
                 {
-                    return
-                        (AccessibilityLevel.SequenceBreak, _dungeon.Sections[0].Available, sequenceBroken);
+                    if (sequenceBreak)
+                    {
+                        return
+                            (AccessibilityLevel.SequenceBreak, _dungeon.Sections[0].Available, sequenceBroken);
+                    }
+                    
+                    return (AccessibilityLevel.Normal, _dungeon.Sections[0].Available, sequenceBroken);
+                }
+
+                if (minimumInaccessible >= _dungeon.Sections[0].Available)
+                {
+                    if (visible)
+                    {
+                        return (AccessibilityLevel.Inspect, 0, sequenceBroken);
+                    }
+
+                    return (AccessibilityLevel.None, 0, sequenceBroken);
                 }
                 else
                 {
-                    return (AccessibilityLevel.Normal, _dungeon.Sections[0].Available, sequenceBroken);
+                    return
+                        (AccessibilityLevel.Partial,
+                        _dungeon.Sections[0].Available - minimumInaccessible, sequenceBroken);
                 }
             }
 
@@ -393,16 +409,33 @@ namespace OpenTracker.Models.Dungeons
                 inaccessibleItems -= _dungeon.BigKey;
             }
 
-            if (inaccessibleItems <= 0)
+            if (inaccessibleItems <= minimumInaccessible)
             {
-                if (sequenceBreak)
+                if (minimumInaccessible == 0)
                 {
-                    return
-                        (AccessibilityLevel.SequenceBreak, _dungeon.Sections[0].Available, sequenceBroken);
+                    if (sequenceBreak)
+                    {
+                        return
+                            (AccessibilityLevel.SequenceBreak, _dungeon.Sections[0].Available, sequenceBroken);
+                    }
+
+                    return (AccessibilityLevel.Normal, _dungeon.Sections[0].Available, sequenceBroken);
+                }
+
+                if (minimumInaccessible >= _dungeon.Sections[0].Available)
+                {
+                    if (visible)
+                    {
+                        return (AccessibilityLevel.Inspect, 0, sequenceBroken);
+                    }
+
+                    return (AccessibilityLevel.None, 0, sequenceBroken);
                 }
                 else
                 {
-                    return (AccessibilityLevel.Normal, _dungeon.Sections[0].Available, sequenceBroken);
+                    return
+                        (AccessibilityLevel.Partial,
+                        _dungeon.Sections[0].Available - minimumInaccessible, sequenceBroken);
                 }
             }
 
@@ -413,18 +446,36 @@ namespace OpenTracker.Models.Dungeons
                 inaccessibleItems -= smallKeys - smallKeyValue;
             }
 
-            if (inaccessibleItems <= 0)
+            if (inaccessibleItems <= minimumInaccessible)
             {
-                if (sequenceBreak)
+                if (minimumInaccessible == 0)
                 {
-                    return (AccessibilityLevel.SequenceBreak, _dungeon.Sections[0].Available, sequenceBroken);
+                    if (sequenceBreak)
+                    {
+                        return
+                            (AccessibilityLevel.SequenceBreak, _dungeon.Sections[0].Available, sequenceBroken);
+                    }
+
+                    return (AccessibilityLevel.Normal, _dungeon.Sections[0].Available, sequenceBroken);
+                }
+
+                if (minimumInaccessible >= _dungeon.Sections[0].Available)
+                {
+                    if (visible)
+                    {
+                        return (AccessibilityLevel.Inspect, 0, sequenceBroken);
+                    }
+
+                    return (AccessibilityLevel.None, 0, sequenceBroken);
                 }
                 else
                 {
-                    return (AccessibilityLevel.Normal, _dungeon.Sections[0].Available, sequenceBroken);
+                    return
+                        (AccessibilityLevel.Partial,
+                        _dungeon.Sections[0].Available - minimumInaccessible, sequenceBroken);
                 }
             }
-            
+
             if (!Mode.Instance.MapShuffle)
             {
                 inaccessibleItems -= _dungeon.Map;
@@ -435,10 +486,7 @@ namespace OpenTracker.Models.Dungeons
                 inaccessibleItems -= _dungeon.Compass;
             }
             
-            if (Mode.Instance.GuaranteedBossItems)
-            {
-                inaccessibleItems = Math.Max(inaccessibleItems, inaccessibleBosses);
-            }
+            inaccessibleItems = Math.Max(inaccessibleItems, minimumInaccessible);
 
             if (inaccessibleItems <= 0)
             {
@@ -455,12 +503,10 @@ namespace OpenTracker.Models.Dungeons
 
                 return (AccessibilityLevel.None, 0, sequenceBroken);
             }
-            else
-            {
-                return
-                    (AccessibilityLevel.Partial,
-                    _dungeon.Sections[0].Available - inaccessibleItems, sequenceBroken);
-            }
+            
+            return
+                (AccessibilityLevel.Partial,
+                _dungeon.Sections[0].Available - inaccessibleItems, sequenceBroken);
         }
 
         /// <summary>

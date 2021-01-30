@@ -253,7 +253,34 @@ namespace OpenTracker.Models.KeyLayouts
                     {
                         return new List<IKeyLayout>
                         {
-                            new EndKeyLayout()
+                            new EndKeyLayout(
+                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
+                            new SmallKeyLayout(
+                                2,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.ATRoom03,
+                                    DungeonItemID.ATDarkMaze
+                                }, false,
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout()
+                                }, dungeon,
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffSmallKeyShuffleOff]),
+                            new SmallKeyLayout(
+                                4,
+                                new List<DungeonItemID>
+                                {
+                                    DungeonItemID.ATRoom03,
+                                    DungeonItemID.ATDarkMaze,
+                                    DungeonItemID.ATDarkArcherDrop,
+                                    DungeonItemID.ATCircleOfPotsDrop
+                                }, false,
+                                new List<IKeyLayout>
+                                {
+                                    new EndKeyLayout()
+                                }, dungeon,
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnSmallKeyShuffleOff])
                         };
                     }
                 case Locations.LocationID.EasternPalace:
@@ -335,20 +362,34 @@ namespace OpenTracker.Models.KeyLayouts
                                 new List<IKeyLayout>
                                 {
                                     new SmallKeyLayout(
-                                        2,
+                                        1,
                                         new List<DungeonItemID>
                                         {
                                             DungeonItemID.EPCannonballChest,
                                             DungeonItemID.EPMapChest,
                                             DungeonItemID.EPCompassChest,
                                             DungeonItemID.EPDarkSquarePot,
-                                            DungeonItemID.EPBigKeyChest,
                                             DungeonItemID.EPBigChest,
                                             DungeonItemID.EPDarkEyegoreDrop
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
+                                            new SmallKeyLayout(
+                                                2,
+                                                new List<DungeonItemID>
+                                                {
+                                                    DungeonItemID.EPCannonballChest,
+                                                    DungeonItemID.EPMapChest,
+                                                    DungeonItemID.EPCompassChest,
+                                                    DungeonItemID.EPBigChest,
+                                                    DungeonItemID.EPBigKeyChest,
+                                                    DungeonItemID.EPDarkSquarePot,
+                                                    DungeonItemID.EPDarkEyegoreDrop
+                                                }, true,
+                                                new List<IKeyLayout>
+                                                {
+                                                    new EndKeyLayout()
+                                                }, dungeon),
                                         }, dungeon)
                                 },
                                 RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffle]),

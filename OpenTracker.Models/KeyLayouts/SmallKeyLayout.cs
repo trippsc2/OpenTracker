@@ -70,9 +70,13 @@ namespace OpenTracker.Models.KeyLayouts
         /// <returns>
         /// A boolean representing whether the key layout is possible.
         /// </returns>
-        private bool ValidateMinimumKeyCount(int dungeonKeys, int collectedKeys, int inaccessible)
+        private ValidationStatus ValidateMinimumKeyCount(int collectedKeys, int inaccessible, int sequenceBreak)
         {
-            return dungeonKeys - collectedKeys >= inaccessible + _count - _smallKeyLocations.Count;
+            bool withSequenceBreak = collectedKeys >= Math.Max(0, _count - inaccessible);
+            bool withoutSequenceBreak = collectedKeys >= Math.Max(0, _count - inaccessible - sequenceBreak);
+
+            return (withSequenceBreak ? ValidationStatus.ValidWithSeqenceBreak : ValidationStatus.Invalid) |
+                (withoutSequenceBreak ? ValidationStatus.ValidWithoutSequenceBreak : ValidationStatus.Invalid);
         }
 
         /// <summary>
@@ -87,9 +91,15 @@ namespace OpenTracker.Models.KeyLayouts
         /// <returns>
         /// A boolean representing whether the key layout is possible.
         /// </returns>
-        private bool ValidateMaximumKeyCount(int collectedKeys, int inaccessible)
+        private ValidationStatus ValidateMaximumKeyCount(int dungeonKeys, int collectedKeys, int inaccessible, int sequenceBreak)
         {
-            return collectedKeys >= _count - inaccessible;
+            bool withSequenceBreak = collectedKeys <= dungeonKeys - Math.Max(0, inaccessible -
+                (_smallKeyLocations.Count - _count));
+            bool withoutSequenceBreak = collectedKeys <= dungeonKeys - Math.Max(0, inaccessible + sequenceBreak -
+                (_smallKeyLocations.Count - _count));
+
+            return (withSequenceBreak ? ValidationStatus.ValidWithSeqenceBreak : ValidationStatus.Invalid) |
+                (withoutSequenceBreak ? ValidationStatus.ValidWithoutSequenceBreak : ValidationStatus.Invalid);
         }
 
         /// <summary>
@@ -107,7 +117,7 @@ namespace OpenTracker.Models.KeyLayouts
         /// <returns>
         /// A boolean representing whether the key layout is possible.
         /// </returns>
-        public bool CanBeTrue(IMutableDungeon dungeonData, int smallKeys, bool bigKey)
+        public ValidationStatus CanBeTrue(IMutableDungeon dungeonData, int smallKeys, bool bigKey)
         {
             if (dungeonData == null)
             {
@@ -116,16 +126,28 @@ namespace OpenTracker.Models.KeyLayouts
 
             if (!_requirement.Met)
             {
-                return false;
+                return ValidationStatus.Invalid;
             }
 
+            int sequenceBreak = 0;
             int inaccessible = 0;
 
             foreach (var item in _smallKeyLocations)
             {
-                if (dungeonData.ItemDictionary[item].Accessibility <= AccessibilityLevel.Partial)
+                switch (dungeonData.ItemDictionary[item].Accessibility)
                 {
-                    inaccessible++;
+                    case AccessibilityLevel.SequenceBreak:
+                        {
+                            sequenceBreak++;
+                        }
+                        break;
+                    case AccessibilityLevel.Normal:
+                        break;
+                    default:
+                        {
+                            inaccessible++;
+                        }
+                        break;
                 }
             }
 
@@ -137,25 +159,41 @@ namespace OpenTracker.Models.KeyLayouts
             int dungeonSmallKeys = Mode.Instance.KeyDropShuffle ?
                 _dungeon.SmallKeys + _dungeon.SmallKeyDrops.Count : _dungeon.SmallKeys;
 
-            if (!ValidateMinimumKeyCount(dungeonSmallKeys, smallKeys, inaccessible))
+            ValidationStatus maximumResult = ValidationStatus.ValidWithSeqenceBreak |
+                ValidationStatus.ValidWithoutSequenceBreak;
+
+            var minimumKeyCountStatus = ValidateMinimumKeyCount(smallKeys, inaccessible, sequenceBreak);
+
+            if (minimumKeyCountStatus == ValidationStatus.Invalid)
             {
-                return false;
+                return ValidationStatus.Invalid;
             }
 
-            if (!ValidateMaximumKeyCount(smallKeys, inaccessible))
+            maximumResult &= minimumKeyCountStatus;
+
+            var maximumKeyCountStatus = ValidateMaximumKeyCount(dungeonSmallKeys, smallKeys, inaccessible, sequenceBreak);
+
+            if (maximumKeyCountStatus == ValidationStatus.Invalid)
             {
-                return false;
+                return ValidationStatus.Invalid;
             }
+
+            maximumResult &= maximumKeyCountStatus;
+
+            ValidationStatus result = ValidationStatus.Invalid;
 
             foreach (var child in _children)
             {
-                if (child.CanBeTrue(dungeonData, smallKeys, bigKey))
+                var childResult = child.CanBeTrue(dungeonData, smallKeys, bigKey);
+                result |= childResult;
+
+                if ((maximumResult & result) == maximumResult)
                 {
-                    return true;
+                    return maximumResult;
                 }
             }
 
-            return false;
+            return result;
         }
     }
 }
