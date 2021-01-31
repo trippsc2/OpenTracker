@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
+using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.DungeonItems
@@ -6,7 +7,7 @@ namespace OpenTracker.Models.DungeonItems
     /// <summary>
     /// This is the interface for a dungeon item.
     /// </summary>
-    public interface IDungeonItem : INotifyPropertyChanged
+    public interface IDungeonItem : INotifyPropertyChanged, IDisposable
     {
         AccessibilityLevel Accessibility { get; }
     }

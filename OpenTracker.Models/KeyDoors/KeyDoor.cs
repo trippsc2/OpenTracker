@@ -122,5 +122,13 @@ namespace OpenTracker.Models.KeyDoors
         {
             OnPropertyChanged(nameof(Accessibility));
         }
+
+        public void Dispose()
+        {
+            if (_node != null)
+            {
+                _node.PropertyChanged -= OnNodeChanged;
+            }
+        }
     }
 }

@@ -45,8 +45,8 @@ namespace OpenTracker.Models.Dungeons
         public List<IKeyLayout> KeyLayouts { get; }
         public List<DungeonNodeID> Nodes { get; }
         public List<IRequirementNode> EntryNodes { get; }
-        public ConcurrentQueue<IMutableDungeon> DungeonDataQueue { get; } =
-            new ConcurrentQueue<IMutableDungeon>();
+        public ConcurrentQueue<object> Queue { get; } =
+            new ConcurrentQueue<object>();
 
         /// <summary>
         /// Constructor
@@ -129,11 +129,6 @@ namespace OpenTracker.Models.Dungeons
             KeyLayouts = KeyLayoutFactory.GetDungeonKeyLayouts(this);
             EntryNodes = entryNodes ?? throw new ArgumentNullException(nameof(entryNodes));
 
-            for (int i = 0; i < Environment.ProcessorCount - 1; i++)
-            {
-                CreateDungeonData();
-            }
-
             foreach (var section in Sections)
             {
                 section.PropertyChanged += OnSectionChanged;
@@ -153,6 +148,11 @@ namespace OpenTracker.Models.Dungeons
             if (BigKeyItem != null)
             {
                 BigKeyItem.PropertyChanged += OnItemChanged;
+            }
+
+            for (int i = 0; i < Environment.ProcessorCount - 1; i++)
+            {
+                Queue.Enqueue(new object());
             }
 
             Mode.Instance.PropertyChanged += OnModeChanged;
@@ -250,22 +250,12 @@ namespace OpenTracker.Models.Dungeons
         }
 
         /// <summary>
-        /// Creates an instance of the mutable dungeon data.
-        /// </summary>
-        private void CreateDungeonData()
-        {
-            var dungeonData = MutableDungeonFactory.GetMutableDungeon(this);
-            DungeonDataQueue.Enqueue(dungeonData);
-            FinishMutableDungeonCreation(dungeonData);
-        }
-
-        /// <summary>
         /// Subscribes to PropertyChanged event on each requirement.
         /// </summary>
         private void SubscribeToConnectionRequirements()
         {
             var requirmentSubscriptions = new List<IRequirement>();
-            DungeonDataQueue.TryPeek(out var dungeonData);
+            var dungeonData = GetDungeonData(true);
 
             foreach (var node in Nodes)
             {
@@ -291,13 +281,16 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// The next available DungeonData class.
         /// </returns>
-        private IMutableDungeon GetDungeonData()
+        private IMutableDungeon GetDungeonData(bool force = false)
         {
             while (true)
             {
-                if (DungeonDataQueue.TryDequeue(out IMutableDungeon result))
+                if (Queue.TryDequeue(out var _) || force)
                 {
-                    return result;
+                    var dungeonData = MutableDungeonFactory.GetMutableDungeon(this);
+                    FinishMutableDungeonCreation(dungeonData);
+
+                    return dungeonData;
                 }
             }
         }
@@ -451,7 +444,7 @@ namespace OpenTracker.Models.Dungeons
             if (availableKeys == 0)
             {
                 finalQueue.Add(state);
-                DungeonDataQueue.Enqueue(dungeonData);
+                dungeonData.Dispose();
                 return;
             }
 
@@ -460,7 +453,7 @@ namespace OpenTracker.Models.Dungeons
             if (accessibleKeyDoors.Count == 0)
             {
                 finalQueue.Add(state);
-                DungeonDataQueue.Enqueue(dungeonData);
+                dungeonData.Dispose();
                 return;
             }
 
@@ -475,7 +468,7 @@ namespace OpenTracker.Models.Dungeons
                         state.SequenceBreak));
             }
 
-            DungeonDataQueue.Enqueue(dungeonData);
+            dungeonData.Dispose();
         }
 
         /// <summary>
@@ -493,7 +486,7 @@ namespace OpenTracker.Models.Dungeons
 
             if (!dungeonData.ValidateKeyLayout(state))
             {
-                DungeonDataQueue.Enqueue(dungeonData);
+                dungeonData.Dispose();
                 return;
             }
 
@@ -508,7 +501,7 @@ namespace OpenTracker.Models.Dungeons
                 inLogicQueue.Add(result);
             }
 
-            DungeonDataQueue.Enqueue(dungeonData);
+            dungeonData.Dispose();
         }
 
         /// <summary>

@@ -2,7 +2,6 @@
 using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.KeyDoors;
-using OpenTracker.Models.KeyLayouts;
 using OpenTracker.Models.Modes;
 using System;
 using System.Collections.Generic;
@@ -539,6 +538,49 @@ namespace OpenTracker.Models.Dungeons
             {
                 door.Unlocked = false;
             }
+        }
+
+        public void Dispose()
+        {
+            foreach (var smallKeyDoor in SmallKeyDoors.Values)
+            {
+                smallKeyDoor.Dispose();
+            }
+
+            foreach (var bigKeyDoor in BigKeyDoors.Values)
+            {
+                bigKeyDoor.Dispose();
+            }
+
+            foreach (var item in Items.Values)
+            {
+                item.Dispose();
+            }
+
+            foreach (var boss in BossItems)
+            {
+                boss.Dispose();
+            }
+
+            foreach (var smallKeyDrop in SmallKeyDrops.Values)
+            {
+                smallKeyDrop.Dispose();
+            }
+
+            foreach (var bigKeyDrop in BigKeyDrops.Values)
+            {
+                bigKeyDrop.Dispose();
+            }
+
+            foreach (var node in Nodes.Values)
+            {
+                if (node is IDisposable disposableNode)
+                {
+                    disposableNode.Dispose();
+                }
+            }
+
+            _dungeon.Queue.Enqueue(new object());
         }
     }
 }

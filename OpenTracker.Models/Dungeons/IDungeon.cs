@@ -26,7 +26,7 @@ namespace OpenTracker.Models.Dungeons
         int SmallKeys { get; }
         List<KeyDoorID> SmallKeyDoors { get; }
         List<KeyDoorID> BigKeyDoors { get; }
-        ConcurrentQueue<IMutableDungeon> DungeonDataQueue { get; }
+        ConcurrentQueue<object> Queue { get; }
         List<DungeonNodeID> Nodes { get; }
         IItem MapItem { get; }
         IItem CompassItem { get; }
