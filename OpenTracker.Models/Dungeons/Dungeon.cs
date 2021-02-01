@@ -9,6 +9,7 @@ using OpenTracker.Models.Modes;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Sections;
+using OpenTracker.Models.TaskSchedulers;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -24,6 +25,9 @@ namespace OpenTracker.Models.Dungeons
     /// </summary>
     public class Dungeon : Location, IDungeon
     {
+        private static readonly ConstrainedTaskScheduler _taskScheduler =
+            new ConstrainedTaskScheduler(Math.Max(1, Environment.ProcessorCount - 1));
+
         public event EventHandler<IMutableDungeon> DungeonDataCreated;
 
         public int Map { get; }
@@ -45,8 +49,8 @@ namespace OpenTracker.Models.Dungeons
         public List<IKeyLayout> KeyLayouts { get; }
         public List<DungeonNodeID> Nodes { get; }
         public List<IRequirementNode> EntryNodes { get; }
-        public ConcurrentQueue<object> Queue { get; } =
-            new ConcurrentQueue<object>();
+        public ConcurrentQueue<IMutableDungeon> DungeonDataQueue { get; } =
+            new ConcurrentQueue<IMutableDungeon>();
 
         /// <summary>
         /// Constructor
@@ -150,9 +154,9 @@ namespace OpenTracker.Models.Dungeons
                 BigKeyItem.PropertyChanged += OnItemChanged;
             }
 
-            for (int i = 0; i < Environment.ProcessorCount - 1; i++)
+            for (int i = 0; i < Environment.ProcessorCount; i++)
             {
-                Queue.Enqueue(new object());
+                CreateDungeonData();
             }
 
             Mode.Instance.PropertyChanged += OnModeChanged;
@@ -249,13 +253,20 @@ namespace OpenTracker.Models.Dungeons
             }
         }
 
+        private void CreateDungeonData()
+        {
+            var dungeonData = MutableDungeonFactory.GetMutableDungeon(this);
+            FinishMutableDungeonCreation(dungeonData);
+            DungeonDataQueue.Enqueue(dungeonData);
+        }
+
         /// <summary>
         /// Subscribes to PropertyChanged event on each requirement.
         /// </summary>
         private void SubscribeToConnectionRequirements()
         {
             var requirmentSubscriptions = new List<IRequirement>();
-            var dungeonData = GetDungeonData(true);
+            var dungeonData = GetDungeonData();
 
             foreach (var node in Nodes)
             {
@@ -281,18 +292,20 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// The next available DungeonData class.
         /// </returns>
-        private IMutableDungeon GetDungeonData(bool force = false)
+        private IMutableDungeon GetDungeonData()
         {
             while (true)
             {
-                if (Queue.TryDequeue(out var _) || force)
+                if (DungeonDataQueue.TryDequeue(out var dungeonData))
                 {
-                    var dungeonData = MutableDungeonFactory.GetMutableDungeon(this);
-                    FinishMutableDungeonCreation(dungeonData);
-
                     return dungeonData;
                 }
             }
+        }
+
+        private void ReturnDungeonData(IMutableDungeon dungeonData)
+        {
+            DungeonDataQueue.Enqueue(dungeonData);
         }
 
         /// <summary>
@@ -380,21 +393,6 @@ namespace OpenTracker.Models.Dungeons
         }
 
         /// <summary>
-        /// Updates the accessibility and number of accessible items for the contained sections.
-        /// </summary>
-        private void UpdateSectionAccessibility()
-        {
-            if (ID == LocationID.GanonsTower)
-            {
-                UpdateSectionAccessibility(true);
-            }
-            else
-            {
-                UpdateSectionAccessibility(false);
-            }
-        }
-
-        /// <summary>
         /// Populates the initial key permutations for the initial simulations.
         /// </summary>
         /// <param name="collection">
@@ -431,11 +429,11 @@ namespace OpenTracker.Models.Dungeons
         /// <param name="nextQueue">
         /// The next queue to which this permutation will be added.
         /// </param>
-        private void ProcessDungeonState(
-            DungeonState state, BlockingCollection<DungeonState> finalQueue,
+        private static void ProcessDungeonState(
+            IMutableDungeon dungeonData, DungeonState state,
+            BlockingCollection<DungeonState> finalQueue,
             BlockingCollection<DungeonState> nextQueue)
         {
-            var dungeonData = GetDungeonData();
             dungeonData.ApplyState(state);
 
             int availableKeys = dungeonData.GetAvailableSmallKeys(state.SequenceBreak) +
@@ -444,7 +442,6 @@ namespace OpenTracker.Models.Dungeons
             if (availableKeys == 0)
             {
                 finalQueue.Add(state);
-                dungeonData.Dispose();
                 return;
             }
 
@@ -453,7 +450,6 @@ namespace OpenTracker.Models.Dungeons
             if (accessibleKeyDoors.Count == 0)
             {
                 finalQueue.Add(state);
-                dungeonData.Dispose();
                 return;
             }
 
@@ -467,8 +463,6 @@ namespace OpenTracker.Models.Dungeons
                         newPermutation, state.KeysCollected, state.BigKeyCollected,
                         state.SequenceBreak));
             }
-
-            dungeonData.Dispose();
         }
 
         /// <summary>
@@ -477,16 +471,15 @@ namespace OpenTracker.Models.Dungeons
         /// <param name="state">
         /// The permutation to be processed.
         /// </param>
-        private void ProcessFinalDungeonState(
-            DungeonState state, BlockingCollection<DungeonResult> inLogicQueue,
+        private static void ProcessFinalDungeonState(
+            IMutableDungeon dungeonData, DungeonState state,
+            BlockingCollection<DungeonResult> inLogicQueue,
             BlockingCollection<DungeonResult> outOfLogicQueue)
         {
-            var dungeonData = GetDungeonData();
             dungeonData.ApplyState(state);
 
             if (!dungeonData.ValidateKeyLayout(state))
             {
-                dungeonData.Dispose();
                 return;
             }
 
@@ -500,20 +493,16 @@ namespace OpenTracker.Models.Dungeons
             {
                 inLogicQueue.Add(result);
             }
-
-            dungeonData.Dispose();
         }
 
         /// <summary>
         /// Updates the accessibility and number of accessible items for the contained sections
         /// using parallel operation.
         /// </summary>
-        private void UpdateSectionAccessibility(bool parallel)
+        private void UpdateSectionAccessibility()
         {
-            int parallelThreads = parallel ? Math.Max(1, Environment.ProcessorCount - 1) : 1;
-
             var keyDoorPermutationQueue = new List<BlockingCollection<DungeonState>>();
-            var keyDoorTasks = new List<Task[]>();
+            var keyDoorTasks = new List<Task>();
             var finalQueue = new BlockingCollection<DungeonState>();
             var resultInLogicQueue = new BlockingCollection<DungeonResult>();
             var resultOutOfLogicQueue = new BlockingCollection<DungeonResult>();
@@ -529,27 +518,31 @@ namespace OpenTracker.Models.Dungeons
             {
                 int currentIteration = i;
 
-                keyDoorTasks.Add(Enumerable.Range(1, parallelThreads)
-                    .Select(_ => Task.Factory.StartNew(() =>
+                keyDoorTasks.Add(Task.Factory.StartNew(() =>
+                {
+                    var dungeonData = GetDungeonData();
+
+                    foreach (var item in keyDoorPermutationQueue[currentIteration].GetConsumingEnumerable())
                     {
-                        foreach (var item in keyDoorPermutationQueue[currentIteration].GetConsumingEnumerable())
+                        if (keyDoorPermutationQueue.Count > currentIteration + 1)
                         {
-                            if (keyDoorPermutationQueue.Count > currentIteration + 1)
-                            {
-                                ProcessDungeonState(item, finalQueue, keyDoorPermutationQueue[currentIteration + 1]);
-                            }
-                            else
-                            {
-                                ProcessDungeonState(item, finalQueue, null);
-                            }
+                            ProcessDungeonState(dungeonData, item, finalQueue,
+                                keyDoorPermutationQueue[currentIteration + 1]);
                         }
-                    },
-                    CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default)).ToArray());
+                        else
+                        {
+                            ProcessDungeonState(dungeonData, item, finalQueue, null);
+                        }
+                    }
+
+                    ReturnDungeonData(dungeonData);
+                },
+                CancellationToken.None, TaskCreationOptions.None, _taskScheduler));
             }
 
             for (int i = 0; i < keyDoorTasks.Count; i++)
             {
-                Task.WaitAll(keyDoorTasks[i]);
+                keyDoorTasks[i].Wait();
                 keyDoorPermutationQueue[i].Dispose();
 
                 if (i + 1 < keyDoorPermutationQueue.Count)
@@ -562,17 +555,21 @@ namespace OpenTracker.Models.Dungeons
                 }
             }
 
-            Task[] finalKeyDoorTasks = Enumerable.Range(1, parallelThreads)
-                .Select(_ => Task.Factory.StartNew(() =>
-                {
-                    foreach (var item in finalQueue.GetConsumingEnumerable())
-                    {
-                        ProcessFinalDungeonState(item, resultInLogicQueue, resultOutOfLogicQueue);
-                    }
-                },
-                CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default)).ToArray();
+            var finalKeyDoorTask = Task.Factory.StartNew(() =>
+            {
+                var dungeonData = GetDungeonData();
 
-            Task.WaitAll(finalKeyDoorTasks);
+                foreach (var item in finalQueue.GetConsumingEnumerable())
+                {
+                    ProcessFinalDungeonState(dungeonData, item, resultInLogicQueue,
+                        resultOutOfLogicQueue);
+                }
+
+                ReturnDungeonData(dungeonData);
+            },
+            CancellationToken.None, TaskCreationOptions.None, _taskScheduler);
+
+            finalKeyDoorTask.Wait();
             finalQueue.Dispose();
             resultInLogicQueue.CompleteAdding();
             resultOutOfLogicQueue.CompleteAdding();

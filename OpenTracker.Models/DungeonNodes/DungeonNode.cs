@@ -11,7 +11,7 @@ namespace OpenTracker.Models.DungeonNodes
     /// <summary>
     /// This is the class for dungeon requirement node.
     /// </summary>
-    public class DungeonNode : IDungeonNode, IDisposable
+    public class DungeonNode : IDungeonNode
     {
         private readonly DungeonNodeID _id;
         private readonly IMutableDungeon _dungeonData;
@@ -181,15 +181,6 @@ namespace OpenTracker.Models.DungeonNodes
         public void Reset()
         {
             AlwaysAccessible = false;
-        }
-
-        public void Dispose()
-        {
-            foreach (var connection in Connections)
-            {
-                connection.PropertyChanged -= OnConnectionChanged;
-                connection.Dispose();
-            }
         }
     }
 }

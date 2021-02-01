@@ -108,10 +108,5 @@ namespace OpenTracker.Models.DungeonItems
         {
             Accessibility = _node.Accessibility;
         }
-
-        public void Dispose()
-        {
-            _node.PropertyChanged -= OnNodeChanged;
-        }
     }
 }

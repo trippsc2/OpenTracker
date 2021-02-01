@@ -81,10 +81,5 @@ namespace OpenTracker.Models.NodeConnections
 
             return Accessibility;
         }
-
-        public void Dispose()
-        {
-            _fromNode.PropertyChanged -= OnNodeChanged;
-        }
     }
 }

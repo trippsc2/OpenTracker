@@ -140,11 +140,5 @@ namespace OpenTracker.Models.NodeConnections
             return AccessibilityLevelMethods.Min(Requirement.Accessibility,
                 _fromNode.GetNodeAccessibility(newExcludedNodes));
         }
-
-        public void Dispose()
-        {
-            _fromNode.PropertyChanged -= OnNodeChanged;
-            Requirement.PropertyChanged -= OnRequirementChanged;
-        }
     }
 }
