@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -14,6 +15,8 @@ namespace OpenTracker.Models.RequirementNodes
         int ExitsAccessible { get; set; }
         int DungeonExitsAccessible { get; set; }
         int InsanityExitsAccessible { get; set; }
+
+        event EventHandler ChangePropagated;
 
         AccessibilityLevel GetNodeAccessibility(List<IRequirementNode> excludedNodes);
         void Reset();

@@ -18,6 +18,7 @@ namespace OpenTracker.Models.RequirementNodes
             new List<INodeConnection>();
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler ChangePropagated;
 
         private bool _alwaysAccessible;
         public bool AlwaysAccessible
@@ -124,6 +125,11 @@ namespace OpenTracker.Models.RequirementNodes
                 propertyName == nameof(InsanityExitsAccessible))
             {
                 UpdateAccessibility();
+            }
+
+            if (propertyName == nameof(Accessibility))
+            {
+                ChangePropagated?.Invoke(this, new EventArgs());
             }
         }
 

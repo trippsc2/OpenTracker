@@ -9,12 +9,11 @@ using OpenTracker.Models.Modes;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Sections;
-using OpenTracker.Models.TaskSchedulers;
+using OpenTracker.Models.Utils;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -140,7 +139,7 @@ namespace OpenTracker.Models.Dungeons
 
             foreach (var node in EntryNodes)
             {
-                node.PropertyChanged += OnNodeChanged;
+                node.ChangePropagated += OnNodeChangePropagated;
             }
 
             if (SmallKeyItem != null)
@@ -190,12 +189,9 @@ namespace OpenTracker.Models.Dungeons
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnNodeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnNodeChangePropagated(object sender, EventArgs e)
         {
-            if (e.PropertyName == nameof(IRequirementNode.Accessibility))
-            {
-                UpdateSectionAccessibility();
-            }
+            UpdateSectionAccessibility();
         }
 
         /// <summary>

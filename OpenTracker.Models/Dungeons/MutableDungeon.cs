@@ -2,6 +2,7 @@
 using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.KeyDoors;
+using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,8 @@ namespace OpenTracker.Models.Dungeons
     {
         private readonly IDungeon _dungeon;
 
+        public LocationID ID =>
+            _dungeon.ID;
         public KeyDoorDictionary KeyDoorDictionary { get; }
         public DungeonItemDictionary ItemDictionary { get; }
         public Dictionary<KeyDoorID, IKeyDoor> SmallKeyDoors { get; } =

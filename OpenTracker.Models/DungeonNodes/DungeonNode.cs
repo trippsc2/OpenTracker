@@ -24,6 +24,7 @@ namespace OpenTracker.Models.DungeonNodes
             new List<INodeConnection>();
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler ChangePropagated;
 
         private bool _alwaysAccessible;
         public bool AlwaysAccessible
@@ -85,6 +86,7 @@ namespace OpenTracker.Models.DungeonNodes
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            ChangePropagated?.Invoke(this, new EventArgs());
         }
 
         /// <summary>

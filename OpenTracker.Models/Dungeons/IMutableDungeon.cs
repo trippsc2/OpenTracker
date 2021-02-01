@@ -1,6 +1,7 @@
 ﻿using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.KeyDoors;
+using OpenTracker.Models.Locations;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.Dungeons
@@ -10,6 +11,7 @@ namespace OpenTracker.Models.Dungeons
     /// </summary>
     public interface IMutableDungeon
     {
+        LocationID ID { get; }
         Dictionary<KeyDoorID, IKeyDoor> BigKeyDoors { get; }
         List<IDungeonItem> BossItems { get; }
         Dictionary<DungeonItemID, IDungeonItem> Items { get; }

@@ -2548,6 +2548,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
+                                    new EndKeyLayout(
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
                                     new SmallKeyLayout(
                                         1,
                                         new List<DungeonItemID>
@@ -2631,7 +2633,8 @@ namespace OpenTracker.Models.KeyLayouts
                                                         RequirementDictionary.Instance[
                                                             RequirementType.GuaranteedBossItemsOffItemPlacementAdvanced])
                                                 }, dungeon)
-                                        }, dungeon)
+                                        }, dungeon,
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
                                 },
                                 RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
                             new BigKeyLayout(
@@ -2647,6 +2650,8 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
+                                    new EndKeyLayout(
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
                                     new SmallKeyLayout(
                                         1,
                                         new List<DungeonItemID>
@@ -2730,7 +2735,8 @@ namespace OpenTracker.Models.KeyLayouts
                                                         RequirementDictionary.Instance[
                                                             RequirementType.GuaranteedBossItemsOffItemPlacementAdvanced])
                                                 }, dungeon)
-                                        }, dungeon)
+                                        }, dungeon,
+                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
                                 },
                                 RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff])
                         };

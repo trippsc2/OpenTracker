@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OpenTracker.Models.TaskSchedulers
+namespace OpenTracker.Models.Utils
 {
     public class ConstrainedTaskScheduler : TaskScheduler
     {
