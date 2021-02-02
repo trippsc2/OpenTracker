@@ -209,10 +209,16 @@
         /// </returns>
         public static IItem GetItem(ItemType type)
         {
+            if (type == ItemType.TowerCrystals || type == ItemType.GanonCrystals)
+            {
+                return new CrystalRequirementItem();
+            }
+            
             int? maximum = GetItemMaximum(type);
 
             if (maximum.HasValue)
             {
+
                 int? keyDropMaximum = GetItemKeyDropMaximum(type);
 
                 if (keyDropMaximum.HasValue)

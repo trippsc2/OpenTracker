@@ -10,7 +10,7 @@ namespace OpenTracker.Models.Requirements
     /// </summary>
     public class CrystalRequirement : IRequirement
     {
-        private readonly IItem _gtCrystal;
+        private readonly ICrystalRequirementItem _gtCrystal;
         private readonly IItem _crystal;
         private readonly IItem _redCrystal;
 
@@ -39,7 +39,7 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         public CrystalRequirement()
         {
-            _gtCrystal = ItemDictionary.Instance[ItemType.TowerCrystals];
+            _gtCrystal = (ICrystalRequirementItem)ItemDictionary.Instance[ItemType.TowerCrystals];
             _crystal = PrizeDictionary.Instance[PrizeType.Crystal];
             _redCrystal = PrizeDictionary.Instance[PrizeType.RedCrystal];
 
@@ -73,7 +73,8 @@ namespace OpenTracker.Models.Requirements
         /// </param>
         private void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IItem.Current))
+            if (e.PropertyName == nameof(IItem.Current) ||
+                e.PropertyName == nameof(ICrystalRequirementItem.Known))
             {
                 UpdateAccessibility();
             }
@@ -84,8 +85,15 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         private void UpdateAccessibility()
         {
-            Accessibility = _gtCrystal.Current + _crystal.Current + _redCrystal.Current >= 7 ?
-                AccessibilityLevel.Normal : AccessibilityLevel.None;
+            if (_gtCrystal.Known)
+            {
+                Accessibility = _gtCrystal.Current + _crystal.Current + _redCrystal.Current >= 7 ?
+                    AccessibilityLevel.Normal : AccessibilityLevel.None;
+            }
+            else
+            {
+                Accessibility = AccessibilityLevel.SequenceBreak;
+            }
         }
     }
 }

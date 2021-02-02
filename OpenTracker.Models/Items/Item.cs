@@ -139,7 +139,7 @@ namespace OpenTracker.Models.Items
         /// <summary>
         /// Resets the item to its starting values.
         /// </summary>
-        public void Reset()
+        public virtual void Reset()
         {
             Current = _starting;
         }

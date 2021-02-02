@@ -68,7 +68,7 @@ namespace OpenTracker.ViewModels.Items.Large
         {
             return new CrystalRequirementLargeItemVM(
                 $"avares://OpenTracker/Assets/Images/Items/{type.ToString().ToLowerInvariant()}.png",
-                ItemDictionary.Instance[Enum.Parse<ItemType>(type.ToString())]);
+                (ICrystalRequirementItem)ItemDictionary.Instance[Enum.Parse<ItemType>(type.ToString())]);
         }
 
         /// <summary>

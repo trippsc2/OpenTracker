@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Interfaces;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
@@ -14,15 +15,36 @@ namespace OpenTracker.ViewModels.Items.Large
     /// </summary>
     public class CrystalRequirementLargeItemVM : LargeItemVMBase, IClickHandler
     {
-        private readonly IItem _item;
+        private readonly ICrystalRequirementItem _item;
 
         public string ImageSource { get; }
 
-        public string ImageCount =>
-            (7 - _item.Current).ToString(CultureInfo.InvariantCulture);
-        public string TextColor =>
-            _item.Current == 0 ?
-            AppSettings.Instance.Colors.EmphasisFontColor : "#ffffffff";
+        public string ImageCount
+        {
+            get
+            {
+                if (_item.Known)
+                {
+                    return (7 - _item.Current).ToString(CultureInfo.InvariantCulture);
+                }
+
+                return "?";
+            }
+        }
+
+        public string TextColor
+        {
+            get
+            {
+                if (_item.Known)
+                {
+                    return _item.Current == 0 ?
+                        AppSettings.Instance.Colors.EmphasisFontColor : "#ffffffff";
+                }
+
+                return AppSettings.Instance.Colors.AccessibilityColors[AccessibilityLevel.SequenceBreak];
+            }
+        }
 
         /// <summary>
         /// Constructor
@@ -33,17 +55,18 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <param name="item">
         /// An item that is to be represented by this control.
         /// </param>
-        public CrystalRequirementLargeItemVM(string imageSource, IItem item)
+        public CrystalRequirementLargeItemVM(string imageSource, ICrystalRequirementItem item)
         {
             _item = item ?? throw new ArgumentNullException(nameof(item));
             ImageSource = imageSource ?? throw new ArgumentNullException(nameof(imageSource));
 
             _item.PropertyChanged += OnItemChanged;
             AppSettings.Instance.Colors.PropertyChanged += OnColorsChanged;
+            AppSettings.Instance.Colors.AccessibilityColors.PropertyChanged += OnColorsChanged;
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IItem interface.
+        /// Subscribes to the PropertyChanged event on the ICrystalRequirementItem interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -53,7 +76,8 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         private void OnItemChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IItem.Current))
+            if (e.PropertyName == nameof(ICrystalRequirementItem.Current) ||
+                e.PropertyName == nameof(ICrystalRequirementItem.Known))
             {
                 this.RaisePropertyChanged(nameof(ImageCount));
                 UpdateTextColor();
@@ -71,10 +95,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         private void OnColorsChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ColorSettings.EmphasisFontColor))
-            {
-                UpdateTextColor();
-            }
+            UpdateTextColor();
         }
 
         /// <summary>
@@ -93,7 +114,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         public void OnLeftClick(bool force)
         {
-            UndoRedoManager.Instance.Execute(new AddItem(_item));
+            UndoRedoManager.Instance.Execute(new AddCrystalRequirement(_item));
         }
 
         /// <summary>
@@ -104,7 +125,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         public void OnRightClick(bool force)
         {
-            UndoRedoManager.Instance.Execute(new RemoveItem(_item));
+            UndoRedoManager.Instance.Execute(new RemoveCrystalRequirement(_item));
         }
     }
 }
