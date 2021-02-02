@@ -1105,6 +1105,8 @@ namespace OpenTracker.Models.RequirementNodes
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.EntranceNoneInverted], node));
                         connections.Add(new NodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.FluteInverted], node));
+                        connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldMirror], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DWKakarikoPortal], node,
@@ -1284,6 +1286,8 @@ namespace OpenTracker.Models.RequirementNodes
                     {
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.EntranceNoneInverted], node));
+                        connections.Add(new NodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.FluteInverted], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldMirror], node));
                         connections.Add(new NodeConnection(
@@ -1499,6 +1503,8 @@ namespace OpenTracker.Models.RequirementNodes
                             RequirementNodeDictionary.Instance[RequirementNodeID.LWWitchArea], node,
                             RequirementDictionary.Instance[RequirementType.LWMirror]));
                         connections.Add(new NodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.FluteInverted], node));
+                        connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldEastNotBunny], node,
                             RequirementDictionary.Instance[RequirementType.Hammer]));
                         connections.Add(new NodeConnection(
@@ -1534,6 +1540,8 @@ namespace OpenTracker.Models.RequirementNodes
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldStandardOpen], node,
                             RequirementDictionary.Instance[RequirementType.Aga1]));
+                        connections.Add(new NodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.FluteInverted], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldMirror], node));
                         connections.Add(new NodeConnection(
@@ -1706,6 +1714,8 @@ namespace OpenTracker.Models.RequirementNodes
                     break;
                 case RequirementNodeID.DarkWorldSouthEast:
                     {
+                        connections.Add(new NodeConnection(
+                            RequirementNodeDictionary.Instance[RequirementNodeID.FluteInverted], node));
                         connections.Add(new NodeConnection(
                             RequirementNodeDictionary.Instance[RequirementNodeID.LightWorldMirror], node));
                         connections.Add(new NodeConnection(
