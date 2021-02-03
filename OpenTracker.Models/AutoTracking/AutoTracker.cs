@@ -14,7 +14,8 @@ namespace OpenTracker.Models.AutoTracking
         private byte? _inGameStatus;
 
         private bool InGame =>
-            _inGameStatus.HasValue && _inGameStatus.Value > 0x05 && _inGameStatus.Value != 0x14;
+            _inGameStatus.HasValue && _inGameStatus.Value > 0x05 && _inGameStatus.Value != 0x14 &&
+            _inGameStatus.Value < 0x20;
         public ISNESConnector SNESConnector { get; }
         public Action<LogLevel, string> LogHandler { get; set; }
 
