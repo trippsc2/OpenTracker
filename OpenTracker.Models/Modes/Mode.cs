@@ -194,6 +194,20 @@ namespace OpenTracker.Models.Modes
             }
         }
 
+        private bool _shopShuffle;
+        public bool ShopShuffle
+        {
+            get => _shopShuffle;
+            set
+            {
+                if (_shopShuffle != value)
+                {
+                    _shopShuffle = value;
+                    OnPropertyChanged(nameof(ShopShuffle));
+                }
+            }
+        }
+
         /// <summary>
         /// Raises the PropertyChanged event for the specified property.
         /// </summary>

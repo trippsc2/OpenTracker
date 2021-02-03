@@ -77,7 +77,9 @@
                           Command="{Binding EnemyShuffleCommand}">Enemy Shuffle</CheckBox>
             <CheckBox Classes="ModeSettings" IsChecked="{Binding GuaranteedBossItems, Mode=OneWay}"
                       Command="{Binding
-                    GuaranteedBossItemsCommand}">Guaranteed Boss Items (Ambrosia)</CheckBox>
+                      GuaranteedBossItemsCommand}">Guaranteed Boss Items (Ambrosia)</CheckBox>
+            <CheckBox Classes="ModeSettings" IsChecked="{Binding ShopShuffle, Mode=OneWay}"
+                      Command="{Binding ShopShuffleCommand}">Shop Shuffle</CheckBox>
             <CheckBox Classes="ModeSettings" IsChecked="{Binding GenericKeys, Mode=OneWay}"
                       Command="{Binding GenericKeysCommand}">Generic Keys</CheckBox>
             <CheckBox Classes="ModeSettings" IsChecked="{Binding TakeAnyLocations, Mode=OneWay}"

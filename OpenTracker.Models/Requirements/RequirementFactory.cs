@@ -294,6 +294,24 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
+        /// Returns a shop shuffle requirement.
+        /// </summary>
+        /// <param name="type">
+        /// The requirement type.
+        /// </param>
+        /// <returns>
+        /// A shop shuffle requirement.
+        /// </returns>
+        private static IRequirement GetShopShuffleRequirement(RequirementType type)
+        {
+            return type switch
+            {
+                RequirementType.ShopShuffle => new KeyDropShuffleRequirement(true),
+                _ => throw new ArgumentOutOfRangeException(nameof(type))
+            };
+        }
+
+        /// <summary>
         /// Returns an item exact amount requirement.
         /// </summary>
         /// <param name="type">
@@ -702,6 +720,10 @@ namespace OpenTracker.Models.Requirements
                     {
                         return GetKeyDropShuffleRequirement(type);
                     }
+                case RequirementType.ShopShuffle:
+                    {
+                        return GetShopShuffleRequirement(type);
+                    }
                 case RequirementType.NoKeyShuffle:
                     {
                         return new AggregateRequirement(new List<IRequirement>
@@ -864,14 +886,6 @@ namespace OpenTracker.Models.Requirements
                             RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]
                         });
                     }
-                case RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon:
-                    {
-                        return new AggregateRequirement(new List<IRequirement>
-                        {
-                            RequirementDictionary.Instance[RequirementType.TakeAnyLocations],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]
-                        });
-                    }
                 case RequirementType.SmallKeyShuffleOffItemPlacementAdvanced:
                     {
                         return new AggregateRequirement(new List<IRequirement>
@@ -982,6 +996,30 @@ namespace OpenTracker.Models.Requirements
                         {
                             RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
                             RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced]
+                        });
+                    }
+                case RequirementType.TakeAnyLocationsOrShopShuffle:
+                    {
+                        return new AlternativeRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.TakeAnyLocations],
+                            RequirementDictionary.Instance[RequirementType.ShopShuffle]
+                        });
+                    }
+                case RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.TakeAnyLocations],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]
+                        });
+                    }
+                case RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.TakeAnyLocationsOrShopShuffle],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnWorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOff:

@@ -22,6 +22,7 @@ namespace OpenTracker.ViewModels
         public ReactiveCommand<Unit, Unit> BossShuffleCommand { get; }
         public ReactiveCommand<Unit, Unit> EnemyShuffleCommand { get; }
         public ReactiveCommand<Unit, Unit> GuaranteedBossItemsCommand { get; }
+        public ReactiveCommand<Unit, Unit> ShopShuffleCommand { get; }
         public ReactiveCommand<Unit, Unit> GenericKeysCommand { get; }
         public ReactiveCommand<Unit, Unit> TakeAnyLocationsCommand { get; }
         public ReactiveCommand<Unit, Unit> KeyDropShuffleCommand { get; }
@@ -60,6 +61,8 @@ namespace OpenTracker.ViewModels
             Mode.Instance.EnemyShuffle;
         public static bool GuaranteedBossItems =>
             Mode.Instance.GuaranteedBossItems;
+        public static bool ShopShuffle =>
+            Mode.Instance.ShopShuffle;
         public static bool GenericKeys =>
             Mode.Instance.GenericKeys;
         public static bool TakeAnyLocations =>
@@ -90,6 +93,7 @@ namespace OpenTracker.ViewModels
             BossShuffleCommand = ReactiveCommand.Create(ToggleBossShuffle);
             EnemyShuffleCommand = ReactiveCommand.Create(ToggleEnemyShuffle);
             GuaranteedBossItemsCommand = ReactiveCommand.Create(ToggleGuaranteedBossItems);
+            ShopShuffleCommand = ReactiveCommand.Create(ToggleShopShuffle);
             GenericKeysCommand = ReactiveCommand.Create(ToggleGenericKeys);
             TakeAnyLocationsCommand = ReactiveCommand.Create(ToggleTakeAnyLocations);
             KeyDropShuffleCommand = ReactiveCommand.Create(ToggleKeyDropShuffle);
@@ -161,6 +165,11 @@ namespace OpenTracker.ViewModels
             if (e.PropertyName == nameof(Mode.GuaranteedBossItems))
             {
                 this.RaisePropertyChanged(nameof(GuaranteedBossItems));
+            }
+
+            if (e.PropertyName == nameof(Mode.ShopShuffle))
+            {
+                this.RaisePropertyChanged(nameof(ShopShuffle));
             }
 
             if (e.PropertyName == nameof(Mode.GenericKeys))
@@ -272,6 +281,12 @@ namespace OpenTracker.ViewModels
         private void ToggleGuaranteedBossItems()
         {
             UndoRedoManager.Instance.Execute(new ChangeGuaranteedBossItems(
+                !Mode.Instance.GuaranteedBossItems));
+        }
+
+        private void ToggleShopShuffle()
+        {
+            UndoRedoManager.Instance.Execute(new ChangeShopShuffle(
                 !Mode.Instance.GuaranteedBossItems));
         }
 
