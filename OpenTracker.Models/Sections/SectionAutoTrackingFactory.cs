@@ -789,9 +789,14 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 0),
-                                    0xF0, 4),
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackBitwiseIntegerValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 0),
+                                        0xF0, 4),
+                                    new AutoTrackAddressValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Dungeon, 0), 255, 0)
+                                }),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -809,9 +814,14 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 1),
-                                    0x3, 0),
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackBitwiseIntegerValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 1),
+                                        0x3, 0),
+                                    new AutoTrackAddressValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Dungeon, 3), 255, 0)
+                                }),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -825,9 +835,14 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 2),
-                                    0x07, 0),
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackBitwiseIntegerValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 2),
+                                        0x07, 0),
+                                    new AutoTrackAddressValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Dungeon, 1), 255, 0)
+                                }),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -849,9 +864,14 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 1),
-                                    0xE0, 5),
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackBitwiseIntegerValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 1),
+                                        0xE0, 5),
+                                    new AutoTrackAddressValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Dungeon, 2), 255, 0)
+                                }),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -877,9 +897,14 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 1),
-                                    0x1C, 2),
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackBitwiseIntegerValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 1),
+                                        0x1C, 2),
+                                    new AutoTrackAddressValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Dungeon, 9), 255, 0)
+                                }),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -905,9 +930,14 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 0),
-                                    0x0F, 0),
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackBitwiseIntegerValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 0),
+                                        0x0F, 0),
+                                    new AutoTrackAddressValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Dungeon, 5), 255, 0)
+                                }),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -933,9 +963,14 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 5),
-                                    0xF, 0),
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackBitwiseIntegerValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 5),
+                                        0xF, 0),
+                                    new AutoTrackAddressValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Dungeon, 4), 255, 0)
+                                }),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -961,9 +996,14 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 3),
-                                    0xF0, 4),
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackBitwiseIntegerValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 3),
+                                        0xF0, 4),
+                                    new AutoTrackAddressValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Dungeon, 7), 255, 0)
+                                }),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -989,9 +1029,14 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 3),
-                                    0xF, 0),
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackBitwiseIntegerValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 3),
+                                        0xF, 0),
+                                    new AutoTrackAddressValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Dungeon, 10), 255, 0)
+                                }),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -1017,9 +1062,14 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 4),
-                                    0xF0, 4),
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackBitwiseIntegerValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 4),
+                                        0xF0, 4),
+                                    new AutoTrackAddressValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Dungeon, 8), 255, 0)
+                                }),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -1045,9 +1095,14 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 4),
-                                    0xF, 0),
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackBitwiseIntegerValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 4),
+                                        0xF, 0),
+                                    new AutoTrackAddressValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Dungeon, 6), 255, 0)
+                                }),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -1073,9 +1128,14 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 5),
-                                    0xF0, 4),
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackBitwiseIntegerValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 5),
+                                        0xF0, 4),
+                                    new AutoTrackAddressValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Dungeon, 11), 255, 0)
+                                }),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(
@@ -1101,9 +1161,14 @@ namespace OpenTracker.Models.Sections
                         return new AutoTrackConditionalValue(
                             RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
                             new AutoTrackMultipleDifference(
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 2),
-                                    0xF8, 3),
+                                new AutoTrackMultipleOverride(new List<IAutoTrackValue>
+                                {
+                                    new AutoTrackBitwiseIntegerValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.DungeonItem, 2),
+                                        0xF8, 3),
+                                    new AutoTrackAddressValue(
+                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Dungeon, 12), 255, 0)
+                                }),
                                 new AutoTrackMultipleSum(new List<IAutoTrackValue>
                                 {
                                     new AutoTrackConditionalValue(

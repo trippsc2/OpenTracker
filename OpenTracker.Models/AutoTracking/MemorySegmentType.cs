@@ -10,6 +10,6 @@
         Item,
         NPCItem,
         DungeonItem,
-        SmallKey
+        Dungeon
     }
 }

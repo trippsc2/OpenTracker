@@ -142,7 +142,7 @@ namespace OpenTracker.Models.Items
                 case ItemType.TRSmallKey:
                 case ItemType.GTSmallKey:
                     {
-                        return MemorySegmentType.SmallKey;
+                        return MemorySegmentType.Dungeon;
                     }
                 default:
                     {
@@ -180,9 +180,16 @@ namespace OpenTracker.Models.Items
                         return 27;
                     }
                 case ItemType.Bow:
-                case ItemType.HCSmallKey when index == 0:
                     {
                         return 0;
+                    }
+                case ItemType.HCSmallKey when index == 0:
+                    {
+                        return 32;
+                    }
+                case ItemType.HCSmallKey:
+                    {
+                        return 33;
                     }
                 case ItemType.Arrows when index == 0:
                     {
@@ -207,9 +214,12 @@ namespace OpenTracker.Models.Items
                         return 2;
                     }
                 case ItemType.Bomb:
-                case ItemType.DPSmallKey:
                     {
                         return 3;
+                    }
+                case ItemType.DPSmallKey:
+                    {
+                        return 35;
                     }
                 case ItemType.BigBomb:
                     {
@@ -217,7 +227,6 @@ namespace OpenTracker.Models.Items
                     }
                 case ItemType.MagicBat:
                 case ItemType.Mushroom:
-                case ItemType.HCSmallKey:
                     {
                         return 1;
                     }
@@ -226,48 +235,72 @@ namespace OpenTracker.Models.Items
                         return 21;
                     }
                 case ItemType.FireRod:
-                case ItemType.SPSmallKey:
                     {
                         return 5;
                     }
+                case ItemType.SPSmallKey:
+                    {
+                        return 37;
+                    }
                 case ItemType.IceRod:
-                case ItemType.PoDSmallKey:
                     {
                         return 6;
                     }
+                case ItemType.PoDSmallKey:
+                    {
+                        return 38;
+                    }
                 case ItemType.Bombos:
-                case ItemType.MMSmallKey:
                     {
                         return 7;
                     }
+                case ItemType.MMSmallKey:
+                    {
+                        return 39;
+                    }
                 case ItemType.Ether:
-                case ItemType.SWSmallKey:
                     {
                         return 8;
                     }
+                case ItemType.SWSmallKey:
+                    {
+                        return 40;
+                    }
                 case ItemType.Quake:
-                case ItemType.IPSmallKey:
                     {
                         return 9;
+                    }
+                case ItemType.IPSmallKey:
+                    {
+                        return 41;
                     }
                 case ItemType.Gloves:
                     {
                         return 20;
                     }
                 case ItemType.Lamp:
-                case ItemType.ToHSmallKey:
                     {
                         return 10;
                     }
+                case ItemType.ToHSmallKey:
+                    {
+                        return 42;
+                    }
                 case ItemType.Hammer:
-                case ItemType.TTSmallKey:
                     {
                         return 11;
                     }
+                case ItemType.TTSmallKey:
+                    {
+                        return 43;
+                    }
                 case ItemType.Net:
-                case ItemType.GTSmallKey:
                     {
                         return 13;
+                    }
+                case ItemType.GTSmallKey:
+                    {
+                        return 45;
                     }
                 case ItemType.Book:
                     {
@@ -341,11 +374,11 @@ namespace OpenTracker.Models.Items
                     }
                 case ItemType.ATSmallKey:
                     {
-                        return 4;
+                        return 36;
                     }
                 case ItemType.TRSmallKey:
                     {
-                        return 12;
+                        return 44;
                     }
                 case ItemType.HCMap:
                 case ItemType.EPMap:
