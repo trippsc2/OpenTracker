@@ -69,6 +69,7 @@
         GuaranteedBossItemsOffSmallKeyShuffleOffItemPlacementAdvanced,
         GuaranteedBossItemsOffNoKeyShuffle,
         GuaranteedBossItemsOffItemPlacementAdvanced,
+        ShopShuffleEntranceShuffleNoneDungeon,
         TakeAnyLocationsOrShopShuffle,
         TakeAnyLocationsEntranceShuffleNoneDungeon,
         TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon,

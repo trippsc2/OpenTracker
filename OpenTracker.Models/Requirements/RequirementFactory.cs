@@ -306,7 +306,7 @@ namespace OpenTracker.Models.Requirements
         {
             return type switch
             {
-                RequirementType.ShopShuffle => new KeyDropShuffleRequirement(true),
+                RequirementType.ShopShuffle => new ShopShuffleRequirement(true),
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
@@ -996,6 +996,14 @@ namespace OpenTracker.Models.Requirements
                         {
                             RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
                             RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced]
+                        });
+                    }
+                case RequirementType.ShopShuffleEntranceShuffleNoneDungeon:
+                    {
+                        return new AggregateRequirement(new List<IRequirement>
+                        {
+                            RequirementDictionary.Instance[RequirementType.ShopShuffle],
+                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]
                         });
                     }
                 case RequirementType.TakeAnyLocationsOrShopShuffle:

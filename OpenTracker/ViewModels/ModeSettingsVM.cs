@@ -287,7 +287,7 @@ namespace OpenTracker.ViewModels
         private void ToggleShopShuffle()
         {
             UndoRedoManager.Instance.Execute(new ChangeShopShuffle(
-                !Mode.Instance.GuaranteedBossItems));
+                !Mode.Instance.ShopShuffle));
         }
 
         /// <summary>

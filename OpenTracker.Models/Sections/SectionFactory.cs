@@ -499,7 +499,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.TheWellEntrance:
                 case LocationID.ChickenHouseEntrance:
                 case LocationID.TavernFront:
-                case LocationID.KakarikoShop:
+                case LocationID.KakarikoShopEntrance:
                 case LocationID.SickKidEntrance:
                 case LocationID.BlacksmithHouse:
                 case LocationID.ChestGameEntrance:
@@ -535,6 +535,8 @@ namespace OpenTracker.Models.Sections
                 case LocationID.ForestHideoutExit:
                 case LocationID.HoulihanHoleExit:
                 case LocationID.Sanctuary:
+                case LocationID.KakarikoShop:
+                case LocationID.LakeHyliaShop:
                     {
                         return RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld];
                     }
@@ -785,6 +787,7 @@ namespace OpenTracker.Models.Sections
                             RequirementNodeID.AgahnimTowerEntrance];
                     }
                 case LocationID.WitchsHutEntrance:
+                case LocationID.PotionShop:
                     {
                         return RequirementNodeDictionary.Instance[RequirementNodeID.LWWitchArea];
                     }
@@ -850,10 +853,13 @@ namespace OpenTracker.Models.Sections
                 case LocationID.SkullWoodsEastEntrance:
                 case LocationID.SkullWoodsSWHole:
                 case LocationID.SkullWoodsSEHole:
+                case LocationID.DarkLumberjackShop:
+                case LocationID.RedShieldShop:
                     {
                         return RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldWest];
                     }
                 case LocationID.HammerHouse:
+                case LocationID.VillageOfOutcastsShop:
                     {
                         return RequirementNodeDictionary.Instance[RequirementNodeID.HammerHouse];
                     }
@@ -871,6 +877,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.ArrowGameEntrance:
                 case LocationID.DarkHyliaFortuneTeller:
                 case LocationID.ArrowGameTakeAny:
+                case LocationID.DarkLakeHyliaShop:
                     {
                         return RequirementNodeDictionary.Instance[RequirementNodeID.DarkWorldSouth];
                     }
@@ -900,6 +907,7 @@ namespace OpenTracker.Models.Sections
                             RequirementNodeID.DarkWorldEastNotBunny];
                     }
                 case LocationID.DarkWitchsHut:
+                case LocationID.DarkPotionShop:
                     {
                         return RequirementNodeDictionary.Instance[RequirementNodeID.DWWitchArea];
                     }
@@ -980,6 +988,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.ParadoxCaveMiddle:
                 case LocationID.ParadoxCaveBottom:
                 case LocationID.EDMFairyCaveTakeAny:
+                case LocationID.DeathMountainShop:
                     {
                         return RequirementNodeDictionary.Instance[
                             RequirementNodeID.DeathMountainEastBottom];
@@ -1012,7 +1021,8 @@ namespace OpenTracker.Models.Sections
                             RequirementNodeID.DeathMountainEastTop];
                     }
                 case LocationID.SuperBunnyCaveBottom:
-                case LocationID.DeathMountainShop:
+                case LocationID.DeathMountainShopEntrance:
+                case LocationID.DarkDeathMountainShop:
                     {
                         return RequirementNodeDictionary.Instance[
                             RequirementNodeID.DarkDeathMountainEastBottom];
@@ -1490,7 +1500,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.ChickenHouseEntrance:
                 case LocationID.GrassHouseEntrance:
                 case LocationID.TavernFront:
-                case LocationID.KakarikoShop:
+                case LocationID.KakarikoShopEntrance:
                 case LocationID.SickKidEntrance:
                 case LocationID.BlacksmithHouse:
                 case LocationID.ChestGameEntrance:
@@ -1725,7 +1735,7 @@ namespace OpenTracker.Models.Sections
                         return RequirementNodeDictionary.Instance[RequirementNodeID.DeathMountainEastTop];
                     }
                 case LocationID.SuperBunnyCaveBottom:
-                case LocationID.DeathMountainShop:
+                case LocationID.DeathMountainShopEntrance:
                     {
                         return RequirementNodeDictionary.Instance[RequirementNodeID.DarkDeathMountainEastBottom];
                     }
@@ -1835,6 +1845,20 @@ namespace OpenTracker.Models.Sections
             return new DungeonEntranceSection(
                 GetSectionName(id), GetEntranceSectionExitProvided(id), GetSectionNode(id),
                 GetSectionRequirement(id));
+        }
+
+        /// <summary>
+        /// Returns a new shop section instance for the specified section.
+        /// </summary>
+        /// <param name="id">
+        /// The location ID.
+        /// </param>
+        /// <returns>
+        /// A new shop section instance.
+        /// </returns>
+        private static ISection GetShopSection(LocationID id)
+        {
+            return new ShopShuffle(GetSectionNode(id), GetSectionRequirement(id));
         }
 
         /// <summary>
@@ -2021,7 +2045,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.ChickenHouseEntrance:
                 case LocationID.GrassHouseEntrance:
                 case LocationID.TavernFront:
-                case LocationID.KakarikoShop:
+                case LocationID.KakarikoShopEntrance:
                 case LocationID.BombHutEntrance:
                 case LocationID.SickKidEntrance:
                 case LocationID.BlacksmithHouse:
@@ -2099,7 +2123,7 @@ namespace OpenTracker.Models.Sections
                 case LocationID.EDMConnectorTop:
                 case LocationID.ParadoxCaveTop:
                 case LocationID.SuperBunnyCaveBottom:
-                case LocationID.DeathMountainShop:
+                case LocationID.DeathMountainShopEntrance:
                 case LocationID.SuperBunnyCaveTop:
                 case LocationID.HookshotCaveEntrance:
                 case LocationID.HookshotCaveTop:
@@ -2207,6 +2231,22 @@ namespace OpenTracker.Models.Sections
                         return new List<ISection>
                         {
                             GetInsanityEntranceSection(id)
+                        };
+                    }
+                case LocationID.KakarikoShop:
+                case LocationID.DeathMountainShop:
+                case LocationID.LakeHyliaShop:
+                case LocationID.PotionShop:
+                case LocationID.DarkLumberjackShop:
+                case LocationID.RedShieldShop:
+                case LocationID.VillageOfOutcastsShop:
+                case LocationID.DarkLakeHyliaShop:
+                case LocationID.DarkPotionShop:
+                case LocationID.DarkDeathMountainShop:
+                    {
+                        return new List<ISection>
+                        {
+                            GetShopSection(id)
                         };
                     }
             }

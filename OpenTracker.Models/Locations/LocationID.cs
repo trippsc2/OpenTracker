@@ -89,7 +89,7 @@
         ChickenHouseEntrance,
         GrassHouseEntrance,
         TavernFront,
-        KakarikoShop,
+        KakarikoShopEntrance,
         BombHutEntrance,
         SickKidEntrance,
         BlacksmithHouse,
@@ -189,7 +189,7 @@
         EDMConnectorTop,
         ParadoxCaveTop,
         SuperBunnyCaveBottom,
-        DeathMountainShop,
+        DeathMountainShopEntrance,
         SuperBunnyCaveTop,
         HookshotCaveEntrance,
         TurtleRockEntrance,
@@ -244,6 +244,16 @@
         SkullWoodsNWHole,
         SkullWoodsSWHole,
         SkullWoodsSEHole,
-        SkullWoodsNEHole
+        SkullWoodsNEHole,
+        KakarikoShop,
+        LakeHyliaShop,
+        DeathMountainShop,
+        PotionShop,
+        DarkLumberjackShop,
+        RedShieldShop,
+        VillageOfOutcastsShop,
+        DarkLakeHyliaShop,
+        DarkPotionShop,
+        DarkDeathMountainShop
     }
 }

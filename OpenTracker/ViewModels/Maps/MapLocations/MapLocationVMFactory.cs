@@ -288,6 +288,10 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                     {
                         return new TakeAnyMapLocationVM(mapLocation);
                     }
+                case IShopSection _:
+                    {
+                        return new ShopMapLocationVM(mapLocation);
+                    }
                 case IMarkableSection _:
                     {
                         return GetMarkableMapLocationControlVM(mapLocation);

@@ -108,7 +108,7 @@ namespace OpenTracker.Models.Locations
                 LocationID.WitchsHut => new List<MapLocation>
                 {
                     new MapLocation(
-                        id, MapID.LightWorld, 1607, 670,
+                        id, MapID.LightWorld, 1607, 665,
                         RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
                 },
                 LocationID.SahasrahlasHut => new List<MapLocation>
@@ -581,7 +581,7 @@ namespace OpenTracker.Models.Locations
                         id, MapID.LightWorld, 320, 1195,
                         RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.KakarikoShop => new List<MapLocation>
+                LocationID.KakarikoShopEntrance => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.LightWorld, 220, 1175,
@@ -1184,7 +1184,7 @@ namespace OpenTracker.Models.Locations
                         id, MapID.DarkWorld, 1685, 295,
                         RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.DeathMountainShop => new List<MapLocation>
+                LocationID.DeathMountainShopEntrance => new List<MapLocation>
                 {
                     new MapLocation(
                         id, MapID.DarkWorld, 1725, 295,
@@ -1519,6 +1519,66 @@ namespace OpenTracker.Models.Locations
                     new MapLocation(
                         id, MapID.DarkWorld, 380, 262,
                         RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity])
+                },
+                LocationID.KakarikoShop => new List<MapLocation>
+                {
+                    new MapLocation(
+                        id, MapID.LightWorld, 220, 1175,
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
+                },
+                LocationID.LakeHyliaShop => new List<MapLocation>
+                {
+                    new MapLocation(
+                        id, MapID.LightWorld, 1460, 1540,
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
+                },
+                LocationID.DeathMountainShop => new List<MapLocation>
+                {
+                    new MapLocation(
+                        id, MapID.LightWorld, 1735, 290,
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
+                },
+                LocationID.PotionShop => new List<MapLocation>
+                {
+                    new MapLocation(
+                        id, MapID.LightWorld, 1607, 715,
+                        RequirementDictionary.Instance[RequirementType.ShopShuffleEntranceShuffleNoneDungeon])
+                },
+                LocationID.DarkLumberjackShop => new List<MapLocation>
+                {
+                    new MapLocation(
+                        id, MapID.DarkWorld, 675, 115,
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
+                },
+                LocationID.RedShieldShop => new List<MapLocation>
+                {
+                    new MapLocation(
+                        id, MapID.DarkWorld, 665, 922,
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
+                },
+                LocationID.VillageOfOutcastsShop => new List<MapLocation>
+                {
+                    new MapLocation(
+                        id, MapID.DarkWorld, 408, 1069,
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
+                },
+                LocationID.DarkLakeHyliaShop => new List<MapLocation>
+                {
+                    new MapLocation(
+                        id, MapID.DarkWorld, 1460, 1540,
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
+                },
+                LocationID.DarkPotionShop => new List<MapLocation>
+                {
+                    new MapLocation(
+                        id, MapID.DarkWorld, 1607, 670,
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
+                },
+                LocationID.DarkDeathMountainShop => new List<MapLocation>
+                {
+                    new MapLocation(
+                        id, MapID.DarkWorld, 1725, 360,
+                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(id))
             };

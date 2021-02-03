@@ -40,6 +40,11 @@ namespace OpenTracker.ViewModels.PinnedLocations
                 icons.Add(new ItemSectionIconVM(itemSection));
             }
 
+            if (section is IShopSection shopSection)
+            {
+                icons.Add(new ShopSectionIconVM(shopSection));
+            }
+
             if (section is ITakeAnySection takeAnySection)
             {
                 icons.Add(new TakeAnySectionIconVM(takeAnySection));
