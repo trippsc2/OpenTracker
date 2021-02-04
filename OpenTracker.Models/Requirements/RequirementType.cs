@@ -172,6 +172,7 @@
         Pendant,
         GreenPendant,
         TRSmallKey2,
+        TRSmallKey3,
         SBBlindPedestal,
         SBBonkOverLedge,
         SBBumperCaveHookshot,

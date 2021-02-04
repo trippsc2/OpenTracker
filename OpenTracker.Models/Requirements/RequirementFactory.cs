@@ -446,6 +446,8 @@ namespace OpenTracker.Models.Requirements
             {
                 RequirementType.TRSmallKey2 => new SmallKeyRequirement(
                     ItemDictionary.Instance[ItemType.TRSmallKey], 2),
+                RequirementType.TRSmallKey3 => new SmallKeyRequirement(
+                    ItemDictionary.Instance[ItemType.TRSmallKey], 3),
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
@@ -1474,6 +1476,7 @@ namespace OpenTracker.Models.Requirements
                         return GetItemRequirement(type);
                     }
                 case RequirementType.TRSmallKey2:
+                case RequirementType.TRSmallKey3:
                     {
                         return GetSmallKeyRequirement(type);
                     }
@@ -2059,7 +2062,15 @@ namespace OpenTracker.Models.Requirements
                             new AggregateRequirement(new List<IRequirement>
                             {
                                 RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn],
-                                RequirementDictionary.Instance[RequirementType.TRSmallKey2]
+                                new AlternativeRequirement(new List<IRequirement>
+                                {
+                                    RequirementDictionary.Instance[RequirementType.TRSmallKey3],
+                                    new AggregateRequirement(new List<IRequirement>
+                                    {
+                                        RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                                        RequirementDictionary.Instance[RequirementType.TRSmallKey2]
+                                    })
+                                }),
                             }),
                             new AggregateRequirement(new List<IRequirement>
                             {
