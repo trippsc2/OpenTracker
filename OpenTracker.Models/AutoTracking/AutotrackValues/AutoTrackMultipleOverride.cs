@@ -52,7 +52,7 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         {
             foreach (var value in _values)
             {
-                if (value.CurrentValue > 0)
+                if (value.CurrentValue.HasValue && value.CurrentValue > 0)
                 {
                     CurrentValue = value.CurrentValue;
                     break;

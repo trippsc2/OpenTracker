@@ -60,8 +60,14 @@ namespace OpenTracker.Models.Items
                     new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef38c], 0x10), 1),
                 ItemType.MagicBat => new AutoTrackFlagBool(
                     new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef411], 0x80), 1),
-                ItemType.Mushroom => new AutoTrackFlagBool(
-                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef341], 0x20), 1),
+                ItemType.Mushroom => new AutoTrackMultipleOverride(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef411], 0x20), 2),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef38c], 0x20), 1)
+                    }),
                 ItemType.Boots => new AutoTrackAddressBool(
                     AutoTracker.Instance.MemoryAddresses[0x7ef355], 0, 1),
                 ItemType.FireRod => new AutoTrackAddressBool(
@@ -376,7 +382,14 @@ namespace OpenTracker.Models.Items
                         new AutoTrackFlagBool(
                             new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef161], 0x04), 1)
                     }),
-                ItemType.EPFreeKey => throw new NotImplementedException(),
+                ItemType.EPFreeKey => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef175], 0x04), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef133], 0x04), 1)
+                    }),
                 ItemType.DPFreeKey => new AutoTrackMultipleSum(
                     new List<IAutoTrackValue>
                     {
@@ -387,7 +400,20 @@ namespace OpenTracker.Models.Items
                         new AutoTrackFlagBool(
                             new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef087], 0x04), 1)
                     }),
-                ItemType.SPFreeKey => throw new NotImplementedException(),
+                ItemType.SPFreeKey => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef071], 0x04), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef06f], 0x04), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef06d], 0x04), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef06b], 0x04), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef02d], 0x04), 1)
+                    }),
                 ItemType.SWFreeKey => new AutoTrackMultipleSum(
                     new List<IAutoTrackValue>
                     {
@@ -480,7 +506,20 @@ namespace OpenTracker.Models.Items
                         new AutoTrackFlagBool(
                             new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef161], 0x20), 1)
                     }),
-                ItemType.EPUnlockedDoor => throw new NotImplementedException(),
+                ItemType.EPUnlockedDoor => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef175], 0x80), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef173], 0x80), 1)
+                            }),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef133], 0x80), 1)
+                    }),
                 ItemType.DPUnlockedDoor => new AutoTrackMultipleSum(
                     new List<IAutoTrackValue>
                     {
@@ -535,7 +574,40 @@ namespace OpenTracker.Models.Items
                         new AutoTrackFlagBool(
                             new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef017], 0x20), 1)
                     }),
-                ItemType.SPUnlockedDoor => throw new NotImplementedException(),
+                ItemType.SPUnlockedDoor => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef051], 0x80), 1),
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef071], 0x40), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef06f], 0x10), 1)
+                            }),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef06f], 0x20), 1),
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef06d], 0x20), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef06b], 0x80), 1)
+                            }),
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef06d], 0x40), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef04d], 0x80), 1)
+                            }),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef02d], 0x40), 1)
+                    }),
                 ItemType.SWUnlockedDoor => new AutoTrackMultipleSum(
                     new List<IAutoTrackValue>
                     {

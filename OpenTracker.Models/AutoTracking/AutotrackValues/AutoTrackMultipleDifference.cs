@@ -15,9 +15,14 @@ namespace OpenTracker.Models.AutoTracking.AutotrackValues
         {
             get
             {
-                if (_value1.CurrentValue.HasValue && _value2.CurrentValue.HasValue)
+                if (_value1.CurrentValue.HasValue)
                 {
-                    return Math.Max(0, _value1.CurrentValue.Value - _value2.CurrentValue.Value);
+                    if (_value2.CurrentValue.HasValue)
+                    {
+                        return Math.Max(0, _value1.CurrentValue.Value - _value2.CurrentValue.Value);
+                    }
+
+                    return _value1.CurrentValue.Value;
                 }
 
                 return null;

@@ -58,16 +58,16 @@ namespace OpenTracker.Models.Sections
                     new List<IAutoTrackValue>
                     {
                         new AutoTrackFlagBool(
-                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef05f], 0x20), 1),
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef05e], 0x20), 1),
                         new AutoTrackFlagBool(
-                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef05f], 0x40), 1),
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef05e], 0x40), 1),
                         new AutoTrackFlagBool(
-                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef05f], 0x80), 1),
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef05e], 0x80), 1),
                         new AutoTrackFlagBool(
-                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef060], 0x01), 1),
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef05f], 0x01), 1),
                     }),
                 LocationID.TheWell => new AutoTrackFlagBool(
-                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef05f], 0x10), 1),
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef05e], 0x10), 1),
                 LocationID.BottleVendor => new AutoTrackFlagBool(
                     new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef3c9], 0x02), 1),
                 LocationID.ChickenHouse => new AutoTrackFlagBool(
@@ -83,7 +83,7 @@ namespace OpenTracker.Models.Sections
                 LocationID.Library => new AutoTrackFlagBool(
                     new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef410], 0x80), 1),
                 LocationID.MushroomSpot => new AutoTrackFlagBool(
-                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef281], 0x10), 1),
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef411], 0x10), 1),
                 LocationID.ForestHideout => new AutoTrackFlagBool(
                     new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef1c3], 0x02), 1),
                 LocationID.CastleSecret when sectionIndex == 1 => new AutoTrackFlagBool(
@@ -274,10 +274,10 @@ namespace OpenTracker.Models.Sections
                         new AutoTrackMultipleOverride(
                             new List<IAutoTrackValue>
                             {
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef434], 0xF0, 4),
                                 new AutoTrackAddressValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef4c0], 255, 0)
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef4c0], 255, 0),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef434], 0xF0, 4)
                             }),
                         new AutoTrackMultipleSum(
                             new List<IAutoTrackValue>
@@ -318,10 +318,10 @@ namespace OpenTracker.Models.Sections
                         new AutoTrackMultipleOverride(
                             new List<IAutoTrackValue>
                             {
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef436], 0x07, 0),
                                 new AutoTrackAddressValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef4c1], 255, 0)
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef4c1], 255, 0),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef436], 0x07, 0)
                             }),
                         new AutoTrackMultipleSum(
                             new List<IAutoTrackValue>
@@ -347,10 +347,10 @@ namespace OpenTracker.Models.Sections
                         new AutoTrackMultipleOverride(
                             new List<IAutoTrackValue>
                             {
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef435], 0xE0, 5),
                                 new AutoTrackAddressValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef4c2], 255, 0)
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef4c2], 255, 0),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef435], 0xE0, 5)
                             }),
                         new AutoTrackMultipleSum(
                             new List<IAutoTrackValue>
@@ -380,10 +380,10 @@ namespace OpenTracker.Models.Sections
                         new AutoTrackMultipleOverride(
                             new List<IAutoTrackValue>
                             {
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef435], 0x1C, 2),
                                 new AutoTrackAddressValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef4c9], 255, 0)
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef4c9], 255, 0),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef435], 0x1C, 2)
                             }),
                         new AutoTrackMultipleSum(
                             new List<IAutoTrackValue>
@@ -413,10 +413,10 @@ namespace OpenTracker.Models.Sections
                         new AutoTrackMultipleOverride(
                             new List<IAutoTrackValue>
                             {
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef434], 0x0F, 0),
                                 new AutoTrackAddressValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef4c5], 255, 0)
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef4c5], 255, 0),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef434], 0x0F, 0)
                             }),
                         new AutoTrackMultipleSum(
                             new List<IAutoTrackValue>
@@ -446,10 +446,10 @@ namespace OpenTracker.Models.Sections
                         new AutoTrackMultipleOverride(
                             new List<IAutoTrackValue>
                             {
+                                new AutoTrackAddressValue(
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef4c4], 255, 0),
                                 new AutoTrackBitwiseIntegerValue(
                                     AutoTracker.Instance.MemoryAddresses[0x7ef439], 0xF, 0),
-                                new AutoTrackAddressValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef4c4], 255, 0)
                             }),
                         new AutoTrackMultipleSum(
                             new List<IAutoTrackValue>
@@ -479,10 +479,10 @@ namespace OpenTracker.Models.Sections
                         new AutoTrackMultipleOverride(
                             new List<IAutoTrackValue>
                             {
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef437], 0xF0, 4),
                                 new AutoTrackAddressValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef4c7], 255, 0)
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef4c7], 255, 0),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef437], 0xF0, 4)
                             }),
                         new AutoTrackMultipleSum(
                             new List<IAutoTrackValue>
@@ -512,10 +512,10 @@ namespace OpenTracker.Models.Sections
                         new AutoTrackMultipleOverride(
                             new List<IAutoTrackValue>
                             {
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef437], 0xF, 0),
                                 new AutoTrackAddressValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef4ca], 255, 0)
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef4ca], 255, 0),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef437], 0xF, 0)
                             }),
                         new AutoTrackMultipleSum(
                             new List<IAutoTrackValue>
@@ -545,10 +545,10 @@ namespace OpenTracker.Models.Sections
                         new AutoTrackMultipleOverride(
                             new List<IAutoTrackValue>
                             {
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef438], 0xF0, 4),
                                 new AutoTrackAddressValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef4c8], 255, 0)
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef4c8], 255, 0),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef438], 0xF0, 4)
                             }),
                         new AutoTrackMultipleSum(
                             new List<IAutoTrackValue>
@@ -578,10 +578,10 @@ namespace OpenTracker.Models.Sections
                         new AutoTrackMultipleOverride(
                             new List<IAutoTrackValue>
                             {
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef438], 0xF, 0),
                                 new AutoTrackAddressValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef4c6], 255, 0)
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef4c6], 255, 0),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef438], 0xF, 0)
                             }),
                         new AutoTrackMultipleSum(
                             new List<IAutoTrackValue>
@@ -611,10 +611,10 @@ namespace OpenTracker.Models.Sections
                         new AutoTrackMultipleOverride(
                             new List<IAutoTrackValue>
                             {
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef439], 0xF0, 4),
                                 new AutoTrackAddressValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef4cb], 255, 0)
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef4cb], 255, 0),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef439], 0xF0, 4)
                             }),
                         new AutoTrackMultipleSum(
                             new List<IAutoTrackValue>
@@ -644,10 +644,10 @@ namespace OpenTracker.Models.Sections
                         new AutoTrackMultipleOverride(
                             new List<IAutoTrackValue>
                             {
-                                new AutoTrackBitwiseIntegerValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef436], 0xF8, 3),
                                 new AutoTrackAddressValue(
-                                    AutoTracker.Instance.MemoryAddresses[0x7ef4cc], 255, 0)
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef4cc], 255, 0),
+                                new AutoTrackBitwiseIntegerValue(
+                                    AutoTracker.Instance.MemoryAddresses[0x7ef436], 0xF8, 3)
                             }),
                         new AutoTrackMultipleSum(
                             new List<IAutoTrackValue>
