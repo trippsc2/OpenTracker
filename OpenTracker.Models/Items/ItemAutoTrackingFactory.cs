@@ -12,1624 +12,6 @@ namespace OpenTracker.Models.Items
     public static class ItemAutoTrackingFactory
     {
         /// <summary>
-        /// Returns the memory segment of the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <param name="index">
-        /// The index of the memory address to be retrieved.
-        /// </param>
-        /// <returns>
-        /// The memory segment of the specified item.
-        /// </returns>
-        private static MemorySegmentType GetMemorySegment(ItemType type, int index = 0)
-        {
-            switch (type)
-            {
-                case ItemType.Sword:
-                case ItemType.Shield:
-                case ItemType.Mail:
-                case ItemType.Bow:
-                case ItemType.Arrows:
-                case ItemType.Boomerang:
-                case ItemType.RedBoomerang:
-                case ItemType.Hookshot:
-                case ItemType.Bomb:
-                case ItemType.Powder:
-                case ItemType.Mushroom when index == 1:
-                case ItemType.Boots:
-                case ItemType.FireRod:
-                case ItemType.IceRod:
-                case ItemType.Bombos:
-                case ItemType.Ether:
-                case ItemType.Quake:
-                case ItemType.Gloves:
-                case ItemType.Lamp:
-                case ItemType.Hammer:
-                case ItemType.Flute:
-                case ItemType.FluteActivated:
-                case ItemType.Net:
-                case ItemType.Book:
-                case ItemType.Shovel:
-                case ItemType.Flippers:
-                case ItemType.Bottle:
-                case ItemType.CaneOfSomaria:
-                case ItemType.CaneOfByrna:
-                case ItemType.Cape:
-                case ItemType.Mirror:
-                case ItemType.HalfMagic:
-                case ItemType.MoonPearl:
-                case ItemType.HCBigKey:
-                case ItemType.EPBigKey:
-                case ItemType.DPBigKey:
-                case ItemType.ToHBigKey:
-                case ItemType.PoDBigKey:
-                case ItemType.SPBigKey:
-                case ItemType.SWBigKey:
-                case ItemType.TTBigKey:
-                case ItemType.IPBigKey:
-                case ItemType.MMBigKey:
-                case ItemType.TRBigKey:
-                case ItemType.GTBigKey:
-                case ItemType.SmallKey:
-                case ItemType.HCMap:
-                case ItemType.EPMap:
-                case ItemType.DPMap:
-                case ItemType.ToHMap:
-                case ItemType.PoDMap:
-                case ItemType.SPMap:
-                case ItemType.SWMap:
-                case ItemType.TTMap:
-                case ItemType.IPMap:
-                case ItemType.MMMap:
-                case ItemType.TRMap:
-                case ItemType.GTMap:
-                case ItemType.EPCompass:
-                case ItemType.DPCompass:
-                case ItemType.ToHCompass:
-                case ItemType.PoDCompass:
-                case ItemType.SPCompass:
-                case ItemType.SWCompass:
-                case ItemType.TTCompass:
-                case ItemType.IPCompass:
-                case ItemType.MMCompass:
-                case ItemType.TRCompass:
-                case ItemType.GTCompass:
-                    {
-                        return MemorySegmentType.Item;
-                    }
-                case ItemType.MagicBat:
-                case ItemType.Mushroom:
-                    {
-                        return MemorySegmentType.NPCItem;
-                    }
-                case ItemType.BigBomb:
-                case ItemType.HCFreeKey:
-                case ItemType.ATFreeKey:
-                case ItemType.DPFreeKey:
-                case ItemType.SWFreeKey:
-                case ItemType.TTFreeKey:
-                case ItemType.IPFreeKey:
-                case ItemType.MMFreeKey:
-                case ItemType.TRFreeKey:
-                case ItemType.GTFreeKey:
-                case ItemType.HCUnlockedDoor:
-                case ItemType.ATUnlockedDoor:
-                case ItemType.DPUnlockedDoor:
-                case ItemType.ToHUnlockedDoor:
-                case ItemType.PoDUnlockedDoor:
-                case ItemType.SPUnlockedDoor:
-                case ItemType.SWUnlockedDoor:
-                case ItemType.TTUnlockedDoor:
-                case ItemType.IPUnlockedDoor:
-                case ItemType.MMUnlockedDoor:
-                case ItemType.TRUnlockedDoor:
-                case ItemType.GTUnlockedDoor:
-                    {
-                        return MemorySegmentType.Room;
-                    }
-                case ItemType.HCSmallKey:
-                case ItemType.ATSmallKey:
-                case ItemType.DPSmallKey:
-                case ItemType.ToHSmallKey:
-                case ItemType.PoDSmallKey:
-                case ItemType.SPSmallKey:
-                case ItemType.SWSmallKey:
-                case ItemType.TTSmallKey:
-                case ItemType.IPSmallKey:
-                case ItemType.MMSmallKey:
-                case ItemType.TRSmallKey:
-                case ItemType.GTSmallKey:
-                    {
-                        return MemorySegmentType.Dungeon;
-                    }
-                default:
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(type));
-                    }
-            }
-        }
-
-        /// <summary>
-        /// Returns the memory address index of the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <param name="index">
-        /// The index of the memory address to be retrieved.
-        /// </param>
-        /// <returns>
-        /// The memory address index.
-        /// </returns>
-        private static int GetMemoryIndex(ItemType type, int index = 0)
-        {
-            switch (type)
-            {
-                case ItemType.Sword:
-                    {
-                        return 25;
-                    }
-                case ItemType.Shield:
-                    {
-                        return 26;
-                    }
-                case ItemType.Mail:
-                    {
-                        return 27;
-                    }
-                case ItemType.Bow:
-                    {
-                        return 0;
-                    }
-                case ItemType.HCSmallKey when index == 0:
-                    {
-                        return 32;
-                    }
-                case ItemType.HCSmallKey:
-                    {
-                        return 33;
-                    }
-                case ItemType.Arrows when index == 0:
-                    {
-                        return 78;
-                    }
-                case ItemType.Arrows:
-                    {
-                        return 55;
-                    }
-                case ItemType.Boomerang:
-                case ItemType.RedBoomerang:
-                case ItemType.Powder:
-                case ItemType.Mushroom when index == 1:
-                case ItemType.Flute:
-                case ItemType.FluteActivated:
-                case ItemType.Shovel:
-                    {
-                        return 76;
-                    }
-                case ItemType.Hookshot:
-                    {
-                        return 2;
-                    }
-                case ItemType.Bomb:
-                    {
-                        return 3;
-                    }
-                case ItemType.DPSmallKey:
-                    {
-                        return 35;
-                    }
-                case ItemType.BigBomb:
-                    {
-                        return 556;
-                    }
-                case ItemType.MagicBat:
-                case ItemType.Mushroom:
-                    {
-                        return 1;
-                    }
-                case ItemType.Boots:
-                    {
-                        return 21;
-                    }
-                case ItemType.FireRod:
-                    {
-                        return 5;
-                    }
-                case ItemType.SPSmallKey:
-                    {
-                        return 37;
-                    }
-                case ItemType.IceRod:
-                    {
-                        return 6;
-                    }
-                case ItemType.PoDSmallKey:
-                    {
-                        return 38;
-                    }
-                case ItemType.Bombos:
-                    {
-                        return 7;
-                    }
-                case ItemType.MMSmallKey:
-                    {
-                        return 39;
-                    }
-                case ItemType.Ether:
-                    {
-                        return 8;
-                    }
-                case ItemType.SWSmallKey:
-                    {
-                        return 40;
-                    }
-                case ItemType.Quake:
-                    {
-                        return 9;
-                    }
-                case ItemType.IPSmallKey:
-                    {
-                        return 41;
-                    }
-                case ItemType.Gloves:
-                    {
-                        return 20;
-                    }
-                case ItemType.Lamp:
-                    {
-                        return 10;
-                    }
-                case ItemType.ToHSmallKey:
-                    {
-                        return 42;
-                    }
-                case ItemType.Hammer:
-                    {
-                        return 11;
-                    }
-                case ItemType.TTSmallKey:
-                    {
-                        return 43;
-                    }
-                case ItemType.Net:
-                    {
-                        return 13;
-                    }
-                case ItemType.GTSmallKey:
-                    {
-                        return 45;
-                    }
-                case ItemType.Book:
-                    {
-                        return 14;
-                    }
-                case ItemType.Flippers:
-                    {
-                        return 22;
-                    }
-                case ItemType.Bottle when index == 0:
-                    {
-                        return 28;
-                    }
-                case ItemType.Bottle when index == 1:
-                    {
-                        return 29;
-                    }
-                case ItemType.Bottle when index == 2:
-                    {
-                        return 30;
-                    }
-                case ItemType.Bottle:
-                    {
-                        return 31;
-                    }
-                case ItemType.CaneOfSomaria:
-                    {
-                        return 16;
-                    }
-                case ItemType.CaneOfByrna:
-                    {
-                        return 17;
-                    }
-                case ItemType.Cape:
-                    {
-                        return 18;
-                    }
-                case ItemType.Mirror:
-                    {
-                        return 19;
-                    }
-                case ItemType.HalfMagic:
-                    {
-                        return 59;
-                    }
-                case ItemType.MoonPearl:
-                    {
-                        return 23;
-                    }
-                case ItemType.HCBigKey:
-                case ItemType.EPBigKey:
-                case ItemType.DPBigKey:
-                case ItemType.PoDBigKey:
-                case ItemType.SPBigKey:
-                case ItemType.MMBigKey:
-                    {
-                        return 39;
-                    }
-                case ItemType.ToHBigKey:
-                case ItemType.SWBigKey:
-                case ItemType.TTBigKey:
-                case ItemType.IPBigKey:
-                case ItemType.TRBigKey:
-                case ItemType.GTBigKey:
-                    {
-                        return 38;
-                    }
-                case ItemType.SmallKey:
-                    {
-                        return 47;
-                    }
-                case ItemType.ATSmallKey:
-                    {
-                        return 36;
-                    }
-                case ItemType.TRSmallKey:
-                    {
-                        return 44;
-                    }
-                case ItemType.HCMap:
-                case ItemType.EPMap:
-                case ItemType.DPMap:
-                case ItemType.PoDMap:
-                case ItemType.SPMap:
-                case ItemType.MMMap:
-                    {
-                        return 41;
-                    }
-                case ItemType.ToHMap:
-                case ItemType.SWMap:
-                case ItemType.TTMap:
-                case ItemType.IPMap:
-                case ItemType.TRMap:
-                case ItemType.GTMap:
-                    {
-                        return 40;
-                    }
-                case ItemType.EPCompass:
-                case ItemType.DPCompass:
-                case ItemType.PoDCompass:
-                case ItemType.SPCompass:
-                case ItemType.MMCompass:
-                    {
-                        return 37;
-                    }
-                case ItemType.ToHCompass:
-                case ItemType.SWCompass:
-                case ItemType.TTCompass:
-                case ItemType.IPCompass:
-                case ItemType.TRCompass:
-                case ItemType.GTCompass:
-                    {
-                        return 36;
-                    }
-                default:
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(type));
-                    }
-            }
-        }
-
-        /// <summary>
-        /// Returns the maximum value of the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <returns>
-        /// The maximum autotracking value.
-        /// </returns>
-        private static byte GetMaximum(ItemType type)
-        {
-            switch (type)
-            {
-                case ItemType.Sword:
-                    {
-                        return 5;
-                    }
-                case ItemType.Shield:
-                case ItemType.SWSmallKey:
-                case ItemType.MMSmallKey:
-                    {
-                        return 3;
-                    }
-                case ItemType.Mail:
-                case ItemType.Gloves:
-                case ItemType.ATSmallKey:
-                case ItemType.IPSmallKey:
-                    {
-                        return 2;
-                    }
-                case ItemType.SmallKey:
-                    {
-                        return 99;
-                    }
-                case ItemType.HCSmallKey:
-                case ItemType.DPSmallKey:
-                case ItemType.ToHSmallKey:
-                case ItemType.SPSmallKey:
-                case ItemType.TTSmallKey:
-                    {
-                        return 1;
-                    }
-                case ItemType.PoDSmallKey:
-                    {
-                        return 6;
-                    }
-                case ItemType.TRSmallKey:
-                case ItemType.GTSmallKey:
-                    {
-                        return 4;
-                    }
-                default:
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(type));
-                    }
-            }
-        }
-
-        /// <summary>
-        /// Returns the adjustment value of the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <returns>
-        /// The adjustment autotracking value.
-        /// </returns>
-        private static int GetAdjustment(ItemType type)
-        {
-            switch (type)
-            {
-                case ItemType.Sword:
-                    {
-                        return 1;
-                    }
-                case ItemType.Shield:
-                case ItemType.Mail:
-                case ItemType.Gloves:
-                case ItemType.SmallKey:
-                case ItemType.HCSmallKey:
-                case ItemType.ATSmallKey:
-                case ItemType.DPSmallKey:
-                case ItemType.ToHSmallKey:
-                case ItemType.PoDSmallKey:
-                case ItemType.SPSmallKey:
-                case ItemType.SWSmallKey:
-                case ItemType.TTSmallKey:
-                case ItemType.IPSmallKey:
-                case ItemType.MMSmallKey:
-                case ItemType.TRSmallKey:
-                case ItemType.GTSmallKey:
-                    {
-                        return 0;
-                    }
-                default:
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(type));
-                    }
-            }
-        }
-
-        /// <summary>
-        /// Returns the comparison value of the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <returns>
-        /// The comparison autotracking value.
-        /// </returns>
-        private static byte GetComparison(ItemType type)
-        {
-            switch (type)
-            {
-                case ItemType.Bow:
-                case ItemType.Arrows:
-                case ItemType.Hookshot:
-                case ItemType.Bomb:
-                case ItemType.Boots:
-                case ItemType.FireRod:
-                case ItemType.IceRod:
-                case ItemType.Bombos:
-                case ItemType.Ether:
-                case ItemType.Quake:
-                case ItemType.Lamp:
-                case ItemType.Hammer:
-                case ItemType.Net:
-                case ItemType.Book:
-                case ItemType.Flippers:
-                case ItemType.Bottle:
-                case ItemType.CaneOfSomaria:
-                case ItemType.CaneOfByrna:
-                case ItemType.Cape:
-                case ItemType.HalfMagic:
-                case ItemType.MoonPearl:
-                case ItemType.HCSmallKey:
-                    {
-                        return 0;
-                    }
-                case ItemType.Mirror:
-                    {
-                        return 1;
-                    }
-                default:
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(type));
-                    }
-            }
-        }
-
-        /// <summary>
-        /// Returns the memory flag for the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <param name="index">
-        /// The index of the memory address to be retrieved.
-        /// </param>
-        /// <returns>
-        /// The memory flag for the specified item.
-        /// </returns>
-        private static byte GetFlag(ItemType type, int index = 0)
-        {
-            switch (type)
-            {
-                case ItemType.Arrows:
-                case ItemType.RedBoomerang:
-                case ItemType.HCBigKey when index == 0:
-                case ItemType.IPBigKey:
-                case ItemType.HCMap when index == 0:
-                case ItemType.IPMap:
-                case ItemType.IPCompass:
-                    {
-                        return 64;
-                    }
-                case ItemType.Boomerang:
-                case ItemType.MagicBat:
-                case ItemType.HCBigKey:
-                case ItemType.SWBigKey:
-                case ItemType.SWMap:
-                case ItemType.SWCompass:
-                case ItemType.HCMap:
-                    {
-                        return 128;
-                    }
-                case ItemType.BigBomb when index == 0:
-                case ItemType.Powder:
-                case ItemType.DPBigKey:
-                case ItemType.TTBigKey:
-                case ItemType.DPMap:
-                case ItemType.TTMap:
-                case ItemType.DPCompass:
-                case ItemType.TTCompass:
-                    {
-                        return 16;
-                    }
-                case ItemType.BigBomb:
-                case ItemType.Mushroom:
-                case ItemType.EPBigKey:
-                case ItemType.ToHBigKey:
-                case ItemType.EPMap:
-                case ItemType.ToHMap:
-                case ItemType.EPCompass:
-                case ItemType.ToHCompass:
-                    {
-                        return 32;
-                    }
-                case ItemType.Flute when index == 0:
-                case ItemType.FluteActivated:
-                case ItemType.MMBigKey:
-                case ItemType.MMMap:
-                case ItemType.MMCompass:
-                    {
-                        return 1;
-                    }
-                case ItemType.Flute:
-                case ItemType.PoDBigKey:
-                case ItemType.PoDMap:
-                case ItemType.PoDCompass:
-                    {
-                        return 2;
-                    }
-                case ItemType.Shovel:
-                case ItemType.SPBigKey:
-                case ItemType.GTBigKey:
-                case ItemType.SPMap:
-                case ItemType.GTMap:
-                case ItemType.SPCompass:
-                case ItemType.GTCompass:
-                    {
-                        return 4;
-                    }
-                case ItemType.TRBigKey:
-                case ItemType.TRMap:
-                case ItemType.TRCompass:
-                    {
-                        return 8;
-                    }
-                default:
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(type));
-                    }
-            }
-        }
-
-        /// <summary>
-        /// Returns the value returned when the comparison is true for the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <param name="index">
-        /// The index of the memory address to be retrieved.
-        /// </param>
-        /// <returns>
-        /// The value returned when the comparison is true.
-        /// </returns>
-        private static int GetTrueValue(ItemType type, int index = 0)
-        {
-            switch (type)
-            {
-                case ItemType.Arrows when index == 0:
-                case ItemType.Mushroom when index == 0:
-                    {
-                        return 2;
-                    }
-                case ItemType.Bow:
-                case ItemType.Boomerang:
-                case ItemType.RedBoomerang:
-                case ItemType.Arrows:
-                case ItemType.Hookshot:
-                case ItemType.Bomb:
-                case ItemType.BigBomb:
-                case ItemType.Powder:
-                case ItemType.MagicBat:
-                case ItemType.Mushroom:
-                case ItemType.Boots:
-                case ItemType.FireRod:
-                case ItemType.IceRod:
-                case ItemType.Bombos:
-                case ItemType.Ether:
-                case ItemType.Quake:
-                case ItemType.Lamp:
-                case ItemType.Hammer:
-                case ItemType.Flute:
-                case ItemType.FluteActivated:
-                case ItemType.Net:
-                case ItemType.Book:
-                case ItemType.Shovel:
-                case ItemType.Flippers:
-                case ItemType.Bottle:
-                case ItemType.CaneOfSomaria:
-                case ItemType.CaneOfByrna:
-                case ItemType.Cape:
-                case ItemType.Mirror:
-                case ItemType.HalfMagic:
-                case ItemType.MoonPearl:
-                case ItemType.HCBigKey:
-                case ItemType.EPBigKey:
-                case ItemType.DPBigKey:
-                case ItemType.ToHBigKey:
-                case ItemType.PoDBigKey:
-                case ItemType.SPBigKey:
-                case ItemType.SWBigKey:
-                case ItemType.TTBigKey:
-                case ItemType.IPBigKey:
-                case ItemType.MMBigKey:
-                case ItemType.TRBigKey:
-                case ItemType.GTBigKey:
-                case ItemType.HCSmallKey:
-                case ItemType.HCMap:
-                case ItemType.EPMap:
-                case ItemType.DPMap:
-                case ItemType.ToHMap:
-                case ItemType.PoDMap:
-                case ItemType.SPMap:
-                case ItemType.SWMap:
-                case ItemType.TTMap:
-                case ItemType.IPMap:
-                case ItemType.MMMap:
-                case ItemType.TRMap:
-                case ItemType.GTMap:
-                case ItemType.EPCompass:
-                case ItemType.DPCompass:
-                case ItemType.ToHCompass:
-                case ItemType.PoDCompass:
-                case ItemType.SPCompass:
-                case ItemType.SWCompass:
-                case ItemType.TTCompass:
-                case ItemType.IPCompass:
-                case ItemType.MMCompass:
-                case ItemType.TRCompass:
-                case ItemType.GTCompass:
-                    {
-                        return 1;
-                    }
-                default:
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(type));
-                    }
-            }
-        }
-
-        /// <summary>
-        /// Returns the autotracking flag value for the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <param name="index">
-        /// The index of the memory address.
-        /// </param>
-        /// <returns>
-        /// The autotracking flag value for the specified item.
-        /// </returns>
-        private static IAutoTrackValue GetFlagBool(ItemType type, int index = 0)
-        {
-            return new AutoTrackFlagBool(
-                new MemoryFlag(
-                    AutoTracker.GetMemoryAddress(
-                        GetMemorySegment(type, index), GetMemoryIndex(type, index)),
-                    GetFlag(type, index)), GetTrueValue(type, index));
-        }
-
-        /// <summary>
-        /// Returns the list of autotracking values for the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <returns>
-        /// The list of autotracking values for the specified item.
-        /// </returns>
-        private static List<IAutoTrackValue> GetValues(ItemType type)
-        {
-            var values = new List<IAutoTrackValue>();
-            int count;
-
-            switch (type)
-            {
-                case ItemType.Arrows:
-                case ItemType.BigBomb:
-                case ItemType.Mushroom:
-                case ItemType.Flute:
-                case ItemType.HCMap:
-                case ItemType.HCSmallKey:
-                case ItemType.HCBigKey:
-                    {
-                        count = 2;
-                    }
-                    break;
-                case ItemType.Bottle:
-                    {
-                        count = 4;
-                    }
-                    break;
-                default:
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(type));
-                    }
-            }
-
-            for (int i = 0; i < count; i++)
-            {
-                switch (type)
-                {
-                    case ItemType.Arrows when i == 0:
-                    case ItemType.BigBomb:
-                    case ItemType.Mushroom:
-                    case ItemType.Flute:
-                    case ItemType.HCMap:
-                        {
-                            values.Add(GetFlagBool(type, i));
-                        }
-                        break;
-                    case ItemType.Arrows:
-                    case ItemType.Bottle:
-                    case ItemType.HCSmallKey:
-                        {
-                            values.Add(GetAddressBool(type, i));
-                        }
-                        break;
-                }
-            }
-
-            return values;
-        }
-
-        /// <summary>
-        /// Returns the autotracking value for the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <returns>
-        /// The autotracking value for the specified item.
-        /// </returns>
-        private static IAutoTrackValue GetAddressValue(ItemType type)
-        {
-            return new AutoTrackAddressValue(
-                AutoTracker.GetMemoryAddress(GetMemorySegment(type), GetMemoryIndex(type)),
-                GetMaximum(type), GetAdjustment(type));
-        }
-
-        /// <summary>
-        /// Returns the autotracking boolean value for the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <param name="index">
-        /// The index of the memory address.
-        /// </param>
-        /// <returns>
-        /// The autotracking boolean value for the specified item.
-        /// </returns>
-        private static IAutoTrackValue GetAddressBool(ItemType type, int index = 0)
-        {
-            return new AutoTrackAddressBool(
-                AutoTracker.GetMemoryAddress(
-                    GetMemorySegment(type, index), GetMemoryIndex(type, index)),
-                GetComparison(type), GetTrueValue(type, index));
-        }
-
-        /// <summary>
-        /// Returns the autotracking override value for the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <returns>
-        /// The autotracking override value for the specified item.
-        /// </returns>
-        private static IAutoTrackValue GetMultipleOverride(ItemType type)
-        {
-            return new AutoTrackMultipleOverride(GetValues(type));
-        }
-
-        /// <summary>
-        /// Returns the autotracking sum value for the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <returns>
-        /// The autotracking sum value for the specified item.
-        /// </returns>
-        private static IAutoTrackValue GetMultipleSum(ItemType type)
-        {
-            return new AutoTrackMultipleSum(GetValues(type));
-        }
-
-        /// <summary>
-        /// Returns the autotracking difference value for the specified item.
-        /// </summary>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <returns>
-        /// The autotracking difference value for the specified item.
-        /// </returns>
-        private static IAutoTrackValue GetSmallKeyValue(ItemType type)
-        {
-            switch (type)
-            {
-                case ItemType.HCSmallKey:
-                    {
-                        return new AutoTrackConditionalValue(
-                            RequirementDictionary.Instance[RequirementType.GenericKeys],
-                            new AutoTrackConditionalValue(
-                                RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
-                                new AutoTrackMultipleDifference(
-                                    new AutoTrackItemValue(ItemDictionary.Instance[ItemType.HCUnlockedDoor]),
-                                    new AutoTrackItemValue(ItemDictionary.Instance[ItemType.HCFreeKey])), null),
-                            GetMultipleOverride(type));
-                    }
-                case ItemType.DPSmallKey:
-                    {
-                        return new AutoTrackConditionalValue(
-                            RequirementDictionary.Instance[RequirementType.GenericKeys],
-                            new AutoTrackConditionalValue(
-                                RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
-                                new AutoTrackMultipleDifference(
-                                    new AutoTrackItemValue(ItemDictionary.Instance[ItemType.DPUnlockedDoor]),
-                                    new AutoTrackItemValue(ItemDictionary.Instance[ItemType.DPFreeKey])), null),
-                            GetAddressValue(type));
-                    }
-                case ItemType.ToHSmallKey:
-                    {
-                        return new AutoTrackConditionalValue(
-                            RequirementDictionary.Instance[RequirementType.GenericKeys],
-                            new AutoTrackConditionalValue(
-                                RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
-                                new AutoTrackItemValue(ItemDictionary.Instance[ItemType.ToHUnlockedDoor]), null),
-                            GetAddressValue(type));
-                    }
-                case ItemType.ATSmallKey:
-                    {
-                        return new AutoTrackConditionalValue(
-                            RequirementDictionary.Instance[RequirementType.GenericKeys],
-                            new AutoTrackConditionalValue(
-                                RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
-                                new AutoTrackMultipleDifference(
-                                    new AutoTrackItemValue(ItemDictionary.Instance[ItemType.ATUnlockedDoor]),
-                                    new AutoTrackItemValue(ItemDictionary.Instance[ItemType.ATFreeKey])), null),
-                            GetAddressValue(type));
-                    }
-                case ItemType.PoDSmallKey:
-                    {
-                        return new AutoTrackConditionalValue(
-                            RequirementDictionary.Instance[RequirementType.GenericKeys],
-                            new AutoTrackConditionalValue(
-                                RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
-                                new AutoTrackItemValue(ItemDictionary.Instance[ItemType.PoDUnlockedDoor]), null),
-                            GetAddressValue(type));
-                    }
-                case ItemType.SPSmallKey:
-                    {
-                        return new AutoTrackConditionalValue(
-                            RequirementDictionary.Instance[RequirementType.GenericKeys],
-                            new AutoTrackConditionalValue(
-                                RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
-                                new AutoTrackItemValue(ItemDictionary.Instance[ItemType.SPUnlockedDoor]), null),
-                            GetAddressValue(type));
-                    }
-                case ItemType.SWSmallKey:
-                    {
-                        return new AutoTrackConditionalValue(
-                            RequirementDictionary.Instance[RequirementType.GenericKeys],
-                            new AutoTrackConditionalValue(
-                                RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
-                                new AutoTrackMultipleDifference(
-                                    new AutoTrackItemValue(ItemDictionary.Instance[ItemType.SWUnlockedDoor]),
-                                    new AutoTrackItemValue(ItemDictionary.Instance[ItemType.SWFreeKey])), null),
-                            GetAddressValue(type));
-                    }
-                case ItemType.TTSmallKey:
-                    {
-                        return new AutoTrackConditionalValue(
-                            RequirementDictionary.Instance[RequirementType.GenericKeys],
-                            new AutoTrackConditionalValue(
-                                RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
-                                new AutoTrackMultipleDifference(
-                                    new AutoTrackItemValue(ItemDictionary.Instance[ItemType.TTUnlockedDoor]),
-                                    new AutoTrackItemValue(ItemDictionary.Instance[ItemType.TTFreeKey])), null),
-                            GetAddressValue(type));
-                    }
-                case ItemType.IPSmallKey:
-                    {
-                        return new AutoTrackConditionalValue(
-                            RequirementDictionary.Instance[RequirementType.GenericKeys],
-                            new AutoTrackConditionalValue(
-                                RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
-                                new AutoTrackMultipleDifference(
-                                    new AutoTrackItemValue(ItemDictionary.Instance[ItemType.IPUnlockedDoor]),
-                                    new AutoTrackItemValue(ItemDictionary.Instance[ItemType.IPFreeKey])), null),
-                            GetAddressValue(type));
-                    }
-                case ItemType.MMSmallKey:
-                    {
-                        return new AutoTrackConditionalValue(
-                            RequirementDictionary.Instance[RequirementType.GenericKeys],
-                            new AutoTrackConditionalValue(
-                                RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
-                                new AutoTrackMultipleDifference(
-                                    new AutoTrackItemValue(ItemDictionary.Instance[ItemType.MMUnlockedDoor]),
-                                    new AutoTrackItemValue(ItemDictionary.Instance[ItemType.MMFreeKey])), null),
-                            GetAddressValue(type));
-                    }
-                case ItemType.TRSmallKey:
-                    {
-                        return new AutoTrackConditionalValue(
-                            RequirementDictionary.Instance[RequirementType.GenericKeys],
-                            new AutoTrackConditionalValue(
-                                RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
-                                new AutoTrackMultipleDifference(
-                                    new AutoTrackItemValue(ItemDictionary.Instance[ItemType.TRUnlockedDoor]),
-                                    new AutoTrackItemValue(ItemDictionary.Instance[ItemType.TRFreeKey])), null),
-                            GetAddressValue(type));
-                    }
-                case ItemType.GTSmallKey:
-                    {
-                        return new AutoTrackConditionalValue(
-                            RequirementDictionary.Instance[RequirementType.GenericKeys],
-                            new AutoTrackConditionalValue(
-                                RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
-                                new AutoTrackMultipleDifference(
-                                    new AutoTrackItemValue(ItemDictionary.Instance[ItemType.GTUnlockedDoor]),
-                                    new AutoTrackItemValue(ItemDictionary.Instance[ItemType.GTFreeKey])), null),
-                            GetAddressValue(type));
-                    }
-                case ItemType.HCFreeKey:
-                    {
-                        return new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                        {
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xe5),
-                                    0x4), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xe3),
-                                    0x4), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x43),
-                                    0x4), 1)
-                        });
-                    }
-                case ItemType.ATFreeKey:
-                    {
-                        return new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                        {
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x181),
-                                    0x4), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x161),
-                                    0x4), 1)
-                        });
-                    }
-                case ItemType.DPFreeKey:
-                    {
-                        return new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                        {
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xc7),
-                                    0x4), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xa7),
-                                    0x4), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x87),
-                                    0x4), 1)
-                        });
-                    }
-                case ItemType.SWFreeKey:
-                    {
-                        return new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                        {
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xad),
-                                    0x4), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x73),
-                                    0x4), 1)
-                        });
-                    }
-                case ItemType.TTFreeKey:
-                    {
-                        return new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                        {
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x179),
-                                    0x4), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x157),
-                                    0x4), 1)
-                        });
-                    }
-                case ItemType.IPFreeKey:
-                    {
-                        return new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                        {
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1d),
-                                    0x4), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x7d),
-                                    0x4), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x7f),
-                                    0x4), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x13f),
-                                    0x4), 1)
-                        });
-                    }
-                case ItemType.MMFreeKey:
-                    {
-                        return new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                        {
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x167),
-                                    0x4), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x183),
-                                    0x4), 1)
-                        });
-                    }
-                case ItemType.TRFreeKey:
-                    {
-                        return new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                        {
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x16d),
-                                    0x4), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x27),
-                                    0x4), 1)
-                        });
-                    }
-                case ItemType.GTFreeKey:
-                    {
-                        return new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                        {
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x117),
-                                    0x4), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x137),
-                                    0x4), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xf7),
-                                    0x4), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x7b),
-                                    0x4), 1)
-                        });
-                    }
-                case ItemType.HCUnlockedDoor:
-                    {
-                        return new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                        {
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xe5),
-                                    0x80), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xe3),
-                                    0x80), 1),
-                            new AutoTrackMultipleOverride(new List<IAutoTrackValue>
-                            {
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x65),
-                                        0x80), 1),
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x45),
-                                        0x80), 1)
-                            }),
-                            new AutoTrackMultipleOverride(new List<IAutoTrackValue>
-                            {
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x43),
-                                        0x80), 1),
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x23),
-                                        0x20), 1)
-                            })
-                        });
-                    }
-                case ItemType.ATUnlockedDoor:
-                    {
-                        return new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                        {
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1c1),
-                                    0x20), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1a1),
-                                    0x80), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x181),
-                                    0x20), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x161),
-                                    0x20), 1)
-                        });
-                    }
-                case ItemType.DPUnlockedDoor:
-                    {
-                        return new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                        {
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x10b),
-                                    0x40), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xc7),
-                                    0x80), 1),
-                            new AutoTrackMultipleOverride(new List<IAutoTrackValue>
-                            {
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xa7),
-                                        0x20), 1),
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x87),
-                                        0x20), 1)
-                            }),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x87),
-                                    0x40), 1)
-                        });
-                    }
-                case ItemType.ToHUnlockedDoor:
-                    {
-                        return new AutoTrackFlagBool(
-                            new MemoryFlag(
-                                AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xef),
-                                0x80), 1);
-                    }
-                case ItemType.PoDUnlockedDoor:
-                    {
-                        return new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                        {
-                            new AutoTrackMultipleOverride(new List<IAutoTrackValue>
-                            {
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x95),
-                                        0x20), 1),
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x75),
-                                        0x80), 1)
-                            }),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x15),
-                                    0x80), 1),
-                            new AutoTrackMultipleOverride(new List<IAutoTrackValue>
-                            {
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x55),
-                                        0x40), 1),
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x35),
-                                        0x10), 1)
-                            }),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x35),
-                                    0x80), 1),
-                            new AutoTrackMultipleOverride(new List<IAutoTrackValue>
-                            {
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x35),
-                                        0x40), 1),
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x33),
-                                        0x40), 1)
-                            }),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x17),
-                                    0x20), 1)
-                        });
-                    }
-                case ItemType.SPUnlockedDoor:
-                    {
-                        return new AutoTrackFlagBool(
-                            new MemoryFlag(
-                                AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x51),
-                                0x80), 1);
-                    }
-                case ItemType.SWUnlockedDoor:
-                    {
-                        return new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                        {
-                            new AutoTrackMultipleOverride(new List<IAutoTrackValue>
-                            {
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xb1),
-                                        0x40), 1),
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xaf),
-                                        0x20), 1)
-                            }),
-                            new AutoTrackMultipleOverride(new List<IAutoTrackValue>
-                            {
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xd1),
-                                        0x40), 1),
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xb1),
-                                        0x20), 1)
-                            }),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xad),
-                                    0x80), 1),
-                            new AutoTrackMultipleOverride(new List<IAutoTrackValue>
-                            {
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xb3),
-                                        0x80), 1),
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x93),
-                                        0x20), 1)
-                            }),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x73),
-                                    0x40), 1)
-                        });
-                    }
-                case ItemType.TTUnlockedDoor:
-                    {
-                        return new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                        {
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x179),
-                                    0x80), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x157),
-                                    0x80), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x89),
-                                    0x40), 1)
-                        });
-                    }
-                case ItemType.IPUnlockedDoor:
-                    {
-                        return new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                        {
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x1d),
-                                    0x80), 1),
-                            new AutoTrackMultipleOverride(new List<IAutoTrackValue>
-                            {
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x7d),
-                                        0x40), 1),
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x9d),
-                                        0x40), 1)
-                            }),
-                            new AutoTrackMultipleOverride(new List<IAutoTrackValue>
-                            {
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xbd),
-                                        0x80), 1),
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xbf),
-                                        0x80), 1)
-                            }),
-                            new AutoTrackMultipleOverride(new List<IAutoTrackValue>
-                            {
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x11d),
-                                        0x80), 1),
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xfd),
-                                        0x80), 1)
-                            }),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x13d),
-                                    0x80), 1),
-                            new AutoTrackMultipleOverride(new List<IAutoTrackValue>
-                            {
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x17d),
-                                        0x40), 1),
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x17f),
-                                        0x80), 1)
-                            })
-                        });
-                    }
-                case ItemType.MMUnlockedDoor:
-                    {
-                        return new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                        {
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x167),
-                                    0x80), 1),
-                            new AutoTrackMultipleOverride(new List<IAutoTrackValue>
-                            {
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x185),
-                                        0x40), 1),
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x183),
-                                        0x40), 1)
-                            }),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x183),
-                                    0x80), 1),
-                            new AutoTrackMultipleOverride(new List<IAutoTrackValue>
-                            {
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x185),
-                                        0x80), 1),
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x187),
-                                        0x80), 1)
-                            }),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x127),
-                                    0x40), 1)
-                        });
-                    }
-                case ItemType.TRUnlockedDoor:
-                    {
-                        return new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                        {
-                            new AutoTrackMultipleOverride(new List<IAutoTrackValue>
-                            {
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x18d),
-                                        0x80), 1),
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x16d),
-                                        0x20), 1)
-                            }),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x16d),
-                                    0x10), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x16d),
-                                    0x80), 1),
-                            new AutoTrackMultipleOverride(new List<IAutoTrackValue>
-                            {
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x27),
-                                        0x80), 1),
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x29),
-                                        0x40), 1)
-                            }),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x9),
-                                    0x80), 1),
-                            new AutoTrackMultipleOverride(new List<IAutoTrackValue>
-                            {
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x18d),
-                                        0x80), 1),
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x189),
-                                        0x80), 1)
-                            })
-                        });
-                    }
-                case ItemType.GTUnlockedDoor:
-                    {
-                        return new AutoTrackMultipleSum(new List<IAutoTrackValue>
-                        {
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x119),
-                                    0x20), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x117),
-                                    0x40), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x137),
-                                    0x80), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xfb),
-                                    0x20), 1),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x11b),
-                                    0x40), 1),
-                            new AutoTrackMultipleOverride(new List<IAutoTrackValue>
-                            {
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xf7),
-                                        0x40), 1),
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0xf9),
-                                        0x20), 1)
-                            }),
-                            new AutoTrackFlagBool(
-                                new MemoryFlag(
-                                    AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x7b),
-                                    0x40), 1),
-                            new AutoTrackMultipleOverride(new List<IAutoTrackValue>
-                            {
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x7b),
-                                        0x20), 1),
-                                new AutoTrackFlagBool(
-                                    new MemoryFlag(
-                                        AutoTracker.GetMemoryAddress(MemorySegmentType.Room, 0x9b),
-                                        0x80), 1)
-                            })
-                        });
-                    }
-                default:
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(type));
-                    }
-            }
-        }
-
-        /// <summary>
         /// Returns the autotracking value for the specified item.
         /// </summary>
         /// <param name="type">
@@ -1640,135 +22,696 @@ namespace OpenTracker.Models.Items
         /// </returns>
         public static IAutoTrackValue GetAutoTrackValue(ItemType type)
         {
-            switch (type)
+            return type switch
             {
-                case ItemType.Sword:
-                case ItemType.Shield:
-                case ItemType.Mail:
-                case ItemType.Gloves:
-                case ItemType.SmallKey:
+                ItemType.Sword => new AutoTrackAddressValue(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef359], 5, 1),
+                ItemType.Shield => new AutoTrackAddressValue(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef35a], 3, 0),
+                ItemType.Mail => new AutoTrackAddressValue(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef35b], 3, 0),
+                ItemType.Bow => new AutoTrackAddressBool(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef340], 0, 1),
+                ItemType.Arrows => new AutoTrackMultipleOverride(
+                    new List<IAutoTrackValue>
                     {
-                        return GetAddressValue(type);
-                    }
-                case ItemType.Bow:
-                case ItemType.Hookshot:
-                case ItemType.Bomb:
-                case ItemType.Boots:
-                case ItemType.FireRod:
-                case ItemType.IceRod:
-                case ItemType.Bombos:
-                case ItemType.Ether:
-                case ItemType.Quake:
-                case ItemType.Lamp:
-                case ItemType.Hammer:
-                case ItemType.Net:
-                case ItemType.Book:
-                case ItemType.Flippers:
-                case ItemType.CaneOfSomaria:
-                case ItemType.CaneOfByrna:
-                case ItemType.Cape:
-                case ItemType.Mirror:
-                case ItemType.HalfMagic:
-                case ItemType.MoonPearl:
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef38e], 0x40), 2),
+                        new AutoTrackAddressBool(
+                            AutoTracker.Instance.MemoryAddresses[0x7ef377], 0, 1)
+                    }),
+                ItemType.Boomerang => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef38c], 0x80), 1),
+                ItemType.RedBoomerang => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef38c], 0x40), 1),
+                ItemType.Hookshot => new AutoTrackAddressBool(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef342], 0, 1),
+                ItemType.Bomb => new AutoTrackAddressBool(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef343], 0, 1),
+                ItemType.BigBomb => new AutoTrackMultipleOverride(
+                    new List<IAutoTrackValue>
                     {
-                        return GetAddressBool(type);
-                    }
-                case ItemType.Arrows:
-                case ItemType.BigBomb:
-                case ItemType.Mushroom:
-                case ItemType.Flute:
-                case ItemType.HCBigKey:
-                case ItemType.HCMap:
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef22c], 0x10), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef22c], 0x20), 1)
+                    }),
+                ItemType.Powder => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef38c], 0x10), 1),
+                ItemType.MagicBat => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef411], 0x80), 1),
+                ItemType.Mushroom => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef341], 0x20), 1),
+                ItemType.Boots => new AutoTrackAddressBool(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef355], 0, 1),
+                ItemType.FireRod => new AutoTrackAddressBool(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef345], 0, 1),
+                ItemType.IceRod => new AutoTrackAddressBool(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef346], 0, 1),
+                ItemType.Bombos => new AutoTrackAddressBool(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef347], 0, 1),
+                ItemType.Ether => new AutoTrackAddressBool(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef348], 0, 1),
+                ItemType.Quake => new AutoTrackAddressBool(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef349], 0, 1),
+                ItemType.SmallKey => new AutoTrackAddressValue(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef397], 29, 0),
+                ItemType.Gloves => new AutoTrackAddressValue(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef354], 2, 0),
+                ItemType.Lamp => new AutoTrackAddressBool(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef34a], 0, 1),
+                ItemType.Hammer => new AutoTrackAddressBool(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef34b], 0, 1),
+                ItemType.Flute => new AutoTrackMultipleOverride(
+                    new List<IAutoTrackValue>
                     {
-                        return GetMultipleOverride(type);
-                    }
-                case ItemType.Boomerang:
-                case ItemType.RedBoomerang:
-                case ItemType.Powder:
-                case ItemType.MagicBat:
-                case ItemType.FluteActivated:
-                case ItemType.Shovel:
-                case ItemType.EPBigKey:
-                case ItemType.DPBigKey:
-                case ItemType.ToHBigKey:
-                case ItemType.PoDBigKey:
-                case ItemType.SPBigKey:
-                case ItemType.SWBigKey:
-                case ItemType.TTBigKey:
-                case ItemType.IPBigKey:
-                case ItemType.MMBigKey:
-                case ItemType.TRBigKey:
-                case ItemType.GTBigKey:
-                case ItemType.EPMap:
-                case ItemType.DPMap:
-                case ItemType.ToHMap:
-                case ItemType.PoDMap:
-                case ItemType.SPMap:
-                case ItemType.SWMap:
-                case ItemType.TTMap:
-                case ItemType.IPMap:
-                case ItemType.MMMap:
-                case ItemType.TRMap:
-                case ItemType.GTMap:
-                case ItemType.EPCompass:
-                case ItemType.DPCompass:
-                case ItemType.ToHCompass:
-                case ItemType.PoDCompass:
-                case ItemType.SPCompass:
-                case ItemType.SWCompass:
-                case ItemType.TTCompass:
-                case ItemType.IPCompass:
-                case ItemType.MMCompass:
-                case ItemType.TRCompass:
-                case ItemType.GTCompass:
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef38c], 0x01), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef38c], 0x02), 1)
+                    }),
+                ItemType.FluteActivated => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef38c], 0x01), 1),
+                ItemType.Net => new AutoTrackAddressBool(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef34d], 0, 1),
+                ItemType.Book => new AutoTrackAddressBool(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef34e], 0, 1),
+                ItemType.Shovel => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef38c], 0x04), 1),
+                ItemType.Flippers => new AutoTrackAddressBool(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef356], 0, 1),
+                ItemType.Bottle => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
                     {
-                        return GetFlagBool(type);
-                    }
-                case ItemType.Bottle:
+                        new AutoTrackAddressBool(
+                            AutoTracker.Instance.MemoryAddresses[0x7ef35c], 0, 1),
+                        new AutoTrackAddressBool(
+                            AutoTracker.Instance.MemoryAddresses[0x7ef35d], 0, 1),
+                        new AutoTrackAddressBool(
+                            AutoTracker.Instance.MemoryAddresses[0x7ef35e], 0, 1),
+                        new AutoTrackAddressBool(
+                            AutoTracker.Instance.MemoryAddresses[0x7ef35f], 0, 1)
+                    }),
+                ItemType.CaneOfSomaria => new AutoTrackAddressBool(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef350], 0, 1),
+                ItemType.CaneOfByrna => new AutoTrackAddressBool(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef351], 0, 1),
+                ItemType.Cape => new AutoTrackAddressBool(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef352], 0, 1),
+                ItemType.Mirror => new AutoTrackAddressBool(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef353], 1, 1),
+                ItemType.HalfMagic => new AutoTrackAddressBool(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef37b], 0, 1),
+                ItemType.MoonPearl => new AutoTrackAddressBool(
+                    AutoTracker.Instance.MemoryAddresses[0x7ef357], 0, 1),
+                ItemType.HCSmallKey => new AutoTrackConditionalValue(
+                    RequirementDictionary.Instance[RequirementType.GenericKeys],
+                    new AutoTrackConditionalValue(
+                        RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                        new AutoTrackMultipleDifference(
+                            new AutoTrackItemValue(ItemDictionary.Instance[ItemType.HCUnlockedDoor]),
+                            new AutoTrackConditionalValue(
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                                new AutoTrackItemValue(ItemDictionary.Instance[ItemType.HCFreeKey]),
+                                new AutoTrackStaticValue(0))), null),
+                    new AutoTrackMultipleOverride(
+                        new List<IAutoTrackValue>
+                        {
+                            new AutoTrackAddressValue(
+                                AutoTracker.Instance.MemoryAddresses[0x7ef4e0], 4, 0),
+                            new AutoTrackAddressValue(
+                                AutoTracker.Instance.MemoryAddresses[0x7ef4e1], 4, 0)
+                        })),
+                ItemType.EPSmallKey => new AutoTrackConditionalValue(
+                    RequirementDictionary.Instance[RequirementType.GenericKeys],
+                    new AutoTrackConditionalValue(
+                        RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                        new AutoTrackMultipleDifference(
+                            new AutoTrackItemValue(ItemDictionary.Instance[ItemType.EPUnlockedDoor]),
+                            new AutoTrackConditionalValue(
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                                new AutoTrackItemValue(ItemDictionary.Instance[ItemType.EPFreeKey]),
+                                new AutoTrackStaticValue(0))), null),
+                    new AutoTrackAddressValue(
+                        AutoTracker.Instance.MemoryAddresses[0x7ef4e2], 2, 0)),
+                ItemType.DPSmallKey => new AutoTrackConditionalValue(
+                    RequirementDictionary.Instance[RequirementType.GenericKeys],
+                    new AutoTrackConditionalValue(
+                        RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                        new AutoTrackMultipleDifference(
+                            new AutoTrackItemValue(ItemDictionary.Instance[ItemType.DPUnlockedDoor]),
+                            new AutoTrackConditionalValue(
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                                new AutoTrackItemValue(ItemDictionary.Instance[ItemType.DPFreeKey]),
+                                new AutoTrackStaticValue(0))), null),
+                    new AutoTrackAddressValue(
+                        AutoTracker.Instance.MemoryAddresses[0x7ef4e3], 4, 0)),
+                ItemType.ToHSmallKey => new AutoTrackConditionalValue(
+                    RequirementDictionary.Instance[RequirementType.GenericKeys],
+                    new AutoTrackConditionalValue(
+                        RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.ToHUnlockedDoor]), null),
+                    new AutoTrackAddressValue(
+                        AutoTracker.Instance.MemoryAddresses[0x7ef4ea], 1, 0)),
+                ItemType.ATSmallKey => new AutoTrackConditionalValue(
+                    RequirementDictionary.Instance[RequirementType.GenericKeys],
+                    new AutoTrackConditionalValue(
+                        RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                        new AutoTrackMultipleDifference(
+                            new AutoTrackItemValue(ItemDictionary.Instance[ItemType.ATUnlockedDoor]),
+                            new AutoTrackConditionalValue(
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                                new AutoTrackItemValue(ItemDictionary.Instance[ItemType.ATFreeKey]),
+                                new AutoTrackStaticValue(0))), null),
+                    new AutoTrackAddressValue(
+                        AutoTracker.Instance.MemoryAddresses[0x7ef4e4], 4, 0)),
+                ItemType.PoDSmallKey => new AutoTrackConditionalValue(
+                    RequirementDictionary.Instance[RequirementType.GenericKeys],
+                    new AutoTrackConditionalValue(
+                        RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                        new AutoTrackItemValue(ItemDictionary.Instance[ItemType.PoDUnlockedDoor]), null),
+                    new AutoTrackAddressValue(
+                        AutoTracker.Instance.MemoryAddresses[0x7ef4e6], 6, 0)),
+                ItemType.SPSmallKey => new AutoTrackConditionalValue(
+                    RequirementDictionary.Instance[RequirementType.GenericKeys],
+                    new AutoTrackConditionalValue(
+                        RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                        new AutoTrackMultipleDifference(
+                            new AutoTrackItemValue(ItemDictionary.Instance[ItemType.SPUnlockedDoor]),
+                            new AutoTrackConditionalValue(
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                                new AutoTrackItemValue(ItemDictionary.Instance[ItemType.SPFreeKey]),
+                                new AutoTrackStaticValue(0))), null),
+                    new AutoTrackAddressValue(
+                        AutoTracker.Instance.MemoryAddresses[0x7ef4e5], 6, 0)),
+                ItemType.SWSmallKey => new AutoTrackConditionalValue(
+                    RequirementDictionary.Instance[RequirementType.GenericKeys],
+                    new AutoTrackConditionalValue(
+                        RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                        new AutoTrackMultipleDifference(
+                            new AutoTrackItemValue(ItemDictionary.Instance[ItemType.SWUnlockedDoor]),
+                            new AutoTrackConditionalValue(
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                                new AutoTrackItemValue(ItemDictionary.Instance[ItemType.SWFreeKey]),
+                                new AutoTrackStaticValue(0))), null),
+                    new AutoTrackAddressValue(
+                        AutoTracker.Instance.MemoryAddresses[0x7ef4e8], 5, 0)),
+                ItemType.TTSmallKey => new AutoTrackConditionalValue(
+                    RequirementDictionary.Instance[RequirementType.GenericKeys],
+                    new AutoTrackConditionalValue(
+                        RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                        new AutoTrackMultipleDifference(
+                            new AutoTrackItemValue(ItemDictionary.Instance[ItemType.TTUnlockedDoor]),
+                            new AutoTrackConditionalValue(
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                                new AutoTrackItemValue(ItemDictionary.Instance[ItemType.TTFreeKey]),
+                                new AutoTrackStaticValue(0))), null),
+                    new AutoTrackAddressValue(
+                        AutoTracker.Instance.MemoryAddresses[0x7ef4eb], 3, 0)),
+                ItemType.IPSmallKey => new AutoTrackConditionalValue(
+                    RequirementDictionary.Instance[RequirementType.GenericKeys],
+                    new AutoTrackConditionalValue(
+                        RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                        new AutoTrackMultipleDifference(
+                            new AutoTrackItemValue(ItemDictionary.Instance[ItemType.IPUnlockedDoor]),
+                            new AutoTrackConditionalValue(
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                                new AutoTrackItemValue(ItemDictionary.Instance[ItemType.IPFreeKey]),
+                                new AutoTrackStaticValue(0))), null),
+                    new AutoTrackAddressValue(
+                        AutoTracker.Instance.MemoryAddresses[0x7ef4e9], 6, 0)),
+                ItemType.MMSmallKey => new AutoTrackConditionalValue(
+                    RequirementDictionary.Instance[RequirementType.GenericKeys],
+                    new AutoTrackConditionalValue(
+                        RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                        new AutoTrackMultipleDifference(
+                            new AutoTrackItemValue(ItemDictionary.Instance[ItemType.MMUnlockedDoor]),
+                            new AutoTrackConditionalValue(
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                                new AutoTrackItemValue(ItemDictionary.Instance[ItemType.MMFreeKey]),
+                                new AutoTrackStaticValue(0))), null),
+                    new AutoTrackAddressValue(
+                        AutoTracker.Instance.MemoryAddresses[0x7ef4e7], 6, 0)),
+                ItemType.TRSmallKey => new AutoTrackConditionalValue(
+                    RequirementDictionary.Instance[RequirementType.GenericKeys],
+                    new AutoTrackConditionalValue(
+                        RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                        new AutoTrackMultipleDifference(
+                            new AutoTrackItemValue(ItemDictionary.Instance[ItemType.TRUnlockedDoor]),
+                            new AutoTrackConditionalValue(
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                                new AutoTrackItemValue(ItemDictionary.Instance[ItemType.TRFreeKey]),
+                                new AutoTrackStaticValue(0))), null),
+                    new AutoTrackAddressValue(
+                        AutoTracker.Instance.MemoryAddresses[0x7ef4ec], 6, 0)),
+                ItemType.GTSmallKey => new AutoTrackConditionalValue(
+                    RequirementDictionary.Instance[RequirementType.GenericKeys],
+                    new AutoTrackConditionalValue(
+                        RequirementDictionary.Instance[RequirementType.RaceIllegalTracking],
+                        new AutoTrackMultipleDifference(
+                            new AutoTrackItemValue(ItemDictionary.Instance[ItemType.GTUnlockedDoor]),
+                            new AutoTrackConditionalValue(
+                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
+                                new AutoTrackItemValue(ItemDictionary.Instance[ItemType.GTFreeKey]),
+                                new AutoTrackStaticValue(0))), null),
+                    new AutoTrackAddressValue(
+                        AutoTracker.Instance.MemoryAddresses[0x7ef4ed], 8, 0)),
+                ItemType.HCBigKey => new AutoTrackMultipleOverride(
+                    new List<IAutoTrackValue>
                     {
-                        return GetMultipleSum(type);
-                    }
-                case ItemType.HCSmallKey:
-                case ItemType.DPSmallKey:
-                case ItemType.ToHSmallKey:
-                case ItemType.ATSmallKey:
-                case ItemType.PoDSmallKey:
-                case ItemType.SPSmallKey:
-                case ItemType.SWSmallKey:
-                case ItemType.TTSmallKey:
-                case ItemType.IPSmallKey:
-                case ItemType.MMSmallKey:
-                case ItemType.TRSmallKey:
-                case ItemType.GTSmallKey:
-                case ItemType.HCFreeKey:
-                case ItemType.ATFreeKey:
-                case ItemType.DPFreeKey:
-                case ItemType.SWFreeKey:
-                case ItemType.TTFreeKey:
-                case ItemType.IPFreeKey:
-                case ItemType.MMFreeKey:
-                case ItemType.TRFreeKey:
-                case ItemType.GTFreeKey:
-                case ItemType.HCUnlockedDoor:
-                case ItemType.ATUnlockedDoor:
-                case ItemType.DPUnlockedDoor:
-                case ItemType.ToHUnlockedDoor:
-                case ItemType.PoDUnlockedDoor:
-                case ItemType.SPUnlockedDoor:
-                case ItemType.SWUnlockedDoor:
-                case ItemType.TTUnlockedDoor:
-                case ItemType.IPUnlockedDoor:
-                case ItemType.MMUnlockedDoor:
-                case ItemType.TRUnlockedDoor:
-                case ItemType.GTUnlockedDoor:
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef367], 0x80), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef367], 0x40), 1)
+                    }),
+                ItemType.EPBigKey => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef367], 0x20), 1),
+                ItemType.DPBigKey => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef367], 0x10), 1),
+                ItemType.ToHBigKey => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef366], 0x20), 1),
+                ItemType.PoDBigKey => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef367], 0x02), 1),
+                ItemType.SPBigKey => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef367], 0x04), 1),
+                ItemType.SWBigKey => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef366], 0x80), 1),
+                ItemType.TTBigKey => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef366], 0x10), 1),
+                ItemType.IPBigKey => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef366], 0x40), 1),
+                ItemType.MMBigKey => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef367], 0x01), 1),
+                ItemType.TRBigKey => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef366], 0x08), 1),
+                ItemType.GTBigKey => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef366], 0x04), 1),
+                ItemType.HCMap => new AutoTrackMultipleOverride(
+                    new List<IAutoTrackValue>
                     {
-                        return GetSmallKeyValue(type);
-                    }
-                default:
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef369], 0x80), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef369], 0x40), 1)
+                    }),
+                ItemType.EPMap => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef369], 0x20), 1),
+                ItemType.DPMap => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef369], 0x10), 1),
+                ItemType.ToHMap => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef368], 0x20), 1),
+                ItemType.PoDMap => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef369], 0x02), 1),
+                ItemType.SPMap => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef369], 0x04), 1),
+                ItemType.SWMap => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef368], 0x80), 1),
+                ItemType.TTMap => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef368], 0x10), 1),
+                ItemType.IPMap => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef368], 0x40), 1),
+                ItemType.MMMap => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef369], 0x01), 1),
+                ItemType.TRMap => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef368], 0x08), 1),
+                ItemType.GTMap => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef368], 0x04), 1),
+                ItemType.EPCompass => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef365], 0x20), 1),
+                ItemType.DPCompass => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef365], 0x10), 1),
+                ItemType.ToHCompass => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef364], 0x20), 1),
+                ItemType.PoDCompass => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef365], 0x02), 1),
+                ItemType.SPCompass => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef365], 0x04), 1),
+                ItemType.SWCompass => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef364], 0x80), 1),
+                ItemType.TTCompass => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef364], 0x10), 1),
+                ItemType.IPCompass => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef364], 0x40), 1),
+                ItemType.MMCompass => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef365], 0x01), 1),
+                ItemType.TRCompass => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef364], 0x08), 1),
+                ItemType.GTCompass => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef364], 0x04), 1),
+                ItemType.HCFreeKey => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
                     {
-                        return null;
-                    }
-            }
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0e5], 0x04), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0e3], 0x04), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef043], 0x04), 1)
+                        }),
+                ItemType.ATFreeKey => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef181], 0x04), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef161], 0x04), 1)
+                    }),
+                ItemType.EPFreeKey => throw new NotImplementedException(),
+                ItemType.DPFreeKey => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0c7], 0x04), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0a7], 0x04), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef087], 0x04), 1)
+                    }),
+                ItemType.SPFreeKey => throw new NotImplementedException(),
+                ItemType.SWFreeKey => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0ad], 0x04), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef073], 0x04), 1)
+                    }),
+                ItemType.TTFreeKey => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef179], 0x04), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef157], 0x04), 1)
+                    }),
+                ItemType.IPFreeKey => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef01d], 0x04), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef07d], 0x04), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef07f], 0x04), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef13f], 0x04), 1)
+                    }),
+                ItemType.MMFreeKey => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef167], 0x04), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef183], 0x04), 1)
+                    }),
+                ItemType.TRFreeKey => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef16d], 0x04), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef027], 0x04), 1)
+                    }),
+                ItemType.GTFreeKey => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef117], 0x04), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef137], 0x04), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0f7], 0x04), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef07b], 0x04), 1)
+                    }),
+                ItemType.HCUnlockedDoor => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0e5], 0x80), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0e3], 0x80), 1),
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef065], 0x80), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef045], 0x80), 1)
+                            }),
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef043], 0x80), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef023], 0x20), 1)
+                            })
+                    }),
+                ItemType.ATUnlockedDoor => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef1c1], 0x20), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef1a1], 0x80), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef181], 0x20), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef161], 0x20), 1)
+                    }),
+                ItemType.EPUnlockedDoor => throw new NotImplementedException(),
+                ItemType.DPUnlockedDoor => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef10b], 0x40), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0c7], 0x80), 1),
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0a7], 0x20), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef087], 0x20), 1)
+                            }),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef087], 0x40), 1)
+                    }),
+                ItemType.ToHUnlockedDoor => new AutoTrackFlagBool(
+                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0ef], 0x80), 1),
+                ItemType.PoDUnlockedDoor => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef095], 0x20), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef075], 0x80), 1)
+                            }),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef015], 0x80), 1),
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef055], 0x40), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef035], 0x10), 1)
+                            }),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef035], 0x80), 1),
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef035], 0x40), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef033], 0x40), 1)
+                            }),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef017], 0x20), 1)
+                    }),
+                ItemType.SPUnlockedDoor => throw new NotImplementedException(),
+                ItemType.SWUnlockedDoor => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0b1], 0x40), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0af], 0x20), 1)
+                            }),
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0d1], 0x40), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0b1], 0x20), 1)
+                            }),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0ad], 0x80), 1),
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0b3], 0x80), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef093], 0x20), 1)
+                            }),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef073], 0x40), 1)
+                    }),
+                ItemType.TTUnlockedDoor => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef179], 0x80), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef157], 0x80), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef089], 0x40), 1)
+                    }),
+                ItemType.IPUnlockedDoor => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef01d], 0x80), 1),
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef07d], 0x40), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef09d], 0x40), 1)
+                            }),
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0bd], 0x80), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0bf], 0x80), 1)
+                            }),
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef11d], 0x80), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0fd], 0x80), 1)
+                            }),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef13d], 0x80), 1),
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef17d], 0x40), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef17f], 0x80), 1)
+                            })
+                    }),
+                ItemType.MMUnlockedDoor => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef167], 0x80), 1),
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef185], 0x40), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef183], 0x40), 1)
+                            }),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef183], 0x80), 1),
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef185], 0x80), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef187], 0x80), 1)
+                            }),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef127], 0x40), 1)
+                    }),
+                ItemType.TRUnlockedDoor => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef18d], 0x80), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef16d], 0x20), 1)
+                            }),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef16d], 0x10), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef16d], 0x80), 1),
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef027], 0x80), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef029], 0x40), 1)
+                            }),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef009], 0x80), 1),
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef18d], 0x80), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef189], 0x80), 1)
+                            })
+                    }),
+                ItemType.GTUnlockedDoor => new AutoTrackMultipleSum(
+                    new List<IAutoTrackValue>
+                    {
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef119], 0x20), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef117], 0x40), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef137], 0x80), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0fb], 0x20), 1),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef11b], 0x40), 1),
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0f7], 0x40), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef0f9], 0x20), 1)
+                            }),
+                        new AutoTrackFlagBool(
+                            new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef07b], 0x40), 1),
+                        new AutoTrackMultipleOverride(
+                            new List<IAutoTrackValue>
+                            {
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef07b], 0x20), 1),
+                                new AutoTrackFlagBool(
+                                    new MemoryFlag(AutoTracker.Instance.MemoryAddresses[0x7ef09b], 0x80), 1)
+                            })
+                    }),
+                _ => null
+            };
         }
     }
 }

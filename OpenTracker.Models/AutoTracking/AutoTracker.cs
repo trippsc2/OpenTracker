@@ -19,6 +19,12 @@ namespace OpenTracker.Models.AutoTracking
         public ISNESConnector SNESConnector { get; }
         public Action<LogLevel, string> LogHandler { get; set; }
 
+        public Dictionary<ulong, MemoryAddress> MemoryAddresses { get; } =
+            new Dictionary<ulong, MemoryAddress>();
+
+        public Dictionary<MemorySegmentType, List<MemoryAddress>> MemorySegments { get; } =
+            new Dictionary<MemorySegmentType, List<MemoryAddress>>();
+
         public List<MemoryAddress> RoomMemory { get; } =
             new List<MemoryAddress>(592);
         public List<MemoryAddress> OverworldEventMemory { get; } =
@@ -56,35 +62,82 @@ namespace OpenTracker.Models.AutoTracking
         {
             SNESConnector = SNESConnectorFactory.GetSNESConnector(HandleLog);
 
-            for (int i = 0; i < 592; i++)
+            foreach (MemorySegmentType type in Enum.GetValues(typeof(MemorySegmentType)))
             {
-                RoomMemory.Add(new MemoryAddress());
+                MemorySegments.Add(type, new List<MemoryAddress>());
+            }
+
+            for (ulong i = 0; i < 592; i++)
+            {
+                CreateMemoryAddress(MemorySegmentType.Room, i);
 
                 if (i < 130)
                 {
-                    OverworldEventMemory.Add(new MemoryAddress());
+                    CreateMemoryAddress(MemorySegmentType.OverworldEvent, i);
                 }
 
                 if (i < 144)
                 {
-                    ItemMemory.Add(new MemoryAddress());
+                    CreateMemoryAddress(MemorySegmentType.Item, i);
                 }
 
                 if (i < 48)
                 {
-                    DungeonMemory.Add(new MemoryAddress());
+                    CreateMemoryAddress(MemorySegmentType.Dungeon, i);
                 }
 
                 if (i < 6)
                 {
-                    DungeonItemMemory.Add(new MemoryAddress());
+                    CreateMemoryAddress(MemorySegmentType.DungeonItem, i);
                 }
 
                 if (i < 2)
                 {
-                    NPCItemMemory.Add(new MemoryAddress());
+                    CreateMemoryAddress(MemorySegmentType.NPCItem, i);
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns the starting address of the specified memory segment.
+        /// </summary>
+        /// <param name="type">
+        /// The memory segment type.
+        /// </param>
+        /// <returns>
+        /// A 64-bit unsigned integer representing the starting memory address of the segment.
+        /// </returns>
+        private static ulong GetMemorySegmentStart(MemorySegmentType type)
+        {
+            return type switch
+            {
+                MemorySegmentType.Room => 0x7ef000,
+                MemorySegmentType.OverworldEvent => 0x7ef280,
+                MemorySegmentType.Item => 0x7ef340,
+                MemorySegmentType.NPCItem => 0x7ef410,
+                MemorySegmentType.DungeonItem => 0x7ef434,
+                MemorySegmentType.Dungeon => 0x7ef4c0,
+                _ => throw new ArgumentOutOfRangeException(nameof(type))
+            };
+        }
+
+        /// <summary>
+        /// Creates a memory address for the specified memory segment and offset.
+        /// </summary>
+        /// <param name="type">
+        /// The memory segment type.
+        /// </param>
+        /// <param name="offset">
+        /// The offset of the address.
+        /// </param>
+        private void CreateMemoryAddress(MemorySegmentType type, ulong offset)
+        {
+            var memoryAddress = new MemoryAddress();
+            var memorySegment = MemorySegments[type];
+            memorySegment.Add(memoryAddress);
+            var address = GetMemorySegmentStart(type);
+            address += (ulong)offset;
+            MemoryAddresses.Add(address, memoryAddress);
         }
 
         /// <summary>
@@ -117,68 +170,23 @@ namespace OpenTracker.Models.AutoTracking
         /// <summary>
         /// Updates cached values of a memory segment.
         /// </summary>
-        /// <param name="segment">
+        /// <param name="type">
         /// The memory segment to updated.
         /// </param>
-        public void MemoryCheck(MemorySegmentType segment)
+        public void MemoryCheck(MemorySegmentType type)
         {
             if (SNESConnector != null && SNESConnector.Socket != null &&
                 SNESConnector.Status != ConnectionStatus.Error && InGame)
             {
-                List<MemoryAddress> memory;
-                ulong startAddress;
-
-                switch (segment)
-                {
-                    case MemorySegmentType.Room:
-                        {
-                            startAddress = 0x7ef000;
-                            memory = RoomMemory;
-                        }
-                        break;
-                    case MemorySegmentType.OverworldEvent:
-                        {
-                            startAddress = 0x7ef280;
-                            memory = OverworldEventMemory;
-                        }
-                        break;
-                    case MemorySegmentType.Item:
-                        {
-                            startAddress = 0x7ef340;
-                            memory = ItemMemory;
-                        }
-                        break;
-                    case MemorySegmentType.NPCItem:
-                        {
-                            startAddress = 0x7ef410;
-                            memory = NPCItemMemory;
-                        }
-                        break;
-                    case MemorySegmentType.DungeonItem:
-                        {
-                            startAddress = 0x7ef434;
-                            memory = DungeonItemMemory;
-                        }
-                        break;
-                    case MemorySegmentType.Dungeon:
-                        {
-                            startAddress = 0x7ef4c0;
-                            memory = DungeonMemory;
-                        }
-                        break;
-                    default:
-                        {
-                            throw new ArgumentOutOfRangeException(nameof(segment));
-                        }
-                }
-
-                byte[] buffer = new byte[memory.Count];
+                var memorySegment = MemorySegments[type];
+                var startAddress = GetMemorySegmentStart(type);
+                byte[] buffer = new byte[memorySegment.Count];
 
                 if (SNESConnector.Read(startAddress, buffer))
                 {
                     for (int i = 0; i < buffer.Length; i++)
                     {
-                        memory[i].Value = buffer[i];
+                        memorySegment[i].Value = buffer[i];
                     }
                 }
             }
@@ -233,32 +241,6 @@ namespace OpenTracker.Models.AutoTracking
             {
                 address.Reset();
             }
-        }
-
-        /// <summary>
-        /// Returns the specified memory address.
-        /// </summary>
-        /// <param name="memorySegment">
-        /// The memory segment of the address.
-        /// </param>
-        /// <param name="index">
-        /// The index of the address.
-        /// </param>
-        /// <returns>
-        /// The memory address.
-        /// </returns>
-        public static MemoryAddress GetMemoryAddress(MemorySegmentType memorySegment, int index)
-        {
-            return memorySegment switch
-            {
-                MemorySegmentType.Room => Instance.RoomMemory[index],
-                MemorySegmentType.OverworldEvent => Instance.OverworldEventMemory[index],
-                MemorySegmentType.Item => Instance.ItemMemory[index],
-                MemorySegmentType.NPCItem => Instance.NPCItemMemory[index],
-                MemorySegmentType.DungeonItem => Instance.DungeonItemMemory[index],
-                MemorySegmentType.Dungeon => Instance.DungeonMemory[index],
-                _ => throw new ArgumentOutOfRangeException(nameof(memorySegment))
-            };
         }
     }
 }
