@@ -4,13 +4,13 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 
-namespace OpenTracker
+namespace OpenTracker.Utils
 {
-    public class SerilogLogSink : ILogSink
+    public class AvaloniaSerilogSink : ILogSink
     {
         private readonly ILogger _logger;
 
-        public SerilogLogSink(string file, Serilog.Events.LogEventLevel minimumLevel)
+        public AvaloniaSerilogSink(string file, Serilog.Events.LogEventLevel minimumLevel)
         {
             _logger = new LoggerConfiguration().WriteTo.File(
                 file, minimumLevel, rollingInterval: RollingInterval.Day).CreateLogger();

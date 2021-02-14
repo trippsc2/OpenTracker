@@ -8,7 +8,6 @@ using OpenTracker.Interfaces;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels;
 using OpenTracker.Views;
-using Serilog;
 using System;
 using System.IO;
 using System.Reflection;
@@ -126,7 +125,7 @@ namespace OpenTracker
 
         public override void Initialize()
         {
-            Logger.Sink = new SerilogLogSink(
+            Logger.Sink = new AvaloniaSerilogSink(
                 GetAvaloniaLogFile(), Serilog.Events.LogEventLevel.Warning);
 
             AvaloniaXamlLoader.Load(this);
