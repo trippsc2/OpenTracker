@@ -10,7 +10,6 @@ using OpenTracker.ViewModels;
 using OpenTracker.Views;
 using System;
 using System.IO;
-using System.Reflection;
 
 namespace OpenTracker
 {
@@ -19,56 +18,32 @@ namespace OpenTracker
         public static IThemeSelector Selector { get; private set; }
         public static IDialogService DialogService { get; private set; }
 
-        private static string GetAppRootFolder()
-        {
-            return Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-        }
-
-        private static string GetAppRootThemesFolder()
-        {
-            return Path.Combine(GetAppRootFolder(), "Themes");
-        }
-
-        private static string GetAppDataFolder()
-        {
-            string localAppData = Environment.GetFolderPath(
-                Environment.SpecialFolder.LocalApplicationData,
-                Environment.SpecialFolderOption.Create);
-
-            return Path.Combine(localAppData, "OpenTracker");
-        }
-
-        private static string GetAppDataThemesFolder()
-        {
-            return Path.Combine(GetAppDataFolder(), "Themes");
-        }
-
         private static void CopyDefaultThemesToAppData()
         {
-            string themePath = GetAppDataThemesFolder();
+            var themePath = AppPath.AppDataThemesPath;
 
             if (!Directory.Exists(themePath))
             {
                 Directory.CreateDirectory(themePath);
             }
 
-            foreach (var themeFile in Directory.GetFiles(GetAppRootThemesFolder()))
+            foreach (var srcTheme in Directory.GetFiles(AppPath.AppRootThemesPath))
             {
-                string themeFilename = Path.GetFileName(themeFile);
-                string newThemeFile = Path.Combine(themePath, themeFilename);
+                var filename = Path.GetFileName(srcTheme);
+                string destTheme = Path.Combine(themePath, filename);
 
-                if (File.Exists(newThemeFile))
+                if (File.Exists(destTheme))
                 {
-                    File.Delete(newThemeFile);
+                    File.Delete(destTheme);
                 }
 
-                File.Copy(themeFile, newThemeFile);
+                File.Copy(srcTheme, destTheme);
             }
         }
 
         private static void MakeDefaultThemeFirst()
         {
-            foreach (ITheme theme in Selector.Themes)
+            foreach (var theme in Selector.Themes)
             {
                 if (theme.Name == "Default")
                 {
@@ -82,27 +57,17 @@ namespace OpenTracker
         private void InitializeThemes()
         {
             CopyDefaultThemesToAppData();
-            Selector = ThemeSelector.Create(GetAppDataThemesFolder(), this);
+            Selector = ThemeSelector.Create(AppPath.AppDataThemesPath, this);
             MakeDefaultThemeFirst();
-        }
-
-        private static string GetThemeConfigFile()
-        {
-            return Path.Combine(GetAppDataFolder(), "OpenTracker.theme");
-        }
-
-        private static string GetAvaloniaLogFile()
-        {
-            return Path.Combine(GetAppDataFolder(), "OpenTracker.Avalonia.log");
         }
 
         private static void SetThemeToLastOrDefault()
         {
-            string themeConfigFile = GetThemeConfigFile();
+            var lastThemeFilePath = AppPath.LastThemeFilePath;
 
-            if (File.Exists(themeConfigFile))
+            if (File.Exists(lastThemeFilePath))
             {
-                Selector.LoadSelectedTheme(themeConfigFile);
+                Selector.LoadSelectedTheme(lastThemeFilePath);
             }
             else
             {
@@ -126,7 +91,7 @@ namespace OpenTracker
         public override void Initialize()
         {
             Logger.Sink = new AvaloniaSerilogSink(
-                GetAvaloniaLogFile(), Serilog.Events.LogEventLevel.Warning);
+                AppPath.AvaloniaLogFilePath, Serilog.Events.LogEventLevel.Warning);
 
             AvaloniaXamlLoader.Load(this);
         }
@@ -145,7 +110,8 @@ namespace OpenTracker
                 SetThemeToLastOrDefault();
                 InitializeDialogService(desktop.MainWindow);
 
-                desktop.Exit += (sender, e) => Selector.SaveSelectedTheme(GetThemeConfigFile());
+                desktop.Exit += (sender, e) => Selector.SaveSelectedTheme(
+                    AppPath.LastThemeFilePath);
             }
 
             base.OnFrameworkInitializationCompleted();
