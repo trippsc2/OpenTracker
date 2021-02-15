@@ -30,6 +30,8 @@ namespace OpenTracker.Utils
             LogEventLevel level, string area, object source, string messageTemplate,
             T0 propertyValue0)
         {
+            _ = propertyValue0 ?? throw new ArgumentNullException(nameof(propertyValue0));
+
             Log(level, area, source, messageTemplate, new object[] { propertyValue0 });
         }
 
@@ -37,6 +39,9 @@ namespace OpenTracker.Utils
             LogEventLevel level, string area, object source, string messageTemplate,
             T0 propertyValue0, T1 propertyValue1)
         {
+            _ = propertyValue0 ?? throw new ArgumentNullException(nameof(propertyValue0));
+            _ = propertyValue1 ?? throw new ArgumentNullException(nameof(propertyValue1));
+
             Log(
                 level, area, source, messageTemplate,
                 new object[] { propertyValue0, propertyValue1 });
@@ -46,6 +51,10 @@ namespace OpenTracker.Utils
             LogEventLevel level, string area, object source, string messageTemplate,
             T0 propertyValue0, T1 propertyValue1, T2 propertyValue2)
         {
+            _ = propertyValue0 ?? throw new ArgumentNullException(nameof(propertyValue0));
+            _ = propertyValue1 ?? throw new ArgumentNullException(nameof(propertyValue1));
+            _ = propertyValue2 ?? throw new ArgumentNullException(nameof(propertyValue2));
+
             Log(
                 level, area, source, messageTemplate,
                 new object[] { propertyValue0, propertyValue1, propertyValue2 });
@@ -65,12 +74,20 @@ namespace OpenTracker.Utils
         {
             if (source is IControl visual)
             {
-                List<string> hierarchy = new List<string>();
-                hierarchy.Add(visual.ToString());
+                var visualString = visual.ToString() ??
+                    throw new NullReferenceException();
+
+                var hierarchy = new List<string>
+                {
+                    visualString
+                };
 
                 while ((visual = visual.Parent) != null)
                 {
-                    hierarchy.Insert(0, visual.ToString());
+                    visualString = visual.ToString() ??
+                        throw new NullReferenceException();
+
+                    hierarchy.Insert(0, visualString);
                 }
 
                 return string.Join("/", hierarchy);

@@ -62,7 +62,11 @@ namespace OpenTracker.Utils
             {
                 if (_appRootPath == null)
                 {
-                    _appRootPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+                    var assembly = Assembly.GetEntryAssembly() ??
+                        throw new NullReferenceException();
+
+                    _appRootPath = Path.GetDirectoryName(assembly.Location) ??
+                        throw new NullReferenceException();
                 }
 
                 return _appRootPath;

@@ -16,25 +16,25 @@ namespace OpenTracker.Views
     public class MainWindow : Window
     {
         private Orientation? _orientation;
-        private AutoTrackerDialog _autoTrackerDialog;
-        private ColorSelectDialog _colorSelectDialog;
-        private SequenceBreakDialog _sequenceBreakDialog;
+        private AutoTrackerDialog? _autoTrackerDialog;
+        private ColorSelectDialog? _colorSelectDialog;
+        private SequenceBreakDialog? _sequenceBreakDialog;
 
-        private IAutoTrackerAccess AutoTrackerAccess =>
+        private IAutoTrackerAccess? AutoTrackerAccess =>
             DataContext as IAutoTrackerAccess;
-        private IBoundsData BoundsData =>
+        private IBoundsData? BoundsData =>
             DataContext as IBoundsData;
-        private ICloseHandler CloseHandler =>
+        private ICloseHandler? CloseHandler =>
             DataContext as ICloseHandler;
-        private IColorSelectAccess ColorSelectAccess =>
+        private IColorSelectAccess? ColorSelectAccess =>
             DataContext as IColorSelectAccess;
-        private IDynamicLayout DynamicLayout =>
+        private IDynamicLayout? DynamicLayout =>
             DataContext as IDynamicLayout;
-        private IOpenData OpenData =>
+        private IOpenData? OpenData =>
             DataContext as IOpenData;
-        private ISaveData SaveData =>
+        private ISaveData? SaveData =>
             DataContext as ISaveData;
-        private ISequenceBreakAccess SequenceBreakAccess =>
+        private ISequenceBreakAccess? SequenceBreakAccess =>
             DataContext as ISequenceBreakAccess;
 
         public MainWindow()
@@ -59,6 +59,8 @@ namespace OpenTracker.Views
 
         private void OnClose(object sender, CancelEventArgs e)
         {
+            _ = CloseHandler ?? throw new NullReferenceException();
+
             CloseHandler.Close(WindowState == WindowState.Maximized, Bounds, Position);
 
             if (_autoTrackerDialog != null && _autoTrackerDialog.IsVisible)
@@ -77,8 +79,13 @@ namespace OpenTracker.Views
             }
         }
 
-        private Screen GetScreen()
+        private Screen? GetScreen()
         {
+            if (BoundsData == null || !BoundsData.X.HasValue || !BoundsData.Y.HasValue)
+            {
+                return null;
+            }
+
             foreach (var screen in Screens.All)
             {
                 if (screen.Bounds.X <= BoundsData.X.Value &&
@@ -93,13 +100,16 @@ namespace OpenTracker.Views
             return null;
         }
 
-        private void OnDataContextChanged(object sender, EventArgs e)
+        private void OnDataContextChanged(object? sender, EventArgs e)
         {
-            if (BoundsData.X.HasValue && BoundsData.Y.HasValue && GetScreen() != null)
+            if (BoundsData == null || !BoundsData.X.HasValue || !BoundsData.Y.HasValue ||
+                GetScreen() == null)
             {
-                Position = new PixelPoint(
-                    (int)Math.Floor(BoundsData.X.Value), (int)Math.Floor(BoundsData.Y.Value));
+                return;
             }
+            
+            Position = new PixelPoint(
+                    (int)Math.Floor(BoundsData.X.Value), (int)Math.Floor(BoundsData.Y.Value));
 
             if (BoundsData.Maximized.HasValue)
             {
@@ -120,12 +130,20 @@ namespace OpenTracker.Views
             if (_orientation != orientation)
             {
                 _orientation = orientation;
+                
+                if (DynamicLayout == null)
+                {
+                    return;
+                }
+
                 DynamicLayout.ChangeLayout(orientation);
             }
         }
 
         public async Task Open()
         {
+            _ = OpenData ?? throw new NullReferenceException();
+
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Filters.Add(new FileDialogFilter() { Name = "JSON", Extensions = { "json" } });
             dialog.AllowMultiple = false;
@@ -148,6 +166,8 @@ namespace OpenTracker.Views
 
         public async Task Save()
         {
+            _ = SaveData ?? throw new NullReferenceException();
+
             if (SaveData.CurrentFilePath != null)
             {
                 SaveData.Save();
@@ -160,6 +180,7 @@ namespace OpenTracker.Views
 
         public async Task SaveAs()
         {
+            _ = SaveData ?? throw new NullReferenceException();
             SaveFileDialog dialog = new SaveFileDialog();
             dialog.Filters.Add(new FileDialogFilter() { Name = "JSON", Extensions = { "json" } });
             string path = await dialog.ShowAsync(this).ConfigureAwait(false);
@@ -181,6 +202,7 @@ namespace OpenTracker.Views
             }
             else
             {
+                _ = AutoTrackerAccess ?? throw new NullReferenceException();
                 _autoTrackerDialog = new AutoTrackerDialog()
                 {
                     DataContext = AutoTrackerAccess.GetAutoTrackerViewModel()
@@ -197,6 +219,7 @@ namespace OpenTracker.Views
             }
             else
             {
+                _ = ColorSelectAccess ?? throw new NullReferenceException();
                 _colorSelectDialog = new ColorSelectDialog()
                 {
                     DataContext = ColorSelectAccess.GetColorSelectViewModel()
@@ -213,6 +236,7 @@ namespace OpenTracker.Views
             }
             else
             {
+                _ = SequenceBreakAccess ?? throw new NullReferenceException();
                 _sequenceBreakDialog = new SequenceBreakDialog()
                 {
                     DataContext = SequenceBreakAccess.GetSequenceBreakViewModel()

@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Threading;
-using OpenTracker.Models;
 using OpenTracker.Models.AutoTracking;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Connections;
