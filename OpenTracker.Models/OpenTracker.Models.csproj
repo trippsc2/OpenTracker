@@ -14,8 +14,4 @@
     <PackageReference Include="WebSocketSharp-netstandard" Version="1.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\OpenTracker.Utils\OpenTracker.Utils.csproj" />
-  </ItemGroup>
-
 </Project>

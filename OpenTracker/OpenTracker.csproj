@@ -18,13 +18,9 @@
   <ItemGroup>
     <AvaloniaResource Remove="bin\**" />
     <AvaloniaXaml Remove="bin\**" />
-    <AvaloniaXaml Remove="Models\UndoRedo\**" />
     <Compile Remove="bin\**" />
-    <Compile Remove="Models\UndoRedo\**" />
     <EmbeddedResource Remove="bin\**" />
-    <EmbeddedResource Remove="Models\UndoRedo\**" />
     <None Remove="bin\**" />
-    <None Remove="Models\UndoRedo\**" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.10.0" />
@@ -45,7 +41,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Avalonia.ThemeManager\Avalonia.ThemeManager.csproj" />
     <ProjectReference Include="..\OpenTracker.Models\OpenTracker.Models.csproj" />
-    <ProjectReference Include="..\OpenTracker.Utils\OpenTracker.Utils.csproj" />
   </ItemGroup>
   <ItemGroup>
     <AvaloniaResource Update="Assets\Images\triforce.png">
@@ -74,5 +69,8 @@
     <None Update="triforce.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\UndoRedo\" />
   </ItemGroup>
 </Project>
