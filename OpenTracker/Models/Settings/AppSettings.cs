@@ -38,7 +38,7 @@ namespace OpenTracker.Models.Settings
         /// <param name="colors">
         /// The color settings.
         /// </param>
-        public AppSettings(
+        private AppSettings(
             IBoundsSettings bounds, ITrackerSettings tracker, ILayoutSettings layout,
             IColorSettings colors)
         {
@@ -65,7 +65,7 @@ namespace OpenTracker.Models.Settings
         {
             return new AppSettingsSaveData()
             {
-                Version = Assembly.GetExecutingAssembly().GetName().Version,
+                Version = Assembly.GetExecutingAssembly().GetName().Version!,
                 Maximized = Bounds.Maximized,
                 X = Bounds.X,
                 Y = Bounds.Y,

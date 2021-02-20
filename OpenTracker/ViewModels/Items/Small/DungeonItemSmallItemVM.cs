@@ -15,11 +15,13 @@ namespace OpenTracker.ViewModels.Items.Small
     /// </summary>
     public class DungeonItemSmallItemVM : SmallItemVMBase, IClickHandler
     {
+        private readonly IColorSettings _colorSettings;
+        private readonly IUndoRedoManager _undoRedoManager;
         private readonly ISection _section;
 
         public string FontColor =>
             _section.Available == 0 ? "#ffffffff" :
-            AppSettings.Instance.Colors.AccessibilityColors[_section.Accessibility];
+            _colorSettings.AccessibilityColors[_section.Accessibility];
         public string ImageSource
         {
             get
@@ -40,17 +42,25 @@ namespace OpenTracker.ViewModels.Items.Small
         public string NumberString =>
             _section.Available.ToString(CultureInfo.InvariantCulture);
 
+        public DungeonItemSmallItemVM(ISection section)
+            : this(AppSettings.Instance.Colors, UndoRedoManager.Instance, section)
+        {
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="section">
         /// The dungeon section to be represented.
         /// </param>
-        public DungeonItemSmallItemVM(ISection section)
+        private DungeonItemSmallItemVM(
+            IColorSettings colorSettings, IUndoRedoManager undoRedoManager, ISection section)
         {
+            _undoRedoManager = undoRedoManager;
+            _colorSettings = colorSettings;
             _section = section ?? throw new ArgumentNullException(nameof(section));
 
-            AppSettings.Instance.Colors.AccessibilityColors.PropertyChanged += OnColorChanged;
+            _colorSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
             _section.PropertyChanged += OnSectionChanged;
         }
 
@@ -118,7 +128,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// </param>
         public void OnLeftClick(bool force)
         {
-            UndoRedoManager.Instance.Execute(new CollectSection(_section, force));
+            _undoRedoManager.Execute(new CollectSection(_section, force));
         }
 
         /// <summary>
@@ -129,7 +139,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// </param>
         public void OnRightClick(bool force)
         {
-            UndoRedoManager.Instance.Execute(new UncollectSection(_section));
+            _undoRedoManager.Execute(new UncollectSection(_section));
         }
     }
 }

@@ -23,6 +23,8 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
     public class EntranceMapLocationVM : MapLocationVMBase, IClickHandler, IConnectLocation,
         IDoubleClickHandler, IPointerOver
     {
+        private readonly IAppSettings _appSettings;
+        private readonly IUndoRedoManager _undoRedoManager;
         private readonly MapLocation _mapLocation;
 
         public Dock MarkingDock { get; }
@@ -45,7 +47,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                     _ => _mapLocation.X - 28,
                 };
 
-                if (AppSettings.Instance.Layout.CurrentMapOrientation == Orientation.Vertical)
+                if (_appSettings.Layout.CurrentMapOrientation == Orientation.Vertical)
                 {
                     return x + 23;
                 }
@@ -69,7 +71,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
                     _ => _mapLocation.Y - 28,
                 };
 
-                if (AppSettings.Instance.Layout.CurrentMapOrientation == Orientation.Vertical)
+                if (_appSettings.Layout.CurrentMapOrientation == Orientation.Vertical)
                 {
                     if (_mapLocation.Map == MapID.DarkWorld)
                     {
@@ -83,7 +85,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
             }
         }
         public bool Visible =>
-            _mapLocation.Requirement.Met && (AppSettings.Instance.Tracker.DisplayAllLocations ||
+            _mapLocation.Requirement.Met && (_appSettings.Tracker.DisplayAllLocations ||
             (_mapLocation.Location.Sections[0] is IMarkableSection markableSection &&
             markableSection.Marking.Mark != MarkType.Unknown) ||
             _mapLocation.Location.Accessibility != AccessibilityLevel.Cleared);
@@ -92,11 +94,19 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         public List<Point> Points { get; }
 
         public string Color =>
-            AppSettings.Instance.Colors.AccessibilityColors[_mapLocation.Location.Accessibility];
+            _appSettings.Colors.AccessibilityColors[_mapLocation.Location.Accessibility];
         public string BorderColor =>
             Highlighted ? "#FFFFFFFF" : "#FF000000";
 
         public MapLocationToolTipVM ToolTip { get; }
+
+        public EntranceMapLocationVM(
+            MapLocation mapLocation, MarkingMapLocationVM marking, Dock markingDock,
+            List<Point> points)
+            : this(AppSettings.Instance, UndoRedoManager.Instance, mapLocation, marking,
+                  markingDock, points)
+        {
+        }
 
         /// <summary>
         /// Constructor
@@ -113,15 +123,19 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         /// <param name="points">
         /// The list of points for the triangle polygon.
         /// </param>
-        public EntranceMapLocationVM(
-            MapLocation mapLocation,  MarkingMapLocationVM marking, Dock markingDock,
-            List<Point> points)
+        private EntranceMapLocationVM(
+            IAppSettings appSettings, IUndoRedoManager undoRedoManager, MapLocation mapLocation,
+            MarkingMapLocationVM marking, Dock markingDock, List<Point> points)
         {
-            _mapLocation = mapLocation ?? throw new ArgumentNullException(nameof(mapLocation));
-            ToolTip = new MapLocationToolTipVM(_mapLocation.Location);
-            Marking = marking ?? throw new ArgumentNullException(nameof(marking));
+            _appSettings = appSettings;
+            _undoRedoManager = undoRedoManager;
+            _mapLocation = mapLocation;
+
+            Marking = marking;
             MarkingDock = markingDock;
-            Points = points ?? throw new ArgumentNullException(nameof(points));
+            Points = points;
+
+            ToolTip = new MapLocationToolTipVM(_mapLocation.Location);
 
             foreach (var section in _mapLocation.Location.Sections)
             {
@@ -130,9 +144,9 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
             }
 
             PropertyChanged += OnPropertyChanged;
-            AppSettings.Instance.Tracker.PropertyChanged += OnTrackerSettingsChanged;
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
-            AppSettings.Instance.Colors.AccessibilityColors.PropertyChanged += OnColorChanged;
+            _appSettings.Tracker.PropertyChanged += OnTrackerSettingsChanged;
+            _appSettings.Layout.PropertyChanged += OnLayoutChanged;
+            _appSettings.Colors.AccessibilityColors.PropertyChanged += OnColorChanged;
             _mapLocation.Location.PropertyChanged += OnLocationChanged;
             _mapLocation.Requirement.PropertyChanged += OnRequirementChanged;
         }
@@ -294,7 +308,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         /// </summary>
         public void OnDoubleClick()
         {
-            UndoRedoManager.Instance.Execute(new PinLocation(_mapLocation.Location));
+            _undoRedoManager.Execute(new PinLocation(_mapLocation.Location));
         }
 
         /// <summary>
@@ -328,7 +342,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
 
             if (location is EntranceMapLocationVM entrance)
             {
-                UndoRedoManager.Instance.Execute(new AddConnection(new Connection(
+                _undoRedoManager.Execute(new AddConnection(new Connection(
                     entrance._mapLocation, _mapLocation)));
             }
         }
@@ -351,7 +365,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         /// </param>
         public void OnRightClick(bool force)
         {
-            UndoRedoManager.Instance.Execute(new ClearLocation(_mapLocation.Location, force));
+            _undoRedoManager.Execute(new ClearLocation(_mapLocation.Location, force));
         }
     }
 }

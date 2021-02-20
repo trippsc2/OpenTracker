@@ -13,15 +13,17 @@ namespace OpenTracker.ViewModels.Items
     /// </summary>
     public class ItemsPanelVM : ViewModelBase
     {
+        private readonly ILayoutSettings _layoutSettings;
+
         private readonly HorizontalSmallItemPanelVM _horizontalSmallItemPanel =
             new HorizontalSmallItemPanelVM();
         private readonly VerticalSmallItemPanelVM _verticalSmallItemPanel =
             new VerticalSmallItemPanelVM();
 
-        public static double Scale =>
-            AppSettings.Instance.Layout.UIScale;
-        public static Orientation Orientation =>
-            AppSettings.Instance.Layout.CurrentLayoutOrientation;
+        public double Scale =>
+            _layoutSettings.UIScale;
+        public Orientation Orientation =>
+            _layoutSettings.CurrentLayoutOrientation;
 
         public ModeSettingsVM ModeSettings { get; } =
             new ModeSettingsVM();
@@ -40,13 +42,19 @@ namespace OpenTracker.ViewModels.Items
             }
         }
 
+        public ItemsPanelVM() : this(AppSettings.Instance.Layout)
+        {
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
-        public ItemsPanelVM()
+        private ItemsPanelVM(ILayoutSettings layoutSettings)
         {
+            _layoutSettings = layoutSettings;
+
             PropertyChanged += OnPropertyChanged;
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>
@@ -77,12 +85,12 @@ namespace OpenTracker.ViewModels.Items
         /// </param>
         private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(LayoutSettings.CurrentLayoutOrientation))
+            if (e.PropertyName == nameof(ILayoutSettings.CurrentLayoutOrientation))
             {
                 this.RaisePropertyChanged(nameof(Orientation));
             }
 
-            if (e.PropertyName == nameof(LayoutSettings.UIScale))
+            if (e.PropertyName == nameof(ILayoutSettings.UIScale))
             {
                 this.RaisePropertyChanged(nameof(Scale));
             }

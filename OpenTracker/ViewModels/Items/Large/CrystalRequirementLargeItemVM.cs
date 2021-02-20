@@ -15,6 +15,7 @@ namespace OpenTracker.ViewModels.Items.Large
     /// </summary>
     public class CrystalRequirementLargeItemVM : LargeItemVMBase, IClickHandler
     {
+        private readonly IColorSettings _colorSettings;
         private readonly ICrystalRequirementItem _item;
 
         public string ImageSource { get; }
@@ -39,11 +40,16 @@ namespace OpenTracker.ViewModels.Items.Large
                 if (_item.Known)
                 {
                     return _item.Current == 0 ?
-                        AppSettings.Instance.Colors.EmphasisFontColor : "#ffffffff";
+                        _colorSettings.EmphasisFontColor : "#ffffffff";
                 }
 
-                return AppSettings.Instance.Colors.AccessibilityColors[AccessibilityLevel.SequenceBreak];
+                return _colorSettings.AccessibilityColors[AccessibilityLevel.SequenceBreak];
             }
+        }
+
+        public CrystalRequirementLargeItemVM(string imageSource, ICrystalRequirementItem item)
+            : this(AppSettings.Instance.Colors, imageSource, item)
+        {
         }
 
         /// <summary>
@@ -55,14 +61,17 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <param name="item">
         /// An item that is to be represented by this control.
         /// </param>
-        public CrystalRequirementLargeItemVM(string imageSource, ICrystalRequirementItem item)
+        private CrystalRequirementLargeItemVM(
+            IColorSettings colorSettings, string imageSource, ICrystalRequirementItem item)
         {
-            _item = item ?? throw new ArgumentNullException(nameof(item));
-            ImageSource = imageSource ?? throw new ArgumentNullException(nameof(imageSource));
+            _colorSettings = colorSettings;
+            _item = item;
+
+            ImageSource = imageSource;
 
             _item.PropertyChanged += OnItemChanged;
-            AppSettings.Instance.Colors.PropertyChanged += OnColorsChanged;
-            AppSettings.Instance.Colors.AccessibilityColors.PropertyChanged += OnColorsChanged;
+            _colorSettings.PropertyChanged += OnColorsChanged;
+            _colorSettings.AccessibilityColors.PropertyChanged += OnColorsChanged;
         }
 
         /// <summary>

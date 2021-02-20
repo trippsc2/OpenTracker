@@ -100,13 +100,20 @@ namespace OpenTracker.ViewModels
         public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocationsCommand =>
             TopMenu.ToggleDisplayAllLocationsCommand;
 
+        public MainWindowVM(ITopMenuVM topMenu, IStatusBarVM statusBar)
+            : this(AppSettings.Instance, SaveLoadManager.Instance, topMenu, statusBar)
+        {
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
-        public MainWindowVM(ITopMenuVM topMenu, IStatusBarVM statusBar)
+        private MainWindowVM(
+            IAppSettings appSettings, ISaveLoadManager saveLoadManager, ITopMenuVM topMenu,
+            IStatusBarVM statusBar)
         {
-            _appSettings = AppSettings.Instance;
-            _saveLoadManager = SaveLoadManager.Instance;
+            _appSettings = appSettings;
+            _saveLoadManager = saveLoadManager;
             _sequenceBreakDictionary = SequenceBreakDictionary.Instance;
 
             TopMenu = topMenu;

@@ -3,7 +3,6 @@ using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Reactive;
@@ -15,10 +14,12 @@ namespace OpenTracker.ViewModels.BossSelect
     /// </summary>
     public class BossSelectPopupVM : ViewModelBase
     {
+        private readonly ILayoutSettings _layoutSettings;
+        private readonly IUndoRedoManager _undoRedoManager;
         private readonly IBossPlacement _bossPlacement;
 
-        public static double Scale =>
-            AppSettings.Instance.Layout.UIScale;
+        public double Scale =>
+            _layoutSettings.UIScale;
         public ObservableCollection<BossSelectButtonVM> Buttons { get; }
 
         private bool _popupOpen;
@@ -30,6 +31,13 @@ namespace OpenTracker.ViewModels.BossSelect
 
         public ReactiveCommand<BossType?, Unit> ChangeBossCommand { get; }
 
+        public BossSelectPopupVM(
+            IBossPlacement bossPlacement,
+            ObservableCollection<BossSelectButtonVM> buttons)
+            : this(AppSettings.Instance.Layout, UndoRedoManager.Instance, bossPlacement, buttons)
+        {
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -39,15 +47,19 @@ namespace OpenTracker.ViewModels.BossSelect
         /// <param name="buttons">
         /// The observable collection of boss select button control ViewModel instances.
         /// </param>
-        public BossSelectPopupVM(
-            IBossPlacement bossPlacement, ObservableCollection<BossSelectButtonVM> buttons)
+        private BossSelectPopupVM(
+            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager,
+            IBossPlacement bossPlacement,
+            ObservableCollection<BossSelectButtonVM> buttons)
         {
-            _bossPlacement = bossPlacement ??
-                throw new ArgumentNullException(nameof(bossPlacement));
-            Buttons = buttons ?? throw new ArgumentNullException(nameof(buttons));
+            _layoutSettings = layoutSettings;
+            _undoRedoManager = undoRedoManager;
+            _bossPlacement = bossPlacement;
+            Buttons = buttons;
+
             ChangeBossCommand = ReactiveCommand.Create<BossType?>(ChangeBoss);
 
-            AppSettings.Instance.Layout.PropertyChanged += OnAppSettingsChanged;
+            _layoutSettings.PropertyChanged += OnAppSettingsChanged;
         }
 
         /// <summary>
@@ -61,7 +73,7 @@ namespace OpenTracker.ViewModels.BossSelect
         /// </param>
         private void OnAppSettingsChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(LayoutSettings.UIScale))
+            if (e.PropertyName == nameof(ILayoutSettings.UIScale))
             {
                 this.RaisePropertyChanged(nameof(Scale));
             }
@@ -75,7 +87,7 @@ namespace OpenTracker.ViewModels.BossSelect
         /// </param>
         private void ChangeBoss(BossType? boss)
         {
-            UndoRedoManager.Instance.Execute(new ChangeBoss(_bossPlacement, boss));
+            _undoRedoManager.Execute(new ChangeBoss(_bossPlacement, boss));
             PopupOpen = false;
         }
     }

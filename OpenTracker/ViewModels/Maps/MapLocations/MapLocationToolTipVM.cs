@@ -16,14 +16,20 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
     /// </summary>
     public class MapLocationToolTipVM : ViewModelBase
     {
+        private readonly ILayoutSettings _layoutSettings;
         private readonly ILocation _location;
 
-        public static double Scale =>
-            AppSettings.Instance.Layout.UIScale;
+        public double Scale =>
+            _layoutSettings.UIScale;
         public string Name =>
             _location.Name;
         public ObservableCollection<MapLocationToolTipMarkingVM> Markings { get; } =
             new ObservableCollection<MapLocationToolTipMarkingVM>();
+
+        public MapLocationToolTipVM(ILocation location)
+            : this(AppSettings.Instance.Layout, location)
+        {
+        }
 
         /// <summary>
         /// Constructor
@@ -31,13 +37,16 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         /// <param name="location">
         /// The map location.
         /// </param>
-        public MapLocationToolTipVM(ILocation location)
+        private MapLocationToolTipVM(
+            ILayoutSettings layoutSettings, ILocation location)
         {
-            _location = location ?? throw new ArgumentNullException(nameof(location));
-            RefreshMarkings();
+            _layoutSettings = layoutSettings;
+            _location = location;
 
             _location.Notes.CollectionChanged += OnNotesChanged;
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
+
+            RefreshMarkings();
         }
 
         /// <summary>

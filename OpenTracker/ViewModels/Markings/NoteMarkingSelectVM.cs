@@ -16,11 +16,13 @@ namespace OpenTracker.ViewModels.Markings
     /// </summary>
     public class NoteMarkingSelectVM : ViewModelBase
     {
+        private readonly ILayoutSettings _layoutSettings;
+        private readonly IUndoRedoManager _undoRedoManager;
         private readonly IMarking _marking;
         private readonly ILocation _location;
 
-        public static double Scale =>
-            AppSettings.Instance.Layout.UIScale;
+        public double Scale =>
+            _layoutSettings.UIScale;
 
         public ObservableCollection<MarkingSelectItemVMBase> Buttons { get; }
 
@@ -34,6 +36,14 @@ namespace OpenTracker.ViewModels.Markings
         public ReactiveCommand<MarkType?, Unit> ChangeMarkingCommand { get; }
         public ReactiveCommand<Unit, Unit> RemoveNoteCommand { get; }
 
+        public NoteMarkingSelectVM(
+            IMarking marking, ObservableCollection<MarkingSelectItemVMBase> buttons,
+            ILocation location)
+            : this(AppSettings.Instance.Layout, UndoRedoManager.Instance, marking, buttons,
+                  location)
+        {
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -46,17 +56,21 @@ namespace OpenTracker.ViewModels.Markings
         /// <param name="location">
         /// The location.
         /// </param>
-        public NoteMarkingSelectVM(
-            IMarking marking, ObservableCollection<MarkingSelectItemVMBase> buttons,
-            ILocation location)
+        private NoteMarkingSelectVM(
+            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager, IMarking marking,
+            ObservableCollection<MarkingSelectItemVMBase> buttons, ILocation location)
         {
-            _marking = marking ?? throw new ArgumentNullException(nameof(marking));
-            Buttons = buttons ?? throw new ArgumentNullException(nameof(buttons));
-            _location = location ?? throw new ArgumentNullException(nameof(location));
+            _layoutSettings = layoutSettings;
+            _undoRedoManager = undoRedoManager;
+            _marking = marking;
+            _location = location;
+
+            Buttons = buttons;
+
             ChangeMarkingCommand = ReactiveCommand.Create<MarkType?>(ChangeMarking);
             RemoveNoteCommand = ReactiveCommand.Create(RemoveNote);
 
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>
@@ -81,7 +95,7 @@ namespace OpenTracker.ViewModels.Markings
         /// </summary>
         private void RemoveNote()
         {
-            UndoRedoManager.Instance.Execute(new RemoveNote(_marking, _location));
+            _undoRedoManager.Execute(new RemoveNote(_marking, _location));
             PopupOpen = false;
         }
 
@@ -98,7 +112,7 @@ namespace OpenTracker.ViewModels.Markings
                 return;
             }
 
-            UndoRedoManager.Instance.Execute(new SetMarking(_marking, marking.Value));
+            _undoRedoManager.Execute(new SetMarking(_marking, marking.Value));
             PopupOpen = false;
         }
     }

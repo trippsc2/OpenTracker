@@ -14,10 +14,12 @@ namespace OpenTracker.ViewModels.Maps
     /// </summary>
     public class MapVM : ViewModelBase
     {
+        private readonly ILayoutSettings _layoutSettings;
+        private readonly IMode _mode;
         private readonly MapID _id;
 
-        public static Thickness Margin =>
-            AppSettings.Instance.Layout.CurrentMapOrientation switch
+        public Thickness Margin =>
+            _layoutSettings.CurrentMapOrientation switch
             {
                 Orientation.Horizontal => new Thickness(10, 20),
                 _ => new Thickness(20, 10)
@@ -26,7 +28,7 @@ namespace OpenTracker.ViewModels.Maps
         {
             get
             {
-                var worldState = Mode.Instance.WorldState == WorldState.Inverted ?
+                var worldState = _mode.WorldState == WorldState.Inverted ?
                     WorldState.Inverted : WorldState.StandardOpen;
 
                 return $"avares://OpenTracker/Assets/Images/Maps/" +
@@ -35,18 +37,24 @@ namespace OpenTracker.ViewModels.Maps
             }
         }
 
+        public MapVM(MapID id) : this(AppSettings.Instance.Layout, Mode.Instance, id)
+        {
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="id">
         /// The map identity.
         /// </param>
-        public MapVM(MapID id)
+        private MapVM(ILayoutSettings layoutSettings, IMode mode, MapID id)
         {
+            _layoutSettings = layoutSettings;
+            _mode = mode;
             _id = id;
 
-            Mode.Instance.PropertyChanged += OnModeChanged;
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            _mode.PropertyChanged += OnModeChanged;
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>

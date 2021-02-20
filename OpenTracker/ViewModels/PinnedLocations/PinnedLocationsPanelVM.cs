@@ -13,18 +13,26 @@ namespace OpenTracker.ViewModels.PinnedLocations
     /// </summary>
     public class PinnedLocationsPanelVM : ViewModelBase
     {
-        public static Orientation Orientation =>
-            AppSettings.Instance.Layout.CurrentLayoutOrientation;
+        private readonly ILayoutSettings _layoutSettings;
+
+        public Orientation Orientation =>
+            _layoutSettings.CurrentLayoutOrientation;
 
         public IObservableCollection<PinnedLocationVM> Locations { get; } =
             PinnedLocationVMCollection.Instance;
 
+        public PinnedLocationsPanelVM() : this(AppSettings.Instance.Layout)
+        {
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
-        public PinnedLocationsPanelVM()
+        private PinnedLocationsPanelVM(ILayoutSettings layoutSettings)
         {
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            _layoutSettings = layoutSettings;
+
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>

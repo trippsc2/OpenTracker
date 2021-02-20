@@ -9,8 +9,10 @@ namespace OpenTracker.Models.UndoRedo
     /// <summary>
     /// This is the class for managing undo/redo actions.
     /// </summary>
-    public class UndoRedoManager : Singleton<UndoRedoManager>, INotifyPropertyChanged
+    public class UndoRedoManager : Singleton<UndoRedoManager>, IUndoRedoManager
     {
+        private readonly ISaveLoadManager _saveLoadManager;
+
         private readonly ObservableStack<IUndoable> _undoableActions =
             new ObservableStack<IUndoable>();
         private readonly ObservableStack<IUndoable> _redoableActions =
@@ -23,8 +25,14 @@ namespace OpenTracker.Models.UndoRedo
         public bool CanRedo =>
             _redoableActions.Count > 0;
 
-        public UndoRedoManager()
+        public UndoRedoManager() : this(SaveLoadManager.Instance)
         {
+        }
+
+        private UndoRedoManager(ISaveLoadManager saveLoadManager)
+        {
+            _saveLoadManager = saveLoadManager;
+
             _undoableActions.CollectionChanged += OnUndoChanged;
             _redoableActions.CollectionChanged += OnRedoChanged;
         }
@@ -65,7 +73,7 @@ namespace OpenTracker.Models.UndoRedo
                 action.Execute();
                 _undoableActions.Push(action);
                 _redoableActions.Clear();
-                //SaveLoadManager.Instance.Unsaved = true;
+                _saveLoadManager.Unsaved = true;
             }
         }
 
@@ -79,7 +87,7 @@ namespace OpenTracker.Models.UndoRedo
                 IUndoable action = _undoableActions.Pop();
                 action.Undo();
                 _redoableActions.Push(action);
-                //SaveLoadManager.Instance.Unsaved = true;
+                _saveLoadManager.Unsaved = true;
             }
         }
 
@@ -93,7 +101,7 @@ namespace OpenTracker.Models.UndoRedo
                 IUndoable action = _redoableActions.Pop();
                 action.Execute();
                 _undoableActions.Push(action);
-                //SaveLoadManager.Instance.Unsaved = true;
+                _saveLoadManager.Unsaved = true;
             }
         }
 

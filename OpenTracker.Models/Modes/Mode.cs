@@ -8,9 +8,9 @@ namespace OpenTracker.Models.Modes
     /// <summary>
     /// This is the class for the game mode settings.
     /// </summary>
-    public class Mode : Singleton<Mode>, INotifyPropertyChanged
+    public class Mode : Singleton<Mode>, IMode
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private ItemPlacement _itemPlacement = ItemPlacement.Advanced;
         public ItemPlacement ItemPlacement

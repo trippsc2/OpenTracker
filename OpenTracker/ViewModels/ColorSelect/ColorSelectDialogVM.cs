@@ -14,62 +14,70 @@ namespace OpenTracker.ViewModels.ColorSelect
     /// </summary>
     public class ColorSelectDialogVM : DialogViewModelBase, IColorSelectDialogVM
     {
-        private SolidColorBrush _emphasisFontColor;
-        public SolidColorBrush EmphasisFontColor
+        private readonly IColorSettings _colorSettings;
+
+        private SolidColorBrush? _emphasisFontColor;
+        public SolidColorBrush? EmphasisFontColor
         {
             get => _emphasisFontColor;
             set => this.RaiseAndSetIfChanged(ref _emphasisFontColor, value);
         }
 
-        private SolidColorBrush _accessibilityNoneColor;
-        public SolidColorBrush AccessibilityNoneColor
+        private SolidColorBrush? _accessibilityNoneColor;
+        public SolidColorBrush? AccessibilityNoneColor
         {
             get => _accessibilityNoneColor;
             set => this.RaiseAndSetIfChanged(ref _accessibilityNoneColor, value);
         }
 
-        private SolidColorBrush _accessibilityPartialColor;
-        public SolidColorBrush AccessibilityPartialColor
+        private SolidColorBrush? _accessibilityPartialColor;
+        public SolidColorBrush? AccessibilityPartialColor
         {
             get => _accessibilityPartialColor;
             set => this.RaiseAndSetIfChanged(ref _accessibilityPartialColor, value);
         }
 
-        private SolidColorBrush _accessibilityInspectColor;
-        public SolidColorBrush AccessibilityInspectColor
+        private SolidColorBrush? _accessibilityInspectColor;
+        public SolidColorBrush? AccessibilityInspectColor
         {
             get => _accessibilityInspectColor;
             set => this.RaiseAndSetIfChanged(ref _accessibilityInspectColor, value);
         }
 
-        private SolidColorBrush _accessibilitySequenceBreakColor;
-        public SolidColorBrush AccessibilitySequenceBreakColor
+        private SolidColorBrush? _accessibilitySequenceBreakColor;
+        public SolidColorBrush? AccessibilitySequenceBreakColor
         {
             get => _accessibilitySequenceBreakColor;
             set => this.RaiseAndSetIfChanged(ref _accessibilitySequenceBreakColor, value);
         }
 
-        private SolidColorBrush _accessibilityNormalColor;
-        public SolidColorBrush AccessibilityNormalColor
+        private SolidColorBrush? _accessibilityNormalColor;
+        public SolidColorBrush? AccessibilityNormalColor
         {
             get => _accessibilityNormalColor;
             set => this.RaiseAndSetIfChanged(ref _accessibilityNormalColor, value);
         }
 
-        private SolidColorBrush _connectorColor;
-        public SolidColorBrush ConnectorColor
+        private SolidColorBrush? _connectorColor;
+        public SolidColorBrush? ConnectorColor
         {
             get => _connectorColor;
             set => this.RaiseAndSetIfChanged(ref _connectorColor, value);
         }
 
+        public ColorSelectDialogVM() : this(AppSettings.Instance.Colors)
+        {
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
-        public ColorSelectDialogVM()
+        private ColorSelectDialogVM(IColorSettings colorSettings)
         {
-            AppSettings.Instance.Colors.PropertyChanged += OnColorSettingsChanged;
-            AppSettings.Instance.Colors.AccessibilityColors.PropertyChanged += OnAccessibilityColorsChanged;
+            _colorSettings = colorSettings;
+
+            _colorSettings.PropertyChanged += OnColorSettingsChanged;
+            _colorSettings.AccessibilityColors.PropertyChanged += OnAccessibilityColorsChanged;
 
             UpdateEmphasisFontColor();
             UpdateAccessibilityColors();
@@ -85,7 +93,7 @@ namespace OpenTracker.ViewModels.ColorSelect
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnColorChanged(object sender, AvaloniaPropertyChangedEventArgs e)
+        private void OnColorChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
         {
             if (sender == EmphasisFontColor)
             {
@@ -132,7 +140,7 @@ namespace OpenTracker.ViewModels.ColorSelect
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnColorSettingsChanged(object sender, PropertyChangedEventArgs e)
+        private void OnColorSettingsChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ColorSettings.EmphasisFontColor))
             {
@@ -154,7 +162,7 @@ namespace OpenTracker.ViewModels.ColorSelect
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnAccessibilityColorsChanged(object sender, PropertyChangedEventArgs e)
+        private void OnAccessibilityColorsChanged(object? sender, PropertyChangedEventArgs e)
         {
             UpdateAccessibilityColors();
         }
@@ -170,7 +178,7 @@ namespace OpenTracker.ViewModels.ColorSelect
             }
 
             EmphasisFontColor =
-                SolidColorBrush.Parse(AppSettings.Instance.Colors.EmphasisFontColor);
+                SolidColorBrush.Parse(_colorSettings.EmphasisFontColor);
             EmphasisFontColor.PropertyChanged += OnColorChanged;
         }
 
@@ -179,7 +187,12 @@ namespace OpenTracker.ViewModels.ColorSelect
         /// </summary>
         private void SetEmphasisFontColor()
         {
-            AppSettings.Instance.Colors.EmphasisFontColor = EmphasisFontColor.Color.ToString();
+            if (EmphasisFontColor == null)
+            {
+                return;
+            }
+
+            _colorSettings.EmphasisFontColor = EmphasisFontColor.Color.ToString();
         }
 
         /// <summary>
@@ -192,7 +205,7 @@ namespace OpenTracker.ViewModels.ColorSelect
                 ConnectorColor.PropertyChanged -= OnColorChanged;
             }
 
-            ConnectorColor = SolidColorBrush.Parse(AppSettings.Instance.Colors.ConnectorColor);
+            ConnectorColor = SolidColorBrush.Parse(_colorSettings.ConnectorColor);
             ConnectorColor.PropertyChanged += OnColorChanged;
         }
 
@@ -201,7 +214,12 @@ namespace OpenTracker.ViewModels.ColorSelect
         /// </summary>
         private void SetConnectorColor()
         {
-            AppSettings.Instance.Colors.ConnectorColor = ConnectorColor.Color.ToString();
+            if (ConnectorColor == null)
+            {
+                return;
+            }
+
+            _colorSettings.ConnectorColor = ConnectorColor.Color.ToString();
         }
 
         /// <summary>
@@ -235,15 +253,15 @@ namespace OpenTracker.ViewModels.ColorSelect
             }
 
             AccessibilityNoneColor = SolidColorBrush
-                .Parse(AppSettings.Instance.Colors.AccessibilityColors[AccessibilityLevel.None]);
+                .Parse(_colorSettings.AccessibilityColors[AccessibilityLevel.None]);
             AccessibilityInspectColor = SolidColorBrush
-                .Parse(AppSettings.Instance.Colors.AccessibilityColors[AccessibilityLevel.Inspect]);
+                .Parse(_colorSettings.AccessibilityColors[AccessibilityLevel.Inspect]);
             AccessibilityPartialColor = SolidColorBrush
-                .Parse(AppSettings.Instance.Colors.AccessibilityColors[AccessibilityLevel.Partial]);
+                .Parse(_colorSettings.AccessibilityColors[AccessibilityLevel.Partial]);
             AccessibilitySequenceBreakColor = SolidColorBrush
-                .Parse(AppSettings.Instance.Colors.AccessibilityColors[AccessibilityLevel.SequenceBreak]);
+                .Parse(_colorSettings.AccessibilityColors[AccessibilityLevel.SequenceBreak]);
             AccessibilityNormalColor = SolidColorBrush
-                .Parse(AppSettings.Instance.Colors.AccessibilityColors[AccessibilityLevel.Normal]);
+                .Parse(_colorSettings.AccessibilityColors[AccessibilityLevel.Normal]);
 
             AccessibilityNoneColor.PropertyChanged += OnColorChanged;
             AccessibilityInspectColor.PropertyChanged += OnColorChanged;
@@ -261,22 +279,22 @@ namespace OpenTracker.ViewModels.ColorSelect
         /// </param>
         private void SetAccessibilityColor(AccessibilityLevel accessibility)
         {
-            SolidColorBrush color = accessibility switch
+            SolidColorBrush? color = accessibility switch
             {
                 AccessibilityLevel.None => AccessibilityNoneColor,
                 AccessibilityLevel.Inspect => AccessibilityInspectColor,
                 AccessibilityLevel.Partial => AccessibilityPartialColor,
                 AccessibilityLevel.SequenceBreak => AccessibilitySequenceBreakColor,
                 AccessibilityLevel.Normal => AccessibilityNormalColor,
-                _ => null
+                _ => throw new ArgumentOutOfRangeException(nameof(accessibility))
             };
 
             if (color == null)
             {
-                throw new ArgumentOutOfRangeException(nameof(accessibility));
+                return;
             }
 
-            AppSettings.Instance.Colors.AccessibilityColors[accessibility] = color.ToString();
+            _colorSettings.AccessibilityColors[accessibility] = color.ToString();
         }
     }
 }

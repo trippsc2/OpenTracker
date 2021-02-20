@@ -36,7 +36,7 @@ namespace OpenTracker.ViewModels
         private readonly IAppSettings _appSettings;
         private readonly IResetManager _resetManager;
         private readonly ISaveLoadManager _saveLoadManager;
-        private readonly UndoRedoManager _undoRedoManager;
+        private readonly IUndoRedoManager _undoRedoManager;
 
         private readonly IDialogService _dialogService;
         private readonly IFileDialogService _fileDialogService;
@@ -166,26 +166,38 @@ namespace OpenTracker.ViewModels
         public bool IsOpeningAbout =>
             _isOpeningAbout.Value;
 
+        public TopMenuVM(
+            IResetManager resetManager, ISaveLoadManager saveLoadManager, IDialogService dialogService,
+            IFileDialogService fileDialogService, IAutoTrackerDialogVM autoTrackerDialog,
+            IColorSelectDialogVM colorSelectDialog, ISequenceBreakDialogVM sequenceBreakDialog,
+            IAboutDialogVM aboutDialog)
+            : this(AppSettings.Instance, resetManager, saveLoadManager,
+                  UndoRedoManager.Instance, dialogService, fileDialogService, autoTrackerDialog,
+                  colorSelectDialog, sequenceBreakDialog, aboutDialog)
+        {
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
-        public TopMenuVM(
-            IResetManager resetManager, ISaveLoadManager saveLoadManager,
-            IDialogService dialogService, IFileDialogService fileDialogService, 
-            IAutoTrackerDialogVM autoTrackerDialog, IColorSelectDialogVM colorSelectDialog,
+        private TopMenuVM(
+            IAppSettings appSettings, IResetManager resetManager, ISaveLoadManager saveLoadManager,
+            IUndoRedoManager undoRedoManager, IDialogService dialogService,
+            IFileDialogService fileDialogService, IAutoTrackerDialogVM autoTrackerDialog,
+            IColorSelectDialogVM colorSelectDialog, ISequenceBreakDialogVM sequenceBreakDialog,
             IAboutDialogVM aboutDialog)
         {
-            _appSettings = AppSettings.Instance;
+            _appSettings = appSettings;
             _resetManager = resetManager;
             _saveLoadManager = saveLoadManager;
-            _undoRedoManager = UndoRedoManager.Instance;
+            _undoRedoManager = undoRedoManager;
 
             _dialogService = dialogService;
             _fileDialogService = fileDialogService;
 
             _autoTrackerDialog = autoTrackerDialog;
             _colorSelectDialog = colorSelectDialog;
-            _sequenceBreakDialog = SequenceBreakDialogVMFactory.GetSequenceBreakDialogVM();
+            _sequenceBreakDialog = sequenceBreakDialog;
             _aboutDialog = aboutDialog;
 
             OpenCommand = ReactiveCommand.CreateFromTask(Open);

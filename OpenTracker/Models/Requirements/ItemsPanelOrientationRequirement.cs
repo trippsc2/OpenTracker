@@ -11,13 +11,14 @@ namespace OpenTracker.Models.Requirements
     /// </summary>
     public class ItemsPanelOrientationRequirement : IRequirement
     {
+        private readonly ILayoutSettings _layoutSettings;
         private readonly Orientation _orientation;
 
         public bool Met =>
             Accessibility != AccessibilityLevel.None;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler ChangePropagated;
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public event EventHandler? ChangePropagated;
 
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
@@ -33,17 +34,24 @@ namespace OpenTracker.Models.Requirements
             }
         }
 
+        public ItemsPanelOrientationRequirement(Orientation orientation)
+            : this(AppSettings.Instance.Layout, orientation)
+        {
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="orientation">
         /// The orientation requirement.
         /// </param>
-        public ItemsPanelOrientationRequirement(Orientation orientation)
+        private ItemsPanelOrientationRequirement(
+            ILayoutSettings layoutSettings, Orientation orientation)
         {
+            _layoutSettings = layoutSettings;
             _orientation = orientation;
 
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
 
             UpdateAccessibility();
         }
@@ -69,9 +77,9 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(LayoutSettings.CurrentLayoutOrientation))
+            if (e.PropertyName == nameof(ILayoutSettings.CurrentLayoutOrientation))
             {
                 UpdateAccessibility();
             }
@@ -82,7 +90,7 @@ namespace OpenTracker.Models.Requirements
         /// </summary>
         private void UpdateAccessibility()
         {
-            Accessibility = AppSettings.Instance.Layout.CurrentLayoutOrientation == _orientation ?
+            Accessibility = _layoutSettings.CurrentLayoutOrientation == _orientation ?
                 AccessibilityLevel.Normal : AccessibilityLevel.None;
         }
     }

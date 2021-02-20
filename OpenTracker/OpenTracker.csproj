@@ -64,6 +64,9 @@
     <Compile Update="Views\Items\Small\SmallItem.axaml.cs">
       <DependentUpon>SmallItem.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\SequenceBreaks\SequenceBreakControl.axaml.cs">
+      <DependentUpon>SequenceBreakControl.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Update="Themes\Dark.xaml">

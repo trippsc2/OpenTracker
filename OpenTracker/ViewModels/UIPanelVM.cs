@@ -15,11 +15,12 @@ namespace OpenTracker.ViewModels
     /// </summary>
     public class UIPanelVM : ViewModelBase
     {
-        public static Dock ItemsDock =>
-            AppSettings.Instance.Layout.CurrentLayoutOrientation switch
+        private readonly ILayoutSettings _layoutSettings;
+        public Dock ItemsDock =>
+            _layoutSettings.CurrentLayoutOrientation switch
             {
-                Orientation.Horizontal => AppSettings.Instance.Layout.HorizontalItemsPlacement,
-                _ => AppSettings.Instance.Layout.VerticalItemsPlacement
+                Orientation.Horizontal => _layoutSettings.HorizontalItemsPlacement,
+                _ => _layoutSettings.VerticalItemsPlacement
             };
 
         public DropdownPanelVM Dropdowns { get; } =
@@ -29,12 +30,18 @@ namespace OpenTracker.ViewModels
         public PinnedLocationsPanelVM Locations { get; } =
             new PinnedLocationsPanelVM();
 
+        public UIPanelVM() : this(AppSettings.Instance.Layout)
+        {
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
-        public UIPanelVM()
+        private UIPanelVM(ILayoutSettings layoutSettings)
         {
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            _layoutSettings = layoutSettings;
+
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>

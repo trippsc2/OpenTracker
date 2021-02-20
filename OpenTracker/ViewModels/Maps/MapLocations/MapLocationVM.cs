@@ -20,6 +20,9 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
     public class MapLocationVM : MapLocationVMBase, IClickHandler, IDoubleClickHandler,
         IPointerOver
     {
+        private readonly IAppSettings _appSettings;
+        private readonly IMode _mode;
+        private readonly IUndoRedoManager _undoRedoManager;
         private readonly MapLocation _mapLocation;
 
         private bool _highlighted;
@@ -35,7 +38,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
             {
                 double x = _mapLocation.X - (Size / 2);
 
-                if (AppSettings.Instance.Layout.CurrentMapOrientation == Orientation.Vertical)
+                if (_appSettings.Layout.CurrentMapOrientation == Orientation.Vertical)
                 {
                     return x + 23;
                 }
@@ -54,7 +57,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
             {
                 double y = _mapLocation.Y - (Size / 2);
 
-                if (AppSettings.Instance.Layout.CurrentMapOrientation == Orientation.Vertical)
+                if (_appSettings.Layout.CurrentMapOrientation == Orientation.Vertical)
                 {
                     if (_mapLocation.Map == MapID.DarkWorld)
                     {
@@ -71,7 +74,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         {
             get
             {
-                if (Mode.Instance.EntranceShuffle >= EntranceShuffle.All)
+                if (_mode.EntranceShuffle >= EntranceShuffle.All)
                 {
                     return 40.0;
                 }
@@ -85,25 +88,25 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
             }
         }
         public bool Visible =>
-            _mapLocation.Requirement.Met && (AppSettings.Instance.Tracker.DisplayAllLocations ||
+            _mapLocation.Requirement.Met && (_appSettings.Tracker.DisplayAllLocations ||
             (_mapLocation.Location.Accessibility != AccessibilityLevel.Cleared &&
             _mapLocation.Location.Accessibility != AccessibilityLevel.None));
         public string Color =>
-            AppSettings.Instance.Colors.AccessibilityColors[_mapLocation.Location.Accessibility];
-        public static Thickness BorderSize =>
-            Mode.Instance.EntranceShuffle >= EntranceShuffle.All ? new Thickness(5) : new Thickness(9);
+            _appSettings.Colors.AccessibilityColors[_mapLocation.Location.Accessibility];
+        public Thickness BorderSize =>
+            _mode.EntranceShuffle >= EntranceShuffle.All ? new Thickness(5) : new Thickness(9);
         public string BorderColor =>
             Highlighted ? "#ffffffff" : "#ff000000";
         public bool TextVisible =>
-            Mode.Instance.EntranceShuffle < EntranceShuffle.All &&
-            AppSettings.Instance.Tracker.ShowItemCountsOnMap &&
+            _mode.EntranceShuffle < EntranceShuffle.All &&
+            _appSettings.Tracker.ShowItemCountsOnMap &&
             _mapLocation.Location.Available != 0 && _mapLocation.Location.Total > 1;
-        public string Text
+        public string? Text
         {
             get
             {
-                if (Mode.Instance.EntranceShuffle == EntranceShuffle.All ||
-                    !AppSettings.Instance.Tracker.ShowItemCountsOnMap ||
+                if (_mode.EntranceShuffle == EntranceShuffle.All ||
+                    !_appSettings.Tracker.ShowItemCountsOnMap ||
                     _mapLocation.Location.Available == 0 || _mapLocation.Location.Total <= 1)
                 {
                     return null;
@@ -126,22 +129,33 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
 
         public MapLocationToolTipVM ToolTip { get; }
 
+        public MapLocationVM(MapLocation mapLocation)
+            : this(AppSettings.Instance, Mode.Instance, UndoRedoManager.Instance, mapLocation)
+        {
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="mapLocation">
         /// The map location being represented.
         /// </param>
-        public MapLocationVM(MapLocation mapLocation)
+        private MapLocationVM(
+            IAppSettings appSettings, IMode mode, IUndoRedoManager undoRedoManager,
+            MapLocation mapLocation)
         {
-            _mapLocation = mapLocation ?? throw new ArgumentNullException(nameof(mapLocation));
+            _appSettings = appSettings;
+            _mode = mode;
+            _undoRedoManager = undoRedoManager;
+            _mapLocation = mapLocation;
+
             ToolTip = new MapLocationToolTipVM(_mapLocation.Location);
 
             PropertyChanged += OnPropertyChanged;
-            AppSettings.Instance.Tracker.PropertyChanged += OnTrackerSettingsChanged;
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
-            AppSettings.Instance.Colors.AccessibilityColors.PropertyChanged += OnColorChanged;
-            Mode.Instance.PropertyChanged += OnModeChanged;
+            _appSettings.Tracker.PropertyChanged += OnTrackerSettingsChanged;
+            _appSettings.Layout.PropertyChanged += OnLayoutChanged;
+            _appSettings.Colors.AccessibilityColors.PropertyChanged += OnColorChanged;
+            _mode.PropertyChanged += OnModeChanged;
             _mapLocation.Location.PropertyChanged += OnLocationChanged;
             _mapLocation.Requirement.PropertyChanged += OnRequirementChanged;
         }
@@ -331,7 +345,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         /// </summary>
         public void OnDoubleClick()
         {
-            UndoRedoManager.Instance.Execute(new PinLocation(_mapLocation.Location));
+            _undoRedoManager.Execute(new PinLocation(_mapLocation.Location));
         }
 
         /// <summary>
@@ -368,7 +382,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         /// </param>
         public void OnRightClick(bool force)
         {
-            UndoRedoManager.Instance.Execute(new ClearLocation(_mapLocation.Location, force));
+            _undoRedoManager.Execute(new ClearLocation(_mapLocation.Location, force));
         }
     }
 }

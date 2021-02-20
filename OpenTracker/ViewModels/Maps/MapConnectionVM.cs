@@ -18,6 +18,9 @@ namespace OpenTracker.ViewModels.Maps
     /// </summary>
     public class MapConnectionVM : ViewModelBase, IClickHandler, IPointerOver
     {
+        private readonly IColorSettings _colorSettings;
+        private readonly IMode _mode;
+        private readonly IUndoRedoManager _undoRedoManager;
         private readonly MapAreaVM _mapArea;
 
         private bool _highlighted;
@@ -27,13 +30,13 @@ namespace OpenTracker.ViewModels.Maps
             private set => this.RaiseAndSetIfChanged(ref _highlighted, value);
         }
 
-        public static bool Visible =>
-            Mode.Instance.EntranceShuffle > EntranceShuffle.None;
+        public bool Visible =>
+            _mode.EntranceShuffle > EntranceShuffle.None;
 
         public Connection Connection { get; }
 
         public Point Start =>
-            MapAreaVM.Orientation switch
+            _mapArea.Orientation switch
             {
                 Orientation.Vertical => Connection.Location1.Map == MapID.DarkWorld ?
                     new Point(Connection.Location1.X + 23, Connection.Location1.Y + 2046) :
@@ -43,7 +46,7 @@ namespace OpenTracker.ViewModels.Maps
                     new Point(Connection.Location1.X + 13, Connection.Location1.Y + 23)
             };
         public Point End =>
-            MapAreaVM.Orientation switch
+            _mapArea.Orientation switch
             {
                 Orientation.Vertical => Connection.Location2.Map == MapID.DarkWorld ?
                     new Point(Connection.Location2.X + 23, Connection.Location2.Y + 2046) :
@@ -53,7 +56,13 @@ namespace OpenTracker.ViewModels.Maps
                     new Point(Connection.Location2.X + 13, Connection.Location2.Y + 23)
             };
         public string Color =>
-            Highlighted ? "#ffffffff" : AppSettings.Instance.Colors.ConnectorColor;
+            Highlighted ? "#ffffffff" : _colorSettings.ConnectorColor;
+
+        public MapConnectionVM(Connection connection, MapAreaVM mapArea)
+            : this(AppSettings.Instance.Colors, Mode.Instance, UndoRedoManager.Instance,
+                  connection, mapArea)
+        {
+        }
 
         /// <summary>
         /// Constructor
@@ -64,15 +73,21 @@ namespace OpenTracker.ViewModels.Maps
         /// <param name="mapArea">
         /// The map area ViewModel parent class.
         /// </param>
-        public MapConnectionVM(Connection connection, MapAreaVM mapArea)
+        private MapConnectionVM(
+            IColorSettings colorSettings, IMode mode, IUndoRedoManager undoRedoManager,
+            Connection connection, MapAreaVM mapArea)
         {
-            Connection = connection ?? throw new ArgumentNullException(nameof(connection));
-            _mapArea = mapArea ?? throw new ArgumentNullException(nameof(mapArea));
+            _colorSettings = colorSettings;
+            _mode = mode;
+            _undoRedoManager = undoRedoManager;
+            _mapArea = mapArea;
+
+            Connection = connection;
 
             PropertyChanged += OnPropertyChanged;
             _mapArea.PropertyChanged += OnMapAreaChanged;
-            Mode.Instance.PropertyChanged += OnModeChanged;
-            AppSettings.Instance.Colors.PropertyChanged += OnColorsChanged;
+            _mode.PropertyChanged += OnModeChanged;
+            _colorSettings.PropertyChanged += OnColorsChanged;
         }
 
         /// <summary>
@@ -170,7 +185,7 @@ namespace OpenTracker.ViewModels.Maps
         /// </param>
         public void OnRightClick(bool force = false)
         {
-            UndoRedoManager.Instance.Execute(new RemoveConnection(Connection));
+            _undoRedoManager.Execute(new RemoveConnection(Connection));
         }
 
         /// <summary>

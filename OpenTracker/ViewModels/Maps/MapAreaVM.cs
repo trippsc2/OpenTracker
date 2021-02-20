@@ -16,23 +16,32 @@ namespace OpenTracker.ViewModels.Maps
     /// </summary>
     public class MapAreaVM : ViewModelBase
     {
-        public static Orientation Orientation => 
-            AppSettings.Instance.Layout.CurrentMapOrientation;
+        private readonly ILayoutSettings _layoutSettings;
+
+        public Orientation Orientation => 
+            _layoutSettings.CurrentMapOrientation;
 
         public ObservableCollection<MapVM> Maps { get; }
         public ObservableCollection<MapConnectionVM> Connectors { get; } =
             new ObservableCollection<MapConnectionVM>();
         public ObservableCollection<MapLocationVMBase> MapLocations { get; }
 
+        public MapAreaVM() : this(AppSettings.Instance.Layout)
+        {
+
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
-        public MapAreaVM()
+        private MapAreaVM(ILayoutSettings layoutSettings)
         {
+            _layoutSettings = layoutSettings;
+
             Maps = MapAreaVMFactory.GetMapControlVMs();
             MapLocations = MapAreaVMFactory.GetMapLocationControlVMs();
 
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
             ConnectionCollection.Instance.CollectionChanged += OnConnectionsChanged;
         }
 
@@ -94,7 +103,7 @@ namespace OpenTracker.ViewModels.Maps
             {
                 Connectors.Clear();
 
-                foreach (Connection connection in (ObservableCollection<Connection>)sender)
+                foreach (var connection in (ObservableCollection<Connection>)sender)
                 {
                     Connectors.Add(new MapConnectionVM(connection, this));
                 }

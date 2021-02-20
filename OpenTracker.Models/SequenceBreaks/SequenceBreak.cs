@@ -1,5 +1,4 @@
 ﻿using OpenTracker.Models.SaveLoad;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.SequenceBreaks
@@ -7,11 +6,11 @@ namespace OpenTracker.Models.SequenceBreaks
     /// <summary>
     /// This is the class for sequence breaks.
     /// </summary>
-    public class SequenceBreak : INotifyPropertyChanged
+    public class SequenceBreak : ISequenceBreak
     {
         private readonly bool _starting;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private bool _enabled = true;
         public bool Enabled
@@ -26,6 +25,8 @@ namespace OpenTracker.Models.SequenceBreaks
                 }
             }
         }
+
+        public delegate ISequenceBreak Factory(bool starting = true);
 
         /// <summary>
         /// Constructor
@@ -76,11 +77,6 @@ namespace OpenTracker.Models.SequenceBreaks
         /// </summary>
         public void Load(SequenceBreakSaveData saveData)
         {
-            if (saveData == null)
-            {
-                throw new ArgumentNullException(nameof(saveData));
-            }
-            
             Enabled = saveData.Enabled;
         }
     }

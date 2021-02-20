@@ -20,6 +20,8 @@ namespace OpenTracker.ViewModels.Items.Small
     /// </summary>
     public class SmallKeySmallItemVM : SmallItemVMBase, IClickHandler
     {
+        private readonly IColorSettings _colorSettings;
+        private readonly IUndoRedoManager _undoRedoManager;
         private readonly IRequirement _spacerRequirement;
         private readonly IRequirement _requirement;
         private readonly IItem _item;
@@ -52,11 +54,16 @@ namespace OpenTracker.ViewModels.Items.Small
 
                 if (!_item.CanAdd())
                 {
-                    return AppSettings.Instance.Colors.EmphasisFontColor;
+                    return _colorSettings.EmphasisFontColor;
                 }
 
                 return "#ffffff";
             }
+        }
+
+        public SmallKeySmallItemVM(IDungeon dungeon)
+            : this(AppSettings.Instance.Colors, UndoRedoManager.Instance, dungeon)
+        {
         }
 
         /// <summary>
@@ -65,18 +72,11 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="dungeon">
         /// The dungeon whose small keys are to be represented.
         /// </param>
-        public SmallKeySmallItemVM(IDungeon dungeon)
+        private SmallKeySmallItemVM(
+            IColorSettings colorSettings, IUndoRedoManager undoRedoManager, IDungeon dungeon)
         {
-            if (dungeon == null)
-            {
-                throw new ArgumentNullException(nameof(dungeon));
-            }
-
-            if (dungeon.SmallKeyItem == null)
-            {
-                throw new ArgumentOutOfRangeException(nameof(dungeon));
-            }
-
+            _colorSettings = colorSettings;
+            _undoRedoManager = undoRedoManager;
             _item = dungeon.SmallKeyItem;
 
             _spacerRequirement = new AlternativeRequirement(new List<IRequirement>
@@ -89,7 +89,7 @@ namespace OpenTracker.ViewModels.Items.Small
                 RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn] :
                 RequirementDictionary.Instance[RequirementType.NoRequirement];
 
-            AppSettings.Instance.Colors.PropertyChanged += OnColorsChanged;
+            _colorSettings.PropertyChanged += OnColorsChanged;
             _item.PropertyChanged += OnItemChanged;
             _requirement.PropertyChanged += OnRequirementChanged;
             _spacerRequirement.PropertyChanged += OnRequirementChanged;
@@ -160,7 +160,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// </param>
         public void OnLeftClick(bool force = false)
         {
-            UndoRedoManager.Instance.Execute(new AddItem(_item));
+            _undoRedoManager.Execute(new AddItem(_item));
         }
 
         /// <summary>
@@ -171,7 +171,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// </param>
         public void OnRightClick(bool force = false)
         {
-            UndoRedoManager.Instance.Execute(new RemoveItem(_item));
+            _undoRedoManager.Execute(new RemoveItem(_item));
         }
     }
 }

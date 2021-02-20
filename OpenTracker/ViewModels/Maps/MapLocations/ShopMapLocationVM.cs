@@ -14,6 +14,8 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
     public class ShopMapLocationVM : MapLocationVMBase, IClickHandler,
         IDoubleClickHandler, IPointerOver
     {
+        private readonly IAppSettings _appSettings;
+        private readonly IUndoRedoManager _undoRedoManager;
         private readonly MapLocation _mapLocation;
 
         private bool _highlighted;
@@ -27,7 +29,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         {
             get
             {
-                if (AppSettings.Instance.Layout.CurrentMapOrientation == Orientation.Vertical)
+                if (_appSettings.Layout.CurrentMapOrientation == Orientation.Vertical)
                 {
                     return _mapLocation.X + 3;
                 }
@@ -44,7 +46,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         {
             get
             {
-                if (AppSettings.Instance.Layout.CurrentMapOrientation == Orientation.Vertical)
+                if (_appSettings.Layout.CurrentMapOrientation == Orientation.Vertical)
                 {
                     if (_mapLocation.Map == MapID.DarkWorld)
                     {
@@ -58,15 +60,20 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
             }
         }
         public bool Visible =>
-            _mapLocation.Requirement.Met && (AppSettings.Instance.Tracker.DisplayAllLocations ||
+            _mapLocation.Requirement.Met && (_appSettings.Tracker.DisplayAllLocations ||
             (_mapLocation.Location.Accessibility != AccessibilityLevel.Cleared &&
             _mapLocation.Location.Accessibility != AccessibilityLevel.None));
         public string Color =>
-            AppSettings.Instance.Colors.AccessibilityColors[_mapLocation.Location.Accessibility];
+            _appSettings.Colors.AccessibilityColors[_mapLocation.Location.Accessibility];
         public string BorderColor =>
             Highlighted ? "#ffffffff" : "#ff000000";
 
         public MapLocationToolTipVM ToolTip { get; }
+
+        public ShopMapLocationVM(MapLocation mapLocation)
+            : this(AppSettings.Instance, UndoRedoManager.Instance, mapLocation)
+        {
+        }
 
         /// <summary>
         /// Constructor
@@ -74,16 +81,20 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         /// <param name="mapLocation">
         /// The map location being represented.
         /// </param>
-        public ShopMapLocationVM(MapLocation mapLocation)
+        private ShopMapLocationVM(
+            IAppSettings appSettings, IUndoRedoManager undoRedoManager, MapLocation mapLocation)
         {
-            _mapLocation = mapLocation ?? throw new ArgumentNullException(nameof(mapLocation));
+            _appSettings = appSettings;
+            _undoRedoManager = undoRedoManager;
+            _mapLocation = mapLocation;
+
             ToolTip = new MapLocationToolTipVM(_mapLocation.Location);
 
             PropertyChanged += OnPropertyChanged;
 
-            AppSettings.Instance.Tracker.PropertyChanged += OnTrackerSettingsChanged;
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
-            AppSettings.Instance.Colors.AccessibilityColors.PropertyChanged += OnColorChanged;
+            _appSettings.Tracker.PropertyChanged += OnTrackerSettingsChanged;
+            _appSettings.Layout.PropertyChanged += OnLayoutChanged;
+            _appSettings.Colors.AccessibilityColors.PropertyChanged += OnColorChanged;
             _mapLocation.Location.PropertyChanged += OnLocationChanged;
             _mapLocation.Requirement.PropertyChanged += OnRequirementChanged;
         }
@@ -211,7 +222,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         /// </summary>
         public void OnDoubleClick()
         {
-            UndoRedoManager.Instance.Execute(new PinLocation(_mapLocation.Location));
+            _undoRedoManager.Execute(new PinLocation(_mapLocation.Location));
         }
 
         /// <summary>
@@ -248,7 +259,7 @@ namespace OpenTracker.ViewModels.Maps.MapLocations
         /// </param>
         public void OnRightClick(bool force)
         {
-            UndoRedoManager.Instance.Execute(new ClearLocation(_mapLocation.Location, force));
+            _undoRedoManager.Execute(new ClearLocation(_mapLocation.Location, force));
         }
     }
 }

@@ -15,10 +15,12 @@ namespace OpenTracker.ViewModels.Markings
     /// </summary>
     public class MarkingSelectVM : ViewModelBase
     {
+        private readonly ILayoutSettings _layoutSettings;
+        private readonly IUndoRedoManager _undoRedoManager;
         private readonly IMarking _marking;
 
-        public static double Scale =>
-            AppSettings.Instance.Layout.UIScale;
+        public double Scale =>
+            _layoutSettings.UIScale;
         public ObservableCollection<MarkingSelectItemVMBase> Buttons { get; }
         public double Width { get; }
         public double Height { get; }
@@ -32,6 +34,14 @@ namespace OpenTracker.ViewModels.Markings
 
         public ReactiveCommand<MarkType?, Unit> ChangeMarkingCommand { get; }
         public ReactiveCommand<Unit, Unit> ClearMarkingCommand { get; }
+
+        public MarkingSelectVM(
+            IMarking marking, ObservableCollection<MarkingSelectItemVMBase> buttons,
+            double width, double height)
+            : this(AppSettings.Instance.Layout, UndoRedoManager.Instance, marking, buttons,
+                  width, height)
+        {
+        }
 
         /// <summary>
         /// Constructor
@@ -48,18 +58,22 @@ namespace OpenTracker.ViewModels.Markings
         /// <param name="height">
         /// The height of the popup.
         /// </param>
-        public MarkingSelectVM(
-            IMarking marking, ObservableCollection<MarkingSelectItemVMBase> buttons,
-            double width, double height)
+        private MarkingSelectVM(
+            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager, IMarking marking,
+            ObservableCollection<MarkingSelectItemVMBase> buttons, double width, double height)
         {
-            _marking = marking ?? throw new ArgumentNullException(nameof(marking));
-            Buttons = buttons ?? throw new ArgumentNullException(nameof(buttons));
+            _layoutSettings = layoutSettings;
+            _undoRedoManager = undoRedoManager;
+            _marking = marking;
+
+            Buttons = buttons;
             Width = width;
             Height = height;
+
             ChangeMarkingCommand = ReactiveCommand.Create<MarkType?>(ChangeMarking);
             ClearMarkingCommand = ReactiveCommand.Create(ClearMarking);
 
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>
@@ -84,7 +98,7 @@ namespace OpenTracker.ViewModels.Markings
         /// </summary>
         private void ClearMarking()
         {
-            UndoRedoManager.Instance.Execute(new SetMarking(_marking, MarkType.Unknown));
+            _undoRedoManager.Execute(new SetMarking(_marking, MarkType.Unknown));
             PopupOpen = false;
         }
 
@@ -101,7 +115,7 @@ namespace OpenTracker.ViewModels.Markings
                 return;
             }
 
-            UndoRedoManager.Instance.Execute(new SetMarking(_marking, marking.Value));
+            _undoRedoManager.Execute(new SetMarking(_marking, marking.Value));
             PopupOpen = false;
         }
     }

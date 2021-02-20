@@ -10,13 +10,14 @@ namespace OpenTracker.Models.Requirements
     /// </summary>
     public class AlwaysDisplayDungeonItemsRequirement : IRequirement
     {
+        private readonly ILayoutSettings _layoutSettings;
         private readonly bool _alwaysDisplayDungeonItems;
 
         public bool Met =>
             Accessibility != AccessibilityLevel.None;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler ChangePropagated;
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public event EventHandler? ChangePropagated;
 
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
@@ -32,17 +33,24 @@ namespace OpenTracker.Models.Requirements
             }
         }
 
+        public AlwaysDisplayDungeonItemsRequirement(bool alwaysDisplayDungeonItems)
+            : this(AppSettings.Instance.Layout, alwaysDisplayDungeonItems)
+        {
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="alwaysDisplayDungeonItems">
         /// A boolean representing the always display dungeon items requirement.
         /// </param>
-        public AlwaysDisplayDungeonItemsRequirement(bool alwaysDisplayDungeonItems)
+        private AlwaysDisplayDungeonItemsRequirement(
+            ILayoutSettings layoutSettings, bool alwaysDisplayDungeonItems)
         {
+            _layoutSettings = layoutSettings;
             _alwaysDisplayDungeonItems = alwaysDisplayDungeonItems;
 
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
 
             UpdateAccessibility();
         }
@@ -68,9 +76,9 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(LayoutSettings.AlwaysDisplayDungeonItems))
+            if (e.PropertyName == nameof(ILayoutSettings.AlwaysDisplayDungeonItems))
             {
                 UpdateAccessibility();
             }
@@ -82,7 +90,7 @@ namespace OpenTracker.Models.Requirements
         private void UpdateAccessibility()
         {
             Accessibility = 
-                AppSettings.Instance.Layout.AlwaysDisplayDungeonItems == _alwaysDisplayDungeonItems ?
+                _layoutSettings.AlwaysDisplayDungeonItems == _alwaysDisplayDungeonItems ?
                 AccessibilityLevel.Normal : AccessibilityLevel.None;
         }
     }

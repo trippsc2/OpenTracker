@@ -6,7 +6,6 @@ using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels.PinnedLocations.SectionIcons;
 using ReactiveUI;
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
@@ -17,10 +16,11 @@ namespace OpenTracker.ViewModels.PinnedLocations
     /// </summary>
     public class SectionVM : ViewModelBase
     {
+        private readonly IColorSettings _colorSettings;
         private readonly ISection _section;
 
         public Color FontColor =>
-            Color.Parse(AppSettings.Instance.Colors.AccessibilityColors[_section.Accessibility]);
+            Color.Parse(_colorSettings.AccessibilityColors[_section.Accessibility]);
         public bool Visible =>
             _section.Requirement.Met;
         public string Name =>
@@ -29,6 +29,11 @@ namespace OpenTracker.ViewModels.PinnedLocations
             _section.Accessibility == AccessibilityLevel.Normal;
 
         public ObservableCollection<SectionIconVMBase> Icons { get; }
+
+        public SectionVM(ISection section, ObservableCollection<SectionIconVMBase> icons)
+            : this(AppSettings.Instance.Colors, section, icons)
+        {
+        }
 
         /// <summary>
         /// Constructor
@@ -39,12 +44,15 @@ namespace OpenTracker.ViewModels.PinnedLocations
         /// <param name="icons">
         /// The observable collection of section icon control ViewModel instances.
         /// </param>
-        public SectionVM(ISection section, ObservableCollection<SectionIconVMBase> icons)
+        public SectionVM(
+            IColorSettings colorSettings, ISection section,
+            ObservableCollection<SectionIconVMBase> icons)
         {
-            _section = section ?? throw new ArgumentNullException(nameof(section));
-            Icons = icons ?? throw new ArgumentNullException(nameof(icons));
+            _colorSettings = colorSettings;
+            _section = section;
+            Icons = icons;
 
-            AppSettings.Instance.Colors.AccessibilityColors.PropertyChanged += OnColorChanged;
+            _colorSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
             _section.PropertyChanged += OnSectionChanged;
             _section.Requirement.PropertyChanged += OnRequirementChanged;
         }

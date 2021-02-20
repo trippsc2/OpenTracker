@@ -9,21 +9,32 @@ namespace OpenTracker.ViewModels.Dropdowns
 {
     public class DropdownPanelVM : ViewModelBase
     {
-        public static bool Visible =>
-            Mode.Instance.EntranceShuffle >= EntranceShuffle.All;
-        public static double Scale =>
-            AppSettings.Instance.Layout.UIScale;
+        private readonly ILayoutSettings _layoutSettings;
+        private readonly IMode _mode;
+
+        public bool Visible =>
+            _mode.EntranceShuffle >= EntranceShuffle.All;
+        public double Scale =>
+            _layoutSettings.UIScale;
 
         public ObservableCollection<DropdownVM> Dropdowns { get; } =
             DropdownVMFactory.GetDropdownVMs();
 
+        public DropdownPanelVM()
+            : this(AppSettings.Instance.Layout, Mode.Instance)
+        {
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
-        public DropdownPanelVM()
+        private DropdownPanelVM(ILayoutSettings layoutSettings, IMode mode)
         {
-            Mode.Instance.PropertyChanged += OnModeChanged;
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            _layoutSettings = layoutSettings;
+            _mode = mode;
+
+            _mode.PropertyChanged += OnModeChanged;
+            _layoutSettings.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>
@@ -37,7 +48,7 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// </param>
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.EntranceShuffle))
+            if (e.PropertyName == nameof(IMode.EntranceShuffle))
             {
                 this.RaisePropertyChanged(nameof(Visible));
             }
@@ -54,7 +65,7 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// </param>
         private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(LayoutSettings.UIScale))
+            if (e.PropertyName == nameof(ILayoutSettings.UIScale))
             {
                 this.RaisePropertyChanged(nameof(Scale));
             }
