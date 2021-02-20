@@ -8,15 +8,14 @@ using OpenTracker.Interfaces;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels;
 using OpenTracker.Views;
-using System;
 using System.IO;
 
 namespace OpenTracker
 {
     public class App : Application
     {
-        public static IThemeSelector Selector { get; private set; }
-        public static IDialogService DialogService { get; private set; }
+        public static IThemeSelector? Selector { get; private set; }
+        public static IDialogService? DialogService { get; private set; }
 
         private static void CopyDefaultThemesToAppData()
         {
@@ -30,7 +29,7 @@ namespace OpenTracker
             foreach (var srcTheme in Directory.GetFiles(AppPath.AppRootThemesPath))
             {
                 var filename = Path.GetFileName(srcTheme);
-                string destTheme = Path.Combine(themePath, filename);
+                var destTheme = Path.Combine(themePath, filename);
 
                 if (File.Exists(destTheme))
                 {
@@ -43,7 +42,7 @@ namespace OpenTracker
 
         private static void MakeDefaultThemeFirst()
         {
-            foreach (var theme in Selector.Themes)
+            foreach (var theme in Selector!.Themes!)
             {
                 if (theme.Name == "Default")
                 {
@@ -67,21 +66,16 @@ namespace OpenTracker
 
             if (File.Exists(lastThemeFilePath))
             {
-                Selector.LoadSelectedTheme(lastThemeFilePath);
+                Selector!.LoadSelectedTheme(lastThemeFilePath);
             }
             else
             {
-                Selector.ApplyTheme(Selector.Themes[0]);
+                Selector!.ApplyTheme(Selector!.Themes![0]);
             }
         }
 
         private static void InitializeDialogService(Window owner)
         {
-            if (owner == null)
-            {
-                throw new ArgumentNullException(nameof(owner));
-            }
-
             DialogService = new DialogService(owner);
             DialogService.Register<MessageBoxDialogVM, MessageBoxDialog>();
             DialogService.Register<AboutDialogVM, AboutDialog>();
@@ -110,7 +104,7 @@ namespace OpenTracker
                 SetThemeToLastOrDefault();
                 InitializeDialogService(desktop.MainWindow);
 
-                desktop.Exit += (sender, e) => Selector.SaveSelectedTheme(
+                desktop.Exit += (sender, e) => Selector!.SaveSelectedTheme(
                     AppPath.LastThemeFilePath);
             }
 
