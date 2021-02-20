@@ -14,7 +14,9 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "OpenTracker.Setup", "OpenTr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenTracker.UnitTests", "OpenTracker.UnitTests\OpenTracker.UnitTests.csproj", "{E97EA1E8-352B-4FDF-97F3-7C679BFA8D6A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Avalonia.ThemeManager", "Avalonia.ThemeManager\Avalonia.ThemeManager.csproj", "{732A9A56-32B4-4149-B3A5-F2A4F48293D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Avalonia.ThemeManager", "Avalonia.ThemeManager\Avalonia.ThemeManager.csproj", "{732A9A56-32B4-4149-B3A5-F2A4F48293D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTracker.Utils", "OpenTracker.Utils\OpenTracker.Utils.csproj", "{440C86CA-774B-4EFF-A8AA-76F462CC8220}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,6 +42,10 @@ Global
 		{732A9A56-32B4-4149-B3A5-F2A4F48293D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{732A9A56-32B4-4149-B3A5-F2A4F48293D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{732A9A56-32B4-4149-B3A5-F2A4F48293D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{440C86CA-774B-4EFF-A8AA-76F462CC8220}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{440C86CA-774B-4EFF-A8AA-76F462CC8220}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{440C86CA-774B-4EFF-A8AA-76F462CC8220}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{440C86CA-774B-4EFF-A8AA-76F462CC8220}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
