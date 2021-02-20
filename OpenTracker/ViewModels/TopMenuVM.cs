@@ -14,6 +14,7 @@ using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using OpenTracker.Utils.Dialog;
+using OpenTracker.ViewModels.AutoTracking;
 using OpenTracker.ViewModels.ColorSelect;
 using OpenTracker.ViewModels.SequenceBreaks;
 using ReactiveUI;
@@ -32,71 +33,73 @@ namespace OpenTracker.ViewModels
     /// </summary>
     public class TopMenuVM : ViewModelBase, ITopMenuVM
     {
+        private readonly IAppSettings _appSettings;
+        private readonly IResetManager _resetManager;
         private readonly ISaveLoadManager _saveLoadManager;
+        private readonly UndoRedoManager _undoRedoManager;
 
         private readonly IDialogService _dialogService;
         private readonly IFileDialogService _fileDialogService;
-        private readonly IResetManager _resetManager;
 
         private readonly IAutoTrackerDialogVM _autoTrackerDialog;
         private readonly ISequenceBreakDialogVM _sequenceBreakDialog;
         private readonly IColorSelectDialogVM _colorSelectDialog;
         private readonly IAboutDialogVM _aboutDialog;
 
-        public static bool DisplayAllLocations =>
-            AppSettings.Instance.Tracker.DisplayAllLocations;
-        public static bool ShowItemCountsOnMap =>
-            AppSettings.Instance.Tracker.ShowItemCountsOnMap;
+        public bool DisplayAllLocations =>
+            _appSettings.Tracker.DisplayAllLocations;
+        public bool ShowItemCountsOnMap =>
+            _appSettings.Tracker.ShowItemCountsOnMap;
 
-        public static bool DisplayMapsCompasses =>
-            AppSettings.Instance.Layout.DisplayMapsCompasses;
-        public static bool AlwaysDisplayDungeonItems =>
-            AppSettings.Instance.Layout.AlwaysDisplayDungeonItems;
+        public bool DisplayMapsCompasses =>
+            _appSettings.Layout.DisplayMapsCompasses;
+        public bool AlwaysDisplayDungeonItems =>
+            _appSettings.Layout.AlwaysDisplayDungeonItems;
 
-        public static bool DynamicLayoutOrientation =>
-            AppSettings.Instance.Layout.LayoutOrientation == null;
-        public static bool HorizontalLayoutOrientation =>
-            AppSettings.Instance.Layout.LayoutOrientation == Orientation.Horizontal;
-        public static bool VerticalLayoutOrientation =>
-            AppSettings.Instance.Layout.LayoutOrientation == Orientation.Vertical;
+        public bool DynamicLayoutOrientation =>
+            _appSettings.Layout.LayoutOrientation == null;
+        public bool HorizontalLayoutOrientation =>
+            _appSettings.Layout.LayoutOrientation == Orientation.Horizontal;
+        public bool VerticalLayoutOrientation =>
+            _appSettings.Layout.LayoutOrientation == Orientation.Vertical;
 
-        public static bool DynamicMapOrientation =>
-            AppSettings.Instance.Layout.MapOrientation == null;
-        public static bool HorizontalMapOrientation =>
-            AppSettings.Instance.Layout.MapOrientation == Orientation.Horizontal;
-        public static bool VerticalMapOrientation =>
-            AppSettings.Instance.Layout.MapOrientation == Orientation.Vertical;
+        public bool DynamicMapOrientation =>
+            _appSettings.Layout.MapOrientation == null;
+        public bool HorizontalMapOrientation =>
+            _appSettings.Layout.MapOrientation == Orientation.Horizontal;
+        public bool VerticalMapOrientation =>
+            _appSettings.Layout.MapOrientation == Orientation.Vertical;
 
-        public static bool TopHorizontalUIPanelPlacement =>
-            AppSettings.Instance.Layout.HorizontalUIPanelPlacement == Dock.Top;
-        public static bool BottomHorizontalUIPanelPlacement =>
-            AppSettings.Instance.Layout.HorizontalUIPanelPlacement == Dock.Bottom;
+        public bool TopHorizontalUIPanelPlacement =>
+            _appSettings.Layout.HorizontalUIPanelPlacement == Dock.Top;
+        public bool BottomHorizontalUIPanelPlacement =>
+            _appSettings.Layout.HorizontalUIPanelPlacement == Dock.Bottom;
 
-        public static bool LeftVerticalUIPanelPlacement =>
-            AppSettings.Instance.Layout.VerticalUIPanelPlacement == Dock.Left;
-        public static bool RightVerticalUIPanelPlacement =>
-            AppSettings.Instance.Layout.VerticalUIPanelPlacement == Dock.Right;
+        public bool LeftVerticalUIPanelPlacement =>
+            _appSettings.Layout.VerticalUIPanelPlacement == Dock.Left;
+        public bool RightVerticalUIPanelPlacement =>
+            _appSettings.Layout.VerticalUIPanelPlacement == Dock.Right;
 
-        public static bool LeftHorizontalItemsPlacement =>
-            AppSettings.Instance.Layout.HorizontalItemsPlacement == Dock.Left;
-        public static bool RightHorizontalItemsPlacement =>
-            AppSettings.Instance.Layout.HorizontalItemsPlacement == Dock.Right;
+        public bool LeftHorizontalItemsPlacement =>
+            _appSettings.Layout.HorizontalItemsPlacement == Dock.Left;
+        public bool RightHorizontalItemsPlacement =>
+            _appSettings.Layout.HorizontalItemsPlacement == Dock.Right;
 
-        public static bool TopVerticalItemsPlacement =>
-            AppSettings.Instance.Layout.VerticalItemsPlacement == Dock.Top;
-        public static bool BottomVerticalItemsPlacement =>
-            AppSettings.Instance.Layout.VerticalItemsPlacement == Dock.Bottom;
+        public bool TopVerticalItemsPlacement =>
+            _appSettings.Layout.VerticalItemsPlacement == Dock.Top;
+        public bool BottomVerticalItemsPlacement =>
+            _appSettings.Layout.VerticalItemsPlacement == Dock.Bottom;
 
-        public static bool OneHundredPercentUIScale =>
-            AppSettings.Instance.Layout.UIScale == 1.0;
-        public static bool OneHundredTwentyFivePercentUIScale =>
-            AppSettings.Instance.Layout.UIScale == 1.25;
-        public static bool OneHundredFiftyPercentUIScale =>
-            AppSettings.Instance.Layout.UIScale == 1.50;
-        public static bool OneHundredSeventyFivePercentUIScale =>
-            AppSettings.Instance.Layout.UIScale == 1.75;
-        public static bool TwoHundredPercentUIScale =>
-            AppSettings.Instance.Layout.UIScale == 2.0;
+        public bool OneHundredPercentUIScale =>
+            _appSettings.Layout.UIScale == 1.0;
+        public bool OneHundredTwentyFivePercentUIScale =>
+            _appSettings.Layout.UIScale == 1.25;
+        public bool OneHundredFiftyPercentUIScale =>
+            _appSettings.Layout.UIScale == 1.50;
+        public bool OneHundredSeventyFivePercentUIScale =>
+            _appSettings.Layout.UIScale == 1.75;
+        public bool TwoHundredPercentUIScale =>
+            _appSettings.Layout.UIScale == 2.0;
 
         public ReactiveCommand<Unit, Unit> OpenCommand { get; }
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
@@ -117,9 +120,9 @@ namespace OpenTracker.ViewModels
             _isResetting.Value;
 
         public bool CanUndo =>
-            UndoRedoManager.Instance.CanUndo;
+            _undoRedoManager.CanUndo;
         public bool CanRedo =>
-            UndoRedoManager.Instance.CanRedo;
+            _undoRedoManager.CanRedo;
 
         public ReactiveCommand<Unit, Unit> UndoCommand { get; }
         public ReactiveCommand<Unit, Unit> RedoCommand { get; }
@@ -167,19 +170,23 @@ namespace OpenTracker.ViewModels
         /// Constructor
         /// </summary>
         public TopMenuVM(
-            ISaveLoadManager saveLoadManager, IDialogService dialogService,
-            IFileDialogService fileDialogService, IResetManager resetManager,
+            IResetManager resetManager, ISaveLoadManager saveLoadManager,
+            IDialogService dialogService, IFileDialogService fileDialogService, 
             IAutoTrackerDialogVM autoTrackerDialog, IColorSelectDialogVM colorSelectDialog,
             IAboutDialogVM aboutDialog)
         {
+            _appSettings = AppSettings.Instance;
+            _resetManager = resetManager;
             _saveLoadManager = saveLoadManager;
+            _undoRedoManager = UndoRedoManager.Instance;
+
             _dialogService = dialogService;
             _fileDialogService = fileDialogService;
-            _resetManager = resetManager;
+
             _autoTrackerDialog = autoTrackerDialog;
             _colorSelectDialog = colorSelectDialog;
-            _aboutDialog = aboutDialog;
             _sequenceBreakDialog = SequenceBreakDialogVMFactory.GetSequenceBreakDialogVM();
+            _aboutDialog = aboutDialog;
 
             OpenCommand = ReactiveCommand.CreateFromTask(Open);
             OpenCommand.IsExecuting.ToProperty(this, x => x.IsOpening, out _isOpening);
@@ -228,9 +235,9 @@ namespace OpenTracker.ViewModels
             AboutCommand.IsExecuting.ToProperty(
                 this, x => x.IsOpeningAbout, out _isOpeningAbout);
 
-            UndoRedoManager.Instance.PropertyChanged += OnUndoRedoManagerChanged;
-            AppSettings.Instance.Tracker.PropertyChanged += OnTrackerSettingsChanged;
-            AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
+            _undoRedoManager.PropertyChanged += OnUndoRedoManagerChanged;
+            _appSettings.Tracker.PropertyChanged += OnTrackerSettingsChanged;
+            _appSettings.Layout.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>
@@ -512,7 +519,7 @@ namespace OpenTracker.ViewModels
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                UndoRedoManager.Instance.Undo();
+                _undoRedoManager.Undo();
             });
         }
 
@@ -523,7 +530,7 @@ namespace OpenTracker.ViewModels
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                UndoRedoManager.Instance.Redo();
+                _undoRedoManager.Redo();
             });
         }
 
@@ -554,8 +561,8 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleShowItemCountsOnMap()
         {
-            AppSettings.Instance.Tracker.ShowItemCountsOnMap =
-                !AppSettings.Instance.Tracker.ShowItemCountsOnMap;
+            _appSettings.Tracker.ShowItemCountsOnMap =
+                !_appSettings.Tracker.ShowItemCountsOnMap;
         }
 
         /// <summary>
@@ -568,11 +575,11 @@ namespace OpenTracker.ViewModels
         {
             if (orientationString == "Dynamic")
             {
-                AppSettings.Instance.Layout.LayoutOrientation = null;
+                _appSettings.Layout.LayoutOrientation = null;
             }
             else if (Enum.TryParse(orientationString, out Orientation orientation))
             {
-                AppSettings.Instance.Layout.LayoutOrientation = orientation;
+                _appSettings.Layout.LayoutOrientation = orientation;
             }
         }
 
@@ -586,11 +593,11 @@ namespace OpenTracker.ViewModels
         {
             if (orientationString == "Dynamic")
             {
-                AppSettings.Instance.Layout.MapOrientation = null;
+                _appSettings.Layout.MapOrientation = null;
             }
             else if (Enum.TryParse(orientationString, out Orientation orientation))
             {
-                AppSettings.Instance.Layout.MapOrientation = orientation;
+                _appSettings.Layout.MapOrientation = orientation;
             }
         }
 
@@ -604,7 +611,7 @@ namespace OpenTracker.ViewModels
         {
             if (Enum.TryParse(dockString, out Dock dock))
             {
-                AppSettings.Instance.Layout.HorizontalUIPanelPlacement = dock;
+                _appSettings.Layout.HorizontalUIPanelPlacement = dock;
             }
         }
 
@@ -618,7 +625,7 @@ namespace OpenTracker.ViewModels
         {
             if (Enum.TryParse(dockString, out Dock dock))
             {
-                AppSettings.Instance.Layout.VerticalUIPanelPlacement = dock;
+                _appSettings.Layout.VerticalUIPanelPlacement = dock;
             }
         }
 
@@ -632,7 +639,7 @@ namespace OpenTracker.ViewModels
         {
             if (Enum.TryParse(dockString, out Dock dock))
             {
-                AppSettings.Instance.Layout.HorizontalItemsPlacement = dock;
+                _appSettings.Layout.HorizontalItemsPlacement = dock;
             }
         }
 
@@ -646,7 +653,7 @@ namespace OpenTracker.ViewModels
         {
             if (Enum.TryParse(dockString, out Dock dock))
             {
-                AppSettings.Instance.Layout.VerticalItemsPlacement = dock;
+                _appSettings.Layout.VerticalItemsPlacement = dock;
             }
         }
 
@@ -656,9 +663,9 @@ namespace OpenTracker.ViewModels
         /// <param name="uiScaleValue">
         /// A floating point number representing the UI scale value.
         /// </param>
-        private static void SetUIScale(string uiScaleValue)
+        private void SetUIScale(string uiScaleValue)
         {
-            AppSettings.Instance.Layout.UIScale = double.Parse(uiScaleValue, CultureInfo.InvariantCulture);
+            _appSettings.Layout.UIScale = double.Parse(uiScaleValue, CultureInfo.InvariantCulture);
         }
 
         /// <summary>
@@ -666,8 +673,8 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleDisplayAllLocations()
         {
-            AppSettings.Instance.Tracker.DisplayAllLocations =
-                !AppSettings.Instance.Tracker.DisplayAllLocations;
+            _appSettings.Tracker.DisplayAllLocations =
+                !_appSettings.Tracker.DisplayAllLocations;
         }
 
         /// <summary>
@@ -675,8 +682,8 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleDisplayMapsCompasses()
         {
-            AppSettings.Instance.Layout.DisplayMapsCompasses =
-                !AppSettings.Instance.Layout.DisplayMapsCompasses;
+            _appSettings.Layout.DisplayMapsCompasses =
+                !_appSettings.Layout.DisplayMapsCompasses;
         }
 
         /// <summary>
@@ -684,8 +691,8 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleAlwaysDisplayDungeonItems()
         {
-            AppSettings.Instance.Layout.AlwaysDisplayDungeonItems =
-                !AppSettings.Instance.Layout.AlwaysDisplayDungeonItems;
+            _appSettings.Layout.AlwaysDisplayDungeonItems =
+                !_appSettings.Layout.AlwaysDisplayDungeonItems;
         }
 
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using OpenTracker.Models.AutoTracking.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,25 +10,22 @@ using WebSocketSharp;
 
 namespace OpenTracker.Models.AutoTracking
 {
-    /// <summary>
-    /// This is the class containing the USB2SNES connector.
-    /// </summary>
-    public class USB2SNESConnector : INotifyPropertyChanged, ISNESConnector
+    public class SNESConnector : ISNESConnector
     {
-        private readonly string _applicationName = "OpenTracker";
-        private readonly Action<LogLevel, string> _logHandler;
+        public IAutoTrackerLogService LogService { get; }
+        private readonly static string _appName = "OpenTracker";
         private readonly object _transmitLock = new object();
-        private Action<MessageEventArgs> _messageHandler;
+        private Action<MessageEventArgs>? _messageHandler;
 
-        public bool Connected =>
+        private bool Connected =>
             Socket != null && Socket.IsAlive;
 
-        public string Uri { get; set; }
+        public string? Uri { get; set; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        private string _device;
-        public string Device
+        private string? _device;
+        public string? Device
         {
             get => _device;
             set
@@ -40,8 +38,8 @@ namespace OpenTracker.Models.AutoTracking
             }
         }
 
-        private WebSocket _socket;
-        public WebSocket Socket
+        private WebSocket? _socket;
+        public WebSocket? Socket
         {
             get => _socket;
             private set
@@ -81,12 +79,12 @@ namespace OpenTracker.Models.AutoTracking
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="logHandler">
-        /// The action to be performed when logs are generated.
+        /// <param name="logService">
+        /// The log service for the SNES connector.
         /// </param>
-        public USB2SNESConnector(Action<LogLevel, string> logHandler = null)
+        public SNESConnector(IAutoTrackerLogService logService)
         {
-            _logHandler = logHandler;
+            LogService = logService;
         }
 
         /// <summary>
@@ -110,23 +108,9 @@ namespace OpenTracker.Models.AutoTracking
         /// <param name="e">
         /// The arguments of the OnMessage event.
         /// </param>
-        private void HandleMessage(object sender, MessageEventArgs e)
+        private void HandleMessage(object? sender, MessageEventArgs e)
         {
             _messageHandler?.Invoke(e);
-        }
-
-        /// <summary>
-        /// Generates a log message.
-        /// </summary>
-        /// <param name="logLevel">
-        /// The logging level of the message.
-        /// </param>
-        /// <param name="message">
-        /// A string presenting the log message.
-        /// </param>
-        private void Log(LogLevel logLevel, string message)
-        {
-            _logHandler?.Invoke(logLevel, message);
         }
 
         /// <summary>
@@ -141,13 +125,13 @@ namespace OpenTracker.Models.AutoTracking
         private bool Connect(int timeOutInMS = 4096)
         {
             Socket = new WebSocket(Uri);
-            Log(LogLevel.Info, "Attempting to connect to USB2SNES websocket at " +
+            LogService.Log(LogLevel.Info, "Attempting to connect to USB2SNES websocket at " +
                 $"{Socket.Url.OriginalString}.");
             Status = ConnectionStatus.Connecting;
 
             using var openEvent = new ManualResetEvent(false);
 
-            void onOpen(object sender, EventArgs e)
+            void onOpen(object? sender, EventArgs e)
             {
                 openEvent.Set();
             }
@@ -159,13 +143,13 @@ namespace OpenTracker.Models.AutoTracking
 
             if (result)
             {
-                Log(LogLevel.Info, "Successfully connected to USB2SNES websocket at " +
+                LogService.Log(LogLevel.Info, "Successfully connected to USB2SNES websocket at " +
                     $"{Socket.Url.OriginalString}.");
                 Status = ConnectionStatus.SelectDevice;
             }
             else
             {
-                Log(LogLevel.Error, "Failed to connect to USB2SNES websocket at " +
+                LogService.Log(LogLevel.Error, "Failed to connect to USB2SNES websocket at " +
                     $"{Socket.Url.OriginalString}.");
                 Status = ConnectionStatus.Error;
             }
@@ -184,7 +168,7 @@ namespace OpenTracker.Models.AutoTracking
         /// </returns>
         private bool Send(RequestType request)
         {
-            Task<bool> sendTask = Task<bool>.Factory.StartNew(() =>
+            var sendTask = Task<bool>.Factory.StartNew(() =>
             {
                 try
                 {
@@ -198,7 +182,8 @@ namespace OpenTracker.Models.AutoTracking
                 return true;
             });
 
-            Task.WaitAll(new Task[] { sendTask });
+            sendTask.Wait();
+
             return sendTask.Result;
         }
 
@@ -220,49 +205,46 @@ namespace OpenTracker.Models.AutoTracking
         /// <returns>
         /// An enumerator of the resulting strings of the response.
         /// </returns>
-        private IEnumerable<string> GetJsonResults(
-            string requestName, RequestType request,
-            bool ignoreErrors = false, int timeOutInMS = 4096)
+        private IEnumerable<string>? GetJsonResults(
+            string requestName, RequestType request, bool ignoreErrors = false,
+            int timeOutInMS = 4096)
         {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
+            string[]? results = null;
 
-            string[] results = null;
             lock (_transmitLock)
             {
                 using ManualResetEvent readEvent = new ManualResetEvent(false);
 
                 _messageHandler = (e) =>
                 {
-                    Log(LogLevel.Info, $"Request {requestName} response received.");
+                    LogService.Log(LogLevel.Info, $"Request {requestName} response received.");
 
                     if (JsonConvert.DeserializeObject<Dictionary<string, string[]>>(
                         e.Data) is Dictionary<string, string[]> dictionary &&
-                        dictionary.TryGetValue("Results", out string[] deserialized))
+                        dictionary.TryGetValue("Results", out string[]? deserialized))
                     {
-                        Log(LogLevel.Debug, $"Request {requestName} successfully deserialized.");
+                        LogService.Log(
+                            LogLevel.Debug, $"Request {requestName} successfully deserialized.");
                         results = deserialized;
                         readEvent.Set();
                     }
                 };
 
-                Log(LogLevel.Info, $"Request {requestName} sending.");
+                LogService.Log(LogLevel.Info, $"Request {requestName} sending.");
 
                 if (!Send(request))
                 {
-                    Log(LogLevel.Info, $"Request {requestName} failed to send.");
+                    LogService.Log(LogLevel.Info, $"Request {requestName} failed to send.");
                     return null;
                 }
 
-                Log(LogLevel.Info, $"Request {requestName} sent.");
+                LogService.Log(LogLevel.Info, $"Request {requestName} sent.");
 
                 if (!readEvent.WaitOne(timeOutInMS))
                 {
                     if (!ignoreErrors)
                     {
-                        Log(LogLevel.Error, $"Request {requestName} failed.");
+                        LogService.Log(LogLevel.Error, $"Request {requestName} failed.");
                         Status = ConnectionStatus.Error;
                     }
 
@@ -272,7 +254,7 @@ namespace OpenTracker.Models.AutoTracking
             }
 
             _messageHandler = null;
-            Log(LogLevel.Info, $"Request {requestName} successful.");
+            LogService.Log(LogLevel.Info, $"Request {requestName} successful.");
             return results;
         }
 
@@ -290,18 +272,18 @@ namespace OpenTracker.Models.AutoTracking
         /// </returns>
         private bool SendOnly(string requestName, RequestType request)
         {
-            Log(LogLevel.Info, $"Request {requestName} is being sent.");
+            LogService.Log(LogLevel.Info, $"Request {requestName} is being sent.");
 
             lock (_transmitLock)
             {
                 if (!Send(request))
                 {
-                    Log(LogLevel.Info, $"Request {requestName} failed to send.");
+                    LogService.Log(LogLevel.Info, $"Request {requestName} failed to send.");
                     return false;
                 }
             }
 
-            Log(LogLevel.Info, $"Request {requestName} has been sent successfully.");
+            LogService.Log(LogLevel.Info, $"Request {requestName} has been sent successfully.");
             return true;
         }
 
@@ -318,16 +300,16 @@ namespace OpenTracker.Models.AutoTracking
         {
             if (Connected)
             {
-                Log(LogLevel.Debug, "Already connected to USB2SNES websocket, " +
+                LogService.Log(LogLevel.Debug, "Already connected to USB2SNES websocket, " +
                     "skipping connection attempt.");
                 return true;
             }
 
             if (Socket != null)
             {
-                Log(LogLevel.Debug, "Attempting to restart WebSocket class.");
+                LogService.Log(LogLevel.Debug, "Attempting to restart WebSocket class.");
                 Disconnect();
-                Log(LogLevel.Debug, "Existing WebSocket class restarted.");
+                LogService.Log(LogLevel.Debug, "Existing WebSocket class restarted.");
             }
 
             return Connect(timeOutInMS);
@@ -342,7 +324,7 @@ namespace OpenTracker.Models.AutoTracking
         /// <returns>
         /// An enumerator of the device info strings.
         /// </returns>
-        private IEnumerable<string> GetDeviceInfo(int timeOutInMS = 4096)
+        private IEnumerable<string>? GetDeviceInfo(int timeOutInMS = 4096)
         {
             return GetJsonResults(
                 "get device info", new RequestType(OpcodeType.Info.ToString()), true, timeOutInMS);
@@ -359,33 +341,35 @@ namespace OpenTracker.Models.AutoTracking
         /// </returns>
         private bool AttachDevice(int timeOutInMS = 4096)
         {
-            Log(LogLevel.Info, $"Attempting to attach to device {Device}.");
+            _ = Device ?? throw new NullReferenceException();
+
+            LogService.Log(LogLevel.Info, $"Attempting to attach to device {Device}.");
             Status = ConnectionStatus.Attaching;
 
             if (!SendOnly("attach", new RequestType(
                 OpcodeType.Attach.ToString(), operands: new List<string>(1) { Device })))
             {
-                Log(LogLevel.Error, $"Device {Device} could not be attached.");
+                LogService.Log(LogLevel.Error, $"Device {Device} could not be attached.");
                 Status = ConnectionStatus.Error;
                 return false;
             }
 
             if (!SendOnly("register name", new RequestType(
-                OpcodeType.Name.ToString(), operands: new List<string>(1) { _applicationName })))
+                OpcodeType.Name.ToString(), operands: new List<string>(1) { _appName })))
             {
-                Log(LogLevel.Error, "Could not register app name with connection.");
+                LogService.Log(LogLevel.Error, "Could not register app name with connection.");
                 Status = ConnectionStatus.Error;
                 return false;
             }
 
             if (GetDeviceInfo(timeOutInMS) == null)
             {
-                Log(LogLevel.Error, $"Device {Device} could not be attached.");
+                LogService.Log(LogLevel.Error, $"Device {Device} could not be attached.");
                 Status = ConnectionStatus.Error;
                 return false;
             }
 
-            Log(LogLevel.Info, $"Device {Device} is successfully attached.");
+            LogService.Log(LogLevel.Info, $"Device {Device} is successfully attached.");
             Status = ConnectionStatus.Connected;
 
             return true;
@@ -413,15 +397,19 @@ namespace OpenTracker.Models.AutoTracking
         /// <returns>
         /// An enumerator of the device list strings.
         /// </returns>
-        public IEnumerable<string> GetDevices(int timeOutInMS = 4096)
+        public async Task<IEnumerable<string>?> GetDevices(int timeOutInMS = 4096)
         {
-            if (!ConnectIfNeeded(timeOutInMS))
+            return await Task<IEnumerable<string>?>.Factory.StartNew(() =>
             {
-                return null;
-            }
+                if (!ConnectIfNeeded(timeOutInMS))
+                {
+                    return null;
+                }
 
-            return GetJsonResults(
-                "get device list", new RequestType(OpcodeType.DeviceList.ToString()), false, timeOutInMS);
+                return GetJsonResults(
+                    "get device list", new RequestType(OpcodeType.DeviceList.ToString()), false,
+                    timeOutInMS);
+            });
         }
 
         /// <summary>
@@ -437,7 +425,8 @@ namespace OpenTracker.Models.AutoTracking
         {
             if (Status == ConnectionStatus.Connected)
             {
-                Log(LogLevel.Debug, "Already attached to device, skipping attachment attempt.");
+                LogService.Log(
+                    LogLevel.Debug, "Already attached to device, skipping attachment attempt.");
                 return true;
             }
 
@@ -463,7 +452,7 @@ namespace OpenTracker.Models.AutoTracking
         /// </returns>
         public bool Read(ulong address, out byte value)
         {
-            byte[] buffer = new byte[1];
+            var buffer = new byte[1];
 
             if (!Read(address, buffer))
             {
@@ -526,7 +515,7 @@ namespace OpenTracker.Models.AutoTracking
                     readEvent.Set();
                 };
 
-                Log(LogLevel.Info, $"Reading {buffer.Length} byte(s) from {address:X}.");
+                LogService.Log(LogLevel.Info, $"Reading {buffer.Length} byte(s) from {address:X}.");
                 Send(new RequestType(
                     OpcodeType.GetAddress.ToString(),
                     operands: new List<string>(2)
@@ -538,13 +527,14 @@ namespace OpenTracker.Models.AutoTracking
 
                 if (!readEvent.WaitOne(timeOutInMS))
                 {
-                    Log(LogLevel.Error, $"Failed to read {buffer.Length} byte(s) from {address:X}.");
+                    LogService.Log(
+                        LogLevel.Error, $"Failed to read {buffer.Length} byte(s) from {address:X}.");
                     Status = ConnectionStatus.Error;
                     return false;
                 }
             }
 
-            Log(LogLevel.Info, $"Read {buffer.Length} byte(s) from {address:X} successfully.");
+            LogService.Log(LogLevel.Info, $"Read {buffer.Length} byte(s) from {address:X} successfully.");
             return true;
         }
     }

@@ -15,12 +15,12 @@
 	</Design.DataContext>
 	
 	<Window.KeyBindings>
-		<KeyBinding Gesture="Ctrl+o" Command="{Binding $self.Open}" />
-		<KeyBinding Gesture="Ctrl+s" Command="{Binding $self.Save}" />
-		<KeyBinding Gesture="Ctrl+Shift+s" Command="{Binding $self.SaveAs}" />
+		<KeyBinding Gesture="Ctrl+o" Command="{Binding OpenCommand}" />
+		<KeyBinding Gesture="Ctrl+s" Command="{Binding SaveCommand}" />
+		<KeyBinding Gesture="Ctrl+Shift+s" Command="{Binding SaveAsCommand}" />
 		<KeyBinding Gesture="Ctrl+z" Command="{Binding UndoCommand}" />
 		<KeyBinding Gesture="Ctrl+y" Command="{Binding RedoCommand}" />
-		<KeyBinding Gesture="F5" Command="{Binding OpenResetDialogCommand}" />
+		<KeyBinding Gesture="F5" Command="{Binding ResetCommand}" />
 		<KeyBinding Gesture="F11" Command="{Binding ToggleDisplayAllLocationsCommand}" />
 	</Window.KeyBindings>
 

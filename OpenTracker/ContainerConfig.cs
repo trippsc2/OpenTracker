@@ -2,6 +2,7 @@
 using OpenTracker.Models.AutoTracking.AutotrackValues;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Settings;
+using OpenTracker.ViewModels.AutoTracking;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -40,7 +41,8 @@ namespace OpenTracker
                 nameof(TrackerSettings),
                 nameof(LayoutSettings),
                 nameof(ColorSettings),
-                nameof(SaveLoadManager)
+                nameof(SaveLoadManager),
+                nameof(AutoTrackerStatusVM)
             };
 
             RegisterNamespace(

@@ -1,14 +1,17 @@
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using OpenTracker.Utils.Dialog;
 
-namespace OpenTracker.Views
+namespace OpenTracker.Views.AutoTracking
 {
-    public class StatusBar : UserControl
+    public class AutoTrackerDialog : DialogWindowBase
     {
-        public StatusBar()
+        public AutoTrackerDialog()
         {
             InitializeComponent();
+#if DEBUG
+            this.AttachDevTools();
+#endif
         }
 
         private void InitializeComponent()

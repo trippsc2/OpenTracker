@@ -1,0 +1,49 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:OpenTracker.ViewModels;assembly=OpenTracker"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:view="clr-namespace:OpenTracker.Views;assembly=OpenTracker"
+        mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="630"
+        x:Class="OpenTracker.Views.AutoTracking.AutoTrackerDialog" WindowStartupLocation="CenterScreen"
+        Icon="avares://OpenTracker/Assets/Images/triforce.png"
+        Title="OpenTracker - AutoTracker" Width="420" Height="630" Padding="5">
+
+  <DockPanel>
+    <StackPanel DockPanel.Dock="Top" Orientation="Vertical">
+      <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
+        <TextBlock Classes="AutoTrackerLabel" Foreground="#FFFFFF">USB2SNES URI:</TextBlock>
+        <TextBox Classes="AutoTrackerURI" Text="{Binding UriString, Mode=TwoWay}" />
+      </StackPanel>
+
+      <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
+        <Button Classes="AutoTrackerSmall" Command="{Binding
+						GetDevicesCommand}">Get Devices</Button>
+        <Button Classes="AutoTrackerSmall" Command="{Binding StopCommand}">Stop</Button>
+      </StackPanel>
+
+      <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
+        <TextBlock Classes="AutoTrackerLabel">Device:</TextBlock>
+        <ComboBox Classes="AutoTrackerDevices" Items="{Binding Devices, Mode=OneWay}"
+						  SelectedItem="{Binding Device, Mode=TwoWay}" />
+      </StackPanel>
+
+      <CheckBox HorizontalAlignment="Center" Classes="AutoTracker" IsChecked="{Binding
+                RaceIllegalTracking}" Command="{Binding ToggleRaceIllegalTrackingCommand}"
+                ToolTip.Tip="This enables autotracking of dungeon items.&#x0a;This may not work correctly in all randomizer versions.">Race Illegal Tracking</CheckBox>
+
+      <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">
+        <Button Classes="AutoTrackerBig" Command="{Binding
+						StartCommand}">Start Autotracking</Button>
+      </StackPanel>
+
+      <ContentControl Margin="10" HorizontalAlignment="Center" Content="{Binding Status}" />
+
+    </StackPanel>
+    
+    <Panel>
+      <ContentControl Content="{Binding Log}" />
+    </Panel>
+
+  </DockPanel>
+</Window>

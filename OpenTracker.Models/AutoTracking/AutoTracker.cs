@@ -1,7 +1,9 @@
-﻿using OpenTracker.Models.Utils;
+﻿using OpenTracker.Models.AutoTracking.Logging;
+using OpenTracker.Models.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using WebSocketSharp;
 
 namespace OpenTracker.Models.AutoTracking
@@ -9,36 +11,37 @@ namespace OpenTracker.Models.AutoTracking
     /// <summary>
     /// This is the class containing autotracking data and methods
     /// </summary>
-    public class AutoTracker : Singleton<AutoTracker>, INotifyPropertyChanged
+    public class AutoTracker : Singleton<AutoTracker>, IAutoTracker
     {
         private byte? _inGameStatus;
+        private readonly Dictionary<MemorySegmentType, List<MemoryAddress>> _memorySegments =
+            new Dictionary<MemorySegmentType, List<MemoryAddress>>();
 
         private bool InGame =>
             _inGameStatus.HasValue && _inGameStatus.Value > 0x05 && _inGameStatus.Value != 0x14 &&
             _inGameStatus.Value < 0x20;
-        public ISNESConnector SNESConnector { get; }
-        public Action<LogLevel, string> LogHandler { get; set; }
 
+        public Action<LogLevel, string>? LogHandler { get; set; }
+
+        public ISNESConnector SNESConnector { get; }
         public Dictionary<ulong, MemoryAddress> MemoryAddresses { get; } =
             new Dictionary<ulong, MemoryAddress>();
 
-        public Dictionary<MemorySegmentType, List<MemoryAddress>> MemorySegments { get; } =
-            new Dictionary<MemorySegmentType, List<MemoryAddress>>();
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        public List<MemoryAddress> RoomMemory { get; } =
-            new List<MemoryAddress>(592);
-        public List<MemoryAddress> OverworldEventMemory { get; } =
-            new List<MemoryAddress>(130);
-        public List<MemoryAddress> ItemMemory { get; } =
-            new List<MemoryAddress>(144);
-        public List<MemoryAddress> NPCItemMemory { get; } =
-            new List<MemoryAddress>(2);
-        public List<MemoryAddress> DungeonItemMemory { get; } =
-            new List<MemoryAddress>(6);
-        public List<MemoryAddress> DungeonMemory { get; } =
-            new List<MemoryAddress>(16);
-
-        public event PropertyChangedEventHandler PropertyChanged;
+        private IEnumerable<string>? _devices = new List<string>();
+        public IEnumerable<string>? Devices
+        {
+            get => _devices;
+            private set
+            {
+                if (_devices != value)
+                {
+                    _devices = value;
+                    OnPropertyChanged(nameof(Devices));
+                }
+            }
+        }
 
         private bool _raceIllegalTracking;
         public bool RaceIllegalTracking
@@ -46,25 +49,29 @@ namespace OpenTracker.Models.AutoTracking
             get => _raceIllegalTracking;
             set
             {
-                if (_raceIllegalTracking != value)
-                {
-                    _raceIllegalTracking = value;
-                    PropertyChanged?.Invoke(
-                        this, new PropertyChangedEventArgs(nameof(RaceIllegalTracking)));
-                }
+                _raceIllegalTracking = value;
+                PropertyChanged?.Invoke(
+                    this, new PropertyChangedEventArgs(nameof(RaceIllegalTracking)));
             }
         }
-        
+
+        public AutoTracker() : this(new SNESConnector(new AutoTrackerLogService()))
+        {
+        }
+
         /// <summary>
         /// Constructor
         /// </summary>
-        public AutoTracker()
+        /// <param name="snesConnector">
+        /// The SNES connector.
+        /// </param>
+        public AutoTracker(ISNESConnector snesConnector)
         {
-            SNESConnector = SNESConnectorFactory.GetSNESConnector(HandleLog);
+            SNESConnector = snesConnector;
 
             foreach (MemorySegmentType type in Enum.GetValues(typeof(MemorySegmentType)))
             {
-                MemorySegments.Add(type, new List<MemoryAddress>());
+                _memorySegments.Add(type, new List<MemoryAddress>());
             }
 
             for (ulong i = 0; i < 592; i++)
@@ -96,6 +103,17 @@ namespace OpenTracker.Models.AutoTracking
                     CreateMemoryAddress(MemorySegmentType.NPCItem, i);
                 }
             }
+        }
+
+        /// <summary>
+        /// Raises the PropertyChanged event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
+        /// </param>
+        private void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
@@ -133,25 +151,54 @@ namespace OpenTracker.Models.AutoTracking
         private void CreateMemoryAddress(MemorySegmentType type, ulong offset)
         {
             var memoryAddress = new MemoryAddress();
-            var memorySegment = MemorySegments[type];
+            var memorySegment = _memorySegments[type];
             memorySegment.Add(memoryAddress);
             var address = GetMemorySegmentStart(type);
-            address += (ulong)offset;
+            address += offset;
             MemoryAddresses.Add(address, memoryAddress);
         }
 
         /// <summary>
-        /// Calls the LogHandler property and is passed to the connector to allow for log handling.
+        /// Returns whether the SNES connector is capable of reading memory.
         /// </summary>
-        /// <param name="logLevel">
-        /// The log level of the event to be logged.
-        /// </param>
-        /// <param name="message">
-        /// A string representing the log message.
-        /// </param>
-        private void HandleLog(LogLevel logLevel, string message)
+        /// <returns>
+        /// A boolean representing whether the SNES connector is capable of reading memory.
+        /// </returns>
+        private bool CanReadMemory()
         {
-            LogHandler?.Invoke(logLevel, message);
+            return SNESConnector.Socket != null && SNESConnector.Status != ConnectionStatus.Error;
+        }
+
+        /// <summary>
+        /// Updates cached values of a memory segment.
+        /// </summary>
+        /// <param name="segment">
+        /// The segment to be updated.
+        /// </param>
+        private void MemoryCheck(MemorySegmentType segment)
+        {
+            var memorySegment = _memorySegments[segment];
+            var startAddress = GetMemorySegmentStart(segment);
+            byte[] buffer = new byte[memorySegment.Count];
+
+            if (SNESConnector.Read(startAddress, buffer))
+            {
+                for (int i = 0; i < buffer.Length; i++)
+                {
+                    memorySegment[i].Value = buffer[i];
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the list of devices provided by the SNES connector.
+        /// </summary>
+        /// <returns>
+        /// A list of strings representing the devices.
+        /// </returns>
+        private async Task<IEnumerable<string>?> GetDevicesFromConnector()
+        {
+            return await SNESConnector.GetDevices();
         }
 
         /// <summary>
@@ -159,88 +206,49 @@ namespace OpenTracker.Models.AutoTracking
         /// </summary>
         public void InGameCheck()
         {
-            if (SNESConnector != null && SNESConnector.Socket != null &&
-                SNESConnector.Status != ConnectionStatus.Error &&
-                SNESConnector.Read(0x7e0010, out byte inGameStatus))
+            if (CanReadMemory() && SNESConnector.Read(0x7e0010, out byte inGameStatus))
             {
                 _inGameStatus = inGameStatus;
             }
         }
 
         /// <summary>
-        /// Updates cached values of a memory segment.
+        /// Updades cached values of all SNES memory addresses.
         /// </summary>
-        /// <param name="type">
-        /// The memory segment to updated.
-        /// </param>
-        public void MemoryCheck(MemorySegmentType type)
+        public void MemoryCheck()
         {
-            if (SNESConnector != null && SNESConnector.Socket != null &&
-                SNESConnector.Status != ConnectionStatus.Error && InGame)
+            if (CanReadMemory() && InGame)
             {
-                var memorySegment = MemorySegments[type];
-                var startAddress = GetMemorySegmentStart(type);
-                byte[] buffer = new byte[memorySegment.Count];
-
-                if (SNESConnector.Read(startAddress, buffer))
+                foreach (MemorySegmentType segment in Enum.GetValues(typeof(MemorySegmentType)))
                 {
-                    for (int i = 0; i < buffer.Length; i++)
-                    {
-                        memorySegment[i].Value = buffer[i];
-                    }
+                    MemoryCheck(segment);
                 }
             }
         }
 
         /// <summary>
-        /// Returns an enumerator of devices to which can be connected.
+        /// Updates the list of devices.
         /// </summary>
-        /// <returns>
-        /// An enumerator of devices to which can be connected.
-        /// </returns>
-        public IEnumerable<string> GetDevices()
+        public async Task GetDevices()
         {
-            return SNESConnector.GetDevices();
+            Devices = await GetDevicesFromConnector();
         }
 
         /// <summary>
-        /// Disconnects from the USB2SNES websocket, disposes of the connection, and
-        ///  resets all memory addresses to null or 0.
+        /// Stops the autotracker.
         /// </summary>
-        public void Stop()
+        public async Task Stop()
         {
-            SNESConnector.Disconnect();
-            _inGameStatus = null;
-
-            foreach (var address in RoomMemory)
+            await Task.Factory.StartNew(() =>
             {
-                address.Reset();
-            }
+                SNESConnector.Disconnect();
+                _inGameStatus = null;
 
-            foreach (var address in OverworldEventMemory)
-            {
-                address.Reset();
-            }
-
-            foreach (var address in ItemMemory)
-            {
-                address.Reset();
-            }
-
-            foreach (var address in NPCItemMemory)
-            {
-                address.Reset();
-            }
-
-            foreach (var address in DungeonItemMemory)
-            {
-                address.Reset();
-            }
-
-            foreach (var address in DungeonMemory)
-            {
-                address.Reset();
-            }
+                foreach (var address in MemoryAddresses.Values)
+                {
+                    address.Reset();
+                }
+            });
         }
     }
 }

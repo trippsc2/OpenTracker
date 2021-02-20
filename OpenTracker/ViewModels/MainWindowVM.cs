@@ -85,8 +85,7 @@ namespace OpenTracker.ViewModels
             };
 
         public ITopMenuVM TopMenu { get; }
-        public StatusBarVM StatusBar { get; } =
-            new StatusBarVM();
+        public IStatusBarVM StatusBar { get; }
         public UIPanelVM UIPanel { get; } =
             new UIPanelVM();
         public MapAreaVM MapArea { get; } =
@@ -104,13 +103,14 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Constructor
         /// </summary>
-        public MainWindowVM(ITopMenuVM topMenu)
+        public MainWindowVM(ITopMenuVM topMenu, IStatusBarVM statusBar)
         {
             _appSettings = AppSettings.Instance;
             _saveLoadManager = SaveLoadManager.Instance;
             _sequenceBreakDictionary = SequenceBreakDictionary.Instance;
 
             TopMenu = topMenu;
+            StatusBar = statusBar;
 
             _saveLoadManager.PropertyChanged += OnSaveLoadManagerChanged;
             _appSettings.Layout.PropertyChanged += OnLayoutChanged;
@@ -118,7 +118,7 @@ namespace OpenTracker.ViewModels
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the SaveLoadManager class.
+        /// Subscribes to the PropertyChanged event on the ISaveLoadManager interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -128,15 +128,15 @@ namespace OpenTracker.ViewModels
         /// </param>
         private void OnSaveLoadManagerChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(SaveLoadManager.CurrentFilePath) ||
-                e.PropertyName == nameof(SaveLoadManager.Unsaved))
+            if (e.PropertyName == nameof(ISaveLoadManager.CurrentFilePath) ||
+                e.PropertyName == nameof(ISaveLoadManager.Unsaved))
             {
                 this.RaisePropertyChanged(nameof(Title));
             }
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
+        /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.

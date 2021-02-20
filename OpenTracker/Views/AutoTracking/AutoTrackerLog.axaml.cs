@@ -2,11 +2,11 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace OpenTracker.Views
+namespace OpenTracker.Views.AutoTracking
 {
-    public class StatusBar : UserControl
+    public class AutoTrackerLog : UserControl
     {
-        public StatusBar()
+        public AutoTrackerLog()
         {
             InitializeComponent();
         }

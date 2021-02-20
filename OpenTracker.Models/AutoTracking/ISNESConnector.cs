@@ -1,23 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using OpenTracker.Models.AutoTracking.Logging;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using WebSocketSharp;
 
 namespace OpenTracker.Models.AutoTracking
 {
-    /// <summary>
-    /// This is the interface providing a SNES connector.
-    /// </summary>
     public interface ISNESConnector : INotifyPropertyChanged
     {
-        bool Connected { get; }
-        string Device { get; set; }
-        WebSocket Socket { get; }
+        string? Device { get; set; }
+        WebSocket? Socket { get; }
         ConnectionStatus Status { get; }
-        string Uri { get; set; }
+        string? Uri { get; set; }
+        IAutoTrackerLogService LogService { get; }
 
         void Disconnect();
         bool AttachDeviceIfNeeded(int timeOutInMS = 4096);
-        IEnumerable<string> GetDevices(int timeOutInMS = 4096);
+        Task<IEnumerable<string>?> GetDevices(int timeOutInMS = 4096);
         bool Read(ulong address, byte[] buffer, int timeOutInMS = 4096);
         bool Read(ulong address, out byte value);
     }
