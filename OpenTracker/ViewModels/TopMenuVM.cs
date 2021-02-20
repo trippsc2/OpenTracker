@@ -1,14 +1,21 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Threading;
+using Newtonsoft.Json;
 using OpenTracker.Models.AutoTracking;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Connections;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.PrizePlacements;
+using OpenTracker.Models.Reset;
+using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
+using OpenTracker.Utils.Dialog;
+using OpenTracker.ViewModels.ColorSelect;
+using OpenTracker.ViewModels.SequenceBreaks;
 using ReactiveUI;
 using System;
 using System.Collections.Specialized;
@@ -16,14 +23,24 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace OpenTracker.ViewModels
 {
     /// <summary>
     /// This is the ViewModel class for the top menu control.
     /// </summary>
-    public class TopMenuVM : ViewModelBase
+    public class TopMenuVM : ViewModelBase, ITopMenuVM
     {
+        private readonly IDialogService _dialogService;
+        private readonly IFileDialogService _fileDialogService;
+        private readonly IResetManager _resetManager;
+
+        private readonly IAutoTrackerDialogVM _autoTrackerDialog;
+        private readonly ISequenceBreakDialogVM _sequenceBreakDialog;
+        private readonly IColorSelectDialogVM _colorSelectDialog;
+        private readonly IAboutDialogVM _aboutDialog;
+
         public static bool DisplayAllLocations =>
             AppSettings.Instance.Tracker.DisplayAllLocations;
         public static bool ShowItemCountsOnMap =>
@@ -79,14 +96,57 @@ namespace OpenTracker.ViewModels
         public static bool TwoHundredPercentUIScale =>
             AppSettings.Instance.Layout.UIScale == 2.0;
 
-        public ReactiveCommand<Unit, Unit> OpenResetDialogCommand { get; }
-        public ReactiveCommand<Unit, Unit> OpenAboutDialogCommand { get; }
+        public ReactiveCommand<Unit, Unit> OpenCommand { get; }
+        public ReactiveCommand<Unit, Unit> SaveCommand { get; }
+        public ReactiveCommand<Unit, Unit> SaveAsCommand { get; }
+        public ReactiveCommand<Unit, Unit> ResetCommand { get; }
+
+        private readonly ObservableAsPropertyHelper<bool> _isOpening;
+        public bool IsOpening =>
+            _isOpening.Value;
+        private readonly ObservableAsPropertyHelper<bool> _isSaving;
+        public bool IsSaving =>
+            _isSaving.Value;
+        private readonly ObservableAsPropertyHelper<bool> _isSavingAs;
+        public bool IsSavingAs =>
+            _isSavingAs.Value;
+        private readonly ObservableAsPropertyHelper<bool> _isResetting;
+        public bool IsResetting =>
+            _isResetting.Value;
+
+        public bool CanUndo =>
+            UndoRedoManager.Instance.CanUndo;
+        public bool CanRedo =>
+            UndoRedoManager.Instance.CanRedo;
+
         public ReactiveCommand<Unit, Unit> UndoCommand { get; }
         public ReactiveCommand<Unit, Unit> RedoCommand { get; }
+        public ReactiveCommand<Unit, Unit> AutoTrackerCommand { get; }
+        public ReactiveCommand<Unit, Unit> SequenceBreaksCommand { get; }
+
+        private readonly ObservableAsPropertyHelper<bool> _isUndoing;
+        public bool IsUndoing =>
+            _isUndoing.Value;
+        private readonly ObservableAsPropertyHelper<bool> _isRedoing;
+        public bool IsRedoing =>
+            _isRedoing.Value;
+        private readonly ObservableAsPropertyHelper<bool> _isOpeningAutoTracker;
+        public bool IsOpeningAutoTracker =>
+            _isOpeningAutoTracker.Value;
+        private readonly ObservableAsPropertyHelper<bool> _isOpeningSequenceBreak;
+        public bool IsOpeningSequenceBreak =>
+            _isOpeningSequenceBreak.Value;
+
         public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocationsCommand { get; }
         public ReactiveCommand<Unit, Unit> ToggleShowItemCountsOnMapCommand { get; }
         public ReactiveCommand<Unit, Unit> ToggleDisplayMapsCompassesCommand { get; }
         public ReactiveCommand<Unit, Unit> ToggleAlwaysDisplayDungeonItemsCommand { get; }
+
+        public ReactiveCommand<Unit, Unit> ColorSelectCommand { get; }
+        private readonly ObservableAsPropertyHelper<bool> _isOpeningColorSelect;
+        public bool IsOpeningColorSelect =>
+            _isOpeningColorSelect.Value;
+
         public ReactiveCommand<string, Unit> SetLayoutOrientationCommand { get; }
         public ReactiveCommand<string, Unit> SetMapOrientationCommand { get; }
         public ReactiveCommand<string, Unit> SetHorizontalUIPanelPlacementCommand { get; }
@@ -95,48 +155,67 @@ namespace OpenTracker.ViewModels
         public ReactiveCommand<string, Unit> SetVerticalItemsPlacementCommand { get; }
         public ReactiveCommand<string, Unit> SetUIScaleCommand { get; }
 
-        private readonly ObservableAsPropertyHelper<bool> _isOpeningResetDialog;
-        public bool IsOpeningResetDialog =>
-            _isOpeningResetDialog.Value;
-
         private readonly ObservableAsPropertyHelper<bool> _isOpeningAboutDialog;
         public bool IsOpeningAboutDialog =>
             _isOpeningAboutDialog.Value;
 
-        private bool _canUndo;
-        public bool CanUndo
-        {
-            get => _canUndo;
-            private set => this.RaiseAndSetIfChanged(ref _canUndo, value);
-        }
+        public ReactiveCommand<Unit, Unit> AboutCommand { get; }
 
-        private bool _canRedo;
-        public bool CanRedo
-        {
-            get => _canRedo;
-            private set => this.RaiseAndSetIfChanged(ref _canRedo, value);
-        }
+        private readonly ObservableAsPropertyHelper<bool> _isOpeningAbout;
+        public bool IsOpeningAbout =>
+            _isOpeningAbout.Value;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public TopMenuVM()
+        public TopMenuVM(
+            IDialogService dialogService, IFileDialogService fileDialogService,
+            IResetManager resetManager, IAutoTrackerDialogVM autoTrackerDialog,
+            IColorSelectDialogVM colorSelectDialog, IAboutDialogVM aboutDialog)
         {
-            OpenResetDialogCommand = ReactiveCommand.CreateFromObservable(OpenResetDialogAsync);
-            OpenResetDialogCommand.IsExecuting.ToProperty(
-                this, x => x.IsOpeningResetDialog, out _isOpeningResetDialog);
+            _dialogService = dialogService;
+            _fileDialogService = fileDialogService;
+            _resetManager = resetManager;
+            _autoTrackerDialog = autoTrackerDialog;
+            _colorSelectDialog = colorSelectDialog;
+            _aboutDialog = aboutDialog;
+            _sequenceBreakDialog = SequenceBreakDialogVMFactory.GetSequenceBreakDialogVM();
 
-            OpenAboutDialogCommand = ReactiveCommand.CreateFromObservable(OpenAboutDialogAsync);
-            OpenAboutDialogCommand.IsExecuting.ToProperty(
-                this, x => x.IsOpeningAboutDialog, out _isOpeningAboutDialog);
+            OpenCommand = ReactiveCommand.CreateFromTask(Open);
+            OpenCommand.IsExecuting.ToProperty(this, x => x.IsOpening, out _isOpening);
 
-            UndoCommand = ReactiveCommand.Create(Undo, this.WhenAnyValue(x => x.CanUndo));
-            RedoCommand = ReactiveCommand.Create(Redo, this.WhenAnyValue(x => x.CanRedo));
+            SaveCommand = ReactiveCommand.CreateFromTask(Save);
+            SaveCommand.IsExecuting.ToProperty(this, x => x.IsSaving, out _isSaving);
+
+            SaveAsCommand = ReactiveCommand.CreateFromTask(SaveAs);
+            SaveAsCommand.IsExecuting.ToProperty(this, x => x.IsSavingAs, out _isSavingAs);
+
+            ResetCommand = ReactiveCommand.CreateFromTask(Reset);
+            ResetCommand.IsExecuting.ToProperty(this, x => x.IsResetting, out _isResetting);
+
+            UndoCommand = ReactiveCommand.CreateFromTask(Undo, this.WhenAnyValue(x => x.CanUndo));
+            UndoCommand.IsExecuting.ToProperty(this, x => x.IsUndoing, out _isUndoing);
+
+            RedoCommand = ReactiveCommand.CreateFromTask(Redo, this.WhenAnyValue(x => x.CanRedo));
+            RedoCommand.IsExecuting.ToProperty(this, x => x.IsRedoing, out _isRedoing);
+
+            AutoTrackerCommand = ReactiveCommand.CreateFromTask(AutoTracker);
+            AutoTrackerCommand.IsExecuting.ToProperty(
+                this, x => x.IsOpeningAutoTracker, out _isOpeningAutoTracker);
+
+            SequenceBreaksCommand = ReactiveCommand.CreateFromTask(SequencesBreak);
+            SequenceBreaksCommand.IsExecuting.ToProperty(
+                this, x => x.IsOpeningSequenceBreak, out _isOpeningSequenceBreak);
+
             ToggleDisplayAllLocationsCommand = ReactiveCommand.Create(ToggleDisplayAllLocations);
-
             ToggleShowItemCountsOnMapCommand = ReactiveCommand.Create(ToggleShowItemCountsOnMap);
             ToggleDisplayMapsCompassesCommand = ReactiveCommand.Create(ToggleDisplayMapsCompasses);
             ToggleAlwaysDisplayDungeonItemsCommand = ReactiveCommand.Create(ToggleAlwaysDisplayDungeonItems);
+
+            ColorSelectCommand = ReactiveCommand.CreateFromTask(ColorSelect);
+            ColorSelectCommand.IsExecuting.ToProperty(
+                this, x => x.IsOpeningColorSelect, out _isOpeningColorSelect);
+
             SetLayoutOrientationCommand = ReactiveCommand.Create<string>(SetLayoutOrientation);
             SetMapOrientationCommand = ReactiveCommand.Create<string>(SetMapOrientation);
             SetHorizontalUIPanelPlacementCommand = ReactiveCommand.Create<string>(SetHorizontalUIPanelPlacement);
@@ -145,8 +224,11 @@ namespace OpenTracker.ViewModels
             SetVerticalItemsPlacementCommand = ReactiveCommand.Create<string>(SetVerticalItemsPlacement);
             SetUIScaleCommand = ReactiveCommand.Create<string>(SetUIScale);
 
-            UndoRedoManager.Instance.UndoableActions.CollectionChanged += OnUndoChanged;
-            UndoRedoManager.Instance.RedoableActions.CollectionChanged += OnRedoChanged;
+            AboutCommand = ReactiveCommand.CreateFromTask(About);
+            AboutCommand.IsExecuting.ToProperty(
+                this, x => x.IsOpeningAbout, out _isOpeningAbout);
+
+            UndoRedoManager.Instance.PropertyChanged += OnUndoRedoManagerChanged;
             AppSettings.Instance.Tracker.PropertyChanged += OnTrackerSettingsChanged;
             AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
         }
@@ -160,23 +242,18 @@ namespace OpenTracker.ViewModels
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnUndoChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void OnUndoRedoManagerChanged(object? sender, PropertyChangedEventArgs e)
         {
-            UpdateCanUndo();
-        }
+            if (e.PropertyName == nameof(UndoRedoManager.CanUndo))
+            {
+                this.RaisePropertyChanged(nameof(CanUndo));
+            }
 
-        /// <summary>
-        /// Subscribes to the CollectionChanged event on the observable stack of redoable actions.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnRedoChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            UpdateCanRedo();
+            if (e.PropertyName == nameof(UndoRedoManager.CanRedo))
+            {
+                this.RaisePropertyChanged(nameof(CanRedo));
+
+            }
         }
 
         /// <summary>
@@ -271,37 +348,205 @@ namespace OpenTracker.ViewModels
         }
 
         /// <summary>
-        /// Updates the CanUndo property with a value representing whether there are objects in the
-        /// Undoable stack.
+        /// Opens an error box with the specified message.
         /// </summary>
-        private void UpdateCanUndo()
+        /// <param name="message">
+        /// The message to be contained in the error box.
+        /// </param>
+        private async Task OpenErrorBox(string message)
         {
-            CanUndo = UndoRedoManager.Instance.CanUndo();
+            await Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                await _dialogService.ShowDialogAsync(
+                    new ErrorBoxDialogVM("Error", message))
+                    .ConfigureAwait(false);
+            });
+        }
+
+        /// <summary>
+        /// Opens a file save dialog box and returns the result.
+        /// </summary>
+        /// <returns>
+        /// A nullable string representing the result of the dialog box.
+        /// </returns>
+        private async Task<string?> OpenSaveFileDialog()
+        {
+            return await _fileDialogService.ShowSaveDialogAsync();
+        }
+
+        /// <summary>
+        /// Save the data to the file and handles errors by opening an error box.
+        /// </summary>
+        /// <param name="path">
+        /// A string representing the file path.
+        /// </param>
+        private async Task SaveWithErrorHandling(string path)
+        {
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                try
+                {
+                    SaveLoadManager.Save(path);
+                }
+                catch (Exception ex)
+                {
+                    string message;
+
+                    switch (ex)
+                    {
+                        case UnauthorizedAccessException uaex:
+                            {
+                                message = "Unable to save to the selected directory.  Check the file permissions and try again.";
+                            }
+                            break;
+                        default:
+                            {
+                                message = ex.Message;
+                            }
+                            break;
+                    }
+
+                    OpenErrorBox(message).Wait();
+                }
+            });
+        }
+
+        /// <summary>
+        /// Opens a file with saved data.
+        /// </summary>
+        public async Task Open()
+        {
+            var dialogResult = await _fileDialogService.ShowOpenDialogAsync();
+
+            if (dialogResult != null)
+            {
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    try
+                    {
+                        SaveLoadManager.Open(dialogResult);
+                    }
+                    catch (Exception ex)
+                    {
+                        string message;
+
+                        switch (ex)
+                        {
+                            case JsonReaderException jex:
+                                {
+                                    message = "The selected file is not a valid JSON file.";
+                                }
+                                break;
+                            case UnauthorizedAccessException uaex:
+                                {
+                                    message = "The file cannot be read.  Check the permissions on the selected file.";
+                                }
+                                break;
+                            default:
+                                {
+                                    message = ex.Message;
+                                }
+                                break;
+                        }
+
+                        OpenErrorBox(message).Wait();
+                    }
+                });
+            }
+        }
+
+        /// <summary>
+        /// If the file is already saved, save the current data to the existing path.  Otherwise,
+        /// open a save file dialog window and save to a new path.
+        /// </summary>
+        /// <returns>
+        /// An observable representing the progress of the command.
+        /// </returns>
+        public async Task Save()
+        {
+            var path = SaveLoadManager.Instance.CurrentFilePath ??
+                await OpenSaveFileDialog();
+
+            if (path != null)
+            {
+                await SaveWithErrorHandling(path);
+            }
+        }
+
+        /// <summary>
+        /// Opens a save file dialog window and saves to a new path.
+        /// </summary>
+        public async Task SaveAs()
+        {
+            var dialogResult = await OpenSaveFileDialog();
+
+            if (dialogResult != null)
+            {
+                await SaveWithErrorHandling(dialogResult);
+            }
+        }
+
+        /// <summary>
+        /// Returns the observable result of the OpenResetDialog method.
+        /// </summary>
+        private async Task Reset()
+        {
+            var result = await _dialogService.ShowDialogAsync<bool>(
+                new MessageBoxDialogVM("Warning",
+                "Resetting the tracker will set all items and locations back to their " +
+                "starting values. This cannot be undone.\n\nDo you wish to proceed?"));
+
+            if (result)
+            {
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    _resetManager.Reset();
+                });
+            }
         }
 
         /// <summary>
         /// Undoes the last action.
         /// </summary>
-        private void Undo()
+        private async Task Undo()
         {
-            UndoRedoManager.Instance.Undo();
-        }
-
-        /// <summary>
-        /// Updates the CanRedo property with a value representing whether there are objects in the
-        /// Redoable stack.
-        /// </summary>
-        private void UpdateCanRedo()
-        {
-            CanRedo = UndoRedoManager.Instance.CanRedo();
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                UndoRedoManager.Instance.Undo();
+            });
         }
 
         /// <summary>
         /// Redoes the last action.
         /// </summary>
-        private void Redo()
+        private async Task Redo()
         {
-            UndoRedoManager.Instance.Redo();
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                UndoRedoManager.Instance.Redo();
+            });
+        }
+
+        /// <summary>
+        /// Opens the AutoTracker dialog window.
+        /// </summary>
+        private async Task AutoTracker()
+        {
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                _dialogService.ShowDialogAsync(_autoTrackerDialog, false).Wait();
+            });
+        }
+
+        /// <summary>
+        /// Opens the Sequence Break dialog window.
+        /// </summary>
+        private async Task SequencesBreak()
+        {
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                _dialogService.ShowDialogAsync(_sequenceBreakDialog, false).Wait();
+            });
         }
 
         /// <summary>
@@ -444,75 +689,25 @@ namespace OpenTracker.ViewModels
         }
 
         /// <summary>
-        /// Resets the undo/redo manager, pinned locations, and game data to their starting values.
+        /// Opens the Color Select dialog window.
         /// </summary>
-        private static void Reset()
+        private async Task ColorSelect()
         {
-            Dispatcher.UIThread.InvokeAsync(() =>
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                UndoRedoManager.Instance.Reset();
-                PinnedLocationCollection.Instance.Clear();
-                AutoTracker.Instance.Stop();
-                BossPlacementDictionary.Instance.Reset();
-                LocationDictionary.Instance.Reset();
-                PrizePlacementDictionary.Instance.Reset();
-                ItemDictionary.Instance.Reset();
-                ConnectionCollection.Instance.Clear();
+                _dialogService.ShowDialogAsync(_colorSelectDialog, false).Wait();
             });
         }
 
         /// <summary>
-        /// Opens a reset dialog window.
+        /// Opens the About dialog window.
         /// </summary>
-        private static void OpenResetDialog()
+        private async Task About()
         {
-            Dispatcher.UIThread.InvokeAsync(async () =>
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                bool? result = await App.DialogService.ShowDialog(
-                    new MessageBoxDialogVM("Warning",
-                    "Resetting the tracker will set all items and locations back to their " +
-                    "starting values. This cannot be undone.\n\nDo you wish to proceed?"))
-                    .ConfigureAwait(false);
-
-                if (result.HasValue && result.Value)
-                {
-                    Reset();
-                }
+                _dialogService.ShowDialogAsync(_aboutDialog, false).Wait();
             });
-        }
-
-        /// <summary>
-        /// Opens an about dialog window.
-        /// </summary>
-        private static void OpenAboutDialog()
-        {
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                bool? result = await App.DialogService.ShowDialog(new AboutDialogVM())
-                    .ConfigureAwait(false);
-            });
-        }
-
-        /// <summary>
-        /// Returns the observable result of the OpenResetDialog method.
-        /// </summary>
-        /// <returns>
-        /// The observable result of the OpenResetDialog method.
-        /// </returns>
-        private IObservable<Unit> OpenResetDialogAsync()
-        {
-            return Observable.Start(() => { OpenResetDialog(); });
-        }
-
-        /// <summary>
-        /// Returns the observable result of the OpenAboutDialog method.
-        /// </summary>
-        /// <returns>
-        /// The observable result of the OpenAboutDialog method.
-        /// </returns>
-        private IObservable<Unit> OpenAboutDialogAsync()
-        {
-            return Observable.Start(() => { OpenAboutDialog(); });
         }
     }
 }

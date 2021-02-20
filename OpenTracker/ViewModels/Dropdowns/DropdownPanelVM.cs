@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.Modes;
 using OpenTracker.Models.Settings;
+using OpenTracker.Utils;
 using ReactiveUI;
 using System.Collections.ObjectModel;
 using System.ComponentModel;

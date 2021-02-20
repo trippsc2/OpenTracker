@@ -2,6 +2,7 @@
 using OpenTracker.Models;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.Utils;
+using OpenTracker.Utils;
 using ReactiveUI;
 using System.ComponentModel;
 

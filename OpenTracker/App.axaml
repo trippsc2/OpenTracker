@@ -1,10 +1,10 @@
 ﻿<Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:OpenTracker"
+             xmlns:utils="clr-namespace:OpenTracker.Utils;assembly=OpenTracker.Utils"
              x:Class="OpenTracker.App">
 	
 	<Application.DataTemplates>
-		<local:ViewLocator />
+    <utils:ViewLocator />
 	</Application.DataTemplates>
 
 	<Application.Styles>

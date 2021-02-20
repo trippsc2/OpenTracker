@@ -7,7 +7,7 @@ namespace OpenTracker.Views
     public class TopMenu : UserControl
     {
         public static IThemeSelector Selector =>
-            App.Selector;
+            App.Selector!;
 
         public TopMenu()
         {

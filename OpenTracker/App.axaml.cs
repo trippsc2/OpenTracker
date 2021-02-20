@@ -16,7 +16,6 @@ namespace OpenTracker
     public class App : Application
     {
         public static IThemeSelector? Selector { get; private set; }
-        public static IDialogService? DialogService { get; private set; }
 
         private static void CopyDefaultThemesToAppData()
         {
@@ -75,14 +74,6 @@ namespace OpenTracker
             }
         }
 
-        private static void InitializeDialogService(Window owner)
-        {
-            DialogService = new DialogService(owner);
-            DialogService.Register<MessageBoxDialogVM, MessageBoxDialog>();
-            DialogService.Register<AboutDialogVM, AboutDialog>();
-            DialogService.Register<ErrorBoxDialogVM, ErrorBoxDialog>();
-        }
-
         public override void Initialize()
         {
             Logger.Sink = new AvaloniaSerilogSink(
@@ -106,7 +97,6 @@ namespace OpenTracker
                 };
                 
                 SetThemeToLastOrDefault();
-                InitializeDialogService(desktop.MainWindow);
 
                 desktop.Exit += (sender, e) => Selector!.SaveSelectedTheme(
                     AppPath.LastThemeFilePath);

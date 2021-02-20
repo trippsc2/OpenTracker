@@ -2,6 +2,7 @@
 using Avalonia.Media;
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Settings;
+using OpenTracker.Utils.Dialog;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
@@ -11,7 +12,7 @@ namespace OpenTracker.ViewModels.ColorSelect
     /// <summary>
     /// This is the ViewModel for the color select dialog window.
     /// </summary>
-    public class ColorSelectDialogVM : ViewModelBase
+    public class ColorSelectDialogVM : DialogViewModelBase, IColorSelectDialogVM
     {
         private SolidColorBrush _emphasisFontColor;
         public SolidColorBrush EmphasisFontColor

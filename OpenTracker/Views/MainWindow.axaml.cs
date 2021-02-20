@@ -5,6 +5,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using OpenTracker.Interfaces;
+using OpenTracker.ViewModels;
 using OpenTracker.Views.ColorSelect;
 using OpenTracker.Views.SequenceBreaks;
 using System;
@@ -20,16 +21,13 @@ namespace OpenTracker.Views
         private ColorSelectDialog? _colorSelectDialog;
         private SequenceBreakDialog? _sequenceBreakDialog;
 
+        private IMainWindowVM? ViewModel =>
+            DataContext as IMainWindowVM;
+
         private IAutoTrackerAccess? AutoTrackerAccess =>
             DataContext as IAutoTrackerAccess;
-        private IBoundsData? BoundsData =>
-            DataContext as IBoundsData;
-        private ICloseHandler? CloseHandler =>
-            DataContext as ICloseHandler;
         private IColorSelectAccess? ColorSelectAccess =>
             DataContext as IColorSelectAccess;
-        private IDynamicLayout? DynamicLayout =>
-            DataContext as IDynamicLayout;
         private IOpenData? OpenData =>
             DataContext as IOpenData;
         private ISaveData? SaveData =>
@@ -59,67 +57,54 @@ namespace OpenTracker.Views
 
         private void OnClose(object sender, CancelEventArgs e)
         {
-            _ = CloseHandler ?? throw new NullReferenceException();
+            _ = ViewModel ?? throw new NullReferenceException();
 
-            CloseHandler.Close(WindowState == WindowState.Maximized, Bounds, Position);
-
-            if (_autoTrackerDialog != null && _autoTrackerDialog.IsVisible)
-            {
-                _autoTrackerDialog?.Close();
-            }
-
-            if (_colorSelectDialog != null && _colorSelectDialog.IsVisible)
-            {
-                _colorSelectDialog?.Close();
-            }
-
-            if (_sequenceBreakDialog != null && _sequenceBreakDialog.IsVisible)
-            {
-                _sequenceBreakDialog?.Close();
-            }
-        }
-
-        private Screen? GetScreen()
-        {
-            if (BoundsData == null || !BoundsData.X.HasValue || !BoundsData.Y.HasValue)
-            {
-                return null;
-            }
-
-            foreach (var screen in Screens.All)
-            {
-                if (screen.Bounds.X <= BoundsData.X.Value &&
-                    screen.Bounds.Y <= BoundsData.Y.Value &&
-                    screen.Bounds.X + screen.Bounds.Width > BoundsData.X.Value &&
-                    screen.Bounds.Y + screen.Bounds.Height > BoundsData.Y.Value)
-                {
-                    return screen;
-                }
-            }
-
-            return null;
+            ViewModel.Close(WindowState == WindowState.Maximized, Bounds, Position);
         }
 
         private void OnDataContextChanged(object? sender, EventArgs e)
         {
-            if (BoundsData == null || !BoundsData.X.HasValue || !BoundsData.Y.HasValue ||
-                GetScreen() == null)
+            if (ViewModel == null || !ViewModel.X.HasValue || !ViewModel.Y.HasValue)
             {
                 return;
             }
-            
-            Position = new PixelPoint(
-                    (int)Math.Floor(BoundsData.X.Value), (int)Math.Floor(BoundsData.Y.Value));
 
-            if (BoundsData.Maximized.HasValue)
+            if (GetScreen() != null)
             {
-                if (BoundsData.Maximized.Value)
+                Position = new PixelPoint(
+                    (int)Math.Floor(ViewModel.X.Value), (int)Math.Floor(ViewModel.Y.Value));
+            }
+
+            if (ViewModel.Maximized.HasValue)
+            {
+                if (ViewModel.Maximized.Value)
                 {
                     WindowState = WindowState.Maximized;
                 }
             }
 
             ChangeLayout(Bounds);
+        }
+
+        private Screen? GetScreen()
+        {
+            if (ViewModel == null || !ViewModel.X.HasValue || !ViewModel.Y.HasValue)
+            {
+                return null;
+            }
+
+            foreach (var screen in Screens.All)
+            {
+                if (screen.Bounds.X <= ViewModel.X.Value &&
+                    screen.Bounds.Y <= ViewModel.Y.Value &&
+                    screen.Bounds.X + screen.Bounds.Width > ViewModel.X.Value &&
+                    screen.Bounds.Y + screen.Bounds.Height > ViewModel.Y.Value)
+                {
+                    return screen;
+                }
+            }
+
+            return null;
         }
 
         private void ChangeLayout(Rect bounds)
@@ -131,12 +116,12 @@ namespace OpenTracker.Views
             {
                 _orientation = orientation;
                 
-                if (DynamicLayout == null)
+                if (ViewModel == null)
                 {
                     return;
                 }
 
-                DynamicLayout.ChangeLayout(orientation);
+                ViewModel.ChangeLayout(orientation);
             }
         }
 

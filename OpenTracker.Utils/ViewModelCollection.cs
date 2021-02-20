@@ -1,5 +1,4 @@
 ﻿using OpenTracker.Models.Utils;
-using OpenTracker.ViewModels;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,7 +24,7 @@ namespace OpenTracker.Utils
             set => _list[index] = value;
         }
 
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
+        public event NotifyCollectionChangedEventHandler? CollectionChanged;
 
         public ViewModelCollection(IObservableCollection<TModel> model)
         {
@@ -41,7 +40,7 @@ namespace OpenTracker.Utils
                 this, new NotifyCollectionChangedEventArgs(action, item, index));
         }
 
-        private void OnModelCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void OnModelCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {

@@ -148,7 +148,7 @@ namespace OpenTracker.ViewModels.SequenceBreaks
         /// <returns>
         /// A new sequence break dialog window ViewModel instance.
         /// </returns>
-        internal static SequenceBreakDialogVM GetSequenceBreakDialogVM()
+        internal static ISequenceBreakDialogVM GetSequenceBreakDialogVM()
         {
             return new SequenceBreakDialogVM(
                 GetBombDuplicationSequenceBreaks(), GetBombJumpsSequenceBreaks(),

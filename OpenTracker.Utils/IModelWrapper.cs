@@ -1,4 +1,4 @@
-﻿namespace OpenTracker
+﻿namespace OpenTracker.Utils
 {
     public interface IModelWrapper
     {

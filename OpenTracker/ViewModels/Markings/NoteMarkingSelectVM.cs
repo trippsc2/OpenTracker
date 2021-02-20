@@ -2,6 +2,7 @@
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;

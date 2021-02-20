@@ -1,6 +1,7 @@
 ﻿using Avalonia.Layout;
 using OpenTracker.Models.Connections;
 using OpenTracker.Models.Settings;
+using OpenTracker.Utils;
 using OpenTracker.ViewModels.Maps.MapLocations;
 using ReactiveUI;
 using System;

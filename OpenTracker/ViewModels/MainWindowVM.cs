@@ -1,15 +1,14 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
-using Avalonia.Threading;
 using Newtonsoft.Json;
 using OpenTracker.Interfaces;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.SequenceBreaks;
 using OpenTracker.Models.Settings;
+using OpenTracker.Utils;
 using OpenTracker.ViewModels.ColorSelect;
 using OpenTracker.ViewModels.Maps;
-using OpenTracker.ViewModels.SequenceBreaks;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -23,9 +22,7 @@ namespace OpenTracker.ViewModels
     /// <summary>
     /// This is the class for the main window ViewModel.
     /// </summary>
-    public class MainWindowVM : ViewModelBase, IMainWindowVM, IAutoTrackerAccess, IBoundsData,
-        ICloseHandler, IColorSelectAccess, IDynamicLayout, IOpenData, ISaveData,
-        ISequenceBreakAccess
+    public class MainWindowVM : ViewModelBase, IMainWindowVM, IColorSelectAccess
     {
         public static string Title
         {
@@ -90,8 +87,7 @@ namespace OpenTracker.ViewModels
 
         public AutoTrackerDialogVM AutoTrackerDialog { get; } =
             new AutoTrackerDialogVM();
-        public TopMenuVM TopMenu { get; } =
-            new TopMenuVM();
+        public ITopMenuVM TopMenu { get; }
         public UIPanelVM UIPanel { get; } =
             new UIPanelVM();
         public MapAreaVM MapArea { get; } =
@@ -99,8 +95,8 @@ namespace OpenTracker.ViewModels
         public StatusBarVM StatusBar { get; } =
             new StatusBarVM();
 
-        public ReactiveCommand<Unit, Unit> OpenResetDialogCommand =>
-            TopMenu.OpenResetDialogCommand;
+        public ReactiveCommand<Unit, Unit> ResetCommand =>
+            TopMenu.ResetCommand;
         public ReactiveCommand<Unit, Unit> UndoCommand =>
             TopMenu.UndoCommand;
         public ReactiveCommand<Unit, Unit> RedoCommand =>
@@ -111,8 +107,10 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Constructor
         /// </summary>
-        public MainWindowVM()
+        public MainWindowVM(ITopMenuVM topMenu)
         {
+            TopMenu = topMenu;
+
             SaveLoadManager.Instance.PropertyChanged += OnSaveLoadManagerChanged;
             AppSettings.Instance.Layout.PropertyChanged += OnLayoutChanged;
             LoadSequenceBreaks();
@@ -155,16 +153,6 @@ namespace OpenTracker.ViewModels
             }
         }
 
-        private static void OpenErrorBox(string message)
-        {
-            Dispatcher.UIThread.InvokeAsync(async () =>
-            {
-                bool? result = await App.DialogService!.ShowDialog(
-                    new ErrorBoxDialogVM("Error", message))
-                    .ConfigureAwait(false);
-            });
-        }
-
         /// <summary>
         /// Changes the expected orientation layout, if dynamic orientation is enabled,
         /// to the specified orientation.
@@ -175,79 +163,6 @@ namespace OpenTracker.ViewModels
         public void ChangeLayout(Orientation orientation)
         {
             AppSettings.Instance.Layout.CurrentDynamicOrientation = orientation;
-        }
-
-        /// <summary>
-        /// Saves the tracker data to a file at the specified path.
-        /// </summary>
-        /// <param name="path">
-        /// The file path to which the tracker data is to be saved.
-        /// </param>
-        public void Save(string path = null)
-        {
-            try
-            {
-                SaveLoadManager.Save(path);
-            }
-            catch (Exception ex)
-            {
-                string message;
-
-                switch (ex)
-                {
-                    case UnauthorizedAccessException uaex:
-                        {
-                            message = "Unable to save to the selected directory.  Check the file permissions and try again.";
-                        }
-                        break;
-                    default:
-                        {
-                            message = ex.Message;
-                        }
-                        break;
-                }
-
-                OpenErrorBox(message);
-            }
-        }
-
-        /// <summary>
-        /// Opens and reads the tracker data from a file at the specified path.
-        /// </summary>
-        /// <param name="path">
-        /// The file path to which the tracker data is to be opened.
-        /// </param>
-        public void Open(string path)
-        {
-            try
-            {
-                SaveLoadManager.Open(path);
-            }
-            catch (Exception ex)
-            {
-                string message;
-
-                switch (ex)
-                {
-                    case JsonReaderException jex:
-                        {
-                            message = "The selected file is not a valid JSON file.";
-                        }
-                        break;
-                    case UnauthorizedAccessException uaex:
-                        {
-                            message = "The file cannot be read.  Check the permissions on the selected file.";
-                        }
-                        break;
-                    default:
-                        {
-                            message = ex.Message;
-                        }
-                        break;
-                }
-
-                OpenErrorBox(message);
-            }
         }
 
         /// <summary>
@@ -335,17 +250,6 @@ namespace OpenTracker.ViewModels
         }
 
         /// <summary>
-        /// Returns the autotracker ViewModel.
-        /// </summary>
-        /// <returns>
-        /// The autotracker ViewModel.
-        /// </returns>
-        public object GetAutoTrackerViewModel()
-        {
-            return AutoTrackerDialog;
-        }
-
-        /// <summary>
         /// Returns a new color select ViewModel.
         /// </summary>
         /// <returns>
@@ -354,17 +258,6 @@ namespace OpenTracker.ViewModels
         public object GetColorSelectViewModel()
         {
             return new ColorSelectDialogVM();
-        }
-
-        /// <summary>
-        /// Returns a new sequence break dialog ViewModel.
-        /// </summary>
-        /// <returns>
-        /// A new color select ViewModel.
-        /// </returns>
-        public object GetSequenceBreakViewModel()
-        {
-            return SequenceBreakDialogVMFactory.GetSequenceBreakDialogVM();
         }
     }
 }

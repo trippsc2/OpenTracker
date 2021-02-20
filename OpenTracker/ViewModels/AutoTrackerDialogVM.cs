@@ -2,6 +2,7 @@
 using OpenTracker.Interfaces;
 using OpenTracker.Models.AutoTracking;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Dialog;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -19,7 +20,7 @@ namespace OpenTracker.ViewModels
     /// <summary>
     /// This is the ViewModel class for the autotracker dialog window.
     /// </summary>
-    public class AutoTrackerDialogVM : ViewModelBase, ISaveData
+    public class AutoTrackerDialogVM : DialogViewModelBase, ISaveData, IAutoTrackerDialogVM
     {
         private readonly DispatcherTimer _memoryCheckTimer;
         private int _tickCount;

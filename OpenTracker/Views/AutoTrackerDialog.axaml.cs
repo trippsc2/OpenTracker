@@ -2,13 +2,15 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using OpenTracker.Interfaces;
+using OpenTracker.Utils.Dialog;
 using System.Threading.Tasks;
 
 namespace OpenTracker.Views
 {
-    public class AutoTrackerDialog : Window
+    public class AutoTrackerDialog : DialogWindowBase
     {
-        private ISaveData ViewModelSave => DataContext as ISaveData;
+        private ISaveData? ViewModelSave =>
+            DataContext as ISaveData;
 
         public AutoTrackerDialog()
         {
@@ -28,7 +30,7 @@ namespace OpenTracker.Views
             SaveFileDialog dialog = new SaveFileDialog();
             dialog.Filters.Add(new FileDialogFilter() { Name = "Text", Extensions = { "txt" } });
             string path = await dialog.ShowAsync(this).ConfigureAwait(false);
-            ViewModelSave.Save(path);
+            ViewModelSave!.Save(path);
         }
     }
 }

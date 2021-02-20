@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Interfaces;
 using OpenTracker.Utils;
+using OpenTracker.Utils.Dialog;
 using ReactiveUI;
 using System;
 using System.Reactive;
@@ -9,14 +10,12 @@ namespace OpenTracker.ViewModels
     /// <summary>
     /// This is the ViewModel for the message box dialog window.
     /// </summary>
-    public class MessageBoxDialogVM : ViewModelBase, IDialogRequestClose
+    public class MessageBoxDialogVM : DialogViewModelBase<bool>
     {
         public ReactiveCommand<Unit, Unit> YesCommand { get; }
         public ReactiveCommand<Unit, Unit> NoCommand { get; }
         public string Title { get; }
         public string Text { get; }
-
-        public event EventHandler<DialogCloseRequestedEventArgs> CloseRequested;
 
         /// <summary>
         /// Constructor
@@ -41,7 +40,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void Yes()
         {
-            CloseRequested?.Invoke(this, new DialogCloseRequestedEventArgs(true));
+            Close(true);
         }
 
         /// <summary>
@@ -49,7 +48,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void No()
         {
-            CloseRequested?.Invoke(this, new DialogCloseRequestedEventArgs(false));
+            Close(false);
         }
     }
 }

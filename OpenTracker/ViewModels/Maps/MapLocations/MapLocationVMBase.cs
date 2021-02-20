@@ -1,4 +1,6 @@
-﻿namespace OpenTracker.ViewModels.Maps.MapLocations
+﻿using OpenTracker.Utils;
+
+namespace OpenTracker.ViewModels.Maps.MapLocations
 {
     /// <summary>
     /// This is the base class to type restrict the map location control to valid ViewModel

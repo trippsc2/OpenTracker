@@ -3,6 +3,7 @@ using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.Settings;
+using OpenTracker.Utils;
 using OpenTracker.ViewModels.PinnedLocations.SectionIcons;
 using ReactiveUI;
 using System;

@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel;
 using System.Reactive;
 using OpenTracker.Models.Modes;
+using OpenTracker.Utils;
 
 namespace OpenTracker.ViewModels
 {

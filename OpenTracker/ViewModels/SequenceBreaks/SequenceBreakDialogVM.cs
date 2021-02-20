@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OpenTracker.Utils;
+using OpenTracker.Utils.Dialog;
+using System;
 using System.Collections.ObjectModel;
 
 namespace OpenTracker.ViewModels.SequenceBreaks
@@ -6,7 +8,7 @@ namespace OpenTracker.ViewModels.SequenceBreaks
     /// <summary>
     /// This is the ViewModel of the sequence break dialog window.
     /// </summary>
-    public class SequenceBreakDialogVM : ViewModelBase
+    public class SequenceBreakDialogVM : DialogViewModelBase, ISequenceBreakDialogVM
     {
         public ObservableCollection<SequenceBreakControlVM> BombDuplication { get; }
         public ObservableCollection<SequenceBreakControlVM> BombJumps { get; }

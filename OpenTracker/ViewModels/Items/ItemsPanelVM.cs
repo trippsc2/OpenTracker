@@ -1,5 +1,6 @@
 ﻿using Avalonia.Layout;
 using OpenTracker.Models.Settings;
+using OpenTracker.Utils;
 using OpenTracker.ViewModels.Items.Large;
 using OpenTracker.ViewModels.Items.Small;
 using ReactiveUI;

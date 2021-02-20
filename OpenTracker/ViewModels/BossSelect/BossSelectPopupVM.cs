@@ -1,6 +1,7 @@
 ﻿using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;

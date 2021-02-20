@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.BossPlacements;
+using OpenTracker.Utils;
 using System;
 
 namespace OpenTracker.ViewModels.BossSelect
