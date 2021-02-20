@@ -11,9 +11,9 @@ namespace OpenTracker.Models.Items
     public class Item : IItem
     {
         private readonly int _starting;
-        private readonly IAutoTrackValue _autoTrackValue;
+        private readonly IAutoTrackValue? _autoTrackValue;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private int _current;
         public int Current
@@ -83,7 +83,7 @@ namespace OpenTracker.Models.Items
         /// </summary>
         private void AutoTrackUpdate()
         {
-            if (_autoTrackValue.CurrentValue.HasValue)
+            if (_autoTrackValue!.CurrentValue.HasValue)
             {
                 if (Current != _autoTrackValue.CurrentValue.Value)
                 {

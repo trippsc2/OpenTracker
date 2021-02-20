@@ -3,7 +3,7 @@
     /// <summary>
     /// This is the class containing the saved window bounds.
     /// </summary>
-    public class BoundsSettings
+    public class BoundsSettings : IBoundsSettings
     {
         public bool? Maximized { get; set; }
         public double? X { get; set; }

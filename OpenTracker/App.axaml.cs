@@ -5,7 +5,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Logging;
 using Avalonia.Markup.Xaml;
 using Avalonia.ThemeManager;
-using OpenTracker.Interfaces;
 using OpenTracker.Utils;
 using OpenTracker.ViewModels;
 using OpenTracker.Views;

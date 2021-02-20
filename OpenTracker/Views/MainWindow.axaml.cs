@@ -3,37 +3,18 @@ using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform;
-using Avalonia.Threading;
-using OpenTracker.Interfaces;
 using OpenTracker.ViewModels;
-using OpenTracker.Views.ColorSelect;
-using OpenTracker.Views.SequenceBreaks;
 using System;
 using System.ComponentModel;
-using System.Threading.Tasks;
 
 namespace OpenTracker.Views
 {
     public class MainWindow : Window
     {
         private Orientation? _orientation;
-        private AutoTrackerDialog? _autoTrackerDialog;
-        private ColorSelectDialog? _colorSelectDialog;
-        private SequenceBreakDialog? _sequenceBreakDialog;
 
         private IMainWindowVM? ViewModel =>
             DataContext as IMainWindowVM;
-
-        private IAutoTrackerAccess? AutoTrackerAccess =>
-            DataContext as IAutoTrackerAccess;
-        private IColorSelectAccess? ColorSelectAccess =>
-            DataContext as IColorSelectAccess;
-        private IOpenData? OpenData =>
-            DataContext as IOpenData;
-        private ISaveData? SaveData =>
-            DataContext as ISaveData;
-        private ISequenceBreakAccess? SequenceBreakAccess =>
-            DataContext as ISequenceBreakAccess;
 
         public MainWindow()
         {
@@ -122,111 +103,6 @@ namespace OpenTracker.Views
                 }
 
                 ViewModel.ChangeLayout(orientation);
-            }
-        }
-
-        public async Task Open()
-        {
-            _ = OpenData ?? throw new NullReferenceException();
-
-            OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Filters.Add(new FileDialogFilter() { Name = "JSON", Extensions = { "json" } });
-            dialog.AllowMultiple = false;
-
-            if (OpenData.CurrentFilePath != null)
-            {
-                dialog.InitialFileName = OpenData.CurrentFilePath;
-            }
-
-            string[] path = await dialog.ShowAsync(this).ConfigureAwait(false);
-
-            if (path != null && path.Length > 0)
-            {
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    OpenData.Open(path[0]);
-                }).ConfigureAwait(false);
-            }
-        }
-
-        public async Task Save()
-        {
-            _ = SaveData ?? throw new NullReferenceException();
-
-            if (SaveData.CurrentFilePath != null)
-            {
-                SaveData.Save();
-            }
-            else
-            {
-                await SaveAs().ConfigureAwait(false);
-            }
-        }
-
-        public async Task SaveAs()
-        {
-            _ = SaveData ?? throw new NullReferenceException();
-            SaveFileDialog dialog = new SaveFileDialog();
-            dialog.Filters.Add(new FileDialogFilter() { Name = "JSON", Extensions = { "json" } });
-            string path = await dialog.ShowAsync(this).ConfigureAwait(false);
-
-            if (path != null)
-            {
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    SaveData.Save(path);
-                }).ConfigureAwait(false);
-            }
-        }
-
-        public void AutoTracker()
-        {
-            if (_autoTrackerDialog != null && _autoTrackerDialog.IsVisible)
-            {
-                _autoTrackerDialog.Activate();
-            }
-            else
-            {
-                _ = AutoTrackerAccess ?? throw new NullReferenceException();
-                _autoTrackerDialog = new AutoTrackerDialog()
-                {
-                    DataContext = AutoTrackerAccess.GetAutoTrackerViewModel()
-                };
-                _autoTrackerDialog.Show();
-            }
-        }
-
-        public void ColorSelect()
-        {
-            if (_colorSelectDialog != null && _colorSelectDialog.IsVisible)
-            {
-                _colorSelectDialog.Activate();
-            }
-            else
-            {
-                _ = ColorSelectAccess ?? throw new NullReferenceException();
-                _colorSelectDialog = new ColorSelectDialog()
-                {
-                    DataContext = ColorSelectAccess.GetColorSelectViewModel()
-                };
-                _colorSelectDialog.Show();
-            }
-        }
-
-        public void SequenceBreak()
-        {
-            if (_sequenceBreakDialog != null && _sequenceBreakDialog.IsVisible)
-            {
-                _sequenceBreakDialog.Activate();
-            }
-            else
-            {
-                _ = SequenceBreakAccess ?? throw new NullReferenceException();
-                _sequenceBreakDialog = new SequenceBreakDialog()
-                {
-                    DataContext = SequenceBreakAccess.GetSequenceBreakViewModel()
-                };
-                _sequenceBreakDialog.Show();
             }
         }
     }

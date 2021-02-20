@@ -1,5 +1,7 @@
 ﻿using Autofac;
 using OpenTracker.Models.AutoTracking.AutotrackValues;
+using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.Settings;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -33,7 +35,12 @@ namespace OpenTracker
 
             var singleInstance = new List<string>
             {
-
+                nameof(AppSettings),
+                nameof(BoundsSettings),
+                nameof(TrackerSettings),
+                nameof(LayoutSettings),
+                nameof(ColorSettings),
+                nameof(SaveLoadManager)
             };
 
             RegisterNamespace(

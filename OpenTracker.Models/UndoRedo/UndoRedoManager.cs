@@ -65,7 +65,7 @@ namespace OpenTracker.Models.UndoRedo
                 action.Execute();
                 _undoableActions.Push(action);
                 _redoableActions.Clear();
-                SaveLoadManager.Instance.Unsaved = true;
+                //SaveLoadManager.Instance.Unsaved = true;
             }
         }
 
@@ -79,7 +79,7 @@ namespace OpenTracker.Models.UndoRedo
                 IUndoable action = _undoableActions.Pop();
                 action.Undo();
                 _redoableActions.Push(action);
-                SaveLoadManager.Instance.Unsaved = true;
+                //SaveLoadManager.Instance.Unsaved = true;
             }
         }
 
@@ -93,7 +93,7 @@ namespace OpenTracker.Models.UndoRedo
                 IUndoable action = _redoableActions.Pop();
                 action.Execute();
                 _undoableActions.Push(action);
-                SaveLoadManager.Instance.Unsaved = true;
+                //SaveLoadManager.Instance.Unsaved = true;
             }
         }
 

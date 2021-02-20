@@ -1,20 +1,19 @@
-﻿using Newtonsoft.Json;
-using OpenTracker.Models.Utils;
+﻿using OpenTracker.Models.Utils;
+using OpenTracker.Utils;
 using System;
 using System.ComponentModel;
-using System.IO;
 
 namespace OpenTracker.Models.SaveLoad
 {
     /// <summary>
     /// This is the class for managing saving and loading game data.
     /// </summary>
-    public class SaveLoadManager : Singleton<SaveLoadManager>, INotifyPropertyChanged
+    public class SaveLoadManager : Singleton<SaveLoadManager>, ISaveLoadManager
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        private string _currentFilename;
-        public string CurrentFilePath
+        private string? _currentFilename;
+        public string? CurrentFilePath
         {
             get => _currentFilename;
             private set
@@ -22,8 +21,8 @@ namespace OpenTracker.Models.SaveLoad
                 if (_currentFilename != value)
                 {
                     _currentFilename = value;
+                    _unsaved = false;
                     OnPropertyChanged(nameof(CurrentFilePath));
-                    Unsaved = false;
                 }
             }
         }
@@ -42,49 +41,44 @@ namespace OpenTracker.Models.SaveLoad
             }
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
+        /// </param>
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public static void Open(string path)
+        /// <summary>
+        /// Loads the game data from the specified file path.
+        /// </summary>
+        /// <param name="path">
+        /// A string representing the file path.
+        /// </param>
+        public void Open(string path)
         {
-            if (path == null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
-
-            string jsonContent = File.ReadAllText(path);
-            SaveData saveData = JsonConvert.DeserializeObject<SaveData>(jsonContent);
+            var saveData = JsonConversion.Load<SaveData>(path) ??
+                throw new NullReferenceException();
             saveData.Load();
-            
-            Instance.CurrentFilePath = path;
+
+            CurrentFilePath = path;
         }
 
-        public static void Save(string path = null)
+        /// <summary>
+        /// Saves the game data to the specified file path.
+        /// </summary>
+        /// <param name="path">
+        /// A string representing the file path.
+        /// </param>
+        public void Save(string path)
         {
-            if (path == null)
-            {
-                if (Instance.CurrentFilePath == null)
-                {
-                    throw new ArgumentNullException(nameof(path));
-                }
+            var saveData = new SaveData();
+            JsonConversion.Save(saveData, path);
 
-                path = Instance.CurrentFilePath;
-            }
-
-            if (File.Exists(path))
-            {
-                File.Delete(path);
-            }
-
-            SaveData saveData = new SaveData();
-            saveData.Save();
-            string json = JsonConvert.SerializeObject(saveData);
-
-            File.WriteAllText(path, json);
-
-            Instance.CurrentFilePath = path;
+            CurrentFilePath = path;
         }
     }
 }

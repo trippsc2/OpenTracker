@@ -16,7 +16,7 @@ namespace OpenTracker.Models.SaveLoad
     /// </summary>
     public class SaveData
     {
-        public Version Version { get; set; }
+        public Version? Version { get; set; }
         public ModeSaveData Mode { get; set; }
         public Dictionary<ItemType, ItemSaveData> Items { get; set; }
         public Dictionary<LocationID, LocationSaveData> Locations { get; set; }

@@ -32,6 +32,8 @@ namespace OpenTracker.ViewModels
     /// </summary>
     public class TopMenuVM : ViewModelBase, ITopMenuVM
     {
+        private readonly ISaveLoadManager _saveLoadManager;
+
         private readonly IDialogService _dialogService;
         private readonly IFileDialogService _fileDialogService;
         private readonly IResetManager _resetManager;
@@ -155,10 +157,6 @@ namespace OpenTracker.ViewModels
         public ReactiveCommand<string, Unit> SetVerticalItemsPlacementCommand { get; }
         public ReactiveCommand<string, Unit> SetUIScaleCommand { get; }
 
-        private readonly ObservableAsPropertyHelper<bool> _isOpeningAboutDialog;
-        public bool IsOpeningAboutDialog =>
-            _isOpeningAboutDialog.Value;
-
         public ReactiveCommand<Unit, Unit> AboutCommand { get; }
 
         private readonly ObservableAsPropertyHelper<bool> _isOpeningAbout;
@@ -169,10 +167,12 @@ namespace OpenTracker.ViewModels
         /// Constructor
         /// </summary>
         public TopMenuVM(
-            IDialogService dialogService, IFileDialogService fileDialogService,
-            IResetManager resetManager, IAutoTrackerDialogVM autoTrackerDialog,
-            IColorSelectDialogVM colorSelectDialog, IAboutDialogVM aboutDialog)
+            ISaveLoadManager saveLoadManager, IDialogService dialogService,
+            IFileDialogService fileDialogService, IResetManager resetManager,
+            IAutoTrackerDialogVM autoTrackerDialog, IColorSelectDialogVM colorSelectDialog,
+            IAboutDialogVM aboutDialog)
         {
+            _saveLoadManager = saveLoadManager;
             _dialogService = dialogService;
             _fileDialogService = fileDialogService;
             _resetManager = resetManager;
@@ -386,7 +386,7 @@ namespace OpenTracker.ViewModels
             {
                 try
                 {
-                    SaveLoadManager.Save(path);
+                    _saveLoadManager.Save(path);
                 }
                 catch (Exception ex)
                 {
@@ -424,7 +424,7 @@ namespace OpenTracker.ViewModels
                 {
                     try
                     {
-                        SaveLoadManager.Open(dialogResult);
+                        _saveLoadManager.Open(dialogResult);
                     }
                     catch (Exception ex)
                     {
@@ -464,7 +464,7 @@ namespace OpenTracker.ViewModels
         /// </returns>
         public async Task Save()
         {
-            var path = SaveLoadManager.Instance.CurrentFilePath ??
+            var path = _saveLoadManager.CurrentFilePath ??
                 await OpenSaveFileDialog();
 
             if (path != null)
