@@ -14,7 +14,6 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Reactive;
 using System.Text;
@@ -22,10 +21,11 @@ using System.Text;
 namespace OpenTracker.ViewModels
 {
     /// <summary>
-    /// This is the ViewModel for the main window.
+    /// This is the class for the main window ViewModel.
     /// </summary>
-    public class MainWindowVM : ViewModelBase, IAutoTrackerAccess, IBoundsData, ICloseHandler,
-        IColorSelectAccess, IDynamicLayout, IOpenData, ISaveData, ISequenceBreakAccess
+    public class MainWindowVM : ViewModelBase, IMainWindowVM, IAutoTrackerAccess, IBoundsData,
+        ICloseHandler, IColorSelectAccess, IDynamicLayout, IOpenData, ISaveData,
+        ISequenceBreakAccess
     {
         public static string Title
         {
@@ -88,8 +88,6 @@ namespace OpenTracker.ViewModels
                 _ => AppSettings.Instance.Layout.VerticalUIPanelPlacement
             };
 
-        public Screens Screens { get; set; }
-
         public AutoTrackerDialogVM AutoTrackerDialog { get; } =
             new AutoTrackerDialogVM();
         public TopMenuVM TopMenu { get; } =
@@ -100,13 +98,6 @@ namespace OpenTracker.ViewModels
             new MapAreaVM();
         public StatusBarVM StatusBar { get; } =
             new StatusBarVM();
-
-        private bool _aboutPageOpen;
-        public bool AboutPageOpen
-        {
-            get => _aboutPageOpen;
-            set => this.RaiseAndSetIfChanged(ref _aboutPageOpen, value);
-        }
 
         public ReactiveCommand<Unit, Unit> OpenResetDialogCommand =>
             TopMenu.OpenResetDialogCommand;
@@ -168,7 +159,7 @@ namespace OpenTracker.ViewModels
         {
             Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                bool? result = await App.DialogService.ShowDialog(
+                bool? result = await App.DialogService!.ShowDialog(
                     new ErrorBoxDialogVM("Error", message))
                     .ConfigureAwait(false);
             });

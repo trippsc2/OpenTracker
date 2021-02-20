@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using Autofac;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Logging;
@@ -96,9 +97,12 @@ namespace OpenTracker
             {
                 InitializeThemes();
 
+                desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
+
+                using var scope = ContainerConfig.Configure().BeginLifetimeScope();
                 desktop.MainWindow = new MainWindow()
                 {
-                    DataContext = new MainWindowVM()
+                    DataContext = scope.Resolve<IMainWindowVM>()
                 };
                 
                 SetThemeToLastOrDefault();

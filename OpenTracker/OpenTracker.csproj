@@ -28,6 +28,7 @@
     <None Remove="Models\UndoRedo\**" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Autofac" Version="6.1.0" />
     <PackageReference Include="Avalonia" Version="0.10.0" />
     <PackageReference Include="Avalonia.Desktop" Version="0.10.0" />
     <PackageReference Include="Avalonia.Diagnostics" Version="0.10.0" />
@@ -46,6 +47,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Avalonia.ThemeManager\Avalonia.ThemeManager.csproj" />
     <ProjectReference Include="..\OpenTracker.Models\OpenTracker.Models.csproj" />
+    <ProjectReference Include="..\OpenTracker.Utils\OpenTracker.Utils.csproj" />
   </ItemGroup>
   <ItemGroup>
     <AvaloniaResource Update="Assets\Images\triforce.png">

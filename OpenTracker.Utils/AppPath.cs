@@ -5,9 +5,9 @@ using System.Reflection;
 namespace OpenTracker.Utils
 {
     /// <summary>
-    /// This class contains methods for returning relevant file/folder paths.
+    /// This class contains properties for returning relevant file/folder paths.
     /// </summary>
-    internal static class AppPath
+    public static class AppPath
     {
         private static string? _appDataPath;
         private static string AppDataPath
@@ -28,7 +28,7 @@ namespace OpenTracker.Utils
         }
 
         private static string? _avaloniaLogFilePath;
-        internal static string AvaloniaLogFilePath
+        public static string AvaloniaLogFilePath
         {
             get
             {
@@ -42,7 +42,7 @@ namespace OpenTracker.Utils
         }
 
         private static string? _appDataThemesPath;
-        internal static string AppDataThemesPath
+        public static string AppDataThemesPath
         {
             get
             {
@@ -56,7 +56,7 @@ namespace OpenTracker.Utils
         }
 
         private static string? _appRootPath;
-        private static string AppRootPath
+        public static string AppRootPath
         {
             get
             {
@@ -74,7 +74,7 @@ namespace OpenTracker.Utils
         }
 
         private static string? _appRootThemesPath;
-        internal static string AppRootThemesPath
+        public static string AppRootThemesPath
         {
             get
             {
@@ -88,7 +88,7 @@ namespace OpenTracker.Utils
         }
 
         private static string? _lastThemeFilePath;
-        internal static string LastThemeFilePath
+        public static string LastThemeFilePath
         {
             get
             {
@@ -98,6 +98,34 @@ namespace OpenTracker.Utils
                 }
 
                 return _lastThemeFilePath;
+            }
+        }
+
+        private static string? _appSettingsFilePath;
+        public static string AppSettingsFilePath
+        {
+            get
+            {
+                if (_appSettingsFilePath == null)
+                {
+                    _appSettingsFilePath = Path.Combine(AppDataPath, "OpenTracker.json");
+                }
+
+                return _appSettingsFilePath;
+            }
+        }
+
+        private static string? _sequenceBreakPath;
+        public static string SequenceBreakPath
+        {
+            get
+            {
+                if (_sequenceBreakPath == null)
+                {
+                    _sequenceBreakPath = Path.Combine(AppDataPath, "sequencebreak.json");
+                }
+
+                return _sequenceBreakPath;
             }
         }
     }
