@@ -1,5 +1,4 @@
 ﻿using OpenTracker.Models.Items;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.AutoTracking.Values
@@ -26,7 +25,7 @@ namespace OpenTracker.Models.AutoTracking.Values
         /// </param>
         public AutoTrackItemValue(IItem item)
         {
-            _item = item ?? throw new ArgumentNullException(nameof(item));
+            _item = item;
 
             _item.PropertyChanged += OnItemChanged;
         }

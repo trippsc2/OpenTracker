@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Utils;
+using System;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.RequirementNodes
@@ -9,17 +10,17 @@ namespace OpenTracker.Models.RequirementNodes
     public class RequirementNodeDictionary : LazyDictionary<RequirementNodeID, IRequirementNode>,
         IRequirementNodeDictionary
     {
-        private readonly IRequirementNodeFactory.Factory _factory;
+        private readonly Lazy<IRequirementNodeFactory> _factory;
 
         public RequirementNodeDictionary(IRequirementNodeFactory.Factory factory)
             : base(new Dictionary<RequirementNodeID, IRequirementNode>())
         {
-            _factory = factory;
+            _factory = new Lazy<IRequirementNodeFactory>(() => factory());
         }
 
         protected override IRequirementNode Create(RequirementNodeID key)
         {
-            return _factory().GetRequirementNode(key);
+            return _factory.Value.GetRequirementNode(key);
         }
     }
 }

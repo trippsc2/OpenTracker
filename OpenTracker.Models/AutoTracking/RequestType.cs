@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace OpenTracker.Models.AutoTracking
 {
     /// <summary>
-    /// This is the class containing data for a request sent to USB2SNES websocket.
+    /// This is the class containing data for a request sent to the USB2SNES websocket.
     /// </summary>
-    public class RequestType
+    public class RequestType : IRequestType
     {
         public string Opcode { get; }
         public string Space { get; }
@@ -32,8 +31,8 @@ namespace OpenTracker.Models.AutoTracking
             string opcode, string space = "SNES", List<string>? flags = null,
             List<string>? operands = null)
         {
-            Opcode = opcode ?? throw new ArgumentNullException(nameof(opcode));
-            Space = space ?? throw new ArgumentNullException(nameof(space));
+            Opcode = opcode;
+            Space = space;
             Flags = flags ?? new List<string>(0);
             Operands = operands ?? new List<string>(0);
         }

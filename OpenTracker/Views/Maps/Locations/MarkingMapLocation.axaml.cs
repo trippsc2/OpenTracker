@@ -9,7 +9,7 @@ namespace OpenTracker.Views.Maps.Locations
 {
     public class MarkingMapLocation : UserControl
     {
-        private IClickHandler ViewModelClickHandler =>
+        private IClickHandler? ViewModelClickHandler =>
             DataContext as IClickHandler;
 
         public MarkingMapLocation()
@@ -24,6 +24,11 @@ namespace OpenTracker.Views.Maps.Locations
 
         private void OnClick(object sender, PointerReleasedEventArgs e)
         {
+            if (ViewModelClickHandler == null)
+            {
+                return;
+            }
+
             if (e.InitialPressMouseButton == MouseButton.Left &&
                 this.GetVisualsAt(e.GetPosition(this)).Any(x => this == x || this.IsVisualAncestorOf(x)))
             {

@@ -1,5 +1,4 @@
 ﻿using OpenTracker.Models.Requirements;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.AutoTracking.Values
@@ -56,7 +55,7 @@ namespace OpenTracker.Models.AutoTracking.Values
         public AutoTrackConditionalValue(
             IRequirement condition, IAutoTrackValue? trueValue, IAutoTrackValue? falseValue)
         {
-            _condition = condition ?? throw new ArgumentNullException(nameof(condition));
+            _condition = condition;
             _trueValue = trueValue;
             _falseValue = falseValue;
 
@@ -82,7 +81,7 @@ namespace OpenTracker.Models.AutoTracking.Values
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirement.Accessibility))
             {
@@ -99,7 +98,7 @@ namespace OpenTracker.Models.AutoTracking.Values
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnValueChanged(object sender, PropertyChangedEventArgs e)
+        private void OnValueChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
             {

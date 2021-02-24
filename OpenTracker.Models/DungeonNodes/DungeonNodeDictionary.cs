@@ -13,8 +13,6 @@ namespace OpenTracker.Models.DungeonNodes
         private readonly IMutableDungeon _dungeonData;
         private readonly IDungeonNode.Factory _factory;
 
-        public delegate IDungeonNodeDictionary Factory(IMutableDungeon dungeonData);
-
         /// <summary>
         /// Constructor
         /// </summary>

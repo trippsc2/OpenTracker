@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
+using System;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.PrizePlacements
@@ -10,17 +11,17 @@ namespace OpenTracker.Models.PrizePlacements
     public class PrizePlacementDictionary : LazyDictionary<PrizePlacementID, IPrizePlacement>,
         IPrizePlacementDictionary
     {
-        private readonly IPrizePlacementFactory _factory;
+        private readonly Lazy<IPrizePlacementFactory> _factory;
 
-        public PrizePlacementDictionary(IPrizePlacementFactory factory)
+        public PrizePlacementDictionary(IPrizePlacementFactory.Factory factory)
             : base(new Dictionary<PrizePlacementID, IPrizePlacement>())
         {
-            _factory = factory;
+            _factory = new Lazy<IPrizePlacementFactory>(() => factory());
         }
 
         protected override IPrizePlacement Create(PrizePlacementID key)
         {
-            return _factory.GetPrizePlacement(key);
+            return _factory.Value.GetPrizePlacement(key);
         }
 
         /// <summary>

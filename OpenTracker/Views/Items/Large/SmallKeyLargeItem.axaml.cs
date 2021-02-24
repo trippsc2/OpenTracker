@@ -7,7 +7,7 @@ namespace OpenTracker.Views.Items.Large
 {
     public class SmallKeyLargeItem : UserControl
     {
-        private IClickHandler ViewModelClickHandler =>
+        private IClickHandler? ViewModelClickHandler =>
             DataContext as IClickHandler;
 
         public SmallKeyLargeItem()
@@ -22,6 +22,11 @@ namespace OpenTracker.Views.Items.Large
 
         private void OnItemClick(object sender, PointerReleasedEventArgs e)
         {
+            if (ViewModelClickHandler == null)
+            {
+                return;
+            }
+
             if (e.InitialPressMouseButton == MouseButton.Left)
             {
                 ViewModelClickHandler.OnLeftClick();

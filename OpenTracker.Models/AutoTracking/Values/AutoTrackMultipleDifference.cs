@@ -45,8 +45,8 @@ namespace OpenTracker.Models.AutoTracking.Values
         /// </param>
         public AutoTrackMultipleDifference(IAutoTrackValue value1, IAutoTrackValue value2)
         {
-            _value1 = value1 ?? throw new ArgumentNullException(nameof(value1));
-            _value2 = value2 ?? throw new ArgumentNullException(nameof(value2));
+            _value1 = value1;
+            _value2 = value2;
 
             _value1.PropertyChanged += OnValueChanged;
             _value2.PropertyChanged += OnValueChanged;

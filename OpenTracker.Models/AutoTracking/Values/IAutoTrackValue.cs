@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.AutoTracking.Values
 {
     /// <summary>
-    /// This is the interface of the autotracking value.
+    /// This is the interface representing autotracking result value.
     /// </summary>
     public interface IAutoTrackValue : INotifyPropertyChanged
     {

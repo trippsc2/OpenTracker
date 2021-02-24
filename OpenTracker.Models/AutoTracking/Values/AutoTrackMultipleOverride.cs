@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.AutoTracking.Values
@@ -22,16 +21,16 @@ namespace OpenTracker.Models.AutoTracking.Values
         /// </param>
         public AutoTrackMultipleOverride(List<IAutoTrackValue> values)
         {
-            _values = values ?? throw new ArgumentNullException(nameof(values));
+            _values = values;
 
             foreach (var value in values)
             {
-                value.PropertyChanged += OnMemoryChanged;
+                value.PropertyChanged += OnValueChanged;
             }
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the MemoryAddress class.
+        /// Subscribes to the PropertyChanged event on the IAutoTrackValue interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -39,7 +38,7 @@ namespace OpenTracker.Models.AutoTracking.Values
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnMemoryChanged(object sender, PropertyChangedEventArgs e)
+        private void OnValueChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
             {

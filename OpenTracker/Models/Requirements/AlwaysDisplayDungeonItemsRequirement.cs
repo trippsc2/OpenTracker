@@ -17,8 +17,11 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="layoutSettings">
+        /// The layout settings.
+        /// </param>
         /// <param name="expectedValue">
-        /// A boolean representing the always display dungeon items requirement.
+        /// A boolean representing the expected value.
         /// </param>
         public AlwaysDisplayDungeonItemsRequirement(
             ILayoutSettings layoutSettings, bool expectedValue)
@@ -32,7 +35,7 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
+        /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.

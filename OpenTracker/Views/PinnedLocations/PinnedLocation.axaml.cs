@@ -7,7 +7,7 @@ namespace OpenTracker.Views.PinnedLocations
 {
     public class PinnedLocation : UserControl
     {
-        public IClickHandler ViewModelClickHandler =>
+        public IClickHandler? ViewModelClickHandler =>
             DataContext as IClickHandler;
 
         public PinnedLocation()
@@ -20,8 +20,13 @@ namespace OpenTracker.Views.PinnedLocations
             AvaloniaXamlLoader.Load(this);
         }
 
-        private void OnClick(object sender, PointerReleasedEventArgs e)
+        private void OnClick(object? sender, PointerReleasedEventArgs e)
         {
+            if (ViewModelClickHandler == null)
+            {
+                return;
+            }
+
             if (e.InitialPressMouseButton == MouseButton.Left)
             {
                 ViewModelClickHandler.OnLeftClick();

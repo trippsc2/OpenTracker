@@ -7,9 +7,9 @@ namespace OpenTracker.Views.Maps.Connections
 {
     public class MapConnection : UserControl
     {
-        private IClickHandler ViewModelClickHandler =>
+        private IClickHandler? ViewModelClickHandler =>
             DataContext as IClickHandler;
-        private IPointerOver ViewModelPointerOver =>
+        private IPointerOver? ViewModelPointerOver =>
             DataContext as IPointerOver;
 
         public MapConnection()
@@ -24,6 +24,11 @@ namespace OpenTracker.Views.Maps.Connections
 
         private void OnPointerReleased(object sender, PointerReleasedEventArgs e)
         {
+            if (ViewModelClickHandler == null)
+            {
+                return;
+            }
+
             if (e.InitialPressMouseButton == MouseButton.Left)
             {
                 ViewModelClickHandler.OnLeftClick();
@@ -37,11 +42,21 @@ namespace OpenTracker.Views.Maps.Connections
 
         private void OnPointerEnter(object sender, PointerEventArgs e)
         {
+            if (ViewModelPointerOver == null)
+            {
+                return;
+            }
+
             ViewModelPointerOver.OnPointerEnter();
         }
 
         private void OnPointerLeave(object sender, PointerEventArgs e)
         {
+            if (ViewModelPointerOver == null)
+            {
+                return;
+            }
+
             ViewModelPointerOver.OnPointerLeave();
         }
     }

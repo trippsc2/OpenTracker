@@ -5,6 +5,9 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
+    /// <summary>
+    /// This is the class for the requirement of the display maps/compasses setting.
+    /// </summary>
     public class DisplayMapsCompassesRequirement : BooleanRequirement
     {
         private readonly ILayoutSettings _layoutSettings;
@@ -15,8 +18,11 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="layoutSettings">
+        /// The layout settings.
+        /// </param>
         /// <param name="expectedValue">
-        /// A boolean representing the display maps/compasses requirement.
+        /// A boolean representing the expected value.
         /// </param>
         public DisplayMapsCompassesRequirement(
             ILayoutSettings layoutSettings, bool expectedValue)
@@ -30,7 +36,7 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
+        /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.

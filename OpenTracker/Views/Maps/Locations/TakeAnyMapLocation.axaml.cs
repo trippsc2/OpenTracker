@@ -10,11 +10,11 @@ namespace OpenTracker.Views.Maps.Locations
 {
     public class TakeAnyMapLocation : UserControl
     {
-        private IClickHandler ViewModelClickHandler =>
+        private IClickHandler? ViewModelClickHandler =>
             DataContext as IClickHandler;
-        private IDoubleClickHandler ViewModelPinLocation => DataContext
+        private IDoubleClickHandler? ViewModelPinLocation => DataContext
             as IDoubleClickHandler;
-        private IPointerOver ViewModelPointerOver =>
+        private IPointerOver? ViewModelPointerOver =>
             DataContext as IPointerOver;
 
         public TakeAnyMapLocation()
@@ -27,8 +27,13 @@ namespace OpenTracker.Views.Maps.Locations
             AvaloniaXamlLoader.Load(this);
         }
 
-        private void OnClick(object sender, PointerReleasedEventArgs e)
+        private void OnClick(object? sender, PointerReleasedEventArgs e)
         {
+            if (ViewModelClickHandler == null)
+            {
+                return;
+            }
+
             if (e.InitialPressMouseButton == MouseButton.Right &&
                 this.GetVisualsAt(e.GetPosition(this)).Any(x => this == x ||
                 this.IsVisualAncestorOf(x)))
@@ -37,18 +42,33 @@ namespace OpenTracker.Views.Maps.Locations
             }
         }
 
-        private void OnDoubleClick(object sender, RoutedEventArgs e)
+        private void OnDoubleClick(object? sender, RoutedEventArgs e)
         {
+            if (ViewModelPinLocation == null)
+            {
+                return;
+            }
+
             ViewModelPinLocation.OnDoubleClick();
         }
 
-        private void OnPointerEnter(object sender, PointerEventArgs e)
+        private void OnPointerEnter(object? sender, PointerEventArgs e)
         {
+            if (ViewModelPointerOver == null)
+            {
+                return;
+            }
+
             ViewModelPointerOver.OnPointerEnter();
         }
 
-        private void OnPointerLeave(object sender, PointerEventArgs e)
+        private void OnPointerLeave(object? sender, PointerEventArgs e)
         {
+            if (ViewModelPointerOver == null)
+            {
+                return;
+            }
+
             ViewModelPointerOver.OnPointerLeave();
         }
     }

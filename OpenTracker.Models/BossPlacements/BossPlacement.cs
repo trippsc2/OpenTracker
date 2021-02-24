@@ -32,6 +32,9 @@ namespace OpenTracker.Models.BossPlacements
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
         /// <param name="defaultBoss">
         /// The default boss type for the boss placement.
         /// </param>

@@ -16,6 +16,9 @@ namespace OpenTracker.Models.AutoTracking.Logging
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="messageFactory">
+        /// An Autofac factory for creating log messages.
+        /// </param>
         public AutoTrackerLogService(ILogMessage.Factory messageFactory)
         {
             _messageFactory = messageFactory;

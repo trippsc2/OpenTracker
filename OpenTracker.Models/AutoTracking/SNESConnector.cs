@@ -10,9 +10,14 @@ using WebSocketSharp;
 
 namespace OpenTracker.Models.AutoTracking
 {
+    /// <summary>
+    /// This is the class for the SNES connector that uses (Q)USB2SNES websocket.
+    /// </summary>
     public class SNESConnector : ISNESConnector
     {
         private readonly IAutoTrackerLogService _logService;
+        private readonly IRequestType.Factory _requestFactory;
+
         private readonly static string _appName = "OpenTracker";
         private readonly object _transmitLock = new object();
         private Action<MessageEventArgs>? _messageHandler;
@@ -82,9 +87,14 @@ namespace OpenTracker.Models.AutoTracking
         /// <param name="logService">
         /// The log service for the SNES connector.
         /// </param>
-        public SNESConnector(IAutoTrackerLogService logService)
+        /// <param name="requestFactory">
+        /// An Autofac factory for creating requests.
+        /// </param>
+        public SNESConnector(
+            IAutoTrackerLogService logService, IRequestType.Factory requestFactory)
         {
             _logService = logService;
+            _requestFactory = requestFactory;
         }
 
         /// <summary>
@@ -166,7 +176,7 @@ namespace OpenTracker.Models.AutoTracking
         /// <returns>
         /// A boolean representing whether the method is successful.
         /// </returns>
-        private bool Send(RequestType request)
+        private bool Send(IRequestType request)
         {
             var sendTask = Task<bool>.Factory.StartNew(() =>
             {
@@ -206,7 +216,7 @@ namespace OpenTracker.Models.AutoTracking
         /// An enumerator of the resulting strings of the response.
         /// </returns>
         private IEnumerable<string>? GetJsonResults(
-            string requestName, RequestType request, bool ignoreErrors = false,
+            string requestName, IRequestType request, bool ignoreErrors = false,
             int timeOutInMS = 4096)
         {
             string[]? results = null;
@@ -270,7 +280,7 @@ namespace OpenTracker.Models.AutoTracking
         /// <returns>
         /// A boolean representing whether the method is successfully.
         /// </returns>
-        private bool SendOnly(string requestName, RequestType request)
+        private bool SendOnly(string requestName, IRequestType request)
         {
             _logService.Log(LogLevel.Info, $"Request {requestName} is being sent.");
 
@@ -327,7 +337,7 @@ namespace OpenTracker.Models.AutoTracking
         private IEnumerable<string>? GetDeviceInfo(int timeOutInMS = 4096)
         {
             return GetJsonResults(
-                "get device info", new RequestType(OpcodeType.Info.ToString()), true, timeOutInMS);
+                "get device info", _requestFactory(OpcodeType.Info.ToString()), true, timeOutInMS);
         }
 
         /// <summary>
@@ -346,7 +356,7 @@ namespace OpenTracker.Models.AutoTracking
             _logService.Log(LogLevel.Info, $"Attempting to attach to device {Device}.");
             Status = ConnectionStatus.Attaching;
 
-            if (!SendOnly("attach", new RequestType(
+            if (!SendOnly("attach", _requestFactory(
                 OpcodeType.Attach.ToString(), operands: new List<string>(1) { Device })))
             {
                 _logService.Log(LogLevel.Error, $"Device {Device} could not be attached.");
@@ -354,7 +364,7 @@ namespace OpenTracker.Models.AutoTracking
                 return false;
             }
 
-            if (!SendOnly("register name", new RequestType(
+            if (!SendOnly("register name", _requestFactory(
                 OpcodeType.Name.ToString(), operands: new List<string>(1) { _appName })))
             {
                 _logService.Log(LogLevel.Error, "Could not register app name with connection.");
@@ -407,7 +417,7 @@ namespace OpenTracker.Models.AutoTracking
                 }
 
                 return GetJsonResults(
-                    "get device list", new RequestType(OpcodeType.DeviceList.ToString()), false,
+                    "get device list", _requestFactory(OpcodeType.DeviceList.ToString()), false,
                     timeOutInMS);
             });
         }
@@ -516,7 +526,7 @@ namespace OpenTracker.Models.AutoTracking
                 };
 
                 _logService.Log(LogLevel.Info, $"Reading {buffer.Length} byte(s) from {address:X}.");
-                Send(new RequestType(
+                Send(_requestFactory(
                     OpcodeType.GetAddress.ToString(),
                     operands: new List<string>(2)
                     {

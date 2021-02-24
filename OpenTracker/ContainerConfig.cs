@@ -87,7 +87,6 @@ namespace OpenTracker
                 nameof(AutoTrackMultipleOverride),
                 nameof(AutoTrackMultipleSum),
                 nameof(AutoTrackStaticValue),
-                nameof(AutoTrackValue),
                 nameof(Item),
                 nameof(CappedItem),
                 nameof(CrystalRequirementItem),

@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.Dungeons;
 using OpenTracker.Utils;
+using System;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.DungeonItems
@@ -11,9 +12,7 @@ namespace OpenTracker.Models.DungeonItems
         IDungeonItemDictionary
     {
         private readonly IMutableDungeon _dungeonData;
-        private readonly IDungeonItemFactory.Factory _factory;
-
-        public delegate IDungeonItemDictionary Factory(IMutableDungeon dungeonData);
+        private readonly Lazy<IDungeonItemFactory> _factory;
 
         /// <summary>
         /// Constructor
@@ -26,12 +25,12 @@ namespace OpenTracker.Models.DungeonItems
             : base(new Dictionary<DungeonItemID, IDungeonItem>())
         {
             _dungeonData = dungeonData;
-            _factory = factory;
+            _factory = new Lazy<IDungeonItemFactory>(() => factory());
         }
 
         protected override IDungeonItem Create(DungeonItemID key)
         {
-            return _factory().GetDungeonItem(_dungeonData, key);
+            return _factory.Value.GetDungeonItem(_dungeonData, key);
         }
     }
 }

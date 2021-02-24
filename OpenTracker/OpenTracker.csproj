@@ -14,18 +14,13 @@
   </PropertyGroup>
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
-    <AvaloniaResource Include="Assets\Images\*.png" />
   </ItemGroup>
   <ItemGroup>
     <AvaloniaResource Remove="bin\**" />
     <AvaloniaXaml Remove="bin\**" />
-    <AvaloniaXaml Remove="Models\UndoRedo\**" />
     <Compile Remove="bin\**" />
-    <Compile Remove="Models\UndoRedo\**" />
     <EmbeddedResource Remove="bin\**" />
-    <EmbeddedResource Remove="Models\UndoRedo\**" />
     <None Remove="bin\**" />
-    <None Remove="Models\UndoRedo\**" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="6.1.0" />
@@ -55,25 +50,7 @@
     </AvaloniaResource>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Views\AboutDialog.axaml.cs">
-      <DependentUpon>AboutDialog.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Items\Small\BigKeySmallItem.axaml.cs">
-      <DependentUpon>BigKeySmallItem.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\Items\Small\SmallItem.axaml.cs">
-      <DependentUpon>SmallItem.axaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\SequenceBreaks\SequenceBreakControl.axaml.cs">
-      <DependentUpon>SequenceBreakControl.axaml</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="Themes\Dark.xaml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Themes\Default.xaml">
-      <Generator></Generator>
+    <None Update="Themes\*.xaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="triforce.ico">

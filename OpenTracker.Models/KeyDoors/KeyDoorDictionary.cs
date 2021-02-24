@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.Dungeons;
 using OpenTracker.Utils;
+using System;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.KeyDoors
@@ -11,7 +12,7 @@ namespace OpenTracker.Models.KeyDoors
         IKeyDoorDictionary
     {
         private readonly IMutableDungeon _dungeonData;
-        private readonly IKeyDoorFactory _factory;
+        private readonly Lazy<IKeyDoorFactory> _factory;
 
         /// <summary>
         /// Constructor
@@ -19,16 +20,16 @@ namespace OpenTracker.Models.KeyDoors
         /// <param name="dungeonData">
         /// The mutable dungeon data parent class.
         /// </param>
-        public KeyDoorDictionary(IKeyDoorFactory factory, IMutableDungeon dungeonData)
+        public KeyDoorDictionary(IKeyDoorFactory.Factory factory, IMutableDungeon dungeonData)
             : base(new Dictionary<KeyDoorID, IKeyDoor>())
         {
             _dungeonData = dungeonData;
-            _factory = factory;
+            _factory = new Lazy<IKeyDoorFactory>(() => factory());
         }
 
         protected override IKeyDoor Create(KeyDoorID key)
         {
-            return _factory.GetKeyDoor(_dungeonData);
+            return _factory.Value.GetKeyDoor(_dungeonData);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace OpenTracker.Views.Items.Small
 {
     public class DungeonItemSmallItem : UserControl
     {
-        private IClickHandler ViewModelClickHandler =>
+        private IClickHandler? ViewModelClickHandler =>
             DataContext as IClickHandler;
 
         public DungeonItemSmallItem()
@@ -22,6 +22,11 @@ namespace OpenTracker.Views.Items.Small
 
         private void OnItemClick(object sender, PointerReleasedEventArgs e)
         {
+            if (ViewModelClickHandler == null)
+            {
+                return;
+            }
+
             if (e.InitialPressMouseButton == MouseButton.Left)
             {
                 ViewModelClickHandler.OnLeftClick(e.KeyModifiers == KeyModifiers.Control);

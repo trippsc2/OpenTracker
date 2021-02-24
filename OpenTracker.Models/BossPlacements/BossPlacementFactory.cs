@@ -9,6 +9,12 @@ namespace OpenTracker.Models.BossPlacements
     {
         private readonly IBossPlacement.Factory _factory;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="factory">
+        /// An Autofac factory for creating boss placements.
+        /// </param>
         public BossPlacementFactory(IBossPlacement.Factory factory)
         {
             _factory = factory;

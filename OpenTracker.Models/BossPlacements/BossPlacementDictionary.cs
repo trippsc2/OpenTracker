@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
+using System;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.BossPlacements
@@ -10,7 +11,7 @@ namespace OpenTracker.Models.BossPlacements
     public class BossPlacementDictionary : LazyDictionary<BossPlacementID, IBossPlacement>,
         IBossPlacementDictionary
     {
-        private readonly IBossPlacementFactory.Factory _factory;
+        private readonly Lazy<IBossPlacementFactory> _factory;
 
         /// <summary>
         /// Constructor
@@ -21,12 +22,12 @@ namespace OpenTracker.Models.BossPlacements
         public BossPlacementDictionary(IBossPlacementFactory.Factory factory)
             : base(new Dictionary<BossPlacementID, IBossPlacement>())
         {
-            _factory = factory;
+            _factory = new Lazy<IBossPlacementFactory>(() => factory());
         }
 
         protected override IBossPlacement Create(BossPlacementID key)
         {
-            return _factory().GetBossPlacement(key);
+            return _factory.Value.GetBossPlacement(key);
         }
 
         /// <summary>

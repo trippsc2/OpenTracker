@@ -49,8 +49,7 @@ namespace OpenTracker.Models.AutoTracking
             set
             {
                 _raceIllegalTracking = value;
-                PropertyChanged?.Invoke(
-                    this, new PropertyChangedEventArgs(nameof(RaceIllegalTracking)));
+                OnPropertyChanged(nameof(RaceIllegalTracking));
             }
         }
 
@@ -59,6 +58,9 @@ namespace OpenTracker.Models.AutoTracking
         /// </summary>
         /// <param name="snesConnector">
         /// The SNES connector.
+        /// </param>
+        /// <param name="addressFactory">
+        /// An Autofac factory for creating memory addresses.
         /// </param>
         public AutoTracker(
             ISNESConnector snesConnector, IMemoryAddress.Factory addressFactory)

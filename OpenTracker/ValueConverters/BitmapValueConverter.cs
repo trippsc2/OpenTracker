@@ -21,7 +21,7 @@ namespace OpenTracker.ValueConverters
         /// <returns>
         /// A bitmap URI from the string.
         /// </returns>
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null)
             {

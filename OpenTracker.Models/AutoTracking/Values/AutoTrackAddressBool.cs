@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace OpenTracker.Models.AutoTracking.Values
 {
@@ -30,7 +29,7 @@ namespace OpenTracker.Models.AutoTracking.Values
         /// </param>
         public AutoTrackAddressBool(IMemoryAddress address, byte comparison, int trueValue)
         {
-            _address = address ?? throw new ArgumentNullException(nameof(address));
+            _address = address;
             _comparison = comparison;
             _trueValue = trueValue;
 
@@ -38,7 +37,7 @@ namespace OpenTracker.Models.AutoTracking.Values
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IMemoryAddress class.
+        /// Subscribes to the PropertyChanged event on the IMemoryAddress interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -46,7 +45,7 @@ namespace OpenTracker.Models.AutoTracking.Values
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnMemoryChanged(object sender, PropertyChangedEventArgs e)
+        private void OnMemoryChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IMemoryAddress.Value))
             {

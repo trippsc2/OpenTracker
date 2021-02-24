@@ -7,5 +7,7 @@ namespace OpenTracker.Models.KeyDoors
     {
         IKeyDoor GetKeyDoor(IMutableDungeon dungeonData);
         IRequirementNode GetKeyDoorNode(KeyDoorID id, IMutableDungeon dungeonData);
+
+        delegate IKeyDoorFactory Factory();
     }
 }

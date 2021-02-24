@@ -7,7 +7,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for the requirement of a specified Items panel orientation.
+    /// This is the class for the requirement of a specified items panel orientation.
     /// </summary>
     public class ItemsPanelOrientationRequirement : BooleanRequirement
     {
@@ -19,8 +19,11 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="layoutSettings">
+        /// The layout settings.
+        /// </param>
         /// <param name="expectedValue">
-        /// The orientation requirement.
+        /// The expected orientation value.
         /// </param>
         public ItemsPanelOrientationRequirement(
             ILayoutSettings layoutSettings, Orientation expectedValue)
@@ -34,7 +37,7 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
+        /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.

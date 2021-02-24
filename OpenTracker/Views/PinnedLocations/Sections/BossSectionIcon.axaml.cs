@@ -7,7 +7,7 @@ namespace OpenTracker.Views.PinnedLocations.Sections
 {
     public class BossSectionIcon : UserControl
     {
-        public IClickHandler ViewModelClickHandler =>
+        public IClickHandler? ViewModelClickHandler =>
             DataContext as IClickHandler;
 
         public BossSectionIcon()
@@ -22,6 +22,11 @@ namespace OpenTracker.Views.PinnedLocations.Sections
 
         private void OnClick(object sender, PointerReleasedEventArgs e)
         {
+            if (ViewModelClickHandler == null)
+            {
+                return;
+            }
+
             if (e.InitialPressMouseButton == MouseButton.Left)
             {
                 ViewModelClickHandler.OnLeftClick();

@@ -7,7 +7,7 @@ namespace OpenTracker.Views.Dropdowns
 {
     public class Dropdown : UserControl
     {
-        private IClickHandler ViewModelClickHandler =>
+        private IClickHandler? ViewModelClickHandler =>
             DataContext as IClickHandler;
 
         public Dropdown()
@@ -20,8 +20,13 @@ namespace OpenTracker.Views.Dropdowns
             AvaloniaXamlLoader.Load(this);
         }
 
-        private void OnClick(object sender, PointerReleasedEventArgs e)
+        private void OnClick(object? sender, PointerReleasedEventArgs e)
         {
+            if (ViewModelClickHandler == null)
+            {
+                return;
+            }
+
             if (e.InitialPressMouseButton == MouseButton.Left)
             {
                 ViewModelClickHandler.OnLeftClick();

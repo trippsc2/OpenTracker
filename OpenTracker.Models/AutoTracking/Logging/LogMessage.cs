@@ -10,8 +10,6 @@ namespace OpenTracker.Models.AutoTracking.Logging
         public LogLevel LogLevel { get; }
         public string Message { get; }
 
-        public delegate ILogMessage Factory(LogLevel logLevel, string message);
-
         /// <summary>
         /// Constructor
         /// </summary>

@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
+using System;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.Items
@@ -9,7 +10,7 @@ namespace OpenTracker.Models.Items
     /// </summary>
     public class ItemDictionary : LazyDictionary<ItemType, IItem>, IItemDictionary
     {
-        private readonly IItemFactory _factory;
+        private readonly Lazy<IItemFactory> _factory;
 
         /// <summary>
         /// Constructor
@@ -17,14 +18,14 @@ namespace OpenTracker.Models.Items
         /// <param name="factory">
         /// Factory for creating items.
         /// </param>
-        public ItemDictionary(IItemFactory factory) : base(new Dictionary<ItemType, IItem>())
+        public ItemDictionary(IItemFactory.Factory factory) : base(new Dictionary<ItemType, IItem>())
         {
-            _factory = factory;
+            _factory = new Lazy<IItemFactory>(() => factory());
         }
 
         protected override IItem Create(ItemType key)
         {
-            return _factory.GetItem(key);
+            return _factory.Value.GetItem(key);
         }
 
         /// <summary>

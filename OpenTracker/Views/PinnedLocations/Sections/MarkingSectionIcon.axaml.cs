@@ -7,7 +7,7 @@ namespace OpenTracker.Views.PinnedLocations.Sections
 {
     public class MarkingSectionIcon : UserControl
     {
-        private IClickHandler ViewModelClickHandler =>
+        private IClickHandler? ViewModelClickHandler =>
             DataContext as IClickHandler;
 
         public MarkingSectionIcon()
@@ -20,8 +20,13 @@ namespace OpenTracker.Views.PinnedLocations.Sections
             AvaloniaXamlLoader.Load(this);
         }
 
-        private void OnClick(object sender, PointerReleasedEventArgs e)
+        private void OnClick(object? sender, PointerReleasedEventArgs e)
         {
+            if (ViewModelClickHandler == null)
+            {
+                return;
+            }
+
             if (e.InitialPressMouseButton == MouseButton.Left)
             {
                 ViewModelClickHandler.OnLeftClick(e.KeyModifiers == KeyModifiers.Control);

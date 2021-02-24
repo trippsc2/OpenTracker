@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.SaveLoad;
 using OpenTracker.Utils;
+using System;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.Dropdowns
@@ -10,7 +11,7 @@ namespace OpenTracker.Models.Dropdowns
     public class DropdownDictionary : LazyDictionary<DropdownID, IDropdown>,
         IDropdownDictionary
     {
-        private readonly IDropdownFactory.Factory _factory;
+        private readonly Lazy<IDropdownFactory> _factory;
 
         /// <summary>
         /// Constructor
@@ -21,12 +22,12 @@ namespace OpenTracker.Models.Dropdowns
         public DropdownDictionary(IDropdownFactory.Factory factory)
             : base(new Dictionary<DropdownID, IDropdown>())
         {
-            _factory = factory;
+            _factory = new Lazy<IDropdownFactory>(() => factory());
         }
 
         protected override IDropdown Create(DropdownID key)
         {
-            return _factory().GetDropdown(key);
+            return _factory.Value.GetDropdown(key);
         }
 
         /// <summary>
