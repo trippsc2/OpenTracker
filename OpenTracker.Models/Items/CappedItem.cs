@@ -1,10 +1,9 @@
-﻿using OpenTracker.Models.AutoTracking.Values;
-using System;
+﻿using System;
 
 namespace OpenTracker.Models.Items
 {
     /// <summary>
-    /// This is the class for an item with a maximum value.
+    /// This class contains item data with a maximum value.
     /// </summary>
     public class CappedItem : Item
     {
@@ -15,14 +14,17 @@ namespace OpenTracker.Models.Items
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="autoTrackValueFactory">
+        /// The item auto track value factory.
+        /// </param>
+        /// <param name="type">
+        /// The item type.
+        /// </param>
         /// <param name="starting">
         /// A 32-bit signed integer representing the starting value of the item.
         /// </param>
         /// <param name="maximum">
         /// A 32-bit signed integer representing the maximum value of the item.
-        /// </param>
-        /// <param name="autoTrackValue">
-        /// The autotracking value for the item.
         /// </param>
         public CappedItem(
             IItemAutoTrackValueFactory autoTrackValueFactory, ItemType type, int starting,

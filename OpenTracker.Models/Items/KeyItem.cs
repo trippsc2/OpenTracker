@@ -4,6 +4,9 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models.Items
 {
+    /// <summary>
+    /// This class contains small key item data.
+    /// </summary>
     public class KeyItem : Item
     {
         private readonly IMode _mode;
@@ -19,6 +22,15 @@ namespace OpenTracker.Models.Items
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
+        /// <param name="autoTrackValueFactory">
+        /// The item autotrack value factory.
+        /// </param>
+        /// <param name="type">
+        /// The item type.
+        /// </param>
         /// <param name="starting">
         /// A 32-bit signed integer representing the starting value of the item.
         /// </param>
@@ -27,9 +39,6 @@ namespace OpenTracker.Models.Items
         /// </param>
         /// <param name="keyDropMaximumDelta">
         /// A 32-bit signed integer representing the delta maximum for key drop shuffle of the item.
-        /// </param>
-        /// <param name="autoTrackValue">
-        /// The autotracking value for the item.
         /// </param>
         public KeyItem(
             IMode mode, IItemAutoTrackValueFactory autoTrackValueFactory, ItemType type,

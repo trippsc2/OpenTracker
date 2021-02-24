@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Items
 {
     /// <summary>
-    /// This is the interface for item data.
+    /// This interface contains item data.
     /// </summary>
     public interface IItem : INotifyPropertyChanged, ISaveable<ItemSaveData>
     {

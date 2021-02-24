@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.Items
 {
     /// <summary>
-    /// This is the dictionary container for items, both tracked and untracked
+    /// This class contains the dictionary container for item data.
     /// </summary>
     public class ItemDictionary : LazyDictionary<ItemType, IItem>, IItemDictionary
     {

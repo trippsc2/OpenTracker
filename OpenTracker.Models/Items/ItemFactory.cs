@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.Items
 {
     /// <summary>
-    /// This is the class for creating items.
+    /// This class contains creation logic for item data.
     /// </summary>
     public class ItemFactory : IItemFactory
     {
@@ -10,6 +10,21 @@
         private readonly CrystalRequirementItem.Factory _crystalRequirementFactory;
         private readonly KeyItem.Factory _keyFactory;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="itemFactory">
+        /// An Autofac factory for creating items.
+        /// </param>
+        /// <param name="cappedItemFactory">
+        /// An Autofac factory for creating items with maximums.
+        /// </param>
+        /// <param name="crystalRequirementFactory">
+        /// An Autofac factory for creating crystal requirement items.
+        /// </param>
+        /// <param name="keyFactory">
+        /// An Autofac factory for creating key items.
+        /// </param>
         public ItemFactory(
             Item.Factory itemFactory, CappedItem.Factory cappedItemFactory,
             CrystalRequirementItem.Factory crystalRequirementFactory, KeyItem.Factory keyFactory)
