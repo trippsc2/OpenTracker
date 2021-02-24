@@ -74,18 +74,24 @@ namespace OpenTracker.Models.AutoTracking
                 _memorySegments.Add(type, new List<IMemoryAddress>());
             }
 
-            for (ulong i = 0; i < 592; i++)
+            for (ulong i = 0; i < 256; i++)
             {
-                CreateMemoryAddress(MemorySegmentType.Room, i);
+                CreateMemoryAddress(MemorySegmentType.FirstRoom, i);
+                CreateMemoryAddress(MemorySegmentType.SecondRoom, i);
+
+                if (i < 144)
+                {
+                    CreateMemoryAddress(MemorySegmentType.Item, i);
+                }
 
                 if (i < 130)
                 {
                     CreateMemoryAddress(MemorySegmentType.OverworldEvent, i);
                 }
 
-                if (i < 144)
+                if (i < 80)
                 {
-                    CreateMemoryAddress(MemorySegmentType.Item, i);
+                    CreateMemoryAddress(MemorySegmentType.ThirdRoom, i);
                 }
 
                 if (i < 48)
@@ -129,7 +135,9 @@ namespace OpenTracker.Models.AutoTracking
         {
             return type switch
             {
-                MemorySegmentType.Room => 0x7ef000,
+                MemorySegmentType.FirstRoom => 0x7ef000,
+                MemorySegmentType.SecondRoom => 0x7ef100,
+                MemorySegmentType.ThirdRoom => 0x7ef200,
                 MemorySegmentType.OverworldEvent => 0x7ef280,
                 MemorySegmentType.Item => 0x7ef340,
                 MemorySegmentType.NPCItem => 0x7ef410,

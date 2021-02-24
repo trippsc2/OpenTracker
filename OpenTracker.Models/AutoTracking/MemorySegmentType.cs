@@ -5,7 +5,9 @@
     /// </summary>
     public enum MemorySegmentType
     {
-        Room,
+        FirstRoom,
+        SecondRoom,
+        ThirdRoom,
         OverworldEvent,
         Item,
         NPCItem,
