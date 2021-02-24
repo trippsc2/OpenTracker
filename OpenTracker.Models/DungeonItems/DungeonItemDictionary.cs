@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.DungeonItems
 {
     /// <summary>
-    /// This is the class containing the dictionary of dungeon items.
+    /// This is the class is the dictionary container of dungeon items.
     /// </summary>
     public class DungeonItemDictionary : LazyDictionary<DungeonItemID, IDungeonItem>,
         IDungeonItemDictionary

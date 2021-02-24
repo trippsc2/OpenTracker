@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.DungeonNodes
 {
     /// <summary>
-    /// This is the interface for a dungeon node.
+    /// This is the interface for dungeon requirement node.
     /// </summary>
     public interface IDungeonNode : IRequirementNode
     {

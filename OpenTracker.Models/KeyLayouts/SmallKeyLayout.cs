@@ -113,7 +113,7 @@ namespace OpenTracker.Models.KeyLayouts
         /// <returns>
         /// A boolean representing whether the key layout is possible.
         /// </returns>
-        public bool CanBeTrue(IMutableDungeon dungeonData, DungeonState state)
+        public bool CanBeTrue(IMutableDungeon dungeonData, IDungeonState state)
         {
             if (dungeonData == null)
             {

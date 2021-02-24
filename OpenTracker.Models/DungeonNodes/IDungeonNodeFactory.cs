@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 namespace OpenTracker.Models.DungeonNodes
 {
+    /// <summary>
+    /// This is the interface contains creation logic for dungeon nodes.
+    /// </summary>
     public interface IDungeonNodeFactory
     {
         void PopulateNodeConnections(

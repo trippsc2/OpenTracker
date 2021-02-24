@@ -28,6 +28,8 @@ namespace OpenTracker.Models.Dungeons
         private readonly IItemDictionary _items;
         private readonly IMode _mode;
         private readonly IMutableDungeon.Factory _mutableDungeonFactory;
+        private readonly IDungeonState.Factory _stateFactory;
+
         private static readonly ConstrainedTaskScheduler _taskScheduler =
             new ConstrainedTaskScheduler(Math.Max(1, Environment.ProcessorCount - 1));
 
@@ -114,12 +116,13 @@ namespace OpenTracker.Models.Dungeons
             ILocationFactory locationFactory, IMapLocationFactory mapLocationFactory,
             ISectionFactory sectionFactory, IMarking.Factory markingFactory,
             ILocationNoteCollection notes, IDungeonFactory dungeonFactory,
-            IKeyLayoutFactory keyDoorFactory, LocationID id)
+            IKeyLayoutFactory keyDoorFactory, IDungeonState.Factory stateFactory, LocationID id)
             : base(locationFactory, mapLocationFactory, sectionFactory, markingFactory, notes, id)
         {
             _items = items;
             _mode = mode;
             _mutableDungeonFactory = mutableDungeonFactory;
+            _stateFactory = stateFactory;
 
             Map = dungeonFactory.GetDungeonMapCount(id);
             Compass = dungeonFactory.GetDungeonCompassCount(id);
@@ -256,6 +259,9 @@ namespace OpenTracker.Models.Dungeons
             }
         }
 
+        /// <summary>
+        /// Creates a new instance of dungeon data.
+        /// </summary>
         private void CreateDungeonData()
         {
             var dungeonData = _mutableDungeonFactory(this);
@@ -306,6 +312,12 @@ namespace OpenTracker.Models.Dungeons
             }
         }
 
+        /// <summary>
+        /// Re-registers a dungeon data instance to the queue.
+        /// </summary>
+        /// <param name="dungeonData">
+        /// The dungeon data instance to be registered to the queue.
+        /// </param>
         private void ReturnDungeonData(IMutableDungeon dungeonData)
         {
             DungeonDataQueue.Enqueue(dungeonData);
@@ -401,7 +413,7 @@ namespace OpenTracker.Models.Dungeons
         /// <param name="collection">
         /// The collection to be populated.
         /// </param>
-        private void PopulateInitialDungeonStates(BlockingCollection<DungeonState> collection)
+        private void PopulateInitialDungeonStates(BlockingCollection<IDungeonState> collection)
         {
             List<int> smallKeyValues = GetSmallKeyValues();
             List<bool> bigKeyValues = GetBigKeyValues();
@@ -411,9 +423,9 @@ namespace OpenTracker.Models.Dungeons
                 foreach (var bigKeyValue in bigKeyValues)
                 {
                     collection.Add(
-                        new DungeonState(new List<KeyDoorID>(), smallKeyValue, bigKeyValue, false));
+                        _stateFactory(new List<KeyDoorID>(), smallKeyValue, bigKeyValue, false));
                     collection.Add(
-                        new DungeonState(new List<KeyDoorID>(), smallKeyValue, bigKeyValue, true));
+                        _stateFactory(new List<KeyDoorID>(), smallKeyValue, bigKeyValue, true));
                 }
             }
 
@@ -432,10 +444,10 @@ namespace OpenTracker.Models.Dungeons
         /// <param name="nextQueue">
         /// The next queue to which this permutation will be added.
         /// </param>
-        private static void ProcessDungeonState(
-            IMutableDungeon dungeonData, DungeonState state,
-            BlockingCollection<DungeonState> finalQueue,
-            BlockingCollection<DungeonState>? nextQueue)
+        private void ProcessDungeonState(
+            IMutableDungeon dungeonData, IDungeonState state,
+            BlockingCollection<IDungeonState> finalQueue,
+            BlockingCollection<IDungeonState>? nextQueue)
         {
             dungeonData.ApplyState(state);
 
@@ -467,7 +479,7 @@ namespace OpenTracker.Models.Dungeons
                 }
 
                 nextQueue.Add(
-                    new DungeonState(
+                    _stateFactory(
                         newPermutation, state.KeysCollected, state.BigKeyCollected,
                         state.SequenceBreak));
             }
@@ -480,9 +492,9 @@ namespace OpenTracker.Models.Dungeons
         /// The permutation to be processed.
         /// </param>
         private static void ProcessFinalDungeonState(
-            IMutableDungeon dungeonData, DungeonState state,
-            BlockingCollection<DungeonResult> inLogicQueue,
-            BlockingCollection<DungeonResult> outOfLogicQueue)
+            IMutableDungeon dungeonData, IDungeonState state,
+            BlockingCollection<IDungeonResult> inLogicQueue,
+            BlockingCollection<IDungeonResult> outOfLogicQueue)
         {
             dungeonData.ApplyState(state);
 
@@ -509,15 +521,15 @@ namespace OpenTracker.Models.Dungeons
         /// </summary>
         private void UpdateSectionAccessibility()
         {
-            var keyDoorPermutationQueue = new List<BlockingCollection<DungeonState>>();
+            var keyDoorPermutationQueue = new List<BlockingCollection<IDungeonState>>();
             var keyDoorTasks = new List<Task>();
-            var finalQueue = new BlockingCollection<DungeonState>();
-            var resultInLogicQueue = new BlockingCollection<DungeonResult>();
-            var resultOutOfLogicQueue = new BlockingCollection<DungeonResult>();
+            var finalQueue = new BlockingCollection<IDungeonState>();
+            var resultInLogicQueue = new BlockingCollection<IDungeonResult>();
+            var resultOutOfLogicQueue = new BlockingCollection<IDungeonResult>();
 
             for (int i = 0; i <= SmallKeyDoors.Count; i++)
             {
-                keyDoorPermutationQueue.Add(new BlockingCollection<DungeonState>());
+                keyDoorPermutationQueue.Add(new BlockingCollection<IDungeonState>());
             }
 
             PopulateInitialDungeonStates(keyDoorPermutationQueue[0]);
@@ -701,6 +713,12 @@ namespace OpenTracker.Models.Dungeons
             }
         }
 
+        /// <summary>
+        /// Signals the dungeon data instance to begin initialization.
+        /// </summary>
+        /// <param name="dungeonData">
+        /// The dungeon data instance to be signaled.
+        /// </param>
         public void FinishMutableDungeonCreation(IMutableDungeon dungeonData)
         {
             DungeonDataCreated?.Invoke(this, dungeonData);

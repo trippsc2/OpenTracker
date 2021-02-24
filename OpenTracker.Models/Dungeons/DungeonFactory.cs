@@ -12,13 +12,22 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.Dungeons
 {
     /// <summary>
-    /// This is the class for creating dungeons.
+    /// This is class contains creation logic for dungeons.
     /// </summary>
     public class DungeonFactory : IDungeonFactory
     {
         private readonly IItemDictionary _items;
         private readonly IRequirementNodeDictionary _requirementNodes;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="items">
+        /// The item dictionary.
+        /// </param>
+        /// <param name="requirementNodes">
+        /// The requirement node dictionary.
+        /// </param>
         public DungeonFactory(
             IItemDictionary items, IRequirementNodeDictionary requirementNodes)
         {

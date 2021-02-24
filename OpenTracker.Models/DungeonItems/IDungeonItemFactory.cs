@@ -1,10 +1,9 @@
 ﻿using OpenTracker.Models.Dungeons;
-using OpenTracker.Models.RequirementNodes;
 
 namespace OpenTracker.Models.DungeonItems
 {
     /// <summary>
-    /// This is the interface for creating dungeon items.
+    /// This is the interface for the creation logic for dungeon items.
     /// </summary>
     public interface IDungeonItemFactory
     {

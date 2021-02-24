@@ -3,6 +3,9 @@ using OpenTracker.Models.SaveLoad;
 
 namespace OpenTracker.Models.Connections
 {
+    /// <summary>
+    /// This is the interface for connections between two entrance map locations.
+    /// </summary>
     public interface IConnection
     {
         IMapLocation Location1 { get; }

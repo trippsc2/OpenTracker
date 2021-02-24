@@ -6,13 +6,22 @@ using System.Collections.ObjectModel;
 namespace OpenTracker.Models.Connections
 {
     /// <summary>
-    /// This is the class containing the collection of connections between MapLocation classes.
+    /// This is the class for the collection container of map connections between map locations.
     /// </summary>
     public class ConnectionCollection : ObservableCollection<IConnection>, IConnectionCollection
     {
         private readonly ILocationDictionary _locations;
         private readonly IConnection.Factory _connectionFactory;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="locations">
+        /// The location dictionary.
+        /// </param>
+        /// <param name="connectionFactory">
+        /// An Autofac factory for creating new connections.
+        /// </param>
         public ConnectionCollection(
             ILocationDictionary locations, IConnection.Factory connectionFactory)
         {

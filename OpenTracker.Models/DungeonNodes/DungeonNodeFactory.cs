@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.DungeonNodes
 {
     /// <summary>
-    /// This is the class for creating dungeon nodes.
+    /// This is the class contains creation logic for dungeon nodes.
     /// </summary>
     public class DungeonNodeFactory : IDungeonNodeFactory
     {
@@ -21,11 +21,17 @@ namespace OpenTracker.Models.DungeonNodes
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="dungeonData">
-        /// The dungeon data to which the nodes belong.
+        /// <param name="requirements">
+        /// The requirement dictionary.
         /// </param>
-        /// <param name="factory">
-        /// A factory for creating dungeon nodes.
+        /// <param name="requirementNodes">
+        /// The requirement node dictionary.
+        /// </param>
+        /// <param name="entryFactory">
+        /// An Autofac factory for creating entry node connections.
+        /// </param>
+        /// <param name="connectionFactory">
+        /// An Autofac factory for creating regular node connections.
         /// </param>
         public DungeonNodeFactory(
             IRequirementDictionary requirements, IRequirementNodeDictionary requirementNodes,

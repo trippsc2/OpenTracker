@@ -6,7 +6,7 @@ using System;
 namespace OpenTracker.Models.DungeonItems
 {
     /// <summary>
-    /// This is the class for creating dungeon items.
+    /// This is the class for the creation logic for dungeon items.
     /// </summary>
     public class DungeonItemFactory : IDungeonItemFactory
     {
@@ -15,9 +15,6 @@ namespace OpenTracker.Models.DungeonItems
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="dungeonData">
-        /// The dungeon data from which the item is created.
-        /// </param>
         /// <param name="factory">
         /// The factory for creating dungeon items.
         /// </param>
@@ -29,11 +26,11 @@ namespace OpenTracker.Models.DungeonItems
         /// <summary>
         /// Returns a dungeon node to which the specified item ID belongs.
         /// </summary>
-        /// <param name="id">
-        /// The dungeon node identity.
-        /// </param>
         /// <param name="dungeonData">
         /// The dungeon mutable data parent class.
+        /// </param>
+        /// <param name="id">
+        /// The dungeon node identity.
         /// </param>
         /// <returns>
         /// A dungeon node.
@@ -553,6 +550,18 @@ namespace OpenTracker.Models.DungeonItems
             throw new ArgumentOutOfRangeException(nameof(id));
         }
 
+        /// <summary>
+        /// Returns a new dungeon item for the specified dungeon data and dungeon item ID.
+        /// </summary>
+        /// <param name="dungeonData">
+        /// The dungeon data.
+        /// </param>
+        /// <param name="id">
+        /// The dungeon item ID.
+        /// </param>
+        /// <returns>
+        /// A new dungeon item.
+        /// </returns>
         public IDungeonItem GetDungeonItem(IMutableDungeon dungeonData, DungeonItemID id)
         {
             return _factory(dungeonData, id, GetDungeonItemNode(dungeonData, id));

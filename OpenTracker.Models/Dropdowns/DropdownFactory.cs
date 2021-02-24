@@ -62,6 +62,15 @@ namespace OpenTracker.Models.Dropdowns
             throw new ArgumentOutOfRangeException(nameof(id));
         }
 
+        /// <summary>
+        /// Returns a new dropdown for the given ID.
+        /// </summary>
+        /// <param name="id">
+        /// The dropdown ID
+        /// </param>
+        /// <returns>
+        /// A new dropdown.
+        /// </returns>
         public IDropdown GetDropdown(DropdownID id)
         {
             return _factory(GetRequirement(id));

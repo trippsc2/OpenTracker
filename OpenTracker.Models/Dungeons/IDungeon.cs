@@ -4,8 +4,6 @@ using OpenTracker.Models.Items;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.KeyLayouts;
 using OpenTracker.Models.Locations;
-using OpenTracker.Models.RequirementNodes;
-using OpenTracker.Models.Sections;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -13,7 +11,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.Dungeons
 {
     /// <summary>
-    /// This is the interface for dungeon data.
+    /// This is the interface containing dungeon data.
     /// </summary>
     public interface IDungeon : ILocation
     {

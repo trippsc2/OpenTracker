@@ -22,11 +22,11 @@ namespace OpenTracker.Models.Dungeons
 
         delegate IMutableDungeon Factory(IDungeon dungeon);
 
-        void ApplyState(DungeonState state);
+        void ApplyState(IDungeonState state);
         List<KeyDoorID> GetAccessibleKeyDoors(bool sequenceBreak = false);
         int GetAvailableSmallKeys(bool sequenceBreak = false);
-        DungeonResult GetDungeonResult(DungeonState state);
-        bool ValidateKeyLayout(DungeonState state);
+        IDungeonResult GetDungeonResult(IDungeonState state);
+        bool ValidateKeyLayout(IDungeonState state);
         void Reset();
     }
 }

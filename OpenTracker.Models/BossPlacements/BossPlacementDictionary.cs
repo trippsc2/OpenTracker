@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.BossPlacements
 {
     /// <summary>
-    /// This is the dictionary container for boss placements.
+    /// This is the class for the dictionary container for boss placements.
     /// </summary>
     public class BossPlacementDictionary : LazyDictionary<BossPlacementID, IBossPlacement>,
         IBossPlacementDictionary

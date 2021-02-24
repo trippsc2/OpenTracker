@@ -58,15 +58,14 @@ namespace OpenTracker.Models.DungeonNodes
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="factory">
+        /// The dungeon node factory for creating node connections.
+        /// </param>
         /// <param name="id">
         /// The node identity.
         /// </param>
         /// <param name="dungeonData">
         /// The mutable dungeon data parent class.
-        /// </param>
-        /// <param name="freeKeysProvided">
-        /// A 32-bit signed integer representing the number of free keys provided by accessing the
-        /// node.
         /// </param>
         public DungeonNode(
             IDungeonNodeFactory factory, IMutableDungeon dungeonData, DungeonNodeID id)

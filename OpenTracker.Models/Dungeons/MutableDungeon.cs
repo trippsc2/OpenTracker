@@ -16,6 +16,7 @@ namespace OpenTracker.Models.Dungeons
     {
         private readonly IMode _mode;
         private readonly IDungeon _dungeon;
+        private readonly IDungeonResult.Factory _resultFactory;
 
         public LocationID ID =>
             _dungeon.ID;
@@ -35,8 +36,6 @@ namespace OpenTracker.Models.Dungeons
         public List<IDungeonItem> Bosses { get; } =
             new List<IDungeonItem>();
 
-        public delegate IMutableDungeon Factory(IDungeon dungeon);
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -45,10 +44,12 @@ namespace OpenTracker.Models.Dungeons
         /// </param>
         public MutableDungeon(
             IMode mode, IKeyDoorDictionary.Factory keyDoors, IDungeonNodeDictionary.Factory nodes,
-            IDungeonItemDictionary.Factory dungeonItems, IDungeon dungeon)
+            IDungeonItemDictionary.Factory dungeonItems, IDungeonResult.Factory resultFactory,
+            IDungeon dungeon)
         {
             _mode = mode;
             _dungeon = dungeon;
+            _resultFactory = resultFactory;
 
             KeyDoors = keyDoors(this);
             DungeonItems = dungeonItems(this);
@@ -183,7 +184,7 @@ namespace OpenTracker.Models.Dungeons
             return bigKeys;
         }
 
-        public void ApplyState(DungeonState state)
+        public void ApplyState(IDungeonState state)
         {
             SetSmallKeyDoorState(state.UnlockedDoors);
 
@@ -277,7 +278,7 @@ namespace OpenTracker.Models.Dungeons
         /// <returns>
         /// A boolean representing whether the result can occur.
         /// </returns>
-        public bool ValidateKeyLayout(DungeonState state)
+        public bool ValidateKeyLayout(IDungeonState state)
         {
             foreach (var keyLayout in _dungeon.KeyLayouts)
             {
@@ -325,7 +326,7 @@ namespace OpenTracker.Models.Dungeons
         /// A tuple of the accessibility of items in the dungeon and a 32-bit integer representing
         /// the number of accessible items in the dungeon.
         /// </returns>
-        public DungeonResult GetDungeonResult(DungeonState state)
+        public IDungeonResult GetDungeonResult(IDungeonState state)
         {
             int inaccessibleBosses = 0;
             int inaccessibleItems = 0;
@@ -412,7 +413,7 @@ namespace OpenTracker.Models.Dungeons
             {
                 if (minimumInaccessible == 0)
                 {                    
-                    return new DungeonResult(
+                    return _resultFactory(
                         bossAccessibility, state.SequenceBreak ? AccessibilityLevel.SequenceBreak :
                         AccessibilityLevel.Normal, _dungeon.Sections[0].Available);
                 }
@@ -421,14 +422,14 @@ namespace OpenTracker.Models.Dungeons
                 {
                     if (visible)
                     {
-                        return new DungeonResult(bossAccessibility, AccessibilityLevel.Inspect, 0);
+                        return _resultFactory(bossAccessibility, AccessibilityLevel.Inspect, 0);
                     }
 
-                    return new DungeonResult(bossAccessibility, AccessibilityLevel.None, 0);
+                    return _resultFactory(bossAccessibility, AccessibilityLevel.None, 0);
                 }
                 else
                 {
-                    return new DungeonResult(
+                    return _resultFactory(
                         bossAccessibility, AccessibilityLevel.Partial,
                         _dungeon.Sections[0].Available - minimumInaccessible);
                 }
@@ -445,7 +446,7 @@ namespace OpenTracker.Models.Dungeons
             {
                 if (minimumInaccessible == 0)
                 {
-                    return new DungeonResult(
+                    return _resultFactory(
                         bossAccessibility, state.SequenceBreak ? AccessibilityLevel.SequenceBreak :
                         AccessibilityLevel.Normal, _dungeon.Sections[0].Available);
                 }
@@ -454,14 +455,14 @@ namespace OpenTracker.Models.Dungeons
                 {
                     if (visible)
                     {
-                        return new DungeonResult(bossAccessibility, AccessibilityLevel.Inspect, 0);
+                        return _resultFactory(bossAccessibility, AccessibilityLevel.Inspect, 0);
                     }
 
-                    return new DungeonResult(bossAccessibility, AccessibilityLevel.None, 0);
+                    return _resultFactory(bossAccessibility, AccessibilityLevel.None, 0);
                 }
                 else
                 {
-                    return new DungeonResult(
+                    return _resultFactory(
                         bossAccessibility, AccessibilityLevel.Partial,
                         _dungeon.Sections[0].Available - minimumInaccessible);
                 }
@@ -478,7 +479,7 @@ namespace OpenTracker.Models.Dungeons
             {
                 if (minimumInaccessible == 0)
                 {
-                    return new DungeonResult(
+                    return _resultFactory(
                         bossAccessibility, state.SequenceBreak ? AccessibilityLevel.SequenceBreak :
                         AccessibilityLevel.Normal, _dungeon.Sections[0].Available);
                 }
@@ -487,14 +488,14 @@ namespace OpenTracker.Models.Dungeons
                 {
                     if (visible)
                     {
-                        return new DungeonResult(bossAccessibility, AccessibilityLevel.Inspect, 0);
+                        return _resultFactory(bossAccessibility, AccessibilityLevel.Inspect, 0);
                     }
 
-                    return new DungeonResult(bossAccessibility, AccessibilityLevel.None, 0);
+                    return _resultFactory(bossAccessibility, AccessibilityLevel.None, 0);
                 }
                 else
                 {
-                    return new DungeonResult(
+                    return _resultFactory(
                         bossAccessibility, AccessibilityLevel.Partial,
                         _dungeon.Sections[0].Available - minimumInaccessible);
                 }
@@ -514,7 +515,7 @@ namespace OpenTracker.Models.Dungeons
 
             if (inaccessibleItems <= 0)
             {
-                return new DungeonResult(
+                return _resultFactory(
                     bossAccessibility, AccessibilityLevel.SequenceBreak,
                     _dungeon.Sections[0].Available);
             }
@@ -523,13 +524,13 @@ namespace OpenTracker.Models.Dungeons
             {
                 if (visible)
                 {
-                    return new DungeonResult(bossAccessibility, AccessibilityLevel.Inspect, 0);
+                    return _resultFactory(bossAccessibility, AccessibilityLevel.Inspect, 0);
                 }
 
-                return new DungeonResult(bossAccessibility, AccessibilityLevel.None, 0);
+                return _resultFactory(bossAccessibility, AccessibilityLevel.None, 0);
             }
             
-            return new DungeonResult(
+            return _resultFactory(
                 bossAccessibility, AccessibilityLevel.Partial,
                 _dungeon.Sections[0].Available - inaccessibleItems);
         }

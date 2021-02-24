@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.DungeonNodes
 {
     /// <summary>
-    /// This is the class containing the dictionary of dungeon nodes.
+    /// This is the class the dictionary container for dungeon nodes.
     /// </summary>
     public class DungeonNodeDictionary : LazyDictionary<DungeonNodeID, IDungeonNode>,
         IDungeonNodeDictionary
@@ -18,6 +18,9 @@ namespace OpenTracker.Models.DungeonNodes
         /// </summary>
         /// <param name="factory">
         /// The factory for creating new dungeon nodes.
+        /// </param>
+        /// <param name="dungeonData">
+        /// The dungeon data.
         /// </param>
         public DungeonNodeDictionary(
             IDungeonNode.Factory factory, IMutableDungeon dungeonData)

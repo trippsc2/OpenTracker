@@ -13,7 +13,9 @@ namespace OpenTracker.Models.DungeonItems
     public class DungeonItem : IDungeonItem
     {
         private readonly IMutableDungeon _dungeonData;
+#if DEBUG
         private readonly DungeonItemID _id;
+#endif
         private readonly IRequirementNode _node;
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -35,11 +37,11 @@ namespace OpenTracker.Models.DungeonItems
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="id">
-        /// The item identity.
-        /// </param>
         /// <param name="dungeonData">
         /// The mutable dungeon data parent class.
+        /// </param>
+        /// <param name="id">
+        /// The item identity.
         /// </param>
         /// <param name="node">
         /// The dungeon node to which this item belongs.
@@ -48,7 +50,9 @@ namespace OpenTracker.Models.DungeonItems
             IMutableDungeon dungeonData, DungeonItemID id, IRequirementNode node)
         {
             _dungeonData = dungeonData;
+#if DEBUG
             _id = id;
+#endif
             _node = node;
 
             _dungeonData.DungeonItems.ItemCreated += OnDungeonItemCreated;
@@ -66,7 +70,7 @@ namespace OpenTracker.Models.DungeonItems
         }
 
         /// <summary>
-        /// Subscribes to the DungeonItemCreated event on the DungeonItemDictionary class.
+        /// Subscribes to the DungeonItemCreated event on the IDungeonItemDictionary interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.

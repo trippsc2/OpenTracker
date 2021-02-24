@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.Dropdowns
 {
     /// <summary>
-    /// This is the interface for the dropdown dictionary.
+    /// This is the interface for the dictionary container of dropdowns.
     /// </summary>
     public interface IDropdownDictionary : IDictionary<DropdownID, IDropdown>,
         ICollection<KeyValuePair<DropdownID, IDropdown>>,
