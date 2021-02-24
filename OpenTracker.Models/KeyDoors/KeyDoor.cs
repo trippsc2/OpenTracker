@@ -8,7 +8,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.KeyDoors
 {
     /// <summary>
-    /// This is the key door data class.
+    /// This class contains key door data.
     /// </summary>
     public class KeyDoor : IKeyDoor
     {
@@ -50,6 +50,12 @@ namespace OpenTracker.Models.KeyDoors
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="factory">
+        /// The key door factory.
+        /// </param>
+        /// <param name="requirementFactory">
+        /// The key door requirement factory.
+        /// </param>
         /// <param name="dungeonData">
         /// The mutable dungeon data parent class.
         /// </param>
@@ -76,13 +82,13 @@ namespace OpenTracker.Models.KeyDoors
         }
 
         /// <summary>
-        /// Subscribes to the DoorCreated event on the KeyDoorDictionary class.
+        /// Subscribes to the ItemCreated event on the IKeyDoorDictionary interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the DoorCreated event.
+        /// The arguments of the ItemCreated event.
         /// </param>
         private void OnDoorCreated(object? sender, KeyValuePair<KeyDoorID, IKeyDoor> e)
         {
@@ -110,7 +116,7 @@ namespace OpenTracker.Models.KeyDoors
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnNodeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirementNode.Accessibility))
             {
@@ -124,14 +130,6 @@ namespace OpenTracker.Models.KeyDoors
         private void UpdateAccessibility()
         {
             OnPropertyChanged(nameof(Accessibility));
-        }
-
-        public void Dispose()
-        {
-            if (_node != null)
-            {
-                _node.PropertyChanged -= OnNodeChanged;
-            }
         }
     }
 }

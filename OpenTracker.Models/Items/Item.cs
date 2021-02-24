@@ -29,27 +29,26 @@ namespace OpenTracker.Models.Items
             }
         }
 
-        public delegate Item Factory(ItemType type, int starting);
+        public delegate Item Factory(int starting, IAutoTrackValue? autoTrackValue);
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="autoTrackValueFactory">
-        /// The item autotrack value factory.
-        /// </param>
         /// <param name="type">
         /// The item type.
         /// </param>
         /// <param name="starting">
         /// A 32-bit signed integer representing the starting value of the item.
         /// </param>
-        public Item(IItemAutoTrackValueFactory autoTrackValueFactory, ItemType type, int starting)
+        /// <param name="autoTrackValue">
+        /// The autotrack value.
+        /// </param>
+        public Item(int starting, IAutoTrackValue? autoTrackValue)
         {
             _starting = starting;
+            _autoTrackValue = autoTrackValue;
 
             Current = _starting;
-
-            _autoTrackValue = autoTrackValueFactory.GetAutoTrackValue(type);
 
             if (_autoTrackValue != null)
             {

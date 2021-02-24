@@ -26,7 +26,7 @@ namespace OpenTracker.Models.Items
 
         protected override IItem Create(PrizeType key)
         {
-            return _factory(ItemType.TowerCrystals, 0);
+            return _factory(0, null);
         }
 
         /// <summary>

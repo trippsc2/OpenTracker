@@ -1,4 +1,5 @@
-﻿using OpenTracker.Models.Modes;
+﻿using OpenTracker.Models.AutoTracking.Values;
+using OpenTracker.Models.Modes;
 using System;
 using System.ComponentModel;
 
@@ -17,7 +18,7 @@ namespace OpenTracker.Models.Items
             _mode.KeyDropShuffle ? _maximum + _keyDropMaximumDelta : _maximum;
 
         public new delegate KeyItem Factory(
-            ItemType type, int starting, int maximum, int keyDropMaximumDelta);
+            int maximum, int keyDropMaximumDelta, int starting, IAutoTrackValue? autoTrackValue);
 
         /// <summary>
         /// Constructor
@@ -25,25 +26,22 @@ namespace OpenTracker.Models.Items
         /// <param name="mode">
         /// The mode settings.
         /// </param>
-        /// <param name="autoTrackValueFactory">
-        /// The item autotrack value factory.
-        /// </param>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        /// <param name="starting">
-        /// A 32-bit signed integer representing the starting value of the item.
-        /// </param>
         /// <param name="maximum">
         /// A 32-bit signed integer representing the maximum value of the item.
         /// </param>
         /// <param name="keyDropMaximumDelta">
         /// A 32-bit signed integer representing the delta maximum for key drop shuffle of the item.
         /// </param>
+        /// <param name="starting">
+        /// A 32-bit signed integer representing the starting value of the item.
+        /// </param>
+        /// <param name="autoTrackValue">
+        /// The auto track value.
+        /// </param>
         public KeyItem(
-            IMode mode, IItemAutoTrackValueFactory autoTrackValueFactory, ItemType type,
-            int starting, int maximum, int keyDropMaximumDelta)
-            : base(autoTrackValueFactory, type, starting)
+            IMode mode, int maximum, int keyDropMaximumDelta, int starting,
+            IAutoTrackValue? autoTrackValue)
+            : base(starting, autoTrackValue)
         {
             if (starting > maximum)
             {
@@ -56,7 +54,7 @@ namespace OpenTracker.Models.Items
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -64,7 +62,7 @@ namespace OpenTracker.Models.Items
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IMode.KeyDropShuffle))
             {

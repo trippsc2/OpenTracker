@@ -4,7 +4,7 @@ using OpenTracker.Models.Requirements;
 namespace OpenTracker.Models.KeyLayouts
 {
     /// <summary>
-    /// This is the class containing the end key layout.
+    /// This class contains the end of key layout data.
     /// </summary>
     public class EndKeyLayout : IKeyLayout
     {

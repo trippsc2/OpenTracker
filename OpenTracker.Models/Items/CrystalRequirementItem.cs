@@ -22,20 +22,12 @@ namespace OpenTracker.Models.Items
             }
         }
 
-        public new delegate CrystalRequirementItem Factory(ItemType type);
+        public new delegate CrystalRequirementItem Factory();
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="autoTrackValueFactory">
-        /// The item auotrack value factory.
-        /// </param>
-        /// <param name="type">
-        /// The item type.
-        /// </param>
-        public CrystalRequirementItem(
-            IItemAutoTrackValueFactory autoTrackValueFactory, ItemType type)
-            : base(autoTrackValueFactory, type, 0, 7)
+        public CrystalRequirementItem() : base(0, 7, null)
         {
         }
 

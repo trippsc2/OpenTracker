@@ -6,12 +6,18 @@ using System;
 namespace OpenTracker.Models.KeyDoors
 {
     /// <summary>
-    /// This is the class for creating key doors.
+    /// This class contains creation logic for key door data.
     /// </summary>
     public class KeyDoorFactory : IKeyDoorFactory
     {
         private readonly IKeyDoor.Factory _factory;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="factory">
+        /// An Autofac factory for creating key doors.
+        /// </param>
         public KeyDoorFactory(IKeyDoor.Factory factory)
         {
             _factory = factory;

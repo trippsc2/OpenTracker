@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.KeyDoors
 {
     /// <summary>
-    /// This is the dictionary container for key doors.
+    /// This class contains the dictionary container for key door .
     /// </summary>
     public class KeyDoorDictionary : LazyDictionary<KeyDoorID, IKeyDoor>,
         IKeyDoorDictionary
@@ -17,6 +17,9 @@ namespace OpenTracker.Models.KeyDoors
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="factory">
+        /// The key door factory.
+        /// </param>
         /// <param name="dungeonData">
         /// The mutable dungeon data parent class.
         /// </param>

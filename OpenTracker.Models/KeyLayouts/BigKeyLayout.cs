@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.KeyLayouts
 {
     /// <summary>
-    /// This is the class containing the big key layout.
+    /// This class contains the big key layout data.
     /// </summary>
     public class BigKeyLayout : IKeyLayout
     {

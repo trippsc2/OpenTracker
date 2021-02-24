@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.KeyLayouts
 {
     /// <summary>
-    /// This is the class containing the small key layout.
+    /// This class contains small key layout data.
     /// </summary>
     public class SmallKeyLayout : IKeyLayout
     {
@@ -63,9 +63,6 @@ namespace OpenTracker.Models.KeyLayouts
         /// <summary>
         /// Returns whether the key layout satisfies the minimum number of keys collected.
         /// </summary>
-        /// <param name="dungeonKeys">
-        /// The dungeon small key total.
-        /// </param>
         /// <param name="collectedKeys">
         /// A 32-bit signed integer representing the number of small keys collected.
         /// </param>
@@ -83,6 +80,9 @@ namespace OpenTracker.Models.KeyLayouts
         /// <summary>
         /// Returns whether the key layout satisfies the maximum number of keys collected.
         /// </summary>
+        /// <param name="dungeonKeys">
+        /// The dungeon small key total.
+        /// </param>
         /// <param name="collectedKeys">
         /// A 32-bit signed integer representing the number of small keys collected.
         /// </param>
@@ -104,11 +104,8 @@ namespace OpenTracker.Models.KeyLayouts
         /// <param name="dungeonData">
         /// The dungeon mutable data.
         /// </param>
-        /// <param name="smallKeys">
-        /// A 32-bit signed integer representing the number of small keys collected.
-        /// </param>
-        /// <param name="bigKey">
-        /// A boolean representing whether the big key was collected.
+        /// <param name="state">
+        /// The dungeon state data.
         /// </param>
         /// <returns>
         /// A boolean representing whether the key layout is possible.

@@ -7,9 +7,9 @@ using System.ComponentModel;
 namespace OpenTracker.Models.KeyDoors
 {
     /// <summary>
-    /// This is the interface for a key door.
+    /// This interface contains key door data.
     /// </summary>
-    public interface IKeyDoor : INotifyPropertyChanged, IDisposable
+    public interface IKeyDoor : INotifyPropertyChanged
     {
         AccessibilityLevel Accessibility { get; }
         bool Unlocked { get; set; }

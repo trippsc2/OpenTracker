@@ -3,6 +3,9 @@ using OpenTracker.Models.RequirementNodes;
 
 namespace OpenTracker.Models.KeyDoors
 {
+    /// <summary>
+    /// This interface contains creation logic for key door data.
+    /// </summary>
     public interface IKeyDoorFactory
     {
         IKeyDoor GetKeyDoor(IMutableDungeon dungeonData);

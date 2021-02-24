@@ -1,10 +1,14 @@
-﻿namespace OpenTracker.Models.Items
+﻿using System;
+
+namespace OpenTracker.Models.Items
 {
     /// <summary>
     /// This class contains creation logic for item data.
     /// </summary>
     public class ItemFactory : IItemFactory
     {
+        private readonly Lazy<IItemAutoTrackValueFactory> _autoTrackValueFactory;
+
         private readonly Item.Factory _itemFactory;
         private readonly CappedItem.Factory _cappedItemFactory;
         private readonly CrystalRequirementItem.Factory _crystalRequirementFactory;
@@ -13,6 +17,9 @@
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="autoTrackValueFactory">
+        /// An Autofac factory for creating autotrack values.
+        /// </param>
         /// <param name="itemFactory">
         /// An Autofac factory for creating items.
         /// </param>
@@ -26,9 +33,13 @@
         /// An Autofac factory for creating key items.
         /// </param>
         public ItemFactory(
-            Item.Factory itemFactory, CappedItem.Factory cappedItemFactory,
+            IItemAutoTrackValueFactory.Factory autoTrackValueFactory, Item.Factory itemFactory,
+            CappedItem.Factory cappedItemFactory,
             CrystalRequirementItem.Factory crystalRequirementFactory, KeyItem.Factory keyFactory)
         {
+            _autoTrackValueFactory =
+                new Lazy<IItemAutoTrackValueFactory>(() => autoTrackValueFactory());
+
             _itemFactory = itemFactory;
             _cappedItemFactory = cappedItemFactory;
             _crystalRequirementFactory = crystalRequirementFactory;
@@ -241,7 +252,7 @@
         {
             if (type == ItemType.TowerCrystals || type == ItemType.GanonCrystals)
             {
-                return _crystalRequirementFactory(type);
+                return _crystalRequirementFactory();
             }
 
             var maximum = GetItemMaximum(type);
@@ -253,13 +264,17 @@
                 if (keyDropMaximum.HasValue)
                 {
                     return _keyFactory(
-                        type, GetItemStarting(type), maximum.Value, keyDropMaximum.Value);
+                        maximum.Value, keyDropMaximum.Value, GetItemStarting(type),
+                        _autoTrackValueFactory.Value.GetAutoTrackValue(type));
                 }
 
-                return _cappedItemFactory(type, GetItemStarting(type), maximum.Value);
+                return _cappedItemFactory(
+                    GetItemStarting(type), maximum.Value,
+                    _autoTrackValueFactory.Value.GetAutoTrackValue(type));
             }
 
-            return _itemFactory(type, GetItemStarting(type));
+            return _itemFactory(
+                GetItemStarting(type), _autoTrackValueFactory.Value.GetAutoTrackValue(type));
         }
     }
 }

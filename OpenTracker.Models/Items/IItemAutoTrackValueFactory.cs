@@ -7,6 +7,8 @@ namespace OpenTracker.Models.Items
     /// </summary>
     public interface IItemAutoTrackValueFactory
     {
+        delegate IItemAutoTrackValueFactory Factory();
+
         IAutoTrackValue? GetAutoTrackValue(ItemType type);
     }
 }
