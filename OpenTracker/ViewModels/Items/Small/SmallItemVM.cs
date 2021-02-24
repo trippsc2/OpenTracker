@@ -2,6 +2,7 @@
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
@@ -12,16 +13,22 @@ namespace OpenTracker.ViewModels.Items.Small
     /// This is the ViewModel of the small Items panel control representing big keys, compasses,
     /// and maps.
     /// </summary>
-    public class SmallItemVM : SmallItemVMBase, IClickHandler
+    public class SmallItemVM : ViewModelBase, ISmallItemVMBase, IClickHandler
     {
-        private readonly string _imageSourceBase;
-        private readonly IRequirement _requirement;
+        private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
+
         private readonly IItem _item;
+        private readonly IRequirement _requirement;
+        private readonly string _imageSourceBase;
 
         public bool Visible =>
             _requirement.Met;
         public string ImageSource =>
             _imageSourceBase + (_item.Current > 0 ? "1" : "0") + ".png";
+
+        public delegate SmallItemVM Factory(
+            IItem item, IRequirement requirement, string imageSourceBase);
 
         /// <summary>
         /// Constructor
@@ -35,12 +42,16 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="requirement">
         /// The requirement for displaying the control.
         /// </param>
-        public SmallItemVM(string imageSourceBase, IItem item, IRequirement requirement)
+        public SmallItemVM(
+            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
+            IItem item, IRequirement requirement, string imageSourceBase)
         {
-            _imageSourceBase = imageSourceBase ??
-                throw new ArgumentNullException(nameof(imageSourceBase));
-            _item = item ?? throw new ArgumentNullException(nameof(item));
-            _requirement = requirement ?? throw new ArgumentNullException(nameof(requirement));
+            _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
+
+            _imageSourceBase = imageSourceBase;
+            _item = item;
+            _requirement = requirement;
             
             _item.PropertyChanged += OnItemChanged;
             _requirement.PropertyChanged += OnRequirementChanged;
@@ -85,7 +96,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// </param>
         public void OnLeftClick(bool force = false)
         {
-            UndoRedoManager.Instance.Execute(new AddItem(_item));
+            _undoRedoManager.Execute(_undoableFactory.GetAddItem(_item));
         }
 
         /// <summary>
@@ -96,7 +107,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// </param>
         public void OnRightClick(bool force = false)
         {
-            UndoRedoManager.Instance.Execute(new RemoveItem(_item));
+            _undoRedoManager.Execute(_undoableFactory.GetRemoveItem(_item));
         }
     }
 }

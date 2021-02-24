@@ -1,63 +1,33 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.Modes;
-using System;
+﻿using OpenTracker.Models.Modes;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
-    public class CompassShuffleRequirement : IRequirement
+    public class CompassShuffleRequirement : BooleanRequirement
     {
-        private readonly bool _compassShuffle;
+        private readonly IMode _mode;
+        private readonly bool _expectedValue;
 
-        public bool Met =>
-            Accessibility == AccessibilityLevel.Normal;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler ChangePropagated;
-
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
+        public delegate CompassShuffleRequirement Factory(bool expectedValue);
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="compassShuffle">
+        /// <param name="expectedValue">
         /// A boolean representing the required compass shuffle value.
         /// </param>
-        public CompassShuffleRequirement(bool compassShuffle)
+        public CompassShuffleRequirement(IMode mode, bool expectedValue)
         {
-            _compassShuffle = compassShuffle;
+            _mode = mode;
+            _expectedValue = expectedValue;
 
-            Mode.Instance.PropertyChanged += OnModeChanged;
+            _mode.PropertyChanged += OnModeChanged;
 
-            UpdateAccessibility();
+            UpdateValue();
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            ChangePropagated?.Invoke(this, new EventArgs());
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -67,19 +37,15 @@ namespace OpenTracker.Models.Requirements
         /// </param>
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.CompassShuffle))
+            if (e.PropertyName == nameof(IMode.CompassShuffle))
             {
-                UpdateAccessibility();
+                UpdateValue();
             }
         }
 
-        /// <summary>
-        /// Updates the accessibility of this requirement.
-        /// </summary>
-        private void UpdateAccessibility()
+        protected override bool ConditionMet()
         {
-            Accessibility = Mode.Instance.CompassShuffle == _compassShuffle ?
-                AccessibilityLevel.Normal : AccessibilityLevel.None;
+            return _mode.CompassShuffle == _expectedValue;
         }
     }
 }

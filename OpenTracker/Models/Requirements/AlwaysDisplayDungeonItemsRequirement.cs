@@ -1,6 +1,4 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.Settings;
-using System;
+﻿using OpenTracker.Models.Settings;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
@@ -8,63 +6,29 @@ namespace OpenTracker.Models.Requirements
     /// <summary>
     /// This is the class for the requirement of the always display dungeon items setting.
     /// </summary>
-    public class AlwaysDisplayDungeonItemsRequirement : IRequirement
+    public class AlwaysDisplayDungeonItemsRequirement : BooleanRequirement
     {
         private readonly ILayoutSettings _layoutSettings;
-        private readonly bool _alwaysDisplayDungeonItems;
+        private readonly bool _expectedValue;
 
-        public bool Met =>
-            Accessibility != AccessibilityLevel.None;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        public event EventHandler? ChangePropagated;
-
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
-
-        public AlwaysDisplayDungeonItemsRequirement(bool alwaysDisplayDungeonItems)
-            : this(AppSettings.Instance.Layout, alwaysDisplayDungeonItems)
-        {
-        }
+        public delegate AlwaysDisplayDungeonItemsRequirement Factory(
+            bool expectedValue);
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="alwaysDisplayDungeonItems">
+        /// <param name="expectedValue">
         /// A boolean representing the always display dungeon items requirement.
         /// </param>
-        private AlwaysDisplayDungeonItemsRequirement(
-            ILayoutSettings layoutSettings, bool alwaysDisplayDungeonItems)
+        public AlwaysDisplayDungeonItemsRequirement(
+            ILayoutSettings layoutSettings, bool expectedValue)
         {
             _layoutSettings = layoutSettings;
-            _alwaysDisplayDungeonItems = alwaysDisplayDungeonItems;
+            _expectedValue = expectedValue;
 
             _layoutSettings.PropertyChanged += OnLayoutChanged;
 
-            UpdateAccessibility();
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            ChangePropagated?.Invoke(this, new EventArgs());
+            UpdateValue();
         }
 
         /// <summary>
@@ -80,18 +44,13 @@ namespace OpenTracker.Models.Requirements
         {
             if (e.PropertyName == nameof(ILayoutSettings.AlwaysDisplayDungeonItems))
             {
-                UpdateAccessibility();
+                UpdateValue();
             }
         }
 
-        /// <summary>
-        /// Updates the accessibility of this requirement.
-        /// </summary>
-        private void UpdateAccessibility()
+        protected override bool ConditionMet()
         {
-            Accessibility = 
-                _layoutSettings.AlwaysDisplayDungeonItems == _alwaysDisplayDungeonItems ?
-                AccessibilityLevel.Normal : AccessibilityLevel.None;
+            return _layoutSettings.AlwaysDisplayDungeonItems == _expectedValue;
         }
     }
 }

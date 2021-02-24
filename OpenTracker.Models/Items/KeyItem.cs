@@ -1,5 +1,4 @@
-﻿using OpenTracker.Models.AutoTracking.AutotrackValues;
-using OpenTracker.Models.Modes;
+﻿using OpenTracker.Models.Modes;
 using System;
 using System.ComponentModel;
 
@@ -7,11 +6,15 @@ namespace OpenTracker.Models.Items
 {
     public class KeyItem : Item
     {
+        private readonly IMode _mode;
         private readonly int _maximum;
         private readonly int _keyDropMaximumDelta;
 
         private int EffectiveMaximum =>
-            Mode.Instance.KeyDropShuffle ? _maximum + _keyDropMaximumDelta : _maximum;
+            _mode.KeyDropShuffle ? _maximum + _keyDropMaximumDelta : _maximum;
+
+        public new delegate KeyItem Factory(
+            ItemType type, int starting, int maximum, int keyDropMaximumDelta);
 
         /// <summary>
         /// Constructor
@@ -28,13 +31,17 @@ namespace OpenTracker.Models.Items
         /// <param name="autoTrackValue">
         /// The autotracking value for the item.
         /// </param>
-        public KeyItem(int starting, int maximum, int keyDropMaximumDelta, IAutoTrackValue autoTrackValue) : base(starting, autoTrackValue)
+        public KeyItem(
+            IMode mode, IItemAutoTrackValueFactory autoTrackValueFactory, ItemType type,
+            int starting, int maximum, int keyDropMaximumDelta)
+            : base(autoTrackValueFactory, type, starting)
         {
             if (starting > maximum)
             {
                 throw new ArgumentOutOfRangeException(nameof(starting));
             }
 
+            _mode = mode;
             _maximum = maximum;
             _keyDropMaximumDelta = keyDropMaximumDelta;
         }
@@ -50,7 +57,7 @@ namespace OpenTracker.Models.Items
         /// </param>
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.KeyDropShuffle))
+            if (e.PropertyName == nameof(IMode.KeyDropShuffle))
             {
                 if (Current > EffectiveMaximum)
                 {

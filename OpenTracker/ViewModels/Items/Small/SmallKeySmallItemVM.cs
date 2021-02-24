@@ -2,12 +2,11 @@
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
-using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
 using ReactiveUI;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -18,10 +17,12 @@ namespace OpenTracker.ViewModels.Items.Small
     /// <summary>
     /// This is the ViewModel of the small Items panel control representing a small key.
     /// </summary>
-    public class SmallKeySmallItemVM : SmallItemVMBase, IClickHandler
+    public class SmallKeySmallItemVM : ViewModelBase, ISmallItemVMBase, IClickHandler
     {
         private readonly IColorSettings _colorSettings;
         private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
+
         private readonly IRequirement _spacerRequirement;
         private readonly IRequirement _requirement;
         private readonly IItem _item;
@@ -61,10 +62,7 @@ namespace OpenTracker.ViewModels.Items.Small
             }
         }
 
-        public SmallKeySmallItemVM(IDungeon dungeon)
-            : this(AppSettings.Instance.Colors, UndoRedoManager.Instance, dungeon)
-        {
-        }
+        public delegate SmallKeySmallItemVM Factory(IDungeon dungeon);
 
         /// <summary>
         /// Constructor
@@ -72,22 +70,27 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="dungeon">
         /// The dungeon whose small keys are to be represented.
         /// </param>
-        private SmallKeySmallItemVM(
-            IColorSettings colorSettings, IUndoRedoManager undoRedoManager, IDungeon dungeon)
+        public SmallKeySmallItemVM(
+            IColorSettings colorSettings, IRequirementDictionary requirements,
+            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
+            AlternativeRequirement.Factory alternativeFactory,
+            AlwaysDisplayDungeonItemsRequirement.Factory alwaysDisplayFactory, IDungeon dungeon)
         {
             _colorSettings = colorSettings;
             _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
+
             _item = dungeon.SmallKeyItem;
 
-            _spacerRequirement = new AlternativeRequirement(new List<IRequirement>
+            _spacerRequirement = alternativeFactory(new List<IRequirement>
             {
-                new AlwaysDisplayDungeonItemsRequirement(true),
-                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]
+                alwaysDisplayFactory(true),
+                requirements[RequirementType.SmallKeyShuffleOn]
             });
 
             _requirement = dungeon.ID == LocationID.EasternPalace ?
-                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn] :
-                RequirementDictionary.Instance[RequirementType.NoRequirement];
+                requirements[RequirementType.KeyDropShuffleOn] :
+                requirements[RequirementType.NoRequirement];
 
             _colorSettings.PropertyChanged += OnColorsChanged;
             _item.PropertyChanged += OnItemChanged;
@@ -160,7 +163,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// </param>
         public void OnLeftClick(bool force = false)
         {
-            _undoRedoManager.Execute(new AddItem(_item));
+            _undoRedoManager.Execute(_undoableFactory.GetAddItem(_item));
         }
 
         /// <summary>
@@ -171,7 +174,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// </param>
         public void OnRightClick(bool force = false)
         {
-            _undoRedoManager.Execute(new RemoveItem(_item));
+            _undoRedoManager.Execute(_undoableFactory.GetRemoveItem(_item));
         }
     }
 }

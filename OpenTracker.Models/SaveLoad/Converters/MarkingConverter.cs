@@ -288,12 +288,12 @@ namespace OpenTracker.Models.SaveLoad.Converters
                 throw new ArgumentNullException(nameof(saveData));
             }
 
-            for (int i = 0; i < saveData.Markings.Count; i++)
+            for (int i = 0; i < saveData.Markings!.Count; i++)
             {
                 saveData.Markings[i] = GetPost141Value(saveData.Markings[i]);
             }
 
-            foreach (var section in saveData.Sections)
+            foreach (var section in saveData.Sections!)
             {
                 ConvertFrom141(section);
             }

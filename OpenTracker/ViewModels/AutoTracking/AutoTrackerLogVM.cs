@@ -39,11 +39,13 @@ namespace OpenTracker.ViewModels.AutoTracking
 
         public ReactiveCommand<Unit, Unit> ResetLogCommand { get; }
 
-        public AutoTrackerLogVM() : this(AutoTracker.Instance.SNESConnector.LogService)
-        {
-        }
-
-        private AutoTrackerLogVM(IAutoTrackerLogService logService)
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="logService">
+        /// The autotracking log service.
+        /// </param>
+        public AutoTrackerLogVM(IAutoTrackerLogService logService)
         {
             _logService = logService;
 
@@ -92,9 +94,8 @@ namespace OpenTracker.ViewModels.AutoTracking
 
                 foreach (var item in e.NewItems)
                 {
-                    var message = (LogMessage)item;
-
-                    if (message.LogLevel >= _logLevel)
+                    if (item != null && item is ILogMessage message &&
+                        message.LogLevel >= _logLevel)
                     {
                         AddLog(message);
                     }
@@ -108,7 +109,7 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// <param name="message">
         /// The log message.
         /// </param>
-        private void AddLog(LogMessage message)
+        private void AddLog(ILogMessage message)
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {

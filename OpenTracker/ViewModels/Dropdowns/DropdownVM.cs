@@ -1,9 +1,7 @@
-﻿using OpenTracker.Interfaces;
-using OpenTracker.Models.Dropdowns;
+﻿using OpenTracker.Models.Dropdowns;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels.Dropdowns
@@ -11,8 +9,9 @@ namespace OpenTracker.ViewModels.Dropdowns
     /// <summary>
     /// This is the ViewModel class for a dropdown icon.
     /// </summary>
-    public class DropdownVM : ViewModelBase, IClickHandler
+    public class DropdownVM : ViewModelBase, IDropdownVM
     {
+        private readonly IUndoRedoManager _undoRedoManager;
         private readonly IDropdown _dropdown;
         private readonly string _imageSourceBase;
 
@@ -20,6 +19,8 @@ namespace OpenTracker.ViewModels.Dropdowns
             _dropdown.RequirementMet;
         public string ImageSource =>
             _imageSourceBase + (_dropdown.Checked ? "1" : "0") + ".png";
+
+        public delegate IDropdownVM Factory(IDropdown dropdown, string imageSourceBase);
 
         /// <summary>
         /// Constructor
@@ -30,17 +31,18 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// <param name="dropdown">
         /// An item that is to be represented by this control.
         /// </param>
-        public DropdownVM(string imageSourceBase, IDropdown dropdown)
+        public DropdownVM(
+            IUndoRedoManager undoRedoManager, IDropdown dropdown, string imageSourceBase)
         {
-            _dropdown = dropdown ?? throw new ArgumentNullException(nameof(dropdown));
-            _imageSourceBase = imageSourceBase ??
-                throw new ArgumentNullException(nameof(imageSourceBase));
+            _undoRedoManager = undoRedoManager;
+            _dropdown = dropdown;
+            _imageSourceBase = imageSourceBase;
 
             _dropdown.PropertyChanged += OnDropdownChanged;
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the IItem interface.
+        /// Subscribes to the PropertyChanged event on the IDropdown interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -69,7 +71,7 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// </param>
         public void OnLeftClick(bool force)
         {
-            UndoRedoManager.Instance.Execute(new CheckDropdown(_dropdown));
+            _undoRedoManager.Execute(new CheckDropdown(_dropdown));
         }
 
         /// <summary>
@@ -80,7 +82,7 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// </param>
         public void OnRightClick(bool force)
         {
-            UndoRedoManager.Instance.Execute(new UncheckDropdown(_dropdown));
+            _undoRedoManager.Execute(new UncheckDropdown(_dropdown));
         }
     }
 }

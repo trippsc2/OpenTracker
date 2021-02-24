@@ -12,10 +12,11 @@ namespace OpenTracker.ViewModels.Maps
     /// <summary>
     /// This is the ViewModel of the map control.
     /// </summary>
-    public class MapVM : ViewModelBase
+    public class MapVM : ViewModelBase, IMapVM
     {
         private readonly ILayoutSettings _layoutSettings;
         private readonly IMode _mode;
+
         private readonly MapID _id;
 
         public Thickness Margin =>
@@ -24,7 +25,7 @@ namespace OpenTracker.ViewModels.Maps
                 Orientation.Horizontal => new Thickness(10, 20),
                 _ => new Thickness(20, 10)
             };
-        public string ImageSource 
+        public string ImageSource
         {
             get
             {
@@ -37,9 +38,7 @@ namespace OpenTracker.ViewModels.Maps
             }
         }
 
-        public MapVM(MapID id) : this(AppSettings.Instance.Layout, Mode.Instance, id)
-        {
-        }
+        public delegate IMapVM Factory(MapID id);
 
         /// <summary>
         /// Constructor
@@ -47,7 +46,7 @@ namespace OpenTracker.ViewModels.Maps
         /// <param name="id">
         /// The map identity.
         /// </param>
-        private MapVM(ILayoutSettings layoutSettings, IMode mode, MapID id)
+        public MapVM(ILayoutSettings layoutSettings, IMode mode, MapID id)
         {
             _layoutSettings = layoutSettings;
             _mode = mode;

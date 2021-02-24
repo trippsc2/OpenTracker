@@ -3,8 +3,7 @@ using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive;
 
@@ -13,15 +12,16 @@ namespace OpenTracker.ViewModels.Markings
     /// <summary>
     /// This is the ViewModel class for the marking select popup control.
     /// </summary>
-    public class MarkingSelectVM : ViewModelBase
+    public class MarkingSelectVM : ViewModelBase, IMarkingSelectVM
     {
         private readonly ILayoutSettings _layoutSettings;
         private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
         private readonly IMarking _marking;
 
         public double Scale =>
             _layoutSettings.UIScale;
-        public ObservableCollection<MarkingSelectItemVMBase> Buttons { get; }
+        public List<IMarkingSelectItemVMBase> Buttons { get; }
         public double Width { get; }
         public double Height { get; }
 
@@ -35,13 +35,8 @@ namespace OpenTracker.ViewModels.Markings
         public ReactiveCommand<MarkType?, Unit> ChangeMarkingCommand { get; }
         public ReactiveCommand<Unit, Unit> ClearMarkingCommand { get; }
 
-        public MarkingSelectVM(
-            IMarking marking, ObservableCollection<MarkingSelectItemVMBase> buttons,
-            double width, double height)
-            : this(AppSettings.Instance.Layout, UndoRedoManager.Instance, marking, buttons,
-                  width, height)
-        {
-        }
+        public delegate IMarkingSelectVM Factory(
+            IMarking marking, List<IMarkingSelectItemVMBase> buttons, double width, double height);
 
         /// <summary>
         /// Constructor
@@ -58,12 +53,15 @@ namespace OpenTracker.ViewModels.Markings
         /// <param name="height">
         /// The height of the popup.
         /// </param>
-        private MarkingSelectVM(
-            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager, IMarking marking,
-            ObservableCollection<MarkingSelectItemVMBase> buttons, double width, double height)
+        public MarkingSelectVM(
+            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager,
+            IUndoableFactory undoableFactory, IMarking marking,
+            List<IMarkingSelectItemVMBase> buttons, double width, double height)
         {
             _layoutSettings = layoutSettings;
             _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
+
             _marking = marking;
 
             Buttons = buttons;
@@ -87,7 +85,7 @@ namespace OpenTracker.ViewModels.Markings
         /// </param>
         private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(LayoutSettings.UIScale))
+            if (e.PropertyName == nameof(ILayoutSettings.UIScale))
             {
                 this.RaisePropertyChanged(nameof(Scale));
             }
@@ -98,7 +96,7 @@ namespace OpenTracker.ViewModels.Markings
         /// </summary>
         private void ClearMarking()
         {
-            _undoRedoManager.Execute(new SetMarking(_marking, MarkType.Unknown));
+            _undoRedoManager.Execute(_undoableFactory.GetSetMarking(_marking, MarkType.Unknown));
             PopupOpen = false;
         }
 
@@ -115,7 +113,7 @@ namespace OpenTracker.ViewModels.Markings
                 return;
             }
 
-            _undoRedoManager.Execute(new SetMarking(_marking, marking.Value));
+            _undoRedoManager.Execute(_undoableFactory.GetSetMarking(_marking, marking.Value));
             PopupOpen = false;
         }
     }

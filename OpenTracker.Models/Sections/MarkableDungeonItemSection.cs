@@ -31,10 +31,9 @@ namespace OpenTracker.Models.Sections
         }
         public int Total =>
             _section.Total;
-        public IMarking Marking { get; } =
-            MarkingFactory.GetMarking();
+        public IMarking Marking { get; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public AccessibilityLevel Accessibility
         {
@@ -47,15 +46,19 @@ namespace OpenTracker.Models.Sections
             set => _section.Accessible = value;
         }
 
+        public delegate MarkableDungeonItemSection Factory(IDungeonItemSection section);
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="section">
         /// The dungeon item section to be encapsulated.
         /// </param>
-        public MarkableDungeonItemSection(IDungeonItemSection section)
+        public MarkableDungeonItemSection(IMarking marking, IDungeonItemSection section)
         {
-            _section = section ?? throw new ArgumentNullException(nameof(section));
+            _section = section;
+
+            Marking = marking;
 
             _section.PropertyChanged += OnPropertyChanged;
         }

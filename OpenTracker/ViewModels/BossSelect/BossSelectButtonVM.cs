@@ -1,13 +1,12 @@
 ﻿using OpenTracker.Models.BossPlacements;
 using OpenTracker.Utils;
-using System;
 
 namespace OpenTracker.ViewModels.BossSelect
 {
     /// <summary>
     /// This is the ViewModel for the boss select button control.
     /// </summary>
-    public class BossSelectButtonVM : ViewModelBase
+    public class BossSelectButtonVM : ViewModelBase, IBossSelectButtonVM
     {
         private readonly IBossPlacement _bossPlacement;
 
@@ -15,9 +14,11 @@ namespace OpenTracker.ViewModels.BossSelect
         public string ImageSource =>
             Boss.HasValue ? 
             "avares://OpenTracker/Assets/Images/Bosses/" +
-            $"{Boss.ToString().ToLowerInvariant()}1.png" :
+            $"{Boss.ToString()!.ToLowerInvariant()}1.png" :
             "avares://OpenTracker/Assets/Images/Bosses/" +
             $"{_bossPlacement.DefaultBoss.ToString().ToLowerInvariant()}0.png";
+
+        public delegate IBossSelectButtonVM Factory(IBossPlacement bossPlacement, BossType? boss);
 
         /// <summary>
         /// Constructor
@@ -28,11 +29,11 @@ namespace OpenTracker.ViewModels.BossSelect
         /// <param name="bossPlacement">
         /// The boss placement to be manipulated.
         /// </param>
-        public BossSelectButtonVM(BossType? boss, IBossPlacement bossPlacement)
+        public BossSelectButtonVM(IBossPlacement bossPlacement, BossType? boss)
         {
+            _bossPlacement = bossPlacement;
+
             Boss = boss;
-            _bossPlacement = bossPlacement ??
-                throw new ArgumentNullException(nameof(bossPlacement));
         }
     }
 }

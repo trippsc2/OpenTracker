@@ -10,8 +10,8 @@ namespace OpenTracker.Models.AutoTracking
     {
         public string Opcode { get; }
         public string Space { get; }
-        public List<string> Flags { get; }
-        public List<string> Operands { get; }
+        public List<string>? Flags { get; }
+        public List<string>? Operands { get; }
 
         /// <summary>
         /// Constructor
@@ -29,8 +29,8 @@ namespace OpenTracker.Models.AutoTracking
         /// The operands of the request.
         /// </param>
         public RequestType(
-            string opcode, string space = "SNES", List<string> flags = null,
-            List<string> operands = null)
+            string opcode, string space = "SNES", List<string>? flags = null,
+            List<string>? operands = null)
         {
             Opcode = opcode ?? throw new ArgumentNullException(nameof(opcode));
             Space = space ?? throw new ArgumentNullException(nameof(space));

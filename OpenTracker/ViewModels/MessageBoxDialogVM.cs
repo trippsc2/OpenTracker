@@ -1,8 +1,5 @@
-﻿using OpenTracker.Interfaces;
-using OpenTracker.Utils;
-using OpenTracker.Utils.Dialog;
+﻿using OpenTracker.Utils.Dialog;
 using ReactiveUI;
-using System;
 using System.Reactive;
 
 namespace OpenTracker.ViewModels
@@ -10,12 +7,15 @@ namespace OpenTracker.ViewModels
     /// <summary>
     /// This is the ViewModel for the message box dialog window.
     /// </summary>
-    public class MessageBoxDialogVM : DialogViewModelBase<bool>
+    public class MessageBoxDialogVM : DialogViewModelBase<bool>,
+        IMessageBoxDialogVM
     {
         public ReactiveCommand<Unit, Unit> YesCommand { get; }
         public ReactiveCommand<Unit, Unit> NoCommand { get; }
         public string Title { get; }
         public string Text { get; }
+
+        public delegate IMessageBoxDialogVM Factory(string title, string text);
 
         /// <summary>
         /// Constructor

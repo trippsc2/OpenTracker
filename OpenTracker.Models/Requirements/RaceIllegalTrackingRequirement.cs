@@ -8,55 +8,27 @@ namespace OpenTracker.Models.Requirements
     /// <summary>
     /// This is the class for race illegal tracking requirements.
     /// </summary>
-    public class RaceIllegalTrackingRequirement : IRequirement
+    public class RaceIllegalTrackingRequirement : BooleanRequirement
     {
-        private readonly bool _raceIllegalTracking;
+        private readonly IAutoTracker _autoTracker;
+        private readonly bool _expectedValue;
 
-        public bool Met =>
-            Accessibility == AccessibilityLevel.Normal;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler ChangePropagated;
-
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
+        public delegate RaceIllegalTrackingRequirement Factory(bool expectedValue);
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="value">
+        /// <param name="expectedValue">
         /// The required value.
         /// </param>
-        public RaceIllegalTrackingRequirement(bool value)
+        public RaceIllegalTrackingRequirement(IAutoTracker autoTracker, bool expectedValue)
         {
-            _raceIllegalTracking = value;
+            _autoTracker = autoTracker;
+            _expectedValue = expectedValue;
 
-            AutoTracker.Instance.PropertyChanged += OnAutoTrackerChanged;
+            _autoTracker.PropertyChanged += OnAutoTrackerChanged;
 
-            UpdateAccessibility();
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            ChangePropagated?.Invoke(this, new EventArgs());
+            UpdateValue();
         }
 
         /// <summary>
@@ -70,19 +42,15 @@ namespace OpenTracker.Models.Requirements
         /// </param>
         private void OnAutoTrackerChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(AutoTracker.RaceIllegalTracking))
+            if (e.PropertyName == nameof(IAutoTracker.RaceIllegalTracking))
             {
-                UpdateAccessibility();
+                UpdateValue();
             }
         }
 
-        /// <summary>
-        /// Updates the accessibility of this requirement.
-        /// </summary>
-        private void UpdateAccessibility()
+        protected override bool ConditionMet()
         {
-            Accessibility = AutoTracker.Instance.RaceIllegalTracking == _raceIllegalTracking ?
-                AccessibilityLevel.Normal : AccessibilityLevel.None;
+            return _autoTracker.RaceIllegalTracking == _expectedValue;
         }
     }
 }

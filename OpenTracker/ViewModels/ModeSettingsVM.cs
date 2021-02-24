@@ -11,8 +11,12 @@ namespace OpenTracker.ViewModels
     /// <summary>
     /// This is the ViewModel for the mode settings popup control.
     /// </summary>
-    public class ModeSettingsVM : ViewModelBase
+    public class ModeSettingsVM : ViewModelBase, IModeSettingsVM
     {
+        private readonly IMode _mode;
+        private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
+
         public ReactiveCommand<string, Unit> ItemPlacementCommand { get; }
         public ReactiveCommand<Unit, Unit> MapShuffleCommand { get; }
         public ReactiveCommand<Unit, Unit> CompassShuffleCommand { get; }
@@ -28,61 +32,58 @@ namespace OpenTracker.ViewModels
         public ReactiveCommand<Unit, Unit> TakeAnyLocationsCommand { get; }
         public ReactiveCommand<Unit, Unit> KeyDropShuffleCommand { get; }
 
-        public static bool BasicItemPlacement =>
-            Mode.Instance.ItemPlacement == ItemPlacement.Basic;
-        public static bool AdvancedItemPlacement =>
-            Mode.Instance.ItemPlacement == ItemPlacement.Advanced;
+        public bool BasicItemPlacement =>
+            _mode.ItemPlacement == ItemPlacement.Basic;
+        public bool AdvancedItemPlacement =>
+            _mode.ItemPlacement == ItemPlacement.Advanced;
 
-        public static bool MapShuffle =>
-            Mode.Instance.MapShuffle;
-        public static bool CompassShuffle =>
-            Mode.Instance.CompassShuffle;
-        public static bool SmallKeyShuffle =>
-            Mode.Instance.SmallKeyShuffle;
-        public static bool BigKeyShuffle =>
-            Mode.Instance.BigKeyShuffle;
+        public bool MapShuffle =>
+            _mode.MapShuffle;
+        public bool CompassShuffle =>
+            _mode.CompassShuffle;
+        public bool SmallKeyShuffle =>
+            _mode.SmallKeyShuffle;
+        public bool BigKeyShuffle =>
+            _mode.BigKeyShuffle;
 
         public bool StandardOpenWorldState =>
-            Mode.Instance.WorldState == WorldState.StandardOpen;
-        public static bool InvertedWorldState =>
-            Mode.Instance.WorldState == WorldState.Inverted;
+            _mode.WorldState == WorldState.StandardOpen;
+        public bool InvertedWorldState =>
+            _mode.WorldState == WorldState.Inverted;
 
-        public static bool EntranceShuffleNone =>
-            Mode.Instance.EntranceShuffle == Models.Modes.EntranceShuffle.None;
-        public static bool EntranceShuffleDungeon =>
-            Mode.Instance.EntranceShuffle == Models.Modes.EntranceShuffle.Dungeon;
-        public static bool EntranceShuffleAll =>
-            Mode.Instance.EntranceShuffle == Models.Modes.EntranceShuffle.All;
-        public static bool EntranceShuffleInsanity =>
-            Mode.Instance.EntranceShuffle == EntranceShuffle.Insanity;
+        public bool EntranceShuffleNone =>
+            _mode.EntranceShuffle == Models.Modes.EntranceShuffle.None;
+        public bool EntranceShuffleDungeon =>
+            _mode.EntranceShuffle == Models.Modes.EntranceShuffle.Dungeon;
+        public bool EntranceShuffleAll =>
+            _mode.EntranceShuffle == Models.Modes.EntranceShuffle.All;
+        public bool EntranceShuffleInsanity =>
+            _mode.EntranceShuffle == EntranceShuffle.Insanity;
 
-        public static bool BossShuffle =>
-            Mode.Instance.BossShuffle;
-        public static bool EnemyShuffle =>
-            Mode.Instance.EnemyShuffle;
-        public static bool GuaranteedBossItems =>
-            Mode.Instance.GuaranteedBossItems;
-        public static bool ShopShuffle =>
-            Mode.Instance.ShopShuffle;
-        public static bool GenericKeys =>
-            Mode.Instance.GenericKeys;
-        public static bool TakeAnyLocations =>
-            Mode.Instance.TakeAnyLocations;
-        public static bool KeyDropShuffle =>
-            Mode.Instance.KeyDropShuffle;
+        public bool BossShuffle =>
+            _mode.BossShuffle;
+        public bool EnemyShuffle =>
+            _mode.EnemyShuffle;
+        public bool GuaranteedBossItems =>
+            _mode.GuaranteedBossItems;
+        public bool ShopShuffle =>
+            _mode.ShopShuffle;
+        public bool GenericKeys =>
+            _mode.GenericKeys;
+        public bool TakeAnyLocations =>
+            _mode.TakeAnyLocations;
+        public bool KeyDropShuffle =>
+            _mode.KeyDropShuffle;
 
         private bool _modeSettingsPopupOpen;
-        public bool ModeSettingsPopupOpen
-        {
-            get => _modeSettingsPopupOpen;
-            set => this.RaiseAndSetIfChanged(ref _modeSettingsPopupOpen, value);
-        }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public ModeSettingsVM()
+        public ModeSettingsVM(
+            IMode mode, IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory)
         {
+            _mode = mode;
+            _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
+
             ItemPlacementCommand = ReactiveCommand.Create<string>(
                 SetItemPlacement, this.WhenAnyValue(x => x.StandardOpenWorldState));
             MapShuffleCommand = ReactiveCommand.Create(ToggleMapShuffle);
@@ -99,7 +100,13 @@ namespace OpenTracker.ViewModels
             TakeAnyLocationsCommand = ReactiveCommand.Create(ToggleTakeAnyLocations);
             KeyDropShuffleCommand = ReactiveCommand.Create(ToggleKeyDropShuffle);
 
-            Mode.Instance.PropertyChanged += OnModeChanged;
+            _mode.PropertyChanged += OnModeChanged;
+        }
+
+        public bool ModeSettingsPopupOpen
+        {
+            get => _modeSettingsPopupOpen;
+            set => this.RaiseAndSetIfChanged(ref _modeSettingsPopupOpen, value);
         }
 
         /// <summary>
@@ -113,39 +120,39 @@ namespace OpenTracker.ViewModels
         /// </param>
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.ItemPlacement))
+            if (e.PropertyName == nameof(IMode.ItemPlacement))
             {
                 this.RaisePropertyChanged(nameof(BasicItemPlacement));
                 this.RaisePropertyChanged(nameof(AdvancedItemPlacement));
             }
 
-            if (e.PropertyName == nameof(Mode.MapShuffle))
+            if (e.PropertyName == nameof(IMode.MapShuffle))
             {
                 this.RaisePropertyChanged(nameof(MapShuffle));
             }
 
-            if (e.PropertyName == nameof(Mode.CompassShuffle))
+            if (e.PropertyName == nameof(IMode.CompassShuffle))
             {
                 this.RaisePropertyChanged(nameof(CompassShuffle));
             }
 
-            if (e.PropertyName == nameof(Mode.SmallKeyShuffle))
+            if (e.PropertyName == nameof(IMode.SmallKeyShuffle))
             {
                 this.RaisePropertyChanged(nameof(SmallKeyShuffle));
             }
 
-            if (e.PropertyName == nameof(Mode.BigKeyShuffle))
+            if (e.PropertyName == nameof(IMode.BigKeyShuffle))
             {
                 this.RaisePropertyChanged(nameof(BigKeyShuffle));
             }
 
-            if (e.PropertyName == nameof(Mode.WorldState))
+            if (e.PropertyName == nameof(IMode.WorldState))
             {
                 this.RaisePropertyChanged(nameof(StandardOpenWorldState));
                 this.RaisePropertyChanged(nameof(InvertedWorldState));
             }
 
-            if (e.PropertyName == nameof(Mode.EntranceShuffle))
+            if (e.PropertyName == nameof(IMode.EntranceShuffle))
             {
                 this.RaisePropertyChanged(nameof(EntranceShuffleNone));
                 this.RaisePropertyChanged(nameof(EntranceShuffleDungeon));
@@ -153,37 +160,37 @@ namespace OpenTracker.ViewModels
                 this.RaisePropertyChanged(nameof(EntranceShuffleInsanity));
             }
 
-            if (e.PropertyName == nameof(Mode.BossShuffle))
+            if (e.PropertyName == nameof(IMode.BossShuffle))
             {
                 this.RaisePropertyChanged(nameof(BossShuffle));
             }
 
-            if (e.PropertyName == nameof(Mode.EnemyShuffle))
+            if (e.PropertyName == nameof(IMode.EnemyShuffle))
             {
                 this.RaisePropertyChanged(nameof(EnemyShuffle));
             }
 
-            if (e.PropertyName == nameof(Mode.GuaranteedBossItems))
+            if (e.PropertyName == nameof(IMode.GuaranteedBossItems))
             {
                 this.RaisePropertyChanged(nameof(GuaranteedBossItems));
             }
 
-            if (e.PropertyName == nameof(Mode.ShopShuffle))
+            if (e.PropertyName == nameof(IMode.ShopShuffle))
             {
                 this.RaisePropertyChanged(nameof(ShopShuffle));
             }
 
-            if (e.PropertyName == nameof(Mode.GenericKeys))
+            if (e.PropertyName == nameof(IMode.GenericKeys))
             {
                 this.RaisePropertyChanged(nameof(GenericKeys));
             }
 
-            if (e.PropertyName == nameof(Mode.TakeAnyLocations))
+            if (e.PropertyName == nameof(IMode.TakeAnyLocations))
             {
                 this.RaisePropertyChanged(nameof(TakeAnyLocations));
             }
 
-            if (e.PropertyName == nameof(Mode.KeyDropShuffle))
+            if (e.PropertyName == nameof(IMode.KeyDropShuffle))
             {
                 this.RaisePropertyChanged(nameof(KeyDropShuffle));
             }
@@ -199,7 +206,7 @@ namespace OpenTracker.ViewModels
         {
             if (Enum.TryParse(itemPlacementString, out ItemPlacement itemPlacement))
             {
-                UndoRedoManager.Instance.Execute(new ChangeItemPlacement(itemPlacement));
+                _undoRedoManager.Execute(_undoableFactory.GetChangeItemPlacement(itemPlacement));
             }
         }
 
@@ -208,7 +215,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleMapShuffle()
         {
-            UndoRedoManager.Instance.Execute(new ChangeMapShuffle(!Mode.Instance.MapShuffle));
+            _undoRedoManager.Execute(_undoableFactory.GetChangeMapShuffle(!_mode.MapShuffle));
         }
 
         /// <summary>
@@ -216,7 +223,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleCompassShuffle()
         {
-            UndoRedoManager.Instance.Execute(new ChangeCompassShuffle(!Mode.Instance.CompassShuffle));
+            _undoRedoManager.Execute(_undoableFactory.GetChangeCompassShuffle(!_mode.CompassShuffle));
         }
 
         /// <summary>
@@ -224,7 +231,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleSmallKeyShuffle()
         {
-            UndoRedoManager.Instance.Execute(new ChangeSmallKeyShuffle(!Mode.Instance.SmallKeyShuffle));
+            _undoRedoManager.Execute(_undoableFactory.GetChangeSmallKeyShuffle(!_mode.SmallKeyShuffle));
         }
 
         /// <summary>
@@ -232,7 +239,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleBigKeyShuffle()
         {
-            UndoRedoManager.Instance.Execute(new ChangeBigKeyShuffle(!Mode.Instance.BigKeyShuffle));
+            _undoRedoManager.Execute(_undoableFactory.GetChangeBigKeyShuffle(!_mode.BigKeyShuffle));
         }
 
         /// <summary>
@@ -245,7 +252,7 @@ namespace OpenTracker.ViewModels
         {
             if (Enum.TryParse(worldStateString, out WorldState worldState))
             {
-                UndoRedoManager.Instance.Execute(new ChangeWorldState(worldState));
+                _undoRedoManager.Execute(_undoableFactory.GetChangeWorldState(worldState));
             }
         }
 
@@ -256,7 +263,7 @@ namespace OpenTracker.ViewModels
         {
             if (Enum.TryParse(entranceShuffleString, out EntranceShuffle entranceShuffle))
             {
-                UndoRedoManager.Instance.Execute(new ChangeEntranceShuffle(entranceShuffle));
+                _undoRedoManager.Execute(_undoableFactory.GetChangeEntranceShuffle(entranceShuffle));
             }
         }
 
@@ -265,7 +272,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleBossShuffle()
         {
-            UndoRedoManager.Instance.Execute(new ChangeBossShuffle(!Mode.Instance.BossShuffle));
+            _undoRedoManager.Execute(_undoableFactory.GetChangeBossShuffle(!_mode.BossShuffle));
         }
 
         /// <summary>
@@ -273,7 +280,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleEnemyShuffle()
         {
-            UndoRedoManager.Instance.Execute(new ChangeEnemyShuffle(!Mode.Instance.EnemyShuffle));
+            _undoRedoManager.Execute(_undoableFactory.GetChangeEnemyShuffle(!_mode.EnemyShuffle));
         }
 
         /// <summary>
@@ -281,14 +288,14 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleGuaranteedBossItems()
         {
-            UndoRedoManager.Instance.Execute(new ChangeGuaranteedBossItems(
-                !Mode.Instance.GuaranteedBossItems));
+            _undoRedoManager.Execute(_undoableFactory.GetChangeGuaranteedBossItems(
+                !_mode.GuaranteedBossItems));
         }
 
         private void ToggleShopShuffle()
         {
-            UndoRedoManager.Instance.Execute(new ChangeShopShuffle(
-                !Mode.Instance.ShopShuffle));
+            _undoRedoManager.Execute(_undoableFactory.GetChangeShopShuffle(
+                !_mode.ShopShuffle));
         }
 
         /// <summary>
@@ -296,8 +303,8 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleGenericKeys()
         {
-            UndoRedoManager.Instance.Execute(new ChangeGenericKeys(
-                !Mode.Instance.GenericKeys));
+            _undoRedoManager.Execute(_undoableFactory.GetChangeGenericKeys(
+                !_mode.GenericKeys));
         }
 
         /// <summary>
@@ -305,8 +312,8 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleTakeAnyLocations()
         {
-            UndoRedoManager.Instance.Execute(new ChangeTakeAnyLocations(
-                !Mode.Instance.TakeAnyLocations));
+            _undoRedoManager.Execute(_undoableFactory.GetChangeTakeAnyLocations(
+                !_mode.TakeAnyLocations));
         }
 
         /// <summary>
@@ -314,8 +321,8 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void ToggleKeyDropShuffle()
         {
-            UndoRedoManager.Instance.Execute(new ChangeKeyDropShuffle(
-                !Mode.Instance.KeyDropShuffle));
+            _undoRedoManager.Execute(_undoableFactory.GetChangeKeyDropShuffle(
+                !_mode.KeyDropShuffle));
         }
     }
 }

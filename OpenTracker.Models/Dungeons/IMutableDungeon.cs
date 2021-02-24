@@ -13,12 +13,14 @@ namespace OpenTracker.Models.Dungeons
     {
         LocationID ID { get; }
         Dictionary<KeyDoorID, IKeyDoor> BigKeyDoors { get; }
-        List<IDungeonItem> BossItems { get; }
+        List<IDungeonItem> Bosses { get; }
         Dictionary<DungeonItemID, IDungeonItem> Items { get; }
-        DungeonNodeDictionary Nodes { get; }
+        IDungeonNodeDictionary Nodes { get; }
         Dictionary<KeyDoorID, IKeyDoor> SmallKeyDoors { get; }
-        DungeonItemDictionary ItemDictionary { get; }
-        KeyDoorDictionary KeyDoorDictionary { get; }
+        IDungeonItemDictionary DungeonItems { get; }
+        IKeyDoorDictionary KeyDoors { get; }
+
+        delegate IMutableDungeon Factory(IDungeon dungeon);
 
         void ApplyState(DungeonState state);
         List<KeyDoorID> GetAccessibleKeyDoors(bool sequenceBreak = false);

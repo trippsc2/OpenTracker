@@ -1,6 +1,4 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.Modes;
-using System;
+﻿using OpenTracker.Models.Modes;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
@@ -8,55 +6,27 @@ namespace OpenTracker.Models.Requirements
     /// <summary>
     /// This is the class for entrance shuffle requirements.
     /// </summary>
-    public class EntranceShuffleRequirement : IRequirement
+    public class EntranceShuffleRequirement : BooleanRequirement
     {
-        private readonly EntranceShuffle _entranceShuffle;
+        private readonly IMode _mode;
+        private readonly EntranceShuffle _expectedValue;
 
-        public bool Met =>
-            Accessibility != AccessibilityLevel.None;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler ChangePropagated;
-
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
+        public delegate EntranceShuffleRequirement Factory(EntranceShuffle expectedValue);
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="entranceShuffle">
+        /// <param name="expectedValue">
         /// The required entrance shuffle value.
         /// </param>
-        public EntranceShuffleRequirement(EntranceShuffle entranceShuffle)
+        public EntranceShuffleRequirement(IMode mode, EntranceShuffle expectedValue)
         {
-            _entranceShuffle = entranceShuffle;
+            _mode = mode;
+            _expectedValue = expectedValue;
 
-            Mode.Instance.PropertyChanged += OnModeChanged;
+            _mode.PropertyChanged += OnModeChanged;
 
-            UpdateAccessibility();
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            ChangePropagated?.Invoke(this, new EventArgs());
+            UpdateValue();
         }
 
         /// <summary>
@@ -70,19 +40,15 @@ namespace OpenTracker.Models.Requirements
         /// </param>
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.EntranceShuffle))
+            if (e.PropertyName == nameof(IMode.EntranceShuffle))
             {
-                UpdateAccessibility();
+                UpdateValue();
             }
         }
 
-        /// <summary>
-        /// Updates the accessibility of this requirement.
-        /// </summary>
-        private void UpdateAccessibility()
+        protected override bool ConditionMet()
         {
-            Accessibility = Mode.Instance.EntranceShuffle == _entranceShuffle ?
-                AccessibilityLevel.Normal : AccessibilityLevel.None;
+            return _mode.EntranceShuffle == _expectedValue;
         }
     }
 }

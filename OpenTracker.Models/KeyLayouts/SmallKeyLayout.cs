@@ -13,12 +13,17 @@ namespace OpenTracker.Models.KeyLayouts
     /// </summary>
     public class SmallKeyLayout : IKeyLayout
     {
+        private readonly IMode _mode;
         private readonly int _count;
         private readonly List<DungeonItemID> _smallKeyLocations;
         private readonly bool _bigKeyInLocations;
         private readonly List<IKeyLayout> _children;
         private readonly IRequirement _requirement;
         private readonly IDungeon _dungeon;
+
+        public delegate SmallKeyLayout Factory(
+            int count, List<DungeonItemID> smallKeyLocations, bool bigKeyInLocations,
+            List<IKeyLayout> children, IDungeon dungeon, IRequirement requirement);
 
         /// <summary>
         /// Constructor
@@ -43,16 +48,16 @@ namespace OpenTracker.Models.KeyLayouts
         /// The requirement for this key layout to be valid.
         /// </param>
         public SmallKeyLayout(
-            int count, List<DungeonItemID> smallKeyLocations, bool bigKeyInLocations,
-            List<IKeyLayout> children, IDungeon dungeon, IRequirement requirement = null)
+            IMode mode, int count, List<DungeonItemID> smallKeyLocations, bool bigKeyInLocations,
+            List<IKeyLayout> children, IDungeon dungeon, IRequirement requirement)
         {
+            _mode = mode;
             _count = count;
-            _smallKeyLocations = smallKeyLocations ??
-                throw new ArgumentNullException(nameof(smallKeyLocations));
+            _smallKeyLocations = smallKeyLocations;
             _bigKeyInLocations = bigKeyInLocations;
-            _children = children ?? throw new ArgumentNullException(nameof(children));
-            _dungeon = dungeon ?? throw new ArgumentNullException(nameof(dungeon));
-            _requirement = requirement ?? RequirementDictionary.Instance[RequirementType.NoRequirement];
+            _children = children;
+            _dungeon = dungeon;
+            _requirement = requirement;
         }
 
         /// <summary>
@@ -124,7 +129,7 @@ namespace OpenTracker.Models.KeyLayouts
 
             foreach (var item in _smallKeyLocations)
             {
-                switch (dungeonData.ItemDictionary[item].Accessibility)
+                switch (dungeonData.DungeonItems[item].Accessibility)
                 {
                     case AccessibilityLevel.SequenceBreak:
                         {
@@ -154,7 +159,7 @@ namespace OpenTracker.Models.KeyLayouts
                 return false;
             }
 
-            int dungeonSmallKeys = Mode.Instance.KeyDropShuffle ?
+            int dungeonSmallKeys = _mode.KeyDropShuffle ?
                 _dungeon.SmallKeys + _dungeon.SmallKeyDrops.Count : _dungeon.SmallKeys;
 
             if (!ValidateMaximumKeyCount(dungeonSmallKeys, state.KeysCollected, inaccessible))

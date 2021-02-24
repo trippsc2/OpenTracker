@@ -69,7 +69,7 @@ namespace OpenTracker.UnitTests.DungeonNodes
 
             foreach (var door in unlockedDoors)
             {
-                dungeonData.KeyDoorDictionary[door].Unlocked = true;
+                dungeonData.KeyDoors[door].Unlocked = true;
             }
 
             Assert.Equal(expected, dungeonData.Nodes[id].Accessibility);

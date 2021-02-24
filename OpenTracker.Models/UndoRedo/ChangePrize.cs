@@ -10,7 +10,9 @@ namespace OpenTracker.Models.UndoRedo
     public class ChangePrize : IUndoable
     {
         private readonly IPrizePlacement _prizePlacement;
-        private IItem _previousItem;
+        private IItem? _previousItem;
+
+        public delegate ChangePrize Factory(IPrizePlacement prizePlacement);
 
         /// <summary>
         /// Constructor

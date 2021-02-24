@@ -7,8 +7,18 @@ namespace OpenTracker.Models.Locations
     /// <summary>
     /// This is the class for creating map locations.
     /// </summary>
-    public static class MapLocationFactory
+    public class MapLocationFactory : IMapLocationFactory
     {
+        private readonly IRequirementDictionary _requirements;
+        private readonly IMapLocation.Factory _factory;
+
+        public MapLocationFactory(
+            IRequirementDictionary requirements, IMapLocation.Factory factory)
+        {
+            _requirements = requirements;
+            _factory = factory;
+        }
+
         /// <summary>
         /// Returns the list of map locations for the specified location.
         /// </summary>
@@ -18,1569 +28,1325 @@ namespace OpenTracker.Models.Locations
         /// <returns>
         /// The list of map locations.
         /// </returns>
-        public static List<MapLocation> GetMapLocations(LocationID id)
+        public List<IMapLocation> GetMapLocations(ILocation location)
         {
-            return id switch
+            return location.ID switch
             {
-                LocationID.LinksHouse => new List<MapLocation>
+                LocationID.LinksHouse => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1097, 1366,
-                        RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen]),
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1097, 1366,
-                        RequirementDictionary.Instance[RequirementType.WorldStateInvertedEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1097, 1366, location,
+                        _requirements[RequirementType.WorldStateStandardOpen]),
+                    _factory(MapID.DarkWorld, 1097, 1366, location,
+                        _requirements[RequirementType.WorldStateInvertedEntranceShuffleNoneDungeon])
                 },
-                LocationID.Pedestal => new List<MapLocation>
+                LocationID.Pedestal => new List<IMapLocation>
                 {
-                    new MapLocation(id, MapID.LightWorld, 83, 101)
+                    _factory(MapID.LightWorld, 83, 101, location,
+                        _requirements[RequirementType.NoRequirement])
                 },
-                LocationID.LumberjackCave => new List<MapLocation>
+                LocationID.LumberjackCave => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 633, 117,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 633, 117, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.BlindsHouse => new List<MapLocation>
+                LocationID.BlindsHouse => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 307, 840,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 307, 840, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.TheWell => new List<MapLocation>
+                LocationID.TheWell => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 47, 833,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 47, 833, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.BottleVendor => new List<MapLocation>
+                LocationID.BottleVendor => new List<IMapLocation>
                 {
-                    new MapLocation(id, MapID.LightWorld, 190, 933)
+                    _factory(MapID.LightWorld, 190, 933, location,
+                        _requirements[RequirementType.NoRequirement])
                 },
-                LocationID.ChickenHouse => new List<MapLocation>
+                LocationID.ChickenHouse => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 197, 1066,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 197, 1066, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.Tavern => new List<MapLocation>
+                LocationID.Tavern => new List<IMapLocation>
                 {
-                    new MapLocation(id, MapID.LightWorld, 320, 1145)
+                    _factory(MapID.LightWorld, 320, 1145, location,
+                        _requirements[RequirementType.NoRequirement])
                 },
-                LocationID.SickKid => new List<MapLocation>
+                LocationID.SickKid => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 314, 1060,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 314, 1060, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.MagicBat => new List<MapLocation>
+                LocationID.MagicBat => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 650, 1127,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 650, 1127, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.RaceGame => new List<MapLocation>
+                LocationID.RaceGame => new List<IMapLocation>
                 {
-                    new MapLocation(id, MapID.LightWorld, 111, 1354)
+                    _factory(MapID.LightWorld, 111, 1354, location,
+                        _requirements[RequirementType.NoRequirement])
                 },
-                LocationID.Library => new List<MapLocation>
+                LocationID.Library => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 313, 1310,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 313, 1310, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.MushroomSpot => new List<MapLocation>
+                LocationID.MushroomSpot => new List<IMapLocation>
                 {
-                    new MapLocation(id, MapID.LightWorld, 244, 170)
+                    _factory(MapID.LightWorld, 244, 170, location,
+                        _requirements[RequirementType.NoRequirement])
                 },
-                LocationID.ForestHideout => new List<MapLocation>
+                LocationID.ForestHideout => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 380, 264,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 380, 264, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.CastleSecret => new List<MapLocation>
+                LocationID.CastleSecret => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1196, 834,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1196, 834, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.WitchsHut => new List<MapLocation>
+                LocationID.WitchsHut => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1607, 665,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1607, 665, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.SahasrahlasHut => new List<MapLocation>
+                LocationID.SahasrahlasHut => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1625, 900,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1625, 900, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.BonkRocks => new List<MapLocation>
+                LocationID.BonkRocks => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 777, 590,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 777, 590, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.KingsTomb => new List<MapLocation>
+                LocationID.KingsTomb => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1207, 598,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1207, 598, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.AginahsCave => new List<MapLocation>
+                LocationID.AginahsCave => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 400, 1655,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 400, 1655, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.GroveDiggingSpot => new List<MapLocation>
+                LocationID.GroveDiggingSpot => new List<IMapLocation>
                 {
-                    new MapLocation(id, MapID.LightWorld, 600, 1350)
+                    _factory(MapID.LightWorld, 600, 1350, location,
+                        _requirements[RequirementType.NoRequirement])
                 },
-                LocationID.Dam => new List<MapLocation>
+                LocationID.Dam => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 942, 1880,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]),
-                    new MapLocation(
-                        id, MapID.LightWorld, 900, 1860,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity]),
+                    _factory(MapID.LightWorld, 942, 1880, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon]),
+                    _factory(MapID.LightWorld, 900, 1860, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity]),
                 },
-                LocationID.MiniMoldormCave => new List<MapLocation>
+                LocationID.MiniMoldormCave => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1309, 1887,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1309, 1887, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.IceRodCave => new List<MapLocation>
+                LocationID.IceRodCave => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1795, 1547,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1795, 1547, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.Hobo => new List<MapLocation>
+                LocationID.Hobo => new List<IMapLocation>
                 {
-                    new MapLocation(id, MapID.LightWorld, 1390, 1390)
+                    _factory(MapID.LightWorld, 1390, 1390, location,
+                        _requirements[RequirementType.NoRequirement])
                 },
-                LocationID.PyramidLedge => new List<MapLocation>
+                LocationID.PyramidLedge => new List<IMapLocation>
                 {
-                    new MapLocation(id, MapID.DarkWorld, 1164, 922)
+                    _factory(MapID.DarkWorld, 1164, 922, location,
+                        _requirements[RequirementType.NoRequirement])
                 },
-                LocationID.FatFairy => new List<MapLocation>
+                LocationID.FatFairy => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 940, 976,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 940, 976, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.HauntedGrove => new List<MapLocation>
+                LocationID.HauntedGrove => new List<IMapLocation>
                 {
-                    new MapLocation(id, MapID.DarkWorld, 620, 1371)
+                    _factory(MapID.DarkWorld, 620, 1371, location,
+                        _requirements[RequirementType.NoRequirement])
                 },
-                LocationID.HypeCave => new List<MapLocation>
+                LocationID.HypeCave => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1200, 1560,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 1200, 1560, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.BombosTablet => new List<MapLocation>
+                LocationID.BombosTablet => new List<IMapLocation>
                 {
-                    new MapLocation(id, MapID.LightWorld, 440, 1845),
-                    new MapLocation(
-                        id, MapID.DarkWorld, 440, 1845,
-                        RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen])
+                    _factory(MapID.LightWorld, 440, 1845, location,
+                        _requirements[RequirementType.NoRequirement]),
+                    _factory(MapID.DarkWorld, 440, 1845, location,
+                        _requirements[RequirementType.WorldStateStandardOpen])
                 },
-                LocationID.SouthOfGrove => new List<MapLocation>
+                LocationID.SouthOfGrove => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 552, 1693,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]),
-                    new MapLocation(
-                        id, MapID.DarkWorld, 552, 1693,
-                        RequirementDictionary.Instance[RequirementType.WorldStateStandardOpenEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 552, 1693, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon]),
+                    _factory(MapID.DarkWorld, 552, 1693, location,
+                        _requirements[RequirementType.WorldStateStandardOpenEntranceShuffleNoneDungeon])
                 },
-                LocationID.DiggingGame => new List<MapLocation>
+                LocationID.DiggingGame => new List<IMapLocation>
                 {
-                    new MapLocation(id, MapID.DarkWorld, 100, 1385)
+                    _factory(MapID.DarkWorld, 100, 1385, location,
+                        _requirements[RequirementType.NoRequirement])
                 },
-                LocationID.WaterfallFairy => new List<MapLocation>
+                LocationID.WaterfallFairy => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1806, 286,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1806, 286, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.ZoraArea => new List<MapLocation>
+                LocationID.ZoraArea => new List<IMapLocation>
                 {
-                    new MapLocation(id, MapID.LightWorld, 1920, 273)
+                    _factory(MapID.LightWorld, 1920, 273, location,
+                        _requirements[RequirementType.NoRequirement])
                 },
-                LocationID.Catfish => new List<MapLocation>
+                LocationID.Catfish => new List<IMapLocation>
                 {
-                    new MapLocation(id, MapID.DarkWorld, 1813, 347)
+                    _factory(MapID.DarkWorld, 1813, 347, location,
+                        _requirements[RequirementType.NoRequirement])
                 },
-                LocationID.GraveyardLedge => new List<MapLocation>
+                LocationID.GraveyardLedge => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1132, 549,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]),
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1132, 530,
-                        RequirementDictionary.Instance[RequirementType.WorldStateStandardOpenEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1132, 549, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon]),
+                    _factory(MapID.DarkWorld, 1132, 530, location,
+                        _requirements[RequirementType.WorldStateStandardOpenEntranceShuffleNoneDungeon])
                 },
-                LocationID.DesertLedge => new List<MapLocation>
+                LocationID.DesertLedge => new List<IMapLocation>
                 {
-                    new MapLocation(id, MapID.LightWorld, 40, 1835)
+                    _factory(MapID.LightWorld, 40, 1835, location,
+                        _requirements[RequirementType.NoRequirement])
                 },
-                LocationID.CShapedHouse => new List<MapLocation>
+                LocationID.CShapedHouse => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 414, 969,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 414, 969, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.TreasureGame => new List<MapLocation>
+                LocationID.TreasureGame => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 100, 936,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 100, 936, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.BombableShack => new List<MapLocation>
+                LocationID.BombableShack => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 219, 1171,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 219, 1171, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.Blacksmith => new List<MapLocation>
+                LocationID.Blacksmith => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 616, 1054,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]),
-                    new MapLocation(
-                        id, MapID.DarkWorld, 295, 1325,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 616, 1054, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon]),
+                    _factory(MapID.DarkWorld, 295, 1325, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.PurpleChest => new List<MapLocation>
+                LocationID.PurpleChest => new List<IMapLocation>
                 {
-                    new MapLocation(id, MapID.LightWorld, 680, 1805),
-                    new MapLocation(id, MapID.DarkWorld, 601, 1050)
+                    _factory(MapID.LightWorld, 680, 1805, location,
+                        _requirements[RequirementType.NoRequirement]),
+                    _factory(MapID.DarkWorld, 601, 1050, location,
+                        _requirements[RequirementType.NoRequirement])
                 },
-                LocationID.HammerPegs => new List<MapLocation>
+                LocationID.HammerPegs => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 636, 1214,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 636, 1214, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.BumperCave => new List<MapLocation>
+                LocationID.BumperCave => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 687, 340,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]),
-                    new MapLocation(
-                        id, MapID.DarkWorld, 680, 315,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 687, 340, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon]),
+                    _factory(MapID.DarkWorld, 680, 315, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.LakeHyliaIsland => new List<MapLocation>
+                LocationID.LakeHyliaIsland => new List<IMapLocation>
                 {
-                    new MapLocation(id, MapID.LightWorld, 1450, 1666),
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1450, 1666,
-                        RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen])
+                    _factory(MapID.LightWorld, 1450, 1666, location,
+                        _requirements[RequirementType.NoRequirement]),
+                    _factory(MapID.DarkWorld, 1450, 1666, location,
+                        _requirements[RequirementType.WorldStateStandardOpen])
                 },
-                LocationID.MireShack => new List<MapLocation>
+                LocationID.MireShack => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 77, 1600,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 77, 1600, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.CheckerboardCave => new List<MapLocation>
+                LocationID.CheckerboardCave => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 354, 1560,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]),
-                    new MapLocation(
-                        id, MapID.DarkWorld, 334, 1557,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 354, 1560, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon]),
+                    _factory(MapID.DarkWorld, 334, 1557, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.OldMan => new List<MapLocation>
+                LocationID.OldMan => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 816, 378,
-                        RequirementDictionary.Instance[RequirementType.WorldStateInvertedEntranceShuffleNoneDungeon]),
-                    new MapLocation(
-                        id, MapID.LightWorld, 900, 440,
-                        RequirementDictionary.Instance[RequirementType.WorldStateStandardOpenEntranceShuffleNoneDungeon]),
-                    new MapLocation(
-                        id, MapID.DarkWorld, 816, 378,
-                        RequirementDictionary.Instance[RequirementType.WorldStateInvertedEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 816, 378, location,
+                        _requirements[RequirementType.WorldStateInvertedEntranceShuffleNoneDungeon]),
+                    _factory(MapID.LightWorld, 900, 440, location,
+                        _requirements[RequirementType.WorldStateStandardOpenEntranceShuffleNoneDungeon]),
+                    _factory(MapID.DarkWorld, 816, 378, location,
+                        _requirements[RequirementType.WorldStateInvertedEntranceShuffleNoneDungeon])
                 },
-                LocationID.SpectacleRock => new List<MapLocation>
+                LocationID.SpectacleRock => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 980, 178,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]),
-                    new MapLocation(
-                        id, MapID.LightWorld, 1036, 170,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 980, 178, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon]),
+                    _factory(MapID.LightWorld, 1036, 170, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.EtherTablet => new List<MapLocation>
+                LocationID.EtherTablet => new List<IMapLocation>
                 {
-                    new MapLocation(id, MapID.LightWorld, 844, 38)
+                    _factory(MapID.LightWorld, 844, 38, location,
+                        _requirements[RequirementType.NoRequirement])
                 },
-                LocationID.SpikeCave => new List<MapLocation>
+                LocationID.SpikeCave => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1151, 294,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 1151, 294, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.SpiralCave => new List<MapLocation>
+                LocationID.SpiralCave => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1598, 180,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1598, 180, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.ParadoxCave => new List<MapLocation>
+                LocationID.ParadoxCave => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1731, 434,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1731, 434, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.SuperBunnyCave => new List<MapLocation>
+                LocationID.SuperBunnyCave => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1695, 290,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 1695, 290, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.HookshotCave => new List<MapLocation>
+                LocationID.HookshotCave => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1670, 126,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 1670, 126, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.FloatingIsland => new List<MapLocation>
+                LocationID.FloatingIsland => new List<IMapLocation>
                 {
-                    new MapLocation(id, MapID.LightWorld, 1627, 40),
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1627, 40,
-                        RequirementDictionary.Instance[RequirementType.WorldStateStandardOpenEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1627, 40, location,
+                        _requirements[RequirementType.NoRequirement]),
+                    _factory(MapID.DarkWorld, 1627, 40, location,
+                        _requirements[RequirementType.WorldStateStandardOpenEntranceShuffleNoneDungeon])
                 },
-                LocationID.MimicCave => new List<MapLocation>
+                LocationID.MimicCave => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1694, 190,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]),
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1693, 205,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1694, 190, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon]),
+                    _factory(MapID.DarkWorld, 1693, 205, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeon])
                 },
-                LocationID.HyruleCastle => new List<MapLocation>
+                LocationID.HyruleCastle => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1003, 926,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]),
-                    new MapLocation(
-                        id, MapID.LightWorld, 925, 540,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeonAll]),
-                    new MapLocation(
-                        id, MapID.LightWorld, 925, 516,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity])
+                    _factory(MapID.LightWorld, 1003, 926, location,
+                        _requirements[RequirementType.EntranceShuffleNone]),
+                    _factory(MapID.LightWorld, 925, 540, location,
+                        _requirements[RequirementType.EntranceShuffleNoneDungeonAll]),
+                    _factory(MapID.LightWorld, 925, 516, location,
+                        _requirements[RequirementType.EntranceShuffleInsanity])
                 },
-                LocationID.AgahnimTower => new List<MapLocation>
+                LocationID.AgahnimTower => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1003, 797,
-                        RequirementDictionary.Instance[RequirementType.WorldStateStandardOpenEntranceShuffleNone]),
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1126, 68,
-                        RequirementDictionary.Instance[RequirementType.WorldStateInvertedEntranceShuffleNone]),
-                    new MapLocation(
-                        id, MapID.LightWorld, 1000, 750,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.LightWorld, 1003, 797, location,
+                        _requirements[RequirementType.WorldStateStandardOpenEntranceShuffleNone]),
+                    _factory(MapID.DarkWorld, 1126, 68, location,
+                        _requirements[RequirementType.WorldStateInvertedEntranceShuffleNone]),
+                    _factory(MapID.LightWorld, 1000, 750, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.EasternPalace => new List<MapLocation>
+                LocationID.EasternPalace => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1925, 791,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]),
-                    new MapLocation(
-                        id, MapID.LightWorld, 1925, 780,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.LightWorld, 1925, 791, location,
+                        _requirements[RequirementType.EntranceShuffleNone]),
+                    _factory(MapID.LightWorld, 1925, 780, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.DesertPalace => new List<MapLocation>
+                LocationID.DesertPalace => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 146, 1584,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]),
-                    new MapLocation(
-                        id, MapID.LightWorld, 150, 1700,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.LightWorld, 146, 1584, location,
+                        _requirements[RequirementType.EntranceShuffleNone]),
+                    _factory(MapID.LightWorld, 150, 1700, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.TowerOfHera => new List<MapLocation>
+                LocationID.TowerOfHera => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1126, 68,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]),
-                    new MapLocation(
-                        id, MapID.LightWorld, 1125, 20,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.LightWorld, 1126, 68, location,
+                        _requirements[RequirementType.EntranceShuffleNone]),
+                    _factory(MapID.LightWorld, 1125, 20, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.PalaceOfDarkness => new List<MapLocation>
+                LocationID.PalaceOfDarkness => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1924, 800,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]),
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1925, 785,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.DarkWorld, 1924, 800, location,
+                        _requirements[RequirementType.EntranceShuffleNone]),
+                    _factory(MapID.DarkWorld, 1925, 785, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.SwampPalace => new List<MapLocation>
+                LocationID.SwampPalace => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 940, 1880,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]),
-                    new MapLocation(
-                        id, MapID.DarkWorld, 940, 1840,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.DarkWorld, 940, 1880, location,
+                        _requirements[RequirementType.EntranceShuffleNone]),
+                    _factory(MapID.DarkWorld, 940, 1840, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.SkullWoods => new List<MapLocation>
+                LocationID.SkullWoods => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 79, 121,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]),
-                    new MapLocation(
-                        id, MapID.DarkWorld, 80, 50,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.DarkWorld, 79, 121, location,
+                        _requirements[RequirementType.EntranceShuffleNone]),
+                    _factory(MapID.DarkWorld, 80, 50, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.ThievesTown => new List<MapLocation>
+                LocationID.ThievesTown => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 251, 971,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]),
-                    new MapLocation(
-                        id, MapID.DarkWorld, 255, 935,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.DarkWorld, 251, 971, location,
+                        _requirements[RequirementType.EntranceShuffleNone]),
+                    _factory(MapID.DarkWorld, 255, 935, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.IcePalace => new List<MapLocation>
+                LocationID.IcePalace => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1600, 1735,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]),
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1600, 1695,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.DarkWorld, 1600, 1735, location,
+                        _requirements[RequirementType.EntranceShuffleNone]),
+                    _factory(MapID.DarkWorld, 1600, 1695, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.MiseryMire => new List<MapLocation>
+                LocationID.MiseryMire => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 150, 1710,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]),
-                    new MapLocation(
-                        id, MapID.DarkWorld, 150, 1600,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.DarkWorld, 150, 1710, location,
+                        _requirements[RequirementType.EntranceShuffleNone]),
+                    _factory(MapID.DarkWorld, 150, 1600, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.TurtleRock => new List<MapLocation>
+                LocationID.TurtleRock => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1890, 144,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]),
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1890, 125,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.DarkWorld, 1890, 144, location,
+                        _requirements[RequirementType.EntranceShuffleNone]),
+                    _factory(MapID.DarkWorld, 1890, 125, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.GanonsTower => new List<MapLocation>
+                LocationID.GanonsTower => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1126, 68,
-                        RequirementDictionary.Instance[RequirementType.WorldStateStandardOpenEntranceShuffleNone]),
-                    new MapLocation(
-                        id, MapID.LightWorld, 1003, 797,
-                        RequirementDictionary.Instance[RequirementType.WorldStateInvertedEntranceShuffleNone]),
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1125, 30,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.DarkWorld, 1126, 68, location,
+                        _requirements[RequirementType.WorldStateStandardOpenEntranceShuffleNone]),
+                    _factory(MapID.LightWorld, 1003, 797, location,
+                        _requirements[RequirementType.WorldStateInvertedEntranceShuffleNone]),
+                    _factory(MapID.DarkWorld, 1125, 30, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.LumberjackHouseEntrance => new List<MapLocation>
+                LocationID.LumberjackHouseEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 675, 120,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 675, 120, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.LumberjackCaveEntrance => new List<MapLocation>
+                LocationID.LumberjackCaveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 600, 145,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 600, 145, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.DeathMountainEntryCave => new List<MapLocation>
+                LocationID.DeathMountainEntryCave => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 715, 350,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 715, 350, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.DeathMountainExitCave => new List<MapLocation>
+                LocationID.DeathMountainExitCave => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 720, 305,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 720, 305, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.KakarikoFortuneTellerEntrance => new List<MapLocation>
+                LocationID.KakarikoFortuneTellerEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 375, 645,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 375, 645, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.WomanLeftDoor => new List<MapLocation>
+                LocationID.WomanLeftDoor => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 305, 840,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 305, 840, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.WomanRightDoor => new List<MapLocation>
+                LocationID.WomanRightDoor => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 340, 840,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 340, 840, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.LeftSnitchHouseEntrance => new List<MapLocation>
+                LocationID.LeftSnitchHouseEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 100, 940,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 100, 940, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.RightSnitchHouseEntrance => new List<MapLocation>
+                LocationID.RightSnitchHouseEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 415, 965,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 415, 965, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.BlindsHouseEntrance => new List<MapLocation>
+                LocationID.BlindsHouseEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 255, 840,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 255, 840, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.TheWellEntrance => new List<MapLocation>
+                LocationID.TheWellEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 47, 833,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 47, 833, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.ChickenHouseEntrance => new List<MapLocation>
+                LocationID.ChickenHouseEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 197, 1066,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 197, 1066, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.GrassHouseEntrance => new List<MapLocation>
+                LocationID.GrassHouseEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 410, 1075,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 410, 1075, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.TavernFront => new List<MapLocation>
+                LocationID.TavernFront => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 320, 1195,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 320, 1195, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.KakarikoShopEntrance => new List<MapLocation>
+                LocationID.KakarikoShopEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 220, 1175,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 220, 1175, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.BombHutEntrance => new List<MapLocation>
+                LocationID.BombHutEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 55, 1195,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 55, 1195, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.SickKidEntrance => new List<MapLocation>
+                LocationID.SickKidEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 314, 1060,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 314, 1060, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.BlacksmithHouse => new List<MapLocation>
+                LocationID.BlacksmithHouse => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 615, 1055,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 615, 1055, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.MagicBatEntrance => new List<MapLocation>
+                LocationID.MagicBatEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 650, 1127,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 650, 1127, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.ChestGameEntrance => new List<MapLocation>
+                LocationID.ChestGameEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 425, 1410,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 425, 1410, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.RaceHouseLeft => new List<MapLocation>
+                LocationID.RaceHouseLeft => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 220, 1435,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 220, 1435, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.RaceHouseRight => new List<MapLocation>
+                LocationID.RaceHouseRight => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 280, 1435,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 280, 1435, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.LibraryEntrance => new List<MapLocation>
+                LocationID.LibraryEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 313, 1310,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 313, 1310, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.ForestHideoutEntrance => new List<MapLocation>
+                LocationID.ForestHideoutEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 380, 264,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 380, 264, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.ForestChestGameEntrance => new List<MapLocation>
+                LocationID.ForestChestGameEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 370, 40,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 370, 40, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.CastleSecretEntrance => new List<MapLocation>
+                LocationID.CastleSecretEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1196, 834,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1196, 834, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.CastleMainEntrance => new List<MapLocation>
+                LocationID.CastleMainEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1000, 895,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.LightWorld, 1000, 895, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.CastleLeftEntrance => new List<MapLocation>
+                LocationID.CastleLeftEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 900, 780,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.LightWorld, 900, 780, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.CastleRightEntrance => new List<MapLocation>
+                LocationID.CastleRightEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1105, 780,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.LightWorld, 1105, 780, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.CastleTowerEntrance => new List<MapLocation>
+                LocationID.CastleTowerEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1000, 800,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.LightWorld, 1000, 800, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.DamEntrance => new List<MapLocation>
+                LocationID.DamEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 942, 1880,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 942, 1880, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.CentralBonkRocksEntrance => new List<MapLocation>
+                LocationID.CentralBonkRocksEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 945, 1310,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 945, 1310, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.WitchsHutEntrance => new List<MapLocation>
+                LocationID.WitchsHutEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1607, 670,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1607, 670, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.WaterfallFairyEntrance => new List<MapLocation>
+                LocationID.WaterfallFairyEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1806, 286,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1806, 286, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.SahasrahlasHutEntrance => new List<MapLocation>
+                LocationID.SahasrahlasHutEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1625, 900,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1625, 900, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.TreesFairyCaveEntrance => new List<MapLocation>
+                LocationID.TreesFairyCaveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1650, 1295,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1650, 1295, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.PegsFairyCaveEntrance => new List<MapLocation>
+                LocationID.PegsFairyCaveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1970, 1405,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1970, 1405, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.EasternPalaceEntrance => new List<MapLocation>
+                LocationID.EasternPalaceEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1925, 820,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.LightWorld, 1925, 820, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.HoulihanHole => new List<MapLocation>
+                LocationID.HoulihanHole => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1290, 625,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1290, 625, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.SanctuaryGrave => new List<MapLocation>
+                LocationID.SanctuaryGrave => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1040, 590,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1040, 590, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.NorthBonkRocks => new List<MapLocation>
+                LocationID.NorthBonkRocks => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 777, 590,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 777, 590, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.KingsTombEntrance => new List<MapLocation>
+                LocationID.KingsTombEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1207, 598,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1207, 598, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.GraveyardLedgeEntrance => new List<MapLocation>
+                LocationID.GraveyardLedgeEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1132, 549,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1132, 549, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.DesertLeftEntrance => new List<MapLocation>
+                LocationID.DesertLeftEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 70, 1590,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.LightWorld, 70, 1590, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.DesertBackEntrance => new List<MapLocation>
+                LocationID.DesertBackEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 150, 1540,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.LightWorld, 150, 1540, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.DesertRightEntrance => new List<MapLocation>
+                LocationID.DesertRightEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 225, 1590,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.LightWorld, 225, 1590, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.DesertFrontEntrance => new List<MapLocation>
+                LocationID.DesertFrontEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 150, 1600,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.LightWorld, 150, 1600, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.AginahsCaveEntrance => new List<MapLocation>
+                LocationID.AginahsCaveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 400, 1655,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 400, 1655, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.ThiefCaveEntrance => new List<MapLocation>
+                LocationID.ThiefCaveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 555, 1790,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 555, 1790, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.RupeeCaveEntrance => new List<MapLocation>
+                LocationID.RupeeCaveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 625, 1920,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 625, 1920, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.SkullWoodsBack => new List<MapLocation>
+                LocationID.SkullWoodsBack => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 80, 100,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.DarkWorld, 80, 100, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.ThievesTownEntrance => new List<MapLocation>
+                LocationID.ThievesTownEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 255, 975,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.DarkWorld, 255, 975, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.CShapedHouseEntrance => new List<MapLocation>
+                LocationID.CShapedHouseEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 414, 969,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 414, 969, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.HammerHouse => new List<MapLocation>
+                LocationID.HammerHouse => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 408, 1069,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 408, 1069, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.DarkVillageFortuneTellerEntrance => new List<MapLocation>
+                LocationID.DarkVillageFortuneTellerEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 377, 647,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 377, 647, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.DarkChapelEntrance => new List<MapLocation>
+                LocationID.DarkChapelEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 924, 551,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 924, 551, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.ShieldShop => new List<MapLocation>
+                LocationID.ShieldShop => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 665, 922,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 665, 922, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.DarkLumberjack => new List<MapLocation>
+                LocationID.DarkLumberjack => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 675, 115,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 675, 115, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.TreasureGameEntrance => new List<MapLocation>
+                LocationID.TreasureGameEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 100, 936,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 100, 936, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.BombableShackEntrance => new List<MapLocation>
+                LocationID.BombableShackEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 219, 1171,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 219, 1171, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.HammerPegsEntrance => new List<MapLocation>
+                LocationID.HammerPegsEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 636, 1214,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 636, 1214, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.BumperCaveExit => new List<MapLocation>
+                LocationID.BumperCaveExit => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 720, 310,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 720, 310, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.BumperCaveEntrance => new List<MapLocation>
+                LocationID.BumperCaveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 715, 355,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 715, 355, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.HypeCaveEntrance => new List<MapLocation>
+                LocationID.HypeCaveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1200, 1560,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 1200, 1560, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.SwampPalaceEntrance => new List<MapLocation>
+                LocationID.SwampPalaceEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 940, 1875,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.DarkWorld, 940, 1875, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.DarkCentralBonkRocksEntrance => new List<MapLocation>
+                LocationID.DarkCentralBonkRocksEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 945, 1310,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 945, 1310, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.SouthOfGroveEntrance => new List<MapLocation>
+                LocationID.SouthOfGroveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 552, 1693,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 552, 1693, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.BombShop => new List<MapLocation>
+                LocationID.BombShop => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1098, 1382,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 1098, 1382, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.ArrowGameEntrance => new List<MapLocation>
+                LocationID.ArrowGameEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 431, 1409,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 431, 1409, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.DarkHyliaFortuneTeller => new List<MapLocation>
+                LocationID.DarkHyliaFortuneTeller => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1300, 1615,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 1300, 1615, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.DarkTreesFairyCaveEntrance => new List<MapLocation>
+                LocationID.DarkTreesFairyCaveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1656, 1296,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 1656, 1296, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.DarkSahasrahlaEntrance => new List<MapLocation>
+                LocationID.DarkSahasrahlaEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1706, 1008,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 1706, 1008, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.PalaceOfDarknessEntrance => new List<MapLocation>
+                LocationID.PalaceOfDarknessEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1925, 830,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.DarkWorld, 1925, 830, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.DarkWitchsHut => new List<MapLocation>
+                LocationID.DarkWitchsHut => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1616, 678,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 1616, 678, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.DarkFluteSpotFiveEntrance => new List<MapLocation>
+                LocationID.DarkFluteSpotFiveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1968, 1405,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 1968, 1405, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.FatFairyEntrance => new List<MapLocation>
+                LocationID.FatFairyEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 940, 976,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 940, 976, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.GanonHole => new List<MapLocation>
+                LocationID.GanonHole => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1003, 832,
-                        RequirementDictionary.Instance[RequirementType.WorldStateInvertedEntranceShuffleAllInsanity]),
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1000, 820,
-                        RequirementDictionary.Instance[RequirementType.WorldStateStandardOpenEntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1003, 832, location,
+                        _requirements[RequirementType.WorldStateInvertedEntranceShuffleAllInsanity]),
+                    _factory(MapID.DarkWorld, 1000, 820, location,
+                        _requirements[RequirementType.WorldStateStandardOpenEntranceShuffleAllInsanity])
                 },
-                LocationID.DarkIceRodCaveEntrance => new List<MapLocation>
+                LocationID.DarkIceRodCaveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1795, 1545,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 1795, 1545, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.DarkFakeIceRodCaveEntrance => new List<MapLocation>
+                LocationID.DarkFakeIceRodCaveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1835, 1545,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 1835, 1545, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.DarkIceRodRockEntrance => new List<MapLocation>
+                LocationID.DarkIceRodRockEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1810, 1585,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 1810, 1585, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.HypeFairyCaveEntrance => new List<MapLocation>
+                LocationID.HypeFairyCaveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1200, 1565,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1200, 1565, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.FortuneTellerEntrance => new List<MapLocation>
+                LocationID.FortuneTellerEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1300, 1615,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1300, 1615, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.LakeShop => new List<MapLocation>
+                LocationID.LakeShop => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1460, 1540,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1460, 1540, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.UpgradeFairy => new List<MapLocation>
+                LocationID.UpgradeFairy => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1590, 1710,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1590, 1710, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.MiniMoldormCaveEntrance => new List<MapLocation>
+                LocationID.MiniMoldormCaveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1309, 1887,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1309, 1887, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.IceRodCaveEntrance => new List<MapLocation>
+                LocationID.IceRodCaveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1795, 1545,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1795, 1545, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.IceBeeCaveEntrance => new List<MapLocation>
+                LocationID.IceBeeCaveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1835, 1545,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1835, 1545, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.IceFairyCaveEntrance => new List<MapLocation>
+                LocationID.IceFairyCaveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1810, 1585,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1810, 1585, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.IcePalaceEntrance => new List<MapLocation>
+                LocationID.IcePalaceEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1600, 1735,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.DarkWorld, 1600, 1735, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.MiseryMireEntrance => new List<MapLocation>
+                LocationID.MiseryMireEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 150, 1650,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.DarkWorld, 150, 1650, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.MireShackEntrance => new List<MapLocation>
+                LocationID.MireShackEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 77, 1600,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 77, 1600, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.MireRightShackEntrance => new List<MapLocation>
+                LocationID.MireRightShackEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 220, 1610,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 220, 1610, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.MireCaveEntrance => new List<MapLocation>
+                LocationID.MireCaveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 400, 1655,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 400, 1655, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.CheckerboardCaveEntrance => new List<MapLocation>
+                LocationID.CheckerboardCaveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 354, 1560,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 354, 1560, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.DeathMountainEntranceBack => new List<MapLocation>
+                LocationID.DeathMountainEntranceBack => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 816, 378,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 816, 378, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.OldManResidence => new List<MapLocation>
+                LocationID.OldManResidence => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 900, 470,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 900, 470, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.OldManBackResidence => new List<MapLocation>
+                LocationID.OldManBackResidence => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1075, 325,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1075, 325, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.DeathMountainExitFront => new List<MapLocation>
+                LocationID.DeathMountainExitFront => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 790, 275,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 790, 275, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.SpectacleRockLeft => new List<MapLocation>
+                LocationID.SpectacleRockLeft => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 920, 280,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 920, 280, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.SpectacleRockRight => new List<MapLocation>
+                LocationID.SpectacleRockRight => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 980, 290,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 980, 290, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.SpectacleRockTop => new List<MapLocation>
+                LocationID.SpectacleRockTop => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 980, 205,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 980, 205, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.SpikeCaveEntrance => new List<MapLocation>
+                LocationID.SpikeCaveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1151, 294,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 1151, 294, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.DarkMountainFairyEntrance => new List<MapLocation>
+                LocationID.DarkMountainFairyEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 815, 376,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 815, 376, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.TowerOfHeraEntrance => new List<MapLocation>
+                LocationID.TowerOfHeraEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1125, 65,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.LightWorld, 1125, 65, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.SpiralCaveBottom => new List<MapLocation>
+                LocationID.SpiralCaveBottom => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1605, 260,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1605, 260, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.EDMFairyCaveEntrance => new List<MapLocation>
+                LocationID.EDMFairyCaveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1695, 290,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1695, 290, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.ParadoxCaveMiddle => new List<MapLocation>
+                LocationID.ParadoxCaveMiddle => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1735, 290,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1735, 290, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.ParadoxCaveBottom => new List<MapLocation>
+                LocationID.ParadoxCaveBottom => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1731, 434,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1731, 434, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.EDMConnectorBottom => new List<MapLocation>
+                LocationID.EDMConnectorBottom => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1645, 275,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1645, 275, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.SpiralCaveTop => new List<MapLocation>
+                LocationID.SpiralCaveTop => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1600, 180,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1600, 180, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.MimicCaveEntrance => new List<MapLocation>
+                LocationID.MimicCaveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1695, 180,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1695, 180, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.EDMConnectorTop => new List<MapLocation>
+                LocationID.EDMConnectorTop => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1645, 230,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1645, 230, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.ParadoxCaveTop => new List<MapLocation>
+                LocationID.ParadoxCaveTop => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1725, 125,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1725, 125, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.SuperBunnyCaveBottom => new List<MapLocation>
+                LocationID.SuperBunnyCaveBottom => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1685, 295,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 1685, 295, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.DeathMountainShopEntrance => new List<MapLocation>
+                LocationID.DeathMountainShopEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1725, 295,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 1725, 295, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.SuperBunnyCaveTop => new List<MapLocation>
+                LocationID.SuperBunnyCaveTop => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1725, 128,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 1725, 128, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.HookshotCaveEntrance => new List<MapLocation>
+                LocationID.HookshotCaveEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1670, 126,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 1670, 126, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.TurtleRockEntrance => new List<MapLocation>
+                LocationID.TurtleRockEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1890, 165,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.DarkWorld, 1890, 165, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.GanonsTowerEntrance => new List<MapLocation>
+                LocationID.GanonsTowerEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1125, 70,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.DarkWorld, 1125, 70, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.TRLedgeLeft => new List<MapLocation>
+                LocationID.TRLedgeLeft => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1598, 182,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.DarkWorld, 1598, 182, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.TRLedgeRight => new List<MapLocation>
+                LocationID.TRLedgeRight => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1694, 182,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.DarkWorld, 1694, 182, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.TRSafetyDoor => new List<MapLocation>
+                LocationID.TRSafetyDoor => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1648, 229,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity])
+                    _factory(MapID.DarkWorld, 1648, 229, location,
+                        _requirements[RequirementType.EntranceShuffleDungeonAllInsanity])
                 },
-                LocationID.HookshotCaveTop => new List<MapLocation>
+                LocationID.HookshotCaveTop => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1627, 40,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity])
+                    _factory(MapID.DarkWorld, 1627, 40, location,
+                        _requirements[RequirementType.EntranceShuffleAllInsanity])
                 },
-                LocationID.LinksHouseEntrance => new List<MapLocation>
+                LocationID.LinksHouseEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1098, 1382,
-                        RequirementDictionary.Instance[RequirementType.WorldStateInvertedEntranceShuffleAllInsanity])
+                    _factory(MapID.LightWorld, 1098, 1382, location,
+                        _requirements[RequirementType.WorldStateInvertedEntranceShuffleAllInsanity])
                 },
-                LocationID.TreesFairyCaveTakeAny => new List<MapLocation>
+                LocationID.TreesFairyCaveTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1650, 1295,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1650, 1295, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.PegsFairyCaveTakeAny => new List<MapLocation>
+                LocationID.PegsFairyCaveTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1970, 1405,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1970, 1405, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.KakarikoFortuneTellerTakeAny => new List<MapLocation>
+                LocationID.KakarikoFortuneTellerTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 375, 645,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 375, 645, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.GrassHouseTakeAny => new List<MapLocation>
+                LocationID.GrassHouseTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 410, 1075,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 410, 1075, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.ForestChestGameTakeAny => new List<MapLocation>
+                LocationID.ForestChestGameTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 370, 40,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 370, 40, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.LumberjackHouseTakeAny => new List<MapLocation>
+                LocationID.LumberjackHouseTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 688, 120,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 688, 120, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.LeftSnitchHouseTakeAny => new List<MapLocation>
+                LocationID.LeftSnitchHouseTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 100, 940,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 100, 940, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.RightSnitchHouseTakeAny => new List<MapLocation>
+                LocationID.RightSnitchHouseTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 415, 965,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 415, 965, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.BombHutTakeAny => new List<MapLocation>
+                LocationID.BombHutTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 55, 1195,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 55, 1195, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.IceFairyCaveTakeAny => new List<MapLocation>
+                LocationID.IceFairyCaveTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1810, 1602,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1810, 1602, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.RupeeCaveTakeAny => new List<MapLocation>
+                LocationID.RupeeCaveTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 625, 1920,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 625, 1920, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.CentralBonkRocksTakeAny => new List<MapLocation>
+                LocationID.CentralBonkRocksTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 945, 1310,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 945, 1310, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.ThiefCaveTakeAny => new List<MapLocation>
+                LocationID.ThiefCaveTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 555, 1790,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 555, 1790, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.IceBeeCaveTakeAny => new List<MapLocation>
+                LocationID.IceBeeCaveTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1850, 1545,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1850, 1545, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.FortuneTellerTakeAny => new List<MapLocation>
+                LocationID.FortuneTellerTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1300, 1615,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1300, 1615, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.HypeFairyCaveTakeAny => new List<MapLocation>
+                LocationID.HypeFairyCaveTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1200, 1565,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1200, 1565, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.ChestGameTakeAny => new List<MapLocation>
+                LocationID.ChestGameTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 425, 1410,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 425, 1410, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.EDMFairyCaveTakeAny => new List<MapLocation>
+                LocationID.EDMFairyCaveTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1695, 290,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1695, 290, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.DarkChapelTakeAny => new List<MapLocation>
+                LocationID.DarkChapelTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 924, 551,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 924, 551, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.DarkVillageFortuneTellerTakeAny => new List<MapLocation>
+                LocationID.DarkVillageFortuneTellerTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 377, 647,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 377, 647, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.DarkTreesFairyCaveTakeAny => new List<MapLocation>
+                LocationID.DarkTreesFairyCaveTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1656, 1296,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 1656, 1296, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.DarkSahasrahlaTakeAny => new List<MapLocation>
+                LocationID.DarkSahasrahlaTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1706, 1008,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 1706, 1008, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.DarkFluteSpotFiveTakeAny => new List<MapLocation>
+                LocationID.DarkFluteSpotFiveTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1968, 1405,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 1968, 1405, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.ArrowGameTakeAny => new List<MapLocation>
+                LocationID.ArrowGameTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 431, 1409,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 431, 1409, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.DarkCentralBonkRocksTakeAny => new List<MapLocation>
+                LocationID.DarkCentralBonkRocksTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 945, 1310,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 945, 1310, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.DarkIceRodCaveTakeAny => new List<MapLocation>
+                LocationID.DarkIceRodCaveTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1795, 1545,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 1795, 1545, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.DarkFakeIceRodCaveTakeAny => new List<MapLocation>
+                LocationID.DarkFakeIceRodCaveTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1835, 1545,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 1835, 1545, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.DarkIceRodRockTakeAny => new List<MapLocation>
+                LocationID.DarkIceRodRockTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1810, 1585,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 1810, 1585, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.DarkMountainFairyTakeAny => new List<MapLocation>
+                LocationID.DarkMountainFairyTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 815, 376,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 815, 376, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.MireRightShackTakeAny => new List<MapLocation>
+                LocationID.MireRightShackTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 220, 1610,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 220, 1610, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.MireCaveTakeAny => new List<MapLocation>
+                LocationID.MireCaveTakeAny => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 400, 1655,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 400, 1655, location,
+                        _requirements[RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon])
                 },
-                LocationID.LumberjackCaveExit => new List<MapLocation>
+                LocationID.LumberjackCaveExit => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 666, 64,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity])
+                    _factory(MapID.LightWorld, 666, 64, location,
+                        _requirements[RequirementType.EntranceShuffleInsanity])
                 },
-                LocationID.TheWellExit => new List<MapLocation>
+                LocationID.TheWellExit => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 94, 854,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity])
+                    _factory(MapID.LightWorld, 94, 854, location,
+                        _requirements[RequirementType.EntranceShuffleInsanity])
                 },
-                LocationID.MagicBatExit => new List<MapLocation>
+                LocationID.MagicBatExit => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 634, 1112,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity])
+                    _factory(MapID.LightWorld, 634, 1112, location,
+                        _requirements[RequirementType.EntranceShuffleInsanity])
                 },
-                LocationID.ForestHideoutExit => new List<MapLocation>
+                LocationID.ForestHideoutExit => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 368, 301,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity])
+                    _factory(MapID.LightWorld, 368, 301, location,
+                        _requirements[RequirementType.EntranceShuffleInsanity])
                 },
-                LocationID.CastleSecretExit => new List<MapLocation>
+                LocationID.CastleSecretExit => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1105, 860,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity])
+                    _factory(MapID.LightWorld, 1105, 860, location,
+                        _requirements[RequirementType.EntranceShuffleInsanity])
                 },
-                LocationID.HoulihanHoleExit => new List<MapLocation>
+                LocationID.HoulihanHoleExit => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1340, 548,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity])
+                    _factory(MapID.LightWorld, 1340, 548, location,
+                        _requirements[RequirementType.EntranceShuffleInsanity])
                 },
-                LocationID.Sanctuary => new List<MapLocation>
+                LocationID.Sanctuary => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 924, 537,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity])
+                    _factory(MapID.LightWorld, 924, 537, location,
+                        _requirements[RequirementType.EntranceShuffleInsanity])
                 },
-                LocationID.GanonHoleExit => new List<MapLocation>
+                LocationID.GanonHoleExit => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 902, 862,
-                        RequirementDictionary.Instance[RequirementType.WorldStateInvertedEntranceShuffleInsanity])
+                    _factory(MapID.LightWorld, 902, 862, location,
+                        _requirements[RequirementType.WorldStateInvertedEntranceShuffleInsanity])
                 },
-                LocationID.SkullWoodsWestEntrance => new List<MapLocation>
+                LocationID.SkullWoodsWestEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 117, 260,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity])
+                    _factory(MapID.DarkWorld, 117, 260, location,
+                        _requirements[RequirementType.EntranceShuffleInsanity])
                 },
-                LocationID.SkullWoodsCenterEntrance => new List<MapLocation>
+                LocationID.SkullWoodsCenterEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 290, 291,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity])
+                    _factory(MapID.DarkWorld, 290, 291, location,
+                        _requirements[RequirementType.EntranceShuffleInsanity])
                 },
-                LocationID.SkullWoodsEastEntrance => new List<MapLocation>
+                LocationID.SkullWoodsEastEntrance => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 368, 299,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity])
+                    _factory(MapID.DarkWorld, 368, 299, location,
+                        _requirements[RequirementType.EntranceShuffleInsanity])
                 },
-                LocationID.SkullWoodsNWHole => new List<MapLocation>
+                LocationID.SkullWoodsNWHole => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 243, 180,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity])
+                    _factory(MapID.DarkWorld, 243, 180, location,
+                        _requirements[RequirementType.EntranceShuffleInsanity])
                 },
-                LocationID.SkullWoodsSWHole => new List<MapLocation>
+                LocationID.SkullWoodsSWHole => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 313, 352,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity])
+                    _factory(MapID.DarkWorld, 313, 352, location,
+                        _requirements[RequirementType.EntranceShuffleInsanity])
                 },
-                LocationID.SkullWoodsSEHole => new List<MapLocation>
+                LocationID.SkullWoodsSEHole => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 392, 337,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity])
+                    _factory(MapID.DarkWorld, 392, 337, location,
+                        _requirements[RequirementType.EntranceShuffleInsanity])
                 },
-                LocationID.SkullWoodsNEHole => new List<MapLocation>
+                LocationID.SkullWoodsNEHole => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 380, 262,
-                        RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity])
+                    _factory(MapID.DarkWorld, 380, 262, location,
+                        _requirements[RequirementType.EntranceShuffleInsanity])
                 },
-                LocationID.KakarikoShop => new List<MapLocation>
+                LocationID.KakarikoShop => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 220, 1175,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 220, 1175, location,
+                        _requirements[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
                 },
-                LocationID.LakeHyliaShop => new List<MapLocation>
+                LocationID.LakeHyliaShop => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1460, 1540,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1460, 1540, location,
+                        _requirements[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
                 },
-                LocationID.DeathMountainShop => new List<MapLocation>
+                LocationID.DeathMountainShop => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1735, 290,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1735, 290, location,
+                        _requirements[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
                 },
-                LocationID.PotionShop => new List<MapLocation>
+                LocationID.PotionShop => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.LightWorld, 1607, 715,
-                        RequirementDictionary.Instance[RequirementType.ShopShuffleEntranceShuffleNoneDungeon])
+                    _factory(MapID.LightWorld, 1607, 715, location,
+                        _requirements[RequirementType.ShopShuffleEntranceShuffleNoneDungeon])
                 },
-                LocationID.DarkLumberjackShop => new List<MapLocation>
+                LocationID.DarkLumberjackShop => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 675, 115,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 675, 115, location,
+                        _requirements[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
                 },
-                LocationID.RedShieldShop => new List<MapLocation>
+                LocationID.RedShieldShop => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 665, 922,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 665, 922, location,
+                        _requirements[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
                 },
-                LocationID.VillageOfOutcastsShop => new List<MapLocation>
+                LocationID.VillageOfOutcastsShop => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 408, 1069,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 408, 1069, location,
+                        _requirements[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
                 },
-                LocationID.DarkLakeHyliaShop => new List<MapLocation>
+                LocationID.DarkLakeHyliaShop => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1460, 1540,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 1460, 1540, location,
+                        _requirements[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
                 },
-                LocationID.DarkPotionShop => new List<MapLocation>
+                LocationID.DarkPotionShop => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1607, 670,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 1607, 670, location,
+                        _requirements[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
                 },
-                LocationID.DarkDeathMountainShop => new List<MapLocation>
+                LocationID.DarkDeathMountainShop => new List<IMapLocation>
                 {
-                    new MapLocation(
-                        id, MapID.DarkWorld, 1725, 360,
-                        RequirementDictionary.Instance[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
+                    _factory(MapID.DarkWorld, 1725, 360, location,
+                        _requirements[RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon])
                 },
-                _ => throw new ArgumentOutOfRangeException(nameof(id))
+                _ => throw new ArgumentOutOfRangeException(nameof(location))
             };
         }
     }

@@ -1,6 +1,5 @@
 ﻿using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
-using System;
 
 namespace OpenTracker.Models.UndoRedo
 {
@@ -9,8 +8,11 @@ namespace OpenTracker.Models.UndoRedo
     /// </summary>
     public class AddNote : IUndoable
     {
+        private readonly IMarking.Factory _factory;
         private readonly ILocation _location;
-        private IMarking _note;
+        private IMarking? _note;
+
+        public delegate AddNote Factory(ILocation location);
 
         /// <summary>
         /// Constructor
@@ -18,9 +20,10 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="location">
         /// The location to which the note will be added.
         /// </param>
-        public AddNote(ILocation location)
+        public AddNote(IMarking.Factory factory, ILocation location)
         {
-            _location = location ?? throw new ArgumentNullException(nameof(location));
+            _factory = factory;
+            _location = location;
         }
 
         /// <summary>
@@ -39,7 +42,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Execute()
         {
-            _note = MarkingFactory.GetMarking();
+            _note = _factory();
             _location.Notes.Add(_note);
         }
 
@@ -48,7 +51,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Undo()
         {
-            _location.Notes.Remove(_note);
+            _location.Notes.Remove(_note!);
         }
     }
 }

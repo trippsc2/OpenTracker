@@ -12,10 +12,8 @@ namespace OpenTracker.Utils.Dialog
     /// </typeparam>
     public class DialogWindowBase<TResult> : Window
     {
-        private WindowBase? _mainWindow;
-
         private Window? ParentWindow =>
-            (Window?)Owner ?? (Window?)_mainWindow;
+            (Window?)Owner;
 
         protected DialogViewModelBase<TResult>? ViewModel =>
             DataContext as DialogViewModelBase<TResult>;

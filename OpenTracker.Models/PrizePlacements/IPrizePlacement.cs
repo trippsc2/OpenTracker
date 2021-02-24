@@ -10,7 +10,9 @@ namespace OpenTracker.Models.PrizePlacements
     public interface IPrizePlacement : INotifyPropertyChanging, INotifyPropertyChanged,
         ISaveable<PrizePlacementSaveData>
     {
-        IItem Prize { get; set; }
+        IItem? Prize { get; set; }
+
+        delegate IPrizePlacement Factory(IItem? startingPrize = null);
 
         bool CanCycle();
         void Cycle();

@@ -7,8 +7,11 @@ namespace OpenTracker.Models.UndoRedo
     /// </summary>
     public class ChangeSmallKeyShuffle : IUndoable
     {
+        private readonly IMode _mode;
         private readonly bool _smallKeyShuffle;
         private bool _previousSmallKeyShuffle;
+
+        public delegate ChangeSmallKeyShuffle Factory(bool smallKeyShuffle);
 
         /// <summary>
         /// Constructor
@@ -16,8 +19,9 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="smallKeyShuffle">
         /// The new small key shuffle setting.
         /// </param>
-        public ChangeSmallKeyShuffle(bool smallKeyShuffle)
+        public ChangeSmallKeyShuffle(IMode mode, bool smallKeyShuffle)
         {
+            _mode = mode;
             _smallKeyShuffle = smallKeyShuffle;
         }
 
@@ -37,8 +41,8 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Execute()
         {
-            _previousSmallKeyShuffle = Mode.Instance.SmallKeyShuffle;
-            Mode.Instance.SmallKeyShuffle = _smallKeyShuffle;
+            _previousSmallKeyShuffle = _mode.SmallKeyShuffle;
+            _mode.SmallKeyShuffle = _smallKeyShuffle;
         }
 
         /// <summary>
@@ -46,7 +50,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Undo()
         {
-            Mode.Instance.SmallKeyShuffle = _previousSmallKeyShuffle;
+            _mode.SmallKeyShuffle = _previousSmallKeyShuffle;
         }
     }
 }

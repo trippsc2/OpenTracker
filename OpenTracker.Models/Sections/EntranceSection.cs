@@ -14,15 +14,14 @@ namespace OpenTracker.Models.Sections
     public class EntranceSection : IEntranceSection
     {
         private readonly IRequirementNode _node;
-        private readonly IRequirementNode _exitProvided;
+        private readonly IRequirementNode? _exitProvided;
 
         public string Name { get; }
         public IRequirement Requirement { get; }
         public bool UserManipulated { get; set; }
-        public IMarking Marking { get; } =
-            MarkingFactory.GetMarking();
+        public IMarking Marking { get; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public AccessibilityLevel Accessibility =>
             _node.Accessibility;
@@ -41,6 +40,10 @@ namespace OpenTracker.Models.Sections
             }
         }
 
+        public delegate EntranceSection Factory(
+            string name, IRequirementNode? exitProvided, IRequirementNode node,
+            IRequirement requirement);
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -57,15 +60,16 @@ namespace OpenTracker.Models.Sections
         /// The requirement for this section to be visible.
         /// </param>
         public EntranceSection(
-            string name, IRequirementNode exitProvided, IRequirementNode node,
-            IRequirement requirement = null)
+            IMarking marking, string name, IRequirementNode? exitProvided, IRequirementNode node,
+            IRequirement requirement)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
-            Available = 1;
             _exitProvided = exitProvided;
-            _node = node ?? throw new ArgumentNullException(nameof(node));
-            Requirement = requirement ??
-                RequirementDictionary.Instance[RequirementType.NoRequirement];
+            _node = node;
+
+            Marking = marking;
+            Name = name;
+            Available = 1;
+            Requirement = requirement;
 
             _node.PropertyChanged += OnNodeChanged;
         }

@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OpenTracker.Views.Maps.Locations.ShopMapLocation">
+  <Panel Width="40" Height="40" IsHitTestVisible="{Binding Visible}"
+         IsVisible="{Binding Visible}" DoubleTapped="OnDoubleClick" PointerReleased="OnClick"
+         PointerEnter="OnPointerEnter" PointerLeave="OnPointerLeave">
+    <Polygon Points="20,0 40,20 20,40 0,20" Fill="{Binding Color}" Stroke="{Binding BorderColor}"
+             StrokeThickness="5">
+      <ToolTip.Tip>
+        <ContentControl Content="{Binding ToolTip}" />
+      </ToolTip.Tip>
+    </Polygon>
+  </Panel>
+</UserControl>

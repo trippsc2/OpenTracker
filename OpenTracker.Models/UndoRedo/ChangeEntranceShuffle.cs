@@ -7,8 +7,11 @@ namespace OpenTracker.Models.UndoRedo
     /// </summary>
     public class ChangeEntranceShuffle : IUndoable
     {
+        private readonly IMode _mode;
         private readonly EntranceShuffle _entranceShuffle;
         private EntranceShuffle _previousEntranceShuffle;
+
+        public delegate ChangeEntranceShuffle Factory(EntranceShuffle entranceShuffle);
 
         /// <summary>
         /// Constructor
@@ -16,8 +19,9 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="entranceShuffle">
         /// The new entrance shuffle setting.
         /// </param>
-        public ChangeEntranceShuffle(EntranceShuffle entranceShuffle)
+        public ChangeEntranceShuffle(IMode mode, EntranceShuffle entranceShuffle)
         {
+            _mode = mode;
             _entranceShuffle = entranceShuffle;
         }
 
@@ -37,8 +41,8 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Execute()
         {
-            _previousEntranceShuffle = Mode.Instance.EntranceShuffle;
-            Mode.Instance.EntranceShuffle = _entranceShuffle;
+            _previousEntranceShuffle = _mode.EntranceShuffle;
+            _mode.EntranceShuffle = _entranceShuffle;
         }
 
         /// <summary>
@@ -46,7 +50,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Undo()
         {
-            Mode.Instance.EntranceShuffle = _previousEntranceShuffle;
+            _mode.EntranceShuffle = _previousEntranceShuffle;
         }
     }
 }

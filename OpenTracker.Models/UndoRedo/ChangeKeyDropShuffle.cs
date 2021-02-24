@@ -7,8 +7,11 @@ namespace OpenTracker.Models.UndoRedo
     /// </summary>
     public class ChangeKeyDropShuffle : IUndoable
     {
+        private readonly IMode _mode;
         private readonly bool _keyDropShuffle;
         private bool _previousKeyDropShuffle;
+
+        public delegate ChangeKeyDropShuffle Factory(bool keyDropShuffle);
 
         /// <summary>
         /// Constructor
@@ -16,8 +19,9 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="keyDropShuffle">
         /// The new key drp shuffle setting.
         /// </param>
-        public ChangeKeyDropShuffle(bool keyDropShuffle)
+        public ChangeKeyDropShuffle(IMode mode, bool keyDropShuffle)
         {
+            _mode = mode;
             _keyDropShuffle = keyDropShuffle;
         }
 
@@ -37,8 +41,8 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Execute()
         {
-            _previousKeyDropShuffle = Mode.Instance.KeyDropShuffle;
-            Mode.Instance.KeyDropShuffle = _keyDropShuffle;
+            _previousKeyDropShuffle = _mode.KeyDropShuffle;
+            _mode.KeyDropShuffle = _keyDropShuffle;
         }
 
         /// <summary>
@@ -46,7 +50,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Undo()
         {
-            Mode.Instance.KeyDropShuffle = _previousKeyDropShuffle;
+            _mode.KeyDropShuffle = _previousKeyDropShuffle;
         }
     }
 }

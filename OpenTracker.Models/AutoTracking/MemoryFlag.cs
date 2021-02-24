@@ -6,12 +6,12 @@ namespace OpenTracker.Models.AutoTracking
     /// <summary>
     /// This is the class for representing a SNES memory flag.
     /// </summary>
-    public class MemoryFlag : INotifyPropertyChanged
+    public class MemoryFlag : IMemoryFlag
     {
-        private readonly MemoryAddress _memoryAddress;
+        private readonly IMemoryAddress _memoryAddress;
         private readonly byte _flag;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private bool _status;
         public bool Status
@@ -36,7 +36,7 @@ namespace OpenTracker.Models.AutoTracking
         /// <param name="flag">
         /// The 8-bit bitwise flag.
         /// </param>
-        public MemoryFlag(MemoryAddress memoryAddress, byte flag)
+        public MemoryFlag(IMemoryAddress memoryAddress, byte flag)
         {
             _memoryAddress = memoryAddress ??
                 throw new ArgumentNullException(nameof(memoryAddress));
@@ -57,7 +57,7 @@ namespace OpenTracker.Models.AutoTracking
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the MemoryAddress class.
+        /// Subscribes to the PropertyChanged event on the IMemoryAddress class.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -67,7 +67,7 @@ namespace OpenTracker.Models.AutoTracking
         /// </param>
         private void OnMemoryChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(MemoryAddress.Value))
+            if (e.PropertyName == nameof(IMemoryAddress.Value))
             {
                 UpdateFlag();
             }

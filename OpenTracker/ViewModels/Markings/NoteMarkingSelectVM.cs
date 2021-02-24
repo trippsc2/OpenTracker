@@ -4,8 +4,7 @@ using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive;
 
@@ -14,17 +13,19 @@ namespace OpenTracker.ViewModels.Markings
     /// <summary>
     /// This is the ViewModel class for the note marking select popup control.
     /// </summary>
-    public class NoteMarkingSelectVM : ViewModelBase
+    public class NoteMarkingSelectVM : ViewModelBase, INoteMarkingSelectVM
     {
         private readonly ILayoutSettings _layoutSettings;
         private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
+
         private readonly IMarking _marking;
         private readonly ILocation _location;
 
         public double Scale =>
             _layoutSettings.UIScale;
 
-        public ObservableCollection<MarkingSelectItemVMBase> Buttons { get; }
+        public List<IMarkingSelectItemVMBase> Buttons { get; }
 
         private bool _popupOpen;
         public bool PopupOpen
@@ -36,13 +37,8 @@ namespace OpenTracker.ViewModels.Markings
         public ReactiveCommand<MarkType?, Unit> ChangeMarkingCommand { get; }
         public ReactiveCommand<Unit, Unit> RemoveNoteCommand { get; }
 
-        public NoteMarkingSelectVM(
-            IMarking marking, ObservableCollection<MarkingSelectItemVMBase> buttons,
-            ILocation location)
-            : this(AppSettings.Instance.Layout, UndoRedoManager.Instance, marking, buttons,
-                  location)
-        {
-        }
+        public delegate INoteMarkingSelectVM Factory(
+            IMarking marking, List<IMarkingSelectItemVMBase> buttons, ILocation location);
 
         /// <summary>
         /// Constructor
@@ -56,12 +52,15 @@ namespace OpenTracker.ViewModels.Markings
         /// <param name="location">
         /// The location.
         /// </param>
-        private NoteMarkingSelectVM(
-            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager, IMarking marking,
-            ObservableCollection<MarkingSelectItemVMBase> buttons, ILocation location)
+        public NoteMarkingSelectVM(
+            ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager,
+            IUndoableFactory undoableFactory, IMarking marking,
+            List<IMarkingSelectItemVMBase> buttons, ILocation location)
         {
             _layoutSettings = layoutSettings;
             _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
+
             _marking = marking;
             _location = location;
 
@@ -82,7 +81,7 @@ namespace OpenTracker.ViewModels.Markings
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(LayoutSettings.UIScale))
             {
@@ -95,7 +94,7 @@ namespace OpenTracker.ViewModels.Markings
         /// </summary>
         private void RemoveNote()
         {
-            _undoRedoManager.Execute(new RemoveNote(_marking, _location));
+            _undoRedoManager.Execute(_undoableFactory.GetRemoveNote(_marking, _location));
             PopupOpen = false;
         }
 
@@ -112,7 +111,7 @@ namespace OpenTracker.ViewModels.Markings
                 return;
             }
 
-            _undoRedoManager.Execute(new SetMarking(_marking, marking.Value));
+            _undoRedoManager.Execute(_undoableFactory.GetSetMarking(_marking, marking.Value));
             PopupOpen = false;
         }
     }

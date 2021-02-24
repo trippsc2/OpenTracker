@@ -1,4 +1,5 @@
-﻿using OpenTracker.Models.NodeConnections;
+﻿using OpenTracker.Models.Dungeons;
+using OpenTracker.Models.NodeConnections;
 using OpenTracker.Models.RequirementNodes;
 using System.Collections.Generic;
 
@@ -10,6 +11,7 @@ namespace OpenTracker.Models.DungeonNodes
     public interface IDungeonNode : IRequirementNode
     {
         List<INodeConnection> Connections { get; }
-        int KeysProvided { get; }
+
+        new delegate IDungeonNode Factory(IMutableDungeon dungeonData, DungeonNodeID id);
     }
 }

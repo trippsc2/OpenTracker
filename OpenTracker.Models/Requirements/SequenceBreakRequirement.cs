@@ -1,6 +1,5 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.SequenceBreaks;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
@@ -8,29 +7,11 @@ namespace OpenTracker.Models.Requirements
     /// <summary>
     /// This is the class for sequence break requirements.
     /// </summary>
-    internal class SequenceBreakRequirement : IRequirement
+    public class SequenceBreakRequirement : BooleanRequirement
     {
-        private readonly SequenceBreak _sequenceBreak;
+        private readonly ISequenceBreak _sequenceBreak;
 
-        public bool Met =>
-            Accessibility != AccessibilityLevel.None;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler ChangePropagated;
-
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
+        public delegate SequenceBreakRequirement Factory(ISequenceBreak sequenceBreak);
 
         /// <summary>
         /// Constructor
@@ -38,25 +19,14 @@ namespace OpenTracker.Models.Requirements
         /// <param name="sequenceBreak">
         /// The sequence break required.
         /// </param>
-        public SequenceBreakRequirement(SequenceBreak sequenceBreak)
+        public SequenceBreakRequirement(ISequenceBreak sequenceBreak)
+            : base(AccessibilityLevel.SequenceBreak)
         {
-            _sequenceBreak = sequenceBreak ?? throw new ArgumentNullException(nameof(sequenceBreak));
+            _sequenceBreak = sequenceBreak;
 
             _sequenceBreak.PropertyChanged += OnSequenceBreakChanged;
 
-            UpdateAccessibility();
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            ChangePropagated?.Invoke(this, new EventArgs());
+            UpdateValue();
         }
 
         /// <summary>
@@ -70,19 +40,15 @@ namespace OpenTracker.Models.Requirements
         /// </param>
         private void OnSequenceBreakChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(SequenceBreak.Enabled))
+            if (e.PropertyName == nameof(ISequenceBreak.Enabled))
             {
-                UpdateAccessibility();
+                UpdateValue();
             }
         }
 
-        /// <summary>
-        /// Updates the accessibility of this requirement.
-        /// </summary>
-        private void UpdateAccessibility()
+        protected override bool ConditionMet()
         {
-            Accessibility = _sequenceBreak.Enabled ?
-                AccessibilityLevel.SequenceBreak : AccessibilityLevel.None;
+            return _sequenceBreak.Enabled;
         }
     }
 }

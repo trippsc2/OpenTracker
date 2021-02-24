@@ -13,22 +13,12 @@ namespace OpenTracker.Models.Requirements
         public bool Met =>
             true;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler ChangePropagated;
+        public AccessibilityLevel Accessibility { get; }
 
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public event EventHandler? ChangePropagated;
+
+        public delegate StaticRequirement Factory(AccessibilityLevel accessibility);
 
         /// <summary>
         /// Constructor
@@ -39,18 +29,6 @@ namespace OpenTracker.Models.Requirements
         public StaticRequirement(AccessibilityLevel accessibility)
         {
             Accessibility = accessibility;
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            ChangePropagated?.Invoke(this, new EventArgs());
         }
     }
 }

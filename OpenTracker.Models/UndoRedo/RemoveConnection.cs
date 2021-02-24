@@ -1,5 +1,4 @@
 ﻿using OpenTracker.Models.Connections;
-using OpenTracker.Models.Locations;
 
 namespace OpenTracker.Models.UndoRedo
 {
@@ -9,7 +8,10 @@ namespace OpenTracker.Models.UndoRedo
     /// </summary>
     public class RemoveConnection : IUndoable
     {
-        private readonly Connection _connection;
+        private readonly IConnectionCollection _connections;
+        private readonly IConnection _connection;
+
+        public delegate RemoveConnection Factory(IConnection connection);
 
         /// <summary>
         /// Constructor
@@ -17,8 +19,10 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="connection">
         /// The connection tuple to be removed.
         /// </param>
-        public RemoveConnection(Connection connection)
+        public RemoveConnection(
+            IConnectionCollection connections, IConnection connection)
         {
+            _connections = connections;
             _connection = connection;
         }
 
@@ -38,7 +42,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Execute()
         {
-            ConnectionCollection.Instance.Remove(_connection);
+            _connections.Remove(_connection);
         }
 
         /// <summary>
@@ -46,7 +50,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Undo()
         {
-            ConnectionCollection.Instance.Add(_connection);
+            _connections.Add(_connection);
         }
     }
 }

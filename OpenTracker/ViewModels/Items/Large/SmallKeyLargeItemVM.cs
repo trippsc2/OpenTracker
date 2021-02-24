@@ -3,6 +3,7 @@ using OpenTracker.Models.Items;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
@@ -13,11 +14,13 @@ namespace OpenTracker.ViewModels.Items.Large
     /// <summary>
     /// This is the ViewModel for the large Items panel control representing small keys.
     /// </summary>
-    public class SmallKeyLargeItemVM : LargeItemVMBase, IClickHandler
+    public class SmallKeyLargeItemVM : ViewModelBase, ILargeItemVMBase, IClickHandler
     {
+        private readonly IUndoRedoManager _undoRedoManager;
+
         private readonly IItem _item;
-        private readonly string _imageSourceBase;
         private readonly IRequirement _requirement;
+        private readonly string _imageSourceBase;
 
         public bool Visible =>
             _requirement.Met;
@@ -25,6 +28,8 @@ namespace OpenTracker.ViewModels.Items.Large
             $"{_imageSourceBase}{(_item.Current > 0 ? "1" : "0")}.png";
         public string ImageCount =>
             _item.Current.ToString(CultureInfo.InvariantCulture);
+
+        public delegate SmallKeyLargeItemVM Factory(IItem item, string imageSourceBase);
 
         /// <summary>
         /// Constructor
@@ -35,12 +40,15 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <param name="item">
         /// An item that is to be represented by this control.
         /// </param>
-        public SmallKeyLargeItemVM(string imageSourceBase, IItem item)
+        public SmallKeyLargeItemVM(
+            IRequirementDictionary requirements, IUndoRedoManager undoRedoManager, IItem item,
+            string imageSourceBase)
         {
-            _item = item ?? throw new ArgumentNullException(nameof(item));
-            _imageSourceBase = imageSourceBase ??
-                throw new ArgumentNullException(nameof(imageSourceBase));
-            _requirement = RequirementDictionary.Instance[RequirementType.GenericKeys];
+            _undoRedoManager = undoRedoManager;
+
+            _item = item;
+            _requirement = requirements[RequirementType.GenericKeys];
+            _imageSourceBase = imageSourceBase;
 
             _item.PropertyChanged += OnItemChanged;
             _requirement.PropertyChanged += OnRequirementChanged;
@@ -86,7 +94,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         public void OnLeftClick(bool force)
         {
-            UndoRedoManager.Instance.Execute(new AddItem(_item));
+            _undoRedoManager.Execute(new AddItem(_item));
         }
 
         /// <summary>
@@ -97,7 +105,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         public void OnRightClick(bool force)
         {
-            UndoRedoManager.Instance.Execute(new RemoveItem(_item));
+            _undoRedoManager.Execute(new RemoveItem(_item));
         }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using OpenTracker.Models.SaveLoad;
-using OpenTracker.Models.Utils;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Modes
@@ -8,7 +6,7 @@ namespace OpenTracker.Models.Modes
     /// <summary>
     /// This is the class for the game mode settings.
     /// </summary>
-    public class Mode : Singleton<Mode>, IMode
+    public class Mode : IMode
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -260,11 +258,11 @@ namespace OpenTracker.Models.Modes
         /// <param name="saveData">
         /// The save data to be loaded.
         /// </param>
-        public void Load(ModeSaveData saveData)
+        public void Load(ModeSaveData? saveData)
         {
             if (saveData == null)
             {
-                throw new ArgumentNullException(nameof(saveData));
+                return;
             }
 
             ItemPlacement = saveData.ItemPlacement;

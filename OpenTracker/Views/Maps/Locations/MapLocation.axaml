@@ -1,0 +1,25 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="OpenTracker.Views.Maps.Locations.MapLocation">
+  <Panel Width="{Binding Size}" Height="{Binding Size}" IsHitTestVisible="{Binding Visible}"
+         IsVisible="{Binding Visible}" DoubleTapped="OnDoubleClick" PointerReleased="OnClick"
+         PointerEnter="OnPointerEnter" PointerLeave="OnPointerLeave">
+    <Border Classes="MapLocation" Width="{Binding Size}" Height="{Binding Size}"
+            Background="{Binding Color, Mode=OneWay}" BorderThickness="{Binding BorderSize}"
+            BorderBrush="{Binding BorderColor, Mode=OneWay}">
+
+      <ToolTip.Tip>
+        <ContentControl Content="{Binding ToolTip}" />
+      </ToolTip.Tip>
+
+      <Border Classes="MapLocationNumber" IsHitTestVisible="{Binding TextVisible}"
+              IsVisible="{Binding TextVisible}">
+        <TextBlock Classes="MapLocationNumber" Foreground="{Binding Color}" Text="{Binding Text}" />
+      </Border>
+    
+    </Border>
+  </Panel>
+</UserControl>

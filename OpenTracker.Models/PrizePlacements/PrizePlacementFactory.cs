@@ -5,8 +5,23 @@ namespace OpenTracker.Models.PrizePlacements
     /// <summary>
     /// This is the class for creating prize placement classes.
     /// </summary>
-    public static class PrizePlacementFactory
+    public class PrizePlacementFactory : IPrizePlacementFactory
     {
+        private readonly IPrizeDictionary _prizes;
+        private readonly IPrizePlacement.Factory _factory;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="factory">
+        /// A factory that creates prize placements.
+        /// </param>
+        public PrizePlacementFactory(IPrizeDictionary prizes, IPrizePlacement.Factory factory)
+        {
+            _prizes = prizes;
+            _factory = factory;
+        }
+
         /// <summary>
         /// Returns a new prize placement instance for the specified prize placement ID.
         /// </summary>
@@ -16,21 +31,14 @@ namespace OpenTracker.Models.PrizePlacements
         /// <returns>
         /// A new prize placement instance.
         /// </returns>
-        public static IPrizePlacement GetPrizePlacement(PrizePlacementID id)
+        public IPrizePlacement GetPrizePlacement(PrizePlacementID id)
         {
-            switch (id)
+            return id switch
             {
-                case PrizePlacementID.ATPrize:
-                    {
-                        return new PrizePlacement(PrizeDictionary.Instance[PrizeType.Aga1]);
-                    }
-                case PrizePlacementID.GTPrize:
-                    {
-                        return new PrizePlacement(PrizeDictionary.Instance[PrizeType.Aga2]);
-                    }
-            }
-
-            return new PrizePlacement();
+                PrizePlacementID.ATPrize => _factory(_prizes[PrizeType.Aga1]),
+                PrizePlacementID.GTPrize => _factory(_prizes[PrizeType.Aga2]),
+                _ => _factory()
+            };
         }
     }
 }

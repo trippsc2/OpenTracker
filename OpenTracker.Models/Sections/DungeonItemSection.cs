@@ -1,11 +1,12 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.AutoTracking.AutotrackValues;
+using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Sections
@@ -15,8 +16,10 @@ namespace OpenTracker.Models.Sections
     /// </summary>
     public class DungeonItemSection : IDungeonItemSection
     {
-        private readonly IDungeon _dungeon;
-        private readonly IAutoTrackValue _autoTrackValue;
+        private readonly IMode _mode;
+        private readonly LocationID _locationID;
+        private IDungeon? _dungeon;
+        private readonly IAutoTrackValue? _autoTrackValue;
 
         public string Name =>
             "Dungeon";
@@ -24,7 +27,7 @@ namespace OpenTracker.Models.Sections
         public IRequirement Requirement { get; }
         public bool UserManipulated { get; set; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
@@ -82,6 +85,9 @@ namespace OpenTracker.Models.Sections
             }
         }
 
+        public delegate DungeonItemSection Factory(
+            LocationID locationID, IAutoTrackValue? autoTrackValue, IRequirement requirement);
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -92,14 +98,16 @@ namespace OpenTracker.Models.Sections
         /// The requirement for this section to be visible.
         /// </param>
         public DungeonItemSection(
-            IDungeon dungeon, IAutoTrackValue autoTrackValue, IRequirement requirement = null)
+            ILocationDictionary locations, IMode mode, LocationID locationID,
+            IAutoTrackValue? autoTrackValue, IRequirement requirement)
         {
-            _dungeon = dungeon ?? throw new ArgumentNullException(nameof(dungeon));
+            _mode = mode;
+            _locationID = locationID;
             _autoTrackValue = autoTrackValue;
-            Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.NoRequirement];
+            Requirement = requirement;
 
-            Mode.Instance.PropertyChanged += OnModeChanged;
-            LocationDictionary.Instance.LocationCreated += OnLocationCreated;
+            _mode.PropertyChanged += OnModeChanged;
+            locations.ItemCreated += OnLocationCreated;
 
             if (_autoTrackValue != null)
             {
@@ -127,10 +135,14 @@ namespace OpenTracker.Models.Sections
         /// <param name="e">
         /// The arguments of the LocationCreated event.
         /// </param>
-        private void OnLocationCreated(object sender, LocationID id)
+        private void OnLocationCreated(object? sender, KeyValuePair<LocationID, ILocation> e)
         {
-            if (id == _dungeon.ID)
+            if (e.Key == _locationID)
             {
+                ((ILocationDictionary)sender!).ItemCreated -= OnLocationCreated;
+
+                _dungeon = (IDungeon)e.Value;
+
                 SetTotal();
             }
         }
@@ -146,12 +158,12 @@ namespace OpenTracker.Models.Sections
         /// </param>
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.WorldState) ||
-                e.PropertyName == nameof(Mode.MapShuffle) ||
-                e.PropertyName == nameof(Mode.CompassShuffle) ||
-                e.PropertyName == nameof(Mode.SmallKeyShuffle) ||
-                e.PropertyName == nameof(Mode.BigKeyShuffle) ||
-                e.PropertyName == nameof(Mode.KeyDropShuffle))
+            if (e.PropertyName == nameof(IMode.WorldState) ||
+                e.PropertyName == nameof(IMode.MapShuffle) ||
+                e.PropertyName == nameof(IMode.CompassShuffle) ||
+                e.PropertyName == nameof(IMode.SmallKeyShuffle) ||
+                e.PropertyName == nameof(IMode.BigKeyShuffle) ||
+                e.PropertyName == nameof(IMode.KeyDropShuffle))
             {
                 SetTotal();
             }
@@ -167,12 +179,12 @@ namespace OpenTracker.Models.Sections
 
         private void AutoTrackUpdate()
         {
-            if (_autoTrackValue.CurrentValue.HasValue)
+            if (_autoTrackValue!.CurrentValue.HasValue)
             {
                 if (Available != Total - _autoTrackValue.CurrentValue.Value)
                 {
                     Available = Total - _autoTrackValue.CurrentValue.Value;
-                    SaveLoadManager.Instance.Unsaved = true;
+                    //SaveLoadManager.Instance.Unsaved = true;
                 }
             }
         }
@@ -185,40 +197,45 @@ namespace OpenTracker.Models.Sections
         /// </param>
         private void SetTotal()
         {
-            int baseTotal = _dungeon.Items.Count;
+            if (_dungeon == null)
+            {
+                return;
+            }
 
-            if (Mode.Instance.KeyDropShuffle)
+            int baseTotal = _dungeon.DungeonItems.Count;
+
+            if (_mode.KeyDropShuffle)
             {
                 baseTotal += _dungeon.SmallKeyDrops.Count + _dungeon.BigKeyDrops.Count;
             }
 
             int dungeonItems = 0;
 
-            if (!Mode.Instance.MapShuffle)
+            if (!_mode.MapShuffle)
             {
                 dungeonItems += _dungeon.Map;
             }
 
-            if (!Mode.Instance.CompassShuffle)
+            if (!_mode.CompassShuffle)
             {
                 dungeonItems += _dungeon.Compass;
             }
 
-            if (!Mode.Instance.SmallKeyShuffle)
+            if (!_mode.SmallKeyShuffle)
             {
                 dungeonItems += _dungeon.SmallKeys;
                 
-                if (Mode.Instance.KeyDropShuffle)
+                if (_mode.KeyDropShuffle)
                 {
                     dungeonItems += _dungeon.SmallKeyDrops.Count;
                 }
             }
 
-            if (!Mode.Instance.BigKeyShuffle)
+            if (!_mode.BigKeyShuffle)
             {
                 dungeonItems += _dungeon.BigKey;
 
-                if (Mode.Instance.KeyDropShuffle)
+                if (_mode.KeyDropShuffle)
                 {
                     dungeonItems += _dungeon.BigKeyDrops.Count;
                 }

@@ -12,6 +12,7 @@ namespace OpenTracker.Models.AutoTracking
         IEnumerable<string>? Devices { get; }
         bool RaceIllegalTracking { get; set; }
         ISNESConnector SNESConnector { get; }
+        Dictionary<ulong, IMemoryAddress> MemoryAddresses { get; }
 
         void InGameCheck();
         void MemoryCheck();

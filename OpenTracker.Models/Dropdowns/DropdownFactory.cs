@@ -6,8 +6,26 @@ namespace OpenTracker.Models.Dropdowns
     /// <summary>
     /// This is the class contianing the creation logic for dropdowns.
     /// </summary>
-    public static class DropdownFactory
+    public class DropdownFactory : IDropdownFactory
     {
+        private readonly IDropdown.Factory _factory;
+        private readonly IRequirementDictionary _requirements;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="requirements">
+        /// The requirement dictionary.
+        /// </param>
+        /// <param name="factory">
+        /// The factory for creating new dropdowns.
+        /// </param>
+        public DropdownFactory(IRequirementDictionary requirements, IDropdown.Factory factory)
+        {
+            _requirements = requirements;
+            _factory = factory;
+        }
+
         /// <summary>
         /// Returns the requirement for the specified dropdown to be relevant.
         /// </summary>
@@ -17,7 +35,7 @@ namespace OpenTracker.Models.Dropdowns
         /// <returns>
         /// The requirement for the specified dropdown to be relevant.
         /// </returns>
-        private static IRequirement GetRequirement(DropdownID id)
+        private IRequirement GetRequirement(DropdownID id)
         {
             switch (id)
             {
@@ -30,32 +48,23 @@ namespace OpenTracker.Models.Dropdowns
                 case DropdownID.HoulihanHole:
                 case DropdownID.GanonHole:
                     {
-                        return RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity];
+                        return _requirements[RequirementType.EntranceShuffleAllInsanity];
                     }
                 case DropdownID.SWNEHole:
                 case DropdownID.SWNWHole:
                 case DropdownID.SWSEHole:
                 case DropdownID.SWSWHole:
                     {
-                        return RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity];
+                        return _requirements[RequirementType.EntranceShuffleInsanity];
                     }
             }
 
             throw new ArgumentOutOfRangeException(nameof(id));
         }
 
-        /// <summary>
-        /// Returns a new dropdown instance for the specified ID.
-        /// </summary>
-        /// <param name="id">
-        /// The dropdown ID.
-        /// </param>
-        /// <returns>
-        /// A new dropdown instance for the specified ID.
-        /// </returns>
-        public static IDropdown GetDropdown(DropdownID id)
+        public IDropdown GetDropdown(DropdownID id)
         {
-            return new Dropdown(GetRequirement(id));
+            return _factory(GetRequirement(id));
         }
     }
 }

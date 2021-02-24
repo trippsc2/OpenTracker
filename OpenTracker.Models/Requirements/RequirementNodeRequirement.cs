@@ -8,29 +8,11 @@ namespace OpenTracker.Models.Requirements
     /// <summary>
     /// This is the class for requirement node requirement.
     /// </summary>
-    internal class RequirementNodeRequirement : IRequirement
+    public class RequirementNodeRequirement : AccessibilityRequirement
     {
         private readonly IRequirementNode _node;
 
-        public bool Met =>
-            Accessibility != AccessibilityLevel.None;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler ChangePropagated;
-
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
+        public delegate RequirementNodeRequirement Factory(IRequirementNode node);
 
         /// <summary>
         /// Constructor
@@ -40,23 +22,11 @@ namespace OpenTracker.Models.Requirements
         /// </param>
         public RequirementNodeRequirement(IRequirementNode node)
         {
-            _node = node ?? throw new ArgumentNullException(nameof(node));
+            _node = node;
 
             _node.PropertyChanged += OnNodeChanged;
 
-            UpdateAccessibility();
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            ChangePropagated?.Invoke(this, new EventArgs());
+            UpdateValue();
         }
 
         /// <summary>
@@ -70,18 +40,15 @@ namespace OpenTracker.Models.Requirements
         /// </param>
         private void OnNodeChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(RequirementNode.Accessibility))
+            if (e.PropertyName == nameof(IRequirementNode.Accessibility))
             {
-                UpdateAccessibility();
+                UpdateValue();
             }
         }
 
-        /// <summary>
-        /// Updates the accessibility of this requirement.
-        /// </summary>
-        private void UpdateAccessibility()
+        protected override AccessibilityLevel GetAccessibility()
         {
-            Accessibility = _node.Accessibility;
+            return _node.Accessibility;
         }
     }
 }

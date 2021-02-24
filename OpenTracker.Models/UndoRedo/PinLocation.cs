@@ -8,8 +8,11 @@ namespace OpenTracker.Models.UndoRedo
     /// </summary>
     public class PinLocation : IUndoable
     {
+        private readonly IPinnedLocationCollection _pinnedLocations;
         private readonly ILocation _pinnedLocation;
         private int? _existingIndex;
+
+        public delegate PinLocation Factory(ILocation pinnedLocation);
 
         /// <summary>
         /// Constructor
@@ -17,10 +20,10 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="pinnedLocation">
         /// The pinned location to be added.
         /// </param>
-        public PinLocation(ILocation pinnedLocation)
+        public PinLocation(IPinnedLocationCollection pinnedLocations, ILocation pinnedLocation)
         {
-            _pinnedLocation = pinnedLocation ??
-                throw new ArgumentNullException(nameof(pinnedLocation));
+            _pinnedLocations = pinnedLocations;
+            _pinnedLocation = pinnedLocation;
         }
 
         /// <summary>
@@ -31,12 +34,12 @@ namespace OpenTracker.Models.UndoRedo
         /// </returns>
         public bool CanExecute()
         {
-            if (!PinnedLocationCollection.Instance.Contains(_pinnedLocation))
+            if (!_pinnedLocations.Contains(_pinnedLocation))
             {
                 return true;
             }
 
-            if (PinnedLocationCollection.Instance.IndexOf(_pinnedLocation) == 0)
+            if (_pinnedLocations.IndexOf(_pinnedLocation) == 0)
             {
                 return false;
             }
@@ -49,13 +52,13 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Execute()
         {
-            if (PinnedLocationCollection.Instance.Contains(_pinnedLocation))
+            if (_pinnedLocations.Contains(_pinnedLocation))
             {
-                _existingIndex = PinnedLocationCollection.Instance.IndexOf(_pinnedLocation);
-                PinnedLocationCollection.Instance.Remove(_pinnedLocation);
+                _existingIndex = _pinnedLocations.IndexOf(_pinnedLocation);
+                _pinnedLocations.Remove(_pinnedLocation);
             }
             
-            PinnedLocationCollection.Instance.Insert(0, _pinnedLocation);
+            _pinnedLocations.Insert(0, _pinnedLocation);
         }
 
         /// <summary>
@@ -63,11 +66,11 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Undo()
         {
-            PinnedLocationCollection.Instance.Remove(_pinnedLocation);
+            _pinnedLocations.Remove(_pinnedLocation);
 
             if (_existingIndex.HasValue)
             {
-                PinnedLocationCollection.Instance.Insert(_existingIndex.Value, _pinnedLocation);
+                _pinnedLocations.Insert(_existingIndex.Value, _pinnedLocation);
             }
         }
     }

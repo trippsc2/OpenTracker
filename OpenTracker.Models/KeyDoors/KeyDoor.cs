@@ -2,7 +2,6 @@
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -13,12 +12,13 @@ namespace OpenTracker.Models.KeyDoors
     /// </summary>
     public class KeyDoor : IKeyDoor
     {
+        private readonly IKeyDoorFactory _factory;
         private readonly IMutableDungeon _dungeonData;
-        private IRequirementNode _node;
+        private IRequirementNode? _node;
 
         public IRequirement Requirement { get; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private bool _unlocked;
         public bool Unlocked
@@ -53,12 +53,15 @@ namespace OpenTracker.Models.KeyDoors
         /// <param name="dungeonData">
         /// The mutable dungeon data parent class.
         /// </param>
-        public KeyDoor(IMutableDungeon dungeonData)
+        public KeyDoor(
+            IKeyDoorFactory factory, KeyDoorRequirement.Factory requirementFactory, IMutableDungeon dungeonData)
         {
-            _dungeonData = dungeonData ?? throw new ArgumentNullException(nameof(dungeonData));
-            Requirement = new KeyDoorRequirement(this);
+            _factory = factory;
+            _dungeonData = dungeonData;
 
-            _dungeonData.KeyDoorDictionary.DoorCreated += OnDoorCreated;
+            Requirement = requirementFactory(this);
+
+            _dungeonData.KeyDoors.ItemCreated += OnDoorCreated;
         }
 
         /// <summary>
@@ -81,12 +84,12 @@ namespace OpenTracker.Models.KeyDoors
         /// <param name="e">
         /// The arguments of the DoorCreated event.
         /// </param>
-        private void OnDoorCreated(object sender, KeyValuePair<KeyDoorID, IKeyDoor> e)
+        private void OnDoorCreated(object? sender, KeyValuePair<KeyDoorID, IKeyDoor> e)
         {
             if (e.Value == this)
             {
-                _dungeonData.KeyDoorDictionary.DoorCreated -= OnDoorCreated;
-                _node = KeyDoorFactory.GetKeyDoorNode(e.Key, _dungeonData);
+                _dungeonData.KeyDoors.ItemCreated -= OnDoorCreated;
+                _node = _factory.GetKeyDoorNode(e.Key, _dungeonData);
 
                 if (_node != null)
                 {

@@ -1,6 +1,5 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.SaveLoad;
-using OpenTracker.Models.Utils;
 using OpenTracker.Utils;
 using System.Collections.Generic;
 using System.Reflection;
@@ -10,18 +9,12 @@ namespace OpenTracker.Models.Settings
     /// <summary>
     /// This is the class for application data to be saved to file.
     /// </summary>
-    public class AppSettings : Singleton<AppSettings>, IAppSettings
+    public class AppSettings : IAppSettings
     {
         public IBoundsSettings Bounds { get; }
         public ITrackerSettings Tracker { get; }
         public ILayoutSettings Layout { get; }
         public IColorSettings Colors { get; }
-
-        public AppSettings()
-            : this(new BoundsSettings(), new TrackerSettings(), new LayoutSettings(),
-                  new ColorSettings())
-        {
-        }
 
         /// <summary>
         /// Constructor
@@ -38,7 +31,7 @@ namespace OpenTracker.Models.Settings
         /// <param name="colors">
         /// The color settings.
         /// </param>
-        private AppSettings(
+        public AppSettings(
             IBoundsSettings bounds, ITrackerSettings tracker, ILayoutSettings layout,
             IColorSettings colors)
         {

@@ -28,17 +28,13 @@ namespace OpenTracker.ViewModels.AutoTracking
             private set => this.RaiseAndSetIfChanged(ref _statusText, value);
         }
 
-        public AutoTrackerStatusVM() : this(AutoTracker.Instance)
-        {
-        }
-
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="autoTracker">
         /// The autotracker.
         /// </param>
-        private AutoTrackerStatusVM(IAutoTracker autoTracker)
+        public AutoTrackerStatusVM(IAutoTracker autoTracker)
         {
             _autoTracker = autoTracker;
 

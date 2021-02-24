@@ -1,5 +1,5 @@
 ﻿using OpenTracker.Models.SaveLoad;
-using OpenTracker.Models.Utils;
+using OpenTracker.Utils;
 using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -9,7 +9,7 @@ namespace OpenTracker.Models.UndoRedo
     /// <summary>
     /// This is the class for managing undo/redo actions.
     /// </summary>
-    public class UndoRedoManager : Singleton<UndoRedoManager>, IUndoRedoManager
+    public class UndoRedoManager : IUndoRedoManager
     {
         private readonly ISaveLoadManager _saveLoadManager;
 
@@ -25,11 +25,7 @@ namespace OpenTracker.Models.UndoRedo
         public bool CanRedo =>
             _redoableActions.Count > 0;
 
-        public UndoRedoManager() : this(SaveLoadManager.Instance)
-        {
-        }
-
-        private UndoRedoManager(ISaveLoadManager saveLoadManager)
+        public UndoRedoManager(ISaveLoadManager saveLoadManager)
         {
             _saveLoadManager = saveLoadManager;
 
@@ -73,7 +69,7 @@ namespace OpenTracker.Models.UndoRedo
                 action.Execute();
                 _undoableActions.Push(action);
                 _redoableActions.Clear();
-                _saveLoadManager.Unsaved = true;
+                //_saveLoadManager.Unsaved = true;
             }
         }
 
@@ -87,7 +83,7 @@ namespace OpenTracker.Models.UndoRedo
                 IUndoable action = _undoableActions.Pop();
                 action.Undo();
                 _redoableActions.Push(action);
-                _saveLoadManager.Unsaved = true;
+                //_saveLoadManager.Unsaved = true;
             }
         }
 
@@ -101,7 +97,7 @@ namespace OpenTracker.Models.UndoRedo
                 IUndoable action = _redoableActions.Pop();
                 action.Execute();
                 _undoableActions.Push(action);
-                _saveLoadManager.Unsaved = true;
+                //_saveLoadManager.Unsaved = true;
             }
         }
 

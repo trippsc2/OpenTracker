@@ -2,36 +2,47 @@
 using OpenTracker.Models.Settings;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels.Dropdowns
 {
-    public class DropdownPanelVM : ViewModelBase
+    /// <summary>
+    /// This is the class for the dropdown panel ViewModel.
+    /// </summary>
+    public class DropdownPanelVM : ViewModelBase, IDropdownPanelVM
     {
         private readonly ILayoutSettings _layoutSettings;
         private readonly IMode _mode;
+        private readonly IDropdownVMFactory _factory;
 
         public bool Visible =>
             _mode.EntranceShuffle >= EntranceShuffle.All;
         public double Scale =>
             _layoutSettings.UIScale;
 
-        public ObservableCollection<DropdownVM> Dropdowns { get; } =
-            DropdownVMFactory.GetDropdownVMs();
-
-        public DropdownPanelVM()
-            : this(AppSettings.Instance.Layout, Mode.Instance)
-        {
-        }
+        public List<IDropdownVM> Dropdowns { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        private DropdownPanelVM(ILayoutSettings layoutSettings, IMode mode)
+        /// <param name="layoutSettings">
+        /// The layout settings.
+        /// </param>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
+        /// <param name="factory">
+        /// The factory for creating new dropdown controls.
+        /// </param>
+        public DropdownPanelVM(
+            ILayoutSettings layoutSettings, IMode mode, IDropdownVMFactory factory)
         {
             _layoutSettings = layoutSettings;
             _mode = mode;
+            _factory = factory;
+
+            Dropdowns = _factory.GetDropdownVMs();
 
             _mode.PropertyChanged += OnModeChanged;
             _layoutSettings.PropertyChanged += OnLayoutChanged;

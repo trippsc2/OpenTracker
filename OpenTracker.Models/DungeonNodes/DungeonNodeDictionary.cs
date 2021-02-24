@@ -1,7 +1,5 @@
 ﻿using OpenTracker.Models.Dungeons;
-using System;
-using System.Collections;
-using System.Collections.Concurrent;
+using OpenTracker.Utils;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.DungeonNodes
@@ -9,117 +7,32 @@ namespace OpenTracker.Models.DungeonNodes
     /// <summary>
     /// This is the class containing the dictionary of dungeon nodes.
     /// </summary>
-    public class DungeonNodeDictionary : IDictionary<DungeonNodeID, IDungeonNode>
+    public class DungeonNodeDictionary : LazyDictionary<DungeonNodeID, IDungeonNode>,
+        IDungeonNodeDictionary
     {
-        private readonly MutableDungeon _dungeonData;
-        private readonly IDungeon _dungeon;
-        private readonly ConcurrentDictionary<DungeonNodeID, IDungeonNode> _dictionary =
-            new ConcurrentDictionary<DungeonNodeID, IDungeonNode>();
+        private readonly IMutableDungeon _dungeonData;
+        private readonly IDungeonNode.Factory _factory;
 
-        public ICollection<DungeonNodeID> Keys =>
-            ((IDictionary<DungeonNodeID, IDungeonNode>)_dictionary).Keys;
-        public ICollection<IDungeonNode> Values =>
-            ((IDictionary<DungeonNodeID, IDungeonNode>)_dictionary).Values;
-        public int Count =>
-            ((ICollection<KeyValuePair<DungeonNodeID, IDungeonNode>>)_dictionary).Count;
-        public bool IsReadOnly =>
-            ((ICollection<KeyValuePair<DungeonNodeID, IDungeonNode>>)_dictionary).IsReadOnly;
-
-        public IDungeonNode this[DungeonNodeID key]
-        {
-            get
-            {
-                if (!ContainsKey(key))
-                {
-                    Create(key);
-                }
-
-                return ((IDictionary<DungeonNodeID, IDungeonNode>)_dictionary)[key];
-            }
-            set => ((IDictionary<DungeonNodeID, IDungeonNode>)_dictionary)[key] = value;
-        }
-
-        public event EventHandler<KeyValuePair<DungeonNodeID, IDungeonNode>> NodeCreated;
+        public delegate IDungeonNodeDictionary Factory(IMutableDungeon dungeonData);
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="dungeonData">
-        /// The dungeon data parent class.
+        /// <param name="factory">
+        /// The factory for creating new dungeon nodes.
         /// </param>
-        /// <param name="dungeon">
-        /// The dungeon parent class.
-        /// </param>
-        public DungeonNodeDictionary(MutableDungeon dungeonData, IDungeon dungeon)
+        public DungeonNodeDictionary(
+            IDungeonNode.Factory factory, IMutableDungeon dungeonData)
+            : base(new Dictionary<DungeonNodeID, IDungeonNode>())
         {
-            _dungeonData = dungeonData ?? throw new ArgumentNullException(nameof(dungeonData));
-            _dungeon = dungeon ?? throw new ArgumentNullException(nameof(dungeon));
+            _factory = factory;
+
+            _dungeonData = dungeonData;
         }
 
-        /// <summary>
-        /// Creates a dungeon node for the specified key.
-        /// </summary>
-        /// <param name="key">The key.</param>
-        private void Create(DungeonNodeID key)
+        protected override IDungeonNode Create(DungeonNodeID key)
         {
-            Add(key, DungeonNodeFactory.GetDungeonNode(key, _dungeonData, _dungeon));
-            NodeCreated?.Invoke(
-                this, new KeyValuePair<DungeonNodeID, IDungeonNode>(key, this[key]));
-        }
-
-        public void Add(DungeonNodeID key, IDungeonNode value)
-        {
-            ((IDictionary<DungeonNodeID, IDungeonNode>)_dictionary).Add(key, value);
-        }
-
-        public void Add(KeyValuePair<DungeonNodeID, IDungeonNode> item)
-        {
-            ((ICollection<KeyValuePair<DungeonNodeID, IDungeonNode>>)_dictionary).Add(item);
-        }
-
-        public void Clear()
-        {
-            ((ICollection<KeyValuePair<DungeonNodeID, IDungeonNode>>)_dictionary).Clear();
-        }
-
-        public bool Contains(KeyValuePair<DungeonNodeID, IDungeonNode> item)
-        {
-            return ((ICollection<KeyValuePair<DungeonNodeID, IDungeonNode>>)_dictionary).Contains(item);
-        }
-
-        public bool ContainsKey(DungeonNodeID key)
-        {
-            return ((IDictionary<DungeonNodeID, IDungeonNode>)_dictionary).ContainsKey(key);
-        }
-
-        public void CopyTo(KeyValuePair<DungeonNodeID, IDungeonNode>[] array, int arrayIndex)
-        {
-            ((ICollection<KeyValuePair<DungeonNodeID, IDungeonNode>>)_dictionary).CopyTo(array, arrayIndex);
-        }
-
-        public IEnumerator<KeyValuePair<DungeonNodeID, IDungeonNode>> GetEnumerator()
-        {
-            return ((IEnumerable<KeyValuePair<DungeonNodeID, IDungeonNode>>)_dictionary).GetEnumerator();
-        }
-
-        public bool Remove(DungeonNodeID key)
-        {
-            return ((IDictionary<DungeonNodeID, IDungeonNode>)_dictionary).Remove(key);
-        }
-
-        public bool Remove(KeyValuePair<DungeonNodeID, IDungeonNode> item)
-        {
-            return ((ICollection<KeyValuePair<DungeonNodeID, IDungeonNode>>)_dictionary).Remove(item);
-        }
-
-        public bool TryGetValue(DungeonNodeID key, out IDungeonNode value)
-        {
-            return ((IDictionary<DungeonNodeID, IDungeonNode>)_dictionary).TryGetValue(key, out value);
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)_dictionary).GetEnumerator();
+            return _factory(_dungeonData, key);
         }
     }
 }

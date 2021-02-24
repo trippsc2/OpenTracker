@@ -20,7 +20,7 @@ namespace OpenTracker.Models.Modes
         bool TakeAnyLocations { get; set; }
         WorldState WorldState { get; set; }
 
-        void Load(ModeSaveData saveData);
+        void Load(ModeSaveData? saveData);
         ModeSaveData Save();
     }
 }

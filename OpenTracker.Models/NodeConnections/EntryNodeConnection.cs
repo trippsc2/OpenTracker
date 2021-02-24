@@ -14,13 +14,14 @@ namespace OpenTracker.Models.NodeConnections
     {
         private readonly IRequirementNode _fromNode;
 
-        public IRequirement Requirement { get; } =
-            RequirementDictionary.Instance[RequirementType.NoRequirement];
+        public IRequirement Requirement { get; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public AccessibilityLevel Accessibility =>
             _fromNode.Accessibility;
+
+        public delegate EntryNodeConnection Factory(IRequirementNode fromNode);
 
         /// <summary>
         /// Constructor
@@ -28,9 +29,12 @@ namespace OpenTracker.Models.NodeConnections
         /// <param name="fromNode">
         /// The node from which the connection originates.
         /// </param>
-        public EntryNodeConnection(IRequirementNode fromNode)
+        public EntryNodeConnection(
+            IRequirementDictionary requirements, IRequirementNode fromNode)
         {
-            _fromNode = fromNode ?? throw new ArgumentNullException(nameof(fromNode));
+            _fromNode = fromNode;
+
+            Requirement = requirements[RequirementType.NoRequirement];
 
             _fromNode.PropertyChanged += OnNodeChanged;
         }

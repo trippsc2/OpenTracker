@@ -1,6 +1,4 @@
-﻿using OpenTracker.Models.AutoTracking.Logging;
-using OpenTracker.Models.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -11,11 +9,12 @@ namespace OpenTracker.Models.AutoTracking
     /// <summary>
     /// This is the class containing autotracking data and methods
     /// </summary>
-    public class AutoTracker : Singleton<AutoTracker>, IAutoTracker
+    public class AutoTracker : IAutoTracker
     {
+        private readonly IMemoryAddress.Factory _addressFactory;
         private byte? _inGameStatus;
-        private readonly Dictionary<MemorySegmentType, List<MemoryAddress>> _memorySegments =
-            new Dictionary<MemorySegmentType, List<MemoryAddress>>();
+        private readonly Dictionary<MemorySegmentType, List<IMemoryAddress>> _memorySegments =
+            new Dictionary<MemorySegmentType, List<IMemoryAddress>>();
 
         private bool InGame =>
             _inGameStatus.HasValue && _inGameStatus.Value > 0x05 && _inGameStatus.Value != 0x14 &&
@@ -24,8 +23,8 @@ namespace OpenTracker.Models.AutoTracking
         public Action<LogLevel, string>? LogHandler { get; set; }
 
         public ISNESConnector SNESConnector { get; }
-        public Dictionary<ulong, MemoryAddress> MemoryAddresses { get; } =
-            new Dictionary<ulong, MemoryAddress>();
+        public Dictionary<ulong, IMemoryAddress> MemoryAddresses { get; } =
+            new Dictionary<ulong, IMemoryAddress>();
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -55,23 +54,22 @@ namespace OpenTracker.Models.AutoTracking
             }
         }
 
-        public AutoTracker() : this(new SNESConnector(new AutoTrackerLogService()))
-        {
-        }
-
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="snesConnector">
         /// The SNES connector.
         /// </param>
-        public AutoTracker(ISNESConnector snesConnector)
+        public AutoTracker(
+            ISNESConnector snesConnector, IMemoryAddress.Factory addressFactory)
         {
+            _addressFactory = addressFactory;
+
             SNESConnector = snesConnector;
 
             foreach (MemorySegmentType type in Enum.GetValues(typeof(MemorySegmentType)))
             {
-                _memorySegments.Add(type, new List<MemoryAddress>());
+                _memorySegments.Add(type, new List<IMemoryAddress>());
             }
 
             for (ulong i = 0; i < 592; i++)
@@ -150,7 +148,7 @@ namespace OpenTracker.Models.AutoTracking
         /// </param>
         private void CreateMemoryAddress(MemorySegmentType type, ulong offset)
         {
-            var memoryAddress = new MemoryAddress();
+            var memoryAddress = _addressFactory();
             var memorySegment = _memorySegments[type];
             memorySegment.Add(memoryAddress);
             var address = GetMemorySegmentStart(type);

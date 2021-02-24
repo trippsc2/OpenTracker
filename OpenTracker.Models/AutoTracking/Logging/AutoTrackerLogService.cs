@@ -8,14 +8,17 @@ namespace OpenTracker.Models.AutoTracking.Logging
     /// </summary>
     public class AutoTrackerLogService : IAutoTrackerLogService
     {
-        public ObservableCollection<LogMessage> LogCollection { get; } =
-            new ObservableCollection<LogMessage>();
+        private readonly ILogMessage.Factory _messageFactory;
+        
+        public ObservableCollection<ILogMessage> LogCollection { get; } =
+            new ObservableCollection<ILogMessage>();
         
         /// <summary>
         /// Constructor
         /// </summary>
-        public AutoTrackerLogService()
+        public AutoTrackerLogService(ILogMessage.Factory messageFactory)
         {
+            _messageFactory = messageFactory;
         }
 
         /// <summary>
@@ -29,7 +32,7 @@ namespace OpenTracker.Models.AutoTracking.Logging
         /// </param>
         public void Log(LogLevel logLevel, string message)
         {
-            LogCollection.Add(new LogMessage(logLevel, message));
+            LogCollection.Add(_messageFactory(logLevel, message));
         }
     }
 }

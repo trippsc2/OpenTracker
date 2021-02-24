@@ -17,7 +17,7 @@ namespace OpenTracker.Models.NodeConnections
 
         public IRequirement Requirement { get; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
@@ -33,6 +33,9 @@ namespace OpenTracker.Models.NodeConnections
             }
         }
 
+        public delegate NodeConnection Factory(
+            IRequirementNode fromNode, IRequirementNode toNode, IRequirement requirement);
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -46,14 +49,16 @@ namespace OpenTracker.Models.NodeConnections
         /// The requirement for the connection to be accessible.
         /// </param>
         public NodeConnection(
-            IRequirementNode fromNode, IRequirementNode toNode, IRequirement requirement = null)
+            IRequirementNode fromNode, IRequirementNode toNode, IRequirement requirement)
         {
-            _fromNode = fromNode ?? throw new ArgumentNullException(nameof(fromNode));
-            _toNode = toNode ?? throw new ArgumentNullException(nameof(toNode));
-            Requirement = requirement ?? RequirementDictionary.Instance[RequirementType.NoRequirement];
+            _fromNode = fromNode;
+            _toNode = toNode;
+
+            Requirement = requirement;
 
             _fromNode.PropertyChanged += OnNodeChanged;
             Requirement.PropertyChanged += OnRequirementChanged;
+
             UpdateAccessibility();
         }
 

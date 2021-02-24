@@ -7,8 +7,8 @@ namespace OpenTracker.Models.Markings
     /// </summary>
     public class Marking : IMarking
     {
-        public event PropertyChangingEventHandler PropertyChanging;
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangingEventHandler? PropertyChanging;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private MarkType _mark;
         public MarkType Mark

@@ -65,14 +65,10 @@ namespace OpenTracker.ViewModels.ColorSelect
             set => this.RaiseAndSetIfChanged(ref _connectorColor, value);
         }
 
-        public ColorSelectDialogVM() : this(AppSettings.Instance.Colors)
-        {
-        }
-
         /// <summary>
         /// Constructor
         /// </summary>
-        private ColorSelectDialogVM(IColorSettings colorSettings)
+        public ColorSelectDialogVM(IColorSettings colorSettings)
         {
             _colorSettings = colorSettings;
 

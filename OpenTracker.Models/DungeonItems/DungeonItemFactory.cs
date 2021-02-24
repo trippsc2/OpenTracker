@@ -8,8 +8,24 @@ namespace OpenTracker.Models.DungeonItems
     /// <summary>
     /// This is the class for creating dungeon items.
     /// </summary>
-    public static class DungeonItemFactory
+    public class DungeonItemFactory : IDungeonItemFactory
     {
+        private readonly IDungeonItem.Factory _factory;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="dungeonData">
+        /// The dungeon data from which the item is created.
+        /// </param>
+        /// <param name="factory">
+        /// The factory for creating dungeon items.
+        /// </param>
+        public DungeonItemFactory(IDungeonItem.Factory factory)
+        {
+            _factory = factory;
+        }
+
         /// <summary>
         /// Returns a dungeon node to which the specified item ID belongs.
         /// </summary>
@@ -22,8 +38,7 @@ namespace OpenTracker.Models.DungeonItems
         /// <returns>
         /// A dungeon node.
         /// </returns>
-        private static IRequirementNode GetDungeonItemNode(
-            DungeonItemID id, IMutableDungeon dungeonData)
+        private static IRequirementNode GetDungeonItemNode(IMutableDungeon dungeonData, DungeonItemID id)
         {
             switch (id)
             {
@@ -538,25 +553,9 @@ namespace OpenTracker.Models.DungeonItems
             throw new ArgumentOutOfRangeException(nameof(id));
         }
 
-        /// <summary>
-        /// Returns a new dungeon item instance of the specified ID.
-        /// </summary>
-        /// <param name="id">
-        /// The dungeon node identity.
-        /// </param>
-        /// <param name="dungeonData">
-        /// The dungeon mutable data parent class.
-        /// </param>
-        /// <returns>A new dungeon item instance.</returns>
-        public static IDungeonItem GetDungeonItem(
-            DungeonItemID id, IMutableDungeon dungeonData)
+        public IDungeonItem GetDungeonItem(IMutableDungeon dungeonData, DungeonItemID id)
         {
-            if (dungeonData == null)
-            {
-                throw new ArgumentNullException(nameof(dungeonData));
-            }
-
-            return new DungeonItem(id, dungeonData, GetDungeonItemNode(id, dungeonData));
+            return _factory(dungeonData, id, GetDungeonItemNode(dungeonData, id));
         }
     }
 }

@@ -10,6 +10,8 @@ namespace OpenTracker.Models.UndoRedo
         private readonly ISection _section;
         private bool _previousUserManipulated;
 
+        public delegate UncollectSection Factory(ISection section);
+
         /// <summary>
         /// Constructor
         /// </summary>

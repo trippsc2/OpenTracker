@@ -1,5 +1,6 @@
 ﻿using OpenTracker.Models.Locations;
-using System;
+using OpenTracker.ViewModels.PinnedLocations.Notes;
+using OpenTracker.ViewModels.PinnedLocations.Sections;
 using System.Collections.Generic;
 
 namespace OpenTracker.ViewModels.PinnedLocations
@@ -7,8 +8,23 @@ namespace OpenTracker.ViewModels.PinnedLocations
     /// <summary>
     /// This is the class for creating pinned location control ViewModel classes.
     /// </summary>
-    public static class PinnedLocationVMFactory
+    public class PinnedLocationVMFactory : IPinnedLocationVMFactory
     {
+        private readonly ISectionVMFactory _sectionFactory;
+        private readonly IPinnedLocationNoteAreaVM.Factory _noteFactory;
+
+        private readonly IPinnedLocationVM.Factory _factory;
+
+        public PinnedLocationVMFactory(
+            ISectionVMFactory sectionFactory, IPinnedLocationNoteAreaVM.Factory noteFactory,
+            IPinnedLocationVM.Factory factory)
+        {
+            _sectionFactory = sectionFactory;
+            _noteFactory = noteFactory;
+
+            _factory = factory;
+        }
+
         /// <summary>
         /// Returns an observable collection of section control ViewModel instances for the
         /// specified location.
@@ -19,13 +35,13 @@ namespace OpenTracker.ViewModels.PinnedLocations
         /// <returns>
         /// An observable collection of section control ViewModel instances.
         /// </returns>
-        private static List<SectionVM> GetPinnedLocationVMSections(ILocation location)
+        private List<ISectionVM> GetSections(ILocation location)
         {
-            var sections = new List<SectionVM>();
+            var sections = new List<ISectionVM>();
 
             foreach (var section in location.Sections)
             {
-                sections.Add(SectionVMFactory.GetSectionVM(section));
+                sections.Add(_sectionFactory.GetSectionVM(section));
             }
 
             return sections;
@@ -40,14 +56,9 @@ namespace OpenTracker.ViewModels.PinnedLocations
         /// <returns>
         /// A new location control ViewModel instance.
         /// </returns>
-        public static PinnedLocationVM GetLocationControlVM(ILocation location)
+        public IPinnedLocationVM GetLocationControlVM(ILocation location)
         {
-            if (location == null)
-            {
-                throw new ArgumentNullException(nameof(location));
-            }
-
-            return new PinnedLocationVM(location, GetPinnedLocationVMSections(location));
+            return _factory(location, GetSections(location), _noteFactory(location));
         }
     }
 }

@@ -11,25 +11,21 @@ namespace OpenTracker.ViewModels.Items
     /// <summary>
     /// This is the ViewModel class for the Items panel control.
     /// </summary>
-    public class ItemsPanelVM : ViewModelBase
+    public class ItemsPanelVM : ViewModelBase, IItemsPanelVM
     {
         private readonly ILayoutSettings _layoutSettings;
 
-        private readonly HorizontalSmallItemPanelVM _horizontalSmallItemPanel =
-            new HorizontalSmallItemPanelVM();
-        private readonly VerticalSmallItemPanelVM _verticalSmallItemPanel =
-            new VerticalSmallItemPanelVM();
+        private readonly IHorizontalSmallItemPanelVM _horizontalSmallItemPanel;
+        private readonly IVerticalSmallItemPanelVM _verticalSmallItemPanel;
 
         public double Scale =>
             _layoutSettings.UIScale;
         public Orientation Orientation =>
             _layoutSettings.CurrentLayoutOrientation;
 
-        public ModeSettingsVM ModeSettings { get; } =
-            new ModeSettingsVM();
-        public LargeItemPanelVM LargeItems { get; } =
-            new LargeItemPanelVM();
-        public SmallItemPanelVM SmallItems
+        public IModeSettingsVM ModeSettings { get; }
+        public ILargeItemPanelVM LargeItems { get; }
+        public ISmallItemPanelVM SmallItems
         {
             get
             {
@@ -42,16 +38,21 @@ namespace OpenTracker.ViewModels.Items
             }
         }
 
-        public ItemsPanelVM() : this(AppSettings.Instance.Layout)
-        {
-        }
-
         /// <summary>
         /// Constructor
         /// </summary>
-        private ItemsPanelVM(ILayoutSettings layoutSettings)
+        public ItemsPanelVM(
+            ILayoutSettings layoutSettings, IHorizontalSmallItemPanelVM horizontalSmallItemPanel,
+            IVerticalSmallItemPanelVM verticalSmallItemPanel, IModeSettingsVM modeSettings,
+            ILargeItemPanelVM largeItems)
         {
             _layoutSettings = layoutSettings;
+
+            _horizontalSmallItemPanel = horizontalSmallItemPanel;
+            _verticalSmallItemPanel = verticalSmallItemPanel;
+
+            ModeSettings = modeSettings;
+            LargeItems = largeItems;
 
             PropertyChanged += OnPropertyChanged;
             _layoutSettings.PropertyChanged += OnLayoutChanged;

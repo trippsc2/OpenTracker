@@ -7,6 +7,8 @@ namespace OpenTracker.Models.UndoRedo
     {
         private readonly IDropdown _dropdown;
 
+        public delegate UncheckDropdown Factory(IDropdown dropdown);
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -15,7 +17,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </param>
         public UncheckDropdown(IDropdown dropdown)
         {
-            _dropdown = dropdown ?? throw new ArgumentNullException(nameof(dropdown));
+            _dropdown = dropdown;
         }
 
         /// <summary>

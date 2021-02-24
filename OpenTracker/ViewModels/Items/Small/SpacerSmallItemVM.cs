@@ -1,6 +1,6 @@
 ﻿using OpenTracker.Models.Requirements;
+using OpenTracker.Utils;
 using ReactiveUI;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels.Items.Small
@@ -8,12 +8,14 @@ namespace OpenTracker.ViewModels.Items.Small
     /// <summary>
     /// This is the ViewModel for the small Items panel control for reserving space.
     /// </summary>
-    public class SpacerSmallItemVM : SmallItemVMBase
+    public class SpacerSmallItemVM : ViewModelBase, ISmallItemVMBase
     {
         private readonly IRequirement _requirement;
 
         public bool Visible =>
             _requirement.Met;
+
+        public delegate SpacerSmallItemVM Factory(IRequirement requirement);
 
         /// <summary>
         /// Constructor
@@ -23,7 +25,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// </param>
         public SpacerSmallItemVM(IRequirement requirement)
         {
-            _requirement = requirement ?? throw new ArgumentNullException(nameof(requirement));
+            _requirement = requirement;
 
             _requirement.PropertyChanged += OnRequirementChanged;
         }

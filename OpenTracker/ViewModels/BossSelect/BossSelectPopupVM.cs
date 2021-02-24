@@ -3,7 +3,7 @@ using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive;
 
@@ -12,7 +12,7 @@ namespace OpenTracker.ViewModels.BossSelect
     /// <summary>
     /// This is the ViewModel class for the boss select popup control.
     /// </summary>
-    public class BossSelectPopupVM : ViewModelBase
+    public class BossSelectPopupVM : ViewModelBase, IBossSelectPopupVM
     {
         private readonly ILayoutSettings _layoutSettings;
         private readonly IUndoRedoManager _undoRedoManager;
@@ -20,7 +20,7 @@ namespace OpenTracker.ViewModels.BossSelect
 
         public double Scale =>
             _layoutSettings.UIScale;
-        public ObservableCollection<BossSelectButtonVM> Buttons { get; }
+        public List<IBossSelectButtonVM> Buttons { get; }
 
         private bool _popupOpen;
         public bool PopupOpen
@@ -31,13 +31,6 @@ namespace OpenTracker.ViewModels.BossSelect
 
         public ReactiveCommand<BossType?, Unit> ChangeBossCommand { get; }
 
-        public BossSelectPopupVM(
-            IBossPlacement bossPlacement,
-            ObservableCollection<BossSelectButtonVM> buttons)
-            : this(AppSettings.Instance.Layout, UndoRedoManager.Instance, bossPlacement, buttons)
-        {
-        }
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -47,15 +40,14 @@ namespace OpenTracker.ViewModels.BossSelect
         /// <param name="buttons">
         /// The observable collection of boss select button control ViewModel instances.
         /// </param>
-        private BossSelectPopupVM(
+        public BossSelectPopupVM(
             ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager,
-            IBossPlacement bossPlacement,
-            ObservableCollection<BossSelectButtonVM> buttons)
+            IBossSelectFactory factory, IBossPlacement bossPlacement)
         {
             _layoutSettings = layoutSettings;
             _undoRedoManager = undoRedoManager;
             _bossPlacement = bossPlacement;
-            Buttons = buttons;
+            Buttons = factory.GetBossSelectButtonVMs(_bossPlacement);
 
             ChangeBossCommand = ReactiveCommand.Create<BossType?>(ChangeBoss);
 

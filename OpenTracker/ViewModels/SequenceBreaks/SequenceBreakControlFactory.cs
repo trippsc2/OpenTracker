@@ -9,16 +9,20 @@ namespace OpenTracker.ViewModels.SequenceBreaks
     /// </summary>
     public class SequenceBreakControlFactory : ISequenceBreakControlFactory
     {
-        private readonly SequenceBreakDictionary _sequenceBreakDictionary;
+        private readonly ISequenceBreakDictionary _sequenceBreakDictionary;
         private readonly ISequenceBreakControlVM.Factory _factory;
 
-        public SequenceBreakControlFactory(ISequenceBreakControlVM.Factory factory)
-            : this(SequenceBreakDictionary.Instance, factory)
-        {
-        }
-
-        private SequenceBreakControlFactory(
-            SequenceBreakDictionary sequenceBreakDictionary,
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="sequenceBreakDictionary">
+        /// The sequence break dictionary.
+        /// </param>
+        /// <param name="factory">
+        /// The Autofac factory for creating new sequnece break controls.
+        /// </param>
+        public SequenceBreakControlFactory(
+            ISequenceBreakDictionary sequenceBreakDictionary,
             ISequenceBreakControlVM.Factory factory)
         {
             _sequenceBreakDictionary = sequenceBreakDictionary;
@@ -107,6 +111,21 @@ namespace OpenTracker.ViewModels.SequenceBreaks
         }
 
         /// <summary>
+        /// Returns a new sequence break control ViewModel.
+        /// </summary>
+        /// <param name="type">
+        /// The type of sequence break.
+        /// </param>
+        /// <returns>
+        /// A new sequence break control ViewModel.
+        /// </returns>
+        private ISequenceBreakControlVM GetSequenceBreakControl(SequenceBreakType type)
+        {
+            return _factory(_sequenceBreakDictionary[type], GetSequenceBreakName(type),
+                GetSequenceBreakToolTip(type));
+        }
+
+        /// <summary>
         /// Returns the list of bomb duplication sequence break control ViewModel
         /// instances.
         /// </summary>
@@ -121,9 +140,7 @@ namespace OpenTracker.ViewModels.SequenceBreaks
                 i <= (int)SequenceBreakType.BombDuplicationMirror; i++)
             {
                 var type = (SequenceBreakType)i;
-                bombDuplicationSequenceBreaks.Add(_factory(
-                    _sequenceBreakDictionary[type], GetSequenceBreakName(type),
-                    GetSequenceBreakToolTip(type)));
+                bombDuplicationSequenceBreaks.Add(GetSequenceBreakControl(type));
             }
 
             return bombDuplicationSequenceBreaks;
@@ -144,9 +161,7 @@ namespace OpenTracker.ViewModels.SequenceBreaks
                 i <= (int)SequenceBreakType.BombJumpIPFreezorRoomGap; i++)
             {
                 var type = (SequenceBreakType)i;
-                bombJumpsSequenceBreaks.Add(_factory(
-                    _sequenceBreakDictionary[type], GetSequenceBreakName(type),
-                    GetSequenceBreakToolTip(type)));
+                bombJumpsSequenceBreaks.Add(GetSequenceBreakControl(type));
             }
 
             return bombJumpsSequenceBreaks;
@@ -167,9 +182,7 @@ namespace OpenTracker.ViewModels.SequenceBreaks
                 i <= (int)SequenceBreakType.DarkRoomTR; i++)
             {
                 var type = (SequenceBreakType)i;
-                darkRoomsSequenceBreaks.Add(_factory(
-                    _sequenceBreakDictionary[type], GetSequenceBreakName(type),
-                    GetSequenceBreakToolTip(type)));
+                darkRoomsSequenceBreaks.Add(GetSequenceBreakControl(type));
             }
 
             return darkRoomsSequenceBreaks;
@@ -191,9 +204,7 @@ namespace OpenTracker.ViewModels.SequenceBreaks
                 i <= (int)SequenceBreakType.WaterWalkFromWaterfallCave; i++)
             {
                 var type = (SequenceBreakType)i;
-                fakeFlippersWaterWalkSequenceBreaks.Add(_factory(
-                    _sequenceBreakDictionary[type], GetSequenceBreakName(type),
-                    GetSequenceBreakToolTip(type)));
+                fakeFlippersWaterWalkSequenceBreaks.Add(GetSequenceBreakControl(type));
             }
 
             return fakeFlippersWaterWalkSequenceBreaks;
@@ -214,9 +225,7 @@ namespace OpenTracker.ViewModels.SequenceBreaks
                 i <= (int)SequenceBreakType.SuperBunnyFallInHole; i++)
             {
                 var type = (SequenceBreakType)i;
-                superBunnySequenceBreaks.Add(_factory(
-                    _sequenceBreakDictionary[type], GetSequenceBreakName(type),
-                    GetSequenceBreakToolTip(type)));
+                superBunnySequenceBreaks.Add(GetSequenceBreakControl(type));
             }
 
             return superBunnySequenceBreaks;
@@ -236,9 +245,7 @@ namespace OpenTracker.ViewModels.SequenceBreaks
                 i <= (int)SequenceBreakType.IPIceBreaker; i++)
             {
                 var type = (SequenceBreakType)i;
-                otherSequenceBreaks.Add(_factory(
-                    _sequenceBreakDictionary[type], GetSequenceBreakName(type),
-                    GetSequenceBreakToolTip(type)));
+                otherSequenceBreaks.Add(GetSequenceBreakControl(type));
             }
 
             return otherSequenceBreaks;

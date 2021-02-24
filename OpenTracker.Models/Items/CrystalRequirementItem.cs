@@ -1,4 +1,4 @@
-﻿using OpenTracker.Models.AutoTracking.AutotrackValues;
+﻿using OpenTracker.Models.AutoTracking.Values;
 
 namespace OpenTracker.Models.Items
 {
@@ -19,7 +19,11 @@ namespace OpenTracker.Models.Items
             }
         }
 
-        public CrystalRequirementItem() : base(0, 7, null)
+        public new delegate CrystalRequirementItem Factory(ItemType type);
+
+        public CrystalRequirementItem(
+            IItemAutoTrackValueFactory autoTrackValueFactory, ItemType type)
+            : base(autoTrackValueFactory, type, 0, 7)
         {
         }
 

@@ -11,13 +11,14 @@ namespace OpenTracker.Models.PrizePlacements
     /// </summary>
     public class PrizePlacement : IPrizePlacement
     {
-        private readonly IItem _startingPrize;
+        private readonly IPrizeDictionary _prizes;
+        private readonly IItem? _startingPrize;
 
-        public event PropertyChangingEventHandler PropertyChanging;
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangingEventHandler? PropertyChanging;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        private IItem _prize;
-        public IItem Prize
+        private IItem? _prize;
+        public IItem? Prize
         {
             get => _prize;
             set
@@ -37,9 +38,11 @@ namespace OpenTracker.Models.PrizePlacements
         /// <param name="startingPrize">
         /// The starting prize item.
         /// </param>
-        public PrizePlacement(IItem startingPrize = null)
+        public PrizePlacement(IPrizeDictionary prizes, IItem? startingPrize = null)
         {
+            _prizes = prizes;
             _startingPrize = startingPrize;
+
             Prize = startingPrize;
         }
 
@@ -83,11 +86,11 @@ namespace OpenTracker.Models.PrizePlacements
         {
             if (Prize == null)
             {
-                Prize = PrizeDictionary.Instance[PrizeType.Crystal];
+                Prize = _prizes[PrizeType.Crystal];
             }
             else
             {
-                PrizeType type = PrizeDictionary.Instance.FirstOrDefault(
+                PrizeType type = _prizes.FirstOrDefault(
                     x => x.Value == Prize).Key;
 
                 if (type == PrizeType.GreenPendant)
@@ -96,7 +99,7 @@ namespace OpenTracker.Models.PrizePlacements
                 }
                 else
                 {
-                    Prize = PrizeDictionary.Instance[type + 1];
+                    Prize = _prizes[type + 1];
                 }
             }
         }
@@ -125,7 +128,7 @@ namespace OpenTracker.Models.PrizePlacements
             }
             else
             {
-                prize = PrizeDictionary.Instance.FirstOrDefault(x => x.Value == Prize).Key;
+                prize = _prizes.FirstOrDefault(x => x.Value == Prize).Key;
             }
 
             return new PrizePlacementSaveData()
@@ -150,7 +153,7 @@ namespace OpenTracker.Models.PrizePlacements
             }
             else
             {
-                Prize = PrizeDictionary.Instance[saveData.Prize.Value];
+                Prize = _prizes[saveData.Prize.Value];
             }
         }
     }

@@ -10,6 +10,8 @@ namespace OpenTracker.Models.UndoRedo
     {
         private readonly ICrystalRequirementItem _item;
 
+        public delegate AddCrystalRequirement Factory(ICrystalRequirementItem item);
+
         /// <summary>
         /// Constructor
         /// </summary>

@@ -2,6 +2,7 @@
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
@@ -12,13 +13,17 @@ namespace OpenTracker.ViewModels.Items.Large
     /// <summary>
     /// This is the ViewModel for the large Items panel control representing a dungeon prize.
     /// </summary>
-    public class PrizeLargeItemVM : LargeItemVMBase, IClickHandler
+    public class PrizeLargeItemVM : ViewModelBase, ILargeItemVMBase, IClickHandler
     {
+        private readonly IUndoRedoManager _undoRedoManager;
+
         private readonly IPrizeSection _section;
         private readonly string _imageSourceBase;
 
         public string ImageSource =>
                 _imageSourceBase + (_section.IsAvailable() ? "0.png" : "1.png");
+
+        public delegate PrizeLargeItemVM Factory(IPrizeSection section, string imageSourceBase);
 
         /// <summary>
         /// Constructor
@@ -29,11 +34,13 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <param name="section">
         /// An item that is to be represented by this control.
         /// </param>
-        public PrizeLargeItemVM(string imageSourceBase, IPrizeSection section)
+        public PrizeLargeItemVM(
+            IUndoRedoManager undoRedoManager, IPrizeSection section, string imageSourceBase)
         {
-            _section = section ?? throw new ArgumentNullException(nameof(section));
-            _imageSourceBase = imageSourceBase ??
-                throw new ArgumentNullException(nameof(imageSourceBase));
+            _undoRedoManager = undoRedoManager;
+
+            _section = section;
+            _imageSourceBase = imageSourceBase;
 
             _section.PropertyChanged += OnSectionChanged;
         }
@@ -63,7 +70,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         public void OnLeftClick(bool force)
         {
-            UndoRedoManager.Instance.Execute(new CollectSection(_section, true));
+            _undoRedoManager.Execute(new CollectSection(_section, true));
         }
 
         /// <summary>
@@ -74,7 +81,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         public void OnRightClick(bool force)
         {
-            UndoRedoManager.Instance.Execute(new UncollectSection(_section));
+            _undoRedoManager.Execute(new UncollectSection(_section));
         }
     }
 }

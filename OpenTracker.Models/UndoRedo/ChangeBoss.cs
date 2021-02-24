@@ -13,6 +13,9 @@ namespace OpenTracker.Models.UndoRedo
         private readonly BossType? _boss;
         private BossType? _previousBoss;
 
+        public delegate ChangeBoss Factory(
+            IBossPlacement bossPlacement, BossType? boss);
+
         /// <summary>
         /// Constructor
         /// </summary>

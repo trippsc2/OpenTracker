@@ -1,4 +1,4 @@
-﻿using OpenTracker.Models.AutoTracking.AutotrackValues;
+﻿using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.SaveLoad;
 using System;
 using System.ComponentModel;
@@ -29,6 +29,8 @@ namespace OpenTracker.Models.Items
             }
         }
 
+        public delegate Item Factory(ItemType type, int starting);
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -38,11 +40,13 @@ namespace OpenTracker.Models.Items
         /// <param name="autoTrackValue">
         /// The autotracking value for the item.
         /// </param>
-        public Item(int starting, IAutoTrackValue autoTrackValue)
+        public Item(IItemAutoTrackValueFactory autoTrackValueFactory, ItemType type, int starting)
         {
             _starting = starting;
-            _autoTrackValue = autoTrackValue;
+
             Current = _starting;
+
+            _autoTrackValue = autoTrackValueFactory.GetAutoTrackValue(type);
 
             if (_autoTrackValue != null)
             {
@@ -88,7 +92,7 @@ namespace OpenTracker.Models.Items
                 if (Current != _autoTrackValue.CurrentValue.Value)
                 {
                     Current = _autoTrackValue.CurrentValue.Value;
-                    SaveLoadManager.Instance.Unsaved = true;
+                    //SaveLoadManager.Instance.Unsaved = true;
                 }
             }
         }

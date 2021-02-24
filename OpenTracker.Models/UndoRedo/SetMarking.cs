@@ -12,6 +12,8 @@ namespace OpenTracker.Models.UndoRedo
         private readonly MarkType _newMarking;
         private MarkType _previousMarking;
 
+        public delegate SetMarking Factory(IMarking marking, MarkType newMarking);
+
         /// <summary>
         /// Constructor
         /// </summary>

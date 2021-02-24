@@ -1,21 +1,22 @@
-﻿using Avalonia.Layout;
-using OpenTracker.Interfaces;
+﻿using OpenTracker.Interfaces;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Items;
-using OpenTracker.Models.Locations;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
 using ReactiveUI;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
-    public class BigKeySmallItemVM : SmallItemVMBase, IClickHandler
+    public class BigKeySmallItemVM : ViewModelBase, ISmallItemVMBase, IClickHandler
     {
-        private readonly IRequirement _spacerRequirement;
+        private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
+
         private readonly IRequirement _requirement;
+        private readonly IRequirement _spacerRequirement;
         private readonly IItem _item;
 
         public bool SpacerVisible =>
@@ -26,72 +27,26 @@ namespace OpenTracker.ViewModels.Items.Small
             "avares://OpenTracker/Assets/Images/Items/bigkey" +
             (_item.Current > 0 ? "1" : "0") + ".png";
 
+        public delegate BigKeySmallItemVM Factory(
+            IDungeon dungeon, IRequirement requirement, IRequirement spacerRequirement);
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="dungeon">
         /// The dungeon whose big keys are to be represented.
         /// </param>
-        public BigKeySmallItemVM(IDungeon dungeon)
+        public BigKeySmallItemVM(
+            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IDungeon dungeon,
+            IRequirement requirement, IRequirement spacerRequirement)
         {
-            if (dungeon == null)
-            {
-                throw new ArgumentNullException(nameof(dungeon));
-            }
+            _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
 
-            if (dungeon.BigKeyItem == null)
-            {
+            _item = dungeon.BigKeyItem ??
                 throw new ArgumentOutOfRangeException(nameof(dungeon));
-            }
-
-            _item = dungeon.BigKeyItem;
-
-            if (dungeon.ID == LocationID.HyruleCastle)
-            {
-                _spacerRequirement = new AlternativeRequirement(new List<IRequirement>
-                {
-                    new AggregateRequirement(new List<IRequirement>
-                    {
-                        new ItemsPanelOrientationRequirement(Orientation.Vertical),
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            new AlwaysDisplayDungeonItemsRequirement(true),
-                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]
-                        })
-                    }),
-                    new AggregateRequirement(new List<IRequirement>
-                    {
-                        RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
-                        new AlternativeRequirement(new List<IRequirement>
-                        {
-                            new AlwaysDisplayDungeonItemsRequirement(true),
-                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]
-                        })
-                    })
-                });
-                _requirement = new AggregateRequirement(new List<IRequirement>
-                {
-                    RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
-                    new AlternativeRequirement(new List<IRequirement>
-                    {
-                        new AlwaysDisplayDungeonItemsRequirement(true),
-                        RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]
-                    })
-                });
-            }
-            else
-            {
-                _spacerRequirement = new AlternativeRequirement(new List<IRequirement>
-                {
-                    new AlwaysDisplayDungeonItemsRequirement(true),
-                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]
-                });
-                _requirement = new AlternativeRequirement(new List<IRequirement>
-                {
-                    new AlwaysDisplayDungeonItemsRequirement(true),
-                    RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]
-                });
-            }
+            _requirement = requirement;
+            _spacerRequirement = spacerRequirement;
 
             _item.PropertyChanged += OnItemChanged;
             _requirement.PropertyChanged += OnRequirementChanged;
@@ -135,7 +90,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// </param>
         public void OnLeftClick(bool force = false)
         {
-            UndoRedoManager.Instance.Execute(new AddItem(_item));
+            _undoRedoManager.Execute(_undoableFactory.GetAddItem(_item));
         }
 
         /// <summary>
@@ -146,7 +101,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// </param>
         public void OnRightClick(bool force = false)
         {
-            UndoRedoManager.Instance.Execute(new RemoveItem(_item));
+            _undoRedoManager.Execute(_undoableFactory.GetRemoveItem(_item));
         }
     }
 }

@@ -1,14 +1,14 @@
-﻿using OpenTracker.Models.Utils;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 
 namespace OpenTracker.Utils
 {
     public abstract class ViewModelCollection<TViewModel, TModel> : IObservableCollection<TViewModel>
-        where TViewModel : ViewModelBase, IModelWrapper
+        where TViewModel : IModelWrapper
     {
         private readonly List<TViewModel> _list;
         private readonly IObservableCollection<TModel> _model;
@@ -34,7 +34,7 @@ namespace OpenTracker.Utils
         }
 
         private void OnCollectionChanged(
-            NotifyCollectionChangedAction action, object item, int index)
+            NotifyCollectionChangedAction action, object? item, int index)
         {
             CollectionChanged?.Invoke(
                 this, new NotifyCollectionChangedEventArgs(action, item, index));
@@ -48,11 +48,11 @@ namespace OpenTracker.Utils
                     {
                         foreach (var item in e.NewItems)
                         {
-                            var vmItem = CreateViewModel((TModel)item);
+                            var vmItem = CreateViewModel((TModel)item!);
 
                             if (e.NewStartingIndex != _list.Count)
                             {
-                                _list.Insert(_model.IndexOf((TModel)item), vmItem);
+                                _list.Insert(_model.IndexOf((TModel)item!), vmItem);
                             }
                             else
                             {

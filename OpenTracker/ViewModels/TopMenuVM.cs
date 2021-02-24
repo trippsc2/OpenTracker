@@ -46,6 +46,9 @@ namespace OpenTracker.ViewModels
         private readonly IColorSelectDialogVM _colorSelectDialog;
         private readonly IAboutDialogVM _aboutDialog;
 
+        private readonly IErrorBoxDialogVM.Factory _errorBoxFactory;
+        private readonly IMessageBoxDialogVM.Factory _messageBoxFactory;
+
         public bool DisplayAllLocations =>
             _appSettings.Tracker.DisplayAllLocations;
         public bool ShowItemCountsOnMap =>
@@ -166,26 +169,16 @@ namespace OpenTracker.ViewModels
         public bool IsOpeningAbout =>
             _isOpeningAbout.Value;
 
-        public TopMenuVM(
-            IResetManager resetManager, ISaveLoadManager saveLoadManager, IDialogService dialogService,
-            IFileDialogService fileDialogService, IAutoTrackerDialogVM autoTrackerDialog,
-            IColorSelectDialogVM colorSelectDialog, ISequenceBreakDialogVM sequenceBreakDialog,
-            IAboutDialogVM aboutDialog)
-            : this(AppSettings.Instance, resetManager, saveLoadManager,
-                  UndoRedoManager.Instance, dialogService, fileDialogService, autoTrackerDialog,
-                  colorSelectDialog, sequenceBreakDialog, aboutDialog)
-        {
-        }
-
         /// <summary>
         /// Constructor
         /// </summary>
-        private TopMenuVM(
+        public TopMenuVM(
             IAppSettings appSettings, IResetManager resetManager, ISaveLoadManager saveLoadManager,
             IUndoRedoManager undoRedoManager, IDialogService dialogService,
             IFileDialogService fileDialogService, IAutoTrackerDialogVM autoTrackerDialog,
             IColorSelectDialogVM colorSelectDialog, ISequenceBreakDialogVM sequenceBreakDialog,
-            IAboutDialogVM aboutDialog)
+            IAboutDialogVM aboutDialog, IErrorBoxDialogVM.Factory errorBoxFactory,
+            IMessageBoxDialogVM.Factory messageBoxFactory)
         {
             _appSettings = appSettings;
             _resetManager = resetManager;
@@ -199,6 +192,9 @@ namespace OpenTracker.ViewModels
             _colorSelectDialog = colorSelectDialog;
             _sequenceBreakDialog = sequenceBreakDialog;
             _aboutDialog = aboutDialog;
+
+            _errorBoxFactory = errorBoxFactory;
+            _messageBoxFactory = messageBoxFactory;
 
             OpenCommand = ReactiveCommand.CreateFromTask(Open);
             OpenCommand.IsExecuting.ToProperty(this, x => x.IsOpening, out _isOpening);
@@ -376,9 +372,7 @@ namespace OpenTracker.ViewModels
         {
             await Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                await _dialogService.ShowDialogAsync(
-                    new ErrorBoxDialogVM("Error", message))
-                    .ConfigureAwait(false);
+                await _dialogService.ShowDialogAsync(_errorBoxFactory("Error", message));
             });
         }
 
@@ -511,7 +505,7 @@ namespace OpenTracker.ViewModels
         private async Task Reset()
         {
             var result = await _dialogService.ShowDialogAsync<bool>(
-                new MessageBoxDialogVM("Warning",
+                _messageBoxFactory("Warning",
                 "Resetting the tracker will set all items and locations back to their " +
                 "starting values. This cannot be undone.\n\nDo you wish to proceed?"));
 

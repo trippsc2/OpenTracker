@@ -3,6 +3,7 @@ using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
@@ -13,10 +14,12 @@ namespace OpenTracker.ViewModels.Items.Small
     /// <summary>
     /// This is the ViewModel for the small Items panel control representing dungeon items.
     /// </summary>
-    public class DungeonItemSmallItemVM : SmallItemVMBase, IClickHandler
+    public class DungeonItemSmallItemVM : ViewModelBase, ISmallItemVMBase, IClickHandler
     {
         private readonly IColorSettings _colorSettings;
         private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
+
         private readonly ISection _section;
 
         public string FontColor =>
@@ -42,10 +45,7 @@ namespace OpenTracker.ViewModels.Items.Small
         public string NumberString =>
             _section.Available.ToString(CultureInfo.InvariantCulture);
 
-        public DungeonItemSmallItemVM(ISection section)
-            : this(AppSettings.Instance.Colors, UndoRedoManager.Instance, section)
-        {
-        }
+        public delegate DungeonItemSmallItemVM Factory(ISection section);
 
         /// <summary>
         /// Constructor
@@ -53,12 +53,15 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <param name="section">
         /// The dungeon section to be represented.
         /// </param>
-        private DungeonItemSmallItemVM(
-            IColorSettings colorSettings, IUndoRedoManager undoRedoManager, ISection section)
+        public DungeonItemSmallItemVM(
+            IColorSettings colorSettings, IUndoRedoManager undoRedoManager,
+            IUndoableFactory undoableFactory, ISection section)
         {
-            _undoRedoManager = undoRedoManager;
             _colorSettings = colorSettings;
-            _section = section ?? throw new ArgumentNullException(nameof(section));
+            _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
+
+            _section = section;
 
             _colorSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
             _section.PropertyChanged += OnSectionChanged;
@@ -128,7 +131,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// </param>
         public void OnLeftClick(bool force)
         {
-            _undoRedoManager.Execute(new CollectSection(_section, force));
+            _undoRedoManager.Execute(_undoableFactory.GetCollectSection(_section, force));
         }
 
         /// <summary>
@@ -139,7 +142,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// </param>
         public void OnRightClick(bool force)
         {
-            _undoRedoManager.Execute(new UncollectSection(_section));
+            _undoRedoManager.Execute(_undoableFactory.GetUncollectSection(_section));
         }
     }
 }

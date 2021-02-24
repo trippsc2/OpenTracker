@@ -3,6 +3,7 @@ using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
@@ -13,9 +14,11 @@ namespace OpenTracker.ViewModels.Items.Large
     /// <summary>
     /// This is the ViewModel of the large Items panel control representing crystal requirements.
     /// </summary>
-    public class CrystalRequirementLargeItemVM : LargeItemVMBase, IClickHandler
+    public class CrystalRequirementLargeItemVM : ViewModelBase, ILargeItemVMBase, IClickHandler
     {
         private readonly IColorSettings _colorSettings;
+        private readonly IUndoRedoManager _undoRedoManager;
+
         private readonly ICrystalRequirementItem _item;
 
         public string ImageSource { get; }
@@ -47,10 +50,8 @@ namespace OpenTracker.ViewModels.Items.Large
             }
         }
 
-        public CrystalRequirementLargeItemVM(string imageSource, ICrystalRequirementItem item)
-            : this(AppSettings.Instance.Colors, imageSource, item)
-        {
-        }
+        public delegate CrystalRequirementLargeItemVM Factory(
+            ICrystalRequirementItem item, string imageSource);
 
         /// <summary>
         /// Constructor
@@ -61,10 +62,13 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <param name="item">
         /// An item that is to be represented by this control.
         /// </param>
-        private CrystalRequirementLargeItemVM(
-            IColorSettings colorSettings, string imageSource, ICrystalRequirementItem item)
+        public CrystalRequirementLargeItemVM(
+            IColorSettings colorSettings, IUndoRedoManager undoRedoManager,
+            ICrystalRequirementItem item, string imageSource)
         {
             _colorSettings = colorSettings;
+            _undoRedoManager = undoRedoManager;
+
             _item = item;
 
             ImageSource = imageSource;
@@ -123,7 +127,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         public void OnLeftClick(bool force)
         {
-            UndoRedoManager.Instance.Execute(new AddCrystalRequirement(_item));
+            _undoRedoManager.Execute(new AddCrystalRequirement(_item));
         }
 
         /// <summary>
@@ -134,7 +138,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         public void OnRightClick(bool force)
         {
-            UndoRedoManager.Instance.Execute(new RemoveCrystalRequirement(_item));
+            _undoRedoManager.Execute(new RemoveCrystalRequirement(_item));
         }
     }
 }

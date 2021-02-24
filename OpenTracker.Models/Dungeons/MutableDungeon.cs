@@ -14,25 +14,28 @@ namespace OpenTracker.Models.Dungeons
     /// </summary>
     public class MutableDungeon : IMutableDungeon
     {
+        private readonly IMode _mode;
         private readonly IDungeon _dungeon;
 
         public LocationID ID =>
             _dungeon.ID;
-        public KeyDoorDictionary KeyDoorDictionary { get; }
-        public DungeonItemDictionary ItemDictionary { get; }
+        public IKeyDoorDictionary KeyDoors { get; }
+        public IDungeonItemDictionary DungeonItems { get; }
+        public IDungeonNodeDictionary Nodes { get; }
         public Dictionary<KeyDoorID, IKeyDoor> SmallKeyDoors { get; } =
             new Dictionary<KeyDoorID, IKeyDoor>();
         public Dictionary<KeyDoorID, IKeyDoor> BigKeyDoors { get; } =
             new Dictionary<KeyDoorID, IKeyDoor>();
-        public DungeonNodeDictionary Nodes { get; }
         public Dictionary<DungeonItemID, IDungeonItem> Items { get; } =
             new Dictionary<DungeonItemID, IDungeonItem>();
         public Dictionary<DungeonItemID, IDungeonItem> SmallKeyDrops { get; } =
             new Dictionary<DungeonItemID, IDungeonItem>();
         public Dictionary<DungeonItemID, IDungeonItem> BigKeyDrops { get; } =
             new Dictionary<DungeonItemID, IDungeonItem>();
-        public List<IDungeonItem> BossItems { get; } =
+        public List<IDungeonItem> Bosses { get; } =
             new List<IDungeonItem>();
+
+        public delegate IMutableDungeon Factory(IDungeon dungeon);
 
         /// <summary>
         /// Constructor
@@ -40,12 +43,16 @@ namespace OpenTracker.Models.Dungeons
         /// <param name="dungeon">
         /// The dungeon immutable data.
         /// </param>
-        public MutableDungeon(IDungeon dungeon)
+        public MutableDungeon(
+            IMode mode, IKeyDoorDictionary.Factory keyDoors, IDungeonNodeDictionary.Factory nodes,
+            IDungeonItemDictionary.Factory dungeonItems, IDungeon dungeon)
         {
-            KeyDoorDictionary = new KeyDoorDictionary(this);
-            ItemDictionary = new DungeonItemDictionary(this);
-            Nodes = new DungeonNodeDictionary(this, dungeon);
-            _dungeon = dungeon ?? throw new ArgumentNullException(nameof(dungeon));
+            _mode = mode;
+            _dungeon = dungeon;
+
+            KeyDoors = keyDoors(this);
+            DungeonItems = dungeonItems(this);
+            Nodes = nodes(this);
 
             _dungeon.DungeonDataCreated += OnDungeonDataCreated;
         }
@@ -59,38 +66,38 @@ namespace OpenTracker.Models.Dungeons
         /// <param name="e">
         /// The arguments of the DungeonDataCreated event.
         /// </param>
-        private void OnDungeonDataCreated(object sender, IMutableDungeon e)
+        private void OnDungeonDataCreated(object? sender, IMutableDungeon e)
         {
             if (e == this)
             {
                 foreach (var smallKeyDoor in _dungeon.SmallKeyDoors)
                 {
-                    SmallKeyDoors.Add(smallKeyDoor, KeyDoorDictionary[smallKeyDoor]);
+                    SmallKeyDoors.Add(smallKeyDoor, KeyDoors[smallKeyDoor]);
                 }
 
                 foreach (var bigKeyDoor in _dungeon.BigKeyDoors)
                 {
-                    BigKeyDoors.Add(bigKeyDoor, KeyDoorDictionary[bigKeyDoor]);
+                    BigKeyDoors.Add(bigKeyDoor, KeyDoors[bigKeyDoor]);
                 }
 
-                foreach (var item in _dungeon.Items)
+                foreach (var item in _dungeon.DungeonItems)
                 {
-                    Items.Add(item, ItemDictionary[item]);
+                    Items.Add(item, DungeonItems[item]);
                 }
 
                 foreach (var boss in _dungeon.Bosses)
                 {
-                    BossItems.Add(ItemDictionary[boss]);
+                    Bosses.Add(DungeonItems[boss]);
                 }
 
                 foreach (var smallKeyDrop in _dungeon.SmallKeyDrops)
                 {
-                    SmallKeyDrops.Add(smallKeyDrop, ItemDictionary[smallKeyDrop]);
+                    SmallKeyDrops.Add(smallKeyDrop, DungeonItems[smallKeyDrop]);
                 }
 
                 foreach (var bigKeyDrop in _dungeon.BigKeyDrops)
                 {
-                    BigKeyDrops.Add(bigKeyDrop, ItemDictionary[bigKeyDrop]);
+                    BigKeyDrops.Add(bigKeyDrop, DungeonItems[bigKeyDrop]);
                 }
 
                 foreach (var node in _dungeon.Nodes)
@@ -154,7 +161,7 @@ namespace OpenTracker.Models.Dungeons
         /// </returns>
         private int GetAvailableBigKeys(bool sequenceBreak = false)
         {
-            if (Mode.Instance.KeyDropShuffle)
+            if (_mode.KeyDropShuffle)
             {
                 return 0;
             }
@@ -197,7 +204,7 @@ namespace OpenTracker.Models.Dungeons
         /// </returns>
         public int GetAvailableSmallKeys(bool sequenceBreak = false)
         {
-            if (Mode.Instance.KeyDropShuffle)
+            if (_mode.KeyDropShuffle)
             {
                 return 0;
             }
@@ -293,7 +300,7 @@ namespace OpenTracker.Models.Dungeons
         {
             List<AccessibilityLevel> bossAccessibility = new List<AccessibilityLevel>();
 
-            foreach (DungeonItem bossItem in BossItems)
+            foreach (var bossItem in Bosses)
             {
                 bossAccessibility.Add(bossItem.Accessibility);
             }
@@ -355,7 +362,7 @@ namespace OpenTracker.Models.Dungeons
                 }
             }
 
-            if (Mode.Instance.KeyDropShuffle)
+            if (_mode.KeyDropShuffle)
             {
                 foreach (var item in SmallKeyDrops.Values)
                 {
@@ -398,7 +405,7 @@ namespace OpenTracker.Models.Dungeons
                 }
             }
 
-            int minimumInaccessible = Mode.Instance.GuaranteedBossItems ? inaccessibleBosses : 0;
+            int minimumInaccessible = _mode.GuaranteedBossItems ? inaccessibleBosses : 0;
             var bossAccessibility = GetBossAccessibility();
 
             if (inaccessibleItems <= minimumInaccessible)
@@ -427,9 +434,9 @@ namespace OpenTracker.Models.Dungeons
                 }
             }
 
-            if (!Mode.Instance.BigKeyShuffle && !state.BigKeyCollected)
+            if (!_mode.BigKeyShuffle && !state.BigKeyCollected)
             {
-                int bigKey = Mode.Instance.KeyDropShuffle ? 
+                int bigKey = _mode.KeyDropShuffle ? 
                     _dungeon.BigKey + _dungeon.BigKeyDrops.Count : _dungeon.BigKey;
                 inaccessibleItems -= bigKey;
             }
@@ -460,9 +467,9 @@ namespace OpenTracker.Models.Dungeons
                 }
             }
 
-            if (!Mode.Instance.SmallKeyShuffle)
+            if (!_mode.SmallKeyShuffle)
             {
-                int smallKeys = Mode.Instance.KeyDropShuffle ?
+                int smallKeys = _mode.KeyDropShuffle ?
                     _dungeon.SmallKeys + _dungeon.SmallKeyDrops.Count : _dungeon.SmallKeys;
                 inaccessibleItems -= smallKeys - state.KeysCollected;
             }
@@ -493,12 +500,12 @@ namespace OpenTracker.Models.Dungeons
                 }
             }
 
-            if (!Mode.Instance.MapShuffle)
+            if (!_mode.MapShuffle)
             {
                 inaccessibleItems -= _dungeon.Map;
             }
             
-            if (!Mode.Instance.CompassShuffle)
+            if (!_mode.CompassShuffle)
             {
                 inaccessibleItems -= _dungeon.Compass;
             }
@@ -537,7 +544,7 @@ namespace OpenTracker.Models.Dungeons
                 node.Reset();
             }
 
-            foreach (var door in KeyDoorDictionary.Values)
+            foreach (var door in KeyDoors.Values)
             {
                 door.Unlocked = false;
             }

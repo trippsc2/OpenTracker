@@ -1,4 +1,5 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
+using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Requirements;
 using System;
 using System.ComponentModel;
@@ -13,5 +14,7 @@ namespace OpenTracker.Models.KeyDoors
         AccessibilityLevel Accessibility { get; }
         bool Unlocked { get; set; }
         IRequirement Requirement { get; }
+
+        delegate IKeyDoor Factory(IMutableDungeon dungeonData);
     }
 }

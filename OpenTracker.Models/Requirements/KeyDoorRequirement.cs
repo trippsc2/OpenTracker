@@ -1,6 +1,4 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.KeyDoors;
-using System;
+﻿using OpenTracker.Models.KeyDoors;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
@@ -8,29 +6,11 @@ namespace OpenTracker.Models.Requirements
     /// <summary>
     /// This is the class for key door requirements.
     /// </summary>
-    public class KeyDoorRequirement : IRequirement
+    public class KeyDoorRequirement : BooleanRequirement
     {
         private readonly IKeyDoor _keyDoor;
 
-        public bool Met => 
-            Accessibility != AccessibilityLevel.None;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler ChangePropagated;
-
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
+        public delegate KeyDoorRequirement Factory(IKeyDoor keyDoor);
 
         /// <summary>
         /// Constructor
@@ -40,21 +20,11 @@ namespace OpenTracker.Models.Requirements
         /// </param>
         public KeyDoorRequirement(IKeyDoor keyDoor)
         {
-            _keyDoor = keyDoor ?? throw new ArgumentNullException(nameof(keyDoor));
+            _keyDoor = keyDoor;
 
             _keyDoor.PropertyChanged += OnKeyDoorChanged;
-        }
 
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            ChangePropagated?.Invoke(this, new EventArgs());
+            UpdateValue();
         }
 
         /// <summary>
@@ -70,17 +40,13 @@ namespace OpenTracker.Models.Requirements
         {
             if (e.PropertyName == nameof(IKeyDoor.Unlocked))
             {
-                UpdateAccessibility();
+                UpdateValue();
             }
         }
 
-        /// <summary>
-        /// Updates the accessibility of this requirement.
-        /// </summary>
-        private void UpdateAccessibility()
+        protected override bool ConditionMet()
         {
-            Accessibility = _keyDoor.Unlocked ? AccessibilityLevel.Normal :
-                AccessibilityLevel.None;
+            return _keyDoor.Unlocked;
         }
     }
 }

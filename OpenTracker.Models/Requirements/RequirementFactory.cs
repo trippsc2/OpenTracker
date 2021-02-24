@@ -12,180 +12,202 @@ namespace OpenTracker.Models.Requirements
     /// <summary>
     /// This is the class for creating Requirement classes.
     /// </summary>
-    public static class RequirementFactory
+    public class RequirementFactory : IRequirementFactory
     {
+        private readonly IBossPlacementDictionary _bossPlacements;
+        private readonly IItemDictionary _items;
+        private readonly IPrizeDictionary _prizes;
+        private readonly IRequirementDictionary _requirements;
+        private readonly IRequirementNodeDictionary _requirementNodes;
+        private readonly ISequenceBreakDictionary _sequenceBreaks;
+        private readonly AggregateRequirement.Factory _aggregateFactory;
+        private readonly AlternativeRequirement.Factory _alternativeFactory;
+        private readonly BigKeyShuffleRequirement.Factory _bigKeyShuffleFactory;
+        private readonly BossRequirement.Factory _bossFactory;
+        private readonly BossShuffleRequirement.Factory _bossShuffleFactory;
+        private readonly CompassShuffleRequirement.Factory _compassShuffleFactory;
+        private readonly CrystalRequirement.Factory _crystalFactory;
+        private readonly EnemyShuffleRequirement.Factory _enemyShuffleFactory;
+        private readonly EntranceShuffleRequirement.Factory _entranceShuffleFactory;
+        private readonly GenericKeysRequirement.Factory _genericKeysFactory;
+        private readonly GuaranteedBossItemsRequirement.Factory _guaranteedBossItemsFactory;
+        private readonly ItemExactRequirement.Factory _itemExactFactory;
+        private readonly ItemPlacementRequirement.Factory _itemPlacementFactory;
+        private readonly ItemRequirement.Factory _itemFactory;
+        private readonly KeyDropShuffleRequirement.Factory _keyDropShuffleFactory;
+        private readonly MapShuffleRequirement.Factory _mapShuffleFactory;
+        private readonly RaceIllegalTrackingRequirement.Factory _raceIllegalTrackingFactory;
+        private readonly RequirementNodeRequirement.Factory _requirementNodeFactory;
+        private readonly SequenceBreakRequirement.Factory _sequenceBreakFactory;
+        private readonly ShopShuffleRequirement.Factory _shopShuffleFactory;
+        private readonly SmallKeyRequirement.Factory _smallKeyFactory;
+        private readonly SmallKeyShuffleRequirement.Factory _smallKeyShuffleFactory;
+        private readonly StaticRequirement.Factory _staticFactory;
+        private readonly TakeAnyLocationsRequirement.Factory _takeAnyLocationsFactory;
+        private readonly WorldStateRequirement.Factory _worldStateFactory;
+
+        public delegate IRequirementFactory Factory(IRequirementDictionary requirements);
+
+        public RequirementFactory(
+            IBossPlacementDictionary bossPlacements, IItemDictionary items,
+            IPrizeDictionary prizes,  IRequirementNodeDictionary requirementNodes,
+            ISequenceBreakDictionary sequenceBreaks, AggregateRequirement.Factory aggregateFactory,
+            AlternativeRequirement.Factory alternativeFactory,
+            BigKeyShuffleRequirement.Factory bigKeyShuffleFactory,
+            BossRequirement.Factory bossFactory, BossShuffleRequirement.Factory bossShuffleFactory,
+            CompassShuffleRequirement.Factory compassShuffleFactory,
+            CrystalRequirement.Factory crystalFactory,
+            EnemyShuffleRequirement.Factory enemyShuffleFactory,
+            EntranceShuffleRequirement.Factory entranceShuffleFactory,
+            GenericKeysRequirement.Factory genericKeysFactory,
+            GuaranteedBossItemsRequirement.Factory guaranteedBossItemsFactory,
+            ItemExactRequirement.Factory itemExactFactory,
+            ItemPlacementRequirement.Factory itemPlacementFactory,
+            ItemRequirement.Factory itemFactory,
+            KeyDropShuffleRequirement.Factory keyDropShuffleFactory,
+            MapShuffleRequirement.Factory mapShuffleFactory,
+            RaceIllegalTrackingRequirement.Factory raceIllegalTrackingFactory,
+            RequirementNodeRequirement.Factory requirementNodeFactory,
+            SequenceBreakRequirement.Factory sequenceBreakFactory,
+            ShopShuffleRequirement.Factory shopShuffleFactory,
+            SmallKeyRequirement.Factory smallKeyFactory,
+            SmallKeyShuffleRequirement.Factory smallKeyShuffleFactory,
+            StaticRequirement.Factory staticFactory,
+            TakeAnyLocationsRequirement.Factory takeAnyLocationsFactory,
+            WorldStateRequirement.Factory worldStateFactory,
+            IRequirementDictionary requirements)
+        {
+            _bossPlacements = bossPlacements;
+            _items = items;
+            _prizes = prizes;
+            _requirements = requirements;
+            _requirementNodes = requirementNodes;
+            _sequenceBreaks = sequenceBreaks;
+            _aggregateFactory = aggregateFactory;
+            _alternativeFactory = alternativeFactory;
+            _bigKeyShuffleFactory = bigKeyShuffleFactory;
+            _bossFactory = bossFactory;
+            _bossShuffleFactory = bossShuffleFactory;
+            _compassShuffleFactory = compassShuffleFactory;
+            _crystalFactory = crystalFactory;
+            _enemyShuffleFactory = enemyShuffleFactory;
+            _entranceShuffleFactory = entranceShuffleFactory;
+            _genericKeysFactory = genericKeysFactory;
+            _guaranteedBossItemsFactory = guaranteedBossItemsFactory;
+            _itemExactFactory = itemExactFactory;
+            _itemPlacementFactory = itemPlacementFactory;
+            _itemFactory = itemFactory;
+            _keyDropShuffleFactory = keyDropShuffleFactory;
+            _mapShuffleFactory = mapShuffleFactory;
+            _raceIllegalTrackingFactory = raceIllegalTrackingFactory;
+            _requirementNodeFactory = requirementNodeFactory;
+            _sequenceBreakFactory = sequenceBreakFactory;
+            _shopShuffleFactory = shopShuffleFactory;
+            _smallKeyFactory = smallKeyFactory;
+            _smallKeyShuffleFactory = smallKeyShuffleFactory;
+            _staticFactory = staticFactory;
+            _takeAnyLocationsFactory = takeAnyLocationsFactory;
+            _worldStateFactory = worldStateFactory;
+        }
+
         /// <summary>
-        /// Returns a static requirement.
+        /// Returns a static requirement accessibility.
         /// </summary>
         /// <param name="type">
         /// The requirement type.
         /// </param>
         /// <returns>
-        /// A static requirement.
+        /// A static accessibility level.
         /// </returns>
-        private static IRequirement GetStaticRequirement(RequirementType type)
+        private static AccessibilityLevel GetStaticAccessibility(RequirementType type)
         {
             return type switch
             {
-                RequirementType.NoRequirement => new StaticRequirement(AccessibilityLevel.Normal),
-                RequirementType.Inspect => new StaticRequirement(AccessibilityLevel.Inspect),
-                RequirementType.SequenceBreak => new StaticRequirement(AccessibilityLevel.SequenceBreak),
+                RequirementType.NoRequirement => AccessibilityLevel.Normal,
+                RequirementType.Inspect => AccessibilityLevel.Inspect,
+                RequirementType.SequenceBreak => AccessibilityLevel.SequenceBreak,
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
 
         /// <summary>
-        /// Returns a world state requirement.
+        /// Returns the expected value of an item placement requirement.
         /// </summary>
         /// <param name="type">
         /// The requirement type.
         /// </param>
         /// <returns>
-        /// A world state requirement.
+        /// A item placement expected value.
         /// </returns>
-        private static IRequirement GetWorldStateRequirement(RequirementType type)
+        private static ItemPlacement GetItemPlacementValue(RequirementType type)
         {
             return type switch
             {
-                RequirementType.WorldStateStandardOpen => new WorldStateRequirement(
-                    WorldState.StandardOpen),
-                RequirementType.WorldStateInverted => new WorldStateRequirement(
-                    WorldState.Inverted),
+                RequirementType.ItemPlacementBasic => ItemPlacement.Basic,
+                RequirementType.ItemPlacementAdvanced => ItemPlacement.Advanced,
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
 
         /// <summary>
-        /// Returns a item placement requirement.
+        /// Returns the boolean expected value of a requirement.
         /// </summary>
         /// <param name="type">
         /// The requirement type.
         /// </param>
         /// <returns>
-        /// A item placement requirement.
+        /// A boolean expected value.
         /// </returns>
-        private static IRequirement GetItemPlacementRequirement(RequirementType type)
+        private static bool GetBooleanValue(RequirementType type)
         {
-            return type switch
+            switch (type)
             {
-                RequirementType.ItemPlacementBasic => new ItemPlacementRequirement(
-                    ItemPlacement.Basic),
-                RequirementType.ItemPlacementAdvanced => new ItemPlacementRequirement(
-                    ItemPlacement.Advanced),
-                _ => throw new ArgumentOutOfRangeException(nameof(type))
-            };
+                case RequirementType.MapShuffleOff:
+                case RequirementType.CompassShuffleOff:
+                case RequirementType.SmallKeyShuffleOff:
+                case RequirementType.BigKeyShuffleOff:
+                case RequirementType.BossShuffleOff:
+                case RequirementType.EnemyShuffleOff:
+                case RequirementType.GuaranteedBossItemsOff:
+                case RequirementType.KeyDropShuffleOff:
+                    {
+                        return false;
+                    }
+                case RequirementType.MapShuffleOn:
+                case RequirementType.CompassShuffleOn:
+                case RequirementType.SmallKeyShuffleOn:
+                case RequirementType.BigKeyShuffleOn:
+                case RequirementType.BossShuffleOn:
+                case RequirementType.EnemyShuffleOn:
+                case RequirementType.GuaranteedBossItemsOn:
+                case RequirementType.GenericKeys:
+                case RequirementType.TakeAnyLocations:
+                case RequirementType.KeyDropShuffleOn:
+                case RequirementType.ShopShuffle:
+                case RequirementType.RaceIllegalTracking:
+                    {
+                        return true;
+                    }
+            }
+
+         throw new ArgumentOutOfRangeException(nameof(type));
         }
 
         /// <summary>
-        /// Returns a map requirement.
+        /// Returns the expected value of a world state requirement.
         /// </summary>
         /// <param name="type">
         /// The requirement type.
         /// </param>
         /// <returns>
-        /// A map requirement.
+        /// A world state expected value.
         /// </returns>
-        private static IRequirement GetMapShuffleRequirement(RequirementType type)
+        private static WorldState GetWorldStateValue(RequirementType type)
         {
             return type switch
             {
-                RequirementType.MapShuffleOff => new MapShuffleRequirement(false),
-                RequirementType.MapShuffleOn => new MapShuffleRequirement(true),
-                _ => throw new ArgumentOutOfRangeException(nameof(type))
-            };
-        }
-
-        /// <summary>
-        /// Returns a compass requirement.
-        /// </summary>
-        /// <param name="type">
-        /// The requirement type.
-        /// </param>
-        /// <returns>
-        /// A compass requirement.
-        /// </returns>
-        private static IRequirement GetCompassShuffleRequirement(RequirementType type)
-        {
-            return type switch
-            {
-                RequirementType.CompassShuffleOff => new CompassShuffleRequirement(false),
-                RequirementType.CompassShuffleOn => new CompassShuffleRequirement(true),
-                _ => throw new ArgumentOutOfRangeException(nameof(type))
-            };
-        }
-
-        /// <summary>
-        /// Returns a small key requirement.
-        /// </summary>
-        /// <param name="type">
-        /// The requirement type.
-        /// </param>
-        /// <returns>
-        /// A small key requirement.
-        /// </returns>
-        private static IRequirement GetSmallKeyShuffleRequirement(RequirementType type)
-        {
-            return type switch
-            {
-                RequirementType.SmallKeyShuffleOff => new SmallKeyShuffleRequirement(false),
-                RequirementType.SmallKeyShuffleOn => new SmallKeyShuffleRequirement(true),
-                _ => throw new ArgumentOutOfRangeException(nameof(type))
-            };
-        }
-
-        /// <summary>
-        /// Returns a big key requirement.
-        /// </summary>
-        /// <param name="type">
-        /// The requirement type.
-        /// </param>
-        /// <returns>
-        /// A big key requirement.
-        /// </returns>
-        private static IRequirement GetBigKeyShuffleRequirement(RequirementType type)
-        {
-            return type switch
-            {
-                RequirementType.BigKeyShuffleOff => new BigKeyShuffleRequirement(false),
-                RequirementType.BigKeyShuffleOn => new BigKeyShuffleRequirement(true),
-                _ => throw new ArgumentOutOfRangeException(nameof(type))
-            };
-        }
-
-        /// <summary>
-        /// Returns a boss shuffle requirement.
-        /// </summary>
-        /// <param name="type">
-        /// The requirement type.
-        /// </param>
-        /// <returns>
-        /// A boss shuffle requirement.
-        /// </returns>
-        private static IRequirement GetBossShuffleRequirement(RequirementType type)
-        {
-            return type switch
-            {
-                RequirementType.BossShuffleOff => new BossShuffleRequirement(false),
-                RequirementType.BossShuffleOn => new BossShuffleRequirement(true),
-                _ => throw new ArgumentOutOfRangeException(nameof(type))
-            };
-        }
-
-        /// <summary>
-        /// Returns a enemy shuffle requirement.
-        /// </summary>
-        /// <param name="type">
-        /// The requirement type.
-        /// </param>
-        /// <returns>
-        /// A enemy shuffle requirement.
-        /// </returns>
-        private static IRequirement GetEnemyShuffleRequirement(RequirementType type)
-        {
-            return type switch
-            {
-                RequirementType.EnemyShuffleOff => new EnemyShuffleRequirement(false),
-                RequirementType.EnemyShuffleOn => new EnemyShuffleRequirement(true),
+                RequirementType.WorldStateStandardOpen => WorldState.StandardOpen,
+                RequirementType.WorldStateInverted => WorldState.Inverted,
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
@@ -199,438 +221,398 @@ namespace OpenTracker.Models.Requirements
         /// <returns>
         /// A entrance shuffle requirement.
         /// </returns>
-        private static IRequirement GetEntranceShuffleRequirement(RequirementType type)
+        private static EntranceShuffle GetEntranceShuffleValue(RequirementType type)
         {
             return type switch
             {
-                RequirementType.EntranceShuffleNone =>
-                    new EntranceShuffleRequirement(EntranceShuffle.None),
-                RequirementType.EntranceShuffleDungeon =>
-                    new EntranceShuffleRequirement(EntranceShuffle.Dungeon),
-                RequirementType.EntranceShuffleAll =>
-                    new EntranceShuffleRequirement(EntranceShuffle.All),
-                RequirementType.EntranceShuffleInsanity =>
-                    new EntranceShuffleRequirement(EntranceShuffle.Insanity),
+                RequirementType.EntranceShuffleNone => EntranceShuffle.None,
+                RequirementType.EntranceShuffleDungeon => EntranceShuffle.Dungeon,
+                RequirementType.EntranceShuffleAll => EntranceShuffle.All,
+                RequirementType.EntranceShuffleInsanity => EntranceShuffle.Insanity,
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
 
         /// <summary>
-        /// Returns a guaranteed boss items requirement.
+        /// Returns the item associated with the specified requirement.
         /// </summary>
         /// <param name="type">
         /// The requirement type.
         /// </param>
         /// <returns>
-        /// A guaranteed boss items requirement.
+        /// The item.
         /// </returns>
-        private static IRequirement GetGuaranteedBossItemsRequirement(RequirementType type)
+        private IItem GetItem(RequirementType type)
+        {
+            switch (type)
+            {
+                case RequirementType.Swordless:
+                case RequirementType.Sword1:
+                case RequirementType.Sword2:
+                case RequirementType.Sword3:
+                    {
+                        return _items[ItemType.Sword];
+                    }
+                case RequirementType.Shield3:
+                    {
+                        return _items[ItemType.Shield];
+                    }
+                case RequirementType.Bow:
+                    {
+                        return _items[ItemType.Bow];
+                    }
+                case RequirementType.Boomerang:
+                    {
+                        return _items[ItemType.Boomerang];
+                    }
+                case RequirementType.RedBoomerang:
+                    {
+                        return _items[ItemType.RedBoomerang];
+                    }
+                case RequirementType.Hookshot:
+                    {
+                        return _items[ItemType.Hookshot];
+                    }
+                case RequirementType.Powder:
+                    {
+                        return _items[ItemType.Powder];
+                    }
+                case RequirementType.Mushroom:
+                    {
+                        return _items[ItemType.Mushroom];
+                    }
+                case RequirementType.Boots:
+                    {
+                        return _items[ItemType.Boots];
+                    }
+                case RequirementType.FireRod:
+                    {
+                        return _items[ItemType.FireRod];
+                    }
+                case RequirementType.IceRod:
+                    {
+                        return _items[ItemType.IceRod];
+                    }
+                case RequirementType.Bombos:
+                    {
+                        return _items[ItemType.Bombos];
+                    }
+                case RequirementType.BombosMM:
+                case RequirementType.BombosTR:
+                case RequirementType.BombosBoth:
+                    {
+                        return _items[ItemType.BombosDungeons];
+                    }
+                case RequirementType.Ether:
+                    {
+                        return _items[ItemType.Ether];
+                    }
+                case RequirementType.EtherMM:
+                case RequirementType.EtherTR:
+                case RequirementType.EtherBoth:
+                    {
+                        return _items[ItemType.EtherDungeons];
+                    }
+                case RequirementType.Quake:
+                    {
+                        return _items[ItemType.Quake];
+                    }
+                case RequirementType.QuakeMM:
+                case RequirementType.QuakeTR:
+                case RequirementType.QuakeBoth:
+                    {
+                        return _items[ItemType.QuakeDungeons];
+                    }
+                case RequirementType.Gloves1:
+                case RequirementType.Gloves2:
+                    {
+                        return _items[ItemType.Gloves];
+                    }
+                case RequirementType.Lamp:
+                    {
+                        return _items[ItemType.Lamp];
+                    }
+                case RequirementType.Hammer:
+                    {
+                        return _items[ItemType.Hammer];
+                    }
+                case RequirementType.Flute:
+                    {
+                        return _items[ItemType.Flute];
+                    }
+                case RequirementType.FluteActivated:
+                    {
+                        return _items[ItemType.FluteActivated];
+                    }
+                case RequirementType.Net:
+                    {
+                        return _items[ItemType.Net];
+                    }
+                case RequirementType.Book:
+                    {
+                        return _items[ItemType.Book];
+                    }
+                case RequirementType.Shovel:
+                    {
+                        return _items[ItemType.Shovel];
+                    }
+                case RequirementType.NoFlippers:
+                case RequirementType.Flippers:
+                    {
+                        return _items[ItemType.Flippers];
+                    }
+                case RequirementType.Bottle:
+                    {
+                        return _items[ItemType.Bottle];
+                    }
+                case RequirementType.CaneOfSomaria:
+                    {
+                        return _items[ItemType.CaneOfSomaria];
+                    }
+                case RequirementType.CaneOfByrna:
+                    {
+                        return _items[ItemType.CaneOfByrna];
+                    }
+                case RequirementType.Cape:
+                    {
+                        return _items[ItemType.Cape];
+                    }
+                case RequirementType.Mirror:
+                    {
+                        return _items[ItemType.Mirror];
+                    }
+                case RequirementType.HalfMagic:
+                    {
+                        return _items[ItemType.HalfMagic];
+                    }
+                case RequirementType.MoonPearl:
+                    {
+                        return _items[ItemType.MoonPearl];
+                    }
+                case RequirementType.Aga1:
+                    {
+                        return _prizes[PrizeType.Aga1];
+                    }
+                case RequirementType.Aga2:
+                    {
+                        return _prizes[PrizeType.Aga2];
+                    }
+                case RequirementType.RedCrystal:
+                    {
+                        return _prizes[PrizeType.RedCrystal];
+                    }
+                case RequirementType.Pendant:
+                    {
+                        return _prizes[PrizeType.Pendant];
+                    }
+                case RequirementType.GreenPendant:
+                    {
+                        return _prizes[PrizeType.GreenPendant];
+                    }
+                case RequirementType.TRSmallKey2:
+                case RequirementType.TRSmallKey3:
+                    {
+                        return _items[ItemType.TRSmallKey];
+                    }
+            }
+
+            throw new ArgumentOutOfRangeException(nameof(type));
+        }
+
+        /// <summary>
+        /// Returns the item count to be checked for the item requirement.
+        /// </summary>
+        /// <param name="type">
+        /// The requirement type.
+        /// </param>
+        /// <returns>
+        /// A 32-bit signed integer representing the item count.
+        /// </returns>
+        private static int GetItemCount(RequirementType type)
+        {
+            switch (type)
+            {
+                case RequirementType.Swordless:
+                case RequirementType.NoFlippers:
+                    {
+                        return 0;
+                    }
+                case RequirementType.Sword1:
+                case RequirementType.BombosTR:
+                case RequirementType.EtherTR:
+                case RequirementType.QuakeTR:
+                case RequirementType.Gloves2:
+                case RequirementType.RedCrystal:
+                case RequirementType.Pendant:
+                case RequirementType.TRSmallKey2:
+                    {
+                        return 2;
+                    }
+                case RequirementType.Sword2:
+                case RequirementType.Shield3:
+                case RequirementType.BombosBoth:
+                case RequirementType.EtherBoth:
+                case RequirementType.QuakeBoth:
+                case RequirementType.TRSmallKey3:
+                    {
+                        return 3;
+                    }
+                case RequirementType.Sword3:
+                    {
+                        return 4;
+                    }
+                case RequirementType.Bow:
+                case RequirementType.Boomerang:
+                case RequirementType.RedBoomerang:
+                case RequirementType.Hookshot:
+                case RequirementType.Powder:
+                case RequirementType.Mushroom:
+                case RequirementType.Boots:
+                case RequirementType.FireRod:
+                case RequirementType.IceRod:
+                case RequirementType.Bombos:
+                case RequirementType.BombosMM:
+                case RequirementType.Ether:
+                case RequirementType.EtherMM:
+                case RequirementType.Quake:
+                case RequirementType.QuakeMM:
+                case RequirementType.Gloves1:
+                case RequirementType.Lamp:
+                case RequirementType.Hammer:
+                case RequirementType.Flute:
+                case RequirementType.FluteActivated:
+                case RequirementType.Net:
+                case RequirementType.Book:
+                case RequirementType.Shovel:
+                case RequirementType.Flippers:
+                case RequirementType.Bottle:
+                case RequirementType.CaneOfSomaria:
+                case RequirementType.CaneOfByrna:
+                case RequirementType.Cape:
+                case RequirementType.Mirror:
+                case RequirementType.HalfMagic:
+                case RequirementType.MoonPearl:
+                case RequirementType.Aga1:
+                case RequirementType.Aga2:
+                case RequirementType.GreenPendant:
+                    {
+                        return 1;
+                    }
+            }
+
+            throw new ArgumentOutOfRangeException(nameof(type));
+        }
+
+        /// <summary>
+        /// Returns the associated sequence break for a requirement.
+        /// </summary>
+        /// <param name="type">
+        /// The requirement type.
+        /// </param>
+        /// <returns>
+        /// A sequence break.
+        /// </returns>
+        private ISequenceBreak GetSequenceBreak(RequirementType type)
         {
             return type switch
             {
-                RequirementType.GuaranteedBossItemsOff =>
-                    new GuaranteedBossItemsRequirement(false),
-                RequirementType.GuaranteedBossItemsOn =>
-                    new GuaranteedBossItemsRequirement(true),
+                RequirementType.SBBlindPedestal => _sequenceBreaks[SequenceBreakType.BlindPedestal],
+                RequirementType.SBBonkOverLedge => _sequenceBreaks[SequenceBreakType.BonkOverLedge],
+                RequirementType.SBBumperCaveHookshot => _sequenceBreaks[SequenceBreakType.BumperCaveHookshot],
+                RequirementType.SBTRLaserSkip => _sequenceBreaks[SequenceBreakType.TRLaserSkip],
+                RequirementType.SBHelmasaurKingBasic => _sequenceBreaks[SequenceBreakType.HelmasaurKingBasic],
+                RequirementType.SBLanmolasBombs => _sequenceBreaks[SequenceBreakType.LanmolasBombs],
+                RequirementType.SBArrghusBasic => _sequenceBreaks[SequenceBreakType.ArrghusBasic],
+                RequirementType.SBMothulaBasic => _sequenceBreaks[SequenceBreakType.MothulaBasic],
+                RequirementType.SBBlindBasic => _sequenceBreaks[SequenceBreakType.BlindBasic],
+                RequirementType.SBKholdstareBasic => _sequenceBreaks[SequenceBreakType.KholdstareBasic],
+                RequirementType.SBVitreousBasic => _sequenceBreaks[SequenceBreakType.VitreousBasic],
+                RequirementType.SBTrinexxBasic => _sequenceBreaks[SequenceBreakType.TrinexxBasic],
+                RequirementType.SBBombDuplicationAncillaOverload => _sequenceBreaks[SequenceBreakType.BombDuplicationAncillaOverload],
+                RequirementType.SBBombDuplicationMirror => _sequenceBreaks[SequenceBreakType.BombDuplicationMirror],
+                RequirementType.SBBombJumpPoDHammerJump => _sequenceBreaks[SequenceBreakType.BombJumpPoDHammerJump],
+                RequirementType.SBBombJumpSWBigChest => _sequenceBreaks[SequenceBreakType.BombJumpSWBigChest],
+                RequirementType.SBBombJumpIPBJ => _sequenceBreaks[SequenceBreakType.BombJumpIPBJ],
+                RequirementType.SBBombJumpIPHookshotGap => _sequenceBreaks[SequenceBreakType.BombJumpIPHookshotGap],
+                RequirementType.SBBombJumpIPFreezorRoomGap => _sequenceBreaks[SequenceBreakType.BombJumpIPFreezorRoomGap],
+                RequirementType.SBDarkRoomDeathMountainEntry => _sequenceBreaks[SequenceBreakType.DarkRoomDeathMountainEntry],
+                RequirementType.SBDarkRoomDeathMountainExit => _sequenceBreaks[SequenceBreakType.DarkRoomDeathMountainExit],
+                RequirementType.SBDarkRoomHC => _sequenceBreaks[SequenceBreakType.DarkRoomHC],
+                RequirementType.SBDarkRoomAT => _sequenceBreaks[SequenceBreakType.DarkRoomAT],
+                RequirementType.SBDarkRoomEPRight => _sequenceBreaks[SequenceBreakType.DarkRoomEPRight],
+                RequirementType.SBDarkRoomEPBack => _sequenceBreaks[SequenceBreakType.DarkRoomEPBack],
+                RequirementType.SBDarkRoomPoDDarkBasement => _sequenceBreaks[SequenceBreakType.DarkRoomPoDDarkBasement],
+                RequirementType.SBDarkRoomPoDDarkMaze => _sequenceBreaks[SequenceBreakType.DarkRoomPoDDarkMaze],
+                RequirementType.SBDarkRoomPoDBossArea => _sequenceBreaks[SequenceBreakType.DarkRoomPoDBossArea],
+                RequirementType.SBDarkRoomMM => _sequenceBreaks[SequenceBreakType.DarkRoomMM],
+                RequirementType.SBDarkRoomTR => _sequenceBreaks[SequenceBreakType.DarkRoomTR],
+                RequirementType.SBFakeFlippersFairyRevival => _sequenceBreaks[SequenceBreakType.FakeFlippersFairyRevival],
+                RequirementType.SBFakeFlippersQirnJump => _sequenceBreaks[SequenceBreakType.FakeFlippersQirnJump],
+                RequirementType.SBFakeFlippersScreenTransition => _sequenceBreaks[SequenceBreakType.FakeFlippersScreenTransition],
+                RequirementType.SBFakeFlippersSplashDeletion => _sequenceBreaks[SequenceBreakType.FakeFlippersSplashDeletion],
+                RequirementType.SBWaterWalk => _sequenceBreaks[SequenceBreakType.WaterWalk],
+                RequirementType.SBWaterWalkFromWaterfallCave => _sequenceBreaks[SequenceBreakType.WaterWalkFromWaterfallCave],
+                RequirementType.SBSuperBunnyFallInHole => _sequenceBreaks[SequenceBreakType.SuperBunnyFallInHole],
+                RequirementType.SBSuperBunnyMirror => _sequenceBreaks[SequenceBreakType.SuperBunnyMirror],
+                RequirementType.SBCameraUnlock => _sequenceBreaks[SequenceBreakType.CameraUnlock],
+                RequirementType.SBDungeonRevive => _sequenceBreaks[SequenceBreakType.DungeonRevive],
+                RequirementType.SBFakePowder => _sequenceBreaks[SequenceBreakType.FakePowder],
+                RequirementType.SBHover => _sequenceBreaks[SequenceBreakType.Hover],
+                RequirementType.SBMimicClip => _sequenceBreaks[SequenceBreakType.MimicClip],
+                RequirementType.SBSpikeCave => _sequenceBreaks[SequenceBreakType.SpikeCave],
+                RequirementType.SBToHHerapot => _sequenceBreaks[SequenceBreakType.ToHHerapot],
+                RequirementType.SBIPIceBreaker => _sequenceBreaks[SequenceBreakType.IPIceBreaker],
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
 
         /// <summary>
-        /// Returns a generic keys requirement.
+        /// Returns a requrement node for the specified requirement.
         /// </summary>
         /// <param name="type">
         /// The requirement type.
         /// </param>
         /// <returns>
-        /// A generic keys requirement.
+        /// A requirement node.
         /// </returns>
-        private static IRequirement GetGenericKeysRequirement(RequirementType type)
+        private IRequirementNode GetRequirementNode(RequirementType type)
         {
             return type switch
             {
-                RequirementType.GenericKeys =>
-                    new GenericKeysRequirement(true),
+                RequirementType.LightWorld => _requirementNodes[RequirementNodeID.LightWorld],
+                RequirementType.HammerPegsArea => _requirementNodes[RequirementNodeID.HammerPegsArea],
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
 
         /// <summary>
-        /// Returns a take any locations requirement.
+        /// Returns a boss placement for the specified requirement.
         /// </summary>
         /// <param name="type">
         /// The requirement type.
         /// </param>
         /// <returns>
-        /// A take any locations requirement.
+        /// A boss placement.
         /// </returns>
-        private static IRequirement GetTakeAnyLocationsRequirement(RequirementType type)
+        private IBossPlacement GetBossPlacement(RequirementType type)
         {
             return type switch
             {
-                RequirementType.TakeAnyLocations =>
-                    new TakeAnyLocationsRequirement(true),
-                _ => throw new ArgumentOutOfRangeException(nameof(type))
-            };
-        }
-
-        /// <summary>
-        /// Returns a key drop shuffle requirement.
-        /// </summary>
-        /// <param name="type">
-        /// The requirement type.
-        /// </param>
-        /// <returns>
-        /// A key drop shuffle requirement.
-        /// </returns>
-        private static IRequirement GetKeyDropShuffleRequirement(RequirementType type)
-        {
-            return type switch
-            {
-                RequirementType.KeyDropShuffleOff => new KeyDropShuffleRequirement(false),
-                RequirementType.KeyDropShuffleOn => new KeyDropShuffleRequirement(true),
-                _ => throw new ArgumentOutOfRangeException(nameof(type))
-            };
-        }
-
-        /// <summary>
-        /// Returns a shop shuffle requirement.
-        /// </summary>
-        /// <param name="type">
-        /// The requirement type.
-        /// </param>
-        /// <returns>
-        /// A shop shuffle requirement.
-        /// </returns>
-        private static IRequirement GetShopShuffleRequirement(RequirementType type)
-        {
-            return type switch
-            {
-                RequirementType.ShopShuffle => new ShopShuffleRequirement(true),
-                _ => throw new ArgumentOutOfRangeException(nameof(type))
-            };
-        }
-
-        /// <summary>
-        /// Returns an item exact amount requirement.
-        /// </summary>
-        /// <param name="type">
-        /// The requirement type.
-        /// </param>
-        /// <returns>
-        /// An item exact amount requirement.
-        /// </returns>
-        private static IRequirement GetItemExactRequirement(RequirementType type)
-        {
-            return type switch
-            {
-                RequirementType.Swordless => new ItemExactRequirement(ItemDictionary.Instance[ItemType.Sword], 0),
-                RequirementType.Mushroom => new ItemExactRequirement(ItemDictionary.Instance[ItemType.Mushroom], 1),
-                RequirementType.BombosMM => new ItemExactRequirement(ItemDictionary.Instance[ItemType.BombosDungeons], 1),
-                RequirementType.BombosTR => new ItemExactRequirement(ItemDictionary.Instance[ItemType.BombosDungeons], 2),
-                RequirementType.BombosBoth => new ItemExactRequirement(ItemDictionary.Instance[ItemType.BombosDungeons], 3),
-                RequirementType.EtherMM => new ItemExactRequirement(ItemDictionary.Instance[ItemType.EtherDungeons], 1),
-                RequirementType.EtherTR => new ItemExactRequirement(ItemDictionary.Instance[ItemType.EtherDungeons], 2),
-                RequirementType.EtherBoth => new ItemExactRequirement(ItemDictionary.Instance[ItemType.EtherDungeons], 3),
-                RequirementType.QuakeMM => new ItemExactRequirement(ItemDictionary.Instance[ItemType.QuakeDungeons], 1),
-                RequirementType.QuakeTR => new ItemExactRequirement(ItemDictionary.Instance[ItemType.QuakeDungeons], 2),
-                RequirementType.QuakeBoth => new ItemExactRequirement(ItemDictionary.Instance[ItemType.QuakeDungeons], 3),
-                RequirementType.NoFlippers => new ItemExactRequirement(ItemDictionary.Instance[ItemType.Flippers], 0),
-                _ => throw new ArgumentOutOfRangeException(nameof(type))
-            };
-        }
-
-        /// <summary>
-        /// Returns an item requirement.
-        /// </summary>
-        /// <param name="type">
-        /// The requirement type.
-        /// </param>
-        /// <returns>
-        /// An item requirement.
-        /// </returns>
-        private static IRequirement GetItemRequirement(RequirementType type)
-        {
-            return type switch
-            {
-                RequirementType.Sword1 => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Sword], 2),
-                RequirementType.Sword2 => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Sword], 3),
-                RequirementType.Sword3 => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Sword], 4),
-                RequirementType.Shield3 => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Shield], 3),
-                RequirementType.Bow => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Bow]),
-                RequirementType.Boomerang => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Boomerang]),
-                RequirementType.RedBoomerang => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.RedBoomerang]),
-                RequirementType.Hookshot => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Hookshot]),
-                RequirementType.Powder => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Powder]),
-                RequirementType.Boots => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Boots]),
-                RequirementType.FireRod => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.FireRod]),
-                RequirementType.IceRod => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.IceRod]),
-                RequirementType.Bombos => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Bombos]),
-                RequirementType.Ether => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Ether]),
-                RequirementType.Quake => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Quake]),
-                RequirementType.Gloves1 => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Gloves]),
-                RequirementType.Gloves2 => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Gloves], 2),
-                RequirementType.Lamp => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Lamp]),
-                RequirementType.Hammer => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Hammer]),
-                RequirementType.Flute => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Flute]),
-                RequirementType.FluteActivated => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.FluteActivated]),
-                RequirementType.Net => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Net]),
-                RequirementType.Book => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Book]),
-                RequirementType.Shovel => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Shovel]),
-                RequirementType.Flippers => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Flippers]),
-                RequirementType.Bottle => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Bottle]),
-                RequirementType.CaneOfSomaria => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.CaneOfSomaria]),
-                RequirementType.CaneOfByrna => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.CaneOfByrna]),
-                RequirementType.Cape => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Cape]),
-                RequirementType.Mirror => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.Mirror]),
-                RequirementType.HalfMagic => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.HalfMagic]),
-                RequirementType.MoonPearl => new ItemRequirement(
-                    ItemDictionary.Instance[ItemType.MoonPearl]),
-                RequirementType.Aga1 => new ItemRequirement(
-                    PrizeDictionary.Instance[PrizeType.Aga1]),
-                RequirementType.Aga2 => new ItemRequirement(
-                    PrizeDictionary.Instance[PrizeType.Aga2]),
-                RequirementType.RedCrystal => new ItemRequirement(
-                    PrizeDictionary.Instance[PrizeType.RedCrystal], 2),
-                RequirementType.Pendant => new ItemRequirement(
-                    PrizeDictionary.Instance[PrizeType.Pendant], 2),
-                RequirementType.GreenPendant => new ItemRequirement(
-                    PrizeDictionary.Instance[PrizeType.GreenPendant]),
-                _ => throw new ArgumentOutOfRangeException(nameof(type))
-            };
-        }
-
-        /// <summary>
-        /// Returns a new small key requirement instance.
-        /// </summary>
-        /// <param name="type">
-        /// The requirement type.
-        /// </param>
-        /// <returns>
-        /// A new small key requirement instance.
-        /// </returns>
-        private static IRequirement GetSmallKeyRequirement(RequirementType type)
-        {
-            return type switch
-            {
-                RequirementType.TRSmallKey2 => new SmallKeyRequirement(
-                    ItemDictionary.Instance[ItemType.TRSmallKey], 2),
-                RequirementType.TRSmallKey3 => new SmallKeyRequirement(
-                    ItemDictionary.Instance[ItemType.TRSmallKey], 3),
-                _ => throw new ArgumentOutOfRangeException(nameof(type))
-            };
-        }
-
-        /// <summary>
-        /// Returns a sequence break requirement.
-        /// </summary>
-        /// <param name="game">
-        /// The game data.
-        /// </param>
-        /// <param name="type">
-        /// The requirement type.
-        /// </param>
-        /// <returns>
-        /// A sequence break requirement.
-        /// </returns>
-        private static IRequirement GetSequenceBreakRequirement(RequirementType type)
-        {
-            return type switch
-            {
-                RequirementType.SBBlindPedestal => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.BlindPedestal]),
-                RequirementType.SBBonkOverLedge => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.BonkOverLedge]),
-                RequirementType.SBBumperCaveHookshot => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.BumperCaveHookshot]),
-                RequirementType.SBTRLaserSkip => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.TRLaserSkip]),
-                RequirementType.SBHelmasaurKingBasic => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.HelmasaurKingBasic]),
-                RequirementType.SBLanmolasBombs => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.LanmolasBombs]),
-                RequirementType.SBArrghusBasic => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.ArrghusBasic]),
-                RequirementType.SBMothulaBasic => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.MothulaBasic]),
-                RequirementType.SBBlindBasic => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.BlindBasic]),
-                RequirementType.SBKholdstareBasic => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.KholdstareBasic]),
-                RequirementType.SBVitreousBasic => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.VitreousBasic]),
-                RequirementType.SBTrinexxBasic => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.TrinexxBasic]),
-                RequirementType.SBBombDuplicationAncillaOverload => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.BombDuplicationAncillaOverload]),
-                RequirementType.SBBombDuplicationMirror => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.BombDuplicationMirror]),
-                RequirementType.SBBombJumpPoDHammerJump => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.BombJumpPoDHammerJump]),
-                RequirementType.SBBombJumpSWBigChest => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.BombJumpSWBigChest]),
-                RequirementType.SBBombJumpIPBJ => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.BombJumpIPBJ]),
-                RequirementType.SBBombJumpIPHookshotGap => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.BombJumpIPHookshotGap]),
-                RequirementType.SBBombJumpIPFreezorRoomGap => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.BombJumpIPFreezorRoomGap]),
-                RequirementType.SBDarkRoomDeathMountainEntry => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.DarkRoomDeathMountainEntry]),
-                RequirementType.SBDarkRoomDeathMountainExit => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.DarkRoomDeathMountainExit]),
-                RequirementType.SBDarkRoomHC => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.DarkRoomHC]),
-                RequirementType.SBDarkRoomAT => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.DarkRoomAT]),
-                RequirementType.SBDarkRoomEPRight => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.DarkRoomEPRight]),
-                RequirementType.SBDarkRoomEPBack => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.DarkRoomEPBack]),
-                RequirementType.SBDarkRoomPoDDarkBasement => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.DarkRoomPoDDarkBasement]),
-                RequirementType.SBDarkRoomPoDDarkMaze => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.DarkRoomPoDDarkMaze]),
-                RequirementType.SBDarkRoomPoDBossArea => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.DarkRoomPoDBossArea]),
-                RequirementType.SBDarkRoomMM => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.DarkRoomMM]),
-                RequirementType.SBDarkRoomTR => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.DarkRoomTR]),
-                RequirementType.SBFakeFlippersFairyRevival => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.FakeFlippersFairyRevival]),
-                RequirementType.SBFakeFlippersQirnJump => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.FakeFlippersQirnJump]),
-                RequirementType.SBFakeFlippersScreenTransition => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.FakeFlippersScreenTransition]),
-                RequirementType.SBFakeFlippersSplashDeletion => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.FakeFlippersSplashDeletion]),
-                RequirementType.SBWaterWalk => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.WaterWalk]),
-                RequirementType.SBWaterWalkFromWaterfallCave => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.WaterWalkFromWaterfallCave]),
-                RequirementType.SBSuperBunnyFallInHole => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.SuperBunnyFallInHole]),
-                RequirementType.SBSuperBunnyMirror => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.SuperBunnyMirror]),
-                RequirementType.SBCameraUnlock => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.CameraUnlock]),
-                RequirementType.SBDungeonRevive => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.DungeonRevive]),
-                RequirementType.SBFakePowder => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.FakePowder]),
-                RequirementType.SBHover => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.Hover]),
-                RequirementType.SBMimicClip => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.MimicClip]),
-                RequirementType.SBSpikeCave => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.SpikeCave]),
-                RequirementType.SBToHHerapot => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.ToHHerapot]),
-                RequirementType.SBIPIceBreaker => new SequenceBreakRequirement(
-                    SequenceBreakDictionary.Instance[SequenceBreakType.IPIceBreaker]),
-                _ => throw new ArgumentOutOfRangeException(nameof(type))
-            };
-        }
-
-        /// <summary>
-        /// Returns a requrement node requirement.
-        /// </summary>
-        /// <param name="type">
-        /// The requirement type.
-        /// </param>
-        /// <returns>
-        /// A requirement node requirement.
-        /// </returns>
-        private static IRequirement GetRequirementNodeRequirement(RequirementType type)
-        {
-            return type switch
-            {
-                RequirementType.LightWorld => new RequirementNodeRequirement(
-                    RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld]),
-                RequirementType.HammerPegsArea => new RequirementNodeRequirement(
-                    RequirementNodeDictionary.Instance[RequirementNodeID.HammerPegsArea]),
-                _ => throw new ArgumentOutOfRangeException(nameof(type))
-            };
-        }
-
-        /// <summary>
-        /// Returns a boss requirement.
-        /// </summary>
-        /// <param name="game">
-        /// The game data.
-        /// </param>
-        /// <param name="type">
-        /// The requirement type.
-        /// </param>
-        /// <returns>
-        /// A boss requirement.
-        /// </returns>
-        private static IRequirement GetBossRequirement(RequirementType type)
-        {
-            return type switch
-            {
-                RequirementType.ATBoss => new BossRequirement(
-                    BossPlacementDictionary.Instance[BossPlacementID.ATBoss]),
-                RequirementType.EPBoss => new BossRequirement(
-                    BossPlacementDictionary.Instance[BossPlacementID.EPBoss]),
-                RequirementType.DPBoss => new BossRequirement(
-                    BossPlacementDictionary.Instance[BossPlacementID.DPBoss]),
-                RequirementType.ToHBoss => new BossRequirement(
-                    BossPlacementDictionary.Instance[BossPlacementID.ToHBoss]),
-                RequirementType.PoDBoss => new BossRequirement(
-                    BossPlacementDictionary.Instance[BossPlacementID.PoDBoss]),
-                RequirementType.SPBoss => new BossRequirement(
-                    BossPlacementDictionary.Instance[BossPlacementID.SPBoss]),
-                RequirementType.SWBoss => new BossRequirement(
-                    BossPlacementDictionary.Instance[BossPlacementID.SWBoss]),
-                RequirementType.TTBoss => new BossRequirement(
-                    BossPlacementDictionary.Instance[BossPlacementID.TTBoss]),
-                RequirementType.IPBoss => new BossRequirement(
-                    BossPlacementDictionary.Instance[BossPlacementID.IPBoss]),
-                RequirementType.MMBoss => new BossRequirement(
-                    BossPlacementDictionary.Instance[BossPlacementID.MMBoss]),
-                RequirementType.TRBoss => new BossRequirement(
-                    BossPlacementDictionary.Instance[BossPlacementID.TRBoss]),
-                RequirementType.GTBoss1 => new BossRequirement(
-                    BossPlacementDictionary.Instance[BossPlacementID.GTBoss1]),
-                RequirementType.GTBoss2 => new BossRequirement(
-                    BossPlacementDictionary.Instance[BossPlacementID.GTBoss2]),
-                RequirementType.GTBoss3 => new BossRequirement(
-                    BossPlacementDictionary.Instance[BossPlacementID.GTBoss3]),
-                RequirementType.GTFinalBoss => new BossRequirement(
-                    BossPlacementDictionary.Instance[BossPlacementID.GTFinalBoss]),
+                RequirementType.ATBoss => _bossPlacements[BossPlacementID.ATBoss],
+                RequirementType.EPBoss => _bossPlacements[BossPlacementID.EPBoss],
+                RequirementType.DPBoss => _bossPlacements[BossPlacementID.DPBoss],
+                RequirementType.ToHBoss => _bossPlacements[BossPlacementID.ToHBoss],
+                RequirementType.PoDBoss => _bossPlacements[BossPlacementID.PoDBoss],
+                RequirementType.SPBoss => _bossPlacements[BossPlacementID.SPBoss],
+                RequirementType.SWBoss => _bossPlacements[BossPlacementID.SWBoss],
+                RequirementType.TTBoss => _bossPlacements[BossPlacementID.TTBoss],
+                RequirementType.IPBoss => _bossPlacements[BossPlacementID.IPBoss],
+                RequirementType.MMBoss => _bossPlacements[BossPlacementID.MMBoss],
+                RequirementType.TRBoss => _bossPlacements[BossPlacementID.TRBoss],
+                RequirementType.GTBoss1 => _bossPlacements[BossPlacementID.GTBoss1],
+                RequirementType.GTBoss2 => _bossPlacements[BossPlacementID.GTBoss2],
+                RequirementType.GTBoss3 => _bossPlacements[BossPlacementID.GTBoss3],
+                RequirementType.GTFinalBoss => _bossPlacements[BossPlacementID.GTFinalBoss],
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
@@ -647,7 +629,7 @@ namespace OpenTracker.Models.Requirements
         /// <returns>
         /// A requirement of the proper type.
         /// </returns>
-        public static IRequirement GetRequirement(RequirementType type)
+        public IRequirement GetRequirement(RequirementType type)
         {
             switch (type)
             {
@@ -655,770 +637,770 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.Inspect:
                 case RequirementType.SequenceBreak:
                     {
-                        return GetStaticRequirement(type);
+                        return _staticFactory(GetStaticAccessibility(type));
                     }
                 case RequirementType.ItemPlacementBasic:
                 case RequirementType.ItemPlacementAdvanced:
                     {
-                        return GetItemPlacementRequirement(type);
+                        return _itemPlacementFactory(GetItemPlacementValue(type));
                     }
                 case RequirementType.MapShuffleOff:
                 case RequirementType.MapShuffleOn:
                     {
-                        return GetMapShuffleRequirement(type);
+                        return _mapShuffleFactory(GetBooleanValue(type));
                     }
                 case RequirementType.CompassShuffleOff:
                 case RequirementType.CompassShuffleOn:
                     {
-                        return GetCompassShuffleRequirement(type);
+                        return _compassShuffleFactory(GetBooleanValue(type));
                     }
                 case RequirementType.SmallKeyShuffleOff:
                 case RequirementType.SmallKeyShuffleOn:
                     {
-                        return GetSmallKeyShuffleRequirement(type);
+                        return _smallKeyShuffleFactory(GetBooleanValue(type));
                     }
                 case RequirementType.BigKeyShuffleOff:
                 case RequirementType.BigKeyShuffleOn:
                     {
-                        return GetBigKeyShuffleRequirement(type);
+                        return _bigKeyShuffleFactory(GetBooleanValue(type));
                     }
                 case RequirementType.WorldStateStandardOpen:
                 case RequirementType.WorldStateInverted:
                     {
-                        return GetWorldStateRequirement(type);
+                        return _worldStateFactory(GetWorldStateValue(type));
                     }
                 case RequirementType.EntranceShuffleNone:
                 case RequirementType.EntranceShuffleDungeon:
                 case RequirementType.EntranceShuffleAll:
                 case RequirementType.EntranceShuffleInsanity:
                     {
-                        return GetEntranceShuffleRequirement(type);
+                        return _entranceShuffleFactory(GetEntranceShuffleValue(type));
                     }
                 case RequirementType.BossShuffleOff:
                 case RequirementType.BossShuffleOn:
                     {
-                        return GetBossShuffleRequirement(type);
+                        return _bossShuffleFactory(GetBooleanValue(type));
                     }
                 case RequirementType.EnemyShuffleOff:
                 case RequirementType.EnemyShuffleOn:
                     {
-                        return GetEnemyShuffleRequirement(type);
+                        return _enemyShuffleFactory(GetBooleanValue(type));
                     }
                 case RequirementType.GuaranteedBossItemsOff:
                 case RequirementType.GuaranteedBossItemsOn:
                     {
-                        return GetGuaranteedBossItemsRequirement(type);
+                        return _guaranteedBossItemsFactory(GetBooleanValue(type));
                     }
                 case RequirementType.GenericKeys:
                     {
-                        return GetGenericKeysRequirement(type);
+                        return _genericKeysFactory(GetBooleanValue(type));
                     }
                 case RequirementType.TakeAnyLocations:
                     {
-                        return GetTakeAnyLocationsRequirement(type);
+                        return _takeAnyLocationsFactory(GetBooleanValue(type));
                     }
                 case RequirementType.KeyDropShuffleOff:
                 case RequirementType.KeyDropShuffleOn:
                     {
-                        return GetKeyDropShuffleRequirement(type);
+                        return _keyDropShuffleFactory(GetBooleanValue(type));
                     }
                 case RequirementType.ShopShuffle:
                     {
-                        return GetShopShuffleRequirement(type);
+                        return _shopShuffleFactory(GetBooleanValue(type));
                     }
                 case RequirementType.NoKeyShuffle:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff]
+                            _requirements[RequirementType.SmallKeyShuffleOff],
+                            _requirements[RequirementType.BigKeyShuffleOff]
                         });
                     }
                 case RequirementType.SmallKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn],
-                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff]
+                            _requirements[RequirementType.SmallKeyShuffleOn],
+                            _requirements[RequirementType.BigKeyShuffleOff]
                         });
                     }
                 case RequirementType.BigKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]
+                            _requirements[RequirementType.SmallKeyShuffleOff],
+                            _requirements[RequirementType.BigKeyShuffleOn]
                         });
                     }
                 case RequirementType.AllKeyShuffle:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn],
-                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]
+                            _requirements[RequirementType.SmallKeyShuffleOn],
+                            _requirements[RequirementType.BigKeyShuffleOn]
                         });
                     }
                 case RequirementType.EntranceShuffleNoneDungeon:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNone],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeon]
+                            _requirements[RequirementType.EntranceShuffleNone],
+                            _requirements[RequirementType.EntranceShuffleDungeon]
                         });
                     }
                 case RequirementType.EntranceShuffleNoneDungeonAll:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNone],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeon],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleAll]
+                            _requirements[RequirementType.EntranceShuffleNone],
+                            _requirements[RequirementType.EntranceShuffleDungeon],
+                            _requirements[RequirementType.EntranceShuffleAll]
                         });
                     }
                 case RequirementType.EntranceShuffleDungeonAllInsanity:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeon],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleAll],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity]
+                            _requirements[RequirementType.EntranceShuffleDungeon],
+                            _requirements[RequirementType.EntranceShuffleAll],
+                            _requirements[RequirementType.EntranceShuffleInsanity]
                         });
                     }
                 case RequirementType.EntranceShuffleAllInsanity:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleAll],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity]
+                            _requirements[RequirementType.EntranceShuffleAll],
+                            _requirements[RequirementType.EntranceShuffleInsanity]
                         });
                     }
                 case RequirementType.WorldStateStandardOpenEntranceShuffleNone:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]
+                            _requirements[RequirementType.WorldStateStandardOpen],
+                            _requirements[RequirementType.EntranceShuffleNone]
                         });
                     }
                 case RequirementType.WorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOff:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpenEntranceShuffleNone],
-                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff]
+                            _requirements[RequirementType.WorldStateStandardOpenEntranceShuffleNone],
+                            _requirements[RequirementType.BigKeyShuffleOff]
                         });
                     }
                 case RequirementType.WorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpenEntranceShuffleNone],
-                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]
+                            _requirements[RequirementType.WorldStateStandardOpenEntranceShuffleNone],
+                            _requirements[RequirementType.BigKeyShuffleOnly]
                         });
                     }
                 case RequirementType.WorldStateStandardOpenEntranceShuffleNoneDungeon:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]
+                            _requirements[RequirementType.WorldStateStandardOpen],
+                            _requirements[RequirementType.EntranceShuffleNoneDungeon]
                         });
                     }
                 case RequirementType.WorldStateStandardOpenEntranceShuffleAllInsanity:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity]
+                            _requirements[RequirementType.WorldStateStandardOpen],
+                            _requirements[RequirementType.EntranceShuffleAllInsanity]
                         });
                     }
                 case RequirementType.WorldStateInvertedEntranceShuffleNone:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNone]
+                            _requirements[RequirementType.WorldStateInverted],
+                            _requirements[RequirementType.EntranceShuffleNone]
                         });
                     }
                 case RequirementType.WorldStateInvertedEntranceShuffleNoneDungeon:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]
+                            _requirements[RequirementType.WorldStateInverted],
+                            _requirements[RequirementType.EntranceShuffleNoneDungeon]
                         });
                     }
                 case RequirementType.WorldStateInvertedEntranceShuffleAllInsanity:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleAllInsanity]
+                            _requirements[RequirementType.WorldStateInverted],
+                            _requirements[RequirementType.EntranceShuffleAllInsanity]
                         });
                     }
                 case RequirementType.WorldStateInvertedEntranceShuffleInsanity:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleInsanity]
+                            _requirements[RequirementType.WorldStateInverted],
+                            _requirements[RequirementType.EntranceShuffleInsanity]
                         });
                     }
                 case RequirementType.WorldStateInvertedOrEntranceShuffleDungeonAllInsanity:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleDungeonAllInsanity]
+                            _requirements[RequirementType.WorldStateInverted],
+                            _requirements[RequirementType.EntranceShuffleDungeonAllInsanity]
                         });
                     }
                 case RequirementType.WorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOff:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.WorldStateInvertedOrEntranceShuffleDungeonAllInsanity],
-                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff]
+                            _requirements[RequirementType.WorldStateInvertedOrEntranceShuffleDungeonAllInsanity],
+                            _requirements[RequirementType.BigKeyShuffleOff]
                         });
                     }
                 case RequirementType.WorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.WorldStateInvertedOrEntranceShuffleDungeonAllInsanity],
-                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]
+                            _requirements[RequirementType.WorldStateInvertedOrEntranceShuffleDungeonAllInsanity],
+                            _requirements[RequirementType.BigKeyShuffleOnly]
                         });
                     }
                 case RequirementType.SmallKeyShuffleOffItemPlacementAdvanced:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced]
+                            _requirements[RequirementType.SmallKeyShuffleOff],
+                            _requirements[RequirementType.ItemPlacementAdvanced]
                         });
                     }
                 case RequirementType.SmallKeyShuffleOffItemPlacementBasic:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.ItemPlacementBasic]
+                            _requirements[RequirementType.SmallKeyShuffleOff],
+                            _requirements[RequirementType.ItemPlacementBasic]
                         });
                     }
                 case RequirementType.GuaranteedBossItemsOnBigKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn],
-                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]
+                            _requirements[RequirementType.GuaranteedBossItemsOn],
+                            _requirements[RequirementType.BigKeyShuffleOnly]
                         });
                     }
                 case RequirementType.GuaranteedBossItemsOnSmallKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn],
-                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]
+                            _requirements[RequirementType.GuaranteedBossItemsOn],
+                            _requirements[RequirementType.SmallKeyShuffleOnly]
                         });
                     }
                 case RequirementType.GuaranteedBossItemsOnSmallKeyShuffleOff:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn],
-                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
+                            _requirements[RequirementType.GuaranteedBossItemsOn],
+                            _requirements[RequirementType.SmallKeyShuffleOff]
                         });
                     }
                 case RequirementType.GuaranteedBossItemsOnNoKeyShuffle:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn],
-                            RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
+                            _requirements[RequirementType.GuaranteedBossItemsOn],
+                            _requirements[RequirementType.NoKeyShuffle]
                         });
                     }
                 case RequirementType.GuaranteedBossItemsOnOrItemPlacementBasic:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn],
-                            RequirementDictionary.Instance[RequirementType.ItemPlacementBasic]
+                            _requirements[RequirementType.GuaranteedBossItemsOn],
+                            _requirements[RequirementType.ItemPlacementBasic]
                         });
                     }
                 case RequirementType.GuaranteedBossItemsOnOrItemPlacementBasicSmallKeyShuffleOff:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOnOrItemPlacementBasic],
-                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
+                            _requirements[RequirementType.GuaranteedBossItemsOnOrItemPlacementBasic],
+                            _requirements[RequirementType.SmallKeyShuffleOff]
                         });
                     }
                 case RequirementType.GuaranteedBossItemsOffBigKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
-                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]
+                            _requirements[RequirementType.GuaranteedBossItemsOff],
+                            _requirements[RequirementType.BigKeyShuffleOnly]
                         });
                     }
                 case RequirementType.GuaranteedBossItemsOffSmallKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
-                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]
+                            _requirements[RequirementType.GuaranteedBossItemsOff],
+                            _requirements[RequirementType.SmallKeyShuffleOnly]
                         });
                     }
                 case RequirementType.GuaranteedBossItemsOffSmallKeyShuffleOff:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
-                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
+                            _requirements[RequirementType.GuaranteedBossItemsOff],
+                            _requirements[RequirementType.SmallKeyShuffleOff]
                         });
                     }
                 case RequirementType.GuaranteedBossItemsOffSmallKeyShuffleOffItemPlacementAdvanced:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOffSmallKeyShuffleOff]
+                            _requirements[RequirementType.ItemPlacementAdvanced],
+                            _requirements[RequirementType.GuaranteedBossItemsOffSmallKeyShuffleOff]
                         });
                     }
                 case RequirementType.GuaranteedBossItemsOffNoKeyShuffle:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
-                            RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
+                            _requirements[RequirementType.GuaranteedBossItemsOff],
+                            _requirements[RequirementType.NoKeyShuffle]
                         });
                     }
                 case RequirementType.GuaranteedBossItemsOffItemPlacementAdvanced:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff],
-                            RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced]
+                            _requirements[RequirementType.GuaranteedBossItemsOff],
+                            _requirements[RequirementType.ItemPlacementAdvanced]
                         });
                     }
                 case RequirementType.ShopShuffleEntranceShuffleNoneDungeon:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.ShopShuffle],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]
+                            _requirements[RequirementType.ShopShuffle],
+                            _requirements[RequirementType.EntranceShuffleNoneDungeon]
                         });
                     }
                 case RequirementType.TakeAnyLocationsOrShopShuffle:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.TakeAnyLocations],
-                            RequirementDictionary.Instance[RequirementType.ShopShuffle]
+                            _requirements[RequirementType.TakeAnyLocations],
+                            _requirements[RequirementType.ShopShuffle]
                         });
                     }
                 case RequirementType.TakeAnyLocationsEntranceShuffleNoneDungeon:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.TakeAnyLocations],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]
+                            _requirements[RequirementType.TakeAnyLocations],
+                            _requirements[RequirementType.EntranceShuffleNoneDungeon]
                         });
                     }
                 case RequirementType.TakeAnyLocationsOrShopShuffleEntranceShuffleNoneDungeon:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.TakeAnyLocationsOrShopShuffle],
-                            RequirementDictionary.Instance[RequirementType.EntranceShuffleNoneDungeon]
+                            _requirements[RequirementType.TakeAnyLocationsOrShopShuffle],
+                            _requirements[RequirementType.EntranceShuffleNoneDungeon]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnWorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOff:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOff]
+                            _requirements[RequirementType.KeyDropShuffleOn],
+                            _requirements[RequirementType.WorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOff]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnWorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOnly]
+                            _requirements[RequirementType.KeyDropShuffleOn],
+                            _requirements[RequirementType.WorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOnly]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnWorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOff:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
-                            RequirementDictionary.Instance[RequirementType.WorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOff]
+                            _requirements[RequirementType.KeyDropShuffleOn],
+                            _requirements[RequirementType.WorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOff]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnWorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
-                            RequirementDictionary.Instance[RequirementType.WorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOnly]
+                            _requirements[RequirementType.KeyDropShuffleOn],
+                            _requirements[RequirementType.WorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOnly]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnBigKeyShuffleOff:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
-                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff]
+                            _requirements[RequirementType.KeyDropShuffleOn],
+                            _requirements[RequirementType.BigKeyShuffleOff]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnBigKeyShuffleOffItemPlacementAdvanced:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]
+                            _requirements[RequirementType.ItemPlacementAdvanced],
+                            _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnBigKeyShuffleOffItemPlacementBasic:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.ItemPlacementBasic],
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]
+                            _requirements[RequirementType.ItemPlacementBasic],
+                            _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnBigKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
-                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]
+                            _requirements[RequirementType.KeyDropShuffleOn],
+                            _requirements[RequirementType.BigKeyShuffleOnly]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnBigKeyShuffleOnlyItemPlacementAdvanced:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]
+                            _requirements[RequirementType.ItemPlacementAdvanced],
+                            _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnBigKeyShuffleOnlyItemPlacementBasic:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.ItemPlacementBasic],
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]
+                            _requirements[RequirementType.ItemPlacementBasic],
+                            _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnSmallKeyShuffleOff:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
-                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
+                            _requirements[RequirementType.KeyDropShuffleOn],
+                            _requirements[RequirementType.SmallKeyShuffleOff]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnSmallKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
-                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]
+                            _requirements[RequirementType.KeyDropShuffleOn],
+                            _requirements[RequirementType.SmallKeyShuffleOnly]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnNoKeyShuffle:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
-                            RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
+                            _requirements[RequirementType.KeyDropShuffleOn],
+                            _requirements[RequirementType.NoKeyShuffle]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnNoKeyShuffleItemPlacementAdvanced:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffle]
+                            _requirements[RequirementType.ItemPlacementAdvanced],
+                            _requirements[RequirementType.KeyDropShuffleOnNoKeyShuffle]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnNoKeyShuffleItemPlacementBasic:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.ItemPlacementBasic],
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffle]
+                            _requirements[RequirementType.ItemPlacementBasic],
+                            _requirements[RequirementType.KeyDropShuffleOnNoKeyShuffle]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnAllKeyShuffle:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
-                            RequirementDictionary.Instance[RequirementType.AllKeyShuffle]
+                            _requirements[RequirementType.KeyDropShuffleOn],
+                            _requirements[RequirementType.AllKeyShuffle]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnGuaranteedBossItemsOnBigKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOnBigKeyShuffleOnly]
+                            _requirements[RequirementType.KeyDropShuffleOn],
+                            _requirements[RequirementType.GuaranteedBossItemsOnBigKeyShuffleOnly]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnGuaranteedBossItemsOnSmallKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOnSmallKeyShuffleOnly]
+                            _requirements[RequirementType.KeyDropShuffleOn],
+                            _requirements[RequirementType.GuaranteedBossItemsOnSmallKeyShuffleOnly]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnGuaranteedBossItemsOnNoKeyShuffle:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOnNoKeyShuffle]
+                            _requirements[RequirementType.KeyDropShuffleOn],
+                            _requirements[RequirementType.GuaranteedBossItemsOnNoKeyShuffle]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnGuaranteedBossItemsOffBigKeyShuffleOff:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff]
+                            _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff],
+                            _requirements[RequirementType.GuaranteedBossItemsOff]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnGuaranteedBossItemsOffSmallKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOffSmallKeyShuffleOnly]
+                            _requirements[RequirementType.KeyDropShuffleOn],
+                            _requirements[RequirementType.GuaranteedBossItemsOffSmallKeyShuffleOnly]
                         });
                     }
                 case RequirementType.KeyDropShuffleOnGuaranteedBossItemsOffNoKeyShuffle:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOn],
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOffNoKeyShuffle]
+                            _requirements[RequirementType.KeyDropShuffleOn],
+                            _requirements[RequirementType.GuaranteedBossItemsOffNoKeyShuffle]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffWorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOff:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOff]
+                            _requirements[RequirementType.KeyDropShuffleOff],
+                            _requirements[RequirementType.WorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOff]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffWorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOnly]
+                            _requirements[RequirementType.KeyDropShuffleOff],
+                            _requirements[RequirementType.WorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOnly]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffWorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOff:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.WorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOff]
+                            _requirements[RequirementType.KeyDropShuffleOff],
+                            _requirements[RequirementType.WorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOff]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffWorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.WorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOnly]
+                            _requirements[RequirementType.KeyDropShuffleOff],
+                            _requirements[RequirementType.WorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOnly]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffBigKeyShuffleOn:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]
+                            _requirements[RequirementType.KeyDropShuffleOff],
+                            _requirements[RequirementType.BigKeyShuffleOn]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffBigKeyShuffleOff:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff]
+                            _requirements[RequirementType.KeyDropShuffleOff],
+                            _requirements[RequirementType.BigKeyShuffleOff]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffBigKeyShuffleOffItemPlacementAdvanced:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced]
+                            _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff],
+                            _requirements[RequirementType.ItemPlacementAdvanced]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffBigKeyShuffleOffItemPlacementBasic:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.ItemPlacementBasic]
+                            _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff],
+                            _requirements[RequirementType.ItemPlacementBasic]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffBigKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]
+                            _requirements[RequirementType.KeyDropShuffleOff],
+                            _requirements[RequirementType.BigKeyShuffleOnly]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffBigKeyShuffleOnlyGuaranteedBossItemsOrItemPlacementBasic:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly],
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOnOrItemPlacementBasic]
+                            _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly],
+                            _requirements[RequirementType.GuaranteedBossItemsOnOrItemPlacementBasic]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffBigKeyShuffleOnlyItemPlacementAdvanced:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly]
+                            _requirements[RequirementType.ItemPlacementAdvanced],
+                            _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffBigKeyShuffleOnlyItemPlacementBasic:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.ItemPlacementBasic],
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly]
+                            _requirements[RequirementType.ItemPlacementBasic],
+                            _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffSmallKeyShuffleOn:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]
+                            _requirements[RequirementType.KeyDropShuffleOff],
+                            _requirements[RequirementType.SmallKeyShuffleOn]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffSmallKeyShuffleOff:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff]
+                            _requirements[RequirementType.KeyDropShuffleOff],
+                            _requirements[RequirementType.SmallKeyShuffleOff]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffSmallKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOnly]
+                            _requirements[RequirementType.KeyDropShuffleOff],
+                            _requirements[RequirementType.SmallKeyShuffleOnly]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffNoKeyShuffle:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.NoKeyShuffle]
+                            _requirements[RequirementType.KeyDropShuffleOff],
+                            _requirements[RequirementType.NoKeyShuffle]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffNoKeyShuffleItemPlacementAdvanced:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffNoKeyShuffle]
+                            _requirements[RequirementType.ItemPlacementAdvanced],
+                            _requirements[RequirementType.KeyDropShuffleOffNoKeyShuffle]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffNoKeyShuffleItemPlacementBasic:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.ItemPlacementBasic],
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffNoKeyShuffle]
+                            _requirements[RequirementType.ItemPlacementBasic],
+                            _requirements[RequirementType.KeyDropShuffleOffNoKeyShuffle]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffGuaranteedBossItemsOnBigKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOnBigKeyShuffleOnly]
+                            _requirements[RequirementType.KeyDropShuffleOff],
+                            _requirements[RequirementType.GuaranteedBossItemsOnBigKeyShuffleOnly]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffGuaranteedBossItemsOnSmallKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOnSmallKeyShuffleOnly]
+                            _requirements[RequirementType.KeyDropShuffleOff],
+                            _requirements[RequirementType.GuaranteedBossItemsOnSmallKeyShuffleOnly]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffGuaranteedBossItemsOnNoKeyShuffle:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOnNoKeyShuffle]
+                            _requirements[RequirementType.KeyDropShuffleOff],
+                            _requirements[RequirementType.GuaranteedBossItemsOnNoKeyShuffle]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffGuaranteedBossItemsOffBigKeyShuffleOff:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff]
+                            _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff],
+                            _requirements[RequirementType.GuaranteedBossItemsOff]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffGuaranteedBossItemsOffBigKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly],
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff]
+                            _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly],
+                            _requirements[RequirementType.GuaranteedBossItemsOff]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffGuaranteedBossItemsOffBigKeyShuffleOnlyItemPlacementAdvanced:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffGuaranteedBossItemsOffBigKeyShuffleOnly],
-                            RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced]
+                            _requirements[RequirementType.KeyDropShuffleOffGuaranteedBossItemsOffBigKeyShuffleOnly],
+                            _requirements[RequirementType.ItemPlacementAdvanced]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffGuaranteedBossItemsOffSmallKeyShuffleOnly:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOffSmallKeyShuffleOnly]
+                            _requirements[RequirementType.KeyDropShuffleOff],
+                            _requirements[RequirementType.GuaranteedBossItemsOffSmallKeyShuffleOnly]
                         });
                     }
                 case RequirementType.KeyDropShuffleOffGuaranteedBossItemsOffNoKeyShuffle:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
-                            RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOffNoKeyShuffle]
+                            _requirements[RequirementType.KeyDropShuffleOff],
+                            _requirements[RequirementType.GuaranteedBossItemsOffNoKeyShuffle]
                         });
                     }
                 case RequirementType.RaceIllegalTracking:
                     {
-                        return new RaceIllegalTrackingRequirement(true);
+                        return _raceIllegalTrackingFactory(GetBooleanValue(type));
                     }
                 case RequirementType.Swordless:
                 case RequirementType.Mushroom:
@@ -1433,7 +1415,7 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.QuakeBoth:
                 case RequirementType.NoFlippers:
                     {
-                        return GetItemExactRequirement(type);
+                        return _itemExactFactory(GetItem(type), GetItemCount(type));
                     }
                 case RequirementType.Sword1:
                 case RequirementType.Sword2:
@@ -1473,12 +1455,12 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.Pendant:
                 case RequirementType.GreenPendant:
                     {
-                        return GetItemRequirement(type);
+                        return _itemFactory(GetItem(type), GetItemCount(type));
                     }
                 case RequirementType.TRSmallKey2:
                 case RequirementType.TRSmallKey3:
                     {
-                        return GetSmallKeyRequirement(type);
+                        return _smallKeyFactory(GetItem(type), GetItemCount(type));
                     }
                 case RequirementType.SBBlindPedestal:
                 case RequirementType.SBBonkOverLedge:
@@ -1527,491 +1509,491 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.SBToHHerapot:
                 case RequirementType.SBIPIceBreaker:
                     {
-                        return GetSequenceBreakRequirement(type);
+                        return _sequenceBreakFactory(GetSequenceBreak(type));
                     }
                 case RequirementType.GTCrystal:
                     {
-                        return new CrystalRequirement();
+                        return _crystalFactory();
                     }
                 case RequirementType.LightWorld:
                 case RequirementType.HammerPegsArea:
                     {
-                        return GetRequirementNodeRequirement(type);
+                        return _requirementNodeFactory(GetRequirementNode(type));
                     }
                 case RequirementType.AllMedallions:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.Bombos],
-                            RequirementDictionary.Instance[RequirementType.Ether],
-                            RequirementDictionary.Instance[RequirementType.Quake]
+                            _requirements[RequirementType.Bombos],
+                            _requirements[RequirementType.Ether],
+                            _requirements[RequirementType.Quake]
                         });
                     }
                 case RequirementType.ExtendMagic1:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.Bottle],
-                                RequirementDictionary.Instance[RequirementType.HalfMagic]
+                                _requirements[RequirementType.Bottle],
+                                _requirements[RequirementType.HalfMagic]
                             });
                     }
                 case RequirementType.ExtendMagic2:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.Bottle],
-                                RequirementDictionary.Instance[RequirementType.HalfMagic]
+                                _requirements[RequirementType.Bottle],
+                                _requirements[RequirementType.HalfMagic]
                             });
                     }
                 case RequirementType.FireRodDarkRoom:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.FireRod],
-                            RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced]
+                            _requirements[RequirementType.FireRod],
+                            _requirements[RequirementType.ItemPlacementAdvanced]
                         });
                     }
                 case RequirementType.UseMedallion:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.Swordless],
-                            RequirementDictionary.Instance[RequirementType.Sword1]
+                            _requirements[RequirementType.Swordless],
+                            _requirements[RequirementType.Sword1]
                         });
                     }
                 case RequirementType.MeltThings:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.FireRod],
-                            new AggregateRequirement(new List<IRequirement>
+                            _requirements[RequirementType.FireRod],
+                            _aggregateFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.Bombos],
-                                RequirementDictionary.Instance[RequirementType.UseMedallion]
+                                _requirements[RequirementType.Bombos],
+                                _requirements[RequirementType.UseMedallion]
                             })
                         });
                     }
                 case RequirementType.NotBunnyLW:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen],
-                            RequirementDictionary.Instance[RequirementType.MoonPearl]
+                            _requirements[RequirementType.WorldStateStandardOpen],
+                            _requirements[RequirementType.MoonPearl]
                         });
                     }
                 case RequirementType.NotBunnyDW:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                            RequirementDictionary.Instance[RequirementType.MoonPearl]
+                            _requirements[RequirementType.WorldStateInverted],
+                            _requirements[RequirementType.MoonPearl]
                         });
                     }
                 case RequirementType.ATBarrier:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.Cape],
-                            new AggregateRequirement(new List<IRequirement>
+                            _requirements[RequirementType.Cape],
+                            _aggregateFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.Swordless],
-                                RequirementDictionary.Instance[RequirementType.Hammer]
+                                _requirements[RequirementType.Swordless],
+                                _requirements[RequirementType.Hammer]
                             }),
-                            RequirementDictionary.Instance[RequirementType.Sword2]
+                            _requirements[RequirementType.Sword2]
                         });
                     }
                 case RequirementType.BombDuplicationAncillaOverload:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBBombDuplicationAncillaOverload],
-                            RequirementDictionary.Instance[RequirementType.Bow],
-                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria],
-                            new AlternativeRequirement(new List<IRequirement>
+                            _requirements[RequirementType.SBBombDuplicationAncillaOverload],
+                            _requirements[RequirementType.Bow],
+                            _requirements[RequirementType.CaneOfSomaria],
+                            _alternativeFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.Boomerang],
-                                RequirementDictionary.Instance[RequirementType.RedBoomerang]
+                                _requirements[RequirementType.Boomerang],
+                                _requirements[RequirementType.RedBoomerang]
                             })
                         });
                     }
                 case RequirementType.BombDuplicationMirror:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBBombDuplicationMirror],
-                            RequirementDictionary.Instance[RequirementType.Flippers],
-                            RequirementDictionary.Instance[RequirementType.Mirror]
+                            _requirements[RequirementType.SBBombDuplicationMirror],
+                            _requirements[RequirementType.Flippers],
+                            _requirements[RequirementType.Mirror]
                         });
                     }
                 case RequirementType.BombJumpPoDHammerJump:
                     {
-                        return RequirementDictionary.Instance[RequirementType.SBBombJumpPoDHammerJump];
+                        return _requirements[RequirementType.SBBombJumpPoDHammerJump];
                     }
                 case RequirementType.BombJumpSWBigChest:
                     {
-                        return RequirementDictionary.Instance[RequirementType.SBBombJumpSWBigChest];
+                        return _requirements[RequirementType.SBBombJumpSWBigChest];
                     }
                 case RequirementType.BombJumpIPBJ:
                     {
-                        return RequirementDictionary.Instance[RequirementType.SBBombJumpIPBJ];
+                        return _requirements[RequirementType.SBBombJumpIPBJ];
                     }
                 case RequirementType.BombJumpIPHookshotGap:
                     {
-                        return RequirementDictionary.Instance[RequirementType.SBBombJumpIPHookshotGap];
+                        return _requirements[RequirementType.SBBombJumpIPHookshotGap];
                     }
                 case RequirementType.BombJumpIPFreezorRoomGap:
                     {
-                        return RequirementDictionary.Instance[RequirementType.SBBombJumpIPFreezorRoomGap];
+                        return _requirements[RequirementType.SBBombJumpIPFreezorRoomGap];
                     }
                 case RequirementType.BonkOverLedge:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.Boots],
-                            new AlternativeRequirement(new List<IRequirement>
+                            _requirements[RequirementType.Boots],
+                            _alternativeFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.SBBonkOverLedge],
-                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced]
+                                _requirements[RequirementType.SBBonkOverLedge],
+                                _requirements[RequirementType.ItemPlacementAdvanced]
                             })
                         });
                     }
                 case RequirementType.BumperCaveGap:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.Hookshot],
-                            RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                            RequirementDictionary.Instance[RequirementType.SBBumperCaveHookshot]
+                            _requirements[RequirementType.Hookshot],
+                            _requirements[RequirementType.ItemPlacementAdvanced],
+                            _requirements[RequirementType.SBBumperCaveHookshot]
                         });
                     }
                 case RequirementType.CameraUnlock:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBCameraUnlock],
-                            RequirementDictionary.Instance[RequirementType.Bottle]
+                            _requirements[RequirementType.SBCameraUnlock],
+                            _requirements[RequirementType.Bottle]
                         });
                     }
                 case RequirementType.Curtains:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.Swordless],
-                            RequirementDictionary.Instance[RequirementType.Sword1]
+                            _requirements[RequirementType.Swordless],
+                            _requirements[RequirementType.Sword1]
                         });
                     }
                 case RequirementType.DarkRoomDeathMountainEntry:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBDarkRoomDeathMountainEntry],
-                            RequirementDictionary.Instance[RequirementType.Lamp]
+                            _requirements[RequirementType.SBDarkRoomDeathMountainEntry],
+                            _requirements[RequirementType.Lamp]
                         });
                     }
                 case RequirementType.DarkRoomDeathMountainExit:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBDarkRoomDeathMountainExit],
-                            RequirementDictionary.Instance[RequirementType.Lamp]
+                            _requirements[RequirementType.SBDarkRoomDeathMountainExit],
+                            _requirements[RequirementType.Lamp]
                         });
                     }
                 case RequirementType.DarkRoomHC:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBDarkRoomHC],
-                            RequirementDictionary.Instance[RequirementType.Lamp],
-                            RequirementDictionary.Instance[RequirementType.FireRodDarkRoom]
+                            _requirements[RequirementType.SBDarkRoomHC],
+                            _requirements[RequirementType.Lamp],
+                            _requirements[RequirementType.FireRodDarkRoom]
                         });
                     }
                 case RequirementType.DarkRoomAT:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBDarkRoomAT],
-                            RequirementDictionary.Instance[RequirementType.Lamp]
+                            _requirements[RequirementType.SBDarkRoomAT],
+                            _requirements[RequirementType.Lamp]
                         });
                     }
                 case RequirementType.DarkRoomEPRight:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBDarkRoomEPRight],
-                            RequirementDictionary.Instance[RequirementType.Lamp]
+                            _requirements[RequirementType.SBDarkRoomEPRight],
+                            _requirements[RequirementType.Lamp]
                         });
                     }
                 case RequirementType.DarkRoomEPBack:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBDarkRoomEPBack],
-                            RequirementDictionary.Instance[RequirementType.Lamp],
-                            RequirementDictionary.Instance[RequirementType.FireRodDarkRoom]
+                            _requirements[RequirementType.SBDarkRoomEPBack],
+                            _requirements[RequirementType.Lamp],
+                            _requirements[RequirementType.FireRodDarkRoom]
                         });
                     }
                 case RequirementType.DarkRoomPoDDarkBasement:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBDarkRoomPoDDarkBasement],
-                            RequirementDictionary.Instance[RequirementType.Lamp],
-                            RequirementDictionary.Instance[RequirementType.FireRodDarkRoom]
+                            _requirements[RequirementType.SBDarkRoomPoDDarkBasement],
+                            _requirements[RequirementType.Lamp],
+                            _requirements[RequirementType.FireRodDarkRoom]
                         });
                     }
                 case RequirementType.DarkRoomPoDDarkMaze:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBDarkRoomPoDDarkMaze],
-                            RequirementDictionary.Instance[RequirementType.Lamp]
+                            _requirements[RequirementType.SBDarkRoomPoDDarkMaze],
+                            _requirements[RequirementType.Lamp]
                         });
                     }
                 case RequirementType.DarkRoomPoDBossArea:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBDarkRoomPoDBossArea],
-                            RequirementDictionary.Instance[RequirementType.Lamp]
+                            _requirements[RequirementType.SBDarkRoomPoDBossArea],
+                            _requirements[RequirementType.Lamp]
                         });
                     }
                 case RequirementType.DarkRoomMM:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBDarkRoomMM],
-                            RequirementDictionary.Instance[RequirementType.Lamp]
+                            _requirements[RequirementType.SBDarkRoomMM],
+                            _requirements[RequirementType.Lamp]
                         });
                     }
                 case RequirementType.DarkRoomTR:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBDarkRoomTR],
-                            RequirementDictionary.Instance[RequirementType.Lamp]
+                            _requirements[RequirementType.SBDarkRoomTR],
+                            _requirements[RequirementType.Lamp]
                         });
                     }
                 case RequirementType.DungeonRevive:
                     {
-                        return RequirementDictionary.Instance[RequirementType.SBDungeonRevive];
+                        return _requirements[RequirementType.SBDungeonRevive];
                     }
                 case RequirementType.FakeFlippersFairyRevival:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBFakeFlippersFairyRevival],
-                            RequirementDictionary.Instance[RequirementType.Bottle]
+                            _requirements[RequirementType.SBFakeFlippersFairyRevival],
+                            _requirements[RequirementType.Bottle]
                         });
                     }
                 case RequirementType.FakeFlippersQirnJump:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBFakeFlippersQirnJump]
+                            _requirements[RequirementType.SBFakeFlippersQirnJump]
                         });
                     }
                 case RequirementType.FakeFlippersScreenTransition:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBFakeFlippersScreenTransition]
+                            _requirements[RequirementType.SBFakeFlippersScreenTransition]
                         });
                     }
                 case RequirementType.FakeFlippersSplashDeletion:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            new AlternativeRequirement(new List<IRequirement>
+                            _alternativeFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.Bow],
-                                RequirementDictionary.Instance[RequirementType.RedBoomerang],
-                                RequirementDictionary.Instance[RequirementType.CaneOfSomaria],
-                                RequirementDictionary.Instance[RequirementType.IceRod]
+                                _requirements[RequirementType.Bow],
+                                _requirements[RequirementType.RedBoomerang],
+                                _requirements[RequirementType.CaneOfSomaria],
+                                _requirements[RequirementType.IceRod]
                             }),
-                            RequirementDictionary.Instance[RequirementType.SBFakeFlippersSplashDeletion]
+                            _requirements[RequirementType.SBFakeFlippersSplashDeletion]
                         });
                     }
                 case RequirementType.FireSource:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.Lamp],
-                            RequirementDictionary.Instance[RequirementType.FireRod]
+                            _requirements[RequirementType.Lamp],
+                            _requirements[RequirementType.FireRod]
                         });
                     }
                 case RequirementType.Hover:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBHover],
-                            RequirementDictionary.Instance[RequirementType.Boots]
+                            _requirements[RequirementType.SBHover],
+                            _requirements[RequirementType.Boots]
                         });
                     }
                 case RequirementType.LaserBridge:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBTRLaserSkip],
-                            RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                            RequirementDictionary.Instance[RequirementType.Cape],
-                            RequirementDictionary.Instance[RequirementType.CaneOfByrna],
-                            RequirementDictionary.Instance[RequirementType.Shield3]
+                            _requirements[RequirementType.SBTRLaserSkip],
+                            _requirements[RequirementType.ItemPlacementAdvanced],
+                            _requirements[RequirementType.Cape],
+                            _requirements[RequirementType.CaneOfByrna],
+                            _requirements[RequirementType.Shield3]
                         });
                     }
                 case RequirementType.MagicBat:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            new AggregateRequirement(new List<IRequirement>
+                            _aggregateFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.SBFakePowder],
-                                RequirementDictionary.Instance[RequirementType.Mushroom],
-                                RequirementDictionary.Instance[RequirementType.CaneOfSomaria]
+                                _requirements[RequirementType.SBFakePowder],
+                                _requirements[RequirementType.Mushroom],
+                                _requirements[RequirementType.CaneOfSomaria]
                             }),
-                            RequirementDictionary.Instance[RequirementType.Powder]
+                            _requirements[RequirementType.Powder]
                         });
                     }
                 case RequirementType.MimicClip:
                     {
-                        return RequirementDictionary.Instance[RequirementType.SBMimicClip];
+                        return _requirements[RequirementType.SBMimicClip];
                     }
                 case RequirementType.Pedestal:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            new AggregateRequirement(new List<IRequirement>
+                            _aggregateFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.Pendant],
-                                RequirementDictionary.Instance[RequirementType.GreenPendant],
-                                new AlternativeRequirement(new List<IRequirement>
+                                _requirements[RequirementType.Pendant],
+                                _requirements[RequirementType.GreenPendant],
+                                _alternativeFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.SBBlindPedestal],
-                                    RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                                    RequirementDictionary.Instance[RequirementType.Book]
+                                    _requirements[RequirementType.SBBlindPedestal],
+                                    _requirements[RequirementType.ItemPlacementAdvanced],
+                                    _requirements[RequirementType.Book]
                                 })
                             }),
-                            new AggregateRequirement(new List<IRequirement>
+                            _aggregateFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.Book],
-                                RequirementDictionary.Instance[RequirementType.Inspect]
+                                _requirements[RequirementType.Book],
+                                _requirements[RequirementType.Inspect]
                             })
                         });
                     }
                 case RequirementType.RedEyegoreGoriya:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.EnemyShuffleOn],
-                            RequirementDictionary.Instance[RequirementType.Bow]
+                            _requirements[RequirementType.EnemyShuffleOn],
+                            _requirements[RequirementType.Bow]
                         });
                     }
                 case RequirementType.SpikeCave:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SequenceBreak],
-                            RequirementDictionary.Instance[RequirementType.CaneOfByrna],
-                            new AggregateRequirement(new List<IRequirement>
+                            _requirements[RequirementType.SequenceBreak],
+                            _requirements[RequirementType.CaneOfByrna],
+                            _aggregateFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.Cape],
-                                RequirementDictionary.Instance[RequirementType.ExtendMagic1]
+                                _requirements[RequirementType.Cape],
+                                _requirements[RequirementType.ExtendMagic1]
                             })
                         });
                     }
                 case RequirementType.SuperBunnyFallInHole:
                     {
-                        return RequirementDictionary.Instance[RequirementType.SBSuperBunnyFallInHole];
+                        return _requirements[RequirementType.SBSuperBunnyFallInHole];
                     }
                 case RequirementType.SuperBunnyMirror:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBSuperBunnyMirror],
-                            RequirementDictionary.Instance[RequirementType.Mirror]
+                            _requirements[RequirementType.SBSuperBunnyMirror],
+                            _requirements[RequirementType.Mirror]
                         });
                     }
                 case RequirementType.Tablet:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.Book],
-                            new AlternativeRequirement(new List<IRequirement>
+                            _requirements[RequirementType.Book],
+                            _alternativeFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.Inspect],
-                                new AggregateRequirement(new List<IRequirement>
+                                _requirements[RequirementType.Inspect],
+                                _aggregateFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.Swordless],
-                                    RequirementDictionary.Instance[RequirementType.Hammer]
+                                    _requirements[RequirementType.Swordless],
+                                    _requirements[RequirementType.Hammer]
                                 }),
-                                RequirementDictionary.Instance[RequirementType.Sword2]
+                                _requirements[RequirementType.Sword2]
                             })
                         });
                     }
                 case RequirementType.Torch:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.Inspect],
-                            RequirementDictionary.Instance[RequirementType.Boots]
+                            _requirements[RequirementType.Inspect],
+                            _requirements[RequirementType.Boots]
                         });
                     }
                 case RequirementType.ToHHerapot:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBToHHerapot],
-                            new AlternativeRequirement(new List<IRequirement>
+                            _requirements[RequirementType.SBToHHerapot],
+                            _alternativeFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.Hookshot],
-                                new AggregateRequirement(new List<IRequirement>
+                                _requirements[RequirementType.Hookshot],
+                                _aggregateFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.Boots],
-                                    RequirementDictionary.Instance[RequirementType.Sword1]
+                                    _requirements[RequirementType.Boots],
+                                    _requirements[RequirementType.Sword1]
                                 })
                             })
                         });
                     }
                 case RequirementType.IPIceBreaker:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBIPIceBreaker],
-                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria]
+                            _requirements[RequirementType.SBIPIceBreaker],
+                            _requirements[RequirementType.CaneOfSomaria]
                         });
                     }
                 case RequirementType.MMMedallion:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.UseMedallion],
-                            new AlternativeRequirement(new List<IRequirement>
+                            _requirements[RequirementType.UseMedallion],
+                            _alternativeFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.AllMedallions],
-                                new AggregateRequirement(new List<IRequirement>
+                                _requirements[RequirementType.AllMedallions],
+                                _aggregateFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.Bombos],
-                                    new AlternativeRequirement(new List<IRequirement>
+                                    _requirements[RequirementType.Bombos],
+                                    _alternativeFactory(new List<IRequirement>
                                     {
-                                        RequirementDictionary.Instance[RequirementType.BombosMM],
-                                        RequirementDictionary.Instance[RequirementType.BombosBoth]
+                                        _requirements[RequirementType.BombosMM],
+                                        _requirements[RequirementType.BombosBoth]
                                     })
                                 }),
-                                new AggregateRequirement(new List<IRequirement>
+                                _aggregateFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.Ether],
-                                    new AlternativeRequirement(new List<IRequirement>
+                                    _requirements[RequirementType.Ether],
+                                    _alternativeFactory(new List<IRequirement>
                                     {
-                                        RequirementDictionary.Instance[RequirementType.EtherMM],
-                                        RequirementDictionary.Instance[RequirementType.EtherBoth]
+                                        _requirements[RequirementType.EtherMM],
+                                        _requirements[RequirementType.EtherBoth]
                                     })
                                 }),
-                                new AggregateRequirement(new List<IRequirement>
+                                _aggregateFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.Quake],
-                                    new AlternativeRequirement(new List<IRequirement>
+                                    _requirements[RequirementType.Quake],
+                                    _alternativeFactory(new List<IRequirement>
                                     {
-                                        RequirementDictionary.Instance[RequirementType.QuakeMM],
-                                        RequirementDictionary.Instance[RequirementType.QuakeBoth]
+                                        _requirements[RequirementType.QuakeMM],
+                                        _requirements[RequirementType.QuakeBoth]
                                     })
                                 }),
                             })
@@ -2019,37 +2001,37 @@ namespace OpenTracker.Models.Requirements
                     }
                 case RequirementType.TRMedallion:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.UseMedallion],
-                            new AlternativeRequirement(new List<IRequirement>
+                            _requirements[RequirementType.UseMedallion],
+                            _alternativeFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.AllMedallions],
-                                new AggregateRequirement(new List<IRequirement>
+                                _requirements[RequirementType.AllMedallions],
+                                _aggregateFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.Bombos],
-                                    new AlternativeRequirement(new List<IRequirement>
+                                    _requirements[RequirementType.Bombos],
+                                    _alternativeFactory(new List<IRequirement>
                                     {
-                                        RequirementDictionary.Instance[RequirementType.BombosTR],
-                                        RequirementDictionary.Instance[RequirementType.BombosBoth]
+                                        _requirements[RequirementType.BombosTR],
+                                        _requirements[RequirementType.BombosBoth]
                                     })
                                 }),
-                                new AggregateRequirement(new List<IRequirement>
+                                _aggregateFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.Ether],
-                                    new AlternativeRequirement(new List<IRequirement>
+                                    _requirements[RequirementType.Ether],
+                                    _alternativeFactory(new List<IRequirement>
                                     {
-                                        RequirementDictionary.Instance[RequirementType.EtherTR],
-                                        RequirementDictionary.Instance[RequirementType.EtherBoth]
+                                        _requirements[RequirementType.EtherTR],
+                                        _requirements[RequirementType.EtherBoth]
                                     })
                                 }),
-                                new AggregateRequirement(new List<IRequirement>
+                                _aggregateFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.Quake],
-                                    new AlternativeRequirement(new List<IRequirement>
+                                    _requirements[RequirementType.Quake],
+                                    _alternativeFactory(new List<IRequirement>
                                     {
-                                        RequirementDictionary.Instance[RequirementType.QuakeTR],
-                                        RequirementDictionary.Instance[RequirementType.QuakeBoth]
+                                        _requirements[RequirementType.QuakeTR],
+                                        _requirements[RequirementType.QuakeBoth]
                                     })
                                 }),
                             })
@@ -2057,161 +2039,161 @@ namespace OpenTracker.Models.Requirements
                     }
                 case RequirementType.TRKeyDoorsToMiddleExit:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            new AggregateRequirement(new List<IRequirement>
+                            _aggregateFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn],
-                                new AlternativeRequirement(new List<IRequirement>
+                                _requirements[RequirementType.SmallKeyShuffleOn],
+                                _alternativeFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.TRSmallKey3],
-                                    new AggregateRequirement(new List<IRequirement>
+                                    _requirements[RequirementType.TRSmallKey3],
+                                    _aggregateFactory(new List<IRequirement>
                                     {
-                                        RequirementDictionary.Instance[RequirementType.KeyDropShuffleOff],
-                                        RequirementDictionary.Instance[RequirementType.TRSmallKey2]
+                                        _requirements[RequirementType.KeyDropShuffleOff],
+                                        _requirements[RequirementType.TRSmallKey2]
                                     })
                                 }),
                             }),
-                            new AggregateRequirement(new List<IRequirement>
+                            _aggregateFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff],
-                                new AlternativeRequirement(new List<IRequirement>
+                                _requirements[RequirementType.SmallKeyShuffleOff],
+                                _alternativeFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.FireRod],
-                                    RequirementDictionary.Instance[RequirementType.SequenceBreak]
+                                    _requirements[RequirementType.FireRod],
+                                    _requirements[RequirementType.SequenceBreak]
                                 })
                             })
                         });
                     }
                 case RequirementType.WaterWalk:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBWaterWalk],
-                            RequirementDictionary.Instance[RequirementType.Boots]
+                            _requirements[RequirementType.SBWaterWalk],
+                            _requirements[RequirementType.Boots]
                         });
                     }
                 case RequirementType.WaterWalkFromWaterfallCave:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SBWaterWalkFromWaterfallCave],
-                            RequirementDictionary.Instance[RequirementType.NoFlippers],
-                            new AlternativeRequirement(new List<IRequirement>
+                            _requirements[RequirementType.SBWaterWalkFromWaterfallCave],
+                            _requirements[RequirementType.NoFlippers],
+                            _alternativeFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.MoonPearl],
-                                RequirementDictionary.Instance[RequirementType.EntranceShuffleAll]
+                                _requirements[RequirementType.MoonPearl],
+                                _requirements[RequirementType.EntranceShuffleAll]
                             })
                         });
                     }
                 case RequirementType.LWMirror:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.WorldStateInverted],
-                            RequirementDictionary.Instance[RequirementType.Mirror]
+                            _requirements[RequirementType.WorldStateInverted],
+                            _requirements[RequirementType.Mirror]
                         });
                     }
                 case RequirementType.DWMirror:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.WorldStateStandardOpen],
-                            RequirementDictionary.Instance[RequirementType.Mirror]
+                            _requirements[RequirementType.WorldStateStandardOpen],
+                            _requirements[RequirementType.Mirror]
                         });
                     }
                 case RequirementType.Armos:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.Sword1],
-                            RequirementDictionary.Instance[RequirementType.Hammer],
-                            RequirementDictionary.Instance[RequirementType.Bow],
-                            RequirementDictionary.Instance[RequirementType.Boomerang],
-                            RequirementDictionary.Instance[RequirementType.RedBoomerang],
-                            new AggregateRequirement(new List<IRequirement>
+                            _requirements[RequirementType.Sword1],
+                            _requirements[RequirementType.Hammer],
+                            _requirements[RequirementType.Bow],
+                            _requirements[RequirementType.Boomerang],
+                            _requirements[RequirementType.RedBoomerang],
+                            _aggregateFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.ExtendMagic2],
-                                new AlternativeRequirement(new List<IRequirement>
+                                _requirements[RequirementType.ExtendMagic2],
+                                _alternativeFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.FireRod],
-                                    RequirementDictionary.Instance[RequirementType.IceRod]
+                                    _requirements[RequirementType.FireRod],
+                                    _requirements[RequirementType.IceRod]
                                 })
                             }),
-                            new AggregateRequirement(new List<IRequirement>
+                            _aggregateFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.ExtendMagic1],
-                                new AlternativeRequirement(new List<IRequirement>
+                                _requirements[RequirementType.ExtendMagic1],
+                                _alternativeFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.CaneOfByrna],
-                                    RequirementDictionary.Instance[RequirementType.CaneOfSomaria]
+                                    _requirements[RequirementType.CaneOfByrna],
+                                    _requirements[RequirementType.CaneOfSomaria]
                                 })
                             })
                         });
                     }
                 case RequirementType.Lanmolas:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.Sword1],
-                            RequirementDictionary.Instance[RequirementType.Hammer],
-                            RequirementDictionary.Instance[RequirementType.Bow],
-                            RequirementDictionary.Instance[RequirementType.FireRod],
-                            RequirementDictionary.Instance[RequirementType.IceRod],
-                            RequirementDictionary.Instance[RequirementType.CaneOfByrna],
-                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria],
-                            RequirementDictionary.Instance[RequirementType.SBLanmolasBombs]
+                            _requirements[RequirementType.Sword1],
+                            _requirements[RequirementType.Hammer],
+                            _requirements[RequirementType.Bow],
+                            _requirements[RequirementType.FireRod],
+                            _requirements[RequirementType.IceRod],
+                            _requirements[RequirementType.CaneOfByrna],
+                            _requirements[RequirementType.CaneOfSomaria],
+                            _requirements[RequirementType.SBLanmolasBombs]
                         });
                     }
                 case RequirementType.Moldorm:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.Sword1],
-                            RequirementDictionary.Instance[RequirementType.Hammer]
+                            _requirements[RequirementType.Sword1],
+                            _requirements[RequirementType.Hammer]
                         });
                     }
                 case RequirementType.HelmasaurKingSB:
                     {
-                        return RequirementDictionary.Instance[RequirementType.Sword1];
+                        return _requirements[RequirementType.Sword1];
                     }
                 case RequirementType.HelmasaurKing:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            new AggregateRequirement(new List<IRequirement>
+                            _aggregateFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.HelmasaurKingSB],
-                                new AlternativeRequirement(new List<IRequirement>
+                                _requirements[RequirementType.HelmasaurKingSB],
+                                _alternativeFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.SBHelmasaurKingBasic],
-                                    RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced]
+                                    _requirements[RequirementType.SBHelmasaurKingBasic],
+                                    _requirements[RequirementType.ItemPlacementAdvanced]
                                 })
                             }),
-                            RequirementDictionary.Instance[RequirementType.Bow],
-                            RequirementDictionary.Instance[RequirementType.Sword2]
+                            _requirements[RequirementType.Bow],
+                            _requirements[RequirementType.Sword2]
                         });
                     }
                 case RequirementType.ArrghusSB:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.Hookshot],
-                            new AlternativeRequirement(new List<IRequirement>
+                            _requirements[RequirementType.Hookshot],
+                            _alternativeFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.Hammer],
-                                RequirementDictionary.Instance[RequirementType.Sword1],
-                                new AggregateRequirement(new List<IRequirement>
+                                _requirements[RequirementType.Hammer],
+                                _requirements[RequirementType.Sword1],
+                                _aggregateFactory(new List<IRequirement>
                                 {
-                                    new AlternativeRequirement(new List<IRequirement>
+                                    _alternativeFactory(new List<IRequirement>
                                     {
-                                        RequirementDictionary.Instance[RequirementType.ExtendMagic1],
-                                        RequirementDictionary.Instance[RequirementType.Bow]
+                                        _requirements[RequirementType.ExtendMagic1],
+                                        _requirements[RequirementType.Bow]
                                     }),
-                                    new AlternativeRequirement(new List<IRequirement>
+                                    _alternativeFactory(new List<IRequirement>
                                     {
-                                        RequirementDictionary.Instance[RequirementType.FireRod],
-                                        RequirementDictionary.Instance[RequirementType.IceRod]
+                                        _requirements[RequirementType.FireRod],
+                                        _requirements[RequirementType.IceRod]
                                     })
                                 })
                             }),
@@ -2219,78 +2201,78 @@ namespace OpenTracker.Models.Requirements
                     }
                 case RequirementType.Arrghus:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.ArrghusSB],
-                            new AlternativeRequirement(new List<IRequirement>
+                            _requirements[RequirementType.ArrghusSB],
+                            _alternativeFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.SBArrghusBasic],
-                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                                RequirementDictionary.Instance[RequirementType.Swordless],
-                                RequirementDictionary.Instance[RequirementType.Sword2]
+                                _requirements[RequirementType.SBArrghusBasic],
+                                _requirements[RequirementType.ItemPlacementAdvanced],
+                                _requirements[RequirementType.Swordless],
+                                _requirements[RequirementType.Sword2]
                             })
                         });
                     }
                 case RequirementType.MothulaSB:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.Sword1],
-                            RequirementDictionary.Instance[RequirementType.Hammer],
-                            new AggregateRequirement(new List<IRequirement>
+                            _requirements[RequirementType.Sword1],
+                            _requirements[RequirementType.Hammer],
+                            _aggregateFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.ExtendMagic1],
-                                RequirementDictionary.Instance[RequirementType.FireRod]
+                                _requirements[RequirementType.ExtendMagic1],
+                                _requirements[RequirementType.FireRod]
                             }),
-                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria],
-                            RequirementDictionary.Instance[RequirementType.CaneOfByrna]
+                            _requirements[RequirementType.CaneOfSomaria],
+                            _requirements[RequirementType.CaneOfByrna]
                         });
                     }
                 case RequirementType.Mothula:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.MothulaSB],
-                            new AlternativeRequirement(new List<IRequirement>
+                            _requirements[RequirementType.MothulaSB],
+                            _alternativeFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.SBMothulaBasic],
-                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                                RequirementDictionary.Instance[RequirementType.Sword2],
-                                new AggregateRequirement(new List<IRequirement>
+                                _requirements[RequirementType.SBMothulaBasic],
+                                _requirements[RequirementType.ItemPlacementAdvanced],
+                                _requirements[RequirementType.Sword2],
+                                _aggregateFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1],
-                                    RequirementDictionary.Instance[RequirementType.FireRod]
+                                    _requirements[RequirementType.ExtendMagic1],
+                                    _requirements[RequirementType.FireRod]
                                 })
                             })
                         });
                     }
                 case RequirementType.BlindSB:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.Sword1],
-                            RequirementDictionary.Instance[RequirementType.Hammer],
-                            RequirementDictionary.Instance[RequirementType.CaneOfSomaria],
-                            RequirementDictionary.Instance[RequirementType.CaneOfByrna]
+                            _requirements[RequirementType.Sword1],
+                            _requirements[RequirementType.Hammer],
+                            _requirements[RequirementType.CaneOfSomaria],
+                            _requirements[RequirementType.CaneOfByrna]
                         });
                     }
                 case RequirementType.Blind:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.BlindSB],
-                            new AlternativeRequirement(new List<IRequirement>
+                            _requirements[RequirementType.BlindSB],
+                            _alternativeFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.SBBlindBasic],
-                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                                RequirementDictionary.Instance[RequirementType.Swordless],
-                                new AggregateRequirement(new List<IRequirement>
+                                _requirements[RequirementType.SBBlindBasic],
+                                _requirements[RequirementType.ItemPlacementAdvanced],
+                                _requirements[RequirementType.Swordless],
+                                _aggregateFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.Sword1],
-                                    new AlternativeRequirement(new List<IRequirement>
+                                    _requirements[RequirementType.Sword1],
+                                    _alternativeFactory(new List<IRequirement>
                                     {
-                                        RequirementDictionary.Instance[RequirementType.Cape],
-                                        RequirementDictionary.Instance[RequirementType.CaneOfByrna]
+                                        _requirements[RequirementType.Cape],
+                                        _requirements[RequirementType.CaneOfByrna]
                                     })
                                 })
                             })
@@ -2298,143 +2280,143 @@ namespace OpenTracker.Models.Requirements
                     }
                 case RequirementType.KholdstareSB:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.MeltThings],
-                            new AlternativeRequirement(new List<IRequirement>
+                            _requirements[RequirementType.MeltThings],
+                            _alternativeFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.Hammer],
-                                RequirementDictionary.Instance[RequirementType.Sword1],
-                                new AggregateRequirement(new List<IRequirement>
+                                _requirements[RequirementType.Hammer],
+                                _requirements[RequirementType.Sword1],
+                                _aggregateFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.ExtendMagic2],
-                                    RequirementDictionary.Instance[RequirementType.FireRod]
+                                    _requirements[RequirementType.ExtendMagic2],
+                                    _requirements[RequirementType.FireRod]
                                 }),
-                                new AggregateRequirement(new List<IRequirement>
+                                _aggregateFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1],
-                                    RequirementDictionary.Instance[RequirementType.FireRod],
-                                    RequirementDictionary.Instance[RequirementType.Bombos],
-                                    RequirementDictionary.Instance[RequirementType.Swordless]
+                                    _requirements[RequirementType.ExtendMagic1],
+                                    _requirements[RequirementType.FireRod],
+                                    _requirements[RequirementType.Bombos],
+                                    _requirements[RequirementType.Swordless]
                                 })
                             })
                         });
                     }
                 case RequirementType.Kholdstare:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.KholdstareSB],
-                            new AlternativeRequirement(new List<IRequirement>
+                            _requirements[RequirementType.KholdstareSB],
+                            _alternativeFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.SBKholdstareBasic],
-                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                                RequirementDictionary.Instance[RequirementType.Sword2],
-                                new AggregateRequirement(new List<IRequirement>
+                                _requirements[RequirementType.SBKholdstareBasic],
+                                _requirements[RequirementType.ItemPlacementAdvanced],
+                                _requirements[RequirementType.Sword2],
+                                _aggregateFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.ExtendMagic2],
-                                    RequirementDictionary.Instance[RequirementType.FireRod]
+                                    _requirements[RequirementType.ExtendMagic2],
+                                    _requirements[RequirementType.FireRod]
                                 }),
-                                new AggregateRequirement(new List<IRequirement>
+                                _aggregateFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.Bombos],
-                                    RequirementDictionary.Instance[RequirementType.UseMedallion],
-                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1],
-                                    RequirementDictionary.Instance[RequirementType.FireRod]
+                                    _requirements[RequirementType.Bombos],
+                                    _requirements[RequirementType.UseMedallion],
+                                    _requirements[RequirementType.ExtendMagic1],
+                                    _requirements[RequirementType.FireRod]
                                 })
                             })
                         });
                     }
                 case RequirementType.VitreousSB:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.Hammer],
-                            RequirementDictionary.Instance[RequirementType.Sword1],
-                            RequirementDictionary.Instance[RequirementType.Bow]
+                            _requirements[RequirementType.Hammer],
+                            _requirements[RequirementType.Sword1],
+                            _requirements[RequirementType.Bow]
                         });
                     }
                 case RequirementType.Vitreous:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.VitreousSB],
-                            new AlternativeRequirement(new List<IRequirement>
+                            _requirements[RequirementType.VitreousSB],
+                            _alternativeFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.SBVitreousBasic],
-                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                                RequirementDictionary.Instance[RequirementType.Sword2],
-                                RequirementDictionary.Instance[RequirementType.Bow]
+                                _requirements[RequirementType.SBVitreousBasic],
+                                _requirements[RequirementType.ItemPlacementAdvanced],
+                                _requirements[RequirementType.Sword2],
+                                _requirements[RequirementType.Bow]
                             })
                         });
                     }
                 case RequirementType.TrinexxSB:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.FireRod],
-                            RequirementDictionary.Instance[RequirementType.IceRod],
-                            new AlternativeRequirement(new List<IRequirement>
+                            _requirements[RequirementType.FireRod],
+                            _requirements[RequirementType.IceRod],
+                            _alternativeFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.Sword3],
-                                RequirementDictionary.Instance[RequirementType.Hammer],
-                                new AggregateRequirement(new List<IRequirement>
+                                _requirements[RequirementType.Sword3],
+                                _requirements[RequirementType.Hammer],
+                                _aggregateFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1],
-                                    RequirementDictionary.Instance[RequirementType.Sword2]
+                                    _requirements[RequirementType.ExtendMagic1],
+                                    _requirements[RequirementType.Sword2]
                                 }),
-                                new AggregateRequirement(new List<IRequirement>
+                                _aggregateFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.ExtendMagic2],
-                                    RequirementDictionary.Instance[RequirementType.Sword1]
+                                    _requirements[RequirementType.ExtendMagic2],
+                                    _requirements[RequirementType.Sword1]
                                 })
                             })
                         });
                     }
                 case RequirementType.Trinexx:
                     {
-                        return new AggregateRequirement(new List<IRequirement>
+                        return _aggregateFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.TrinexxSB],
-                            new AlternativeRequirement(new List<IRequirement>
+                            _requirements[RequirementType.TrinexxSB],
+                            _alternativeFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.SBTrinexxBasic],
-                                RequirementDictionary.Instance[RequirementType.ItemPlacementAdvanced],
-                                RequirementDictionary.Instance[RequirementType.Swordless],
-                                RequirementDictionary.Instance[RequirementType.Sword3],
-                                new AggregateRequirement(new List<IRequirement>
+                                _requirements[RequirementType.SBTrinexxBasic],
+                                _requirements[RequirementType.ItemPlacementAdvanced],
+                                _requirements[RequirementType.Swordless],
+                                _requirements[RequirementType.Sword3],
+                                _aggregateFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.ExtendMagic1],
-                                    RequirementDictionary.Instance[RequirementType.Sword2]
+                                    _requirements[RequirementType.ExtendMagic1],
+                                    _requirements[RequirementType.Sword2]
                                 })
                             })
                         });
                     }
                 case RequirementType.AgaBoss:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.Sword1],
-                            RequirementDictionary.Instance[RequirementType.Hammer],
-                            RequirementDictionary.Instance[RequirementType.Net]
+                            _requirements[RequirementType.Sword1],
+                            _requirements[RequirementType.Hammer],
+                            _requirements[RequirementType.Net]
                         });
                     }
                 case RequirementType.UnknownBoss:
                     {
-                        return new AlternativeRequirement(new List<IRequirement>
+                        return _alternativeFactory(new List<IRequirement>
                         {
-                            RequirementDictionary.Instance[RequirementType.SequenceBreak],
-                            new AggregateRequirement(new List<IRequirement>
+                            _requirements[RequirementType.SequenceBreak],
+                            _aggregateFactory(new List<IRequirement>
                             {
-                                RequirementDictionary.Instance[RequirementType.Armos],
-                                RequirementDictionary.Instance[RequirementType.Lanmolas],
-                                RequirementDictionary.Instance[RequirementType.Moldorm],
-                                RequirementDictionary.Instance[RequirementType.Arrghus],
-                                RequirementDictionary.Instance[RequirementType.Mothula],
-                                RequirementDictionary.Instance[RequirementType.Blind],
-                                RequirementDictionary.Instance[RequirementType.Kholdstare],
-                                RequirementDictionary.Instance[RequirementType.Vitreous],
-                                RequirementDictionary.Instance[RequirementType.Trinexx]
+                                _requirements[RequirementType.Armos],
+                                _requirements[RequirementType.Lanmolas],
+                                _requirements[RequirementType.Moldorm],
+                                _requirements[RequirementType.Arrghus],
+                                _requirements[RequirementType.Mothula],
+                                _requirements[RequirementType.Blind],
+                                _requirements[RequirementType.Kholdstare],
+                                _requirements[RequirementType.Vitreous],
+                                _requirements[RequirementType.Trinexx]
                             })
                         });
                     }
@@ -2454,7 +2436,7 @@ namespace OpenTracker.Models.Requirements
                 case RequirementType.GTBoss3:
                 case RequirementType.GTFinalBoss:
                     {
-                        return GetBossRequirement(type);
+                        return _bossFactory(GetBossPlacement(type));
                     }
             }
 

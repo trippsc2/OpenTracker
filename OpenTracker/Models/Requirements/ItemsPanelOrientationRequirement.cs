@@ -9,63 +9,28 @@ namespace OpenTracker.Models.Requirements
     /// <summary>
     /// This is the class for the requirement of a specified Items panel orientation.
     /// </summary>
-    public class ItemsPanelOrientationRequirement : IRequirement
+    public class ItemsPanelOrientationRequirement : BooleanRequirement
     {
         private readonly ILayoutSettings _layoutSettings;
-        private readonly Orientation _orientation;
+        private readonly Orientation _expectedValue;
 
-        public bool Met =>
-            Accessibility != AccessibilityLevel.None;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        public event EventHandler? ChangePropagated;
-
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
-
-        public ItemsPanelOrientationRequirement(Orientation orientation)
-            : this(AppSettings.Instance.Layout, orientation)
-        {
-        }
+        public delegate ItemsPanelOrientationRequirement Factory(Orientation expectedValue);
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="orientation">
+        /// <param name="expectedValue">
         /// The orientation requirement.
         /// </param>
-        private ItemsPanelOrientationRequirement(
-            ILayoutSettings layoutSettings, Orientation orientation)
+        public ItemsPanelOrientationRequirement(
+            ILayoutSettings layoutSettings, Orientation expectedValue)
         {
             _layoutSettings = layoutSettings;
-            _orientation = orientation;
+            _expectedValue = expectedValue;
 
             _layoutSettings.PropertyChanged += OnLayoutChanged;
 
-            UpdateAccessibility();
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            ChangePropagated?.Invoke(this, new EventArgs());
+            UpdateValue();
         }
 
         /// <summary>
@@ -81,17 +46,13 @@ namespace OpenTracker.Models.Requirements
         {
             if (e.PropertyName == nameof(ILayoutSettings.CurrentLayoutOrientation))
             {
-                UpdateAccessibility();
+                UpdateValue();
             }
         }
 
-        /// <summary>
-        /// Updates the accessibility of this requirement.
-        /// </summary>
-        private void UpdateAccessibility()
+        protected override bool ConditionMet()
         {
-            Accessibility = _layoutSettings.CurrentLayoutOrientation == _orientation ?
-                AccessibilityLevel.Normal : AccessibilityLevel.None;
+            return _layoutSettings.CurrentLayoutOrientation == _expectedValue;
         }
     }
 }

@@ -8,29 +8,11 @@ namespace OpenTracker.Models.Requirements
     /// <summary>
     /// This is the class for aggregating a set of requirements.
     /// </summary>
-    public class AggregateRequirement : IRequirement
+    public class AggregateRequirement : AccessibilityRequirement
     {
         private readonly List<IRequirement> _requirements;
 
-        public bool Met =>
-            Accessibility != AccessibilityLevel.None;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler ChangePropagated;
-
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
+        public delegate AggregateRequirement Factory(List<IRequirement> requirements);
 
         /// <summary>
         /// Constructor
@@ -40,26 +22,14 @@ namespace OpenTracker.Models.Requirements
         /// </param>
         public AggregateRequirement(List<IRequirement> requirements)
         {
-            _requirements = requirements ?? throw new ArgumentNullException(nameof(requirements));
+            _requirements = requirements;
 
             foreach (var requirement in requirements)
             {
                 requirement.PropertyChanged += OnRequirementChanged;
             }
 
-            UpdateAccessibility();
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            ChangePropagated?.Invoke(this, new EventArgs());
+            UpdateValue();
         }
 
         /// <summary>
@@ -75,14 +45,11 @@ namespace OpenTracker.Models.Requirements
         {
             if (e.PropertyName == nameof(IRequirement.Accessibility))
             {
-                UpdateAccessibility();
+                UpdateValue();
             }
         }
 
-        /// <summary>
-        /// Updates the accessibility of this requirement.
-        /// </summary>
-        private void UpdateAccessibility()
+        protected override AccessibilityLevel GetAccessibility()
         {
             var accessibility = AccessibilityLevel.Normal;
 
@@ -96,7 +63,7 @@ namespace OpenTracker.Models.Requirements
                 }
             }
 
-            Accessibility = accessibility;
+            return accessibility;
         }
     }
 }

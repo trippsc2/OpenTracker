@@ -1,5 +1,4 @@
-﻿using OpenTracker.Models.AutoTracking.Logging;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using WebSocketSharp;
@@ -12,7 +11,6 @@ namespace OpenTracker.Models.AutoTracking
         WebSocket? Socket { get; }
         ConnectionStatus Status { get; }
         string? Uri { get; set; }
-        IAutoTrackerLogService LogService { get; }
 
         void Disconnect();
         bool AttachDeviceIfNeeded(int timeOutInMS = 4096);

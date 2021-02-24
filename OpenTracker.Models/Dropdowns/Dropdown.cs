@@ -1,6 +1,5 @@
 ﻿using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Dropdowns
@@ -15,7 +14,7 @@ namespace OpenTracker.Models.Dropdowns
         public bool RequirementMet =>
             _requirement.Met;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private bool _checked;
         public bool Checked
@@ -39,7 +38,7 @@ namespace OpenTracker.Models.Dropdowns
         /// </param>
         public Dropdown(IRequirement requirement)
         {
-            _requirement = requirement ?? throw new ArgumentNullException(nameof(requirement));
+            _requirement = requirement;
 
             _requirement.PropertyChanged += OnRequirementChanged;
         }
@@ -64,12 +63,20 @@ namespace OpenTracker.Models.Dropdowns
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirement.Accessibility))
             {
                 OnPropertyChanged(nameof(RequirementMet));
             }
+        }
+
+        /// <summary>
+        /// Resets the dropdown.
+        /// </summary>
+        public void Reset()
+        {
+            Checked = false;
         }
 
         /// <summary>
@@ -92,11 +99,11 @@ namespace OpenTracker.Models.Dropdowns
         /// <param name="saveData">
         /// The dropdown save data to load.
         /// </param>
-        public void Load(DropdownSaveData saveData)
+        public void Load(DropdownSaveData? saveData)
         {
             if (saveData == null)
             {
-                throw new ArgumentNullException(nameof(saveData));
+                return;
             }
 
             Checked = saveData.Checked;

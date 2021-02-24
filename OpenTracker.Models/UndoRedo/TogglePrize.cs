@@ -10,6 +10,8 @@ namespace OpenTracker.Models.UndoRedo
         private readonly ISection _section;
         private readonly bool _force;
 
+        public delegate TogglePrize Factory(ISection section, bool force);
+
         /// <summary>
         /// Constructor
         /// </summary>

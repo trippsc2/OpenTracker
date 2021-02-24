@@ -1,7 +1,5 @@
 ﻿using Avalonia.Layout;
-using OpenTracker.Models;
 using OpenTracker.Models.Settings;
-using OpenTracker.Models.Utils;
 using OpenTracker.Utils;
 using ReactiveUI;
 using System.ComponentModel;
@@ -11,26 +9,24 @@ namespace OpenTracker.ViewModels.PinnedLocations
     /// <summary>
     /// This is the ViewModel for the Locations panel control.
     /// </summary>
-    public class PinnedLocationsPanelVM : ViewModelBase
+    public class PinnedLocationsPanelVM : ViewModelBase, IPinnedLocationsPanelVM
     {
         private readonly ILayoutSettings _layoutSettings;
 
         public Orientation Orientation =>
             _layoutSettings.CurrentLayoutOrientation;
 
-        public IObservableCollection<PinnedLocationVM> Locations { get; } =
-            PinnedLocationVMCollection.Instance;
-
-        public PinnedLocationsPanelVM() : this(AppSettings.Instance.Layout)
-        {
-        }
+        public IPinnedLocationVMCollection Locations { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        private PinnedLocationsPanelVM(ILayoutSettings layoutSettings)
+        public PinnedLocationsPanelVM(
+            ILayoutSettings layoutSettings, IPinnedLocationVMCollection locations)
         {
             _layoutSettings = layoutSettings;
+
+            Locations = locations;
 
             _layoutSettings.PropertyChanged += OnLayoutChanged;
         }
@@ -46,7 +42,7 @@ namespace OpenTracker.ViewModels.PinnedLocations
         /// </param>
         private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(LayoutSettings.CurrentLayoutOrientation))
+            if (e.PropertyName == nameof(ILayoutSettings.CurrentLayoutOrientation))
             {
                 this.RaisePropertyChanged(nameof(Orientation));
             }

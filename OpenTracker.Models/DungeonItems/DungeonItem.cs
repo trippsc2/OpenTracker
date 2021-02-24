@@ -2,7 +2,7 @@
 using OpenTracker.Models.DungeonNodes;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.RequirementNodes;
-using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.DungeonItems
@@ -12,11 +12,11 @@ namespace OpenTracker.Models.DungeonItems
     /// </summary>
     public class DungeonItem : IDungeonItem
     {
-        private readonly DungeonItemID _id;
         private readonly IMutableDungeon _dungeonData;
+        private readonly DungeonItemID _id;
         private readonly IRequirementNode _node;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private AccessibilityLevel _accessibility;
         public AccessibilityLevel Accessibility
@@ -45,13 +45,13 @@ namespace OpenTracker.Models.DungeonItems
         /// The dungeon node to which this item belongs.
         /// </param>
         public DungeonItem(
-            DungeonItemID id, IMutableDungeon dungeonData, IRequirementNode node)
+            IMutableDungeon dungeonData, DungeonItemID id, IRequirementNode node)
         {
+            _dungeonData = dungeonData;
             _id = id;
-            _dungeonData = dungeonData ?? throw new ArgumentNullException(nameof(dungeonData));
-            _node = node ?? throw new ArgumentNullException(nameof(node));
+            _node = node;
 
-            _dungeonData.ItemDictionary.DungeonItemCreated += OnDungeonItemCreated;
+            _dungeonData.DungeonItems.ItemCreated += OnDungeonItemCreated;
         }
 
         /// <summary>
@@ -74,13 +74,13 @@ namespace OpenTracker.Models.DungeonItems
         /// <param name="e">
         /// The arguments of the DungeonItemCreated event.
         /// </param>
-        private void OnDungeonItemCreated(object sender, DungeonItemID id)
+        private void OnDungeonItemCreated(object? sender, KeyValuePair<DungeonItemID, IDungeonItem> e)
         {
-            if (id == _id)
+            if (e.Value == this)
             {
+                _dungeonData.DungeonItems.ItemCreated -= OnDungeonItemCreated;
                 _node.PropertyChanged += OnNodeChanged;
                 UpdateAccessibility();
-                _dungeonData.ItemDictionary.DungeonItemCreated -= OnDungeonItemCreated;
             }
         }
 
@@ -93,7 +93,7 @@ namespace OpenTracker.Models.DungeonItems
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnNodeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IDungeonNode.Accessibility))
             {

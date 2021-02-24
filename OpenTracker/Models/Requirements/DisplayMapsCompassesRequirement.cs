@@ -5,63 +5,28 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
-    public class DisplayMapsCompassesRequirement : IRequirement
+    public class DisplayMapsCompassesRequirement : BooleanRequirement
     {
         private readonly ILayoutSettings _layoutSettings;
-        private readonly bool _displayMapsCompasses;
+        private readonly bool _expectedValue;
 
-        public bool Met =>
-            Accessibility != AccessibilityLevel.None;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        public event EventHandler? ChangePropagated;
-
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
-
-        public DisplayMapsCompassesRequirement(bool displayMapsCompasses)
-            : this(AppSettings.Instance.Layout, displayMapsCompasses)
-        {
-        }
+        public delegate DisplayMapsCompassesRequirement Factory(bool expectedValue);
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="displayMapsCompasses">
+        /// <param name="expectedValue">
         /// A boolean representing the display maps/compasses requirement.
         /// </param>
-        private DisplayMapsCompassesRequirement(
-            ILayoutSettings layoutSettings, bool displayMapsCompasses)
+        public DisplayMapsCompassesRequirement(
+            ILayoutSettings layoutSettings, bool expectedValue)
         {
             _layoutSettings = layoutSettings;
-            _displayMapsCompasses = displayMapsCompasses;
+            _expectedValue = expectedValue;
 
             _layoutSettings.PropertyChanged += OnLayoutChanged;
 
-            UpdateAccessibility();
-        }
-
-        /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            ChangePropagated?.Invoke(this, new EventArgs());
+            UpdateValue();
         }
 
         /// <summary>
@@ -77,18 +42,13 @@ namespace OpenTracker.Models.Requirements
         {
             if (e.PropertyName == nameof(ILayoutSettings.DisplayMapsCompasses))
             {
-                UpdateAccessibility();
+                UpdateValue();
             }
         }
 
-        /// <summary>
-        /// Updates the accessibility of this requirement.
-        /// </summary>
-        private void UpdateAccessibility()
+        protected override bool ConditionMet()
         {
-            Accessibility =
-                _layoutSettings.DisplayMapsCompasses == _displayMapsCompasses ?
-                AccessibilityLevel.Normal : AccessibilityLevel.None;
+            return _layoutSettings.DisplayMapsCompasses == _expectedValue;
         }
     }
 }

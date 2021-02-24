@@ -24,7 +24,7 @@ namespace OpenTracker.ViewModels
     {
         private readonly IAppSettings _appSettings;
         private readonly ISaveLoadManager _saveLoadManager;
-        private readonly SequenceBreakDictionary _sequenceBreakDictionary;
+        private readonly ISequenceBreakDictionary _sequenceBreaks;
 
         public string Title
         {
@@ -86,10 +86,8 @@ namespace OpenTracker.ViewModels
 
         public ITopMenuVM TopMenu { get; }
         public IStatusBarVM StatusBar { get; }
-        public UIPanelVM UIPanel { get; } =
-            new UIPanelVM();
-        public MapAreaVM MapArea { get; } =
-            new MapAreaVM();
+        public IUIPanelVM UIPanel { get; }
+        public IMapAreaVM MapArea { get; }
 
         public ReactiveCommand<Unit, Unit> ResetCommand =>
             TopMenu.ResetCommand;
@@ -100,24 +98,22 @@ namespace OpenTracker.ViewModels
         public ReactiveCommand<Unit, Unit> ToggleDisplayAllLocationsCommand =>
             TopMenu.ToggleDisplayAllLocationsCommand;
 
-        public MainWindowVM(ITopMenuVM topMenu, IStatusBarVM statusBar)
-            : this(AppSettings.Instance, SaveLoadManager.Instance, topMenu, statusBar)
-        {
-        }
-
         /// <summary>
         /// Constructor
         /// </summary>
-        private MainWindowVM(
-            IAppSettings appSettings, ISaveLoadManager saveLoadManager, ITopMenuVM topMenu,
-            IStatusBarVM statusBar)
+        public MainWindowVM(
+            IAppSettings appSettings, ISaveLoadManager saveLoadManager,
+            ISequenceBreakDictionary sequenceBreaks, ITopMenuVM topMenu, IStatusBarVM statusBar,
+            IUIPanelVM uiPanel, IMapAreaVM mapArea)
         {
             _appSettings = appSettings;
             _saveLoadManager = saveLoadManager;
-            _sequenceBreakDictionary = SequenceBreakDictionary.Instance;
+            _sequenceBreaks = sequenceBreaks;
 
             TopMenu = topMenu;
             StatusBar = statusBar;
+            UIPanel = uiPanel;
+            MapArea = mapArea;
 
             _saveLoadManager.PropertyChanged += OnSaveLoadManagerChanged;
             _appSettings.Layout.PropertyChanged += OnLayoutChanged;
@@ -198,7 +194,7 @@ namespace OpenTracker.ViewModels
         /// </summary>
         private void SaveSequenceBreaks()
         {
-            JsonConversion.Save(_sequenceBreakDictionary.Save(), AppPath.SequenceBreakPath);
+            JsonConversion.Save(_sequenceBreaks.Save(), AppPath.SequenceBreakPath);
         }
 
         /// <summary>
@@ -212,7 +208,7 @@ namespace OpenTracker.ViewModels
 
             if (saveData != null)
             {
-                _sequenceBreakDictionary.Load(saveData);
+                _sequenceBreaks.Load(saveData);
             }
         }
 

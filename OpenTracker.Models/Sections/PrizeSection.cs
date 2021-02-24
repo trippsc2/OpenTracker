@@ -1,4 +1,4 @@
-﻿using OpenTracker.Models.AutoTracking.AutotrackValues;
+﻿using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Requirements;
@@ -14,9 +14,14 @@ namespace OpenTracker.Models.Sections
     public class PrizeSection : BossSection, IPrizeSection
     {
         private readonly bool _alwaysClearable;
-        private readonly IAutoTrackValue _autoTrackValue;
+        private readonly IAutoTrackValue? _autoTrackValue;
 
         public IPrizePlacement PrizePlacement { get; }
+
+        public new delegate PrizeSection Factory(
+            string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement,
+            IAutoTrackValue? autoTrackValue, IRequirement requirement,
+            bool alwaysClearable = false);
 
         /// <summary>
         /// Constructor
@@ -41,8 +46,8 @@ namespace OpenTracker.Models.Sections
         /// </param>
         public PrizeSection(
             string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement,
-            IAutoTrackValue autoTrackValue, bool alwaysClearable = false,
-            IRequirement requirement = null) : base(name, bossPlacement, requirement)
+            IAutoTrackValue? autoTrackValue, IRequirement requirement,
+            bool alwaysClearable = false) : base(name, bossPlacement, requirement)
         {
             _alwaysClearable = alwaysClearable;
             _autoTrackValue = autoTrackValue;
@@ -138,12 +143,12 @@ namespace OpenTracker.Models.Sections
 
         private void AutoTrackUpdate()
         {
-            if (_autoTrackValue.CurrentValue.HasValue)
+            if (_autoTrackValue!.CurrentValue.HasValue)
             {
                 if (Available != 1 - _autoTrackValue.CurrentValue.Value)
                 {
                     Available = 1 - _autoTrackValue.CurrentValue.Value;
-                    SaveLoadManager.Instance.Unsaved = true;
+                    //SaveLoadManager.Instance.Unsaved = true;
                 }
             }
         }

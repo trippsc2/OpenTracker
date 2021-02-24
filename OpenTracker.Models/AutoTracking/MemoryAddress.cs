@@ -5,9 +5,9 @@ namespace OpenTracker.Models.AutoTracking
     /// <summary>
     /// This is the class for representing a SNES memory address.
     /// </summary>
-    public class MemoryAddress : INotifyPropertyChanged
+    public class MemoryAddress : IMemoryAddress
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private byte _value;
         public byte Value
@@ -33,7 +33,7 @@ namespace OpenTracker.Models.AutoTracking
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        
+
         /// <summary>
         /// Resets the memory address to its starting value.
         /// </summary>

@@ -7,8 +7,11 @@ namespace OpenTracker.Models.UndoRedo
     /// </summary>
     public class ChangeGenericKeys : IUndoable
     {
+        private readonly IMode _mode;
         private readonly bool _genericKeys;
         private bool _previousGenericKeys;
+
+        public delegate ChangeGenericKeys Factory(bool genericKeys);
 
         /// <summary>
         /// Constructor
@@ -16,8 +19,9 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="genericKeys">
         /// The new generic keys setting.
         /// </param>
-        public ChangeGenericKeys(bool genericKeys)
+        public ChangeGenericKeys(IMode mode, bool genericKeys)
         {
+            _mode = mode;
             _genericKeys = genericKeys;
         }
 
@@ -37,8 +41,8 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Execute()
         {
-            _previousGenericKeys = Mode.Instance.GenericKeys;
-            Mode.Instance.GenericKeys = _genericKeys;
+            _previousGenericKeys = _mode.GenericKeys;
+            _mode.GenericKeys = _genericKeys;
         }
 
         /// <summary>
@@ -46,7 +50,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Undo()
         {
-            Mode.Instance.GenericKeys = _previousGenericKeys;
+            _mode.GenericKeys = _previousGenericKeys;
         }
     }
 }

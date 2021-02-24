@@ -11,9 +11,9 @@ using System.ComponentModel;
 namespace OpenTracker.ViewModels
 {
     /// <summary>
-    /// This is the ViewModel for the UI panels control.
+    /// This is the class for the UI panels ViewModel.
     /// </summary>
-    public class UIPanelVM : ViewModelBase
+    public class UIPanelVM : ViewModelBase, IUIPanelVM
     {
         private readonly ILayoutSettings _layoutSettings;
         public Dock ItemsDock =>
@@ -23,29 +23,40 @@ namespace OpenTracker.ViewModels
                 _ => _layoutSettings.VerticalItemsPlacement
             };
 
-        public DropdownPanelVM Dropdowns { get; } =
-            new DropdownPanelVM();
-        public ItemsPanelVM Items { get; } =
-            new ItemsPanelVM();
-        public PinnedLocationsPanelVM Locations { get; } =
-            new PinnedLocationsPanelVM();
-
-        public UIPanelVM() : this(AppSettings.Instance.Layout)
-        {
-        }
+        public IDropdownPanelVM Dropdowns { get; }
+        public IItemsPanelVM Items { get; }
+        public IPinnedLocationsPanelVM Locations { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        private UIPanelVM(ILayoutSettings layoutSettings)
+        /// <param name="layoutSettings">
+        /// The layout settings.
+        /// </param>
+        /// <param name="dropdowns">
+        /// The dropdowns panel.
+        /// </param>
+        /// <param name="items">
+        /// The items panel.
+        /// </param>
+        /// <param name="locations">
+        /// The pinned locations panel.
+        /// </param>
+        public UIPanelVM(
+            ILayoutSettings layoutSettings, IDropdownPanelVM dropdowns, IItemsPanelVM items,
+            IPinnedLocationsPanelVM locations)
         {
             _layoutSettings = layoutSettings;
+
+            Dropdowns = dropdowns;
+            Items = items;
+            Locations = locations;
 
             _layoutSettings.PropertyChanged += OnLayoutChanged;
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the LayoutSettings class.
+        /// Subscribes to the PropertyChanged event on the ILayoutSettings interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -53,11 +64,11 @@ namespace OpenTracker.ViewModels
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnLayoutChanged(object sender, PropertyChangedEventArgs e)
+        private void OnLayoutChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(LayoutSettings.CurrentLayoutOrientation) ||
-                e.PropertyName == nameof(LayoutSettings.HorizontalItemsPlacement) ||
-                e.PropertyName == nameof(LayoutSettings.VerticalItemsPlacement))
+            if (e.PropertyName == nameof(ILayoutSettings.CurrentLayoutOrientation) ||
+                e.PropertyName == nameof(ILayoutSettings.HorizontalItemsPlacement) ||
+                e.PropertyName == nameof(ILayoutSettings.VerticalItemsPlacement))
             {
                 this.RaisePropertyChanged(nameof(ItemsDock));
             }

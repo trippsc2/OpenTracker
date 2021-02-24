@@ -7,8 +7,11 @@ namespace OpenTracker.Models.UndoRedo
     /// </summary>
     public class ChangeTakeAnyLocations : IUndoable
     {
+        private readonly IMode _mode;
         private readonly bool _takeAnyLocations;
         private bool _previousTakeAnyLocations;
+
+        public delegate ChangeTakeAnyLocations Factory(bool takeAnyLocations);
 
         /// <summary>
         /// Constructor
@@ -16,8 +19,9 @@ namespace OpenTracker.Models.UndoRedo
         /// <param name="takeAnyLocations">
         /// The new generic keys setting.
         /// </param>
-        public ChangeTakeAnyLocations(bool takeAnyLocations)
+        public ChangeTakeAnyLocations(IMode mode, bool takeAnyLocations)
         {
+            _mode = mode;
             _takeAnyLocations = takeAnyLocations;
         }
 
@@ -37,8 +41,8 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Execute()
         {
-            _previousTakeAnyLocations = Mode.Instance.TakeAnyLocations;
-            Mode.Instance.TakeAnyLocations = _takeAnyLocations;
+            _previousTakeAnyLocations = _mode.TakeAnyLocations;
+            _mode.TakeAnyLocations = _takeAnyLocations;
         }
 
         /// <summary>
@@ -46,7 +50,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         public void Undo()
         {
-            Mode.Instance.TakeAnyLocations = _previousTakeAnyLocations;
+            _mode.TakeAnyLocations = _previousTakeAnyLocations;
         }
     }
 }

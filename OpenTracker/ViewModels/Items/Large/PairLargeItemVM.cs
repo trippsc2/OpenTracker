@@ -1,6 +1,7 @@
 ﻿using OpenTracker.Interfaces;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
@@ -11,14 +12,18 @@ namespace OpenTracker.ViewModels.Items.Large
     /// <summary>
     /// This is the ViewModel for the large Items panel control representing a pair of items.
     /// </summary>
-    public class PairLargeItemVM : LargeItemVMBase, IClickHandler
+    public class PairLargeItemVM : ViewModelBase, ILargeItemVMBase, IClickHandler
     {
+        private readonly IUndoRedoManager _undoRedoManager;
+
         private readonly IItem[] _items;
         private readonly string _imageSourceBase;
 
         public string ImageSource =>
             _imageSourceBase + _items[0].Current.ToString(CultureInfo.InvariantCulture) +
             $"{_items[1].Current.ToString(CultureInfo.InvariantCulture)}.png";
+
+        public delegate PairLargeItemVM Factory(IItem[] items, string imageSourceBase);
 
         /// <summary>
         /// Constructor
@@ -29,11 +34,13 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <param name="items">
         /// An array of items that are to be represented by this control.
         /// </param>
-        public PairLargeItemVM(string imageSourceBase, IItem[] items)
+        public PairLargeItemVM(
+            IUndoRedoManager undoRedoManager, IItem[] items, string imageSourceBase)
         {
-            _items = items ?? throw new ArgumentNullException(nameof(items));
-            _imageSourceBase = imageSourceBase ??
-                throw new ArgumentNullException(nameof(imageSourceBase));
+            _undoRedoManager = undoRedoManager;
+
+            _items = items;
+            _imageSourceBase = imageSourceBase;
 
             if (_items.Length != 2)
             {
@@ -42,11 +49,6 @@ namespace OpenTracker.ViewModels.Items.Large
 
             foreach (var item in _items)
             {
-                if (item == null)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(items));
-                }
-
                 item.PropertyChanged += OnItemChanged;
             }
         }
@@ -73,7 +75,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         public void OnLeftClick(bool force)
         {
-            UndoRedoManager.Instance.Execute(new CycleItem(_items[0]));
+            _undoRedoManager.Execute(new CycleItem(_items[0]));
         }
 
         /// <summary>
@@ -84,7 +86,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         public void OnRightClick(bool force)
         {
-            UndoRedoManager.Instance.Execute(new CycleItem(_items[1]));
+            _undoRedoManager.Execute(new CycleItem(_items[1]));
         }
     }
 }

@@ -13,6 +13,8 @@ namespace OpenTracker.Models.UndoRedo
         private readonly IMarking _note;
         private int _index;
 
+        public delegate RemoveNote Factory(IMarking note, ILocation location);
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -24,8 +26,8 @@ namespace OpenTracker.Models.UndoRedo
         /// </param>
         public RemoveNote(IMarking note, ILocation location)
         {
-            _note = note ?? throw new ArgumentNullException(nameof(note));
-            _location = location ?? throw new ArgumentNullException(nameof(location));
+            _note = note;
+            _location = location;
         }
 
         /// <summary>

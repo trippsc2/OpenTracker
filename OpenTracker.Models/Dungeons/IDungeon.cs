@@ -4,6 +4,8 @@ using OpenTracker.Models.Items;
 using OpenTracker.Models.KeyDoors;
 using OpenTracker.Models.KeyLayouts;
 using OpenTracker.Models.Locations;
+using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Sections;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -16,10 +18,10 @@ namespace OpenTracker.Models.Dungeons
     public interface IDungeon : ILocation
     {
         int BigKey { get; }
-        IItem BigKeyItem { get; }
+        IItem? BigKeyItem { get; }
         List<DungeonItemID> Bosses { get; }
         int Compass { get; }
-        List<DungeonItemID> Items { get; }
+        List<DungeonItemID> DungeonItems { get; }
         List<IKeyLayout> KeyLayouts { get; }
         int Map { get; }
         IItem SmallKeyItem { get; }
@@ -28,12 +30,14 @@ namespace OpenTracker.Models.Dungeons
         List<KeyDoorID> BigKeyDoors { get; }
         ConcurrentQueue<IMutableDungeon> DungeonDataQueue { get; }
         List<DungeonNodeID> Nodes { get; }
-        IItem MapItem { get; }
-        IItem CompassItem { get; }
+        IItem? MapItem { get; }
+        IItem? CompassItem { get; }
         List<DungeonItemID> SmallKeyDrops { get; }
         List<DungeonItemID> BigKeyDrops { get; }
 
-        event EventHandler<IMutableDungeon> DungeonDataCreated;
+        event EventHandler<IMutableDungeon>? DungeonDataCreated;
+
+        new delegate IDungeon Factory(LocationID id);
 
         void FinishMutableDungeonCreation(IMutableDungeon dungeonData);
     }

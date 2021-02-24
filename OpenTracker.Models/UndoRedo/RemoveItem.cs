@@ -9,6 +9,8 @@ namespace OpenTracker.Models.UndoRedo
     {
         private readonly IItem _item;
 
+        public delegate RemoveItem Factory(IItem item);
+
         /// <summary>
         /// Constructor
         /// </summary>

@@ -78,15 +78,10 @@ namespace OpenTracker.ViewModels.AutoTracking
         public bool IsStarting =>
             _isStarting.Value;
 
-        public AutoTrackerDialogVM(IAutoTrackerStatusVM status, IAutoTrackerLogVM log)
-            : this(AutoTracker.Instance, status, log)
-        {
-        }
-
         /// <summary>
         /// Constructor
         /// </summary>
-        private AutoTrackerDialogVM(IAutoTracker autoTracker, IAutoTrackerStatusVM status,
+        public AutoTrackerDialogVM(IAutoTracker autoTracker, IAutoTrackerStatusVM status,
             IAutoTrackerLogVM log)
         {
             _autoTracker = autoTracker;

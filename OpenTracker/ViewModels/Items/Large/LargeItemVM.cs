@@ -1,8 +1,8 @@
 ﻿using OpenTracker.Interfaces;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
 using ReactiveUI;
-using System;
 using System.ComponentModel;
 using System.Globalization;
 
@@ -11,13 +11,17 @@ namespace OpenTracker.ViewModels.Items.Large
     /// <summary>
     /// This is the ViewModel for the large Items panel control representing a basic item.
     /// </summary>
-    public class LargeItemVM : LargeItemVMBase, IClickHandler
+    public class LargeItemVM : ViewModelBase, ILargeItemVMBase, IClickHandler
     {
+        private readonly IUndoRedoManager _undoRedoManager;
+
         private readonly IItem _item;
         private readonly string _imageSourceBase;
 
         public string ImageSource =>
             $"{_imageSourceBase}{_item.Current.ToString(CultureInfo.InvariantCulture)}.png";
+
+        public delegate LargeItemVM Factory(IItem item, string imageSourceBase);
 
         /// <summary>
         /// Constructor
@@ -28,11 +32,12 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <param name="item">
         /// An item that is to be represented by this control.
         /// </param>
-        public LargeItemVM(string imageSourceBase, IItem item)
+        public LargeItemVM(IUndoRedoManager undoRedoManager, IItem item, string imageSourceBase)
         {
-            _item = item ?? throw new ArgumentNullException(nameof(item));
-            _imageSourceBase = imageSourceBase ??
-                throw new ArgumentNullException(nameof(imageSourceBase));
+            _undoRedoManager = undoRedoManager;
+
+            _item = item;
+            _imageSourceBase = imageSourceBase;
 
             _item.PropertyChanged += OnItemChanged;
         }
@@ -62,7 +67,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         public void OnLeftClick(bool force)
         {
-            UndoRedoManager.Instance.Execute(new AddItem(_item));
+            _undoRedoManager.Execute(new AddItem(_item));
         }
 
         /// <summary>
@@ -73,7 +78,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         public void OnRightClick(bool force)
         {
-            UndoRedoManager.Instance.Execute(new RemoveItem(_item));
+            _undoRedoManager.Execute(new RemoveItem(_item));
         }
     }
 }

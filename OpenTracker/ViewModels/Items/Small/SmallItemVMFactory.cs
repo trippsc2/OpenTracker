@@ -4,73 +4,61 @@ using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.Sections;
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
     /// <summary>
     /// This is the class containing creation logic for small item control ViewModel classes.
     /// </summary>
-    internal static class SmallItemVMFactory
+    public class SmallItemVMFactory : ISmallItemVMFactory
     {
-        /// <summary>
-        /// Returns a new small item control ViewModel instance representing a small key.
-        /// </summary>
-        /// <param name="dungeon">
-        /// The dungeon from which the small key represented.
-        /// </param>
-        /// <returns>
-        /// A new small item control ViewModel instance.
-        /// </returns>
-        private static SmallKeySmallItemVM GetSmallKeySmallItemControlVM(IDungeon dungeon)
-        {
-            return new SmallKeySmallItemVM(dungeon);
-        }
+        private readonly ILocationDictionary _locations;
+        private readonly IRequirementDictionary _requirements;
 
-        /// <summary>
-        /// Returns a new small item control ViewModel instance representing a spacer.
-        /// </summary>
-        /// <param name="requirement">
-        /// The requirement for the spacer to be visible.
-        /// </param>
-        /// <returns>
-        /// A new small item control ViewModel instance.
-        /// </returns>
-        private static SpacerSmallItemVM GetSpacerSmallItemControlVM(
-            IRequirement requirement)
-        {
-            return new SpacerSmallItemVM(requirement);
-        }
+        private readonly AggregateRequirement.Factory _aggregateFactory;
+        private readonly AlternativeRequirement.Factory _alternativeFactory;
+        private readonly AlwaysDisplayDungeonItemsRequirement.Factory _alwaysDisplayFactory;
+        private readonly DisplayMapsCompassesRequirement.Factory _displayMapsCompassesFactory;
+        private readonly ItemsPanelOrientationRequirement.Factory _itemsPanelOrientationFactory;
 
-        /// <summary>
-        /// Returns a new small item control ViewModel instance representing dungeon items.
-        /// </summary>
-        /// <param name="section">
-        /// The section to be represented.
-        /// </param>
-        /// <returns>
-        /// A new small item control ViewModel instance.
-        /// </returns>
-        private static DungeonItemSmallItemVM GetDungeonItemSmallItemControlVM(
-            ISection section)
-        {
-            return new DungeonItemSmallItemVM(section);
-        }
+        private readonly SmallKeySmallItemVM.Factory _smallKeyFactory;
+        private readonly SpacerSmallItemVM.Factory _spacerFactory;
+        private readonly SmallItemVM.Factory _smallItemFactory;
+        private readonly BigKeySmallItemVM.Factory _bigKeyFactory;
+        private readonly DungeonItemSmallItemVM.Factory _dungeonItemFactory;
+        private readonly PrizeSmallItemVM.Factory _prizeFactory;
+        private readonly BossSmallItemVM.Factory _bossFactory;
 
-        /// <summary>
-        /// Returns a new small item control ViewModel instance representing a dungeon prize.
-        /// </summary>
-        /// <param name="section">
-        /// The prize section.
-        /// </param>
-        /// <returns>
-        /// A new small item control ViewModel instance.
-        /// </returns>
-        private static PrizeSmallItemVM GetPrizeSmallItemControlVM(IPrizeSection section)
+        public SmallItemVMFactory(
+            ILocationDictionary locations, IRequirementDictionary requirements,
+            AggregateRequirement.Factory aggregateFactory,
+            AlternativeRequirement.Factory alternativeFactory,
+            AlwaysDisplayDungeonItemsRequirement.Factory alwaysDisplayFactory,
+            DisplayMapsCompassesRequirement.Factory displayMapsCompassesFactory,
+            ItemsPanelOrientationRequirement.Factory itemsPanelOrientationFactory,
+            SmallKeySmallItemVM.Factory smallKeyFactory,
+            SpacerSmallItemVM.Factory spacerFactory,
+            SmallItemVM.Factory smallItemFactory, BigKeySmallItemVM.Factory bigKeyFactory,
+            DungeonItemSmallItemVM.Factory dungeonItemFactory,
+            PrizeSmallItemVM.Factory prizeFactory, BossSmallItemVM.Factory bossFactory)
         {
-            return new PrizeSmallItemVM(section);
+            _locations = locations;
+            _requirements = requirements;
+
+            _aggregateFactory = aggregateFactory;
+            _alternativeFactory = alternativeFactory;
+            _alwaysDisplayFactory = alwaysDisplayFactory;
+            _displayMapsCompassesFactory = displayMapsCompassesFactory;
+            _itemsPanelOrientationFactory = itemsPanelOrientationFactory;
+
+            _smallKeyFactory = smallKeyFactory;
+            _spacerFactory = spacerFactory;
+            _smallItemFactory = smallItemFactory;
+            _bigKeyFactory = bigKeyFactory;
+            _dungeonItemFactory = dungeonItemFactory;
+            _prizeFactory = prizeFactory;
+            _bossFactory = bossFactory;
         }
 
         /// <summary>
@@ -82,19 +70,20 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <returns>
         /// A new small item control ViewModel instance.
         /// </returns>
-        private static SmallItemVM GetCompassSmallItemControlVM(IDungeon dungeon)
+        private SmallItemVM GetCompassSmallItemControlVM(IDungeon dungeon)
         {
-            return new SmallItemVM(
-                "avares://OpenTracker/Assets/Images/Items/compass", dungeon.CompassItem,
-                new AggregateRequirement(new List<IRequirement>
+            return _smallItemFactory(
+                dungeon.CompassItem!,
+                _aggregateFactory(new List<IRequirement>
                 {
-                    new DisplayMapsCompassesRequirement(true),
-                    new AlternativeRequirement(new List<IRequirement>
+                    _displayMapsCompassesFactory(true),
+                    _alternativeFactory(new List<IRequirement>
                     {
-                        new AlwaysDisplayDungeonItemsRequirement(true),
-                        RequirementDictionary.Instance[RequirementType.CompassShuffleOn]
+                        _alwaysDisplayFactory(true),
+                        _requirements[RequirementType.CompassShuffleOn]
                     })
-                }));
+                }),
+                "avares://OpenTracker/Assets/Images/Items/compass");
         }
 
         /// <summary>
@@ -106,19 +95,20 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <returns>
         /// A new small item control ViewModel instance.
         /// </returns>
-        private static SmallItemVM GetMapSmallItemControlVM(IDungeon dungeon)
+        private SmallItemVM GetMapSmallItemControlVM(IDungeon dungeon)
         {
-            return new SmallItemVM(
-                "avares://OpenTracker/Assets/Images/Items/map", dungeon.MapItem,
-                new AggregateRequirement(new List<IRequirement>
+            return _smallItemFactory(
+                dungeon.MapItem!,
+                _aggregateFactory(new List<IRequirement>
                 {
-                    new DisplayMapsCompassesRequirement(true),
-                    new AlternativeRequirement(new List<IRequirement>
+                    _displayMapsCompassesFactory(true),
+                    _alternativeFactory(new List<IRequirement>
                     {
-                        new AlwaysDisplayDungeonItemsRequirement(true),
-                        RequirementDictionary.Instance[RequirementType.MapShuffleOn]
+                        _alwaysDisplayFactory(true),
+                        _requirements[RequirementType.MapShuffleOn]
                     })
-                }));
+                }),
+                "avares://OpenTracker/Assets/Images/Items/map");
         }
 
         /// <summary>
@@ -130,23 +120,59 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <returns>
         /// A new small item control ViewModel instance.
         /// </returns>
-        private static BigKeySmallItemVM GetBigKeySmallItemControlVM(IDungeon dungeon)
+        private BigKeySmallItemVM GetBigKeySmallItemControlVM(IDungeon dungeon)
         {
-            return new BigKeySmallItemVM(dungeon);
-        }
+            IRequirement requirement;
+            IRequirement spacerRequirement;
 
-        /// <summary>
-        /// Returns a new small item control ViewModel instance representing a boss.
-        /// </summary>
-        /// <param name="bossPlacement">
-        /// The boss placement ID to be represented.
-        /// </param>
-        /// <returns>
-        /// A new small item control ViewModel instance.
-        /// </returns>
-        private static BossSmallItemVM GetBossSmallItemControlVM(IBossPlacement bossPlacement)
-        {
-            return new BossSmallItemVM(bossPlacement);
+            if (dungeon.ID == LocationID.HyruleCastle)
+            {
+                requirement = _aggregateFactory(new List<IRequirement>
+                {
+                    _requirements[RequirementType.KeyDropShuffleOn],
+                    _alternativeFactory(new List<IRequirement>
+                    {
+                        _alwaysDisplayFactory(true),
+                        _requirements[RequirementType.BigKeyShuffleOn]
+                    })
+                });
+                spacerRequirement = _alternativeFactory(new List<IRequirement>
+                {
+                    _aggregateFactory(new List<IRequirement>
+                    {
+                        _itemsPanelOrientationFactory(Orientation.Vertical),
+                        _alternativeFactory(new List<IRequirement>
+                        {
+                            _alwaysDisplayFactory(true),
+                            _requirements[RequirementType.BigKeyShuffleOn]
+                        })
+                    }),
+                    _aggregateFactory(new List<IRequirement>
+                    {
+                        _requirements[RequirementType.KeyDropShuffleOn],
+                        _alternativeFactory(new List<IRequirement>
+                        {
+                            _alwaysDisplayFactory(true),
+                            _requirements[RequirementType.BigKeyShuffleOn]
+                        })
+                    })
+                });
+            }
+            else
+            {
+                spacerRequirement = _alternativeFactory(new List<IRequirement>
+                {
+                    _alwaysDisplayFactory(true),
+                    _requirements[RequirementType.BigKeyShuffleOn]
+                });
+                requirement = _alternativeFactory(new List<IRequirement>
+                {
+                    _alwaysDisplayFactory(true),
+                    _requirements[RequirementType.BigKeyShuffleOn]
+                });
+            }
+
+            return _bigKeyFactory(dungeon, requirement, spacerRequirement);
         }
 
         /// <summary>
@@ -159,23 +185,22 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <returns>
         /// A new observable collection of small item control ViewModel instances.
         /// </returns>
-        internal static ObservableCollection<SmallItemVMBase> GetSmallItemControlVMs(
-            LocationID location)
+        public List<ISmallItemVMBase> GetSmallItemControlVMs(LocationID location)
         {
-            var smallItems = new ObservableCollection<SmallItemVMBase>();
-            var dungeon = (IDungeon)LocationDictionary.Instance[location];
+            var smallItems = new List<ISmallItemVMBase>();
+            var dungeon = (IDungeon)_locations[location];
 
             if (dungeon.CompassItem == null)
             {
-                smallItems.Add(GetSpacerSmallItemControlVM(
-                    new AggregateRequirement(new List<IRequirement>
+                smallItems.Add(_spacerFactory(
+                    _aggregateFactory(new List<IRequirement>
                     {
-                        new DisplayMapsCompassesRequirement(true),
-                        new ItemsPanelOrientationRequirement(Orientation.Vertical),
-                        new AlternativeRequirement(new List<IRequirement>
+                        _displayMapsCompassesFactory(true),
+                        _itemsPanelOrientationFactory(Orientation.Vertical),
+                        _alternativeFactory(new List<IRequirement>
                         {
-                            new AlwaysDisplayDungeonItemsRequirement(true),
-                            RequirementDictionary.Instance[RequirementType.CompassShuffleOn]
+                            _alwaysDisplayFactory(true),
+                            _requirements[RequirementType.CompassShuffleOn]
                         })
                     })));
             }
@@ -186,15 +211,15 @@ namespace OpenTracker.ViewModels.Items.Small
 
             if (dungeon.MapItem == null)
             {
-                smallItems.Add(GetSpacerSmallItemControlVM(
-                    new AggregateRequirement(new List<IRequirement>
+                smallItems.Add(_spacerFactory(
+                    _aggregateFactory(new List<IRequirement>
                     {
-                        new DisplayMapsCompassesRequirement(true),
-                        new ItemsPanelOrientationRequirement(Orientation.Vertical),
-                        new AlternativeRequirement(new List<IRequirement>
+                        _displayMapsCompassesFactory(true),
+                        _itemsPanelOrientationFactory(Orientation.Vertical),
+                        _alternativeFactory(new List<IRequirement>
                         {
-                            new AlwaysDisplayDungeonItemsRequirement(true),
-                            RequirementDictionary.Instance[RequirementType.MapShuffleOn]
+                            _alwaysDisplayFactory(true),
+                            _requirements[RequirementType.MapShuffleOn]
                         })
                     })));
             }
@@ -202,31 +227,19 @@ namespace OpenTracker.ViewModels.Items.Small
             {
                 smallItems.Add(GetMapSmallItemControlVM(dungeon));
             }
-
-            if (dungeon.SmallKeyItem == null)
-            {
-                smallItems.Add(GetSpacerSmallItemControlVM(
-                    new AlternativeRequirement(new List<IRequirement>
-                    {
-                        new AlwaysDisplayDungeonItemsRequirement(true),
-                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]
-                    })));
-            }
-            else
-            {
-                smallItems.Add(GetSmallKeySmallItemControlVM(dungeon));
-            }
+            
+            smallItems.Add(_smallKeyFactory(dungeon));
 
             if (dungeon.BigKeyItem == null)
             {
-                smallItems.Add(GetSpacerSmallItemControlVM(
-                    new AggregateRequirement(new List<IRequirement>
+                smallItems.Add(_spacerFactory(
+                    _aggregateFactory(new List<IRequirement>
                     {
-                        new ItemsPanelOrientationRequirement(Orientation.Vertical),
-                        new AlternativeRequirement(new List<IRequirement>
+                        _itemsPanelOrientationFactory(Orientation.Vertical),
+                        _alternativeFactory(new List<IRequirement>
                         {
-                            new AlwaysDisplayDungeonItemsRequirement(true),
-                            RequirementDictionary.Instance[RequirementType.BigKeyShuffleOn]
+                            _alwaysDisplayFactory(true),
+                            _requirements[RequirementType.BigKeyShuffleOn]
                         })
                     })));
             }
@@ -239,19 +252,19 @@ namespace OpenTracker.ViewModels.Items.Small
             {
                 if (section is IDungeonItemSection)
                 {
-                    smallItems.Add(GetDungeonItemSmallItemControlVM(section));
+                    smallItems.Add(_dungeonItemFactory(section));
                 }
 
                 if (section is IPrizeSection prizeSection && location != LocationID.AgahnimTower &&
                     location != LocationID.GanonsTower)
                 {
-                    smallItems.Add(GetPrizeSmallItemControlVM(prizeSection));
+                    smallItems.Add(_prizeFactory(prizeSection));
                 }
 
                 if (section is IBossSection bossSection &&
                     bossSection.BossPlacement.Boss != BossType.Aga)
                 {
-                    smallItems.Add(GetBossSmallItemControlVM(bossSection.BossPlacement));
+                    smallItems.Add(_bossFactory(bossSection.BossPlacement));
                 }
             }
 

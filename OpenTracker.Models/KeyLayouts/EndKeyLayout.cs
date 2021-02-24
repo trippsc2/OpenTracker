@@ -10,15 +10,17 @@ namespace OpenTracker.Models.KeyLayouts
     {
         private readonly IRequirement _requirement;
 
+        public delegate EndKeyLayout Factory(IRequirement requirement);
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="requirement">
         /// The requirement for this key layout to be valid.
         /// </param>
-        public EndKeyLayout(IRequirement requirement = null)
+        public EndKeyLayout(IRequirement requirement)
         {
-            _requirement = requirement ?? RequirementDictionary.Instance[RequirementType.NoRequirement];
+            _requirement = requirement;
         }
 
         /// <summary>

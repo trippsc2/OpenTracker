@@ -1,5 +1,5 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.AutoTracking.AutotrackValues;
+using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
@@ -14,18 +14,17 @@ namespace OpenTracker.Models.Sections
     /// </summary>
     public class VisibleItemSection : IMarkableSection, IItemSection
     {
-        private readonly IRequirementNode _visibleNode;
+        private readonly IRequirementNode? _visibleNode;
         private readonly IRequirementNode _node;
-        private readonly IAutoTrackValue _autoTrackValue;
+        private readonly IAutoTrackValue? _autoTrackValue;
 
         public string Name { get; }
         public int Total { get; }
         public IRequirement Requirement { get; }
         public bool UserManipulated { get; set; }
-        public IMarking Marking { get; } =
-            MarkingFactory.GetMarking();
+        public IMarking Marking { get; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public AccessibilityLevel Accessibility
         {
@@ -70,6 +69,10 @@ namespace OpenTracker.Models.Sections
             }
         }
 
+        public delegate VisibleItemSection Factory(
+            string name, int total, IRequirementNode node, IAutoTrackValue? autoTrackValue,
+            IRequirement requirement, IRequirementNode? visibleNode = null);
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -89,17 +92,19 @@ namespace OpenTracker.Models.Sections
         /// The node that provides Inspect accessibility for this section.
         /// </param>
         public VisibleItemSection(
-            string name, int total, IRequirementNode node, IAutoTrackValue autoTrackValue,
-            IRequirement requirement = null, IRequirementNode visibleNode = null)
+            IMarking marking, string name, int total, IRequirementNode node,
+            IAutoTrackValue? autoTrackValue, IRequirement requirement,
+            IRequirementNode? visibleNode = null)
         {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
-            Total = total;
-            _node = node ?? throw new ArgumentNullException(nameof(node));
+            _node = node;
             _autoTrackValue = autoTrackValue;
-            Requirement = requirement ??
-                RequirementDictionary.Instance[RequirementType.NoRequirement];
-            Available = Total;
             _visibleNode = visibleNode;
+
+            Marking = marking;
+            Name = name;
+            Total = total;
+            Requirement = requirement;
+            Available = Total;
 
             _node.PropertyChanged += OnNodeChanged;
             UpdateAccessible();
@@ -171,12 +176,12 @@ namespace OpenTracker.Models.Sections
         /// </summary>
         private void AutoTrackUpdate()
         {
-            if (_autoTrackValue.CurrentValue.HasValue)
+            if (_autoTrackValue!.CurrentValue.HasValue)
             {
                 if (Available != Total - _autoTrackValue.CurrentValue.Value)
                 {
                     Available = Total - _autoTrackValue.CurrentValue.Value;
-                    SaveLoadManager.Instance.Unsaved = true;
+                    //SaveLoadManager.Instance.Unsaved = true;
                 }
             }
         }

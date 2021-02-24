@@ -16,6 +16,10 @@ namespace OpenTracker.Models.KeyLayouts
         private readonly List<IKeyLayout> _children;
         private readonly IRequirement _requirement;
 
+        public delegate BigKeyLayout Factory(
+            List<DungeonItemID> bigKeyLocations, List<IKeyLayout> children,
+            IRequirement requirement);
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -30,11 +34,11 @@ namespace OpenTracker.Models.KeyLayouts
         /// </param>
         public BigKeyLayout(
             List<DungeonItemID> bigKeyLocations, List<IKeyLayout> children,
-            IRequirement requirement = null)
+            IRequirement requirement)
         {
-            _bigKeyLocations = bigKeyLocations ?? throw new ArgumentNullException(nameof(bigKeyLocations));
-            _children = children ?? throw new ArgumentNullException(nameof(children));
-            _requirement = requirement ?? RequirementDictionary.Instance[RequirementType.NoRequirement];
+            _bigKeyLocations = bigKeyLocations;
+            _children = children;
+            _requirement = requirement;
         }
 
         /// <summary>
@@ -69,7 +73,7 @@ namespace OpenTracker.Models.KeyLayouts
 
             foreach (var item in _bigKeyLocations)
             {
-                switch (dungeonData.ItemDictionary[item].Accessibility)
+                switch (dungeonData.DungeonItems[item].Accessibility)
                 {
                     case AccessibilityLevel.SequenceBreak:
                         {

@@ -2,20 +2,24 @@
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Models.Sections;
 using ReactiveUI;
-using System;
 using System.ComponentModel;
 using System.Text;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Items;
 using System.Linq;
+using OpenTracker.Utils;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
     /// <summary>
     /// This is the ViewModel of the small item control representing a dungeon prize.
     /// </summary>
-    public class PrizeSmallItemVM : SmallItemVMBase, IClickHandler
+    public class PrizeSmallItemVM : ViewModelBase, ISmallItemVMBase, IClickHandler
     {
+        private readonly IPrizeDictionary _prizes;
+        private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
+
         private readonly IPrizeSection _section;
 
         public string ImageSource
@@ -32,7 +36,7 @@ namespace OpenTracker.ViewModels.Items.Small
                 else
                 {
                     sb.Append(
-                        PrizeDictionary.Instance.FirstOrDefault(
+                        _prizes.FirstOrDefault(
                             x => x.Value == _section.PrizePlacement.Prize).Key.ToString()
                                 .ToLowerInvariant());
                 }
@@ -44,15 +48,23 @@ namespace OpenTracker.ViewModels.Items.Small
             }
         }
 
+        public delegate PrizeSmallItemVM Factory(IPrizeSection section);
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="section">
         /// The prize section to be represented.
         /// </param>
-        public PrizeSmallItemVM(IPrizeSection section)
+        public PrizeSmallItemVM(
+            IPrizeDictionary prizes, IUndoRedoManager undoRedoManager,
+            IUndoableFactory undoableFactory, IPrizeSection section)
         {
-            _section = section ?? throw new ArgumentNullException(nameof(section));
+            _prizes = prizes;
+            _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
+
+            _section = section;
 
             _section.PropertyChanged += OnSectionChanged;
             _section.PrizePlacement.PropertyChanged += OnPrizeChanged;
@@ -100,7 +112,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// </param>
         public void OnLeftClick(bool force = false)
         {
-            UndoRedoManager.Instance.Execute(new TogglePrize(_section, true));
+            _undoRedoManager.Execute(_undoableFactory.GetTogglePrize(_section, true));
         }
 
         /// <summary>
@@ -111,7 +123,7 @@ namespace OpenTracker.ViewModels.Items.Small
         /// </param>
         public void OnRightClick(bool force = false)
         {
-            UndoRedoManager.Instance.Execute(new ChangePrize(_section.PrizePlacement));
+            _undoRedoManager.Execute(_undoableFactory.GetChangePrize(_section.PrizePlacement));
         }
     }
 }

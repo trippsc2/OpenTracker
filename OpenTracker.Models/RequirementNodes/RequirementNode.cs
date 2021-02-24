@@ -12,13 +12,15 @@ namespace OpenTracker.Models.RequirementNodes
     /// </summary>
     public class RequirementNode : IRequirementNode
     {
+        private readonly IMode _mode;
+        private readonly IRequirementNodeFactory _factory;
         private readonly RequirementNodeID _id;
         private readonly bool _start;
         private readonly List<INodeConnection> _connections =
             new List<INodeConnection>();
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler ChangePropagated;
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public event EventHandler? ChangePropagated;
 
         private bool _alwaysAccessible;
         public bool AlwaysAccessible
@@ -90,6 +92,8 @@ namespace OpenTracker.Models.RequirementNodes
             }
         }
 
+        public delegate IRequirementNode Factory(RequirementNodeID id, bool start);
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -99,14 +103,18 @@ namespace OpenTracker.Models.RequirementNodes
         /// <param name="start">
         /// A boolean representing whether the node is the start node.
         /// </param>
-        public RequirementNode(RequirementNodeID id, bool start)
+        public RequirementNode(
+            IMode mode, IRequirementNodeDictionary requirementNodes,
+            IRequirementNodeFactory factory, RequirementNodeID id, bool start)
         {
+            _mode = mode;
+            _factory = factory;
             _id = id;
             _start = start;
             AlwaysAccessible = _start;
 
-            RequirementNodeDictionary.Instance.NodeCreated += OnNodeCreated;
-            Mode.Instance.PropertyChanged += OnModeChanged;
+            requirementNodes.ItemCreated += OnNodeCreated;
+            _mode.PropertyChanged += OnModeChanged;
         }
 
         /// <summary>
@@ -134,6 +142,33 @@ namespace OpenTracker.Models.RequirementNodes
         }
 
         /// <summary>
+        /// Subscribes to the NodeCreated event on the RequirementNodeDictionary class.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the NodeCreated event.
+        /// </param>
+        private void OnNodeCreated(object? sender, KeyValuePair<RequirementNodeID, IRequirementNode> e)
+        {
+            if (e.Value == this)
+            {
+                var requirementNodes = ((IRequirementNodeDictionary)sender!);
+
+                requirementNodes.ItemCreated -= OnNodeCreated;
+                _factory.PopulateNodeConnections(e.Key, this, _connections);
+
+                UpdateAccessibility();
+
+                foreach (var connection in _connections)
+                {
+                    connection.PropertyChanged += OnConnectionChanged;
+                }
+            }
+        }
+
+        /// <summary>
         /// Subscribes to the PropertyChanged event on the Mode class.
         /// </summary>
         /// <param name="sender">
@@ -144,34 +179,10 @@ namespace OpenTracker.Models.RequirementNodes
         /// </param>
         private void OnModeChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.EntranceShuffle))
+            if (e.PropertyName == nameof(IMode.EntranceShuffle))
             {
                 UpdateAccessibility();
             }    
-        }
-
-        /// <summary>
-        /// Subscribes to the NodeCreated event on the RequirementNodeDictionary class.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the NodeCreated event.
-        /// </param>
-        private void OnNodeCreated(object sender, KeyValuePair<RequirementNodeID, IRequirementNode> e)
-        {
-            if (e.Value == this)
-            {
-                RequirementNodeDictionary.Instance.NodeCreated -= OnNodeCreated;
-                RequirementNodeFactory.PopulateNodeConnections(e.Key, this, _connections);
-                UpdateAccessibility();
-
-                foreach (var connection in _connections)
-                {
-                    connection.PropertyChanged += OnConnectionChanged;
-                }
-            }
         }
 
         /// <summary>
@@ -217,10 +228,10 @@ namespace OpenTracker.Models.RequirementNodes
 
             if (AlwaysAccessible ||
                 (InsanityExitsAccessible > 0 &&
-                Mode.Instance.EntranceShuffle >= EntranceShuffle.Insanity) ||
-                (ExitsAccessible > 0 && Mode.Instance.EntranceShuffle >= EntranceShuffle.All) ||
+                _mode.EntranceShuffle >= EntranceShuffle.Insanity) ||
+                (ExitsAccessible > 0 && _mode.EntranceShuffle >= EntranceShuffle.All) ||
                 (DungeonExitsAccessible > 0 &&
-                Mode.Instance.EntranceShuffle >= EntranceShuffle.Dungeon))
+                _mode.EntranceShuffle >= EntranceShuffle.Dungeon))
             {
                 return AccessibilityLevel.Normal;
             }

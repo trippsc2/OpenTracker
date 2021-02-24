@@ -96,7 +96,7 @@ namespace OpenTracker.Utils.Dialog
         {
             if (((DialogViewModelBase<TResult>)viewModel).IsOpen)
             {
-                return default;
+                return default!;
             }
 
             var window = CreateView<TResult>(viewModel);
@@ -138,7 +138,7 @@ namespace OpenTracker.Utils.Dialog
                 disposable.Dispose();
             }
 
-            return result;
+            return result!;
         }
 
         /// <summary>

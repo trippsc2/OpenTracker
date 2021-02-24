@@ -18,6 +18,8 @@ namespace OpenTracker.Models.RequirementNodes
 
         event EventHandler ChangePropagated;
 
+        delegate IRequirementNode Factory(RequirementNodeID id, bool start);
+
         AccessibilityLevel GetNodeAccessibility(List<IRequirementNode> excludedNodes);
         void Reset();
     }

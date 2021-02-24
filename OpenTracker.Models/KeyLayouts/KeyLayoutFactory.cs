@@ -9,8 +9,26 @@ namespace OpenTracker.Models.KeyLayouts
     /// <summary>
     /// This is the class for creating key layouts.
     /// </summary>
-    public static class KeyLayoutFactory
+    public class KeyLayoutFactory : IKeyLayoutFactory
     {
+        private readonly IRequirementDictionary _requirements;
+        private readonly BigKeyLayout.Factory _bigKeyFactory;
+        private readonly EndKeyLayout.Factory _endFactory;
+        private readonly SmallKeyLayout.Factory _smallKeyFactory;
+        private readonly AlternativeRequirement.Factory _alternativeFactory;
+
+        public KeyLayoutFactory(
+            IRequirementDictionary requirements, BigKeyLayout.Factory bigKeyFactory,
+            EndKeyLayout.Factory endFactory, SmallKeyLayout.Factory smallKeyFactory,
+            AlternativeRequirement.Factory alternativeFactory)
+        {
+            _requirements = requirements;
+            _bigKeyFactory = bigKeyFactory;
+            _endFactory = endFactory;
+            _smallKeyFactory = smallKeyFactory;
+            _alternativeFactory = alternativeFactory;
+        }
+
         /// <summary>
         /// Returns the list of key layouts for the specified dungeon.
         /// </summary>
@@ -20,26 +38,21 @@ namespace OpenTracker.Models.KeyLayouts
         /// <returns>
         /// The list of key layouts.
         /// </returns>
-        public static List<IKeyLayout> GetDungeonKeyLayouts(IDungeon dungeon)
+        public List<IKeyLayout> GetDungeonKeyLayouts(IDungeon dungeon)
         {
-            if (dungeon == null)
-            {
-                throw new ArgumentNullException(nameof(dungeon));
-            }
-
             switch (dungeon.ID)
             {
                 case Locations.LocationID.HyruleCastle:
                     {
                         return new List<IKeyLayout>
                         {
-                            new EndKeyLayout(
-                                new AlternativeRequirement(new List<IRequirement>
+                            _endFactory(
+                                _alternativeFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnAllKeyShuffle],
-                                    RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffSmallKeyShuffleOn]
+                                    _requirements[RequirementType.KeyDropShuffleOnAllKeyShuffle],
+                                    _requirements[RequirementType.KeyDropShuffleOffSmallKeyShuffleOn]
                                 })),
-                            new SmallKeyLayout(
+                            _smallKeyFactory(
                                 1,
                                 new List<DungeonItemID>
                                 {
@@ -52,10 +65,10 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout()
+                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffSmallKeyShuffleOff]),
-                            new SmallKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffSmallKeyShuffleOff]),
+                            _smallKeyFactory(
                                 3,
                                 new List<DungeonItemID>
                                 {
@@ -69,7 +82,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(
+                                    _smallKeyFactory(
                                         4,
                                         new List<DungeonItemID>
                                         {
@@ -85,11 +98,12 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
-                                        }, dungeon)
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.HCSanctuary,
@@ -105,10 +119,10 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout()
+                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnSmallKeyShuffleOnly]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnSmallKeyShuffleOnly]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.HCSanctuary,
@@ -121,7 +135,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(
+                                    _smallKeyFactory(
                                         3,
                                         new List<DungeonItemID>
                                         {
@@ -136,7 +150,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         true,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 4,
                                                 new List<DungeonItemID>
                                                 {
@@ -153,12 +167,14 @@ namespace OpenTracker.Models.KeyLayouts
                                                 true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
-                                        }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffle]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnNoKeyShuffle]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.HCBoomerangChest,
@@ -166,7 +182,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(
+                                    _smallKeyFactory(
                                         3,
                                         new List<DungeonItemID>
                                         {
@@ -181,7 +197,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 4,
                                                 new List<DungeonItemID>
                                                 {
@@ -198,19 +214,21 @@ namespace OpenTracker.Models.KeyLayouts
                                                 true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
-                                        }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffle]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnNoKeyShuffle]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.HCBigKeyDrop
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(
+                                    _smallKeyFactory(
                                         3,
                                         new List<DungeonItemID>
                                         {
@@ -225,7 +243,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 4,
                                                 new List<DungeonItemID>
                                                 {
@@ -242,20 +260,22 @@ namespace OpenTracker.Models.KeyLayouts
                                                 false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
-                                        }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnNoKeyShuffle])
+                                _requirements[RequirementType.KeyDropShuffleOnNoKeyShuffle])
                         };
                     }
                 case Locations.LocationID.AgahnimTower:
                     {
                         return new List<IKeyLayout>
                         {
-                            new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                            new SmallKeyLayout(
+                            _endFactory(
+                                _requirements[RequirementType.SmallKeyShuffleOn]),
+                            _smallKeyFactory(
                                 2,
                                 new List<DungeonItemID>
                                 {
@@ -264,10 +284,10 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout()
+                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffSmallKeyShuffleOff]),
-                            new SmallKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffSmallKeyShuffleOff]),
+                            _smallKeyFactory(
                                 4,
                                 new List<DungeonItemID>
                                 {
@@ -278,22 +298,22 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout()
+                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnSmallKeyShuffleOff])
+                                _requirements[RequirementType.KeyDropShuffleOnSmallKeyShuffleOff])
                         };
                     }
                 case Locations.LocationID.EasternPalace:
                     {
                         return new List<IKeyLayout>
                         {
-                            new EndKeyLayout(
-                                new AlternativeRequirement(new List<IRequirement>
+                            _endFactory(
+                                _alternativeFactory(new List<IRequirement>
                                 {
-                                    RequirementDictionary.Instance[RequirementType.AllKeyShuffle],
-                                    RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOn]
+                                    _requirements[RequirementType.AllKeyShuffle],
+                                    _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOn]
                                 })),
-                            new BigKeyLayout(
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.EPCannonballChest,
@@ -303,10 +323,10 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout()
+                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
-                            new SmallKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
+                            _smallKeyFactory(
                                 1,
                                 new List<DungeonItemID>
                                 {
@@ -318,7 +338,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(
+                                    _smallKeyFactory(
                                         2,
                                         new List<DungeonItemID>
                                         {
@@ -333,11 +353,12 @@ namespace OpenTracker.Models.KeyLayouts
                                         false,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
-                                        }, dungeon)
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.EPCannonballChest,
@@ -347,9 +368,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -362,7 +383,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 2,
                                                 new List<DungeonItemID>
                                                 {
@@ -376,22 +397,23 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon),
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement]),
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.EPBigKeyChest
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -402,7 +424,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 2,
                                                 new List<DungeonItemID>
                                                 {
@@ -415,21 +437,22 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff])
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff])
                         };
                     }
                 case Locations.LocationID.DesertPalace:
                     {
                         return new List<IKeyLayout>
                         {
-                            new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.AllKeyShuffle]),
-                            new SmallKeyLayout(
+                            _endFactory(
+                                _requirements[RequirementType.AllKeyShuffle]),
+                            _smallKeyFactory(
                                 1,
                                 new List<DungeonItemID>
                                 {
@@ -439,10 +462,10 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout()
+                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.DPMapChest,
@@ -450,9 +473,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -462,12 +485,12 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.DPCompassChest,
@@ -475,9 +498,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -486,12 +509,12 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
-                            new SmallKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
+                            _smallKeyFactory(
                                 2,
                                 new List<DungeonItemID>
                                 {
@@ -502,7 +525,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(
+                                    _smallKeyFactory(
                                         3,
                                         new List<DungeonItemID>
                                         {
@@ -514,7 +537,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 4,
                                                 new List<DungeonItemID>
                                                 {
@@ -527,12 +550,14 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
-                                        }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.DPMapChest,
@@ -545,10 +570,10 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout()
+                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnSmallKeyShuffleOnly]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnSmallKeyShuffleOnly]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.DPMapChest,
@@ -557,9 +582,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         2,
                                         new List<DungeonItemID>
                                         {
@@ -570,7 +595,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout
+                                            _smallKeyFactory
                                             (
                                                 3,
                                                 new List<DungeonItemID>
@@ -583,7 +608,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         4,
                                                         new List<DungeonItemID>
                                                         {
@@ -596,23 +621,25 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, true,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new EndKeyLayout()
-                                                        }, dungeon)
-                                                }, dungeon)
+                                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.DPBeamosHallPot
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         2,
                                         new List<DungeonItemID>
                                         {
@@ -622,7 +649,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 3,
                                                 new List<DungeonItemID>
                                                 {
@@ -633,7 +660,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         4,
                                                         new List<DungeonItemID>
                                                         {
@@ -645,23 +672,25 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, false,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new EndKeyLayout()
-                                                        }, dungeon)
-                                                }, dungeon)
+                                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.DPTiles2Pot
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         2,
                                         new List<DungeonItemID>
                                         {
@@ -671,7 +700,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 4,
                                                 new List<DungeonItemID>
                                                 {
@@ -683,21 +712,22 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff])
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff])
                         };
                     }
                 case Locations.LocationID.TowerOfHera:
                     {
                         return new List<IKeyLayout>
                         {
-                            new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.AllKeyShuffle]),
-                            new SmallKeyLayout(
+                            _endFactory(
+                                _requirements[RequirementType.AllKeyShuffle]),
+                            _smallKeyFactory(
                                 1,
                                 new List<DungeonItemID>
                                 {
@@ -710,10 +740,10 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout()
+                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOffBigKeyShuffleOnly]),
-                            new SmallKeyLayout(
+                                _requirements[RequirementType.GuaranteedBossItemsOffBigKeyShuffleOnly]),
+                            _smallKeyFactory(
                                 1,
                                 new List<DungeonItemID>
                                 {
@@ -725,10 +755,10 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout()
+                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOnBigKeyShuffleOnly]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.GuaranteedBossItemsOnBigKeyShuffleOnly]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.ToHBasementCage,
@@ -736,9 +766,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -751,10 +781,10 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOffSmallKeyShuffleOff]),
-                                    new SmallKeyLayout(
+                                        _requirements[RequirementType.GuaranteedBossItemsOffSmallKeyShuffleOff]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -766,21 +796,21 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOnSmallKeyShuffleOff])
+                                        _requirements[RequirementType.GuaranteedBossItemsOnSmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.BigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.ToHBigKeyChest
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -789,20 +819,20 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff])
+                                _requirements[RequirementType.BigKeyShuffleOff])
                         };
                     }
                 case Locations.LocationID.PalaceOfDarkness:
                     {
                         return new List<IKeyLayout>
                         {
-                            new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.AllKeyShuffle]),
-                            new SmallKeyLayout(
+                            _endFactory(
+                                _requirements[RequirementType.AllKeyShuffle]),
+                            _smallKeyFactory(
                                 4,
                                 new List<DungeonItemID>
                                 {
@@ -815,7 +845,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(
+                                    _smallKeyFactory(
                                         6,
                                         new List<DungeonItemID>
                                         {
@@ -832,11 +862,12 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
-                                        }, dungeon)
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.BigKeyShuffleOnly]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.BigKeyShuffleOnly]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.PoDShooterRoom,
@@ -848,9 +879,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         4,
                                         new List<DungeonItemID>
                                         {
@@ -863,7 +894,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 6,
                                                 new List<DungeonItemID>
                                                 {
@@ -880,13 +911,14 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.BigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.PoDCompassChest,
@@ -896,9 +928,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         4,
                                         new List<DungeonItemID>
                                         {
@@ -911,7 +943,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 6,
                                                 new List<DungeonItemID>
                                                 {
@@ -928,13 +960,14 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.BigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.PoDDarkMazeTop,
@@ -942,9 +975,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         4,
                                         new List<DungeonItemID>
                                         {
@@ -957,7 +990,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 6,
                                                 new List<DungeonItemID>
                                                 {
@@ -974,21 +1007,22 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.BigKeyShuffleOff])
+                                _requirements[RequirementType.BigKeyShuffleOff])
                         };
                     }
                 case Locations.LocationID.SwampPalace:
                     {
                         return new List<IKeyLayout>
                         {
-                            new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.AllKeyShuffle]),
-                            new SmallKeyLayout(
+                            _endFactory(
+                                _requirements[RequirementType.AllKeyShuffle]),
+                            _smallKeyFactory(
                                 1,
                                 new List<DungeonItemID>
                                 {
@@ -996,10 +1030,10 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout()
+                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.SPMapChest,
@@ -1013,9 +1047,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -1023,21 +1057,21 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.SPBoss
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -1045,12 +1079,12 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffGuaranteedBossItemsOffBigKeyShuffleOff]),
-                            new SmallKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffGuaranteedBossItemsOffBigKeyShuffleOff]),
+                            _smallKeyFactory(
                                 1,
                                 new List<DungeonItemID>
                                 {
@@ -1058,7 +1092,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(
+                                    _smallKeyFactory(
                                         2,
                                         new List<DungeonItemID>
                                         {
@@ -1068,7 +1102,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 3,
                                                 new List<DungeonItemID>
                                                 {
@@ -1079,7 +1113,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         5,
                                                         new List<DungeonItemID>
                                                         {
@@ -1093,7 +1127,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, false,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new SmallKeyLayout(
+                                                            _smallKeyFactory(
                                                                 6,
                                                                 new List<DungeonItemID>
                                                                 {
@@ -1111,15 +1145,19 @@ namespace OpenTracker.Models.KeyLayouts
                                                                 }, false,
                                                                 new List<IKeyLayout>
                                                                 {
-                                                                    new EndKeyLayout()
-                                                                }, dungeon)
-                                                        }, dungeon)
-                                                }, dungeon)
+                                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         },
-                                        dungeon)
+                                        dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.SPMapChest,
@@ -1127,9 +1165,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -1137,7 +1175,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 2,
                                                 new List<DungeonItemID>
                                                 {
@@ -1147,7 +1185,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         3,
                                                         new List<DungeonItemID>
                                                         {
@@ -1158,7 +1196,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, true,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new SmallKeyLayout(
+                                                            _smallKeyFactory(
                                                                 5,
                                                                 new List<DungeonItemID>
                                                                 {
@@ -1172,7 +1210,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                                 }, true,
                                                                 new List<IKeyLayout>
                                                                 {
-                                                                    new SmallKeyLayout(
+                                                                    _smallKeyFactory(
                                                                         6,
                                                                         new List<DungeonItemID>
                                                                         {
@@ -1190,26 +1228,30 @@ namespace OpenTracker.Models.KeyLayouts
                                                                         }, true,
                                                                         new List<IKeyLayout>
                                                                         {
-                                                                            new EndKeyLayout()
-                                                                        }, dungeon)
-                                                                }, dungeon)
-                                                        }, dungeon)
+                                                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                                 },
-                                                dungeon)
+                                                dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.SPTrench1Pot
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -1217,7 +1259,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 2,
                                                 new List<DungeonItemID>
                                                 {
@@ -1227,7 +1269,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         3,
                                                         new List<DungeonItemID>
                                                         {
@@ -1237,7 +1279,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, false,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new SmallKeyLayout(
+                                                            _smallKeyFactory(
                                                                 5,
                                                                 new List<DungeonItemID>
                                                                 {
@@ -1250,7 +1292,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                                 }, false,
                                                                 new List<IKeyLayout>
                                                                 {
-                                                                    new SmallKeyLayout(
+                                                                    _smallKeyFactory(
                                                                         6,
                                                                         new List<DungeonItemID>
                                                                         {
@@ -1267,17 +1309,21 @@ namespace OpenTracker.Models.KeyLayouts
                                                                         }, false,
                                                                         new List<IKeyLayout>
                                                                         {
-                                                                            new EndKeyLayout()
-                                                                        }, dungeon)
-                                                                }, dungeon)
-                                                        }, dungeon)
+                                                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                                 },
-                                                dungeon)
+                                                dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.SPBigChest,
@@ -1286,9 +1332,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -1296,7 +1342,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 2,
                                                 new List<DungeonItemID>
                                                 {
@@ -1306,7 +1352,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         3,
                                                         new List<DungeonItemID>
                                                         {
@@ -1317,7 +1363,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, false,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new SmallKeyLayout(
+                                                            _smallKeyFactory(
                                                                 5,
                                                                 new List<DungeonItemID>
                                                                 {
@@ -1331,7 +1377,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                                 }, true,
                                                                 new List<IKeyLayout>
                                                                 {
-                                                                    new SmallKeyLayout(
+                                                                    _smallKeyFactory(
                                                                         6,
                                                                         new List<DungeonItemID>
                                                                         {
@@ -1349,17 +1395,21 @@ namespace OpenTracker.Models.KeyLayouts
                                                                         }, true,
                                                                         new List<IKeyLayout>
                                                                         {
-                                                                            new EndKeyLayout()
-                                                                        }, dungeon)
-                                                                }, dungeon)
-                                                        }, dungeon)
+                                                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                                 },
-                                                dungeon)
+                                                dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.SPFloodedRoomLeft,
@@ -1369,9 +1419,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -1379,7 +1429,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 2,
                                                 new List<DungeonItemID>
                                                 {
@@ -1389,7 +1439,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         3,
                                                         new List<DungeonItemID>
                                                         {
@@ -1400,7 +1450,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, false,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new SmallKeyLayout(
+                                                            _smallKeyFactory(
                                                                 5,
                                                                 new List<DungeonItemID>
                                                                 {
@@ -1413,7 +1463,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                                 }, false,
                                                                 new List<IKeyLayout>
                                                                 {
-                                                                    new SmallKeyLayout(
+                                                                    _smallKeyFactory(
                                                                         6,
                                                                         new List<DungeonItemID>
                                                                         {
@@ -1431,17 +1481,21 @@ namespace OpenTracker.Models.KeyLayouts
                                                                         }, true,
                                                                         new List<IKeyLayout>
                                                                         {
-                                                                            new EndKeyLayout()
-                                                                        }, dungeon)
-                                                                }, dungeon)
-                                                        }, dungeon)
+                                                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                                 },
-                                                dungeon)
+                                                dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.SPWestChest,
@@ -1450,9 +1504,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -1460,7 +1514,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 2,
                                                 new List<DungeonItemID>
                                                 {
@@ -1470,7 +1524,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         3,
                                                         new List<DungeonItemID>
                                                         {
@@ -1481,7 +1535,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, false,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new SmallKeyLayout(
+                                                            _smallKeyFactory(
                                                                 5,
                                                                 new List<DungeonItemID>
                                                                 {
@@ -1494,7 +1548,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                                 }, false,
                                                                 new List<IKeyLayout>
                                                                 {
-                                                                    new SmallKeyLayout(
+                                                                    _smallKeyFactory(
                                                                         6,
                                                                         new List<DungeonItemID>
                                                                         {
@@ -1511,26 +1565,30 @@ namespace OpenTracker.Models.KeyLayouts
                                                                         }, false,
                                                                         new List<IKeyLayout>
                                                                         {
-                                                                            new EndKeyLayout()
-                                                                        }, dungeon)
-                                                                }, dungeon)
-                                                        }, dungeon)
+                                                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                                 },
-                                                dungeon)
+                                                dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.SPBoss
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -1538,7 +1596,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 2,
                                                 new List<DungeonItemID>
                                                 {
@@ -1548,7 +1606,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         3,
                                                         new List<DungeonItemID>
                                                         {
@@ -1559,7 +1617,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, false,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new SmallKeyLayout(
+                                                            _smallKeyFactory(
                                                                 5,
                                                                 new List<DungeonItemID>
                                                                 {
@@ -1572,7 +1630,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                                 }, false,
                                                                 new List<IKeyLayout>
                                                                 {
-                                                                    new SmallKeyLayout(
+                                                                    _smallKeyFactory(
                                                                         6,
                                                                         new List<DungeonItemID>
                                                                         {
@@ -1589,25 +1647,29 @@ namespace OpenTracker.Models.KeyLayouts
                                                                         }, false,
                                                                         new List<IKeyLayout>
                                                                         {
-                                                                            new EndKeyLayout()
-                                                                        }, dungeon)
-                                                                }, dungeon)
-                                                        }, dungeon)
+                                                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                                 },
-                                                dungeon)
+                                                dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnGuaranteedBossItemsOffBigKeyShuffleOff])
+                                _requirements[RequirementType.KeyDropShuffleOnGuaranteedBossItemsOffBigKeyShuffleOff])
                         };
                     }
                 case Locations.LocationID.SkullWoods:
                     {
                         return new List<IKeyLayout>
                         {
-                            new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.AllKeyShuffle]),
-                            new SmallKeyLayout(
+                            _endFactory(
+                                _requirements[RequirementType.AllKeyShuffle]),
+                            _smallKeyFactory(
                                 3,
                                 new List<DungeonItemID>
                                 {
@@ -1621,11 +1683,11 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout()
+                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[
+                                _requirements[
                                     RequirementType.KeyDropShuffleOffBigKeyShuffleOnlyItemPlacementAdvanced]),
-                            new SmallKeyLayout(
+                            _smallKeyFactory(
                                 1,
                                 new List<DungeonItemID>
                                 {
@@ -1633,7 +1695,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(
+                                    _smallKeyFactory(
                                         3,
                                         new List<DungeonItemID>
                                         {
@@ -1647,12 +1709,13 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
-                                        }, dungeon)
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[
+                                _requirements[
                                     RequirementType.KeyDropShuffleOffBigKeyShuffleOnlyItemPlacementBasic]),
-                            new BigKeyLayout(
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.SWBigKeyChest,
@@ -1665,9 +1728,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         3,
                                         new List<DungeonItemID>
                                         {
@@ -1681,12 +1744,12 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOffItemPlacementAdvanced]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOffItemPlacementAdvanced]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.SWBigKeyChest,
@@ -1698,9 +1761,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -1708,7 +1771,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 3,
                                                 new List<DungeonItemID>
                                                 {
@@ -1722,22 +1785,23 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOffItemPlacementBasic]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOffItemPlacementBasic]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.SWBoss
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         3,
                                         new List<DungeonItemID>
                                         {
@@ -1750,10 +1814,10 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOffItemPlacementAdvanced]),
-                                    new SmallKeyLayout(
+                                        _requirements[RequirementType.SmallKeyShuffleOffItemPlacementAdvanced]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -1761,7 +1825,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 3,
                                                 new List<DungeonItemID>
                                                 {
@@ -1774,13 +1838,14 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOffItemPlacementBasic])
+                                        _requirements[RequirementType.SmallKeyShuffleOffItemPlacementBasic])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffGuaranteedBossItemsOffBigKeyShuffleOff]),
-                            new SmallKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffGuaranteedBossItemsOffBigKeyShuffleOff]),
+                            _smallKeyFactory(
                                 4,
                                 new List<DungeonItemID>
                                 {
@@ -1795,7 +1860,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(
+                                    _smallKeyFactory(
                                         5,
                                         new List<DungeonItemID>
                                         {
@@ -1811,11 +1876,12 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
-                                        }, dungeon)
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnlyItemPlacementAdvanced]),
-                            new SmallKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOnlyItemPlacementAdvanced]),
+                            _smallKeyFactory(
                                 1,
                                 new List<DungeonItemID>
                                 {
@@ -1823,7 +1889,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(
+                                    _smallKeyFactory(
                                         4,
                                         new List<DungeonItemID>
                                         {
@@ -1838,7 +1904,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 5,
                                                 new List<DungeonItemID>
                                                 {
@@ -1854,12 +1920,14 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
-                                        }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnlyItemPlacementBasic]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOnlyItemPlacementBasic]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.SWBigKeyChest,
@@ -1875,10 +1943,10 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout()
+                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnGuaranteedBossItemsOffSmallKeyShuffleOnly]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnGuaranteedBossItemsOffSmallKeyShuffleOnly]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.SWBigKeyChest,
@@ -1893,10 +1961,10 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout()
+                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnGuaranteedBossItemsOnSmallKeyShuffleOnly]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnGuaranteedBossItemsOnSmallKeyShuffleOnly]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.SWBigKeyChest,
@@ -1910,9 +1978,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         4,
                                         new List<DungeonItemID>
                                         {
@@ -1927,7 +1995,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 5,
                                                 new List<DungeonItemID>
                                                 {
@@ -1943,13 +2011,14 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOffItemPlacementAdvanced]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOffItemPlacementAdvanced]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.SWBigKeyChest,
@@ -1962,9 +2031,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -1972,7 +2041,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 4,
                                                 new List<DungeonItemID>
                                                 {
@@ -1987,7 +2056,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         5,
                                                         new List<DungeonItemID>
                                                         {
@@ -2003,23 +2072,25 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, true,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new EndKeyLayout()
-                                                        }, dungeon)
-                                                }, dungeon)
+                                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOffItemPlacementBasic]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOffItemPlacementBasic]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.SWSpikeCornerDrop
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         5,
                                         new List<DungeonItemID>
                                         {
@@ -2034,10 +2105,10 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOffItemPlacementAdvanced]),
-                                    new SmallKeyLayout(
+                                        _requirements[RequirementType.SmallKeyShuffleOffItemPlacementAdvanced]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -2045,7 +2116,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 5,
                                                 new List<DungeonItemID>
                                                 {
@@ -2060,22 +2131,23 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOffItemPlacementBasic])
+                                        _requirements[RequirementType.SmallKeyShuffleOffItemPlacementBasic])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.SWBoss
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         4,
                                         new List<DungeonItemID>
                                         {
@@ -2089,7 +2161,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 5,
                                                 new List<DungeonItemID>
                                                 {
@@ -2104,11 +2176,12 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOffItemPlacementAdvanced]),
-                                    new SmallKeyLayout(
+                                        _requirements[RequirementType.SmallKeyShuffleOffItemPlacementAdvanced]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -2116,7 +2189,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 4,
                                                 new List<DungeonItemID>
                                                 {
@@ -2130,7 +2203,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         5,
                                                         new List<DungeonItemID>
                                                         {
@@ -2145,22 +2218,24 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, false,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new EndKeyLayout()
-                                                        }, dungeon)
-                                                }, dungeon)
+                                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOffItemPlacementBasic])
+                                        _requirements[RequirementType.SmallKeyShuffleOffItemPlacementBasic])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnGuaranteedBossItemsOffBigKeyShuffleOff])
+                                _requirements[RequirementType.KeyDropShuffleOnGuaranteedBossItemsOffBigKeyShuffleOff])
                         };
                     }
                 case Locations.LocationID.ThievesTown:
                     {
                         return new List<IKeyLayout>
                         {
-                            new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.AllKeyShuffle]),
-                            new SmallKeyLayout(
+                            _endFactory(
+                                _requirements[RequirementType.AllKeyShuffle]),
+                            _smallKeyFactory(
                                 1,
                                 new List<DungeonItemID>
                                 {
@@ -2173,10 +2248,10 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout()
+                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.TTMapChest,
@@ -2186,9 +2261,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -2201,12 +2276,12 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
-                            new SmallKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
+                            _smallKeyFactory(
                                 1,
                                 new List<DungeonItemID>
                                 {
@@ -2218,7 +2293,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(
+                                    _smallKeyFactory(
                                         3,
                                         new List<DungeonItemID>
                                         {
@@ -2232,11 +2307,12 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
-                                        }, dungeon)
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.TTMapChest,
@@ -2246,9 +2322,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -2260,7 +2336,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 3,
                                                 new List<DungeonItemID>
                                                 {
@@ -2274,21 +2350,22 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff])
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff])
                         };
                     }
                 case Locations.LocationID.IcePalace:
                     {
                         return new List<IKeyLayout>
                         {
-                            new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.AllKeyShuffle]),
-                            new SmallKeyLayout(
+                            _endFactory(
+                                _requirements[RequirementType.AllKeyShuffle]),
+                            _smallKeyFactory(
                                 2,
                                 new List<DungeonItemID>
                                 {
@@ -2302,11 +2379,11 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout()
+                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[
+                                _requirements[
                                     RequirementType.KeyDropShuffleOffBigKeyShuffleOnlyGuaranteedBossItemsOrItemPlacementBasic]),
-                            new SmallKeyLayout(
+                            _smallKeyFactory(
                                 2,
                                 new List<DungeonItemID>
                                 {
@@ -2321,11 +2398,11 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout()
+                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[
+                                _requirements[
                                     RequirementType.KeyDropShuffleOffGuaranteedBossItemsOffBigKeyShuffleOnlyItemPlacementAdvanced]),
-                            new BigKeyLayout(
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.IPCompassChest,
@@ -2337,9 +2414,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         2,
                                         new List<DungeonItemID>
                                         {
@@ -2353,11 +2430,11 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[
+                                        _requirements[
                                             RequirementType.GuaranteedBossItemsOnOrItemPlacementBasicSmallKeyShuffleOff]),
-                                    new SmallKeyLayout(
+                                    _smallKeyFactory(
                                         2,
                                         new List<DungeonItemID>
                                         {
@@ -2372,13 +2449,13 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[
+                                        _requirements[
                                             RequirementType.GuaranteedBossItemsOffSmallKeyShuffleOffItemPlacementAdvanced])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
-                            new SmallKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
+                            _smallKeyFactory(
                                 1,
                                 new List<DungeonItemID>
                                 {
@@ -2386,7 +2463,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(
+                                    _smallKeyFactory(
                                         2,
                                         new List<DungeonItemID>
                                         {
@@ -2396,7 +2473,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 6,
                                                 new List<DungeonItemID>
                                                 {
@@ -2414,11 +2491,11 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                                 }, dungeon,
-                                                RequirementDictionary.Instance[
+                                                _requirements[
                                                     RequirementType.GuaranteedBossItemsOnOrItemPlacementBasic]),
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 5,
                                                 new List<DungeonItemID>
                                                 {
@@ -2436,7 +2513,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         6,
                                                         new List<DungeonItemID>
                                                         {
@@ -2455,15 +2532,17 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, false,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new EndKeyLayout()
-                                                        }, dungeon)
+                                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                                 }, dungeon,
-                                                RequirementDictionary.Instance[
+                                                _requirements[
                                                     RequirementType.GuaranteedBossItemsOffItemPlacementAdvanced])
-                                        }, dungeon)
+                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.IPCompassChest,
@@ -2471,9 +2550,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -2481,7 +2560,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 2,
                                                 new List<DungeonItemID>
                                                 {
@@ -2491,7 +2570,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         6,
                                                         new List<DungeonItemID>
                                                         {
@@ -2509,11 +2588,11 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, true,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new EndKeyLayout()
+                                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                                         }, dungeon,
-                                                        RequirementDictionary.Instance[
+                                                        _requirements[
                                                             RequirementType.GuaranteedBossItemsOnOrItemPlacementBasic]),
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         5,
                                                         new List<DungeonItemID>
                                                         {
@@ -2531,7 +2610,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, true,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new SmallKeyLayout(
+                                                            _smallKeyFactory(
                                                                 6,
                                                                 new List<DungeonItemID>
                                                                 {
@@ -2550,17 +2629,19 @@ namespace OpenTracker.Models.KeyLayouts
                                                                 }, true,
                                                                 new List<IKeyLayout>
                                                                 {
-                                                                    new EndKeyLayout()
-                                                                }, dungeon)
+                                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                                         }, dungeon,
-                                                        RequirementDictionary.Instance[
+                                                        _requirements[
                                                             RequirementType.GuaranteedBossItemsOffItemPlacementAdvanced])
-                                                }, dungeon)
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.IPSpikeRoom,
@@ -2573,9 +2654,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -2583,7 +2664,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 2,
                                                 new List<DungeonItemID>
                                                 {
@@ -2593,7 +2674,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         6,
                                                         new List<DungeonItemID>
                                                         {
@@ -2611,11 +2692,11 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, true,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new EndKeyLayout()
+                                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                                         }, dungeon,
-                                                        RequirementDictionary.Instance[
+                                                        _requirements[
                                                             RequirementType.GuaranteedBossItemsOnOrItemPlacementBasic]),
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         5,
                                                         new List<DungeonItemID>
                                                         {
@@ -2633,7 +2714,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, true,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new SmallKeyLayout(
+                                                            _smallKeyFactory(
                                                                 6,
                                                                 new List<DungeonItemID>
                                                                 {
@@ -2652,25 +2733,27 @@ namespace OpenTracker.Models.KeyLayouts
                                                                 }, true,
                                                                 new List<IKeyLayout>
                                                                 {
-                                                                    new EndKeyLayout()
-                                                                }, dungeon)
+                                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                                         }, dungeon,
-                                                        RequirementDictionary.Instance[
+                                                        _requirements[
                                                             RequirementType.GuaranteedBossItemsOffItemPlacementAdvanced])
-                                                }, dungeon)
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff])
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff])
                         };
                     }
                 case Locations.LocationID.MiseryMire:
                     {
                         return new List<IKeyLayout>
                         {
-                            new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.AllKeyShuffle]),
-                            new SmallKeyLayout(
+                            _endFactory(
+                                _requirements[RequirementType.AllKeyShuffle]),
+                            _smallKeyFactory(
                                 3,
                                 new List<DungeonItemID>
                                 {
@@ -2683,10 +2766,10 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout()
+                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffGuaranteedBossItemsOffBigKeyShuffleOnly]),
-                            new SmallKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffGuaranteedBossItemsOffBigKeyShuffleOnly]),
+                            _smallKeyFactory(
                                 3,
                                 new List<DungeonItemID>
                                 {
@@ -2698,10 +2781,10 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, true,
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout()
+                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffGuaranteedBossItemsOnBigKeyShuffleOnly]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffGuaranteedBossItemsOnBigKeyShuffleOnly]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.MMBridgeChest,
@@ -2709,9 +2792,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         3,
                                         new List<DungeonItemID>
                                         {
@@ -2724,10 +2807,10 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOffSmallKeyShuffleOff]),
-                                    new SmallKeyLayout(
+                                        _requirements[RequirementType.GuaranteedBossItemsOffSmallKeyShuffleOff]),
+                                    _smallKeyFactory(
                                         3,
                                         new List<DungeonItemID>
                                         {
@@ -2739,12 +2822,12 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOnSmallKeyShuffleOff])
+                                        _requirements[RequirementType.GuaranteedBossItemsOnSmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.MMMainLobby,
@@ -2752,9 +2835,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -2763,7 +2846,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 3,
                                                 new List<DungeonItemID>
                                                 {
@@ -2776,10 +2859,10 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                                 }, dungeon,
-                                                RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff]),
-                                            new SmallKeyLayout(
+                                                _requirements[RequirementType.GuaranteedBossItemsOff]),
+                                            _smallKeyFactory(
                                                 3,
                                                 new List<DungeonItemID>
                                                 {
@@ -2791,14 +2874,14 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                                 }, dungeon,
-                                                RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn])
+                                                _requirements[RequirementType.GuaranteedBossItemsOn])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.MMCompassChest,
@@ -2806,9 +2889,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -2817,7 +2900,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 2,
                                                 new List<DungeonItemID>
                                                 {
@@ -2828,7 +2911,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(3,
+                                                    _smallKeyFactory(3,
                                                         new List<DungeonItemID>
                                                         {
                                                             DungeonItemID.MMBridgeChest,
@@ -2842,10 +2925,10 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, true,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new EndKeyLayout()
+                                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                                         }, dungeon,
-                                                        RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOff]),
-                                                    new SmallKeyLayout(3,
+                                                        _requirements[RequirementType.GuaranteedBossItemsOff]),
+                                                    _smallKeyFactory(3,
                                                         new List<DungeonItemID>
                                                         {
                                                             DungeonItemID.MMBridgeChest,
@@ -2858,15 +2941,16 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, true,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new EndKeyLayout()
+                                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                                         }, dungeon,
-                                                        RequirementDictionary.Instance[RequirementType.GuaranteedBossItemsOn])
-                                                }, dungeon)
+                                                        _requirements[RequirementType.GuaranteedBossItemsOn])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
-                            new SmallKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
+                            _smallKeyFactory(
                                 1,
                                 new List<DungeonItemID>
                                 {
@@ -2878,7 +2962,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(
+                                    _smallKeyFactory(
                                         5,
                                         new List<DungeonItemID>
                                         {
@@ -2892,7 +2976,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 6,
                                                 new List<DungeonItemID>
                                                 {
@@ -2907,12 +2991,14 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
-                                        }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.MMBridgeChest,
@@ -2921,9 +3007,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -2935,7 +3021,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 5,
                                                 new List<DungeonItemID>
                                                 {
@@ -2949,7 +3035,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         6,
                                                         new List<DungeonItemID>
                                                         {
@@ -2964,14 +3050,16 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, true,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new EndKeyLayout()
-                                                        }, dungeon)
-                                                }, dungeon)
+                                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.MMMainLobby,
@@ -2980,9 +3068,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -2992,7 +3080,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 5,
                                                 new List<DungeonItemID>
                                                 {
@@ -3006,7 +3094,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         6,
                                                         new List<DungeonItemID>
                                                         {
@@ -3021,23 +3109,25 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, true,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new EndKeyLayout()
-                                                        }, dungeon)
-                                                }, dungeon)
+                                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.MMConveyerCrystalDrop
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -3047,7 +3137,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 5,
                                                 new List<DungeonItemID>
                                                 {
@@ -3060,7 +3150,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         6,
                                                         new List<DungeonItemID>
                                                         {
@@ -3075,14 +3165,16 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, true,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new EndKeyLayout()
-                                                        }, dungeon)
-                                                }, dungeon)
+                                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.MMCompassChest,
@@ -3090,9 +3182,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         1,
                                         new List<DungeonItemID>
                                         {
@@ -3102,7 +3194,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 5,
                                                 new List<DungeonItemID>
                                                 {
@@ -3115,7 +3207,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         6,
                                                         new List<DungeonItemID>
                                                         {
@@ -3129,22 +3221,24 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, false,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new EndKeyLayout()
-                                                        }, dungeon)
-                                                }, dungeon)
+                                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff])
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff])
                         };
                     }
                 case Locations.LocationID.TurtleRock:
                     {
                         return new List<IKeyLayout>
                         {
-                            new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.AllKeyShuffle]),
-                            new SmallKeyLayout(
+                            _endFactory(
+                                _requirements[RequirementType.AllKeyShuffle]),
+                            _smallKeyFactory(
                                 2,
                                 new List<DungeonItemID>
                                 {
@@ -3155,7 +3249,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(
+                                    _smallKeyFactory(
                                         3,
                                         new List<DungeonItemID>
                                         {
@@ -3169,7 +3263,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 4,
                                                 new List<DungeonItemID>
                                                 {
@@ -3187,12 +3281,14 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
-                                        }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffWorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOnly]),
-                            new SmallKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffWorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOnly]),
+                            _smallKeyFactory(
                                 4,
                                 new List<DungeonItemID>
                                 {
@@ -3210,10 +3306,10 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout()
+                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffWorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOnly]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffWorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOnly]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.TRCompassChest,
@@ -3223,9 +3319,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         2,
                                         new List<DungeonItemID>
                                         {
@@ -3236,7 +3332,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 3,
                                                 new List<DungeonItemID>
                                                 {
@@ -3250,7 +3346,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         4,
                                                         new List<DungeonItemID>
                                                         {
@@ -3268,23 +3364,25 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, true,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new EndKeyLayout()
-                                                        }, dungeon)
-                                                }, dungeon)
+                                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffWorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffWorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.TRBigKeyChest
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         2,
                                         new List<DungeonItemID>
                                         {
@@ -3295,7 +3393,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 3,
                                                 new List<DungeonItemID>
                                                 {
@@ -3308,7 +3406,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         4,
                                                         new List<DungeonItemID>
                                                         {
@@ -3325,14 +3423,16 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, false,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new EndKeyLayout()
-                                                        }, dungeon)
-                                                }, dungeon)
+                                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffWorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffWorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.TRCompassChest,
@@ -3347,9 +3447,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         4,
                                         new List<DungeonItemID>
                                         {
@@ -3367,21 +3467,21 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffWorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffWorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.TRBigKeyChest
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         4,
                                         new List<DungeonItemID>
                                         {
@@ -3397,12 +3497,12 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffWorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOff]),
-                            new SmallKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffWorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOff]),
+                            _smallKeyFactory(
                                 3,
                                 new List<DungeonItemID>
                                 {
@@ -3414,7 +3514,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(
+                                    _smallKeyFactory(
                                         5,
                                         new List<DungeonItemID>
                                         {
@@ -3429,7 +3529,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 6,
                                                 new List<DungeonItemID>
                                                 {
@@ -3448,12 +3548,14 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
-                                        }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnWorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOnly]),
-                            new SmallKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnWorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOnly]),
+                            _smallKeyFactory(
                                 6,
                                 new List<DungeonItemID>
                                 {
@@ -3473,10 +3575,10 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout()
+                                    _endFactory(_requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnWorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOnly]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnWorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOnly]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.TRCompassChest,
@@ -3487,9 +3589,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         3,
                                         new List<DungeonItemID>
                                         {
@@ -3501,7 +3603,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 5,
                                                 new List<DungeonItemID>
                                                 {
@@ -3516,7 +3618,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         6,
                                                         new List<DungeonItemID>
                                                         {
@@ -3535,23 +3637,25 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, true,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new EndKeyLayout()
-                                                        }, dungeon)
-                                                }, dungeon)
+                                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnWorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnWorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.TRPokey2Drop
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         3,
                                         new List<DungeonItemID>
                                         {
@@ -3563,7 +3667,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 5,
                                                 new List<DungeonItemID>
                                                 {
@@ -3577,7 +3681,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         6,
                                                         new List<DungeonItemID>
                                                         {
@@ -3595,23 +3699,25 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, false,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new EndKeyLayout()
-                                                        }, dungeon)
-                                                }, dungeon)
+                                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnWorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnWorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.TRBigKeyChest
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         4,
                                         new List<DungeonItemID>
                                         {
@@ -3623,7 +3729,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 5,
                                                 new List<DungeonItemID>
                                                 {
@@ -3638,7 +3744,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         6,
                                                         new List<DungeonItemID>
                                                         {
@@ -3657,14 +3763,16 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, false,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new EndKeyLayout()
-                                                        }, dungeon)
-                                                }, dungeon)
+                                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnWorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnWorldStateStandardOpenEntranceShuffleNoneBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.TRCompassChest,
@@ -3679,9 +3787,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         6,
                                         new List<DungeonItemID>
                                         {
@@ -3701,21 +3809,21 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnWorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnWorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.TRBigKeyChest
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         6,
                                         new List<DungeonItemID>
                                         {
@@ -3733,20 +3841,20 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnWorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOff]),
+                                _requirements[RequirementType.KeyDropShuffleOnWorldStateInvertedOrEntranceShuffleDungeonAllInsanityBigKeyShuffleOff]),
                         };
                     }
                 case Locations.LocationID.GanonsTower:
                     {
                         return new List<IKeyLayout>
                         {
-                            new EndKeyLayout(
-                                RequirementDictionary.Instance[RequirementType.AllKeyShuffle]),
-                            new SmallKeyLayout(
+                            _endFactory(
+                                _requirements[RequirementType.AllKeyShuffle]),
+                            _smallKeyFactory(
                                 3,
                                 new List<DungeonItemID>
                                 {
@@ -3761,7 +3869,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(
+                                    _smallKeyFactory(
                                         4,
                                         new List<DungeonItemID>
                                         {
@@ -3786,11 +3894,12 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
-                                        }, dungeon)
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOnly]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.GTHopeRoomLeft,
@@ -3804,9 +3913,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         3,
                                         new List<DungeonItemID>
                                         {
@@ -3821,7 +3930,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 4,
                                                 new List<DungeonItemID>
                                                 {
@@ -3846,13 +3955,14 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.GTFiresnakeRoom,
@@ -3863,9 +3973,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         3,
                                         new List<DungeonItemID>
                                         {
@@ -3880,7 +3990,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 4,
                                                 new List<DungeonItemID>
                                                 {
@@ -3905,22 +4015,23 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.GTMapChest
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         3,
                                         new List<DungeonItemID>
                                         {
@@ -3935,7 +4046,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(4,
+                                            _smallKeyFactory(4,
                                             new List<DungeonItemID>
                                             {
                                                 DungeonItemID.GTHopeRoomLeft,
@@ -3958,14 +4069,15 @@ namespace OpenTracker.Models.KeyLayouts
                                             }, false,
                                             new List<IKeyLayout>
                                             {
-                                                new EndKeyLayout()
+                                                _endFactory(_requirements[RequirementType.NoRequirement])
                                             },
-                                            dungeon)
+                                            dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.GTRandomizerRoomTopLeft,
@@ -3975,9 +4087,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         2,
                                         new List<DungeonItemID>
                                         {
@@ -3992,7 +4104,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 3,
                                                 new List<DungeonItemID>
                                                 {
@@ -4008,7 +4120,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         4,
                                                         new List<DungeonItemID>
                                                         {
@@ -4033,14 +4145,16 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, true,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new EndKeyLayout()
-                                                        }, dungeon)
-                                                }, dungeon)
+                                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.GTCompassRoomTopLeft,
@@ -4050,9 +4164,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         2,
                                         new List<DungeonItemID>
                                         {
@@ -4067,7 +4181,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 3,
                                                 new List<DungeonItemID>
                                                 {
@@ -4083,7 +4197,7 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new SmallKeyLayout(
+                                                    _smallKeyFactory(
                                                         4,
                                                         new List<DungeonItemID>
                                                         {
@@ -4108,14 +4222,16 @@ namespace OpenTracker.Models.KeyLayouts
                                                         }, true,
                                                         new List<IKeyLayout>
                                                         {
-                                                            new EndKeyLayout()
-                                                        }, dungeon)
-                                                }, dungeon)
+                                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
-                            new SmallKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOffBigKeyShuffleOff]),
+                            _smallKeyFactory(
                                 7,
                                 new List<DungeonItemID>
                                 {
@@ -4135,7 +4251,7 @@ namespace OpenTracker.Models.KeyLayouts
                                 }, false,
                                 new List<IKeyLayout>
                                 {
-                                    new SmallKeyLayout(
+                                    _smallKeyFactory(
                                         8,
                                         new List<DungeonItemID>
                                         {
@@ -4167,11 +4283,12 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new EndKeyLayout()
-                                        }, dungeon)
+                                            _endFactory(_requirements[RequirementType.NoRequirement])
+                                        }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                 }, dungeon,
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOnly]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.GTHopeRoomLeft,
@@ -4187,9 +4304,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         7,
                                         new List<DungeonItemID>
                                         {
@@ -4209,7 +4326,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, true,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 8,
                                                 new List<DungeonItemID>
                                                 {
@@ -4241,13 +4358,14 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.GTFiresnakeRoom,
@@ -4263,9 +4381,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         7,
                                         new List<DungeonItemID>
                                         {
@@ -4282,7 +4400,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 8,
                                                 new List<DungeonItemID>
                                                 {
@@ -4314,13 +4432,14 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, true,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
-                            new BigKeyLayout(
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff]),
+                            _bigKeyFactory(
                                 new List<DungeonItemID>
                                 {
                                     DungeonItemID.GTRandomizerRoomTopLeft,
@@ -4330,9 +4449,9 @@ namespace OpenTracker.Models.KeyLayouts
                                 },
                                 new List<IKeyLayout>
                                 {
-                                    new EndKeyLayout(
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOn]),
-                                    new SmallKeyLayout(
+                                    _endFactory(
+                                        _requirements[RequirementType.SmallKeyShuffleOn]),
+                                    _smallKeyFactory(
                                         7,
                                         new List<DungeonItemID>
                                         {
@@ -4349,7 +4468,7 @@ namespace OpenTracker.Models.KeyLayouts
                                         }, false,
                                         new List<IKeyLayout>
                                         {
-                                            new SmallKeyLayout(
+                                            _smallKeyFactory(
                                                 8,
                                                 new List<DungeonItemID>
                                                 {
@@ -4376,12 +4495,13 @@ namespace OpenTracker.Models.KeyLayouts
                                                 }, false,
                                                 new List<IKeyLayout>
                                                 {
-                                                    new EndKeyLayout()
-                                                }, dungeon)
+                                                    _endFactory(_requirements[RequirementType.NoRequirement])
+                                                }, dungeon,
+                                        _requirements[RequirementType.NoRequirement])
                                         }, dungeon,
-                                        RequirementDictionary.Instance[RequirementType.SmallKeyShuffleOff])
+                                        _requirements[RequirementType.SmallKeyShuffleOff])
                                 },
-                                RequirementDictionary.Instance[RequirementType.KeyDropShuffleOnBigKeyShuffleOff])
+                                _requirements[RequirementType.KeyDropShuffleOnBigKeyShuffleOff])
                         };
                     }
             }

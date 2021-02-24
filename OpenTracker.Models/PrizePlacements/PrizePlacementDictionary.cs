@@ -1,8 +1,5 @@
 ﻿using OpenTracker.Models.SaveLoad;
-using OpenTracker.Models.Utils;
-using System;
-using System.Collections;
-using System.Collections.Concurrent;
+using OpenTracker.Utils;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.PrizePlacements
@@ -10,44 +7,20 @@ namespace OpenTracker.Models.PrizePlacements
     /// <summary>
     /// This is the dictionary container for prize placements.
     /// </summary>
-    public class PrizePlacementDictionary : Singleton<PrizePlacementDictionary>,
-        IDictionary<PrizePlacementID, IPrizePlacement>
+    public class PrizePlacementDictionary : LazyDictionary<PrizePlacementID, IPrizePlacement>,
+        IPrizePlacementDictionary
     {
-        private static readonly ConcurrentDictionary<PrizePlacementID, IPrizePlacement> _dictionary =
-            new ConcurrentDictionary<PrizePlacementID, IPrizePlacement>();
+        private readonly IPrizePlacementFactory _factory;
 
-        public ICollection<PrizePlacementID> Keys =>
-            ((IDictionary<PrizePlacementID, IPrizePlacement>)_dictionary).Keys;
-        public ICollection<IPrizePlacement> Values =>
-            ((IDictionary<PrizePlacementID, IPrizePlacement>)_dictionary).Values;
-        public int Count =>
-            ((ICollection<KeyValuePair<PrizePlacementID, IPrizePlacement>>)_dictionary).Count;
-        public bool IsReadOnly =>
-            ((ICollection<KeyValuePair<PrizePlacementID, IPrizePlacement>>)_dictionary).IsReadOnly;
-
-        public IPrizePlacement this[PrizePlacementID key]
+        public PrizePlacementDictionary(IPrizePlacementFactory factory)
+            : base(new Dictionary<PrizePlacementID, IPrizePlacement>())
         {
-            get
-            {
-                if (!ContainsKey(key))
-                {
-                    Create(key);
-                }
-
-                return ((IDictionary<PrizePlacementID, IPrizePlacement>)_dictionary)[key];
-            }
-            set => ((IDictionary<PrizePlacementID, IPrizePlacement>)_dictionary)[key] = value;
+            _factory = factory;
         }
 
-        /// <summary>
-        /// Creates a new prize placement for the specified key.
-        /// </summary>
-        /// <param name="key">
-        /// The key.
-        /// </param>
-        private void Create(PrizePlacementID key)
+        protected override IPrizePlacement Create(PrizePlacementID key)
         {
-            Add(key, PrizePlacementFactory.GetPrizePlacement(key));
+            return _factory.GetPrizePlacement(key);
         }
 
         /// <summary>
@@ -59,66 +32,6 @@ namespace OpenTracker.Models.PrizePlacements
             {
                 placement.Reset();
             }
-        }
-
-        public void Add(PrizePlacementID key, IPrizePlacement value)
-        {
-            ((IDictionary<PrizePlacementID, IPrizePlacement>)_dictionary).Add(key, value);
-        }
-
-        public void Add(KeyValuePair<PrizePlacementID, IPrizePlacement> item)
-        {
-            ((ICollection<KeyValuePair<PrizePlacementID, IPrizePlacement>>)_dictionary).Add(item);
-        }
-
-        public void Clear()
-        {
-            _dictionary.Clear();
-        }
-
-        public bool Contains(KeyValuePair<PrizePlacementID, IPrizePlacement> item)
-        {
-            return ((ICollection<KeyValuePair<PrizePlacementID, IPrizePlacement>>)_dictionary).Contains(item);
-        }
-
-        public bool ContainsKey(PrizePlacementID key)
-        {
-            return _dictionary.ContainsKey(key);
-        }
-
-        public void CopyTo(KeyValuePair<PrizePlacementID, IPrizePlacement>[] array, int arrayIndex)
-        {
-            ((ICollection<KeyValuePair<PrizePlacementID, IPrizePlacement>>)_dictionary).CopyTo(array, arrayIndex);
-        }
-
-        public bool Remove(PrizePlacementID key)
-        {
-            return ((IDictionary<PrizePlacementID, IPrizePlacement>)_dictionary).Remove(key);
-        }
-
-        public bool Remove(KeyValuePair<PrizePlacementID, IPrizePlacement> item)
-        {
-            return ((ICollection<KeyValuePair<PrizePlacementID, IPrizePlacement>>)_dictionary).Remove(item);
-        }
-
-        public bool TryGetValue(PrizePlacementID key, out IPrizePlacement value)
-        {
-            if (!ContainsKey(key))
-            {
-                Create(key);
-            }
-
-            return _dictionary.TryGetValue(key, out value);
-        }
-
-        public IEnumerator<KeyValuePair<PrizePlacementID, IPrizePlacement>> GetEnumerator()
-        {
-            return _dictionary.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _dictionary.GetEnumerator();
         }
 
         /// <summary>
@@ -143,11 +56,11 @@ namespace OpenTracker.Models.PrizePlacements
         /// <summary>
         /// Loads a dictionary of prize placement save data.
         /// </summary>
-        public void Load(Dictionary<PrizePlacementID, PrizePlacementSaveData> saveData)
+        public void Load(Dictionary<PrizePlacementID, PrizePlacementSaveData>? saveData)
         {
             if (saveData == null)
             {
-                throw new ArgumentNullException(nameof(saveData));
+                return;
             }
 
             foreach (var prizePlacement in saveData.Keys)

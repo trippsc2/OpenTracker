@@ -22,7 +22,7 @@ namespace OpenTracker.Utils.Dialog
         /// </param>
         protected void Close(TResult result = default)
         {
-            CloseRequested?.Invoke(this, new DialogResultEventArgs<TResult>(result));
+            CloseRequested?.Invoke(this, new DialogResultEventArgs<TResult>(result!));
         }
     }
 

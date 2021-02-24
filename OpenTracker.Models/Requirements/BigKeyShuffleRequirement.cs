@@ -1,6 +1,4 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.Modes;
-using System;
+﻿using OpenTracker.Models.Modes;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
@@ -8,81 +6,52 @@ namespace OpenTracker.Models.Requirements
     /// <summary>
     /// This is the class for big key shuffle requirements.
     /// </summary>
-    public class BigKeyShuffleRequirement : IRequirement
+    public class BigKeyShuffleRequirement : BooleanRequirement
     {
-        private readonly bool _bigKeyShuffle;
+        private readonly IMode _mode;
+        private readonly bool _expectedValue;
 
-        public bool Met =>
-            Accessibility != AccessibilityLevel.None;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler ChangePropagated;
-
-        private AccessibilityLevel _accessibility;
-        public AccessibilityLevel Accessibility
-        {
-            get => _accessibility;
-            private set
-            {
-                if (_accessibility != value)
-                {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
-                }
-            }
-        }
+        public delegate BigKeyShuffleRequirement Factory(bool expectedValue);
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="bigKeyShuffle">
-        /// A boolean representing the required big key shuffle value.
+        /// <param name="mode">
+        /// The mode settings.
         /// </param>
-        public BigKeyShuffleRequirement(bool bigKeyShuffle)
+        /// <param name="expectedValue">
+        /// The expected big key shuffle value.
+        /// </param>
+        public BigKeyShuffleRequirement(IMode mode, bool expectedValue)
         {
-            _bigKeyShuffle = bigKeyShuffle;
+            _mode = mode;
+            _expectedValue = expectedValue;
 
-            Mode.Instance.PropertyChanged += OnModeChanged;
+            _mode.PropertyChanged += OnModeChanged;
 
-            UpdateAccessibility();
+            UpdateValue();
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
-        /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            ChangePropagated?.Invoke(this, new EventArgs());
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
-        /// The sending object of the event.
+        /// The event sender.
         /// </param>
         /// <param name="e">
-        /// The arguments of the PropertyChanged event.
+        /// The PropertyChanged event args.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Mode.BigKeyShuffle))
+            if (e.PropertyName == nameof(IMode.BigKeyShuffle))
             {
-                UpdateAccessibility();
+                UpdateValue();
             }
         }
 
-        /// <summary>
-        /// Updates the accessibility of this requirement.
-        /// </summary>
-        private void UpdateAccessibility()
+        protected override bool ConditionMet()
         {
-            Accessibility = Mode.Instance.BigKeyShuffle == _bigKeyShuffle ?
-                AccessibilityLevel.Normal : AccessibilityLevel.None;
+            return _mode.BigKeyShuffle == _expectedValue;
         }
     }
 }
