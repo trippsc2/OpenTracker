@@ -9,6 +9,9 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models.Sections
 {
+    /// <summary>
+    /// This class contains dropdown section data.
+    /// </summary>
     public class DropdownSection : IEntranceSection
     {
         private readonly IMode _mode;
@@ -58,11 +61,14 @@ namespace OpenTracker.Models.Sections
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
+        /// <param name="marking">
+        /// The section marking.
+        /// </param>
         /// <param name="name">
         /// A string representing the name of the section.
-        /// </param>
-        /// <param name="exitProvided">
-        /// The exit provided.
         /// </param>
         /// <param name="exitNode">
         /// The requirement node of the exit of the dropdown.
@@ -111,7 +117,7 @@ namespace OpenTracker.Models.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnNodeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirementNode.Accessibility))
             {
@@ -120,7 +126,7 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -128,7 +134,7 @@ namespace OpenTracker.Models.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IMode.EntranceShuffle))
             {

@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the interface for take any sections.
+    /// This interface contains take any section data.
     /// </summary>
     public interface ITakeAnySection : ISection
     {

@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the interface for prize sections.
+    /// This interface contains boss/prize section data (end of each dungeon).
     /// </summary>
     public interface IPrizeSection : IBossSection
     {

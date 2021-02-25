@@ -1,5 +1,4 @@
 ﻿using OpenTracker.Models.BossPlacements;
-using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Locations;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.RequirementNodes;
@@ -10,7 +9,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the class for creating section classes.
+    /// This class contains creation logic for section data.
     /// </summary>
     public class SectionFactory : ISectionFactory
     {
@@ -32,6 +31,60 @@ namespace OpenTracker.Models.Sections
         private readonly TakeAnySection.Factory _takeAnyFactory;
         private readonly VisibleItemSection.Factory _visibleItemFactory;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="bossPlacements">
+        /// The boss placement dictionary.
+        /// </param>
+        /// <param name="prizePlacements">
+        /// The prize placement dictionary.
+        /// </param>
+        /// <param name="requirementNodes">
+        /// The requirement node dictionary.
+        /// </param>
+        /// <param name="requirements">
+        /// The requirement dictionary.
+        /// </param>
+        /// <param name="autoTrackingFactory">
+        /// The item autotracking factory.
+        /// </param>
+        /// <param name="bossFactory">
+        /// An Autofac factory for creating boss sections.
+        /// </param>
+        /// <param name="dropdownFactory">
+        /// An Autofac factory for creating dropdown sections.
+        /// </param>
+        /// <param name="dungeonEntranceFactory">
+        /// An Autofac factory for creating dungeon entrance sections.
+        /// </param>
+        /// <param name="dungeonItemFactory">
+        /// An Autofac factory for creating dungeon item sections.
+        /// </param>
+        /// <param name="entranceFactory">
+        /// An Autofac factory for creating entrance sections.
+        /// </param>
+        /// <param name="insanityEntranceFactory">
+        /// An Autofac factory for creating insanity entrance sections.
+        /// </param>
+        /// <param name="itemFactory">
+        /// An Autofac factory for creating item sections.
+        /// </param>
+        /// <param name="markableDungeonItemFactory">
+        /// An Autofac factory for creating markable dungeon item sections.
+        /// </param>
+        /// <param name="prizeFactory">
+        /// An Autofac factory for creating prize sections.
+        /// </param>
+        /// <param name="shopFactory">
+        /// An Autofac factory for creating shop sections.
+        /// </param>
+        /// <param name="takeAnyFactory">
+        /// An Autofac factory for creating take any sections.
+        /// </param>
+        /// <param name="visibleItemFactory">
+        /// An Autofac factory for creating visible item sections.
+        /// </param>
         public SectionFactory(
             IBossPlacementDictionary bossPlacements, IPrizePlacementDictionary prizePlacements,
             IRequirementNodeDictionary requirementNodes, IRequirementDictionary requirements,

@@ -12,7 +12,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the section class of dungeon items.
+    /// This class contains dungeon item section data.
     /// </summary>
     public class DungeonItemSection : IDungeonItemSection
     {
@@ -91,8 +91,17 @@ namespace OpenTracker.Models.Sections
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="dungeon">
-        /// The data for the dungeon to which this section belongs.
+        /// <param name="locations">
+        /// The location dictionary.
+        /// </param>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
+        /// <param name="locationID">
+        /// The ID of the dungeon to which this section belongs.
+        /// </param>
+        /// <param name="autoTrackValue">
+        /// The section auto track value.
         /// </param>
         /// <param name="requirement">
         /// The requirement for this section to be visible.
@@ -111,7 +120,7 @@ namespace OpenTracker.Models.Sections
 
             if (_autoTrackValue != null)
             {
-                _autoTrackValue.PropertyChanged += OnAutoTrackChanged;
+                _autoTrackValue.PropertyChanged += OnAutoTrackValueChanged;
             }
         }
 
@@ -127,13 +136,13 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
-        /// Subscribes to the LocationCreated event on the LocationDictionary class.
+        /// Subscribes to the ItemCreated event on the ILocationDictionary interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the LocationCreated event.
+        /// The arguments of the ItemCreated event.
         /// </param>
         private void OnLocationCreated(object? sender, KeyValuePair<LocationID, ILocation> e)
         {
@@ -148,7 +157,7 @@ namespace OpenTracker.Models.Sections
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -156,7 +165,7 @@ namespace OpenTracker.Models.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IMode.WorldState) ||
                 e.PropertyName == nameof(IMode.MapShuffle) ||
@@ -169,7 +178,16 @@ namespace OpenTracker.Models.Sections
             }
         }
 
-        private void OnAutoTrackChanged(object sender, PropertyChangedEventArgs e)
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IAutoTrackValue interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnAutoTrackValueChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
             {
@@ -177,6 +195,9 @@ namespace OpenTracker.Models.Sections
             }
         }
 
+        /// <summary>
+        /// Updates the value of the section from autotracking.
+        /// </summary>
         private void AutoTrackUpdate()
         {
             if (_autoTrackValue!.CurrentValue.HasValue)

@@ -8,7 +8,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the section class containing a boss and no dungeon prize (GT non-Aga2 bosses).
+    /// This class contains boss section data (GT LW boss re-fights)
     /// </summary>
     public class BossSection : IBossSection
     {

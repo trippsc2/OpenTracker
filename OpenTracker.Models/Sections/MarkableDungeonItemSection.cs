@@ -8,7 +8,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the section class of dungeon items with a marking.
+    /// This class contains markable data for a dungeon item section.
     /// </summary>
     public class MarkableDungeonItemSection : IMarkableSection, IDungeonItemSection
     {
@@ -51,6 +51,9 @@ namespace OpenTracker.Models.Sections
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="marking">
+        /// The section marking.
+        /// </param>
         /// <param name="section">
         /// The dungeon item section to be encapsulated.
         /// </param>
@@ -72,7 +75,7 @@ namespace OpenTracker.Models.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             PropertyChanged?.Invoke(this, e);
 

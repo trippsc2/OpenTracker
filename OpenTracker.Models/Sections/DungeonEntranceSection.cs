@@ -9,7 +9,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the class for dungeon entrance sections.
+    /// This class contains dungeon entrance section data.
     /// </summary>
     public class DungeonEntranceSection : IEntranceSection
     {
@@ -47,6 +47,9 @@ namespace OpenTracker.Models.Sections
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="marking">
+        /// The section marking.
+        /// </param>
         /// <param name="name">
         /// A string representing the name of the section.
         /// </param>
@@ -112,7 +115,7 @@ namespace OpenTracker.Models.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnNodeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirementNode.Accessibility))
             {

@@ -10,7 +10,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the section class of items with a marking.
+    /// This class contains item sections with marking data.
     /// </summary>
     public class VisibleItemSection : IMarkableSection, IItemSection
     {
@@ -76,6 +76,9 @@ namespace OpenTracker.Models.Sections
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="marking">
+        /// The section marking.
+        /// </param>
         /// <param name="name">
         /// A string representing the name of the section.
         /// </param>
@@ -87,6 +90,9 @@ namespace OpenTracker.Models.Sections
         /// </param>
         /// <param name="autoTrackValue">
         /// The autotracking value for this section.
+        /// </param>
+        /// <param name="requirement">
+        /// The requirement for the section to be visible.
         /// </param>
         /// <param name="visibleNode">
         /// The node that provides Inspect accessibility for this section.
@@ -145,7 +151,7 @@ namespace OpenTracker.Models.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnNodeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirementNode.Accessibility))
             {
@@ -163,7 +169,7 @@ namespace OpenTracker.Models.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnAutoTrackChanged(object sender, PropertyChangedEventArgs e)
+        private void OnAutoTrackChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
             {

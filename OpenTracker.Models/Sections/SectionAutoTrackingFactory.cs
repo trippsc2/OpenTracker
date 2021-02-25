@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the class for creating section auto tracking.
+    /// This class containing creation logic for section autotracking.
     /// </summary>
     public class SectionAutoTrackingFactory : ISectionAutoTrackingFactory
     {
@@ -27,6 +27,51 @@ namespace OpenTracker.Models.Sections
         private readonly AutoTrackStaticValue.Factory _staticValueFactory;
         private readonly IMemoryFlag.Factory _memoryFlagFactory;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="autoTracker">
+        /// The autotracker data.
+        /// </param>
+        /// <param name="items">
+        /// The item dictionary.
+        /// </param>
+        /// <param name="requirements">
+        /// The requirement dictionary.
+        /// </param>
+        /// <param name="boolFactory">
+        /// An Autofac factory creating address boolean autotrack values.
+        /// </param>
+        /// <param name="valueFactory">
+        /// An Autofac factory creating address value autotrack values.
+        /// </param>
+        /// <param name="bitwiseIntegerFactory">
+        /// An Autofac factory creating bitwise integer autotrack values.
+        /// </param>
+        /// <param name="conditionalFactory">
+        /// An Autofac factory creating conditional autotrack values.
+        /// </param>
+        /// <param name="flagBoolFactory">
+        /// An Autofac factory creating flag boolean autotrack values.
+        /// </param>
+        /// <param name="itemValueFactory">
+        /// An Autofac factory creating item value autotrack values.
+        /// </param>
+        /// <param name="differenceFactory">
+        /// An Autofac factory creating difference autotrack values.
+        /// </param>
+        /// <param name="overrideFactory">
+        /// An Autofac factory creating override autotrack values.
+        /// </param>
+        /// <param name="sumFactory">
+        /// An Autofac factory creating sum autotrack values.
+        /// </param>
+        /// <param name="staticValueFactory">
+        /// An Autofac factory creating static autotrack values.
+        /// </param>
+        /// <param name="memoryFlagFactory">
+        /// An Autofac factory creating memory flags.
+        /// </param>
         public SectionAutoTrackingFactory(
             IAutoTracker autoTracker, IItemDictionary items, IRequirementDictionary requirements,
             AutoTrackAddressBool.Factory boolFactory, AutoTrackAddressValue.Factory valueFactory,

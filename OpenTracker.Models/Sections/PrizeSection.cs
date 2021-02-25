@@ -2,14 +2,13 @@
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Requirements;
-using OpenTracker.Models.SaveLoad;
 using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the class containing boss/prize sections of dungeons.
+    /// This class contains boss/prize section data (end of each dungeon).
     /// </summary>
     public class PrizeSection : BossSection, IPrizeSection
     {
@@ -35,14 +34,14 @@ namespace OpenTracker.Models.Sections
         /// <param name="prizePlacement">
         /// The prize placement of this section.
         /// </param>
-        /// <param name="autoTrackFunction">
-        /// The autotracking function.
-        /// </param>
-        /// <param name="memoryAddresses">
-        /// The list of memory addresses to subscribe to for autotracking.
+        /// <param name="autoTrackValue">
+        /// The section autotrack value.
         /// </param>
         /// <param name="requirement">
         /// The requirement for this section to be visible.
+        /// </param>
+        /// <param name="alwaysClearable">
+        /// A boolean representing whether the section is always clearable (used for GT final).
         /// </param>
         public PrizeSection(
             string name, IBossPlacement bossPlacement, IPrizePlacement prizePlacement,
@@ -60,7 +59,7 @@ namespace OpenTracker.Models.Sections
 
             if (_autoTrackValue != null)
             {
-                _autoTrackValue.PropertyChanged += OnAutoTrackChanged;
+                _autoTrackValue.PropertyChanged += OnAutoTrackValueChanged;
             }
         }
 
@@ -73,7 +72,7 @@ namespace OpenTracker.Models.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Available))
             {
@@ -100,7 +99,7 @@ namespace OpenTracker.Models.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanging event.
         /// </param>
-        private void OnPrizeChanging(object sender, PropertyChangingEventArgs e)
+        private void OnPrizeChanging(object? sender, PropertyChangingEventArgs e)
         {
             if (e.PropertyName == nameof(IPrizePlacement.Prize))
             {
@@ -121,7 +120,7 @@ namespace OpenTracker.Models.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnPrizeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnPrizeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IPrizePlacement.Prize))
             {
@@ -133,7 +132,16 @@ namespace OpenTracker.Models.Sections
             }
         }
 
-        private void OnAutoTrackChanged(object sender, PropertyChangedEventArgs e)
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the IAutoTrackValue interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnAutoTrackValueChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
             {
@@ -141,6 +149,9 @@ namespace OpenTracker.Models.Sections
             }
         }
 
+        /// <summary>
+        /// Updates the section value from the autotracked value.
+        /// </summary>
         private void AutoTrackUpdate()
         {
             if (_autoTrackValue!.CurrentValue.HasValue)

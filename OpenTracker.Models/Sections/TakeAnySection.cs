@@ -8,7 +8,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the class containing take any sections.
+    /// This class contains take any section data.
     /// </summary>
     public class TakeAnySection : ITakeAnySection
     {

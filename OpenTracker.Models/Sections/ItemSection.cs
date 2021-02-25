@@ -9,7 +9,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Sections
 {
     /// <summary>
-    /// This is the class containing item sections of locations.
+    /// This class contains item section data.
     /// </summary>
     public class ItemSection : IItemSection
     {
@@ -73,6 +73,9 @@ namespace OpenTracker.Models.Sections
         /// <param name="autoTrackValue">
         /// The autotracking value for this section.
         /// </param>
+        /// <param name="requirement">
+        /// The requirement for the section to be visible.
+        /// </param>
         public ItemSection(
             string name, int total, IRequirementNode node, IAutoTrackValue? autoTrackValue,
             IRequirement requirement)
@@ -118,7 +121,7 @@ namespace OpenTracker.Models.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnNodeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirementNode.Accessibility))
             {
@@ -136,7 +139,7 @@ namespace OpenTracker.Models.Sections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnAutoTrackChanged(object sender, PropertyChangedEventArgs e)
+        private void OnAutoTrackChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IAutoTrackValue.CurrentValue))
             {
