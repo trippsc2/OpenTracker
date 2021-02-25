@@ -1,12 +1,10 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.Modes;
-using System;
+﻿using OpenTracker.Models.Modes;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for World State requirements.
+    /// This class contains world state requirement data.
     /// </summary>
     public class WorldStateRequirement : BooleanRequirement
     {
@@ -18,6 +16,9 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
         /// <param name="expectedValue">
         /// The required world state.
         /// </param>

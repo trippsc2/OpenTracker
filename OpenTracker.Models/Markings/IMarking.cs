@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.Markings
 {
     /// <summary>
-    /// This is interface for marking data.
+    /// This interface contains marking data.
     /// </summary>
     public interface IMarking : INotifyPropertyChanging, INotifyPropertyChanged
     {

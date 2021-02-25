@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Modes
 {
     /// <summary>
-    /// This is the class for the game mode settings.
+    /// This class contains game mode settings data.
     /// </summary>
     public class Mode : IMode
     {

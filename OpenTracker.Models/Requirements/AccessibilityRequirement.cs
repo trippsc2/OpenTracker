@@ -5,7 +5,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the base class for non-boolean requirements.
+    /// This base class contains non-boolean requirement data.
     /// </summary>
     public abstract class AccessibilityRequirement : IRequirement
     {

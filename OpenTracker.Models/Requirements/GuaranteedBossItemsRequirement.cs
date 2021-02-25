@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for guaranteed boss items requirements.
+    /// This class contains guaranteed boss items requirement data.
     /// </summary>
     public class GuaranteedBossItemsRequirement : BooleanRequirement
     {
@@ -16,8 +16,11 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="guaranteedBossItems">
-        /// The required guaranteed boss items value.
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
+        /// <param name="expectedValue">
+        /// A boolean expected guaranteed boss items value.
         /// </param>
         public GuaranteedBossItemsRequirement(IMode mode, bool expectedValue)
         {
@@ -38,7 +41,7 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IMode.GuaranteedBossItems))
             {

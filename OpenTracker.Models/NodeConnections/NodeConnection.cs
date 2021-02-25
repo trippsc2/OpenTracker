@@ -8,7 +8,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.NodeConnections
 {
     /// <summary>
-    /// This is the class for node connections.
+    /// This class contains node connection data.
     /// </summary>
     public class NodeConnection : INodeConnection
     {
@@ -82,7 +82,7 @@ namespace OpenTracker.Models.NodeConnections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnNodeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirementNode.Accessibility))
             {
@@ -99,7 +99,7 @@ namespace OpenTracker.Models.NodeConnections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirement.Accessibility))
             {

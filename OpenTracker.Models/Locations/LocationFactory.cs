@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.Locations
 {
     /// <summary>
-    /// This is the class for creating locations.
+    /// This class contains creation logic for location data.
     /// </summary>
     public class LocationFactory : ILocationFactory
     {

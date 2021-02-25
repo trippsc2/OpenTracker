@@ -8,7 +8,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.NodeConnections
 {
     /// <summary>
-    /// This is the class for dungeon entry node connections.
+    /// This class contains dungeon entry node connection data.
     /// </summary>
     public class EntryNodeConnection : INodeConnection
     {
@@ -26,6 +26,9 @@ namespace OpenTracker.Models.NodeConnections
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="requirements">
+        /// The requirement dictionary.
+        /// </param>
         /// <param name="fromNode">
         /// The node from which the connection originates.
         /// </param>
@@ -59,7 +62,7 @@ namespace OpenTracker.Models.NodeConnections
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnNodeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirementNode.Accessibility))
             {

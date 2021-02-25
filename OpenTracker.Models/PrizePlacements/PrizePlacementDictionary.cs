@@ -6,13 +6,19 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.PrizePlacements
 {
     /// <summary>
-    /// This is the dictionary container for prize placements.
+    /// This class contains the dictionary container for prize placement data.
     /// </summary>
     public class PrizePlacementDictionary : LazyDictionary<PrizePlacementID, IPrizePlacement>,
         IPrizePlacementDictionary
     {
         private readonly Lazy<IPrizePlacementFactory> _factory;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="factory">
+        /// The prize placement factory.
+        /// </param>
         public PrizePlacementDictionary(IPrizePlacementFactory.Factory factory)
             : base(new Dictionary<PrizePlacementID, IPrizePlacement>())
         {

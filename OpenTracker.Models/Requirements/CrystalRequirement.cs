@@ -1,12 +1,11 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Items;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for GT crystal requirements.
+    /// This class contains GT crystal requirement data.
     /// </summary>
     public class CrystalRequirement : AccessibilityRequirement
     {
@@ -19,6 +18,12 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="items">
+        /// The item dictionary.
+        /// </param>
+        /// <param name="prizes">
+        /// The prize dictionary.
+        /// </param>
         public CrystalRequirement(IItemDictionary items, IPrizeDictionary prizes)
         {
             _gtCrystal = (ICrystalRequirementItem)items[ItemType.TowerCrystals];
@@ -41,7 +46,7 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnItemChanged(object sender, PropertyChangedEventArgs e)
+        private void OnItemChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IItem.Current) ||
                 e.PropertyName == nameof(ICrystalRequirementItem.Known))
@@ -52,6 +57,11 @@ namespace OpenTracker.Models.Requirements
 
         protected override AccessibilityLevel GetAccessibility()
         {
+            if (_crystal.Current + _redCrystal.Current >= 7)
+            {
+                return AccessibilityLevel.Normal;
+            }
+
             if (_gtCrystal.Known)
             {
                 return _gtCrystal.Current + _crystal.Current + _redCrystal.Current >= 7 ?

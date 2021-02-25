@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for entrance shuffle requirements.
+    /// This class contains entrance shuffle requirement data.
     /// </summary>
     public class EntranceShuffleRequirement : BooleanRequirement
     {
@@ -16,6 +16,9 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
         /// <param name="expectedValue">
         /// The required entrance shuffle value.
         /// </param>
@@ -30,7 +33,7 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -38,7 +41,7 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IMode.EntranceShuffle))
             {

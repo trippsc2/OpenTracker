@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for key door requirements.
+    /// This class contains key door requirement data.
     /// </summary>
     public class KeyDoorRequirement : BooleanRequirement
     {
@@ -36,7 +36,7 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnKeyDoorChanged(object sender, PropertyChangedEventArgs e)
+        private void OnKeyDoorChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IKeyDoor.Unlocked))
             {

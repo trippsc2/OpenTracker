@@ -5,13 +5,22 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.Locations
 {
     /// <summary>
-    /// This is the class for creating map locations.
+    /// This class contains the creation logic for map location data.
     /// </summary>
     public class MapLocationFactory : IMapLocationFactory
     {
         private readonly IRequirementDictionary _requirements;
         private readonly IMapLocation.Factory _factory;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="requirements">
+        /// The requirement dictionary.
+        /// </param>
+        /// <param name="factory">
+        /// An Autofac factory for creating map locations.
+        /// </param>
         public MapLocationFactory(
             IRequirementDictionary requirements, IMapLocation.Factory factory)
         {

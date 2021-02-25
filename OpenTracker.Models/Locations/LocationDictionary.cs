@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.Locations
 {
     /// <summary>
-    /// This is the dictionary of location data
+    /// This class contains the dictionary container for location data.
     /// </summary>
     public class LocationDictionary : LazyDictionary<LocationID, ILocation>,
         ILocationDictionary
@@ -14,6 +14,15 @@ namespace OpenTracker.Models.Locations
         private readonly ILocation.Factory _locationFactory;
         private readonly IDungeon.Factory _dungeonFactory;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="locationFactory">
+        /// The location factory.
+        /// </param>
+        /// <param name="dungeonFactory">
+        /// The dungeon factory.
+        /// </param>
         public LocationDictionary(
             ILocation.Factory locationFactory, IDungeon.Factory dungeonFactory)
             : base(new Dictionary<LocationID, ILocation>())
@@ -49,6 +58,9 @@ namespace OpenTracker.Models.Locations
             }
         }
 
+        /// <summary>
+        /// Resets all locations to their starting values.
+        /// </summary>
         public void Reset()
         {
             foreach (var location in Values)

@@ -5,6 +5,9 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
+    /// <summary>
+    /// This class contains map shuffle setting requirement data.
+    /// </summary>
     public class MapShuffleRequirement : BooleanRequirement
     {
         private readonly IMode _mode;
@@ -15,8 +18,11 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
         /// <param name="expectedValue">
-        /// A boolean representing the required map shuffle value.
+        /// A boolean expected map shuffle value.
         /// </param>
         public MapShuffleRequirement(IMode mode, bool expectedValue)
         {
@@ -37,7 +43,7 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IMode.MapShuffle))
             {

@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.PrizePlacements
 {
     /// <summary>
-    /// This is the class for creating prize placement classes.
+    /// This class contains the creation logic for prize placement data.
     /// </summary>
     public class PrizePlacementFactory : IPrizePlacementFactory
     {

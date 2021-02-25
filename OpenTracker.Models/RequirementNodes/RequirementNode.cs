@@ -8,14 +8,16 @@ using System.ComponentModel;
 namespace OpenTracker.Models.RequirementNodes
 {
     /// <summary>
-    /// This is the class for requirement nodes.
+    /// This class contains requirement node data.
     /// </summary>
     public class RequirementNode : IRequirementNode
     {
         private readonly IMode _mode;
         private readonly IRequirementNodeFactory _factory;
+
         private readonly RequirementNodeID _id;
         private readonly bool _start;
+
         private readonly List<INodeConnection> _connections =
             new List<INodeConnection>();
 
@@ -97,6 +99,15 @@ namespace OpenTracker.Models.RequirementNodes
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
+        /// <param name="requirementNodes">
+        /// The requirement node dictionary.
+        /// </param>
+        /// <param name="factory">
+        /// The requirement node factory.
+        /// </param>
         /// <param name="id">
         /// The requirement node identity.
         /// </param>
@@ -142,13 +153,13 @@ namespace OpenTracker.Models.RequirementNodes
         }
 
         /// <summary>
-        /// Subscribes to the NodeCreated event on the RequirementNodeDictionary class.
+        /// Subscribes to the ItemCreated event on the IRequirementNodeDictionary interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
         /// </param>
         /// <param name="e">
-        /// The arguments of the NodeCreated event.
+        /// The arguments of the ItemCreated event.
         /// </param>
         private void OnNodeCreated(object? sender, KeyValuePair<RequirementNodeID, IRequirementNode> e)
         {
@@ -169,7 +180,7 @@ namespace OpenTracker.Models.RequirementNodes
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the Mode class.
+        /// Subscribes to the PropertyChanged event on the IMode interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -177,7 +188,7 @@ namespace OpenTracker.Models.RequirementNodes
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IMode.EntranceShuffle))
             {
@@ -194,7 +205,7 @@ namespace OpenTracker.Models.RequirementNodes
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnConnectionChanged(object sender, PropertyChangedEventArgs e)
+        private void OnConnectionChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(INodeConnection.Accessibility))
             {
@@ -221,11 +232,6 @@ namespace OpenTracker.Models.RequirementNodes
         /// </returns>
         public AccessibilityLevel GetNodeAccessibility(List<IRequirementNode> excludedNodes)
         {
-            if (excludedNodes == null)
-            {
-                throw new ArgumentNullException(nameof(excludedNodes));
-            }
-
             if (AlwaysAccessible ||
                 (InsanityExitsAccessible > 0 &&
                 _mode.EntranceShuffle >= EntranceShuffle.Insanity) ||

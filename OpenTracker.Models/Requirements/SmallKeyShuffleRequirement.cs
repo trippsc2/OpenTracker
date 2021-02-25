@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for small key shuffle requirements.
+    /// This class contains small key shuffle requirement data.
     /// </summary>
     public class SmallKeyShuffleRequirement : BooleanRequirement
     {
@@ -16,8 +16,11 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
         /// <param name="expectedValue">
-        /// A boolean representing the required small key shuffle value.
+        /// A boolean expected small key shuffle value.
         /// </param>
         public SmallKeyShuffleRequirement(IMode mode, bool expectedValue)
         {
@@ -38,7 +41,7 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IMode.SmallKeyShuffle))
             {

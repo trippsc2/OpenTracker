@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.Markings
 {
     /// <summary>
-    /// This is the class for marking data.
+    /// This class contains marking data.
     /// </summary>
     public class Marking : IMarking
     {

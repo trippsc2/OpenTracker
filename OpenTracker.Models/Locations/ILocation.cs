@@ -7,7 +7,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Locations
 {
     /// <summary>
-    /// This is the interface for location data.
+    /// This interface contains location data.
     /// </summary>
     public interface ILocation : ISaveable<LocationSaveData>, INotifyPropertyChanged
     {

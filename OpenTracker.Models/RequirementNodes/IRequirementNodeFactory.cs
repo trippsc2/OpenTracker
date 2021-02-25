@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace OpenTracker.Models.RequirementNodes
 {
+    /// <summary>
+    /// This interface contains creation logic for requirement node data.
+    /// </summary>
     public interface IRequirementNodeFactory
     {
         delegate IRequirementNodeFactory Factory();

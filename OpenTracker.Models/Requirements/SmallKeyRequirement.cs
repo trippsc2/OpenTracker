@@ -5,7 +5,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for a small key requirement.
+    /// This class contains small key requirement data.
     /// </summary>
     public class SmallKeyRequirement : BooleanRequirement
     {
@@ -19,6 +19,12 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
+        /// <param name="items">
+        /// The item dictionary.
+        /// </param>
         /// <param name="item">
         /// The item of the requirement.
         /// </param>
@@ -49,7 +55,7 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IMode.GenericKeys))
             {
@@ -66,7 +72,7 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnItemChanged(object sender, PropertyChangedEventArgs e)
+        private void OnItemChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IItem.Current))
             {

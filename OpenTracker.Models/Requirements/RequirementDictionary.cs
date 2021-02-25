@@ -5,13 +5,19 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the dictionary containing requirement data
+    /// This class contains the dictionary container for requirement data.
     /// </summary>
     public class RequirementDictionary : LazyDictionary<RequirementType, IRequirement>,
         IRequirementDictionary
     {
         private readonly Lazy<IRequirementFactory> _factory;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="factory">
+        /// The requirement factory.
+        /// </param>
         public RequirementDictionary(IRequirementFactory.Factory factory)
             : base(new Dictionary<RequirementType, IRequirement>())
         {

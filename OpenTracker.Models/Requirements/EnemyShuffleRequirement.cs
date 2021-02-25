@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for enemy shuffle requirements.
+    /// This class contains enemy shuffle requirement data.
     /// </summary>
     public class EnemyShuffleRequirement : BooleanRequirement
     {
@@ -16,6 +16,9 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
         /// <param name="expectedValue">
         /// The required enemy shuffle value.
         /// </param>
@@ -38,7 +41,7 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnModeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnModeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IMode.EnemyShuffle))
             {

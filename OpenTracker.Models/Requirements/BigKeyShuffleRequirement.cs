@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for big key shuffle requirements.
+    /// This class contains big key shuffle requirement data.
     /// </summary>
     public class BigKeyShuffleRequirement : BooleanRequirement
     {

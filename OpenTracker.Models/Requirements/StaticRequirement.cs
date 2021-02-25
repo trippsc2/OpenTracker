@@ -5,8 +5,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for unchanging requirements, such as no requirement or
-    /// inspect requirements.
+    /// This class contains unchanging requirement data.
     /// </summary>
     public class StaticRequirement : IRequirement
     {

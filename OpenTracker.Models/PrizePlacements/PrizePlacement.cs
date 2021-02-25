@@ -7,7 +7,7 @@ using System.Linq;
 namespace OpenTracker.Models.PrizePlacements
 {
     /// <summary>
-    /// This is the class for prize placements.
+    /// This class contains prize placement data.
     /// </summary>
     public class PrizePlacement : IPrizePlacement
     {
@@ -35,6 +35,9 @@ namespace OpenTracker.Models.PrizePlacements
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="prizes">
+        /// The prize dictionary.
+        /// </param>
         /// <param name="startingPrize">
         /// The starting prize item.
         /// </param>

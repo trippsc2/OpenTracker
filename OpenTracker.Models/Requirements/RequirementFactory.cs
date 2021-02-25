@@ -10,7 +10,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for creating Requirement classes.
+    /// This class contains creation logic for requirement data.
     /// </summary>
     public class RequirementFactory : IRequirementFactory
     {
@@ -48,6 +48,102 @@ namespace OpenTracker.Models.Requirements
 
         public delegate IRequirementFactory Factory(IRequirementDictionary requirements);
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="bossPlacements">
+        /// The boss placement dictionary.
+        /// </param>
+        /// <param name="items">
+        /// The item dictionary.
+        /// </param>
+        /// <param name="prizes">
+        /// The prize dictionary.
+        /// </param>
+        /// <param name="requirementNodes">
+        /// The requirement node dictionary.
+        /// </param>
+        /// <param name="sequenceBreaks">
+        /// The sequence break dictionary.
+        /// </param>
+        /// <param name="aggregateFactory">
+        /// An Autofac factory for creating aggregate requirements.
+        /// </param>
+        /// <param name="alternativeFactory">
+        /// An Autofac factory for creating alternative requirements.
+        /// </param>
+        /// <param name="bigKeyShuffleFactory">
+        /// An Autofac factory for creating big key shuffle requirements.
+        /// </param>
+        /// <param name="bossFactory">
+        /// An Autofac factory for creating boss placement requirements.
+        /// </param>
+        /// <param name="bossShuffleFactory">
+        /// An Autofac factory for creating boss shuffle requirements.
+        /// </param>
+        /// <param name="compassShuffleFactory">
+        /// An Autofac factory for creating compass shuffle requirements.
+        /// </param>
+        /// <param name="crystalFactory">
+        /// An Autofac factory for creating crystal requirements.
+        /// </param>
+        /// <param name="enemyShuffleFactory">
+        /// An Autofac factory for creating enemy shuffle requirements.
+        /// </param>
+        /// <param name="entranceShuffleFactory">
+        /// An Autofac factory for creating entrance shuffle requirements.
+        /// </param>
+        /// <param name="genericKeysFactory">
+        /// An Autofac factory for creating generic keys requirements.
+        /// </param>
+        /// <param name="guaranteedBossItemsFactory">
+        /// An Autofac factory for creating guaranteed boss items requirements.
+        /// </param>
+        /// <param name="itemExactFactory">
+        /// An Autofac factory for creating item exact amount requirements.
+        /// </param>
+        /// <param name="itemPlacementFactory">
+        /// An Autofac factory for creating item placement requirements.
+        /// </param>
+        /// <param name="itemFactory">
+        /// An Autofac factory for creating item requirements.
+        /// </param>
+        /// <param name="keyDropShuffleFactory">
+        /// An Autofac factory for creating key drop shuffle requirements.
+        /// </param>
+        /// <param name="mapShuffleFactory">
+        /// An Autofac factory for creating map shuffle requirements.
+        /// </param>
+        /// <param name="raceIllegalTrackingFactory">
+        /// An Autofac factory for creating race illegal tracking requirements.
+        /// </param>
+        /// <param name="requirementNodeFactory">
+        /// An Autofac factory for creating requirement node requirements.
+        /// </param>
+        /// <param name="sequenceBreakFactory">
+        /// An Autofac factory for creating sequence break requirements.
+        /// </param>
+        /// <param name="shopShuffleFactory">
+        /// An Autofac factory for creating shop shuffle requirements.
+        /// </param>
+        /// <param name="smallKeyFactory">
+        /// An Autofac factory for creating small key requirements.
+        /// </param>
+        /// <param name="smallKeyShuffleFactory">
+        /// An Autofac factory for creating small key shuffle requirements.
+        /// </param>
+        /// <param name="staticFactory">
+        /// An Autofac factory for creating static requirements.
+        /// </param>
+        /// <param name="takeAnyLocationsFactory">
+        /// An Autofac factory for creating take any locations requirements.
+        /// </param>
+        /// <param name="worldStateFactory">
+        /// An Autofac factory for creating world state requirements.
+        /// </param>
+        /// <param name="requirements">
+        /// The requirements dictionary.
+        /// </param>
         public RequirementFactory(
             IBossPlacementDictionary bossPlacements, IItemDictionary items,
             IPrizeDictionary prizes,  IRequirementNodeDictionary requirementNodes,

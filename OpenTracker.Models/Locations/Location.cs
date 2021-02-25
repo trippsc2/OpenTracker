@@ -10,7 +10,7 @@ using System.Globalization;
 namespace OpenTracker.Models.Locations
 {
     /// <summary>
-    /// This is the class containing location data.
+    /// This class contains location data.
     /// </summary>
     public class Location : ILocation
     {
@@ -84,14 +84,23 @@ namespace OpenTracker.Models.Locations
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="factory">
+        /// The location factory.
+        /// </param>
+        /// <param name="mapLocationFactory">
+        /// The map location factory.
+        /// </param>
+        /// <param name="sectionFactory">
+        /// The section factory.
+        /// </param>
+        /// <param name="markingFactory">
+        /// The marking factory.
+        /// </param>
+        /// <param name="notes">
+        /// A new collection of location notes.
+        /// </param>
         /// <param name="id">
         /// The ID of the location.
-        /// </param>
-        /// <param name="name">
-        /// A string representing the name of the location.
-        /// </param>
-        /// <param name="mapLocations">
-        /// The list of map locations for the location.
         /// </param>
         public Location(ILocationFactory factory, IMapLocationFactory mapLocationFactory,
             ISectionFactory sectionFactory, IMarking.Factory markingFactory, 
@@ -128,7 +137,7 @@ namespace OpenTracker.Models.Locations
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the ISection class.
+        /// Subscribes to the PropertyChanged event on the ISection interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -325,7 +334,7 @@ namespace OpenTracker.Models.Locations
         {
             if (saveData == null)
             {
-                throw new ArgumentNullException(nameof(saveData));
+                return;
             }
 
             Notes.Clear();

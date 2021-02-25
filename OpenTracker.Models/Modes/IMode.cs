@@ -3,6 +3,9 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models.Modes
 {
+    /// <summary>
+    /// This interface contains game mode settings data.
+    /// </summary>
     public interface IMode : INotifyPropertyChanged
     {
         bool BigKeyShuffle { get; set; }

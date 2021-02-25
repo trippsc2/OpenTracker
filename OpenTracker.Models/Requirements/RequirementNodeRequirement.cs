@@ -1,12 +1,11 @@
 ﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.RequirementNodes;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for requirement node requirement.
+    /// This class containing requirement node requirement data.
     /// </summary>
     public class RequirementNodeRequirement : AccessibilityRequirement
     {
@@ -38,7 +37,7 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnNodeChanged(object sender, PropertyChangedEventArgs e)
+        private void OnNodeChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirementNode.Accessibility))
             {

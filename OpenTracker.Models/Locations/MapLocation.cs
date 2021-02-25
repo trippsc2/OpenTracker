@@ -1,10 +1,9 @@
 ﻿using OpenTracker.Models.Requirements;
-using System.Collections.Generic;
 
 namespace OpenTracker.Models.Locations
 {
     /// <summary>
-    /// This is the class containing data for a location's placement on the map.
+    /// This class contains map location data.
     /// </summary>
     public class MapLocation : IMapLocation
     {
@@ -17,9 +16,6 @@ namespace OpenTracker.Models.Locations
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="location">
-        /// The location parent class.
-        /// </param>
         /// <param name="map">
         /// The map identity on which the location is represented.
         /// </param>
@@ -28,6 +24,9 @@ namespace OpenTracker.Models.Locations
         /// </param>
         /// <param name="y">
         /// The Y coordinate of the map location.
+        /// </param>
+        /// <param name="location">
+        /// The location parent class.
         /// </param>
         /// <param name="requirement">
         /// The mode requirement for displaying this map location.

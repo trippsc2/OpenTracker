@@ -6,7 +6,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for aggregating a set of requirements.
+    /// This class contains logic aggregating a set of requirements.
     /// </summary>
     public class AggregateRequirement : AccessibilityRequirement
     {
@@ -41,7 +41,7 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnRequirementChanged(object sender, PropertyChangedEventArgs e)
+        private void OnRequirementChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IRequirement.Accessibility))
             {

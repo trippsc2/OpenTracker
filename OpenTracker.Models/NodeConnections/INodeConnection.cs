@@ -6,6 +6,9 @@ using System.ComponentModel;
 
 namespace OpenTracker.Models.NodeConnections
 {
+    /// <summary>
+    /// This interface contains node connection data.
+    /// </summary>
     public interface INodeConnection : INotifyPropertyChanged
     {
         AccessibilityLevel Accessibility { get; }

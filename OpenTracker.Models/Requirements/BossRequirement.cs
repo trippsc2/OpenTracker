@@ -7,7 +7,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for the requirement of boss placements.
+    /// This class contains boss placement requirement data.
     /// </summary>
     public class BossRequirement : AccessibilityRequirement
     {
@@ -46,6 +46,12 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
+        /// <param name="requirements">
+        /// The requirement dictionary.
+        /// </param>
         /// <param name="bossPlacement">
         /// The boss placement to provide requirements.
         /// </param>

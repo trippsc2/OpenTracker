@@ -2,6 +2,9 @@
 
 namespace OpenTracker.Models.Locations
 {
+    /// <summary>
+    /// This interface contains map location data.
+    /// </summary>
     public interface IMapLocation
     {
         ILocation Location { get; }

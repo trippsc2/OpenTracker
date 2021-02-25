@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for take any locations requirements.
+    /// This class contains take any locations requirement data.
     /// </summary>
     public class TakeAnyLocationsRequirement : BooleanRequirement
     {
@@ -16,8 +16,11 @@ namespace OpenTracker.Models.Requirements
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
         /// <param name="expectedValue">
-        /// The required enemy shuffle value.
+        /// A boolean expected enemy shuffle value.
         /// </param>
         public TakeAnyLocationsRequirement(IMode mode, bool expectedValue)
         {

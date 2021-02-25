@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.RequirementNodes
 {
     /// <summary>
-    /// This is the class for creating requirement node classes.
+    /// This class contains creation logic for requirement node data.
     /// </summary>
     public class RequirementNodeFactory : IRequirementNodeFactory
     {
@@ -15,6 +15,21 @@ namespace OpenTracker.Models.RequirementNodes
         private readonly IRequirementNode.Factory _factory;
         private readonly NodeConnection.Factory _connectionFactory;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="requirements">
+        /// The requirement dictionary.
+        /// </param>
+        /// <param name="requirementNodes">
+        /// The requirement node dictionary.
+        /// </param>
+        /// <param name="factory">
+        /// An Autofac factory for creating requirement nodes.
+        /// </param>
+        /// <param name="connectionFactory">
+        /// An Autofac factory for creating node connections.
+        /// </param>
         public RequirementNodeFactory(
             IRequirementDictionary requirements, IRequirementNodeDictionary requirementNodes,
             IRequirementNode.Factory factory, NodeConnection.Factory connectionFactory)

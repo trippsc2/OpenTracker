@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.Items
 {
     /// <summary>
-    /// This is the class for the dictionary of prizes.
+    /// This class contains the dictionary container for prize data.
     /// </summary>
     public class PrizeDictionary : LazyDictionary<PrizeType, IItem>,
         IPrizeDictionary
@@ -16,7 +16,7 @@ namespace OpenTracker.Models.Items
         /// Constructor
         /// </summary>
         /// <param name="factory">
-        /// A factory that creates prize items.
+        /// An Autofac factory for creating prize items.
         /// </param>
         public PrizeDictionary(Item.Factory factory)
             : base(new Dictionary<PrizeType, IItem>())

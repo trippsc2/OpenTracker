@@ -5,7 +5,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the base class for all boolean condition requirements.
+    /// This base class contains boolean requirement data.
     /// </summary>
     public abstract class BooleanRequirement : IRequirement
     {

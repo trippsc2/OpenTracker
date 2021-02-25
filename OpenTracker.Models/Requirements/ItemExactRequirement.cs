@@ -5,7 +5,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for requirement that requires an exact number of an item.
+    /// This class contains item exact value requirement data.
     /// </summary>
     public class ItemExactRequirement : BooleanRequirement
     {
@@ -42,7 +42,7 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnItemChanged(object sender, PropertyChangedEventArgs e)
+        private void OnItemChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IItem.Current))
             {

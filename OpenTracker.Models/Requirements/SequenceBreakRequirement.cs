@@ -5,7 +5,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for sequence break requirements.
+    /// This class contains sequence break requirement data.
     /// </summary>
     public class SequenceBreakRequirement : BooleanRequirement
     {
@@ -30,7 +30,7 @@ namespace OpenTracker.Models.Requirements
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the SequenceBreak class.
+        /// Subscribes to the PropertyChanged event on the ISequenceBreak interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.
@@ -38,7 +38,7 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnSequenceBreakChanged(object sender, PropertyChangedEventArgs e)
+        private void OnSequenceBreakChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ISequenceBreak.Enabled))
             {

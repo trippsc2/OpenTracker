@@ -6,7 +6,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.RequirementNodes
 {
     /// <summary>
-    /// This is the interface for the requirement node.
+    /// This interface contains requirement node data.
     /// </summary>
     public interface IRequirementNode : INotifyPropertyChanged
     {

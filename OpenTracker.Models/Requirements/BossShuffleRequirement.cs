@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for boss shuffle requirements.
+    /// This class contains boss shuffle requirement data.
     /// </summary>
     public class BossShuffleRequirement : BooleanRequirement
     {

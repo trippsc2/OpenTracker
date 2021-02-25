@@ -5,7 +5,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.PrizePlacements
 {
     /// <summary>
-    /// This is the interface for prize placements.
+    /// This interface contains prize placement data.
     /// </summary>
     public interface IPrizePlacement : INotifyPropertyChanging, INotifyPropertyChanged,
         ISaveable<PrizePlacementSaveData>

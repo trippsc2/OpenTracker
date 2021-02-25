@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for an item requirement.
+    /// This class contains item requirement data.
     /// </summary>
     public class ItemRequirement : BooleanRequirement
     {
@@ -41,7 +41,7 @@ namespace OpenTracker.Models.Requirements
         /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
-        private void OnItemChanged(object sender, PropertyChangedEventArgs e)
+        private void OnItemChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(IItem.Current))
             {
