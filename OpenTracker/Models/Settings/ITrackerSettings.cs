@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.Settings
 {
     /// <summary>
-    /// This is the interface containing tracker GUI settings.
+    /// This interface contains GUI tracking settings data.
     /// </summary>
     public interface ITrackerSettings : INotifyPropertyChanged
     {

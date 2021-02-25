@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.Settings
 {
     /// <summary>
-    /// This is the class containing tracker GUI settings.
+    /// This class contains GUI tracking settings data.
     /// </summary>
     public class TrackerSettings : ITrackerSettings
     {

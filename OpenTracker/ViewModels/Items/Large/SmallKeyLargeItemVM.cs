@@ -17,6 +17,7 @@ namespace OpenTracker.ViewModels.Items.Large
     public class SmallKeyLargeItemVM : ViewModelBase, ILargeItemVMBase, IClickHandler
     {
         private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
 
         private readonly IItem _item;
         private readonly IRequirement _requirement;
@@ -41,10 +42,11 @@ namespace OpenTracker.ViewModels.Items.Large
         /// An item that is to be represented by this control.
         /// </param>
         public SmallKeyLargeItemVM(
-            IRequirementDictionary requirements, IUndoRedoManager undoRedoManager, IItem item,
-            string imageSourceBase)
+            IRequirementDictionary requirements, IUndoRedoManager undoRedoManager,
+            IUndoableFactory undoableFactory, IItem item, string imageSourceBase)
         {
             _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
 
             _item = item;
             _requirement = requirements[RequirementType.GenericKeys];
@@ -94,7 +96,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         public void OnLeftClick(bool force)
         {
-            _undoRedoManager.Execute(new AddItem(_item));
+            _undoRedoManager.Execute(_undoableFactory.GetAddItem(_item));
         }
 
         /// <summary>
@@ -105,7 +107,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         public void OnRightClick(bool force)
         {
-            _undoRedoManager.Execute(new RemoveItem(_item));
+            _undoRedoManager.Execute(_undoableFactory.GetRemoveItem(_item));
         }
     }
 }

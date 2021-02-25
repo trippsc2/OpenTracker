@@ -4,7 +4,7 @@ using OpenTracker.Models.Markings;
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to add a note to a location.
+    /// This class contains undoable action data to add a note to a location.
     /// </summary>
     public class AddNote : IUndoable
     {
@@ -17,6 +17,9 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="factory">
+        /// An Autofac factory for creating markings.
+        /// </param>
         /// <param name="location">
         /// The location to which the note will be added.
         /// </param>

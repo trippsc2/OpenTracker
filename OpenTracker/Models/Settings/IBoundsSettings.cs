@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.Settings
 {
     /// <summary>
-    /// This is the interface containing the saved window bounds.
+    /// This interface contains window bounds settings.
     /// </summary>
     public interface IBoundsSettings
     {

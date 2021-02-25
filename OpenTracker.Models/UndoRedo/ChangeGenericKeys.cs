@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for the undoable action to change the generic keys mode setting.
+    /// This class contains undoable action data to change the generic keys mode setting.
     /// </summary>
     public class ChangeGenericKeys : IUndoable
     {
@@ -16,6 +16,9 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
         /// <param name="genericKeys">
         /// The new generic keys setting.
         /// </param>

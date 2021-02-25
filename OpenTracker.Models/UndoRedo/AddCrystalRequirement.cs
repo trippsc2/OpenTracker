@@ -4,7 +4,7 @@ using System;
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to "add" crystal requirement item.
+    /// This class contains undoable action data to "add" crystal requirement item.
     /// </summary>
     public class AddCrystalRequirement : IUndoable
     {

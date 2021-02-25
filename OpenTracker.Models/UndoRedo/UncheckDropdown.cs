@@ -1,8 +1,10 @@
 ﻿using OpenTracker.Models.Dropdowns;
-using System;
 
 namespace OpenTracker.Models.UndoRedo
 {
+    /// <summary>
+    /// This class contains undoable action data to uncheck a dropdown.
+    /// </summary>
     public class UncheckDropdown : IUndoable
     {
         private readonly IDropdown _dropdown;

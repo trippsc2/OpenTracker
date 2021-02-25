@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to toggle a dungeon prize.
+    /// This class contains undoable action to toggle a dungeon prize.
     /// </summary>
     public class TogglePrize : IUndoable
     {

@@ -1,11 +1,10 @@
 ﻿using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
-using System;
 
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to remove a note from a location.
+    /// This class contains undoable action to remove a note from a location.
     /// </summary>
     public class RemoveNote : IUndoable
     {

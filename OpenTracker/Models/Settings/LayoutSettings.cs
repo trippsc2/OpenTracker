@@ -5,7 +5,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Settings
 {
     /// <summary>
-    /// This is the class containing tracker GUI layout settings.
+    /// This class contains GUI layout settings data.
     /// </summary>
     public class LayoutSettings : ILayoutSettings
     {

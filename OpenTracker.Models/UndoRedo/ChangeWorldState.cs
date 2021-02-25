@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to change the world state setting.
+    /// This class contains undoable action data to change the world state setting.
     /// </summary>
     public class ChangeWorldState : IUndoable
     {

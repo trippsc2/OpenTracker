@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for the requirement of the always display dungeon items setting.
+    /// This class contains always display dungeon items setting requirement data.
     /// </summary>
     public class AlwaysDisplayDungeonItemsRequirement : BooleanRequirement
     {

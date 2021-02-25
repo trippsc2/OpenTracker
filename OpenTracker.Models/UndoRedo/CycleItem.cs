@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to cycle an item through valid counts.
+    /// This class contains undoable action data to cycle an item through valid counts.
     /// </summary>
     public class CycleItem : IUndoable
     {

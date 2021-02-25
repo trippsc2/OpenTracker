@@ -10,7 +10,7 @@ using OpenTracker.Models.UndoRedo;
 namespace OpenTracker.Models.Reset
 {
     /// <summary>
-    /// This is the class for resetting the tracker.
+    /// This class contains logic for resetting the tracker.
     /// </summary>
     public class ResetManager : IResetManager
     {

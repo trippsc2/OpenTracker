@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace OpenTracker.ViewModels.AutoTracking
 {
+    /// <summary>
+    /// This class contains the autotracker dialog window ViewModel.
+    /// </summary>
     public class AutoTrackerDialogVM : DialogViewModelBase, IAutoTrackerDialogVM
     {
         private readonly IAutoTracker _autoTracker;
@@ -81,8 +84,17 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// <summary>
         /// Constructor
         /// </summary>
-        public AutoTrackerDialogVM(IAutoTracker autoTracker, IAutoTrackerStatusVM status,
-            IAutoTrackerLogVM log)
+        /// <param name="autoTracker">
+        /// The autotracker data.
+        /// </param>
+        /// <param name="status">
+        /// The autotracker status control ViewModel.
+        /// </param>
+        /// <param name="log">
+        /// The autotracker log control ViewModel.
+        /// </param>
+        public AutoTrackerDialogVM(
+            IAutoTracker autoTracker, IAutoTrackerStatusVM status, IAutoTrackerLogVM log)
         {
             _autoTracker = autoTracker;
 
@@ -145,13 +157,13 @@ namespace OpenTracker.ViewModels.AutoTracking
         }
 
         /// <summary>
-        /// Subscribes to the dispatcher timer and triggers the appropriate memory checks on tick.
+        /// Subscribes to the dispatcher timer Tick event.
         /// </summary>
         /// <param name="sender">
         /// The event sender.
         /// </param>
         /// <param name="e">
-        /// The event arguments.
+        /// The arguments of the Tick event.
         /// </param>
         private void OnMemoryCheckTimerTick(object? sender, EventArgs e)
         {
@@ -192,7 +204,7 @@ namespace OpenTracker.ViewModels.AutoTracking
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the AutoTracker class.
+        /// Subscribes to the PropertyChanged event on the IAutoTracker interface.
         /// </summary>
         /// <param name="sender">
         /// The sending object of the event.

@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.Settings
 {
     /// <summary>
-    /// This is the interface for application data to be saved to file.
+    /// This interface contains app settings data.
     /// </summary>
     public interface IAppSettings : ISaveable<AppSettingsSaveData>
     {

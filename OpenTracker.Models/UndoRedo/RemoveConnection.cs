@@ -3,8 +3,7 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to remove a connection between
-    /// two entrances.
+    /// This class contains undoable action to remove a connection between two entrances.
     /// </summary>
     public class RemoveConnection : IUndoable
     {
@@ -16,8 +15,11 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="connections">
+        /// The connection collection.
+        /// </param>
         /// <param name="connection">
-        /// The connection tuple to be removed.
+        /// The connection to be removed.
         /// </param>
         public RemoveConnection(
             IConnectionCollection connections, IConnection connection)

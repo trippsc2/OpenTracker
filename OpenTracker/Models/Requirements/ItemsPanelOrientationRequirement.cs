@@ -1,13 +1,11 @@
 ﻿using Avalonia.Layout;
-using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Settings;
-using System;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for the requirement of a specified items panel orientation.
+    /// This class contains items panel orientation requirement data.
     /// </summary>
     public class ItemsPanelOrientationRequirement : BooleanRequirement
     {

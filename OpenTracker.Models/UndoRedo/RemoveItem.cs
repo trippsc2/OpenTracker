@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to remove an item.
+    /// This class contains undoable action to remove an item.
     /// </summary>
     public class RemoveItem : IUndoable
     {

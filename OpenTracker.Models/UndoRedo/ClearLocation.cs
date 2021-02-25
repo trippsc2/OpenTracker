@@ -1,13 +1,12 @@
 ﻿using OpenTracker.Models.Locations;
 using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
-using System;
 using System.Collections.Generic;
 
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to clear a location.
+    /// This class contains undoable action data to clear a location.
     /// </summary>
     public class ClearLocation : IUndoable
     {
@@ -30,7 +29,7 @@ namespace OpenTracker.Models.UndoRedo
         /// </param>
         public ClearLocation(ILocation location, bool force = false)
         {
-            _location = location ?? throw new ArgumentNullException(nameof(location));
+            _location = location;
             _force = force;
         }
 

@@ -362,7 +362,7 @@ namespace OpenTracker.ViewModels.Maps.Locations
         /// </param>
         public void OnRightClick(bool force)
         {
-            _undoRedoManager.Execute(new ClearLocation(MapLocation.Location!, force));
+            _undoRedoManager.Execute(_undoableFactory.GetClearLocation(MapLocation.Location!, force));
         }
     }
 }

@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.SequenceBreaks
 {
     /// <summary>
-    /// This is the class for sequence breaks.
+    /// This class contains sequence breaks.
     /// </summary>
     public class SequenceBreak : ISequenceBreak
     {

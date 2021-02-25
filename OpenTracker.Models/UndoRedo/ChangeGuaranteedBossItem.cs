@@ -3,13 +3,13 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to change the guaranteed boss items setting
-    /// (Ambrosia).
+    /// This class contains undoable action to change the guaranteed boss items setting (Ambrosia).
     /// </summary>
     public class ChangeGuaranteedBossItems : IUndoable
     {
         private readonly IMode _mode;
         private readonly bool _guaranteedBossItems;
+
         private bool _previousGuaranteedBossItems;
 
         public delegate ChangeGuaranteedBossItems Factory(bool guaranteedBossItems);
@@ -17,6 +17,9 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
         /// <param name="guaranteedBossItems">
         /// The new guaranteed boss items setting.
         /// </param>

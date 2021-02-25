@@ -3,12 +3,14 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for unpinning a location.
+    /// This class contains undoable action data to unpin a location.
     /// </summary>
     public class UnpinLocation : IUndoable
     {
         private readonly IPinnedLocationCollection _pinnedLocations;
+
         private readonly ILocation _pinnedLocation;
+
         private int? _existingIndex;
 
         public delegate UnpinLocation Factory(ILocation pinnedLocation);
@@ -16,6 +18,9 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="pinnedLocations">
+        /// The pinned locations collection.
+        /// </param>
         /// <param name="pinnedLocation">
         /// The pinned location ViewModel instance to be added.
         /// </param>

@@ -16,6 +16,8 @@ namespace OpenTracker.ViewModels.BossSelect
     {
         private readonly ILayoutSettings _layoutSettings;
         private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
+
         private readonly IBossPlacement _bossPlacement;
 
         public double Scale =>
@@ -42,11 +44,15 @@ namespace OpenTracker.ViewModels.BossSelect
         /// </param>
         public BossSelectPopupVM(
             ILayoutSettings layoutSettings, IUndoRedoManager undoRedoManager,
-            IBossSelectFactory factory, IBossPlacement bossPlacement)
+            IUndoableFactory undoableFactory, IBossSelectFactory factory,
+            IBossPlacement bossPlacement)
         {
             _layoutSettings = layoutSettings;
             _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
+
             _bossPlacement = bossPlacement;
+
             Buttons = factory.GetBossSelectButtonVMs(_bossPlacement);
 
             ChangeBossCommand = ReactiveCommand.Create<BossType?>(ChangeBoss);
@@ -79,7 +85,7 @@ namespace OpenTracker.ViewModels.BossSelect
         /// </param>
         private void ChangeBoss(BossType? boss)
         {
-            _undoRedoManager.Execute(new ChangeBoss(_bossPlacement, boss));
+            _undoRedoManager.Execute(_undoableFactory.GetChangeBoss(_bossPlacement, boss));
             PopupOpen = false;
         }
     }

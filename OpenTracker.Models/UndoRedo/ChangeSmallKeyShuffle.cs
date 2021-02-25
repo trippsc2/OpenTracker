@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to change the small key shuffle setting.
+    /// This class contains undoable action data to change the small key shuffle setting.
     /// </summary>
     public class ChangeSmallKeyShuffle : IUndoable
     {
@@ -16,6 +16,9 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
         /// <param name="smallKeyShuffle">
         /// The new small key shuffle setting.
         /// </param>

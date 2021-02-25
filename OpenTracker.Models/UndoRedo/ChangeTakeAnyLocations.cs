@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for the undoable action of changing the take any locations mode setting.
+    /// This class contains undoable action data to change the take any locations mode setting.
     /// </summary>
     public class ChangeTakeAnyLocations : IUndoable
     {
@@ -16,6 +16,9 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
         /// <param name="takeAnyLocations">
         /// The new generic keys setting.
         /// </param>

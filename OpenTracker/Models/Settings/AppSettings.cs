@@ -7,7 +7,7 @@ using System.Reflection;
 namespace OpenTracker.Models.Settings
 {
     /// <summary>
-    /// This is the class for application data to be saved to file.
+    /// This class contains app settings data.
     /// </summary>
     public class AppSettings : IAppSettings
     {

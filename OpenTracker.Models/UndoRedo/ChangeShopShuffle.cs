@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for the undoable action of changing the shop shuffle mode setting.
+    /// This class contains undoable action data to change the shop shuffle mode setting.
     /// </summary>
     public class ChangeShopShuffle : IUndoable
     {
@@ -16,6 +16,9 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
         /// <param name="shopShuffle">
         /// The new key drp shuffle setting.
         /// </param>

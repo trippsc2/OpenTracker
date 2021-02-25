@@ -3,8 +3,7 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to create a connection between
-    /// two entrances.
+    /// This class contains undoable action data to create a connection between two entrances.
     /// </summary>
     public class AddConnection : IUndoable
     {
@@ -16,6 +15,9 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="connections">
+        /// The connection collection.
+        /// </param>
         /// <param name="connection">
         /// A tuple of the two map locations that are being collected.
         /// </param>

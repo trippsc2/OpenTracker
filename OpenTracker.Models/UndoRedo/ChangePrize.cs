@@ -5,7 +5,7 @@ using System.Linq;
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to change the dungeon prize.
+    /// This class contains undoable action data to change the dungeon prize.
     /// </summary>
     public class ChangePrize : IUndoable
     {
@@ -19,9 +19,6 @@ namespace OpenTracker.Models.UndoRedo
         /// </summary>
         /// <param name="prizePlacement">
         /// The boss section data for the dungeon.
-        /// </param>
-        /// <param name="item">
-        /// The item of the prize to be placed.
         /// </param>
         public ChangePrize(IPrizePlacement prizePlacement)
         {

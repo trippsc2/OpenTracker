@@ -1,10 +1,9 @@
 ﻿using OpenTracker.Models.Dropdowns;
-using System;
 
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to check a dropdown.
+    /// This class contains undoable action data to check a dropdown.
     /// </summary>
     public class CheckDropdown : IUndoable
     {

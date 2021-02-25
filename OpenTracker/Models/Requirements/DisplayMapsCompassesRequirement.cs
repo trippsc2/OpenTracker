@@ -1,12 +1,10 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
-using OpenTracker.Models.Settings;
-using System;
+﻿using OpenTracker.Models.Settings;
 using System.ComponentModel;
 
 namespace OpenTracker.Models.Requirements
 {
     /// <summary>
-    /// This is the class for the requirement of the display maps/compasses setting.
+    /// This class contains display maps/compasses setting requirement data.
     /// </summary>
     public class DisplayMapsCompassesRequirement : BooleanRequirement
     {

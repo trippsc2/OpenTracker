@@ -16,6 +16,7 @@ namespace OpenTracker.ViewModels.Items.Large
     public class PrizeLargeItemVM : ViewModelBase, ILargeItemVMBase, IClickHandler
     {
         private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
 
         private readonly IPrizeSection _section;
         private readonly string _imageSourceBase;
@@ -35,9 +36,11 @@ namespace OpenTracker.ViewModels.Items.Large
         /// An item that is to be represented by this control.
         /// </param>
         public PrizeLargeItemVM(
-            IUndoRedoManager undoRedoManager, IPrizeSection section, string imageSourceBase)
+            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory,
+            IPrizeSection section, string imageSourceBase)
         {
             _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
 
             _section = section;
             _imageSourceBase = imageSourceBase;
@@ -70,7 +73,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         public void OnLeftClick(bool force)
         {
-            _undoRedoManager.Execute(new CollectSection(_section, true));
+            _undoRedoManager.Execute(_undoableFactory.GetCollectSection(_section, true));
         }
 
         /// <summary>
@@ -81,7 +84,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         public void OnRightClick(bool force)
         {
-            _undoRedoManager.Execute(new UncollectSection(_section));
+            _undoRedoManager.Execute(_undoableFactory.GetUncollectSection(_section));
         }
     }
 }

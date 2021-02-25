@@ -12,6 +12,8 @@ namespace OpenTracker.ViewModels.Dropdowns
     public class DropdownVM : ViewModelBase, IDropdownVM
     {
         private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
+
         private readonly IDropdown _dropdown;
         private readonly string _imageSourceBase;
 
@@ -32,9 +34,12 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// An item that is to be represented by this control.
         /// </param>
         public DropdownVM(
-            IUndoRedoManager undoRedoManager, IDropdown dropdown, string imageSourceBase)
+            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IDropdown dropdown,
+            string imageSourceBase)
         {
             _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
+
             _dropdown = dropdown;
             _imageSourceBase = imageSourceBase;
 
@@ -71,7 +76,7 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// </param>
         public void OnLeftClick(bool force)
         {
-            _undoRedoManager.Execute(new CheckDropdown(_dropdown));
+            _undoRedoManager.Execute(_undoableFactory.GetCheckDropdown(_dropdown));
         }
 
         /// <summary>
@@ -82,7 +87,7 @@ namespace OpenTracker.ViewModels.Dropdowns
         /// </param>
         public void OnRightClick(bool force)
         {
-            _undoRedoManager.Execute(new UncheckDropdown(_dropdown));
+            _undoRedoManager.Execute(_undoableFactory.GetUncheckDropdown(_dropdown));
         }
     }
 }

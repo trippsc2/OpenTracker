@@ -7,7 +7,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for managing undo/redo actions.
+    /// This class contains logic managing undo/redo actions.
     /// </summary>
     public class UndoRedoManager : IUndoRedoManager
     {
@@ -25,6 +25,12 @@ namespace OpenTracker.Models.UndoRedo
         public bool CanRedo =>
             _redoableActions.Count > 0;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="saveLoadManager">
+        /// The save/load manager.
+        /// </param>
         public UndoRedoManager(ISaveLoadManager saveLoadManager)
         {
             _saveLoadManager = saveLoadManager;
@@ -33,16 +39,40 @@ namespace OpenTracker.Models.UndoRedo
             _redoableActions.CollectionChanged += OnRedoChanged;
         }
 
+        /// <summary>
+        /// Raises the PropertyChanged event for the specified property.
+        /// </summary>
+        /// <param name="propertyName">
+        /// The string of the property name of the changed property.
+        /// </param>
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        /// <summary>
+        /// Subscribes to the CollectionChanged event on the _undoableActions observable stack.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the CollectionChanged event.
+        /// </param>
         private void OnUndoChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged(nameof(CanUndo));
         }
 
+        /// <summary>
+        /// Subscribes to the CollectionChanged event on the _redoableActions observable stack.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the CollectionChanged event.
+        /// </param>
         private void OnRedoChanged(object? sender, NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged(nameof(CanRedo));
@@ -69,7 +99,7 @@ namespace OpenTracker.Models.UndoRedo
                 action.Execute();
                 _undoableActions.Push(action);
                 _redoableActions.Clear();
-                //_saveLoadManager.Unsaved = true;
+                _saveLoadManager.Unsaved = true;
             }
         }
 
@@ -83,7 +113,7 @@ namespace OpenTracker.Models.UndoRedo
                 IUndoable action = _undoableActions.Pop();
                 action.Undo();
                 _redoableActions.Push(action);
-                //_saveLoadManager.Unsaved = true;
+                _saveLoadManager.Unsaved = true;
             }
         }
 
@@ -97,7 +127,7 @@ namespace OpenTracker.Models.UndoRedo
                 IUndoable action = _redoableActions.Pop();
                 action.Execute();
                 _undoableActions.Push(action);
-                //_saveLoadManager.Unsaved = true;
+                _saveLoadManager.Unsaved = true;
             }
         }
 

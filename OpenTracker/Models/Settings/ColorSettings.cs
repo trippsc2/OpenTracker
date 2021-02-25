@@ -6,7 +6,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Settings
 {
     /// <summary>
-    /// This is the class containing color settings.
+    /// This class contains color settings data.
     /// </summary>
     public class ColorSettings : IColorSettings
     {

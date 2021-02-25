@@ -3,13 +3,14 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to change the boss shuffle
-    /// setting.
+    /// This class contains undoable action to change the boss shuffle setting.
     /// </summary>
     public class ChangeBossShuffle : IUndoable
     {
         private readonly IMode _mode;
+
         private readonly bool _bossShuffle;
+
         private bool _previousBossShuffle;
 
         public delegate ChangeBossShuffle Factory(bool bossShuffle);

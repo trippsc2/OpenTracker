@@ -18,6 +18,7 @@ namespace OpenTracker.ViewModels.Items.Large
     {
         private readonly IColorSettings _colorSettings;
         private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
 
         private readonly ICrystalRequirementItem _item;
 
@@ -64,10 +65,11 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         public CrystalRequirementLargeItemVM(
             IColorSettings colorSettings, IUndoRedoManager undoRedoManager,
-            ICrystalRequirementItem item, string imageSource)
+            IUndoableFactory undoableFactory, ICrystalRequirementItem item, string imageSource)
         {
             _colorSettings = colorSettings;
             _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
 
             _item = item;
 
@@ -127,7 +129,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         public void OnLeftClick(bool force)
         {
-            _undoRedoManager.Execute(new AddCrystalRequirement(_item));
+            _undoRedoManager.Execute(_undoableFactory.GetAddCrystalRequirement(_item));
         }
 
         /// <summary>
@@ -138,7 +140,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         public void OnRightClick(bool force)
         {
-            _undoRedoManager.Execute(new RemoveCrystalRequirement(_item));
+            _undoRedoManager.Execute(_undoableFactory.GetRemoveCrystalRequirement(_item));
         }
     }
 }

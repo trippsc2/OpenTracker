@@ -1,11 +1,10 @@
 ﻿using OpenTracker.Models.Markings;
 using OpenTracker.Models.Sections;
-using System;
 
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to collect an item/entrance from a location
+    /// This class contains undoable action data to collect an item/entrance from a location
     /// section.
     /// </summary>
     public class CollectSection : IUndoable

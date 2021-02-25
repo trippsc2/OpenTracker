@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for an undoable action to change the item placement setting.
+    /// This class contains undoable action data to change the item placement setting.
     /// </summary>
     public class ChangeItemPlacement : IUndoable
     {
@@ -16,6 +16,9 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
         /// <param name="itemPlacement">
         /// The new item placement setting.
         /// </param>

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.SequenceBreaks
 {
     /// <summary>
-    /// This is the dictionary container for sequence breaks.
+    /// This class contains the dictionary container for sequence breaks.
     /// </summary>
     public class SequenceBreakDictionary : LazyDictionary<SequenceBreakType, ISequenceBreak>,
         ISequenceBreakDictionary

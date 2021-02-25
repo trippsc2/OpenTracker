@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the interface for undoable actions.
+    /// This interface contains undoable action data.
     /// </summary>
     public interface IUndoable
     {

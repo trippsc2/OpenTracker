@@ -15,6 +15,7 @@ namespace OpenTracker.ViewModels.Items.Large
     public class PairLargeItemVM : ViewModelBase, ILargeItemVMBase, IClickHandler
     {
         private readonly IUndoRedoManager _undoRedoManager;
+        private readonly IUndoableFactory _undoableFactory;
 
         private readonly IItem[] _items;
         private readonly string _imageSourceBase;
@@ -35,9 +36,11 @@ namespace OpenTracker.ViewModels.Items.Large
         /// An array of items that are to be represented by this control.
         /// </param>
         public PairLargeItemVM(
-            IUndoRedoManager undoRedoManager, IItem[] items, string imageSourceBase)
+            IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IItem[] items,
+            string imageSourceBase)
         {
             _undoRedoManager = undoRedoManager;
+            _undoableFactory = undoableFactory;
 
             _items = items;
             _imageSourceBase = imageSourceBase;
@@ -75,7 +78,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         public void OnLeftClick(bool force)
         {
-            _undoRedoManager.Execute(new CycleItem(_items[0]));
+            _undoRedoManager.Execute(_undoableFactory.GetCycleItem(_items[0]));
         }
 
         /// <summary>
@@ -86,7 +89,7 @@ namespace OpenTracker.ViewModels.Items.Large
         /// </param>
         public void OnRightClick(bool force)
         {
-            _undoRedoManager.Execute(new CycleItem(_items[1]));
+            _undoRedoManager.Execute(_undoableFactory.GetCycleItem(_items[1]));
         }
     }
 }

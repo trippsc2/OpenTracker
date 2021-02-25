@@ -6,10 +6,22 @@ using System.Collections.Generic;
 
 namespace OpenTracker.Models
 {
+    /// <summary>
+    /// This class contains logic for converting Avalonia logs to Serilog file logs.
+    /// </summary>
     public class AvaloniaSerilogSink : ILogSink
     {
         private readonly ILogger _logger;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="file">
+        /// The file path to which the logs will output.
+        /// </param>
+        /// <param name="minimumLevel">
+        /// The minimum logging level to output.
+        /// </param>
         public AvaloniaSerilogSink(string file, Serilog.Events.LogEventLevel minimumLevel)
         {
             _logger = new LoggerConfiguration().WriteTo.File(
@@ -70,6 +82,15 @@ namespace OpenTracker.Models
             _logger.Write((Serilog.Events.LogEventLevel)level, messageTemplate, propertyValues);
         }
 
+        /// <summary>
+        /// Gets the hierarchy of the Avalonia control object.
+        /// </summary>
+        /// <param name="source">
+        /// An Avalonia control from which the log is generated as an object.
+        /// </param>
+        /// <returns>
+        /// A string representing the visual hierarchy of the control as an object.
+        /// </returns>
         private static object GetHierarchy(object source)
         {
             if (source is IControl visual)

@@ -5,7 +5,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.Settings
 {
     /// <summary>
-    /// This is the interface containing color settings.
+    /// This interface contains color settings data.
     /// </summary>
     public interface IColorSettings : INotifyPropertyChanged
     {

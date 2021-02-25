@@ -1,14 +1,14 @@
 ﻿using OpenTracker.Models.Locations;
-using System;
 
 namespace OpenTracker.Models.UndoRedo
 {
     /// <summary>
-    /// This is the class for pinning a location.
+    /// This class contains undoable action data to pin a location.
     /// </summary>
     public class PinLocation : IUndoable
     {
         private readonly IPinnedLocationCollection _pinnedLocations;
+
         private readonly ILocation _pinnedLocation;
         private int? _existingIndex;
 
@@ -17,6 +17,9 @@ namespace OpenTracker.Models.UndoRedo
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="pinnedLocations">
+        /// The pinned location collection.
+        /// </param>
         /// <param name="pinnedLocation">
         /// The pinned location to be added.
         /// </param>
