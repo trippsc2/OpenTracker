@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.SaveLoad
 {
     /// <summary>
-    /// This is the class for containing save data for the Location class.
+    /// This contains location save data.
     /// </summary>
     public class LocationSaveData
     {

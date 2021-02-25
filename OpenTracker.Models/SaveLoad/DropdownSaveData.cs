@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.SaveLoad
 {
     /// <summary>
-    /// This is the class for containing save data for the IDropdown interface.
+    /// This class contains dropdown save data.
     /// </summary>
     public class DropdownSaveData
     {

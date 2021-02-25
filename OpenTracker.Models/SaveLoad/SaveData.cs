@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace OpenTracker.Models.SaveLoad
 {
     /// <summary>
-    /// This is the class for collecting data for save/load.
+    /// This class contains save data.
     /// </summary>
     public class SaveData
     {

@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.SaveLoad
 {
     /// <summary>
-    /// This is the class for containing save data for the ISection-implementing classes.
+    /// This class contains section save data.
     /// </summary>
     public class SectionSaveData
     {

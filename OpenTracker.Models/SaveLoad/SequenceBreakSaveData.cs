@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.SaveLoad
 {
     /// <summary>
-    /// This is the class for containing save data for the SequenceBreak class.
+    /// This class contains sequence break save data.
     /// </summary>
     public class SequenceBreakSaveData
     {

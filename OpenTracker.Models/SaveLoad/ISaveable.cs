@@ -1,10 +1,10 @@
 ﻿namespace OpenTracker.Models.SaveLoad
 {
     /// <summary>
-    /// This is the generic interface for assigning save data.
+    /// This generic interface contains methods saving and loading data.
     /// </summary>
     /// <typeparam name="T">
-    /// The class for save data.
+    /// The save data class.
     /// </typeparam>
     public interface ISaveable<T>
     {

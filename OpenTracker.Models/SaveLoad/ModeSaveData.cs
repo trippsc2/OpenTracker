@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.SaveLoad
 {
     /// <summary>
-    /// This is the class for containing save data for the Mode class.
+    /// This class contains mode setting save data.
     /// </summary>
     public class ModeSaveData
     {
@@ -13,8 +13,7 @@ namespace OpenTracker.Models.SaveLoad
         public bool CompassShuffle { get; set; }
         public bool SmallKeyShuffle { get; set; }
         public bool BigKeyShuffle { get; set; }
-        public WorldState WorldState { get; set; } =
-            WorldState.StandardOpen;
+        public WorldState WorldState { get; set; }
         public EntranceShuffle EntranceShuffle { get; set; }
         public bool BossShuffle { get; set; }
         public bool EnemyShuffle { get; set; }

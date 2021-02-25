@@ -14,7 +14,7 @@ using System.Reflection;
 namespace OpenTracker.Models.SaveLoad
 {
     /// <summary>
-    /// This is the class for managing saving and loading game data.
+    /// This class contains logic managing saving and loading game data.
     /// </summary>
     public class SaveLoadManager : ISaveLoadManager
     {

@@ -1,7 +1,7 @@
 ﻿namespace OpenTracker.Models.SaveLoad
 {
     /// <summary>
-    /// This is the class for containing save data for the IItem interface classes.
+    /// This class contains item save data.
     /// </summary>
     public class ItemSaveData
     {

@@ -3,7 +3,7 @@
 namespace OpenTracker.Models.SaveLoad
 {
     /// <summary>
-    /// This is the interface for managing saving and loading game data.
+    /// This interface contains logic managing saving and loading game data.
     /// </summary>
     public interface ISaveLoadManager : INotifyPropertyChanged
     {
