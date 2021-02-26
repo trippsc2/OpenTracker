@@ -8,10 +8,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using WebSocketSharp;
 
-namespace OpenTracker.Models.AutoTracking
+namespace OpenTracker.Models.AutoTracking.SNESConnectors
 {
     /// <summary>
-    /// This is the class for the SNES connector that uses (Q)USB2SNES websocket.
+    /// This class contains logic for the SNES connector using WebSocketSharp to connect to
+    /// (Q)USB2SNES.
     /// </summary>
     public class SNESConnector : ISNESConnector
     {

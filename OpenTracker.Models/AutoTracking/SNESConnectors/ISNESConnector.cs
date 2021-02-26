@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using WebSocketSharp;
 
-namespace OpenTracker.Models.AutoTracking
+namespace OpenTracker.Models.AutoTracking.SNESConnectors
 {
+    /// <summary>
+    /// This interface contains logic for the SNES connector using WebSocketSharp to connect to
+    /// (Q)USB2SNES.
+    /// </summary>
     public interface ISNESConnector : INotifyPropertyChanged
     {
         ConnectionStatus Status { get; }
