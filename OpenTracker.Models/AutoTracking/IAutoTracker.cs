@@ -17,6 +17,12 @@ namespace OpenTracker.Models.AutoTracking
         void InGameCheck();
         void MemoryCheck();
         Task GetDevices();
-        Task Stop();
+        Task Disconnect();
+        Task Connect(string uriString);
+        bool CanConnect();
+        bool CanDisconnect();
+        bool CanGetDevices();
+        bool CanStart();
+        Task Start(string device);
     }
 }

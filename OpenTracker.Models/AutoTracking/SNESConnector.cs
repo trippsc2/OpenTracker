@@ -20,34 +20,21 @@ namespace OpenTracker.Models.AutoTracking
 
         private readonly static string _appName = "OpenTracker";
         private readonly object _transmitLock = new object();
+
         private Action<MessageEventArgs>? _messageHandler;
+        private string? _uri;
+        private string? _device;
 
         private bool Connected =>
             Socket != null && Socket.IsAlive;
 
-        public string? Uri { get; set; }
-
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private string? _device;
-        public string? Device
-        {
-            get => _device;
-            set
-            {
-                if (_device != value)
-                {
-                    _device = value;
-                    OnPropertyChanged(nameof(Device));
-                }
-            }
-        }
-
         private WebSocket? _socket;
-        public WebSocket? Socket
+        private WebSocket? Socket
         {
             get => _socket;
-            private set
+            set
             {
                 if (_socket != value)
                 {
@@ -57,7 +44,6 @@ namespace OpenTracker.Models.AutoTracking
                     }
 
                     _socket = value;
-                    OnPropertyChanged(nameof(Socket));
 
                     if (_socket != null)
                     {
@@ -121,50 +107,6 @@ namespace OpenTracker.Models.AutoTracking
         private void HandleMessage(object? sender, MessageEventArgs e)
         {
             _messageHandler?.Invoke(e);
-        }
-
-        /// <summary>
-        /// Connects to the USB2SNES web socket.
-        /// </summary>
-        /// <param name="timeOutInMS">
-        /// A 32-bit integer representing the timeout in milliseconds.
-        /// </param>
-        /// <returns>
-        /// A boolean representing whether the method is successful.
-        /// </returns>
-        private bool Connect(int timeOutInMS = 4096)
-        {
-            Socket = new WebSocket(Uri);
-            _logService.Log(LogLevel.Info, "Attempting to connect to USB2SNES websocket at " +
-                $"{Socket.Url.OriginalString}.");
-            Status = ConnectionStatus.Connecting;
-
-            using var openEvent = new ManualResetEvent(false);
-
-            void onOpen(object? sender, EventArgs e)
-            {
-                openEvent.Set();
-            }
-
-            Socket.OnOpen += onOpen;
-            Socket.Connect();
-            bool result = openEvent.WaitOne(timeOutInMS);
-            Socket.OnOpen -= onOpen;
-
-            if (result)
-            {
-                _logService.Log(LogLevel.Info, "Successfully connected to USB2SNES websocket at " +
-                    $"{Socket.Url.OriginalString}.");
-                Status = ConnectionStatus.SelectDevice;
-            }
-            else
-            {
-                _logService.Log(LogLevel.Error, "Failed to connect to USB2SNES websocket at " +
-                    $"{Socket.Url.OriginalString}.");
-                Status = ConnectionStatus.Error;
-            }
-
-            return result;
         }
 
         /// <summary>
@@ -351,15 +293,15 @@ namespace OpenTracker.Models.AutoTracking
         /// </returns>
         private bool AttachDevice(int timeOutInMS = 4096)
         {
-            _ = Device ?? throw new NullReferenceException();
+            _ = _device ?? throw new NullReferenceException();
 
-            _logService.Log(LogLevel.Info, $"Attempting to attach to device {Device}.");
+            _logService.Log(LogLevel.Info, $"Attempting to attach to device {_device}.");
             Status = ConnectionStatus.Attaching;
 
             if (!SendOnly("attach", _requestFactory(
-                OpcodeType.Attach.ToString(), operands: new List<string>(1) { Device })))
+                OpcodeType.Attach.ToString(), operands: new List<string>(1) { _device })))
             {
-                _logService.Log(LogLevel.Error, $"Device {Device} could not be attached.");
+                _logService.Log(LogLevel.Error, $"Device {_device} could not be attached.");
                 Status = ConnectionStatus.Error;
                 return false;
             }
@@ -374,15 +316,70 @@ namespace OpenTracker.Models.AutoTracking
 
             if (GetDeviceInfo(timeOutInMS) == null)
             {
-                _logService.Log(LogLevel.Error, $"Device {Device} could not be attached.");
+                _logService.Log(LogLevel.Error, $"Device {_device} could not be attached.");
                 Status = ConnectionStatus.Error;
                 return false;
             }
 
-            _logService.Log(LogLevel.Info, $"Device {Device} is successfully attached.");
+            _logService.Log(LogLevel.Info, $"Device {_device} is successfully attached.");
             Status = ConnectionStatus.Connected;
 
             return true;
+        }
+
+        /// <summary>
+        /// Sets the URI.
+        /// </summary>
+        /// <param name="uriString">
+        /// A string representing the URI.
+        /// </param>
+        public void SetUri(string uriString)
+        {
+            _uri = uriString;
+        }
+
+        /// <summary>
+        /// Connects to the USB2SNES web socket.
+        /// </summary>
+        /// <param name="timeOutInMS">
+        /// A 32-bit integer representing the timeout in milliseconds.
+        /// </param>
+        /// <returns>
+        /// A boolean representing whether the method is successful.
+        /// </returns>
+        public bool Connect(int timeOutInMS = 4096)
+        {
+            Socket = new WebSocket(_uri);
+            _logService.Log(LogLevel.Info, "Attempting to connect to USB2SNES websocket at " +
+                $"{Socket.Url.OriginalString}.");
+            Status = ConnectionStatus.Connecting;
+
+            using var openEvent = new ManualResetEvent(false);
+
+            void onOpen(object? sender, EventArgs e)
+            {
+                openEvent.Set();
+            }
+
+            Socket.OnOpen += onOpen;
+            Socket.Connect();
+            bool result = openEvent.WaitOne(timeOutInMS);
+            Socket.OnOpen -= onOpen;
+
+            if (result)
+            {
+                _logService.Log(LogLevel.Info, "Successfully connected to USB2SNES websocket at " +
+                    $"{Socket.Url.OriginalString}.");
+                Status = ConnectionStatus.SelectDevice;
+            }
+            else
+            {
+                _logService.Log(LogLevel.Error, "Failed to connect to USB2SNES websocket at " +
+                    $"{Socket.Url.OriginalString}.");
+                Status = ConnectionStatus.Error;
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -395,7 +392,7 @@ namespace OpenTracker.Models.AutoTracking
             GC.Collect();
             GC.WaitForPendingFinalizers();
             Status = ConnectionStatus.NotConnected;
-            Device = null;
+            _device = null;
         }
 
         /// <summary>
@@ -420,6 +417,19 @@ namespace OpenTracker.Models.AutoTracking
                     "get device list", _requestFactory(OpcodeType.DeviceList.ToString()), false,
                     timeOutInMS);
             });
+        }
+
+        /// <summary>
+        /// Sets the device to be connected to.
+        /// </summary>
+        /// <param name="device">
+        /// A string representing the device.
+        /// </param>
+        public void SetDevice(string device)
+        {
+            _device = device;
+
+            AttachDeviceIfNeeded();
         }
 
         /// <summary>

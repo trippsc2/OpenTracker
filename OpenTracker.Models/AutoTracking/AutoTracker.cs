@@ -16,7 +16,9 @@ namespace OpenTracker.Models.AutoTracking
         private readonly Dictionary<MemorySegmentType, List<IMemoryAddress>> _memorySegments =
             new Dictionary<MemorySegmentType, List<IMemoryAddress>>();
 
-        private bool InGame =>
+        private bool CanReadMemory =>
+            SNESConnector.Status == ConnectionStatus.Connected;
+        private bool IsInGame =>
             _inGameStatus.HasValue && _inGameStatus.Value > 0x05 && _inGameStatus.Value != 0x14 &&
             _inGameStatus.Value < 0x20;
 
@@ -28,8 +30,8 @@ namespace OpenTracker.Models.AutoTracking
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        private IEnumerable<string>? _devices = new List<string>();
-        public IEnumerable<string>? Devices
+        private IEnumerable<string> _devices = new List<string>();
+        public IEnumerable<string> Devices
         {
             get => _devices;
             private set
@@ -167,17 +169,6 @@ namespace OpenTracker.Models.AutoTracking
         }
 
         /// <summary>
-        /// Returns whether the SNES connector is capable of reading memory.
-        /// </summary>
-        /// <returns>
-        /// A boolean representing whether the SNES connector is capable of reading memory.
-        /// </returns>
-        private bool CanReadMemory()
-        {
-            return SNESConnector.Socket != null && SNESConnector.Status != ConnectionStatus.Error;
-        }
-
-        /// <summary>
         /// Updates cached values of a memory segment.
         /// </summary>
         /// <param name="segment">
@@ -204,9 +195,12 @@ namespace OpenTracker.Models.AutoTracking
         /// <returns>
         /// A list of strings representing the devices.
         /// </returns>
-        private async Task<IEnumerable<string>?> GetDevicesFromConnector()
+        private async Task<IEnumerable<string>> GetDevicesFromConnector()
         {
-            return await SNESConnector.GetDevices();
+            var devices = await SNESConnector.GetDevices() ??
+                new List<string>();
+
+            return devices;
         }
 
         /// <summary>
@@ -214,24 +208,61 @@ namespace OpenTracker.Models.AutoTracking
         /// </summary>
         public void InGameCheck()
         {
-            if (CanReadMemory() && SNESConnector.Read(0x7e0010, out byte inGameStatus))
+            if (CanReadMemory && SNESConnector.Read(0x7e0010, out byte inGameStatus))
             {
                 _inGameStatus = inGameStatus;
             }
         }
 
         /// <summary>
-        /// Updades cached values of all SNES memory addresses.
+        /// Updates cached values of all SNES memory addresses.
         /// </summary>
         public void MemoryCheck()
         {
-            if (CanReadMemory() && InGame)
+            if (CanReadMemory && IsInGame)
             {
                 foreach (MemorySegmentType segment in Enum.GetValues(typeof(MemorySegmentType)))
                 {
                     MemoryCheck(segment);
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns whether the web socket can be connected to.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether the web socket can be connected to.
+        /// </returns>
+        public bool CanConnect()
+        {
+            return SNESConnector.Status == ConnectionStatus.NotConnected;
+        }
+
+        /// <summary>
+        /// Connects to the web socket with the specified URI string.
+        /// </summary>
+        /// <param name="uriString">
+        /// A string representing the web socket URI.
+        /// </param>
+        public async Task Connect(string uriString)
+        {
+            await Task.Factory.StartNew(() =>
+            {
+                SNESConnector.SetUri(uriString);
+                SNESConnector.Connect();
+            });
+        }
+
+        /// <summary>
+        /// Returns whether the web socket is able to provide the devices.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether the web socket is able to provide the devices.
+        /// </returns>
+        public bool CanGetDevices()
+        {
+            return SNESConnector.Status == ConnectionStatus.SelectDevice;
         }
 
         /// <summary>
@@ -243,9 +274,20 @@ namespace OpenTracker.Models.AutoTracking
         }
 
         /// <summary>
-        /// Stops the autotracker.
+        /// Returns whether the web socket can be disconnected.
         /// </summary>
-        public async Task Stop()
+        /// <returns>
+        /// A boolean representing whether the web socket can be disconnected.
+        /// </returns>
+        public bool CanDisconnect()
+        {
+            return SNESConnector.Status != ConnectionStatus.NotConnected;
+        }
+
+        /// <summary>
+        /// Disconnects the autotracker.
+        /// </summary>
+        public async Task Disconnect()
         {
             await Task.Factory.StartNew(() =>
             {
@@ -256,6 +298,28 @@ namespace OpenTracker.Models.AutoTracking
                 {
                     address.Reset();
                 }
+            });
+        }
+
+        /// <summary>
+        /// Returns whether autotracking can be started.
+        /// </summary>
+        /// <returns>
+        /// A boolean representing whether autotracking can be started.
+        /// </returns>
+        public bool CanStart()
+        {
+            return SNESConnector.Status == ConnectionStatus.SelectDevice;
+        }
+
+        /// <summary>
+        /// Starts autotracking.
+        /// </summary>
+        public async Task Start(string device)
+        {
+            await Task.Factory.StartNew(() =>
+            {
+                SNESConnector.SetDevice(device);
             });
         }
     }

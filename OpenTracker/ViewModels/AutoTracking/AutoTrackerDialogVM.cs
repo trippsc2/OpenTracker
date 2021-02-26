@@ -19,12 +19,18 @@ namespace OpenTracker.ViewModels.AutoTracking
         private readonly DispatcherTimer _memoryCheckTimer;
         private int _tickCount;
 
+        public bool UriTextBoxEnabled =>
+            _autoTracker.CanConnect();
+
         private string _uriString = "ws://localhost:8080";
         public string UriString
         {
             get => _uriString;
             set => this.RaiseAndSetIfChanged(ref _uriString, value);
         }
+
+        public bool DevicesComboBoxEnabled =>
+            _autoTracker.CanStart();
 
         public IEnumerable<string>? Devices =>
             _autoTracker.Devices;
@@ -39,6 +45,13 @@ namespace OpenTracker.ViewModels.AutoTracking
         public bool RaceIllegalTracking =>
             _autoTracker.RaceIllegalTracking;
 
+        private bool _canConnect;
+        public bool CanConnect
+        {
+            get => _canConnect;
+            private set => this.RaiseAndSetIfChanged(ref _canConnect, value);
+        }
+
         private bool _canGetDevices;
         public bool CanGetDevices
         {
@@ -46,11 +59,11 @@ namespace OpenTracker.ViewModels.AutoTracking
             private set => this.RaiseAndSetIfChanged(ref _canGetDevices, value);
         }
 
-        private bool _canStop;
-        public bool CanStop
+        private bool _canDisconnect;
+        public bool CanDisconnect
         {
-            get => _canStop;
-            private set => this.RaiseAndSetIfChanged(ref _canStop, value);
+            get => _canDisconnect;
+            private set => this.RaiseAndSetIfChanged(ref _canDisconnect, value);
         }
 
         private bool _canStart;
@@ -63,19 +76,24 @@ namespace OpenTracker.ViewModels.AutoTracking
         public IAutoTrackerLogVM Log { get; }
         public IAutoTrackerStatusVM Status { get; }
 
+        public ReactiveCommand<Unit, Unit> ConnectCommand { get; }
         public ReactiveCommand<Unit, Unit> GetDevicesCommand { get; }
-        public ReactiveCommand<Unit, Unit> StopCommand { get; }
+        public ReactiveCommand<Unit, Unit> DisconnectCommand { get; }
         public ReactiveCommand<Unit, Unit> StartCommand { get; }
 
         public ReactiveCommand<Unit, Unit> ToggleRaceIllegalTrackingCommand { get; }
+
+        private readonly ObservableAsPropertyHelper<bool> _isConnecting;
+        public bool IsConnecting =>
+            _isConnecting.Value;
 
         private readonly ObservableAsPropertyHelper<bool> _isGettingDevices;
         public bool IsGettingDevices =>
             _isGettingDevices.Value;
 
-        private readonly ObservableAsPropertyHelper<bool> _isStopping;
-        public bool IsStopping =>
-            _isStopping.Value;
+        private readonly ObservableAsPropertyHelper<bool> _isDisconnecting;
+        public bool IsDisconnecting =>
+            _isDisconnecting.Value;
 
         private readonly ObservableAsPropertyHelper<bool> _isStarting;
         public bool IsStarting =>
@@ -110,15 +128,20 @@ namespace OpenTracker.ViewModels.AutoTracking
 
             ToggleRaceIllegalTrackingCommand = ReactiveCommand.Create(ToggleRaceIllegalTracking);
 
+            ConnectCommand = ReactiveCommand.CreateFromTask(
+                Connect, this.WhenAnyValue(x => x.CanConnect));
+            ConnectCommand.IsExecuting.ToProperty(
+                this, x => x.IsConnecting, out _isConnecting);
+
             GetDevicesCommand = ReactiveCommand.CreateFromTask(
                 GetDevices, this.WhenAnyValue(x => x.CanGetDevices));
             GetDevicesCommand.IsExecuting.ToProperty(
                 this, x => x.IsGettingDevices, out _isGettingDevices);
 
-            StopCommand = ReactiveCommand.CreateFromTask(
-                Stop, this.WhenAnyValue(x => x.CanStop));
-            StopCommand.IsExecuting.ToProperty(
-                this, x => x.IsStopping, out _isStopping);
+            DisconnectCommand = ReactiveCommand.CreateFromTask(
+                Stop, this.WhenAnyValue(x => x.CanDisconnect));
+            DisconnectCommand.IsExecuting.ToProperty(
+                this, x => x.IsDisconnecting, out _isDisconnecting);
 
             StartCommand = ReactiveCommand.CreateFromTask(
                 Start, this.WhenAnyValue(x => x.CanStart));
@@ -129,9 +152,7 @@ namespace OpenTracker.ViewModels.AutoTracking
             _autoTracker.PropertyChanged += OnAutoTrackerChanged;
             _autoTracker.SNESConnector.PropertyChanged += OnConnectorChanged;
 
-            UpdateCanGetDevices();
-            UpdateCanStart();
-            UpdateCanStop();
+            UpdateCommandCanExecuteProperties();
         }
 
         /// <summary>
@@ -147,7 +168,7 @@ namespace OpenTracker.ViewModels.AutoTracking
         {
             if (e.PropertyName == nameof(UriString))
             {
-                UpdateCanGetDevices();
+                UpdateCanConnect();
             }
 
             if (e.PropertyName == nameof(Device))
@@ -192,14 +213,18 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// </param>
         private void OnConnectorChanged(object? sender, PropertyChangedEventArgs e)
         {
-            UpdateCanGetDevices();
-            UpdateCanStart();
-            UpdateCanStop();
-
-            if (e.PropertyName == nameof(ISNESConnector.Status) &&
-                _autoTracker.SNESConnector.Status == ConnectionStatus.Error)
+            if (e.PropertyName == nameof(ISNESConnector.Status))
             {
-                _memoryCheckTimer.Stop();
+                UpdateCommandCanExecuteProperties();
+
+                if (_autoTracker.SNESConnector.Status != ConnectionStatus.Connected &&
+                    _memoryCheckTimer.IsEnabled)
+                {
+                    _memoryCheckTimer.Stop();
+                }
+
+                this.RaisePropertyChanged(nameof(UriTextBoxEnabled));
+                this.RaisePropertyChanged(nameof(DevicesComboBoxEnabled));
             }
         }
 
@@ -226,17 +251,69 @@ namespace OpenTracker.ViewModels.AutoTracking
         }
 
         /// <summary>
-        /// Updates the CanGetDevices property with a value representing whether the SNES connector
-        /// can be queries for a device list.
+        /// Updates the "can execute" properties for all commands.
+        /// </summary>
+        private void UpdateCommandCanExecuteProperties()
+        {
+            UpdateCanConnect();
+            UpdateCanGetDevices();
+            UpdateCanDisconnect();
+            UpdateCanStart();
+        }
+
+        /// <summary>
+        /// Updates the CanConnect property.
+        /// </summary>
+        private void UpdateCanConnect()
+        {
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                CanConnect = CanCreateWebSocketUri() && _autoTracker.CanConnect();
+            });
+        }
+
+        /// <summary>
+        /// Updates the CanGetDevices property.
         /// </summary>
         private void UpdateCanGetDevices()
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                CanGetDevices = CanCreateWebSocketUri() &&
-                    (_autoTracker.SNESConnector.Socket == null ||
-                    _autoTracker.SNESConnector.Status == ConnectionStatus.Connected);
+                CanGetDevices = _autoTracker.CanGetDevices();
             });
+        }
+
+        /// <summary>
+        /// Updates the CanGetDisconnect property.
+        /// </summary>
+        private void UpdateCanDisconnect()
+        {
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                CanDisconnect = _autoTracker.CanDisconnect();
+            });
+        }
+
+        /// <summary>
+        /// Updates the CanStart property.
+        /// </summary>
+        private void UpdateCanStart()
+        {
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                CanStart = !(Device is null) && Device != string.Empty && _autoTracker.CanStart();
+            });
+        }
+
+        /// <summary>
+        /// Connects to the web socket at the specified URI string.
+        /// </summary>
+        /// <param name="uriString">
+        /// A string representing the web socket URI.
+        /// </param>
+        private async Task Connect()
+        {
+            await _autoTracker.Connect(UriString);
         }
 
         /// <summary>
@@ -248,27 +325,10 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// </returns>
         private async Task GetDevices()
         {
-            if (_autoTracker.SNESConnector.Uri != UriString)
-                {
-                    _autoTracker.SNESConnector.Uri = UriString;
-                }
-            
             await Dispatcher.UIThread.InvokeAsync(async () =>
                 {
                     await _autoTracker.GetDevices();
                 });
-        }
-
-        /// <summary>
-        /// Updates the CanStop property with a value representing whether autotracking
-        /// can be stopped.
-        /// </summary>
-        private void UpdateCanStop()
-        {
-            Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                CanStop = _autoTracker.SNESConnector.Socket != null;
-            });
         }
 
         /// <summary>
@@ -277,20 +337,10 @@ namespace OpenTracker.ViewModels.AutoTracking
         private async Task Stop()
         {
             _memoryCheckTimer.Stop();
-            await _autoTracker.Stop();
-        }
 
-        /// <summary>
-        /// Updates the CanStart property with a value representing whether autotracking
-        /// can be started.
-        /// </summary>
-        private void UpdateCanStart()
-        {
-            Dispatcher.UIThread.InvokeAsync(() =>
+            await Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                CanStart = _autoTracker.SNESConnector.Socket != null &&
-                    _autoTracker.SNESConnector.Status != ConnectionStatus.Error &&
-                    Device != null && _autoTracker.SNESConnector.Device != Device;
+                await _autoTracker.Disconnect();
             });
         }
 
@@ -298,12 +348,15 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// Starts autotracking.
         /// </summary>
         private async Task Start()
-        {
-            _autoTracker.SNESConnector.Device = Device ??
-                throw new NullReferenceException();
-            
-            await Dispatcher.UIThread.InvokeAsync(() =>
+        {    
+            if (Device is null)
             {
+                throw new NullReferenceException();
+            }
+
+            await Dispatcher.UIThread.InvokeAsync(async () =>
+            {
+                await _autoTracker.Start(Device);
                 _memoryCheckTimer.Start();
             });
         }

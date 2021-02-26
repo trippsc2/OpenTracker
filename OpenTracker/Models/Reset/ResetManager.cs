@@ -51,7 +51,7 @@ namespace OpenTracker.Models.Reset
         {
             _undoRedoManager.Reset();
             _pinnedLocations.Clear();
-            _autoTracker.Stop();
+            _autoTracker.Disconnect();
             _bossPlacements.Reset();
             _locations.Reset();
             _prizePlacements.Reset();
