@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive;
 using System.Threading.Tasks;
+using OpenTracker.Models.AutoTracking.Logging;
 
 namespace OpenTracker.ViewModels.AutoTracking
 {
@@ -112,6 +113,12 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// <param name="autoTracker">
         /// The autotracker data.
         /// </param>
+        /// <param name="logService">
+        /// The autotracker log service.
+        /// </param>
+        /// <param name="snesConnectorFactory">m
+        /// The SNES connector factory.
+        /// </param>
         /// <param name="status">
         /// The autotracker status control ViewModel.
         /// </param>
@@ -119,7 +126,7 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// The autotracker log control ViewModel.
         /// </param>
         public AutoTrackerDialogVM(
-            IAutoTracker autoTracker, ISNESConnectorFactory snesConnectorFactory,
+            IAutoTracker autoTracker, IAutoTrackerLogService logService, ISNESConnectorFactory snesConnectorFactory,
             IAutoTrackerStatusVM status, IAutoTrackerLogVM log)
         {
             _autoTracker = autoTracker;
@@ -142,21 +149,29 @@ namespace OpenTracker.ViewModels.AutoTracking
                 Connect, this.WhenAnyValue(x => x.CanConnect));
             ConnectCommand.IsExecuting.ToProperty(
                 this, x => x.IsConnecting, out _isConnecting);
+            ConnectCommand.ThrownExceptions
+                .Subscribe(ex => { logService.Log(LogLevel.Fatal, ex.Message); });
 
             GetDevicesCommand = ReactiveCommand.CreateFromTask(
                 GetDevices, this.WhenAnyValue(x => x.CanGetDevices));
             GetDevicesCommand.IsExecuting.ToProperty(
                 this, x => x.IsGettingDevices, out _isGettingDevices);
+            GetDevicesCommand.ThrownExceptions
+                .Subscribe(ex => { logService.Log(LogLevel.Fatal, ex.Message); });
 
             DisconnectCommand = ReactiveCommand.CreateFromTask(
                 Stop, this.WhenAnyValue(x => x.CanDisconnect));
             DisconnectCommand.IsExecuting.ToProperty(
                 this, x => x.IsDisconnecting, out _isDisconnecting);
+            DisconnectCommand.ThrownExceptions
+                .Subscribe(ex => { logService.Log(LogLevel.Fatal, ex.Message); });
 
             StartCommand = ReactiveCommand.CreateFromTask(
                 Start, this.WhenAnyValue(x => x.CanStart));
             StartCommand.IsExecuting.ToProperty(
                 this, x => x.IsStarting, out _isStarting);
+            StartCommand.ThrownExceptions
+                .Subscribe(ex => { logService.Log(LogLevel.Fatal, ex.Message); });
 
             PropertyChanged += OnPropertyChanged;
             _autoTracker.PropertyChanged += OnAutoTrackerChanged;
@@ -328,9 +343,6 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// <summary>
         /// Connects to the web socket at the specified URI string.
         /// </summary>
-        /// <param name="uriString">
-        /// A string representing the web socket URI.
-        /// </param>
         private async Task Connect()
         {
             await _autoTracker.Connect(UriString);

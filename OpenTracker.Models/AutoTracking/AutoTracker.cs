@@ -364,17 +364,14 @@ namespace OpenTracker.Models.AutoTracking
         /// Disconnects the autotracker.
         /// </summary>
         public async Task Disconnect()
-        {
-            await Task.Factory.StartNew(() =>
+        { 
+            await SNESConnector.Disconnect();
+            _inGameStatus = null;
+            
+            foreach (var address in MemoryAddresses.Values)
             {
-                SNESConnector.Disconnect();
-                _inGameStatus = null;
-
-                foreach (var address in MemoryAddresses.Values)
-                {
-                    address.Reset();
-                }
-            });
+                address.Reset();
+            }
         }
 
         /// <summary>

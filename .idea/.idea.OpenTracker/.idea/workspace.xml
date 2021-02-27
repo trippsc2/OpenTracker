@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="bb06074c-9d0e-4cec-81f6-0a5e9d1ff139" name="Default Changelist" comment="" />
+    <list default="true" id="bb06074c-9d0e-4cec-81f6-0a5e9d1ff139" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.OpenTracker/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.OpenTracker/.idea/contentModel.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.OpenTracker/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.OpenTracker/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.OpenTracker/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.OpenTracker/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/AutoTracker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/AutoTracker.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/SNESConnectors/ISNESConnector.cs" beforeDir="false" afterPath="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/SNESConnectors/ISNESConnector.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/SNESConnectors/NewSNESConnector.cs" beforeDir="false" afterPath="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/SNESConnectors/NewSNESConnector.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/SNESConnectors/SNESConnector.cs" beforeDir="false" afterPath="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/SNESConnectors/SNESConnector.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OpenTracker/ViewModels/AutoTracking/AutoTrackerDialogVM.cs" beforeDir="false" afterPath="$PROJECT_DIR$/OpenTracker/ViewModels/AutoTracking/AutoTrackerDialogVM.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -10,16 +19,44 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GithubPullRequestsUISettings">
+    <option name="hiddenUrls">
+      <set>
+        <option value="https://github.com/trippsc2/OpenTracker" />
+      </set>
+    </option>
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3964ECCD-63C1-4D6B-A9F0-7FA8F889C77A/3C/RxApp.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <changedPaths>
+      <option value="$PROJECT_DIR$/OpenTracker/ViewModels/AutoTracking/AutoTrackerDialogVM.cs" />
+      <option value="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/SNESConnectors/ISNESConnector.cs" />
+      <option value="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/SNESConnectors/SNESConnector.cs" />
+      <option value="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/AutoTracker.cs" />
+      <option value="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/SNESConnectors/NewSNESConnector.cs" />
+    </changedPaths>
+  </component>
   <component name="ProjectId" id="1foj3D4FCBGFrC2BA4Hb0ClDfFd" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="DebuggerViewTab_PTCS_FirstProportionKey" value="0.34997287" />
+    <property name="DebuggerViewTab_PTCS_LastProportionKey" value="0.0" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="settings.editor.selected.configurable" value="configurable.group.language" />
+    <property name="settings.editor.selected.configurable" value="preferences.editor" />
   </component>
   <component name="RunManager">
     <configuration name="OpenTracker" type="DotNetProject" factoryName=".NET Project">
@@ -41,6 +78,7 @@
       </method>
     </configuration>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -52,6 +90,9 @@
       <option name="presentableId" value="Default" />
       <updated>1596891138378</updated>
       <workItem from="1596891150223" duration="328000" />
+      <workItem from="1614387326982" duration="325000" />
+      <workItem from="1614387698874" duration="159000" />
+      <workItem from="1614387912237" duration="5769000" />
     </task>
     <servers />
   </component>
@@ -62,11 +103,5 @@
   <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="461" y="169" key="SettingsEditor" timestamp="1596891281015">
-      <screen x="0" y="0" width="1920" height="1050" />
-    </state>
-    <state x="461" y="169" key="SettingsEditor/1920.0.1920.1050/-1080.-426.1080.1890/0.0.1920.1050@0.0.1920.1050" timestamp="1596891281015" />
   </component>
 </project>

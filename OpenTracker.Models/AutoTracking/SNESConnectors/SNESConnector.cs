@@ -19,7 +19,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         private readonly IAutoTrackerLogService _logService;
         private readonly IRequestType.Factory _requestFactory;
 
-        private readonly static string _appName = "OpenTracker";
+        private const string AppName = "OpenTracker";
         private readonly object _transmitLock = new object();
 
         private Action<MessageEventArgs>? _messageHandler;
@@ -37,11 +37,13 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
             get => _status;
             set
             {
-                if (_status != value)
+                if (_status == value)
                 {
-                    _status = value;
-                    OnStatusChanged();
+                    return;
                 }
+                
+                _status = value;
+                OnStatusChanged();
             }
         }
 
@@ -260,7 +262,8 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
             if (Socket != null)
             {
                 _logService.Log(LogLevel.Debug, "Attempting to restart WebSocket class.");
-                Disconnect();
+                var disconnectTask = Disconnect();
+                disconnectTask.Wait();
                 _logService.Log(LogLevel.Debug, "Existing WebSocket class restarted.");
             }
 
@@ -310,7 +313,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
             }
 
             if (!SendOnly("register name", _requestFactory(
-                OpcodeType.Name.ToString(), operands: new List<string>(1) { _appName })))
+                OpcodeType.Name.ToString(), operands: new List<string>(1) { AppName })))
             {
                 _logService.Log(LogLevel.Error, "Could not register app name with connection.");
                 Status = ConnectionStatus.Error;
@@ -344,13 +347,13 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// <summary>
         /// Connects to the USB2SNES web socket.
         /// </summary>
-        /// <param name="timeOutInMS">
+        /// <param name="timeOutInMs">
         /// A 32-bit integer representing the timeout in milliseconds.
         /// </param>
         /// <returns>
         /// A boolean representing whether the method is successful.
         /// </returns>
-        public async Task<bool> Connect(int timeOutInMS = 4096)
+        public async Task<bool> Connect(int timeOutInMs = 4096)
         {
             return await Task<bool>.Factory.StartNew(() =>
             {
@@ -368,7 +371,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
 
                 Socket.OnOpen += onOpen;
                 Socket.Connect();
-                bool result = openEvent.WaitOne(timeOutInMS);
+                bool result = openEvent.WaitOne(timeOutInMs);
                 Socket.OnOpen -= onOpen;
 
                 if (result)
@@ -391,14 +394,17 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// <summary>
         /// Disconnects from the web socket and unsets the web socket property.
         /// </summary>
-        public void Disconnect()
+        public async Task Disconnect()
         {
-            Socket?.Close();
-            Socket = null;
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            Status = ConnectionStatus.NotConnected;
-            _device = null;
+            await Task.Factory.StartNew(() =>
+            {
+                Socket?.Close();
+                Socket = null;
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                Status = ConnectionStatus.NotConnected;
+                _device = null;
+            });
         }
 
         /// <summary>
