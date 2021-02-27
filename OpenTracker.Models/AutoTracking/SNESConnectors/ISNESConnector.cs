@@ -14,10 +14,9 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         Task Disconnect();
         Task<bool> AttachDeviceIfNeeded(int timeOutInMs = 4096);
         Task<IEnumerable<string>?> GetDevices(int timeOutInMs = 4096);
-        Task<bool> Read(ulong address, byte[] buffer, int timeOutInMs = 4096);
-        Task<byte?> Read(ulong address);
+        Task<byte[]?> Read(ulong address, int bytesToRead = 1, int timeOutInMs = 4096);
         Task<bool> Connect(int timeOutInMs = 4096);
         void SetUri(string uriString);
-        void SetDevice(string device);
+        Task SetDevice(string device);
     }
 }

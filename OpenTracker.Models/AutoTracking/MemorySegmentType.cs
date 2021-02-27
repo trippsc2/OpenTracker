@@ -5,6 +5,7 @@
     /// </summary>
     public enum MemorySegmentType
     {
+        Test,
         FirstRoom,
         SecondRoom,
         ThirdRoom,

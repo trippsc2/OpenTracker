@@ -21,6 +21,7 @@
 
       <CheckBox HorizontalAlignment="Center" Classes="AutoTracker" IsChecked="{Binding
                 Experimental}" Command="{Binding ToggleExperimentalCommand}"
+                IsEnabled="{Binding ExperimentalCheckBoxEnabled}"
                 ToolTip.Tip="This has not been thoroughly tested.">Use Experimental</CheckBox>
 
       <StackPanel Margin="10" Orientation="Horizontal" HorizontalAlignment="Center">

@@ -6,6 +6,7 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
 using OpenTracker.Models.AutoTracking.Logging;
@@ -33,10 +34,13 @@ namespace OpenTracker.ViewModels.AutoTracking
             set => this.RaiseAndSetIfChanged(ref _uriString, value);
         }
 
-        public bool DevicesComboBoxEnabled =>
-            _autoTracker.CanStart();
+        public bool ExperimentalCheckBoxEnabled =>
+            _autoTracker.Status == ConnectionStatus.NotConnected;
 
-        public IEnumerable<string>? Devices =>
+        public bool DevicesComboBoxEnabled =>
+            _autoTracker.CanStart() && Devices.Count > 0;
+
+        public List<string> Devices =>
             _autoTracker.Devices;
 
         private string? _device;
@@ -175,6 +179,7 @@ namespace OpenTracker.ViewModels.AutoTracking
 
             PropertyChanged += OnPropertyChanged;
             _autoTracker.PropertyChanged += OnAutoTrackerChanged;
+            _snesConnectorFactory.PropertyChanged += OnSNESConnectorFactoryChanged;
 
             UpdateCommandCanExecuteProperties();
         }
@@ -214,14 +219,14 @@ namespace OpenTracker.ViewModels.AutoTracking
         {
             _tickCount++;
 
-            Dispatcher.UIThread.InvokeAsync(() =>
+            Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                _autoTracker.InGameCheck();
+                await _autoTracker.InGameCheck();
 
                 if (_tickCount == 3)
                 {
                     _tickCount = 0;
-                    _autoTracker.MemoryCheck();
+                    await _autoTracker.MemoryCheck();
                 }
             });
         }
@@ -247,6 +252,7 @@ namespace OpenTracker.ViewModels.AutoTracking
                 Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     this.RaisePropertyChanged(nameof(Devices));
+                    this.RaisePropertyChanged(nameof(DevicesComboBoxEnabled));
                 });
             }
 
@@ -262,6 +268,7 @@ namespace OpenTracker.ViewModels.AutoTracking
                         _memoryCheckTimer.Stop();
                     }
 
+                    this.RaisePropertyChanged(nameof(ExperimentalCheckBoxEnabled));
                     this.RaisePropertyChanged(nameof(UriTextBoxEnabled));
                     this.RaisePropertyChanged(nameof(DevicesComboBoxEnabled));
                 });

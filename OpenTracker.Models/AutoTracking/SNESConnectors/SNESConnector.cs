@@ -153,7 +153,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// <param name="ignoreErrors">
         /// A boolean representing whether to log and change the status on error.
         /// </param>
-        /// <param name="timeOutInMS">
+        /// <param name="timeOutInMs">
         /// A 32-bit integer representing the timeout in milliseconds.
         /// </param>
         /// <returns>
@@ -161,7 +161,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// </returns>
         private IEnumerable<string>? GetJsonResults(
             string requestName, IRequestType request, bool ignoreErrors = false,
-            int timeOutInMS = 4096)
+            int timeOutInMs = 4096)
         {
             string[]? results = null;
 
@@ -175,7 +175,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
 
                     if (JsonConvert.DeserializeObject<Dictionary<string, string[]>>(
                         e.Data) is Dictionary<string, string[]> dictionary &&
-                        dictionary.TryGetValue("Results", out string[]? deserialized))
+                        dictionary.TryGetValue("Results", out var deserialized))
                     {
                         _logService.Log(
                             LogLevel.Debug, $"Request {requestName} successfully deserialized.");
@@ -188,13 +188,13 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
 
                 if (!Send(request))
                 {
-                    _logService.Log(LogLevel.Info, $"Request {requestName} failed to send.");
+                    _logService.Log(LogLevel.Error, $"Request {requestName} failed to send.");
                     return null;
                 }
 
                 _logService.Log(LogLevel.Info, $"Request {requestName} sent.");
 
-                if (!readEvent.WaitOne(timeOutInMS))
+                if (!readEvent.WaitOne(timeOutInMs))
                 {
                     if (!ignoreErrors)
                     {
@@ -244,13 +244,13 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// <summary>
         /// Connects to the USB2SNES web socket, if not already connected.
         /// </summary>
-        /// <param name="timeOutInMS">
+        /// <param name="timeOutInMs">
         /// A 32-bit integer representing the timeout in milliseconds.
         /// </param>
         /// <returns>
         /// A boolean representing whether the method is successful.
         /// </returns>
-        private bool ConnectIfNeeded(int timeOutInMS = 4096)
+        private bool ConnectIfNeeded(int timeOutInMs = 4096)
         {
             if (Connected)
             {
@@ -267,7 +267,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
                 _logService.Log(LogLevel.Debug, "Existing WebSocket class restarted.");
             }
 
-            var connectTask = Connect(timeOutInMS);
+            var connectTask = Connect(timeOutInMs);
             connectTask.Wait();
 
             return connectTask.Result;
@@ -276,28 +276,28 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// <summary>
         /// Returns the device info of the attached device.
         /// </summary>
-        /// <param name="timeOutInMS">
+        /// <param name="timeOutInMs">
         /// A 32-bit integer representing the timeout in milliseconds.
         /// </param>
         /// <returns>
         /// An enumerator of the device info strings.
         /// </returns>
-        private IEnumerable<string>? GetDeviceInfo(int timeOutInMS = 4096)
+        private IEnumerable<string>? GetDeviceInfo(int timeOutInMs = 4096)
         {
             return GetJsonResults(
-                "get device info", _requestFactory(OpcodeType.Info.ToString()), true, timeOutInMS);
+                "get device info", _requestFactory(OpcodeType.Info.ToString()), true, timeOutInMs);
         }
 
         /// <summary>
         /// Attaches to the selected device.
         /// </summary>
-        /// <param name="timeOutInMS">
+        /// <param name="timeOutInMs">
         /// A 32-bit integer representing the timeout in milliseconds.
         /// </param>
         /// <returns>
         /// A boolean representing whether the method is successful.
         /// </returns>
-        private bool AttachDevice(int timeOutInMS = 4096)
+        private bool AttachDevice(int timeOutInMs = 4096)
         {
             _ = _device ?? throw new NullReferenceException();
 
@@ -320,7 +320,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
                 return false;
             }
 
-            if (GetDeviceInfo(timeOutInMS) == null)
+            if (GetDeviceInfo(timeOutInMs) == null)
             {
                 _logService.Log(LogLevel.Error, $"Device {_device} could not be attached.");
                 Status = ConnectionStatus.Error;
@@ -410,24 +410,24 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// <summary>
         /// Returns the list of devices to which can be attached.
         /// </summary>
-        /// <param name="timeOutInMS">
+        /// <param name="timeOutInMs">
         /// A 32-bit integer representing the timeout in milliseconds.
         /// </param>
         /// <returns>
         /// An enumerator of the device list strings.
         /// </returns>
-        public async Task<IEnumerable<string>?> GetDevices(int timeOutInMS = 4096)
+        public async Task<IEnumerable<string>?> GetDevices(int timeOutInMs = 4096)
         {
             return await Task<IEnumerable<string>?>.Factory.StartNew(() =>
             {
-                if (!ConnectIfNeeded(timeOutInMS))
+                if (!ConnectIfNeeded(timeOutInMs))
                 {
                     return null;
                 }
 
                 return GetJsonResults(
                     "get device list", _requestFactory(OpcodeType.DeviceList.ToString()), false,
-                    timeOutInMS);
+                    timeOutInMs);
             });
         }
 
@@ -435,25 +435,25 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// Sets the device to be connected to.
         /// </summary>
         /// <param name="device">
-        /// A string representing the device.
+        ///     A string representing the device.
         /// </param>
-        public void SetDevice(string device)
+        public async Task SetDevice(string device)
         {
             _device = device;
 
-            AttachDeviceIfNeeded();
+            await AttachDeviceIfNeeded();
         }
 
         /// <summary>
         /// Attaches to the selected device, if not already attached.
         /// </summary>
-        /// <param name="timeOutInMS">
+        /// <param name="timeOutInMs">
         /// A 32-bit integer representing the timeout in milliseconds.
         /// </param>
         /// <returns>
         /// A boolean representing whether the method is successful.
         /// </returns>
-        public async Task<bool> AttachDeviceIfNeeded(int timeOutInMS = 4096)
+        public async Task<bool> AttachDeviceIfNeeded(int timeOutInMs = 4096)
         {
             return await Task<bool>.Factory.StartNew(() =>
             {
@@ -464,42 +464,12 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
                     return true;
                 }
 
-                if (!ConnectIfNeeded(timeOutInMS))
+                if (!ConnectIfNeeded(timeOutInMs))
                 {
                     return false;
                 }
 
-                return AttachDevice(timeOutInMS);
-            });
-        }
-
-        /// <summary>
-        /// Returns the value of a byte of SNES memory.
-        /// </summary>
-        /// <param name="address">
-        /// A 64-bit unsigned integer representing the memory address to be read.
-        /// </param>
-        /// <param name="value">
-        /// An 8-bit unsigned integer representing the value of the byte of SNES memory.
-        /// </param>
-        /// <returns>
-        /// A boolean representing whether the method is successful.
-        /// </returns>
-        public async Task<byte?> Read(ulong address)
-        {
-            return await Task<byte?>.Factory.StartNew(() =>
-            {
-                var buffer = new byte[1];
-
-                var readTask = Read(address, buffer);
-                readTask.Wait();
-
-                if (!readTask.Result)
-                {
-                    return null;
-                }
-
-                return buffer[0];
+                return AttachDevice(timeOutInMs);
             });
         }
 
@@ -507,37 +477,33 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// Returns the values of a contiguous set of bytes of SNES memory.
         /// </summary>
         /// <param name="address">
-        /// A 64-bit unsigned integer representing the starting memory address to be read.
+        ///     A 64-bit unsigned integer representing the starting memory address to be read.
         /// </param>
-        /// <param name="buffer">
-        /// An array of bytes to be filled with SNES memory data.
+        /// <param name="bytesToRead">
+        ///     A 32-bit signed integer representing the number of bytes to read.
         /// </param>
-        /// <param name="timeOutInMS">
-        /// A 32-bit integer representing the timeout in milliseconds.
+        /// <param name="timeOutInMs">
+        ///     A 32-bit signed integer representing the timeout in milliseconds.
         /// </param>
         /// <returns>
         /// A boolean representing whether the method is successful.
         /// </returns>
-        public async Task<bool> Read(ulong address, byte[] buffer, int timeOutInMS = 4096)
+        public async Task<byte[]?> Read(ulong address, int bytesToRead = 1, int timeOutInMs = 4096)
         {
-            return await Task<bool>.Factory.StartNew(() =>
+            return await Task<byte[]?>.Factory.StartNew(() =>
             {
-                if (buffer == null)
-                {
-                    throw new ArgumentNullException(nameof(buffer));
-                }
-
-                var attachTask = AttachDeviceIfNeeded(timeOutInMS);
+                var buffer = new byte[bytesToRead];
+                var attachTask = AttachDeviceIfNeeded(timeOutInMs);
                 attachTask.Wait();
 
                 if (!attachTask.Result)
                 {
-                    return false;
+                    return null;
                 }
 
                 if (Status != ConnectionStatus.Connected)
                 {
-                    return false;
+                    return null;
                 }
 
                 using ManualResetEvent readEvent = new ManualResetEvent(false);
@@ -559,27 +525,27 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
                         readEvent.Set();
                     };
 
-                    _logService.Log(LogLevel.Info, $"Reading {buffer.Length} byte(s) from {address:X}.");
+                    _logService.Log(LogLevel.Info, $"Reading {bytesToRead} byte(s) from {address:X}.");
                     Send(_requestFactory(
                         OpcodeType.GetAddress.ToString(),
                         operands: new List<string>(2)
                         {
                         AddressTranslator.TranslateAddress((uint)address, TranslationMode.Read)
                             .ToString("X", CultureInfo.InvariantCulture),
-                        buffer.Length.ToString("X", CultureInfo.InvariantCulture)
+                        bytesToRead.ToString("X", CultureInfo.InvariantCulture)
                         }));
 
-                    if (!readEvent.WaitOne(timeOutInMS))
+                    if (!readEvent.WaitOne(timeOutInMs))
                     {
                         _logService.Log(
                             LogLevel.Error, $"Failed to read {buffer.Length} byte(s) from {address:X}.");
                         Status = ConnectionStatus.Error;
-                        return false;
+                        return null;
                     }
                 }
 
                 _logService.Log(LogLevel.Info, $"Read {buffer.Length} byte(s) from {address:X} successfully.");
-                return true;
+                return buffer;
             });
         }
     }

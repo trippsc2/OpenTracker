@@ -22,8 +22,8 @@ namespace OpenTracker.Models.AutoTracking
         private bool CanReadMemory =>
             Status == ConnectionStatus.Connected;
         private bool IsInGame =>
-            _inGameStatus.HasValue && _inGameStatus.Value > 0x05 && _inGameStatus.Value != 0x14 &&
-            _inGameStatus.Value < 0x20;
+            !(_inGameStatus is null) && _inGameStatus > 0x05 && _inGameStatus != 0x14 &&
+            _inGameStatus < 0x20;
 
         public Action<LogLevel, string>? LogHandler { get; set; }
 
@@ -45,17 +45,14 @@ namespace OpenTracker.Models.AutoTracking
                         _snesConnector.StatusChanged -= OnStatusChanged;
                     }
                     _snesConnector = value;
-                    if (!(_snesConnector is null))
-                    {
-                        _snesConnector.StatusChanged += OnStatusChanged;
-                    }
+                    _snesConnector.StatusChanged += OnStatusChanged;
                     Status = ConnectionStatus.NotConnected;
                 }
             }
         }
 
-        private IEnumerable<string> _devices = new List<string>();
-        public IEnumerable<string> Devices
+        private List<string> _devices = new List<string>();
+        public List<string> Devices
         {
             get => _devices;
             private set
@@ -115,7 +112,7 @@ namespace OpenTracker.Models.AutoTracking
                 _memorySegments.Add(type, new List<IMemoryAddress>());
             }
 
-            for (ulong i = 0; i < 256; i++)
+            for (ulong i = 0; i < 128; i++)
             {
                 CreateMemoryAddress(MemorySegmentType.FirstRoom, i);
                 CreateMemoryAddress(MemorySegmentType.SecondRoom, i);
@@ -132,6 +129,7 @@ namespace OpenTracker.Models.AutoTracking
 
                 if (i < 80)
                 {
+                    _memorySegments[MemorySegmentType.Test].Add(_addressFactory());
                     CreateMemoryAddress(MemorySegmentType.ThirdRoom, i);
                 }
 
@@ -171,7 +169,7 @@ namespace OpenTracker.Models.AutoTracking
         /// <param name="sender">
         /// The sending object of the event.
         /// </param>
-        /// <param name="status">
+        /// <param name="e">
         /// The arguments of the PropertyChanged event.
         /// </param>
         private void OnFactoryChanged(object? sender, PropertyChangedEventArgs e)
@@ -209,6 +207,7 @@ namespace OpenTracker.Models.AutoTracking
         {
             return type switch
             {
+                MemorySegmentType.Test => 0x7ef000,
                 MemorySegmentType.FirstRoom => 0x7ef000,
                 MemorySegmentType.SecondRoom => 0x7ef100,
                 MemorySegmentType.ThirdRoom => 0x7ef200,
@@ -239,7 +238,7 @@ namespace OpenTracker.Models.AutoTracking
             address += offset;
             MemoryAddresses.Add(address, memoryAddress);
         }
-
+        
         /// <summary>
         /// Updates cached values of a memory segment.
         /// </summary>
@@ -250,11 +249,11 @@ namespace OpenTracker.Models.AutoTracking
         {
             var memorySegment = _memorySegments[segment];
             var startAddress = GetMemorySegmentStart(segment);
-            byte[] buffer = new byte[memorySegment.Count];
+            var buffer = await SNESConnector.Read(startAddress, memorySegment.Count);
 
-            if (await SNESConnector.Read(startAddress, buffer))
+            if (!(buffer is null))
             {
-                for (int i = 0; i < buffer.Length; i++)
+                for (var i = 0; i < buffer.Length; i++)
                 {
                     memorySegment[i].Value = buffer[i];
                 }
@@ -267,12 +266,16 @@ namespace OpenTracker.Models.AutoTracking
         /// <returns>
         /// A list of strings representing the devices.
         /// </returns>
-        private async Task<IEnumerable<string>> GetDevicesFromConnector()
+        private async Task<List<string>> GetDevicesFromConnector()
         {
-            var devices = await SNESConnector.GetDevices() ??
-                new List<string>();
+            var devices = await SNESConnector.GetDevices();
 
-            return devices;
+            if (devices is null)
+            {
+                return new List<string>();
+            }
+            
+            return new List<string>(devices);
         }
 
         /// <summary>
@@ -289,7 +292,7 @@ namespace OpenTracker.Models.AutoTracking
                     return;
                 }
 
-                _inGameStatus = result;
+                _inGameStatus = result[0];
             }
         }
 
@@ -390,10 +393,7 @@ namespace OpenTracker.Models.AutoTracking
         /// </summary>
         public async Task Start(string device)
         {
-            await Task.Factory.StartNew(() =>
-            {
-                SNESConnector.SetDevice(device);
-            });
+            await SNESConnector.SetDevice(device);
         }
     }
 }

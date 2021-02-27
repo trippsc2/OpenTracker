@@ -9,7 +9,7 @@ namespace OpenTracker.Models.AutoTracking
     /// </summary>
     public interface IAutoTracker : INotifyPropertyChanged
     {
-        IEnumerable<string>? Devices { get; }
+        List<string> Devices { get; }
         bool RaceIllegalTracking { get; set; }
         Dictionary<ulong, IMemoryAddress> MemoryAddresses { get; }
         ConnectionStatus Status { get; }

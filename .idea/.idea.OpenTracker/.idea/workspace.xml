@@ -2,14 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bb06074c-9d0e-4cec-81f6-0a5e9d1ff139" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.OpenTracker/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.OpenTracker/.idea/contentModel.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.OpenTracker/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.OpenTracker/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.OpenTracker/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.OpenTracker/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/AutoTracker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/AutoTracker.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/IAutoTracker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/IAutoTracker.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/MemorySegmentType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/MemorySegmentType.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/SNESConnectors/ISNESConnector.cs" beforeDir="false" afterPath="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/SNESConnectors/ISNESConnector.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/SNESConnectors/NewSNESConnector.cs" beforeDir="false" afterPath="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/SNESConnectors/NewSNESConnector.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/SNESConnectors/SNESConnector.cs" beforeDir="false" afterPath="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/SNESConnectors/SNESConnector.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/OpenTracker/ViewModels/AutoTracking/AutoTrackerDialogVM.cs" beforeDir="false" afterPath="$PROJECT_DIR$/OpenTracker/ViewModels/AutoTracking/AutoTrackerDialogVM.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OpenTracker/Views/AutoTracking/AutoTrackerDialog.axaml" beforeDir="false" afterPath="$PROJECT_DIR$/OpenTracker/Views/AutoTracking/AutoTrackerDialog.axaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,21 +28,34 @@
     </option>
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/87DBB896-6B20-4A14-9B6A-7AB43642646D/6a/3257ac77/Number.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9E1C76E9-A1AD-4B74-ADB2-BB1ED6D8D88A/8C/ResolveOperation.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/87DBB896-6B20-4A14-9B6A-7AB43642646D/60/a268dece/Lzcnt.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/87DBB896-6B20-4A14-9B6A-7AB43642646D/d1/6bddba81/AsyncTaskMethodBuilder`1.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/87DBB896-6B20-4A14-9B6A-7AB43642646D/c2/38a06378/Enum.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/87DBB896-6B20-4A14-9B6A-7AB43642646D/32/82f8ad26/Int32.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/87DBB896-6B20-4A14-9B6A-7AB43642646D/6a/5b49e7bb/CancellationTokenSource.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/87DBB896-6B20-4A14-9B6A-7AB43642646D/d1/34cdd50e/Array.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/87DBB896-6B20-4A14-9B6A-7AB43642646D/d2/40807af9/StackFrameHelper.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/87DBB896-6B20-4A14-9B6A-7AB43642646D/3f/8931f5d0/TimerQueueTimer.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/87DBB896-6B20-4A14-9B6A-7AB43642646D/cd/21884a5e/GenericArraySortHelper`1.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6FF76902-4340-49A1-A41E-7BBED3BBBECB/27/89a43abd/StackTraceSymbols.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/87DBB896-6B20-4A14-9B6A-7AB43642646D/bb/d4cc6d05/List`1.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3964ECCD-63C1-4D6B-A9F0-7FA8F889C77A/3C/RxApp.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/87DBB896-6B20-4A14-9B6A-7AB43642646D/d5/c79d1023/ConditionalWeakTable`2.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/87DBB896-6B20-4A14-9B6A-7AB43642646D/b7/82d89f6b/UInt32.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <changedPaths>
-      <option value="$PROJECT_DIR$/OpenTracker/ViewModels/AutoTracking/AutoTrackerDialogVM.cs" />
+      <option value="$PROJECT_DIR$/OpenTracker/Views/AutoTracking/AutoTrackerDialog.axaml" />
+      <option value="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/IAutoTracker.cs" />
       <option value="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/SNESConnectors/ISNESConnector.cs" />
       <option value="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/SNESConnectors/SNESConnector.cs" />
-      <option value="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/AutoTracker.cs" />
       <option value="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/SNESConnectors/NewSNESConnector.cs" />
+      <option value="$PROJECT_DIR$/OpenTracker/ViewModels/AutoTracking/AutoTrackerDialogVM.cs" />
+      <option value="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/MemorySegmentType.cs" />
+      <option value="$PROJECT_DIR$/OpenTracker.Models/AutoTracking/AutoTracker.cs" />
     </changedPaths>
   </component>
   <component name="ProjectId" id="1foj3D4FCBGFrC2BA4Hb0ClDfFd" />
@@ -51,12 +65,14 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="DebuggerViewTab_PTCS_FirstProportionKey" value="0.34997287" />
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="DebuggerViewTab_PTCS_FirstProportionKey" value="0.34988964" />
     <property name="DebuggerViewTab_PTCS_LastProportionKey" value="0.0" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="settings.editor.selected.configurable" value="preferences.editor" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.C#" />
   </component>
   <component name="RunManager">
     <configuration name="OpenTracker" type="DotNetProject" factoryName=".NET Project">
@@ -93,6 +109,8 @@
       <workItem from="1614387326982" duration="325000" />
       <workItem from="1614387698874" duration="159000" />
       <workItem from="1614387912237" duration="5769000" />
+      <workItem from="1614394534621" duration="2800000" />
+      <workItem from="1614433437457" duration="9435000" />
     </task>
     <servers />
   </component>
@@ -101,6 +119,18 @@
   </component>
   <component name="UnityProjectConfiguration" hasMinimizedUI="null" />
   <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>
