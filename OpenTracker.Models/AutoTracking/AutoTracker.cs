@@ -12,7 +12,6 @@ namespace OpenTracker.Models.AutoTracking
     /// </summary>
     public class AutoTracker : IAutoTracker
     {
-        private readonly ISNESConnectorFactory _snesConnectorFactory;
         private readonly IMemoryAddress.Factory _addressFactory;
 
         private byte? _inGameStatus;
@@ -93,19 +92,18 @@ namespace OpenTracker.Models.AutoTracking
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="snesConnectorFactory">
+        /// <param name="snesConnector">
         /// The SNES connector factory.
         /// </param>
         /// <param name="addressFactory">
         /// An Autofac factory for creating memory addresses.
         /// </param>
         public AutoTracker(
-            ISNESConnectorFactory snesConnectorFactory, IMemoryAddress.Factory addressFactory)
+            ISNESConnector snesConnector, IMemoryAddress.Factory addressFactory)
         {
-            _snesConnectorFactory = snesConnectorFactory;
             _addressFactory = addressFactory;
-
-            SNESConnector = _snesConnectorFactory.GetConnector();
+            
+            SNESConnector = snesConnector;
 
             foreach (MemorySegmentType type in Enum.GetValues(typeof(MemorySegmentType)))
             {
@@ -116,21 +114,14 @@ namespace OpenTracker.Models.AutoTracking
             {
                 CreateMemoryAddress(MemorySegmentType.FirstRoom, i);
                 CreateMemoryAddress(MemorySegmentType.SecondRoom, i);
-
-                if (i < 144)
-                {
-                    CreateMemoryAddress(MemorySegmentType.Item, i);
-                }
-
-                if (i < 130)
-                {
-                    CreateMemoryAddress(MemorySegmentType.OverworldEvent, i);
-                }
+                CreateMemoryAddress(MemorySegmentType.ThirdRoom, i);
+                CreateMemoryAddress(MemorySegmentType.FourthRoom, i);
+                CreateMemoryAddress(MemorySegmentType.FirstItem, i);
+                CreateMemoryAddress(MemorySegmentType.FirstOverworldEvent, i);
 
                 if (i < 80)
                 {
-                    _memorySegments[MemorySegmentType.Test].Add(_addressFactory());
-                    CreateMemoryAddress(MemorySegmentType.ThirdRoom, i);
+                    CreateMemoryAddress(MemorySegmentType.FifthRoom, i);
                 }
 
                 if (i < 48)
@@ -138,6 +129,11 @@ namespace OpenTracker.Models.AutoTracking
                     CreateMemoryAddress(MemorySegmentType.Dungeon, i);
                 }
 
+                if (i < 16)
+                {
+                    CreateMemoryAddress(MemorySegmentType.SecondItem, i);
+                }
+                
                 if (i < 6)
                 {
                     CreateMemoryAddress(MemorySegmentType.DungeonItem, i);
@@ -145,11 +141,10 @@ namespace OpenTracker.Models.AutoTracking
 
                 if (i < 2)
                 {
+                    CreateMemoryAddress(MemorySegmentType.SecondOverworldEvent, i);
                     CreateMemoryAddress(MemorySegmentType.NPCItem, i);
                 }
             }
-
-            _snesConnectorFactory.PropertyChanged += OnFactoryChanged;
         }
 
         /// <summary>
@@ -161,23 +156,6 @@ namespace OpenTracker.Models.AutoTracking
         private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
-        /// Subscribes to the PropertyChanged event on the ISNESConnectorFactory interface.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnFactoryChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(ISNESConnectorFactory.Experimental))
-            {
-                SNESConnector = _snesConnectorFactory.GetConnector();
-            }
         }
 
         /// <summary>
@@ -207,12 +185,15 @@ namespace OpenTracker.Models.AutoTracking
         {
             return type switch
             {
-                MemorySegmentType.Test => 0x7ef000,
                 MemorySegmentType.FirstRoom => 0x7ef000,
-                MemorySegmentType.SecondRoom => 0x7ef100,
-                MemorySegmentType.ThirdRoom => 0x7ef200,
-                MemorySegmentType.OverworldEvent => 0x7ef280,
-                MemorySegmentType.Item => 0x7ef340,
+                MemorySegmentType.SecondRoom => 0x7ef080,
+                MemorySegmentType.ThirdRoom => 0x7ef100,
+                MemorySegmentType.FourthRoom => 0x7ef180,
+                MemorySegmentType.FifthRoom => 0x7ef200,
+                MemorySegmentType.FirstOverworldEvent => 0x7ef280,
+                MemorySegmentType.SecondOverworldEvent => 0x7ef300,
+                MemorySegmentType.FirstItem => 0x7ef340,
+                MemorySegmentType.SecondItem => 0x7ef3c0,
                 MemorySegmentType.NPCItem => 0x7ef410,
                 MemorySegmentType.DungeonItem => 0x7ef434,
                 MemorySegmentType.Dungeon => 0x7ef4c0,

@@ -1,36 +1,45 @@
-﻿using OpenTracker.Models.BossPlacements;
+﻿using Autofac;
+using Autofac.Extras.Moq;
+using OpenTracker.Models.BossPlacements;
 using System.Collections.Generic;
 using Xunit;
 
 namespace OpenTracker.UnitTests.BossPlacements
 {
     [Collection("Tests")]
-    public class BossPlacementTests
+    public class BossPlacementTests : TestBase
     {
         [Theory]
-        [MemberData(nameof(BossPlacement_Data))]
+        [MemberData(nameof(BossPlacementData))]
         public void Factory_Tests(
             BossPlacementID id, BossType? expectedDefaultBoss, BossType? expectedBoss)
         {
-            var bossPlacement = BossPlacementFactory.GetBossPlacement(id);
+            var container = Configure();
 
+            using var scope = container.BeginLifetimeScope();
+            var factory = scope.Resolve<IBossPlacementFactory>();
+            var bossPlacement = factory.GetBossPlacement(id);
+                
             Assert.Equal(expectedDefaultBoss, bossPlacement.DefaultBoss);
             Assert.Equal(expectedBoss, bossPlacement.Boss);
         }
 
         [Theory]
-        [MemberData(nameof(BossPlacement_Data))]
+        [MemberData(nameof(BossPlacementData))]
         public void Dictionary_Tests(
             BossPlacementID id, BossType? expectedDefaultBoss, BossType? expectedBoss)
         {
-            var bossPlacement = BossPlacementDictionary.Instance[id];
-            bossPlacement.Reset();
+            var container = Configure();
+
+            using var scope = container.BeginLifetimeScope();
+            var bossPlacementDictionary = scope.Resolve<IBossPlacementDictionary>();
+            var bossPlacement = bossPlacementDictionary[id];
 
             Assert.Equal(expectedDefaultBoss, bossPlacement.DefaultBoss);
             Assert.Equal(expectedBoss, bossPlacement.Boss);
         }
 
-        public static IEnumerable<object[]> BossPlacement_Data =>
+        public static IEnumerable<object[]> BossPlacementData =>
             new List<object[]>
             {
                 new object[]
@@ -128,8 +137,12 @@ namespace OpenTracker.UnitTests.BossPlacements
         [Fact]
         public void PropertyChanged_Tests()
         {
-            var bossPlacement = new BossPlacement(BossType.Armos);
+            var container = Configure();
 
+            using var scope = container.BeginLifetimeScope();
+            var factory = scope.Resolve<IBossPlacement.Factory>();
+            var bossPlacement = factory(BossType.Test);
+            
             Assert.PropertyChanged(
                 bossPlacement, nameof(IBossPlacement.Boss),
                 () => { bossPlacement.Boss = BossType.Armos; });

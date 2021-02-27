@@ -1,57 +1,36 @@
-﻿using Autofac;
-using OpenTracker.Models.AutoTracking;
-using OpenTracker.Models.AutoTracking.Values;
-using OpenTracker.Models.AutoTracking.Logging;
-using OpenTracker.Models.Dropdowns;
-using OpenTracker.Models.Items;
-using OpenTracker.Models.SaveLoad;
-using OpenTracker.Models.Settings;
-using OpenTracker.ViewModels.AutoTracking;
-using OpenTracker.ViewModels.Dropdowns;
-using OpenTracker.ViewModels.SequenceBreaks;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Autofac;
+using OpenTracker.Models.AutoTracking;
+using OpenTracker.Models.AutoTracking.Logging;
+using OpenTracker.Models.AutoTracking.SNESConnectors;
+using OpenTracker.Models.AutoTracking.Values;
 using OpenTracker.Models.BossPlacements;
 using OpenTracker.Models.Connections;
-using OpenTracker.Models.NodeConnections;
-using OpenTracker.Models.Locations;
-using OpenTracker.Models.Dungeons;
-using OpenTracker.Models.Sections;
-using OpenTracker.Models.Requirements;
-using OpenTracker.Models.RequirementNodes;
-using OpenTracker.Models.KeyDoors;
-using OpenTracker.Models.KeyLayouts;
-using OpenTracker.Models.Modes;
-using OpenTracker.Models.PrizePlacements;
-using OpenTracker.Models.SequenceBreaks;
-using OpenTracker.Models.UndoRedo;
-using OpenTracker.Models.Reset;
-using OpenTracker.ViewModels.Items.Small;
-using OpenTracker.ViewModels.Items.Large;
-using OpenTracker.ViewModels.Markings;
-using OpenTracker.ViewModels.Markings.Images;
-using OpenTracker.ViewModels.PinnedLocations.Sections;
-using OpenTracker.ViewModels.Maps;
-using OpenTracker.Utils;
-using OpenTracker.Utils.Dialog;
-using OpenTracker.ViewModels.BossSelect;
-using OpenTracker.ViewModels.ColorSelect;
-using OpenTracker.ViewModels.Items;
-using OpenTracker.ViewModels.PinnedLocations;
-using OpenTracker.ViewModels;
-using OpenTracker.ViewModels.Maps.Connections;
-using OpenTracker.ViewModels.Maps.Locations;
+using OpenTracker.Models.Dropdowns;
 using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.DungeonNodes;
-using OpenTracker.Models.AutoTracking.SNESConnectors;
+using OpenTracker.Models.Dungeons;
+using OpenTracker.Models.Items;
+using OpenTracker.Models.KeyDoors;
+using OpenTracker.Models.KeyLayouts;
+using OpenTracker.Models.Locations;
+using OpenTracker.Models.Modes;
+using OpenTracker.Models.NodeConnections;
+using OpenTracker.Models.PrizePlacements;
+using OpenTracker.Models.RequirementNodes;
+using OpenTracker.Models.Requirements;
+using OpenTracker.Models.SaveLoad;
+using OpenTracker.Models.Sections;
+using OpenTracker.Models.SequenceBreaks;
+using OpenTracker.Models.UndoRedo;
+using OpenTracker.Utils;
+using OpenTracker.Utils.Dialog;
 
-namespace OpenTracker
+namespace OpenTracker.UnitTests
 {
-    /// <summary>
-    /// This is the class for creating and configuring the Autofac container.
-    /// </summary>
-    public static class ContainerConfig
+    public class TestBase
     {
         private static List<string> UtilsSkipTypes =>
             new List<string>();
@@ -210,91 +189,6 @@ namespace OpenTracker
                 nameof(UndoableFactory)
             };
 
-        private static List<string> GUISkipTypes =>
-            new List<string>
-            {
-                nameof(SmallItemPanelVM)
-            };
-
-        private static List<string> GUISelfTypes =>
-            new List<string>
-            {
-                nameof(AlwaysDisplayDungeonItemsRequirement),
-                nameof(DisplayMapsCompassesRequirement),
-                nameof(ItemsPanelOrientationRequirement),
-                nameof(CrystalRequirementLargeItemVM),
-                nameof(LargeItemVM),
-                nameof(PairLargeItemVM),
-                nameof(PrizeLargeItemVM),
-                nameof(SmallKeyLargeItemVM),
-                nameof(BigKeySmallItemVM),
-                nameof(BossSmallItemVM),
-                nameof(DungeonItemSmallItemVM),
-                nameof(PrizeSmallItemVM),
-                nameof(SmallItemVM),
-                nameof(SmallKeySmallItemVM),
-                nameof(SpacerSmallItemVM),
-                nameof(DungeonMapLocationVM),
-                nameof(EntranceMapLocationVM),
-                nameof(MapLocationVM),
-                nameof(MarkableDungeonMapLocationVM),
-                nameof(MarkableMapLocationVM),
-                nameof(ShopMapLocationVM),
-                nameof(TakeAnyMapLocationVM),
-                nameof(MarkingSelectButtonVM),
-                nameof(MarkingSelectSpacerVM),
-                nameof(ItemMarkingImageVM),
-                nameof(MarkingImageVM),
-                nameof(BossSectionIconVM),
-                nameof(EntranceSectionIconVM),
-                nameof(ItemSectionIconVM),
-                nameof(MarkingSectionIconVM),
-                nameof(PrizeSectionIconVM),
-                nameof(ShopSectionIconVM),
-                nameof(TakeAnySectionIconVM)
-            };
-
-        private static List<string> GUISingleInstanceTypes =>
-            new List<string>
-            {
-                nameof(ResetManager),
-                nameof(AppSettings),
-                nameof(BoundsSettings),
-                nameof(ColorSettings),
-                nameof(LayoutSettings),
-                nameof(TrackerSettings),
-                nameof(AutoTrackerDialogVM),
-                nameof(AutoTrackerLogVM),
-                nameof(AutoTrackerStatusVM),
-                nameof(BossSelectFactory),
-                nameof(ColorSelectDialogVM),
-                nameof(DropdownPanelVM),
-                nameof(DropdownVMFactory),
-                nameof(ItemsPanelVM),
-                nameof(LargeItemPanelVM),
-                nameof(LargeItemVMFactory),
-                nameof(SmallItemPanelVM),
-                nameof(SmallItemVMFactory),
-                nameof(MapAreaVM),
-                nameof(MapAreaVMFactory),
-                nameof(MapConnectionCollection),
-                nameof(MapLocationVMFactory),
-                nameof(MarkingSelectFactory),
-                nameof(MarkingImageDictionary),
-                nameof(MarkingImageFactory),
-                nameof(PinnedLocationDictionary),
-                nameof(PinnedLocationsPanelVM),
-                nameof(PinnedLocationVMCollection),
-                nameof(PinnedLocationVMFactory),
-                nameof(SectionVMFactory),
-                nameof(SequenceBreakControlFactory),
-                nameof(SequenceBreakDialogVM),
-                nameof(AboutDialogVM),
-                nameof(MainWindowVM),
-                nameof(ModeSettingsVM),
-                nameof(StatusBarVM),
-                nameof(UIPanelVM)
-            };
 
         /// <summary>
         /// Returns a newly configured Autofac container.
@@ -302,7 +196,7 @@ namespace OpenTracker
         /// <returns>
         /// A new Autofac container.
         /// </returns>
-        public static IContainer Configure()
+        protected static IContainer Configure()
         {
             var builder = new ContainerBuilder();
 
@@ -312,9 +206,6 @@ namespace OpenTracker
             RegisterNamespace(
                 Assembly.Load($"{nameof(OpenTracker)}.{nameof(Models)}"), builder,
                 ModelsSkipTypes, ModelsSelfTypes, ModelsSingleInstanceTypes);
-            RegisterNamespace(
-                Assembly.Load(nameof(OpenTracker)), builder, GUISkipTypes, GUISelfTypes,
-                GUISingleInstanceTypes);
 
             return builder.Build();
         }
@@ -327,6 +218,9 @@ namespace OpenTracker
         /// </param>
         /// <param name="builder">
         /// The container builder.
+        /// </param>
+        /// <param name="skip">
+        /// A list of strings representing types that should not be registered.
         /// </param>
         /// <param name="self">
         /// A list of strings representing types that should be registered to themselves.

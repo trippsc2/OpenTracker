@@ -5,12 +5,15 @@
     /// </summary>
     public enum MemorySegmentType
     {
-        Test,
         FirstRoom,
         SecondRoom,
         ThirdRoom,
-        OverworldEvent,
-        Item,
+        FourthRoom,
+        FifthRoom,
+        FirstOverworldEvent,
+        SecondOverworldEvent,
+        FirstItem,
+        SecondItem,
         NPCItem,
         DungeonItem,
         Dungeon
