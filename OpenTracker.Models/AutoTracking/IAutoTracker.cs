@@ -11,11 +11,11 @@ namespace OpenTracker.Models.AutoTracking
     {
         IEnumerable<string>? Devices { get; }
         bool RaceIllegalTracking { get; set; }
-        ISNESConnector SNESConnector { get; }
         Dictionary<ulong, IMemoryAddress> MemoryAddresses { get; }
+        ConnectionStatus Status { get; }
 
-        void InGameCheck();
-        void MemoryCheck();
+        Task InGameCheck();
+        Task MemoryCheck();
         Task GetDevices();
         Task Disconnect();
         Task Connect(string uriString);

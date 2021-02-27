@@ -1,5 +1,6 @@
 ﻿using Avalonia.Threading;
 using OpenTracker.Models.AutoTracking;
+using OpenTracker.Models.AutoTracking.SNESConnectors;
 using OpenTracker.Utils.Dialog;
 using ReactiveUI;
 using System;
@@ -16,6 +17,8 @@ namespace OpenTracker.ViewModels.AutoTracking
     public class AutoTrackerDialogVM : DialogViewModelBase, IAutoTrackerDialogVM
     {
         private readonly IAutoTracker _autoTracker;
+        private readonly ISNESConnectorFactory _snesConnectorFactory;
+
         private readonly DispatcherTimer _memoryCheckTimer;
         private int _tickCount;
 
@@ -44,6 +47,9 @@ namespace OpenTracker.ViewModels.AutoTracking
 
         public bool RaceIllegalTracking =>
             _autoTracker.RaceIllegalTracking;
+
+        public bool Experimental =>
+            _snesConnectorFactory.Experimental;
 
         private bool _canConnect;
         public bool CanConnect
@@ -82,6 +88,7 @@ namespace OpenTracker.ViewModels.AutoTracking
         public ReactiveCommand<Unit, Unit> StartCommand { get; }
 
         public ReactiveCommand<Unit, Unit> ToggleRaceIllegalTrackingCommand { get; }
+        public ReactiveCommand<Unit, Unit> ToggleExperimentalCommand { get; }
 
         private readonly ObservableAsPropertyHelper<bool> _isConnecting;
         public bool IsConnecting =>
@@ -112,9 +119,11 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// The autotracker log control ViewModel.
         /// </param>
         public AutoTrackerDialogVM(
-            IAutoTracker autoTracker, IAutoTrackerStatusVM status, IAutoTrackerLogVM log)
+            IAutoTracker autoTracker, ISNESConnectorFactory snesConnectorFactory,
+            IAutoTrackerStatusVM status, IAutoTrackerLogVM log)
         {
             _autoTracker = autoTracker;
+            _snesConnectorFactory = snesConnectorFactory;
 
             Status = status;
             Log = log;
@@ -127,6 +136,7 @@ namespace OpenTracker.ViewModels.AutoTracking
             _memoryCheckTimer.Tick += OnMemoryCheckTimerTick;
 
             ToggleRaceIllegalTrackingCommand = ReactiveCommand.Create(ToggleRaceIllegalTracking);
+            ToggleExperimentalCommand = ReactiveCommand.Create(ToggleExperimental);
 
             ConnectCommand = ReactiveCommand.CreateFromTask(
                 Connect, this.WhenAnyValue(x => x.CanConnect));
@@ -150,7 +160,6 @@ namespace OpenTracker.ViewModels.AutoTracking
 
             PropertyChanged += OnPropertyChanged;
             _autoTracker.PropertyChanged += OnAutoTrackerChanged;
-            _autoTracker.SNESConnector.PropertyChanged += OnConnectorChanged;
 
             UpdateCommandCanExecuteProperties();
         }
@@ -203,32 +212,6 @@ namespace OpenTracker.ViewModels.AutoTracking
         }
 
         /// <summary>
-        /// Subscribes to the PropertyChanged event on the ISNESConnector interface.
-        /// </summary>
-        /// <param name="sender">
-        /// The sending object of the event.
-        /// </param>
-        /// <param name="e">
-        /// The arguments of the PropertyChanged event.
-        /// </param>
-        private void OnConnectorChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(ISNESConnector.Status))
-            {
-                UpdateCommandCanExecuteProperties();
-
-                if (_autoTracker.SNESConnector.Status != ConnectionStatus.Connected &&
-                    _memoryCheckTimer.IsEnabled)
-                {
-                    _memoryCheckTimer.Stop();
-                }
-
-                this.RaisePropertyChanged(nameof(UriTextBoxEnabled));
-                this.RaisePropertyChanged(nameof(DevicesComboBoxEnabled));
-            }
-        }
-
-        /// <summary>
         /// Subscribes to the PropertyChanged event on the IAutoTracker interface.
         /// </summary>
         /// <param name="sender">
@@ -246,7 +229,44 @@ namespace OpenTracker.ViewModels.AutoTracking
 
             if (e.PropertyName == nameof(IAutoTracker.Devices))
             {
-                this.RaisePropertyChanged(nameof(Devices));
+                Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    this.RaisePropertyChanged(nameof(Devices));
+                });
+            }
+
+            if (e.PropertyName == nameof(IAutoTracker.Status))
+            {
+                Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    UpdateCommandCanExecuteProperties();
+
+                    if (_autoTracker.Status != ConnectionStatus.Connected &&
+                        _memoryCheckTimer.IsEnabled)
+                    {
+                        _memoryCheckTimer.Stop();
+                    }
+
+                    this.RaisePropertyChanged(nameof(UriTextBoxEnabled));
+                    this.RaisePropertyChanged(nameof(DevicesComboBoxEnabled));
+                });
+            }
+        }
+
+        /// <summary>
+        /// Subscribes to the PropertyChanged event on the ISNESConnectorFactory interface.
+        /// </summary>
+        /// <param name="sender">
+        /// The sending object of the event.
+        /// </param>
+        /// <param name="e">
+        /// The arguments of the PropertyChanged event.
+        /// </param>
+        private void OnSNESConnectorFactoryChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ISNESConnectorFactory.Experimental))
+            {
+                this.RaisePropertyChanged(nameof(Experimental));
             }
         }
 
@@ -367,6 +387,14 @@ namespace OpenTracker.ViewModels.AutoTracking
         private void ToggleRaceIllegalTracking()
         {
             _autoTracker.RaceIllegalTracking = !_autoTracker.RaceIllegalTracking;
+        }
+
+        /// <summary>
+        /// Toggles the experimental flag.
+        /// </summary>
+        private void ToggleExperimental()
+        {
+            _snesConnectorFactory.Experimental = !_snesConnectorFactory.Experimental;
         }
 
         /// <summary>

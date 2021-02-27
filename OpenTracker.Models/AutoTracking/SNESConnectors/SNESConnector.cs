@@ -2,11 +2,11 @@
 using OpenTracker.Models.AutoTracking.Logging;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using WebSocketSharp;
+using LogLevel = OpenTracker.Models.AutoTracking.Logging.LogLevel;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors
 {
@@ -29,7 +29,21 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         private bool Connected =>
             Socket != null && Socket.IsAlive;
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public event EventHandler<ConnectionStatus>? StatusChanged;
+
+        private ConnectionStatus _status;
+        private ConnectionStatus Status
+        {
+            get => _status;
+            set
+            {
+                if (_status != value)
+                {
+                    _status = value;
+                    OnStatusChanged();
+                }
+            }
+        }
 
         private WebSocket? _socket;
         private WebSocket? Socket
@@ -54,19 +68,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
             }
         }
 
-        private ConnectionStatus _status;
-        public ConnectionStatus Status
-        {
-            get => _status;
-            private set
-            {
-                if (_status != value)
-                {
-                    _status = value;
-                    OnPropertyChanged(nameof(Status));
-                }
-            }
-        }
+        public delegate SNESConnector Factory();
 
         /// <summary>
         /// Constructor
@@ -85,14 +87,11 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for the specified property.
+        /// Raises the StatusChanged event.
         /// </summary>
-        /// <param name="propertyName">
-        /// The string of the property name of the changed property.
-        /// </param>
-        private void OnPropertyChanged(string propertyName)
+        private void OnStatusChanged()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            StatusChanged?.Invoke(this, Status);
         }
 
         /// <summary>
@@ -198,7 +197,7 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
                     if (!ignoreErrors)
                     {
                         _logService.Log(LogLevel.Error, $"Request {requestName} failed.");
-                        Status = ConnectionStatus.Error;
+                        StatusChanged?.Invoke(this, ConnectionStatus.Error);
                     }
 
                     _messageHandler = null;
@@ -265,7 +264,10 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
                 _logService.Log(LogLevel.Debug, "Existing WebSocket class restarted.");
             }
 
-            return Connect(timeOutInMS);
+            var connectTask = Connect(timeOutInMS);
+            connectTask.Wait();
+
+            return connectTask.Result;
         }
 
         /// <summary>
@@ -348,39 +350,42 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// <returns>
         /// A boolean representing whether the method is successful.
         /// </returns>
-        public bool Connect(int timeOutInMS = 4096)
+        public async Task<bool> Connect(int timeOutInMS = 4096)
         {
-            Socket = new WebSocket(_uri);
-            _logService.Log(LogLevel.Info, "Attempting to connect to USB2SNES websocket at " +
-                $"{Socket.Url.OriginalString}.");
-            Status = ConnectionStatus.Connecting;
-
-            using var openEvent = new ManualResetEvent(false);
-
-            void onOpen(object? sender, EventArgs e)
+            return await Task<bool>.Factory.StartNew(() =>
             {
-                openEvent.Set();
-            }
-
-            Socket.OnOpen += onOpen;
-            Socket.Connect();
-            bool result = openEvent.WaitOne(timeOutInMS);
-            Socket.OnOpen -= onOpen;
-
-            if (result)
-            {
-                _logService.Log(LogLevel.Info, "Successfully connected to USB2SNES websocket at " +
+                Socket = new WebSocket(_uri);
+                _logService.Log(LogLevel.Info, "Attempting to connect to USB2SNES websocket at " +
                     $"{Socket.Url.OriginalString}.");
-                Status = ConnectionStatus.SelectDevice;
-            }
-            else
-            {
-                _logService.Log(LogLevel.Error, "Failed to connect to USB2SNES websocket at " +
-                    $"{Socket.Url.OriginalString}.");
-                Status = ConnectionStatus.Error;
-            }
+                Status = ConnectionStatus.Connecting;
 
-            return result;
+                using var openEvent = new ManualResetEvent(false);
+
+                void onOpen(object? sender, EventArgs e)
+                {
+                    openEvent.Set();
+                }
+
+                Socket.OnOpen += onOpen;
+                Socket.Connect();
+                bool result = openEvent.WaitOne(timeOutInMS);
+                Socket.OnOpen -= onOpen;
+
+                if (result)
+                {
+                    _logService.Log(LogLevel.Info, "Successfully connected to USB2SNES websocket at " +
+                        $"{Socket.Url.OriginalString}.");
+                    Status = ConnectionStatus.SelectDevice;
+                }
+                else
+                {
+                    _logService.Log(LogLevel.Error, "Failed to connect to USB2SNES websocket at " +
+                        $"{Socket.Url.OriginalString}.");
+                    Status = ConnectionStatus.Error;
+                }
+
+                return result;
+            });
         }
 
         /// <summary>
@@ -442,21 +447,24 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// <returns>
         /// A boolean representing whether the method is successful.
         /// </returns>
-        public bool AttachDeviceIfNeeded(int timeOutInMS = 4096)
+        public async Task<bool> AttachDeviceIfNeeded(int timeOutInMS = 4096)
         {
-            if (Status == ConnectionStatus.Connected)
+            return await Task<bool>.Factory.StartNew(() =>
             {
-                _logService.Log(
-                    LogLevel.Debug, "Already attached to device, skipping attachment attempt.");
-                return true;
-            }
+                if (Status == ConnectionStatus.Connected)
+                {
+                    _logService.Log(
+                        LogLevel.Debug, "Already attached to device, skipping attachment attempt.");
+                    return true;
+                }
 
-            if (!ConnectIfNeeded(timeOutInMS))
-            {
-                return false;
-            }
+                if (!ConnectIfNeeded(timeOutInMS))
+                {
+                    return false;
+                }
 
-            return AttachDevice(timeOutInMS);
+                return AttachDevice(timeOutInMS);
+            });
         }
 
         /// <summary>
@@ -471,18 +479,22 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// <returns>
         /// A boolean representing whether the method is successful.
         /// </returns>
-        public bool Read(ulong address, out byte value)
+        public async Task<byte?> Read(ulong address)
         {
-            var buffer = new byte[1];
-
-            if (!Read(address, buffer))
+            return await Task<byte?>.Factory.StartNew(() =>
             {
-                value = 0;
-                return false;
-            }
+                var buffer = new byte[1];
 
-            value = buffer[0];
-            return true;
+                var readTask = Read(address, buffer);
+                readTask.Wait();
+
+                if (!readTask.Result)
+                {
+                    return null;
+                }
+
+                return buffer[0];
+            });
         }
 
         /// <summary>
@@ -500,63 +512,69 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
         /// <returns>
         /// A boolean representing whether the method is successful.
         /// </returns>
-        public bool Read(ulong address, byte[] buffer, int timeOutInMS = 4096)
+        public async Task<bool> Read(ulong address, byte[] buffer, int timeOutInMS = 4096)
         {
-            if (buffer == null)
+            return await Task<bool>.Factory.StartNew(() =>
             {
-                throw new ArgumentNullException(nameof(buffer));
-            }
-
-            if (!AttachDeviceIfNeeded(timeOutInMS))
-            {
-                return false;
-            }
-
-            if (Status != ConnectionStatus.Connected)
-            {
-                return false;
-            }
-
-            using ManualResetEvent readEvent = new ManualResetEvent(false);
-
-            lock (_transmitLock)
-            {
-                _messageHandler = (e) =>
+                if (buffer == null)
                 {
-                    if (!e.IsBinary || e.RawData == null)
-                    {
-                        return;
-                    }
+                    throw new ArgumentNullException(nameof(buffer));
+                }
 
-                    for (int i = 0; i < buffer.Length; i++)
-                    {
-                        buffer[i] = e.RawData[Math.Min(i, e.RawData.Length - 1)];
-                    }
+                var attachTask = AttachDeviceIfNeeded(timeOutInMS);
+                attachTask.Wait();
 
-                    readEvent.Set();
-                };
+                if (!attachTask.Result)
+                {
+                    return false;
+                }
 
-                _logService.Log(LogLevel.Info, $"Reading {buffer.Length} byte(s) from {address:X}.");
-                Send(_requestFactory(
-                    OpcodeType.GetAddress.ToString(),
-                    operands: new List<string>(2)
+                if (Status != ConnectionStatus.Connected)
+                {
+                    return false;
+                }
+
+                using ManualResetEvent readEvent = new ManualResetEvent(false);
+
+                lock (_transmitLock)
+                {
+                    _messageHandler = (e) =>
                     {
+                        if (!e.IsBinary || e.RawData == null)
+                        {
+                            return;
+                        }
+
+                        for (int i = 0; i < buffer.Length; i++)
+                        {
+                            buffer[i] = e.RawData[Math.Min(i, e.RawData.Length - 1)];
+                        }
+
+                        readEvent.Set();
+                    };
+
+                    _logService.Log(LogLevel.Info, $"Reading {buffer.Length} byte(s) from {address:X}.");
+                    Send(_requestFactory(
+                        OpcodeType.GetAddress.ToString(),
+                        operands: new List<string>(2)
+                        {
                         AddressTranslator.TranslateAddress((uint)address, TranslationMode.Read)
                             .ToString("X", CultureInfo.InvariantCulture),
                         buffer.Length.ToString("X", CultureInfo.InvariantCulture)
-                    }));
+                        }));
 
-                if (!readEvent.WaitOne(timeOutInMS))
-                {
-                    _logService.Log(
-                        LogLevel.Error, $"Failed to read {buffer.Length} byte(s) from {address:X}.");
-                    Status = ConnectionStatus.Error;
-                    return false;
+                    if (!readEvent.WaitOne(timeOutInMS))
+                    {
+                        _logService.Log(
+                            LogLevel.Error, $"Failed to read {buffer.Length} byte(s) from {address:X}.");
+                        Status = ConnectionStatus.Error;
+                        return false;
+                    }
                 }
-            }
 
-            _logService.Log(LogLevel.Info, $"Read {buffer.Length} byte(s) from {address:X} successfully.");
-            return true;
+                _logService.Log(LogLevel.Info, $"Read {buffer.Length} byte(s) from {address:X} successfully.");
+                return true;
+            });
         }
     }
 }

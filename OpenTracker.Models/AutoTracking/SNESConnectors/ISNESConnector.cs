@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OpenTracker.Models.AutoTracking.SNESConnectors
@@ -8,16 +8,16 @@ namespace OpenTracker.Models.AutoTracking.SNESConnectors
     /// This interface contains logic for the SNES connector using WebSocketSharp to connect to
     /// (Q)USB2SNES.
     /// </summary>
-    public interface ISNESConnector : INotifyPropertyChanged
+    public interface ISNESConnector
     {
-        ConnectionStatus Status { get; }
+        event EventHandler<ConnectionStatus>? StatusChanged;
 
         void Disconnect();
-        bool AttachDeviceIfNeeded(int timeOutInMS = 4096);
+        Task<bool> AttachDeviceIfNeeded(int timeOutInMS = 4096);
         Task<IEnumerable<string>?> GetDevices(int timeOutInMS = 4096);
-        bool Read(ulong address, byte[] buffer, int timeOutInMS = 4096);
-        bool Read(ulong address, out byte value);
-        bool Connect(int timeOutInMS = 4096);
+        Task<bool> Read(ulong address, byte[] buffer, int timeOutInMS = 4096);
+        Task<byte?> Read(ulong address);
+        Task<bool> Connect(int timeOutInMS = 4096);
         void SetUri(string uriString);
         void SetDevice(string device);
     }

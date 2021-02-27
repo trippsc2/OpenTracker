@@ -44,6 +44,7 @@ using OpenTracker.ViewModels.Maps.Connections;
 using OpenTracker.ViewModels.Maps.Locations;
 using OpenTracker.Models.DungeonItems;
 using OpenTracker.Models.DungeonNodes;
+using OpenTracker.Models.AutoTracking.SNESConnectors;
 
 namespace OpenTracker
 {
@@ -77,6 +78,8 @@ namespace OpenTracker
         private static List<string> ModelsSelfTypes =>
             new List<string>
             {
+                nameof(SNESConnector),
+                nameof(NewSNESConnector),
                 nameof(AutoTrackAddressBool),
                 nameof(AutoTrackAddressValue),
                 nameof(AutoTrackBitwiseIntegerValue),
@@ -175,7 +178,7 @@ namespace OpenTracker
             {
                 nameof(AutoTracker),
                 nameof(AutoTrackerLogService),
-                nameof(SNESConnector),
+                nameof(SNESConnectorFactory),
                 nameof(BossPlacementDictionary),
                 nameof(BossPlacementFactory),
                 nameof(ConnectionCollection),

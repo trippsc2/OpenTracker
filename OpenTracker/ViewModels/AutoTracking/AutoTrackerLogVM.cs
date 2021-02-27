@@ -1,5 +1,4 @@
 ﻿using Avalonia.Threading;
-using OpenTracker.Models.AutoTracking;
 using OpenTracker.Models.AutoTracking.Logging;
 using OpenTracker.Utils;
 using ReactiveUI;
@@ -10,7 +9,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Reactive;
-using WebSocketSharp;
+using LogLevel = OpenTracker.Models.AutoTracking.Logging.LogLevel;
 
 namespace OpenTracker.ViewModels.AutoTracking
 {
@@ -23,7 +22,7 @@ namespace OpenTracker.ViewModels.AutoTracking
         public ObservableStringBuilder LogText { get; } =
             new ObservableStringBuilder();
 
-        private LogLevel _logLevel = WebSocketSharp.LogLevel.Info;
+        private LogLevel _logLevel = Models.AutoTracking.Logging.LogLevel.Info;
         public string LogLevel
         {
             get => _logLevel.ToString();

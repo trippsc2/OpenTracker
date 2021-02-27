@@ -39,7 +39,6 @@ namespace OpenTracker.ViewModels.AutoTracking
             _autoTracker = autoTracker;
 
             _autoTracker.PropertyChanged += OnAutoTrackerChanged;
-            _autoTracker.SNESConnector.PropertyChanged += OnConnectorChanged;
 
             UpdateStatusText();
         }
@@ -55,7 +54,8 @@ namespace OpenTracker.ViewModels.AutoTracking
         /// </param>
         private void OnAutoTrackerChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IAutoTracker.RaceIllegalTracking))
+            if (e.PropertyName == nameof(IAutoTracker.RaceIllegalTracking) ||
+                e.PropertyName == nameof(IAutoTracker.Status))
             {
                 UpdateStatusText();
             }
@@ -82,7 +82,7 @@ namespace OpenTracker.ViewModels.AutoTracking
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                switch (_autoTracker.SNESConnector.Status)
+                switch (_autoTracker.Status)
                 {
                     case ConnectionStatus.NotConnected:
                         {
