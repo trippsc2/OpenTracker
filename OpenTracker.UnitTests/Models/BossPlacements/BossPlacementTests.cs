@@ -1,20 +1,19 @@
 ﻿using Autofac;
-using Autofac.Extras.Moq;
 using OpenTracker.Models.BossPlacements;
 using System.Collections.Generic;
+using OpenTracker.Models.Modes;
 using Xunit;
 
-namespace OpenTracker.UnitTests.BossPlacements
+namespace OpenTracker.UnitTests.Models.BossPlacements
 {
-    [Collection("Tests")]
-    public class BossPlacementTests : TestBase
+    public class BossPlacementTests
     {
         [Theory]
         [MemberData(nameof(BossPlacementData))]
         public void Factory_Tests(
             BossPlacementID id, BossType? expectedDefaultBoss, BossType? expectedBoss)
         {
-            var container = Configure();
+            var container = ContainerConfig.Configure();
 
             using var scope = container.BeginLifetimeScope();
             var factory = scope.Resolve<IBossPlacementFactory>();
@@ -29,7 +28,7 @@ namespace OpenTracker.UnitTests.BossPlacements
         public void Dictionary_Tests(
             BossPlacementID id, BossType? expectedDefaultBoss, BossType? expectedBoss)
         {
-            var container = Configure();
+            var container = ContainerConfig.Configure();
 
             using var scope = container.BeginLifetimeScope();
             var bossPlacementDictionary = scope.Resolve<IBossPlacementDictionary>();
@@ -134,10 +133,99 @@ namespace OpenTracker.UnitTests.BossPlacements
                 }
             };
 
+        [Theory]
+        [MemberData(nameof(GetCurrentBossData))]
+        public void GetCurrentBoss_Tests(
+            BossPlacementID id, BossType? expectedNoBossShuffle)
+        {
+            var container = ContainerConfig.Configure();
+
+            using var scope = container.BeginLifetimeScope();
+            var bossPlacementDictionary = scope.Resolve<IBossPlacementDictionary>();
+            var bossPlacement = bossPlacementDictionary[id];
+            var mode = scope.Resolve<IMode>();
+            
+            Assert.Equal(expectedNoBossShuffle, bossPlacement.GetCurrentBoss());
+
+            mode.BossShuffle = true;
+            
+            Assert.Null( bossPlacement.GetCurrentBoss());
+        }
+
+        public static IEnumerable<object[]> GetCurrentBossData =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    BossPlacementID.EPBoss,
+                    BossType.Armos
+                },
+                new object[]
+                {
+                    BossPlacementID.DPBoss,
+                    BossType.Lanmolas
+                },
+                new object[]
+                {
+                    BossPlacementID.ToHBoss,
+                    BossType.Moldorm
+                },
+                new object[]
+                {
+                    BossPlacementID.PoDBoss,
+                    BossType.HelmasaurKing
+                },
+                new object[]
+                {
+                    BossPlacementID.SPBoss,
+                    BossType.Arrghus
+                },
+                new object[]
+                {
+                    BossPlacementID.SWBoss,
+                    BossType.Mothula
+                },
+                new object[]
+                {
+                    BossPlacementID.TTBoss,
+                    BossType.Blind
+                },
+                new object[]
+                {
+                    BossPlacementID.IPBoss,
+                    BossType.Kholdstare
+                },
+                new object[]
+                {
+                    BossPlacementID.MMBoss,
+                    BossType.Vitreous
+                },
+                new object[]
+                {
+                    BossPlacementID.TRBoss,
+                    BossType.Trinexx
+                },
+                new object[]
+                {
+                    BossPlacementID.GTBoss1,
+                    BossType.Armos
+                },
+                new object[]
+                {
+                    BossPlacementID.GTBoss2,
+                    BossType.Lanmolas
+                },
+                new object[]
+                {
+                    BossPlacementID.GTBoss3,
+                    BossType.Moldorm
+                }
+            };
+
         [Fact]
         public void PropertyChanged_Tests()
         {
-            var container = Configure();
+            var container = ContainerConfig.Configure();
 
             using var scope = container.BeginLifetimeScope();
             var factory = scope.Resolve<IBossPlacement.Factory>();

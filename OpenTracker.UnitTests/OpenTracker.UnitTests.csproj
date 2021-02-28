@@ -23,6 +23,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\OpenTracker.Models\OpenTracker.Models.csproj" />
+    <ProjectReference Include="..\OpenTracker\OpenTracker.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models" />
   </ItemGroup>
 
 </Project>

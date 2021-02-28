@@ -1,8 +1,8 @@
-﻿using OpenTracker.Models.Items;
-using System;
+﻿using System;
+using OpenTracker.Models.Items;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Items
+namespace OpenTracker.UnitTests.Models.Items
 {
     [Collection("Tests")]
     public class CappedItemTests
