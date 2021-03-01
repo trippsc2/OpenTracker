@@ -1,12 +1,12 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using System.Collections.Generic;
+using Autofac;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.SaveLoad;
-using System.Collections.Generic;
-using Autofac;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Requirements
+namespace OpenTracker.UnitTests.Models.Requirements
 {
     [Collection("Tests")]
     public class ModeRequirementTests

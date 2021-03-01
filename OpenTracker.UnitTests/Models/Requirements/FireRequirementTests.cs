@@ -15,6 +15,7 @@ namespace OpenTracker.UnitTests.Models.Requirements
     {
         [Theory]
         [MemberData(nameof(FireRodDarkRoomData))]
+        [MemberData(nameof(FireSourceData))]
         [MemberData(nameof(MeltThingsData))]
         public override void AccessibilityTests(
             ModeSaveData modeData, (ItemType, int)[] items, (PrizeType, int)[] prizes,
@@ -81,6 +82,59 @@ namespace OpenTracker.UnitTests.Models.Requirements
                     new (LocationID, int)[0],
                     new RequirementNodeID[0],
                     RequirementType.FireRodDarkRoom,
+                    AccessibilityLevel.Normal
+                }
+            };
+
+        public static IEnumerable<object[]> FireSourceData =>
+            new List<object[]>
+            {
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Lamp, 0),
+                        (ItemType.FireRod, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new (LocationID, int)[0],
+                    new (LocationID, int)[0],
+                    new RequirementNodeID[0],
+                    RequirementType.FireSource,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Lamp, 1),
+                        (ItemType.FireRod, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new (LocationID, int)[0],
+                    new (LocationID, int)[0],
+                    new RequirementNodeID[0],
+                    RequirementType.FireSource,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData(),
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.Lamp, 0),
+                        (ItemType.FireRod, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new (LocationID, int)[0],
+                    new (LocationID, int)[0],
+                    new RequirementNodeID[0],
+                    RequirementType.FireSource,
                     AccessibilityLevel.Normal
                 }
             };

@@ -4,7 +4,6 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.Items
 {
-    [Collection("Tests")]
     public class ItemTests
     {
         [Theory]

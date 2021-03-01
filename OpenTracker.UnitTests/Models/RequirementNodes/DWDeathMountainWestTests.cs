@@ -9,7 +9,6 @@ using Xunit;
 
 namespace OpenTracker.UnitTests.Models.RequirementNodes
 {
-    [Collection("Tests")]
     public class DWDeathMountainWestTests : RequirementNodeTestBase
     {
         [Theory]
