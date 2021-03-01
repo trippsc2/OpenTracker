@@ -36,7 +36,7 @@ namespace OpenTracker.Views
             ChangeLayout(Bounds);
         }
 
-        private void OnClose(object sender, CancelEventArgs e)
+        private void OnClose(object? sender, CancelEventArgs e)
         {
             _ = ViewModel ?? throw new NullReferenceException();
 

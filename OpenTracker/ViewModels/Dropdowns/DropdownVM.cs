@@ -1,8 +1,11 @@
-﻿using OpenTracker.Models.Dropdowns;
+﻿using System;
+using OpenTracker.Models.Dropdowns;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
 using System.ComponentModel;
+using System.Reactive;
+using Avalonia.Input;
 
 namespace OpenTracker.ViewModels.Dropdowns
 {
@@ -21,12 +24,20 @@ namespace OpenTracker.ViewModels.Dropdowns
             _dropdown.RequirementMet;
         public string ImageSource =>
             _imageSourceBase + (_dropdown.Checked ? "1" : "0") + ".png";
+        
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
         public delegate IDropdownVM Factory(IDropdown dropdown, string imageSourceBase);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// The factory for creating undoable actions.
+        /// </param>
         /// <param name="imageSourceBase">
         /// A string representing the base image source.
         /// </param>
@@ -42,6 +53,8 @@ namespace OpenTracker.ViewModels.Dropdowns
 
             _dropdown = dropdown;
             _imageSourceBase = imageSourceBase;
+
+            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
 
             _dropdown.PropertyChanged += OnDropdownChanged;
         }
@@ -69,25 +82,42 @@ namespace OpenTracker.ViewModels.Dropdowns
         }
 
         /// <summary>
-        /// Handles left click and adds an item.
+        /// Creates a new undoable action to check the dropdown to the undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnLeftClick(bool force)
+        private void CheckDropdown()
         {
             _undoRedoManager.Execute(_undoableFactory.GetCheckDropdown(_dropdown));
         }
 
         /// <summary>
-        /// Handles right clicks and removes an item.
+        /// Creates a new undoable action to uncheck the dropdown to the undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnRightClick(bool force)
+        private void UncheckDropdown()
         {
             _undoRedoManager.Execute(_undoableFactory.GetUncheckDropdown(_dropdown));
+        }
+
+        /// <summary>
+        /// Handles the dropdown being clicked.
+        /// </summary>
+        /// <param name="e">
+        /// The pointer released event args.
+        /// </param>
+        private void HandleClick(PointerReleasedEventArgs e)
+        {
+            switch (e.InitialPressMouseButton)
+            {
+                case MouseButton.Left:
+                {
+                    CheckDropdown();
+                }
+                    break;
+                case MouseButton.Right:
+                {
+                    UncheckDropdown();
+                }
+                    break;
+            }
         }
     }
 }
