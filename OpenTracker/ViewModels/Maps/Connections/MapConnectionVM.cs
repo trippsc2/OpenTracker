@@ -8,11 +8,13 @@ using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
 using System.ComponentModel;
+using System.Reactive;
+using Avalonia.Input;
 
 namespace OpenTracker.ViewModels.Maps.Connections
 {
     /// <summary>
-    /// This is the ViewModel of the control representing a connection between entrance locations.
+    /// This class contains map connection control ViewModel data.
     /// </summary>
     public class MapConnectionVM : ViewModelBase, IMapConnectionVM
     {
@@ -60,12 +62,26 @@ namespace OpenTracker.ViewModels.Maps.Connections
             };
         public string Color =>
             Highlighted ? "#ffffffff" : _colorSettings.ConnectorColor;
-
-        public delegate IMapConnectionVM Factory(IConnection connection);
+        
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerEnterCommand { get; }
+        public ReactiveCommand<PointerEventArgs, Unit> HandlePointerExitCommand { get; }
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="colorSettings">
+        /// The color settings data.
+        /// </param>
+        /// <param name="mode">
+        /// The mode settings.
+        /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// A factory for creating undoable actions.
+        /// </param>
         /// <param name="connection">
         /// The connection data.
         /// </param>
@@ -83,6 +99,10 @@ namespace OpenTracker.ViewModels.Maps.Connections
             _mapArea = mapArea;
 
             Connection = connection;
+            
+            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            HandlePointerEnterCommand = ReactiveCommand.Create<PointerEventArgs>(HandlePointerEnter);
+            HandlePointerExitCommand = ReactiveCommand.Create<PointerEventArgs>(HandlePointerExit);
 
             PropertyChanged += OnPropertyChanged;
             _mapArea.PropertyChanged += OnMapAreaChanged;
@@ -168,40 +188,63 @@ namespace OpenTracker.ViewModels.Maps.Connections
         }
 
         /// <summary>
-        /// Handles left clicks.
+        /// Creates an undoable action to remove the connection and sends it to the undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnLeftClick(bool force = false)
-        {
-        }
-
-        /// <summary>
-        /// Handles right clicks and removes the connection.
-        /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnRightClick(bool force = false)
+        private void RemoveConnection()
         {
             _undoRedoManager.Execute(_undoableFactory.GetRemoveConnection(Connection));
         }
 
         /// <summary>
-        /// Handles pointer entering the control and highlights the control.
+        /// Highlights the control.
         /// </summary>
-        public void OnPointerEnter()
+        private void Highlight()
         {
             Highlighted = true;
         }
 
         /// <summary>
-        /// Handles pointer exiting the control and unhighlights the control.
+        /// Unhighlights the control.
         /// </summary>
-        public void OnPointerLeave()
+        private void Unhighlight()
         {
             Highlighted = false;
+        }
+
+        /// <summary>
+        /// Handles clicking the control.
+        /// </summary>
+        /// <param name="e">
+        /// The pointer released event args.
+        /// </param>
+        private void HandleClick(PointerReleasedEventArgs e)
+        {
+            if (e.InitialPressMouseButton == MouseButton.Right)
+            {
+                RemoveConnection();
+            }
+        }
+
+        /// <summary>
+        /// Handles pointer entering the control.
+        /// </summary>
+        /// <param name="e">
+        /// The PointerEnter event args.
+        /// </param>
+        private void HandlePointerEnter(PointerEventArgs e)
+        {
+            Highlight();
+        }
+
+        /// <summary>
+        /// Handles pointer exiting the control.
+        /// </summary>
+        /// <param name="e">
+        /// The PointerExit event args.
+        /// </param>
+        private void HandlePointerExit(PointerEventArgs e)
+        {
+            Unhighlight();
         }
     }
 }

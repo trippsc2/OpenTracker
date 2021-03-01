@@ -7,14 +7,16 @@ using System.Text;
 using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Items;
 using System.Linq;
+using System.Reactive;
+using Avalonia.Input;
 using OpenTracker.Utils;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
     /// <summary>
-    /// This is the ViewModel of the small item control representing a dungeon prize.
+    /// This class contains dungeon prize small items panel control ViewModel data.
     /// </summary>
-    public class PrizeSmallItemVM : ViewModelBase, ISmallItemVMBase, IClickHandler
+    public class PrizeSmallItemVM : ViewModelBase, ISmallItemVMBase
     {
         private readonly IPrizeDictionary _prizes;
         private readonly IUndoRedoManager _undoRedoManager;
@@ -47,12 +49,23 @@ namespace OpenTracker.ViewModels.Items.Small
                 return sb.ToString();
             }
         }
+        
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
         public delegate PrizeSmallItemVM Factory(IPrizeSection section);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="prizes">
+        /// The prizes dictionary.
+        /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// A factory for creating undoable actions.
+        /// </param>
         /// <param name="section">
         /// The prize section to be represented.
         /// </param>
@@ -65,6 +78,8 @@ namespace OpenTracker.ViewModels.Items.Small
             _undoableFactory = undoableFactory;
 
             _section = section;
+            
+            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
 
             _section.PropertyChanged += OnSectionChanged;
             _section.PrizePlacement.PropertyChanged += OnPrizeChanged;
@@ -105,25 +120,42 @@ namespace OpenTracker.ViewModels.Items.Small
         }
 
         /// <summary>
-        /// Handles left clicks and toggles the prize section.
+        /// Creates an undoable action to toggle the prize section and sends it to the undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnLeftClick(bool force = false)
+        private void TogglePrize()
         {
             _undoRedoManager.Execute(_undoableFactory.GetTogglePrize(_section, true));
         }
 
         /// <summary>
-        /// Handles right clicks and changes the prize.
+        /// Creates an undoable action to change the prize and sends it to the undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnRightClick(bool force = false)
+        private void ChangePrize()
         {
             _undoRedoManager.Execute(_undoableFactory.GetChangePrize(_section.PrizePlacement));
+        }
+
+        /// <summary>
+        /// Handles clicking the control.
+        /// </summary>
+        /// <param name="e">
+        /// The pointer released event args.
+        /// </param>
+        private void HandleClick(PointerReleasedEventArgs e)
+        {
+            switch (e.InitialPressMouseButton)
+            {
+                case MouseButton.Left:
+                {
+                    TogglePrize();
+                }
+                    break;
+                case MouseButton.Right:
+                {
+                    ChangePrize();
+                }
+                    break;
+            }
         }
     }
 }

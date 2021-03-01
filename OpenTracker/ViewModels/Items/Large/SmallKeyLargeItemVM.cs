@@ -1,20 +1,19 @@
-﻿using OpenTracker.Interfaces;
+﻿using Avalonia.Input;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Requirements;
-using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Reactive;
 
 namespace OpenTracker.ViewModels.Items.Large
 {
     /// <summary>
-    /// This is the ViewModel for the large Items panel control representing small keys.
+    /// This class contains small key large items panel control ViewModel data.
     /// </summary>
-    public class SmallKeyLargeItemVM : ViewModelBase, ILargeItemVMBase, IClickHandler
+    public class SmallKeyLargeItemVM : ViewModelBase, ILargeItemVMBase
     {
         private readonly IUndoRedoManager _undoRedoManager;
         private readonly IUndoableFactory _undoableFactory;
@@ -29,12 +28,23 @@ namespace OpenTracker.ViewModels.Items.Large
             $"{_imageSourceBase}{(_item.Current > 0 ? "1" : "0")}.png";
         public string ImageCount =>
             _item.Current.ToString(CultureInfo.InvariantCulture);
+        
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
         public delegate SmallKeyLargeItemVM Factory(IItem item, string imageSourceBase);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="requirements">
+        /// The requirements dictionary.
+        /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// A factory for creating undoable actions.
+        /// </param>
         /// <param name="imageSourceBase">
         /// A string representing the image source base.
         /// </param>
@@ -51,6 +61,8 @@ namespace OpenTracker.ViewModels.Items.Large
             _item = item;
             _requirement = requirements[RequirementType.GenericKeys];
             _imageSourceBase = imageSourceBase;
+            
+            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
 
             _item.PropertyChanged += OnItemChanged;
             _requirement.PropertyChanged += OnRequirementChanged;
@@ -89,25 +101,42 @@ namespace OpenTracker.ViewModels.Items.Large
         }
 
         /// <summary>
-        /// Handles left clicks and adds an item.
+        /// Creates an undoable action to add an item and sends it to the undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnLeftClick(bool force)
+        private void AddItem()
         {
             _undoRedoManager.Execute(_undoableFactory.GetAddItem(_item));
         }
 
         /// <summary>
-        /// Handles right clicks and removes an item.
+        /// Creates an undoable action to remove an item and sends it to the undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnRightClick(bool force)
+        private void RemoveItem()
         {
             _undoRedoManager.Execute(_undoableFactory.GetRemoveItem(_item));
+        }
+
+        /// <summary>
+        /// Handles clicking the control.
+        /// </summary>
+        /// <param name="e">
+        /// The pointer released event args.
+        /// </param>
+        private void HandleClick(PointerReleasedEventArgs e)
+        {
+            switch (e.InitialPressMouseButton)
+            {
+                case MouseButton.Left:
+                {
+                    AddItem();
+                }
+                    break;
+                case MouseButton.Right:
+                {
+                    RemoveItem();
+                }
+                    break;
+            }
         }
     }
 }

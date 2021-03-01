@@ -1,4 +1,4 @@
-﻿using OpenTracker.Interfaces;
+﻿using Avalonia.Input;
 using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Locations;
@@ -10,14 +10,15 @@ using ReactiveUI;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.Reactive;
 using System.Text;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
     /// <summary>
-    /// This is the ViewModel of the small Items panel control representing a small key.
+    /// This class contains small key small items panel control ViewModel data.
     /// </summary>
-    public class SmallKeySmallItemVM : ViewModelBase, ISmallItemVMBase, IClickHandler
+    public class SmallKeySmallItemVM : ViewModelBase, ISmallItemVMBase
     {
         private readonly IColorSettings _colorSettings;
         private readonly IUndoRedoManager _undoRedoManager;
@@ -44,29 +45,34 @@ namespace OpenTracker.ViewModels.Items.Small
                 return sb.ToString();
             }
         }
-        public string TextColor
-        {
-            get
-            {
-                if (_item == null)
-                {
-                    return "#ffffff";
-                }
-
-                if (!_item.CanAdd())
-                {
-                    return _colorSettings.EmphasisFontColor;
-                }
-
-                return "#ffffff";
-            }
-        }
+        public string TextColor => 
+            _item.CanAdd() ? "#ffffff" : _colorSettings.EmphasisFontColor;
+        
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
         public delegate SmallKeySmallItemVM Factory(IDungeon dungeon);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="colorSettings">
+        /// The color settings data.
+        /// </param>
+        /// <param name="requirements">
+        /// The requirement dictionary.
+        /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// A factory for creating undoable actions.
+        /// </param>
+        /// <param name="alternativeFactory">
+        /// An Autofac factory for creating alternative requirements.
+        /// </param>
+        /// <param name="alwaysDisplayFactory">
+        /// An Autofac factory for creating always display dungeon items requirements.
+        /// </param>
         /// <param name="dungeon">
         /// The dungeon whose small keys are to be represented.
         /// </param>
@@ -91,6 +97,8 @@ namespace OpenTracker.ViewModels.Items.Small
             _requirement = dungeon.ID == LocationID.EasternPalace ?
                 requirements[RequirementType.KeyDropShuffleOn] :
                 requirements[RequirementType.NoRequirement];
+            
+            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
 
             _colorSettings.PropertyChanged += OnColorsChanged;
             _item.PropertyChanged += OnItemChanged;
@@ -156,25 +164,42 @@ namespace OpenTracker.ViewModels.Items.Small
         }
 
         /// <summary>
-        /// Handles left clicks and adds an item.
+        /// Creates an undoable action to add an item and sends it to the undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnLeftClick(bool force = false)
+        private void AddItem()
         {
             _undoRedoManager.Execute(_undoableFactory.GetAddItem(_item));
         }
 
         /// <summary>
-        /// Handles right clicks and removes an item.
+        /// Creates an undoable actions to remove an item and sends it to the undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnRightClick(bool force = false)
+        private void RemoveItem()
         {
             _undoRedoManager.Execute(_undoableFactory.GetRemoveItem(_item));
+        }
+
+        /// <summary>
+        /// Handles clicking the control.
+        /// </summary>
+        /// <param name="e">
+        /// The pointer released event args.
+        /// </param>
+        private void HandleClick(PointerReleasedEventArgs e)
+        {
+            switch (e.InitialPressMouseButton)
+            {
+                case MouseButton.Left:
+                {
+                    AddItem();
+                }
+                    break;
+                case MouseButton.Right:
+                {
+                    RemoveItem();
+                }
+                    break;
+            }
         }
     }
 }

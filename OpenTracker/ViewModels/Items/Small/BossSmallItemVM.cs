@@ -1,17 +1,18 @@
-﻿using OpenTracker.Interfaces;
-using ReactiveUI;
-using System.ComponentModel;
+﻿using Avalonia.Input;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.BossPlacements;
-using OpenTracker.ViewModels.BossSelect;
 using OpenTracker.Utils;
+using OpenTracker.ViewModels.BossSelect;
+using ReactiveUI;
+using System.ComponentModel;
+using System.Reactive;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
     /// <summary>
-    /// This is the ViewModel for the small Items panel control representing the boss.
+    /// This class contains the boss small items panel control ViewModel data.
     /// </summary>
-    public class BossSmallItemVM : ViewModelBase, ISmallItemVMBase, IClickHandler
+    public class BossSmallItemVM : ViewModelBase, ISmallItemVMBase
     {
         private readonly IBossPlacement _bossPlacement;
         private readonly IRequirement _requirement;
@@ -25,12 +26,20 @@ namespace OpenTracker.ViewModels.Items.Small
             $"{_bossPlacement.DefaultBoss.ToString().ToLowerInvariant()}0.png";
 
         public IBossSelectPopupVM BossSelect { get; }
+        
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
         public delegate BossSmallItemVM Factory(IBossPlacement bossPlacement);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="requirements">
+        /// The requirements dictionary.
+        /// </param>
+        /// <param name="bossSelectFactory">
+        /// An Autofac factory for creating the boss select popup control ViewModel.
+        /// </param>
         /// <param name="bossPlacement">
         /// The boss section to which the boss belongs.
         /// </param>
@@ -40,7 +49,10 @@ namespace OpenTracker.ViewModels.Items.Small
         {
             _bossPlacement = bossPlacement;
             _requirement = requirements[RequirementType.BossShuffleOn];
+            
             BossSelect = bossSelectFactory(_bossPlacement);
+            
+            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
 
             _bossPlacement.PropertyChanged += OnBossChanged;
             _requirement.PropertyChanged += OnRequirementChanged;
@@ -78,24 +90,25 @@ namespace OpenTracker.ViewModels.Items.Small
         }
 
         /// <summary>
-        /// Handles left clicks and opens the boss select popup.
+        /// Opens the boss select popup.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnLeftClick(bool force = false)
+        private void OpenBossSelect()
         {
             BossSelect.PopupOpen = true;
         }
 
         /// <summary>
-        /// Handles right clicks.
+        /// Handles clicking the control.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
+        /// <param name="e">
+        /// The pointer released event args.
         /// </param>
-        public void OnRightClick(bool force = false)
+        private void HandleClick(PointerReleasedEventArgs e)
         {
+            if (e.InitialPressMouseButton == MouseButton.Left)
+            {
+                OpenBossSelect();
+            }
         }
     }
 }

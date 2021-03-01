@@ -1,20 +1,20 @@
-﻿using OpenTracker.Interfaces;
+﻿using Avalonia.Input;
 using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Sections;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Reactive;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
     /// <summary>
-    /// This is the ViewModel for the small Items panel control representing dungeon items.
+    /// This class contains dungeon items small items panel control ViewModel data.
     /// </summary>
-    public class DungeonItemSmallItemVM : ViewModelBase, ISmallItemVMBase, IClickHandler
+    public class DungeonItemSmallItemVM : ViewModelBase, ISmallItemVMBase
     {
         private readonly IColorSettings _colorSettings;
         private readonly IUndoRedoManager _undoRedoManager;
@@ -44,12 +44,23 @@ namespace OpenTracker.ViewModels.Items.Small
         }
         public string NumberString =>
             _section.Available.ToString(CultureInfo.InvariantCulture);
+        
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
         public delegate DungeonItemSmallItemVM Factory(ISection section);
 
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="colorSettings">
+        /// The color settings data.
+        /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// A factory for creating undoable actions.
+        /// </param>
         /// <param name="section">
         /// The dungeon section to be represented.
         /// </param>
@@ -62,7 +73,9 @@ namespace OpenTracker.ViewModels.Items.Small
             _undoableFactory = undoableFactory;
 
             _section = section;
-
+            
+            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
+            
             _colorSettings.AccessibilityColors.PropertyChanged += OnColorChanged;
             _section.PropertyChanged += OnSectionChanged;
         }
@@ -124,25 +137,45 @@ namespace OpenTracker.ViewModels.Items.Small
         }
 
         /// <summary>
-        /// Handles left clicks and collects the section.
+        /// Creates an undoable action to collect the section and sends it to the undo/redo manager.
         /// </summary>
         /// <param name="force">
         /// A boolean representing whether the logic should be ignored.
         /// </param>
-        public void OnLeftClick(bool force)
+        private void CollectSection(bool force)
         {
             _undoRedoManager.Execute(_undoableFactory.GetCollectSection(_section, force));
         }
 
         /// <summary>
-        /// Handles right clicks and uncollects the section.
+        /// Creates an undoable action to uncollect the section and sends it to the undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnRightClick(bool force)
+        private void UncollectSection()
         {
             _undoRedoManager.Execute(_undoableFactory.GetUncollectSection(_section));
+        }
+
+        /// <summary>
+        /// Handles clicking the control.
+        /// </summary>
+        /// <param name="e">
+        /// The pointer released event args.
+        /// </param>
+        private void HandleClick(PointerReleasedEventArgs e)
+        {
+            switch (e.InitialPressMouseButton)
+            {
+                case MouseButton.Left:
+                {
+                    CollectSection((e.KeyModifiers & KeyModifiers.Control) > 0);
+                }
+                    break;
+                case MouseButton.Right:
+                {
+                    UncollectSection();
+                }
+                    break;
+            }
         }
     }
 }

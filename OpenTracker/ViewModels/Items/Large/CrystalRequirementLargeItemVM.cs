@@ -1,20 +1,20 @@
-﻿using OpenTracker.Interfaces;
-using OpenTracker.Models.AccessibilityLevels;
+﻿using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Settings;
 using OpenTracker.Models.UndoRedo;
 using OpenTracker.Utils;
 using ReactiveUI;
-using System;
 using System.ComponentModel;
 using System.Globalization;
+using System.Reactive;
+using Avalonia.Input;
 
 namespace OpenTracker.ViewModels.Items.Large
 {
     /// <summary>
-    /// This is the ViewModel of the large Items panel control representing crystal requirements.
+    /// This class contains crystal requirement large items panel control ViewModel data.
     /// </summary>
-    public class CrystalRequirementLargeItemVM : ViewModelBase, ILargeItemVMBase, IClickHandler
+    public class CrystalRequirementLargeItemVM : ViewModelBase, ILargeItemVMBase
     {
         private readonly IColorSettings _colorSettings;
         private readonly IUndoRedoManager _undoRedoManager;
@@ -24,18 +24,8 @@ namespace OpenTracker.ViewModels.Items.Large
 
         public string ImageSource { get; }
 
-        public string ImageCount
-        {
-            get
-            {
-                if (_item.Known)
-                {
-                    return (7 - _item.Current).ToString(CultureInfo.InvariantCulture);
-                }
-
-                return "?";
-            }
-        }
+        public string ImageCount =>
+            _item.Known ? (7 - _item.Current).ToString(CultureInfo.InvariantCulture) : "?";
 
         public string TextColor
         {
@@ -43,13 +33,14 @@ namespace OpenTracker.ViewModels.Items.Large
             {
                 if (_item.Known)
                 {
-                    return _item.Current == 0 ?
-                        _colorSettings.EmphasisFontColor : "#ffffffff";
+                    return _item.Current == 0 ? _colorSettings.EmphasisFontColor : "#ffffffff";
                 }
 
                 return _colorSettings.AccessibilityColors[AccessibilityLevel.SequenceBreak];
             }
         }
+
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
         public delegate CrystalRequirementLargeItemVM Factory(
             ICrystalRequirementItem item, string imageSource);
@@ -57,6 +48,15 @@ namespace OpenTracker.ViewModels.Items.Large
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="colorSettings">
+        /// The color settings data.
+        /// </param>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// The factory for creating undoable actions.
+        /// </param>
         /// <param name="imageSource">
         /// A string representing the image source.
         /// </param>
@@ -74,6 +74,8 @@ namespace OpenTracker.ViewModels.Items.Large
             _item = item;
 
             ImageSource = imageSource;
+
+            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
 
             _item.PropertyChanged += OnItemChanged;
             _colorSettings.PropertyChanged += OnColorsChanged;
@@ -122,25 +124,42 @@ namespace OpenTracker.ViewModels.Items.Large
         }
 
         /// <summary>
-        /// Handles left clicks and decreases the crystal requirement by one.
+        /// Creates an undoable action to add to the crystal requirement item and sends it to the undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnLeftClick(bool force)
+        private void AddItem()
         {
             _undoRedoManager.Execute(_undoableFactory.GetAddCrystalRequirement(_item));
         }
 
         /// <summary>
-        /// Handles right clicks and increases the crystal requirement by one.
+        /// Creates an undoable action to remove to the crystal requirement item and sends it to the undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnRightClick(bool force)
+        private void RemoveItem()
         {
             _undoRedoManager.Execute(_undoableFactory.GetRemoveCrystalRequirement(_item));
+        }
+
+        /// <summary>
+        /// Handles clicking the control.
+        /// </summary>
+        /// <param name="e">
+        /// The pointer released event args.
+        /// </param>
+        private void HandleClick(PointerReleasedEventArgs e)
+        {
+            switch (e.InitialPressMouseButton)
+            {
+                case MouseButton.Left:
+                {
+                    AddItem();
+                }
+                    break;
+                case MouseButton.Right:
+                {
+                    RemoveItem();
+                }
+                    break;
+            }
         }
     }
 }

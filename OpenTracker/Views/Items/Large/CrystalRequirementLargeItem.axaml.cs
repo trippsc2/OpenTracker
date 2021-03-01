@@ -7,9 +7,6 @@ namespace OpenTracker.Views.Items.Large
 {
     public class CrystalRequirementLargeItem : UserControl
     {
-        private IClickHandler? ViewModelClickHandler =>
-            DataContext as IClickHandler;
-
         public CrystalRequirementLargeItem()
         {
             InitializeComponent();
@@ -18,24 +15,6 @@ namespace OpenTracker.Views.Items.Large
         private void InitializeComponent()
         {
             AvaloniaXamlLoader.Load(this);
-        }
-
-        private void OnItemClick(object sender, PointerReleasedEventArgs e)
-        {
-            if (ViewModelClickHandler == null)
-            {
-                return;
-            }
-
-            if (e.InitialPressMouseButton == MouseButton.Left)
-            {
-                ViewModelClickHandler.OnLeftClick();
-            }
-
-            if (e.InitialPressMouseButton == MouseButton.Right)
-            {
-                ViewModelClickHandler.OnRightClick();
-            }
         }
     }
 }

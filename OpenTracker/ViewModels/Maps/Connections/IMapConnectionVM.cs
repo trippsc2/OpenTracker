@@ -4,7 +4,7 @@ using OpenTracker.Utils;
 
 namespace OpenTracker.ViewModels.Maps.Connections
 {
-    public interface IMapConnectionVM : IModelWrapper, IClickHandler, IPointerOver
+    public interface IMapConnectionVM : IModelWrapper
     {
         delegate IMapConnectionVM Factory(IConnection connection);
     }

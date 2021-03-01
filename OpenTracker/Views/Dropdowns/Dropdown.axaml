@@ -13,12 +13,14 @@
   </UserControl.Resources>
 
   <Panel Name="panel" Classes="ItemControl" IsVisible="{Binding Visible}">
+    
     <i:Interaction.Behaviors>
       <ia:EventTriggerBehavior EventName="PointerReleased" SourceObject="{Binding
        #panel}">
         <ia:InvokeCommandAction Command="{Binding HandleClickCommand}" />
       </ia:EventTriggerBehavior>
     </i:Interaction.Behaviors>
+    
     <Image Source="{Binding Path=ImageSource, Converter={StaticResource
      BitmapValueConverter}}" />
   </Panel>

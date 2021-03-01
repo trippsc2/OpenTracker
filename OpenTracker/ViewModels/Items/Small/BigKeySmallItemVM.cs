@@ -1,5 +1,4 @@
-﻿using OpenTracker.Interfaces;
-using OpenTracker.Models.Dungeons;
+﻿using OpenTracker.Models.Dungeons;
 using OpenTracker.Models.Items;
 using OpenTracker.Models.Requirements;
 using OpenTracker.Models.UndoRedo;
@@ -7,10 +6,15 @@ using OpenTracker.Utils;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
+using System.Reactive;
+using Avalonia.Input;
 
 namespace OpenTracker.ViewModels.Items.Small
 {
-    public class BigKeySmallItemVM : ViewModelBase, ISmallItemVMBase, IClickHandler
+    /// <summary>
+    /// This class contains big key small item panel control ViewModel data.
+    /// </summary>
+    public class BigKeySmallItemVM : ViewModelBase, ISmallItemVMBase
     {
         private readonly IUndoRedoManager _undoRedoManager;
         private readonly IUndoableFactory _undoableFactory;
@@ -26,6 +30,8 @@ namespace OpenTracker.ViewModels.Items.Small
         public string ImageSource =>
             "avares://OpenTracker/Assets/Images/Items/bigkey" +
             (_item.Current > 0 ? "1" : "0") + ".png";
+        
+        public ReactiveCommand<PointerReleasedEventArgs, Unit> HandleClickCommand { get; }
 
         public delegate BigKeySmallItemVM Factory(
             IDungeon dungeon, IRequirement requirement, IRequirement spacerRequirement);
@@ -33,8 +39,20 @@ namespace OpenTracker.ViewModels.Items.Small
         /// <summary>
         /// Constructor
         /// </summary>
+        /// <param name="undoRedoManager">
+        /// The undo/redo manager.
+        /// </param>
+        /// <param name="undoableFactory">
+        /// A factory for creating undoable actions.
+        /// </param>
         /// <param name="dungeon">
         /// The dungeon whose big keys are to be represented.
+        /// </param>
+        /// <param name="requirement">
+        /// The requirement for the control to be visible.
+        /// </param>
+        /// <param name="spacerRequirement">
+        /// The requirement for the control to take reserve space.
         /// </param>
         public BigKeySmallItemVM(
             IUndoRedoManager undoRedoManager, IUndoableFactory undoableFactory, IDungeon dungeon,
@@ -47,6 +65,8 @@ namespace OpenTracker.ViewModels.Items.Small
                 throw new ArgumentOutOfRangeException(nameof(dungeon));
             _requirement = requirement;
             _spacerRequirement = spacerRequirement;
+            
+            HandleClickCommand = ReactiveCommand.Create<PointerReleasedEventArgs>(HandleClick);
 
             _item.PropertyChanged += OnItemChanged;
             _requirement.PropertyChanged += OnRequirementChanged;
@@ -83,25 +103,42 @@ namespace OpenTracker.ViewModels.Items.Small
         }
 
         /// <summary>
-        /// Handles left clicks and adds an item.
+        /// Creates an undoable action to add an item and sends it to the undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnLeftClick(bool force = false)
+        private void AddItem()
         {
             _undoRedoManager.Execute(_undoableFactory.GetAddItem(_item));
         }
 
         /// <summary>
-        /// Handles right clicks and removes an item.
+        /// Creates an undoable action to remove an item and sends it to the undo/redo manager.
         /// </summary>
-        /// <param name="force">
-        /// A boolean representing whether the logic should be ignored.
-        /// </param>
-        public void OnRightClick(bool force = false)
+        private void RemoveItem()
         {
             _undoRedoManager.Execute(_undoableFactory.GetRemoveItem(_item));
+        }
+
+        /// <summary>
+        /// Handles clicking the control.
+        /// </summary>
+        /// <param name="e">
+        /// The pointer released event args.
+        /// </param>
+        private void HandleClick(PointerReleasedEventArgs e)
+        {
+            switch (e.InitialPressMouseButton)
+            {
+                case MouseButton.Left:
+                {
+                    AddItem();
+                }
+                    break;
+                case MouseButton.Right:
+                {
+                    RemoveItem();
+                }
+                    break;
+            }
         }
     }
 }
