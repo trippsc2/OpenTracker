@@ -2,6 +2,7 @@
 using OpenTracker.Models.BossPlacements;
 using System.Collections.Generic;
 using OpenTracker.Models.Modes;
+using OpenTracker.Models.SaveLoad;
 using Xunit;
 
 namespace OpenTracker.UnitTests.Models.BossPlacements
@@ -234,6 +235,68 @@ namespace OpenTracker.UnitTests.Models.BossPlacements
             Assert.PropertyChanged(
                 bossPlacement, nameof(IBossPlacement.Boss),
                 () => { bossPlacement.Boss = BossType.Armos; });
+        }
+
+        [Fact]
+        public void Reset_Tests()
+        {
+            var container = ContainerConfig.Configure();
+
+            using var scope = container.BeginLifetimeScope();
+            var factory = scope.Resolve<IBossPlacement.Factory>();
+            var bossPlacement = factory(BossType.Test);
+
+            bossPlacement.Boss = BossType.Test;
+            
+            Assert.Equal(BossType.Test, bossPlacement.Boss);
+            
+            bossPlacement.Reset();
+            
+            Assert.Null(bossPlacement.Boss);
+        }
+
+        [Fact]
+        public void Load_Tests()
+        {
+            var container = ContainerConfig.Configure();
+
+            using var scope = container.BeginLifetimeScope();
+            var factory = scope.Resolve<IBossPlacement.Factory>();
+            var bossPlacement = factory(BossType.Test);
+
+            var saveData = new BossPlacementSaveData()
+            {
+                Boss = BossType.Test
+            };
+            
+            Assert.Null(bossPlacement.Boss);
+            
+            bossPlacement.Load(null);
+            
+            Assert.Null(bossPlacement.Boss);
+
+            bossPlacement.Load(saveData);
+            
+            Assert.Equal(BossType.Test, bossPlacement.Boss);
+        }
+
+        [Fact]
+        public void Save_Tests()
+        {
+            var container = ContainerConfig.Configure();
+
+            using var scope = container.BeginLifetimeScope();
+            var factory = scope.Resolve<IBossPlacement.Factory>();
+            var bossPlacement = factory(BossType.Test);
+
+            var saveData = bossPlacement.Save();
+            
+            Assert.Null(saveData.Boss);
+
+            bossPlacement.Boss = BossType.Test;
+            saveData = bossPlacement.Save();
+            
+            Assert.Equal(BossType.Test, saveData.Boss);
         }
     }
 }

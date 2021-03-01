@@ -2,12 +2,6 @@
 using Avalonia.Layout;
 using Avalonia.Threading;
 using Newtonsoft.Json;
-using OpenTracker.Models.AutoTracking;
-using OpenTracker.Models.BossPlacements;
-using OpenTracker.Models.Connections;
-using OpenTracker.Models.Items;
-using OpenTracker.Models.Locations;
-using OpenTracker.Models.PrizePlacements;
 using OpenTracker.Models.Reset;
 using OpenTracker.Models.SaveLoad;
 using OpenTracker.Models.Settings;
@@ -19,11 +13,9 @@ using OpenTracker.ViewModels.ColorSelect;
 using OpenTracker.ViewModels.SequenceBreaks;
 using ReactiveUI;
 using System;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.Reactive;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace OpenTracker.ViewModels
@@ -108,6 +100,7 @@ namespace OpenTracker.ViewModels
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
         public ReactiveCommand<Unit, Unit> SaveAsCommand { get; }
         public ReactiveCommand<Unit, Unit> ResetCommand { get; }
+        public ReactiveCommand<Window, Unit> CloseCommand { get; }
 
         private readonly ObservableAsPropertyHelper<bool> _isOpening;
         public bool IsOpening =>
@@ -207,6 +200,8 @@ namespace OpenTracker.ViewModels
 
             ResetCommand = ReactiveCommand.CreateFromTask(Reset);
             ResetCommand.IsExecuting.ToProperty(this, x => x.IsResetting, out _isResetting);
+            
+            CloseCommand = ReactiveCommand.Create<Window>(Close);
 
             UndoCommand = ReactiveCommand.CreateFromTask(Undo, this.WhenAnyValue(x => x.CanUndo));
             UndoCommand.IsExecuting.ToProperty(this, x => x.IsUndoing, out _isUndoing);
@@ -427,7 +422,7 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Opens a file with saved data.
         /// </summary>
-        public async Task Open()
+        private async Task Open()
         {
             var dialogResult = await _fileDialogService.ShowOpenDialogAsync();
 
@@ -475,7 +470,7 @@ namespace OpenTracker.ViewModels
         /// <returns>
         /// An observable representing the progress of the command.
         /// </returns>
-        public async Task Save()
+        private async Task Save()
         {
             var path = _saveLoadManager.CurrentFilePath ??
                 await OpenSaveFileDialog();
@@ -489,7 +484,7 @@ namespace OpenTracker.ViewModels
         /// <summary>
         /// Opens a save file dialog window and saves to a new path.
         /// </summary>
-        public async Task SaveAs()
+        private async Task SaveAs()
         {
             var dialogResult = await OpenSaveFileDialog();
 
@@ -516,6 +511,17 @@ namespace OpenTracker.ViewModels
                     _resetManager.Reset();
                 });
             }
+        }
+
+        /// <summary>
+        /// Closes the window.
+        /// </summary>
+        /// <param name="window">
+        /// The window to be closed.
+        /// </param>
+        private void Close(Window window)
+        {
+            window.Close();
         }
 
         /// <summary>

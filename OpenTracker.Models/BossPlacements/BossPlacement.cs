@@ -106,8 +106,13 @@ namespace OpenTracker.Models.BossPlacements
         /// <summary>
         /// Loads boss placement save data.
         /// </summary>
-        public void Load(BossPlacementSaveData saveData)
+        public void Load(BossPlacementSaveData? saveData)
         {
+            if (saveData == null)
+            {
+                return;
+            }
+            
             Boss = saveData.Boss;
         }
     }

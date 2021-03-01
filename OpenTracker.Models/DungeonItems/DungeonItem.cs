@@ -8,7 +8,7 @@ using System.ComponentModel;
 namespace OpenTracker.Models.DungeonItems
 {
     /// <summary>
-    /// This is the class for mutable dungeon item data.
+    /// This class contains mutable dungeon item data.
     /// </summary>
     public class DungeonItem : IDungeonItem
     {
@@ -26,11 +26,13 @@ namespace OpenTracker.Models.DungeonItems
             get => _accessibility;
             private set
             {
-                if (_accessibility != value)
+                if (_accessibility == value)
                 {
-                    _accessibility = value;
-                    OnPropertyChanged(nameof(Accessibility));
+                    return;
                 }
+                
+                _accessibility = value;
+                OnPropertyChanged(nameof(Accessibility));
             }
         }
 
@@ -80,12 +82,14 @@ namespace OpenTracker.Models.DungeonItems
         /// </param>
         private void OnDungeonItemCreated(object? sender, KeyValuePair<DungeonItemID, IDungeonItem> e)
         {
-            if (e.Value == this)
+            if (e.Value != this)
             {
-                _dungeonData.DungeonItems.ItemCreated -= OnDungeonItemCreated;
-                _node.PropertyChanged += OnNodeChanged;
-                UpdateAccessibility();
+                return;
             }
+            
+            _dungeonData.DungeonItems.ItemCreated -= OnDungeonItemCreated;
+            _node.PropertyChanged += OnNodeChanged;
+            UpdateAccessibility();
         }
 
         /// <summary>

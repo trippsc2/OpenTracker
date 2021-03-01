@@ -21,5 +21,6 @@ namespace OpenTracker.Models.SaveLoad
         public bool GenericKeys { get; set; }
         public bool TakeAnyLocations { get; set; }
         public bool KeyDropShuffle { get; set; }
+        public bool ShopShuffle { get; set; }
     }
 }

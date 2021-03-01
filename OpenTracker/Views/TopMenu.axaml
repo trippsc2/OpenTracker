@@ -53,7 +53,8 @@
         </MenuItem>
 
         <Separator />
-        <MenuItem Classes="Menu InnerMenu" Command="{Binding $parent[view:MainWindow].Close}">
+        <MenuItem Classes="Menu InnerMenu" Command="{Binding CloseCommand}"
+                  CommandParameter="{Binding $parent[view:MainWindow]}">
           <MenuItem.Header>
             <Grid ColumnDefinitions="Auto,*,Auto">
               <TextBlock Text="Close" />
