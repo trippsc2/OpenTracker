@@ -40,9 +40,10 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
         public override void Tests(
             ModeSaveData modeData, (ItemType, int)[] items, (PrizeType, int)[] prizes,
             (SequenceBreakType, bool)[] sequenceBreaks, RequirementNodeID[] accessibleNodes,
-            RequirementNodeID id, AccessibilityLevel expected)
+            RequirementNodeID id, bool towerCrystalsKnown, AccessibilityLevel expected)
         {
-            base.Tests(modeData, items, prizes, sequenceBreaks, accessibleNodes, id, expected);
+            base.Tests(
+                modeData, items, prizes, sequenceBreaks, accessibleNodes, id, towerCrystalsKnown, expected);
         }
     
         public static IEnumerable<object[]> DarkWorldWestNotBunny_To_DWLakeHyliaFlippers =>
@@ -62,6 +63,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -78,6 +80,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFlippers,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -99,6 +102,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -115,6 +119,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFlippers,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -136,6 +141,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -152,6 +158,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFlippers,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -173,6 +180,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -189,6 +197,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFlippers,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -210,6 +219,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -226,6 +236,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFlippers,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -247,6 +258,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.IcePalaceIslandInverted
                     },
                     RequirementNodeID.DWLakeHyliaFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -263,6 +275,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.IcePalaceIslandInverted
                     },
                     RequirementNodeID.DWLakeHyliaFlippers,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -290,6 +303,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     },
                     new RequirementNodeID[0],
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -315,6 +329,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -340,6 +355,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -365,6 +381,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -390,6 +407,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -415,6 +433,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -440,6 +459,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -465,6 +485,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -490,6 +511,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -515,6 +537,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -540,6 +563,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -565,6 +589,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -590,6 +615,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 }
             };
@@ -619,6 +645,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -643,6 +670,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -667,6 +695,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -691,6 +720,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -715,6 +745,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -739,6 +770,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -763,6 +795,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -787,6 +820,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -811,6 +845,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -835,6 +870,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -859,6 +895,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 }
             };
@@ -888,6 +925,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -912,6 +950,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -936,6 +975,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -960,6 +1000,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -984,6 +1025,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1008,6 +1050,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1032,6 +1075,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -1056,6 +1100,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -1080,6 +1125,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -1104,6 +1150,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -1128,6 +1175,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 }
             };
@@ -1157,6 +1205,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1181,6 +1230,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1205,6 +1255,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1229,6 +1280,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1253,6 +1305,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1277,6 +1330,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1301,6 +1355,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -1325,6 +1380,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -1349,6 +1405,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -1373,6 +1430,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -1397,6 +1455,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 }
             };
@@ -1426,6 +1485,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1450,6 +1510,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1474,6 +1535,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1498,6 +1560,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1522,6 +1585,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1546,6 +1610,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1570,6 +1635,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -1594,6 +1660,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -1618,6 +1685,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -1642,6 +1710,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -1666,6 +1735,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 }
             };
@@ -1695,6 +1765,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.IcePalaceIslandInverted
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1719,6 +1790,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.IcePalaceIslandInverted
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1743,6 +1815,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.IcePalaceIslandInverted
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1767,6 +1840,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.IcePalaceIslandInverted
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1791,6 +1865,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.IcePalaceIslandInverted
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1815,6 +1890,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.IcePalaceIslandInverted
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1839,6 +1915,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.IcePalaceIslandInverted
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -1863,6 +1940,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.IcePalaceIslandInverted
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -1887,6 +1965,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.IcePalaceIslandInverted
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -1911,6 +1990,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.IcePalaceIslandInverted
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -1935,6 +2015,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.IcePalaceIslandInverted
                     },
                     RequirementNodeID.DWLakeHyliaFakeFlippers,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 }
             };
@@ -1959,6 +2040,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaWaterWalk,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1978,6 +2060,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaWaterWalk,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1997,6 +2080,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.DWLakeHyliaWaterWalk,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 }
             };
@@ -2021,6 +2105,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.LakeHyliaFairyIsland
                     },
                     RequirementNodeID.IcePalaceIsland,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2040,6 +2125,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.LakeHyliaFairyIsland
                     },
                     RequirementNodeID.IcePalaceIsland,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -2059,6 +2145,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.LakeHyliaFairyIsland
                     },
                     RequirementNodeID.IcePalaceIsland,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -2080,6 +2167,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.LakeHyliaFairyIslandStandardOpen
                     },
                     RequirementNodeID.IcePalaceIsland,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2096,6 +2184,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.LakeHyliaFairyIslandStandardOpen
                     },
                     RequirementNodeID.IcePalaceIsland,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -2117,6 +2206,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWLakeHyliaFlippers
                     },
                     RequirementNodeID.IcePalaceIsland,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2133,6 +2223,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWLakeHyliaFlippers
                     },
                     RequirementNodeID.IcePalaceIsland,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -2154,6 +2245,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWLakeHyliaFakeFlippers
                     },
                     RequirementNodeID.IcePalaceIsland,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2170,6 +2262,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWLakeHyliaFakeFlippers
                     },
                     RequirementNodeID.IcePalaceIsland,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -2191,6 +2284,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWLakeHyliaWaterWalk
                     },
                     RequirementNodeID.IcePalaceIsland,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2207,6 +2301,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWLakeHyliaWaterWalk
                     },
                     RequirementNodeID.IcePalaceIsland,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -2228,6 +2323,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.IcePalaceIsland
                     },
                     RequirementNodeID.IcePalaceIslandInverted,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2244,6 +2340,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.IcePalaceIsland
                     },
                     RequirementNodeID.IcePalaceIslandInverted,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -2259,6 +2356,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.DarkWorldSouthEast,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2272,6 +2370,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.LightWorldMirror
                     },
                     RequirementNodeID.DarkWorldSouthEast,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -2287,6 +2386,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.DarkWorldSouthEast,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2300,6 +2400,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWLakeHyliaFlippers
                     },
                     RequirementNodeID.DarkWorldSouthEast,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -2315,6 +2416,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.DarkWorldSouthEast,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2328,6 +2430,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWLakeHyliaFakeFlippers
                     },
                     RequirementNodeID.DarkWorldSouthEast,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -2343,6 +2446,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.DarkWorldSouthEast,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2356,6 +2460,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWLakeHyliaWaterWalk
                     },
                     RequirementNodeID.DarkWorldSouthEast,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -2380,6 +2485,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthEast
                     },
                     RequirementNodeID.DarkWorldSouthEastNotBunny,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2396,6 +2502,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.DarkWorldSouthEastNotBunny,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -2415,6 +2522,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthEast
                     },
                     RequirementNodeID.DarkWorldSouthEastNotBunny,
+                    false,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -2434,6 +2542,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthEast
                     },
                     RequirementNodeID.DarkWorldSouthEastNotBunny,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -2455,6 +2564,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
                     RequirementNodeID.DarkWorldSouthEastLift1,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2471,6 +2581,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthEastNotBunny
                     },
                     RequirementNodeID.DarkWorldSouthEastLift1,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };

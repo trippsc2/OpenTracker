@@ -1,26 +1,32 @@
-﻿using OpenTracker.Models.AccessibilityLevels;
+﻿using Autofac;
+using OpenTracker.Models.AccessibilityLevels;
 using OpenTracker.Models.Modes;
 using OpenTracker.Models.RequirementNodes;
 using OpenTracker.Models.Requirements;
 using Xunit;
 
-namespace OpenTracker.UnitTests.Requirements
+namespace OpenTracker.UnitTests.Models.Requirements
 {
-    // [Collection("Tests")]
-    // public class LightWorldRequirementTests
-    // {
-    //     [Fact]
-    //     public void AccessibilityTests()
-    //     {
-    //         Mode.Instance.WorldState = WorldState.Inverted;
-    //         RequirementNodeDictionary.Instance.Reset();
-    //         var lightWorldRequirement = RequirementDictionary.Instance[RequirementType.LightWorld];
-    //
-    //         Assert.Equal(AccessibilityLevel.None, lightWorldRequirement.Accessibility);
-    //
-    //         RequirementNodeDictionary.Instance[RequirementNodeID.LightWorld].AlwaysAccessible = true;
-    //
-    //         Assert.Equal(AccessibilityLevel.Normal, lightWorldRequirement.Accessibility);
-    //     }
-    // }
+    public class LightWorldRequirementTests
+    {
+        [Fact]
+        public void AccessibilityTests()
+        {
+            var container = ContainerConfig.Configure();
+
+            using var scope = container.BeginLifetimeScope();
+            var mode = scope.Resolve<IMode>();
+            var requirements = scope.Resolve<IRequirementDictionary>();
+            var requirementNodes = scope.Resolve<IRequirementNodeDictionary>();
+            
+            mode.WorldState = WorldState.Inverted;
+            var lightWorldRequirement = requirements[RequirementType.LightWorld];
+    
+            Assert.Equal(AccessibilityLevel.None, lightWorldRequirement.Accessibility);
+    
+            requirementNodes[RequirementNodeID.LightWorld].AlwaysAccessible = true;
+    
+            Assert.Equal(AccessibilityLevel.Normal, lightWorldRequirement.Accessibility);
+        }
+    }
 }

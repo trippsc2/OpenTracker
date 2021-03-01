@@ -248,7 +248,8 @@ namespace OpenTracker.Models.Modes
                 EnemyShuffle = EnemyShuffle,
                 GuaranteedBossItems = GuaranteedBossItems,
                 GenericKeys = GenericKeys,
-                TakeAnyLocations = TakeAnyLocations
+                TakeAnyLocations = TakeAnyLocations,
+                KeyDropShuffle = KeyDropShuffle
             };
         }
 
@@ -277,6 +278,7 @@ namespace OpenTracker.Models.Modes
             GuaranteedBossItems = saveData.GuaranteedBossItems;
             GenericKeys = saveData.GenericKeys;
             TakeAnyLocations = saveData.TakeAnyLocations;
+            KeyDropShuffle = saveData.KeyDropShuffle;
         }
     }
 }

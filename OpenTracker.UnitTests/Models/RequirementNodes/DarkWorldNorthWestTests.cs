@@ -54,9 +54,10 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
         public override void Tests(
             ModeSaveData modeData, (ItemType, int)[] items, (PrizeType, int)[] prizes,
             (SequenceBreakType, bool)[] sequenceBreaks, RequirementNodeID[] accessibleNodes,
-            RequirementNodeID id, AccessibilityLevel expected)
+            RequirementNodeID id, bool towerCrystalsKnown, AccessibilityLevel expected)
         {
-            base.Tests(modeData, items, prizes, sequenceBreaks, accessibleNodes, id, expected);
+            base.Tests(
+                modeData, items, prizes, sequenceBreaks, accessibleNodes, id, towerCrystalsKnown, expected);
         }
     
         public static IEnumerable<object[]> LWKakarikoPortalStandardOpen_To_DWKakarikoPortal =>
@@ -76,6 +77,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.LWKakarikoPortalStandardOpen
                     },
                     RequirementNodeID.DWKakarikoPortal,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -92,6 +94,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.LWKakarikoPortalStandardOpen
                     },
                     RequirementNodeID.DWKakarikoPortal,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -107,6 +110,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.DWKakarikoPortal,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -120,6 +124,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.DWKakarikoPortal,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -141,6 +146,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWKakarikoPortal
                     },
                     RequirementNodeID.DWKakarikoPortalInverted,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -157,6 +163,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWKakarikoPortal
                     },
                     RequirementNodeID.DWKakarikoPortalInverted,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -172,6 +179,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.DarkWorldWest,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -185,6 +193,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.EntranceNoneInverted
                     },
                     RequirementNodeID.DarkWorldWest,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -200,6 +209,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.DarkWorldWest,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -213,6 +223,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.LightWorldMirror
                     },
                     RequirementNodeID.DarkWorldWest,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -237,6 +248,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWKakarikoPortal
                     },
                     RequirementNodeID.DarkWorldWest,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -253,6 +265,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.DarkWorldWest,
+                    false,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -272,6 +285,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWKakarikoPortal
                     },
                     RequirementNodeID.DarkWorldWest,
+                    false,
                     AccessibilityLevel.Normal
                 },
             };
@@ -287,6 +301,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.DarkWorldWest,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -300,6 +315,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.BumperCaveEntry
                     },
                     RequirementNodeID.DarkWorldWest,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -315,6 +331,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.DarkWorldWest,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -328,6 +345,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.BumperCaveTop
                     },
                     RequirementNodeID.DarkWorldWest,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -349,6 +367,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.HammerHouseNotBunny
                     },
                     RequirementNodeID.DarkWorldWest,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -365,6 +384,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.HammerHouseNotBunny
                     },
                     RequirementNodeID.DarkWorldWest,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -386,6 +406,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
                     RequirementNodeID.DarkWorldWest,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -402,6 +423,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldSouthNotBunny
                     },
                     RequirementNodeID.DarkWorldWest,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -423,6 +445,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
                     RequirementNodeID.DarkWorldWest,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -439,6 +462,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWWitchAreaNotBunny
                     },
                     RequirementNodeID.DarkWorldWest,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -463,6 +487,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWest
                     },
                     RequirementNodeID.DarkWorldWestNotBunny,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -482,6 +507,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWest
                     },
                     RequirementNodeID.DarkWorldWestNotBunny,
+                    false,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -498,6 +524,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.DarkWorldWestNotBunny,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -513,6 +540,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.DarkWorldWestNotBunnyOrSuperBunnyMirror,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -526,6 +554,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.DarkWorldWestNotBunnyOrSuperBunnyMirror,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -550,6 +579,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWest
                     },
                     RequirementNodeID.DarkWorldWestNotBunnyOrSuperBunnyMirror,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -569,6 +599,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWest
                     },
                     RequirementNodeID.DarkWorldWestNotBunnyOrSuperBunnyMirror,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -588,6 +619,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWest
                     },
                     RequirementNodeID.DarkWorldWestNotBunnyOrSuperBunnyMirror,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 }
             };
@@ -609,6 +641,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.DarkWorldWestLift2,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -625,6 +658,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.DarkWorldWestLift2,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -646,6 +680,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWest
                     },
                     RequirementNodeID.SkullWoodsBackArea,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -659,6 +694,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.SkullWoodsBackArea,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -672,6 +708,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.SkullWoodsBackArea,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -685,6 +722,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.SkullWoodsBackArea,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -701,6 +739,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWest
                     },
                     RequirementNodeID.SkullWoodsBackArea,
+                    false,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -717,6 +756,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWest
                     },
                     RequirementNodeID.SkullWoodsBackArea,
+                    false,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -733,6 +773,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWest
                     },
                     RequirementNodeID.SkullWoodsBackArea,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -757,6 +798,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.SkullWoodsBackArea
                     },
                     RequirementNodeID.SkullWoodsBackAreaNotBunny,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -776,6 +818,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.SkullWoodsBackArea
                     },
                     RequirementNodeID.SkullWoodsBackAreaNotBunny,
+                    false,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -792,6 +835,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.SkullWoodsBackAreaNotBunny,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -813,6 +857,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.SkullWoodsBackAreaNotBunny
                     },
                     RequirementNodeID.SkullWoodsBack,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -829,6 +874,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.SkullWoodsBackAreaNotBunny
                     },
                     RequirementNodeID.SkullWoodsBack,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -850,6 +896,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.BumperCaveEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -866,6 +913,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.BumperCaveEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -890,6 +938,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DeathMountainEntry
                     },
                     RequirementNodeID.BumperCaveEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -909,6 +958,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DeathMountainEntry
                     },
                     RequirementNodeID.BumperCaveEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -928,6 +978,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DeathMountainEntry
                     },
                     RequirementNodeID.BumperCaveEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -949,6 +1000,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.BumperCaveEntry
                     },
                     RequirementNodeID.BumperCaveEntryNonEntrance,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -965,6 +1017,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.BumperCaveEntry
                     },
                     RequirementNodeID.BumperCaveEntryNonEntrance,
+                    false,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -981,6 +1034,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.BumperCaveEntry
                     },
                     RequirementNodeID.BumperCaveEntryNonEntrance,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1002,6 +1056,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DeathMountainEntryNonEntrance
                     },
                     RequirementNodeID.BumperCaveFront,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1018,6 +1073,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DeathMountainEntryNonEntrance
                     },
                     RequirementNodeID.BumperCaveFront,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1039,6 +1095,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.BumperCaveEntryNonEntrance
                     },
                     RequirementNodeID.BumperCaveFront,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1055,6 +1112,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.BumperCaveEntryNonEntrance
                     },
                     RequirementNodeID.BumperCaveFront,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1076,6 +1134,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.BumperCaveFront
                     },
                     RequirementNodeID.BumperCaveNotBunny,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1092,6 +1151,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.BumperCaveFront
                     },
                     RequirementNodeID.BumperCaveNotBunny,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1113,6 +1173,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.BumperCavePastGap,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1129,6 +1190,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.BumperCavePastGap,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1148,6 +1210,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.BumperCaveNotBunny
                     },
                     RequirementNodeID.BumperCavePastGap,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -1167,6 +1230,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.BumperCaveNotBunny
                     },
                     RequirementNodeID.BumperCavePastGap,
+                    false,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -1186,6 +1250,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.BumperCaveNotBunny
                     },
                     RequirementNodeID.BumperCavePastGap,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1207,6 +1272,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.BumperCavePastGap
                     },
                     RequirementNodeID.BumperCaveBack,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1223,6 +1289,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.BumperCavePastGap
                     },
                     RequirementNodeID.BumperCaveBack,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1247,6 +1314,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DeathMountainExit
                     },
                     RequirementNodeID.BumperCaveTop,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1266,6 +1334,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DeathMountainExit
                     },
                     RequirementNodeID.BumperCaveTop,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1285,6 +1354,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DeathMountainExit
                     },
                     RequirementNodeID.BumperCaveTop,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1306,6 +1376,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.BumperCaveBack
                     },
                     RequirementNodeID.BumperCaveTop,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1322,6 +1393,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.BumperCaveBack
                     },
                     RequirementNodeID.BumperCaveTop,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1343,6 +1415,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.HammerHouse,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1359,6 +1432,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.HammerHouse,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1383,6 +1457,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.HammerHouse
                     },
                     RequirementNodeID.HammerHouseNotBunny,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1399,6 +1474,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.HammerHouseNotBunny,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1418,6 +1494,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.HammerHouse
                     },
                     RequirementNodeID.HammerHouseNotBunny,
+                    false,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -1437,6 +1514,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.HammerHouse
                     },
                     RequirementNodeID.HammerHouseNotBunny,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1452,6 +1530,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.HammerPegsArea,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1465,6 +1544,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.LightWorldMirror
                     },
                     RequirementNodeID.HammerPegsArea,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1480,6 +1560,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.HammerPegsArea,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1493,6 +1574,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestLift2
                     },
                     RequirementNodeID.HammerPegsArea,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1514,6 +1596,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.HammerPegsArea
                     },
                     RequirementNodeID.HammerPegs,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1530,6 +1613,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.HammerPegsArea
                     },
                     RequirementNodeID.HammerPegs,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1548,6 +1632,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.Blacksmith
                     },
                     RequirementNodeID.PurpleChest,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1562,6 +1647,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.HammerPegsArea
                     },
                     RequirementNodeID.PurpleChest,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1577,6 +1663,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.BlacksmithPrison,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1590,6 +1677,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.LightWorldMirror
                     },
                     RequirementNodeID.BlacksmithPrison,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1605,6 +1693,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.BlacksmithPrison,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1618,6 +1707,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestLift2
                     },
                     RequirementNodeID.BlacksmithPrison,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1636,6 +1726,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.Blacksmith,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1652,6 +1743,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.BlacksmithPrison
                     },
                     RequirementNodeID.Blacksmith,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1668,6 +1760,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.BlacksmithPrison
                     },
                     RequirementNodeID.Blacksmith,
+                    false,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -1685,6 +1778,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.LightWorld
                     },
                     RequirementNodeID.Blacksmith,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1700,6 +1794,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
                     RequirementNodeID.DWGraveyard,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1713,6 +1808,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
                     RequirementNodeID.DWGraveyard,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1737,6 +1833,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWGraveyard
                     },
                     RequirementNodeID.DWGraveyardMirror,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1756,6 +1853,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWGraveyard
                     },
                     RequirementNodeID.DWGraveyardMirror,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1775,6 +1873,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         RequirementNodeID.DWGraveyard
                     },
                     RequirementNodeID.DWGraveyardMirror,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };

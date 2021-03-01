@@ -14,7 +14,7 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
         public virtual void Tests(
             ModeSaveData modeData, (ItemType, int)[] items, (PrizeType, int)[] prizes,
             (SequenceBreakType, bool)[] sequenceBreaks, RequirementNodeID[] accessibleNodes,
-            RequirementNodeID id, AccessibilityLevel expected)
+            RequirementNodeID id, bool towerCrystalsKnown, AccessibilityLevel expected)
         {
             var container = ContainerConfig.Configure();
 
@@ -46,6 +46,9 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
             {
                 requirementNodes[node].AlwaysAccessible = true;
             }
+
+            var towerCrystals = (ICrystalRequirementItem)itemDictionary[ItemType.TowerCrystals];
+            towerCrystals.Known = towerCrystalsKnown;
     
             Assert.Equal(expected, requirementNodes[id].Accessibility);
         }

@@ -65,9 +65,10 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
         public override void Tests(
             ModeSaveData modeData, (ItemType, int)[] items, (PrizeType, int)[] prizes,
             (SequenceBreakType, bool)[] sequenceBreaks, RequirementNodeID[] accessibleNodes,
-            RequirementNodeID id, AccessibilityLevel expected)
+            RequirementNodeID id, bool towerCrystalsKnown, AccessibilityLevel expected)
         {
-            base.Tests(modeData, items, prizes, sequenceBreaks, accessibleNodes, id, expected);
+            base.Tests(
+                modeData, items, prizes, sequenceBreaks, accessibleNodes, id, towerCrystalsKnown, expected);
         }
     
         public static IEnumerable<object[]> EntranceDungeon_To_HCSanctuaryEntry =>
@@ -83,8 +84,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.HCSanctuaryEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -97,8 +98,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.HCSanctuaryEntry,
+                    false,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -114,8 +115,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.HCSanctuaryEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -133,8 +134,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.HCSanctuaryEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -150,8 +151,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.LightWorldNotBunnyOrSuperBunnyMirror
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.HCSanctuaryEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -169,8 +170,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.HCFrontEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -183,8 +184,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.HCFrontEntry,
+                    false,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -200,8 +201,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.HCFrontEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -219,8 +220,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.HCFrontEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -236,8 +237,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.LightWorldNotBunnyOrDungeonRevive
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.HCFrontEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -252,8 +253,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.HCBackEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -266,8 +267,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.HCBackEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -282,8 +283,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.HCBackEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -296,8 +297,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.EscapeGrave
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.HCBackEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -312,8 +313,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.ATEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -326,8 +327,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.ATEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -348,8 +349,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.AgahnimTowerEntrance
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.ATEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -365,8 +366,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.AgahnimTowerEntrance
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.ATEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -387,8 +388,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.GanonsTowerEntrance
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.ATEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -404,8 +405,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.GanonsTowerEntrance
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.ATEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -423,8 +424,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.EPEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -437,8 +438,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.EPEntry,
+                    false,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -454,8 +455,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.EPEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -473,8 +474,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.EPEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -490,8 +491,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.LightWorldNotBunnyOrDungeonRevive
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.EPEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -506,8 +507,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.DPFrontEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -520,8 +521,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.DPFrontEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -545,8 +546,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (SequenceBreakType.DungeonRevive, true)
                     },
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.DPFrontEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -568,8 +569,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.DesertPalaceFrontEntrance
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.DPFrontEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -591,8 +592,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.DesertPalaceFrontEntrance
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.DPFrontEntry,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -614,8 +615,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.DesertPalaceFrontEntrance
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.DPFrontEntry,
+                    false,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -637,8 +638,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.DesertPalaceFrontEntrance
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.DPFrontEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -653,8 +654,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.DPLeftEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -667,8 +668,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.DPLeftEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -683,8 +684,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.DPLeftEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -697,8 +698,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.DesertLedge
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.DPLeftEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -713,8 +714,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.DPBackEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -727,8 +728,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.DPBackEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -743,8 +744,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.DPBackEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -757,8 +758,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.DesertBack
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.DPBackEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -773,8 +774,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.ToHEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -787,8 +788,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.ToHEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -803,8 +804,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.ToHEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -817,8 +818,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.DeathMountainWestTopNotBunny
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.ToHEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -842,8 +843,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.DeathMountainWestTop
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.ToHEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -862,8 +863,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.DeathMountainWestTop
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.ToHEntry,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -882,8 +883,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.DeathMountainWestTop
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.ToHEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -898,8 +899,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.PoDEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -912,8 +913,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.PoDEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -928,8 +929,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.PoDEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -942,8 +943,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.DarkWorldEastNotBunny
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.PoDEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -958,8 +959,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.SPEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -972,8 +973,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.SPEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -994,8 +995,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.LightWorldInvertedNotBunny
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.SPEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1011,8 +1012,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.LightWorldInvertedNotBunny
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.SPEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1033,8 +1034,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.DarkWorldSouthStandardOpenNotBunny
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.SPEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1050,8 +1051,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.DarkWorldSouthStandardOpenNotBunny
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.SPEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1066,8 +1067,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.SWFrontEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1080,8 +1081,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.SWFrontEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1102,8 +1103,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.DarkWorldWest
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.SWFrontEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1119,8 +1120,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.DarkWorldWest
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.SWFrontEntry,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 }
             };
@@ -1135,8 +1136,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.SWBackEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1149,8 +1150,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.SWBackEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1165,8 +1166,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.SWBackEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1179,8 +1180,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.SkullWoodsBack
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.SWBackEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1195,8 +1196,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.TTEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1209,8 +1210,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.TTEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1225,8 +1226,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.TTEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1239,8 +1240,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.DarkWorldWestNotBunny
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.TTEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1255,8 +1256,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.IPEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1269,8 +1270,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.IPEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1297,8 +1298,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.IcePalaceIsland
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.IPEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1320,8 +1321,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.IcePalaceIsland
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.IPEntry,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -1340,8 +1341,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (SequenceBreakType.DungeonRevive, true)
                     },
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.IPEntry,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -1363,8 +1364,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.IcePalaceIsland
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.IPEntry,
+                    false,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -1386,8 +1387,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.IcePalaceIsland
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.IPEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1402,8 +1403,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.MMEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1416,8 +1417,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.MMEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1432,8 +1433,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.MMEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1446,8 +1447,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.MiseryMireEntrance
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.MMEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1462,8 +1463,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.TRFrontEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1476,8 +1477,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.TRFrontEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1492,8 +1493,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.TRFrontEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1506,8 +1507,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TurtleRockFrontEntrance
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.TRFrontEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1528,8 +1529,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TRFrontEntry
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.TRFrontEntryStandardOpen,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1545,8 +1546,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TRFrontEntry
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.TRFrontEntryStandardOpen,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1567,8 +1568,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TRFrontEntryStandardOpen
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.TRFrontEntryStandardOpenEntranceNone,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1584,8 +1585,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TRFrontEntryStandardOpen
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.TRFrontEntryStandardOpenEntranceNone,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1601,8 +1602,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TRFrontEntryStandardOpen
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.TRFrontEntryStandardOpenEntranceNone,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1623,8 +1624,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TRFrontEntryStandardOpenEntranceNone
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.TRFrontToKeyDoors,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1640,8 +1641,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TRFrontEntryStandardOpenEntranceNone
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.TRFrontToKeyDoors,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -1654,12 +1655,14 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new ModeSaveData()
                     {
                         SmallKeyShuffle = true,
-                        GenericKeys = false
+                        GenericKeys = false,
+                        KeyDropShuffle = false
                     },
                     new (ItemType, int)[]
                     {
                         (ItemType.FireRod, 0),
-                        (ItemType.SmallKey, 0)
+                        (ItemType.SmallKey, 0),
+                        (ItemType.TRSmallKey, 0)
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
@@ -1667,11 +1670,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
-                    new (LocationID, int)[]
-                    {
-                        (LocationID.TurtleRock, 0)
-                    },
                     RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1679,12 +1679,14 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new ModeSaveData()
                     {
                         SmallKeyShuffle = true,
-                        GenericKeys = false
+                        GenericKeys = false,
+                        KeyDropShuffle = false
                     },
                     new (ItemType, int)[]
                     {
                         (ItemType.FireRod, 1),
-                        (ItemType.SmallKey, 0)
+                        (ItemType.SmallKey, 0),
+                        (ItemType.TRSmallKey, 0)
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
@@ -1692,11 +1694,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
-                    new (LocationID, int)[]
-                    {
-                        (LocationID.TurtleRock, 0)
-                    },
                     RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1704,12 +1703,14 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new ModeSaveData()
                     {
                         SmallKeyShuffle = true,
-                        GenericKeys = false
+                        GenericKeys = false,
+                        KeyDropShuffle = false
                     },
                     new (ItemType, int)[]
                     {
                         (ItemType.FireRod, 0),
-                        (ItemType.SmallKey, 2)
+                        (ItemType.SmallKey, 2),
+                        (ItemType.TRSmallKey, 0)
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
@@ -1717,11 +1718,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
-                    new (LocationID, int)[]
-                    {
-                        (LocationID.TurtleRock, 0)
-                    },
                     RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1729,12 +1727,14 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new ModeSaveData()
                     {
                         SmallKeyShuffle = true,
-                        GenericKeys = false
+                        GenericKeys = false,
+                        KeyDropShuffle = false
                     },
                     new (ItemType, int)[]
                     {
                         (ItemType.FireRod, 0),
-                        (ItemType.SmallKey, 0)
+                        (ItemType.SmallKey, 0),
+                        (ItemType.TRSmallKey, 1)
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
@@ -1742,11 +1742,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
-                    new (LocationID, int)[]
-                    {
-                        (LocationID.TurtleRock, 1)
-                    },
                     RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1754,12 +1751,14 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new ModeSaveData()
                     {
                         SmallKeyShuffle = true,
-                        GenericKeys = true
+                        GenericKeys = true,
+                        KeyDropShuffle = false
                     },
                     new (ItemType, int)[]
                     {
                         (ItemType.FireRod, 0),
-                        (ItemType.SmallKey, 0)
+                        (ItemType.SmallKey, 0),
+                        (ItemType.TRSmallKey, 0)
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
@@ -1767,11 +1766,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
-                    new (LocationID, int)[]
-                    {
-                        (LocationID.TurtleRock, 0)
-                    },
                     RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1779,12 +1775,14 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new ModeSaveData()
                     {
                         SmallKeyShuffle = true,
-                        GenericKeys = true
+                        GenericKeys = true,
+                        KeyDropShuffle = false
                     },
                     new (ItemType, int)[]
                     {
                         (ItemType.FireRod, 1),
-                        (ItemType.SmallKey, 0)
+                        (ItemType.SmallKey, 0),
+                        (ItemType.TRSmallKey, 0)
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
@@ -1792,11 +1790,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
-                    new (LocationID, int)[]
-                    {
-                        (LocationID.TurtleRock, 0)
-                    },
                     RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1804,12 +1799,14 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new ModeSaveData()
                     {
                         SmallKeyShuffle = true,
-                        GenericKeys = true
+                        GenericKeys = true,
+                        KeyDropShuffle = false
                     },
                     new (ItemType, int)[]
                     {
                         (ItemType.FireRod, 0),
-                        (ItemType.SmallKey, 0)
+                        (ItemType.SmallKey, 0),
+                        (ItemType.TRSmallKey, 1)
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
@@ -1817,11 +1814,176 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
-                    new (LocationID, int)[]
+                    RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
                     {
-                        (LocationID.TurtleRock, 1)
+                        SmallKeyShuffle = true,
+                        GenericKeys = false,
+                        KeyDropShuffle = true
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.FireRod, 0),
+                        (ItemType.SmallKey, 0),
+                        (ItemType.TRSmallKey, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.TRFrontToKeyDoors
                     },
                     RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = true,
+                        GenericKeys = false,
+                        KeyDropShuffle = true
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.FireRod, 1),
+                        (ItemType.SmallKey, 0),
+                        (ItemType.TRSmallKey, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.TRFrontToKeyDoors
+                    },
+                    RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = true,
+                        GenericKeys = false,
+                        KeyDropShuffle = true
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.FireRod, 0),
+                        (ItemType.SmallKey, 3),
+                        (ItemType.TRSmallKey, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.TRFrontToKeyDoors
+                    },
+                    RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = true,
+                        GenericKeys = false,
+                        KeyDropShuffle = true
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.FireRod, 0),
+                        (ItemType.SmallKey, 0),
+                        (ItemType.TRSmallKey, 2)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.TRFrontToKeyDoors
+                    },
+                    RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = true,
+                        GenericKeys = true,
+                        KeyDropShuffle = true
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.FireRod, 0),
+                        (ItemType.SmallKey, 0),
+                        (ItemType.TRSmallKey, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.TRFrontToKeyDoors
+                    },
+                    RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = true,
+                        GenericKeys = true,
+                        KeyDropShuffle = true
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.FireRod, 1),
+                        (ItemType.SmallKey, 0),
+                        (ItemType.TRSmallKey, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.TRFrontToKeyDoors
+                    },
+                    RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
+                    AccessibilityLevel.None
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = true,
+                        GenericKeys = true,
+                        KeyDropShuffle = true
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.FireRod, 0),
+                        (ItemType.SmallKey, 0),
+                        (ItemType.TRSmallKey, 2)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.TRFrontToKeyDoors
+                    },
+                    RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -1829,12 +1991,14 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new ModeSaveData()
                     {
                         SmallKeyShuffle = false,
-                        GenericKeys = false
+                        GenericKeys = false,
+                        KeyDropShuffle = false
                     },
                     new (ItemType, int)[]
                     {
                         (ItemType.FireRod, 0),
-                        (ItemType.SmallKey, 0)
+                        (ItemType.SmallKey, 0),
+                        (ItemType.TRSmallKey, 0)
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
@@ -1842,11 +2006,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
-                    new (LocationID, int)[]
-                    {
-                        (LocationID.TurtleRock, 0)
-                    },
                     RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -1854,12 +2015,14 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new ModeSaveData()
                     {
                         SmallKeyShuffle = false,
-                        GenericKeys = false
+                        GenericKeys = false,
+                        KeyDropShuffle = false
                     },
                     new (ItemType, int)[]
                     {
                         (ItemType.FireRod, 0),
-                        (ItemType.SmallKey, 2)
+                        (ItemType.SmallKey, 2),
+                        (ItemType.TRSmallKey, 2)
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
@@ -1867,11 +2030,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
-                    new (LocationID, int)[]
-                    {
-                        (LocationID.TurtleRock, 2)
-                    },
                     RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -1879,12 +2039,62 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new ModeSaveData()
                     {
                         SmallKeyShuffle = false,
-                        GenericKeys = false
+                        GenericKeys = false,
+                        KeyDropShuffle = true
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.FireRod, 0),
+                        (ItemType.SmallKey, 0),
+                        (ItemType.TRSmallKey, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.TRFrontToKeyDoors
+                    },
+                    RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
+                    AccessibilityLevel.SequenceBreak
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = false,
+                        GenericKeys = false,
+                        KeyDropShuffle = true
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.FireRod, 0),
+                        (ItemType.SmallKey, 3),
+                        (ItemType.TRSmallKey, 3)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.TRFrontToKeyDoors
+                    },
+                    RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
+                    AccessibilityLevel.SequenceBreak
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = false,
+                        GenericKeys = false,
+                        KeyDropShuffle = false
                     },
                     new (ItemType, int)[]
                     {
                         (ItemType.FireRod, 1),
-                        (ItemType.SmallKey, 0)
+                        (ItemType.SmallKey, 0),
+                        (ItemType.TRSmallKey, 0)
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
@@ -1892,11 +2102,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
-                    new (LocationID, int)[]
-                    {
-                        (LocationID.TurtleRock, 0)
-                    },
                     RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -1904,12 +2111,14 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new ModeSaveData()
                     {
                         SmallKeyShuffle = true,
-                        GenericKeys = false
+                        GenericKeys = false,
+                        KeyDropShuffle = false
                     },
                     new (ItemType, int)[]
                     {
                         (ItemType.FireRod, 0),
-                        (ItemType.SmallKey, 0)
+                        (ItemType.SmallKey, 0),
+                        (ItemType.TRSmallKey, 2)
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
@@ -1917,11 +2126,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
-                    new (LocationID, int)[]
-                    {
-                        (LocationID.TurtleRock, 2)
-                    },
                     RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -1929,12 +2135,14 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new ModeSaveData()
                     {
                         SmallKeyShuffle = true,
-                        GenericKeys = true
+                        GenericKeys = true,
+                        KeyDropShuffle = false
                     },
                     new (ItemType, int)[]
                     {
                         (ItemType.FireRod, 0),
-                        (ItemType.SmallKey, 2)
+                        (ItemType.SmallKey, 2),
+                        (ItemType.TRSmallKey, 0)
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
@@ -1942,11 +2150,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
-                    new (LocationID, int)[]
-                    {
-                        (LocationID.TurtleRock, 0)
-                    },
                     RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -1954,12 +2159,14 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new ModeSaveData()
                     {
                         SmallKeyShuffle = true,
-                        GenericKeys = true
+                        GenericKeys = true,
+                        KeyDropShuffle = false
                     },
                     new (ItemType, int)[]
                     {
                         (ItemType.FireRod, 0),
-                        (ItemType.SmallKey, 1)
+                        (ItemType.SmallKey, 1),
+                        (ItemType.TRSmallKey, 1)
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
@@ -1967,11 +2174,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
-                    new (LocationID, int)[]
-                    {
-                        (LocationID.TurtleRock, 1)
-                    },
                     RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -1979,12 +2183,14 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new ModeSaveData()
                     {
                         SmallKeyShuffle = true,
-                        GenericKeys = true
+                        GenericKeys = true,
+                        KeyDropShuffle = false
                     },
                     new (ItemType, int)[]
                     {
                         (ItemType.FireRod, 0),
-                        (ItemType.SmallKey, 0)
+                        (ItemType.SmallKey, 0),
+                        (ItemType.TRSmallKey, 2)
                     },
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
@@ -1992,11 +2198,152 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TRFrontToKeyDoors
                     },
-                    new (LocationID, int)[]
+                    RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
                     {
-                        (LocationID.TurtleRock, 2)
+                        SmallKeyShuffle = false,
+                        GenericKeys = false,
+                        KeyDropShuffle = true
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.FireRod, 1),
+                        (ItemType.SmallKey, 0),
+                        (ItemType.TRSmallKey, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.TRFrontToKeyDoors
                     },
                     RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = true,
+                        GenericKeys = false,
+                        KeyDropShuffle = true
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.FireRod, 0),
+                        (ItemType.SmallKey, 0),
+                        (ItemType.TRSmallKey, 3)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.TRFrontToKeyDoors
+                    },
+                    RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = true,
+                        GenericKeys = true,
+                        KeyDropShuffle = true
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.FireRod, 0),
+                        (ItemType.SmallKey, 3),
+                        (ItemType.TRSmallKey, 0)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.TRFrontToKeyDoors
+                    },
+                    RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = true,
+                        GenericKeys = true,
+                        KeyDropShuffle = true
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.FireRod, 0),
+                        (ItemType.SmallKey, 2),
+                        (ItemType.TRSmallKey, 1)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.TRFrontToKeyDoors
+                    },
+                    RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = true,
+                        GenericKeys = true,
+                        KeyDropShuffle = true
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.FireRod, 0),
+                        (ItemType.SmallKey, 1),
+                        (ItemType.TRSmallKey, 2)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.TRFrontToKeyDoors
+                    },
+                    RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
+                    AccessibilityLevel.Normal
+                },
+                new object[]
+                {
+                    new ModeSaveData()
+                    {
+                        SmallKeyShuffle = true,
+                        GenericKeys = true,
+                        KeyDropShuffle = true
+                    },
+                    new (ItemType, int)[]
+                    {
+                        (ItemType.FireRod, 0),
+                        (ItemType.SmallKey, 0),
+                        (ItemType.TRSmallKey, 3)
+                    },
+                    new (PrizeType, int)[0],
+                    new (SequenceBreakType, bool)[0],
+                    new RequirementNodeID[]
+                    {
+                        RequirementNodeID.TRFrontToKeyDoors
+                    },
+                    RequirementNodeID.TRKeyDoorsToMiddleExit,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -2011,8 +2358,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.TRMiddleEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2025,8 +2372,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.TRMiddleEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -2041,8 +2388,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.TRMiddleEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2055,8 +2402,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TurtleRockTunnel
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.TRMiddleEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -2071,8 +2418,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.TRBackEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2085,8 +2432,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.TRBackEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -2101,8 +2448,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.TRBackEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2115,8 +2462,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.TurtleRockSafetyDoor
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.TRBackEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -2131,8 +2478,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     new (PrizeType, int)[0],
                     new (SequenceBreakType, bool)[0],
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.GTEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2145,8 +2492,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.EntranceDungeonAllInsanity
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.GTEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -2167,8 +2514,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.AgahnimTowerEntrance
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.GTEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2184,8 +2531,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.AgahnimTowerEntrance
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.GTEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
@@ -2209,8 +2556,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                         (SequenceBreakType.DungeonRevive, true)
                     },
                     new RequirementNodeID[0],
-                    new (LocationID, int)[0],
                     RequirementNodeID.GTEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2232,8 +2579,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.GanonsTowerEntranceStandardOpen
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.GTEntry,
+                    false,
                     AccessibilityLevel.None
                 },
                 new object[]
@@ -2255,8 +2602,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.GanonsTowerEntranceStandardOpen
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.GTEntry,
+                    false,
                     AccessibilityLevel.SequenceBreak
                 },
                 new object[]
@@ -2278,8 +2625,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.GanonsTowerEntranceStandardOpen
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.GTEntry,
+                    false,
                     AccessibilityLevel.Normal
                 },
                 new object[]
@@ -2301,8 +2648,8 @@ namespace OpenTracker.UnitTests.Models.RequirementNodes
                     {
                         RequirementNodeID.GanonsTowerEntranceStandardOpen
                     },
-                    new (LocationID, int)[0],
                     RequirementNodeID.GTEntry,
+                    false,
                     AccessibilityLevel.Normal
                 }
             };
